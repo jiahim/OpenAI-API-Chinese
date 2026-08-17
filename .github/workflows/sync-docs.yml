@@ -1,0 +1,49 @@
+name: Sync official English docs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * 1"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-openai-english-docs
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Enable pnpm
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify synchronizer
+        run: |
+          pnpm typecheck
+          pnpm test
+
+      - name: Synchronize official Markdown
+        run: pnpm docs:sync --prune
+
+      - name: Commit source updates
+        run: |
+          if [[ -z "$(git status --porcelain -- docs/en)" ]]; then
+            echo "No official documentation changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/en
+          git commit -m "docs: sync official English sources"
+          git push
