@@ -1,23 +1,27 @@
 # Handoff：OpenAI 中文文档翻译库
 
-> **给后续执行者：** 官方英文镜像同步器已安全合入；当前完成自动同步 PR 与远端门禁闭环，然后进入中文翻译流水线。不要恢复旧 Python 翻译脚本，也不要清洗 `docs/en` 中的官方原文格式。
+> **给后续执行者：** 官方英文镜像同步器和自动同步 PR 工作流已安全合入；当前先修复合并后暴露的 Node 测试运行器偶发故障，再完成首次远端同步与门禁验收。不要恢复旧 Python 翻译脚本，也不要清洗 `docs/en` 中的官方原文格式。
 
 **更新时间：** 2026-08-24（Asia/Singapore）
 
 ## 1. 当前阶段结论
 
-英文来源同步模块已通过 PR #3 合入远端：
+英文来源同步模块与自动同步 PR 工作流均已合入远端：
 
 - PR：`https://github.com/jiahim/OpenAI-API-Chinese/pull/3`。
 - 合并提交：`8f32e86`（`Merge pull request #3 from jiahim/feat-auto-translate`）。
-- PR 的 `Quality gate` 已成功；合并后的本地 `main` 也完成 typecheck、测试和 manifest 状态复验。
-- 当前自动同步门禁改造分支：`codex/auto-sync-pr`。
-- 当前隔离工作树：`.worktrees/codex-auto-sync-pr`。
+- PR #3 的 `Quality gate` 已成功；合并后的本地 `main` 也完成 typecheck、测试和 manifest 状态复验。
+- 自动同步 PR：`https://github.com/jiahim/OpenAI-API-Chinese/pull/4`。
+- 自动同步合并提交：`ee93ed0`（`Merge pull request #4 from jiahim/codex/auto-sync-pr`）。
+- PR #4 的 `Quality gate` 已成功；合并后的 CI #4 在 `Run tests` 偶发失败，错误为 Node 24 测试运行器无法反序列化子进程数据。
+- 同型错误曾在本地多测试文件并行时出现一次，单独运行失败文件及后续完整运行均通过，确认不是确定性测试失败。
+- 当前修复分支：`codex/stabilize-node-tests`；修复策略是保留进程隔离，将测试文件串行执行（`--test-concurrency=1`）。
+- 当前隔离工作树：`.worktrees/codex-stabilize-node-tests`。
 - GitHub `main` 在 PR #3 合并前没有 Ruleset；完成自动同步 PR 的远端验收后再设置门禁。
 - 英文镜像：418 篇，约 88.2 MiB，0 个 removed。
 - TypeScript typecheck 通过，28 项测试通过。
 
-中文生成、翻译提示词、术语策略和增量译文尚未实现。自动同步 PR 与门禁闭环是进入翻译模块设计前的最后一个基础设施步骤。
+中文生成、翻译提示词、术语策略和增量译文尚未实现。测试稳定性、首次自动同步与门禁闭环是进入翻译模块设计前的最后一组基础设施步骤。
 
 ## 2. 已完成能力
 
@@ -126,10 +130,10 @@ pnpm test
 
 ## 4. 下一步
 
-### 必做：完成自动同步 PR 与门禁
+### 必做：修复测试稳定性并完成门禁
 
-1. 提交并推送 `codex/auto-sync-pr`，创建 PR 到 `main`。
-2. 等待该 PR 的 `Quality gate` 成功后合并。
+1. 验证并提交 `codex/stabilize-node-tests`，通过 PR 合入 `main`。
+2. 确认合并后的 `Quality gate` 成功，消除偶发红灯。
 3. 在 Actions 设置中允许 `GITHUB_TOKEN` 创建 PR。
 4. 手动运行一次 **Sync official English docs**，验证无变化时不会创建空 PR；若官方来源恰有变化，验证自动 PR 和 dispatch 的 `Quality gate`。
 5. 为 `main` 配置 Ruleset：必须通过 PR、必须通过 `Quality gate`、禁止 force push、空 bypass。
@@ -149,4 +153,4 @@ pnpm test
 
 ## 5. 新任务开场指令
 
-先阅读本文件并运行 `git status --short --branch`。不要清理现有改动，不要使用 `git reset --hard` 或 `git checkout --`。先完成 `codex/auto-sync-pr` 的 PR、首次远端同步验收和 `main` Ruleset，再设计中文翻译流水线。默认使用 TypeScript；`docs/en` 必须保持官方原文，不做格式化或人工修正。
+先阅读本文件并运行 `git status --short --branch`。不要清理现有改动，不要使用 `git reset --hard` 或 `git checkout --`。先完成测试稳定性修复、首次远端同步验收和 `main` Ruleset，再设计中文翻译流水线。默认使用 TypeScript；`docs/en` 必须保持官方原文，不做格式化或人工修正。

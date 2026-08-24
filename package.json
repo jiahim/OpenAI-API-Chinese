@@ -9,7 +9,7 @@
     "docs:check": "node scripts/sync-docs.ts check",
     "docs:status": "node scripts/sync-docs.ts status",
     "docs:sync": "node scripts/sync-docs.ts sync",
-    "test": "node --test scripts/tests/*.test.ts",
+    "test": "node --test --test-concurrency=1 scripts/tests/*.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
