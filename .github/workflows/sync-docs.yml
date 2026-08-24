@@ -61,7 +61,7 @@ jobs:
         run: |
           if [[ -n "$(git status --porcelain -- docs/en)" ]]; then
             git add docs/en
-            git commit -m "docs: sync official English sources"
+            git commit -m "docs: 同步 OpenAI 官方英文文档"
           fi
 
           if git diff --quiet "origin/$BASE_BRANCH...HEAD" -- docs/en; then
@@ -92,12 +92,21 @@ jobs:
 
           echo "updated=true" >> "$GITHUB_OUTPUT"
 
+      - name: Generate the Chinese synchronization summary
+        if: steps.publish.outputs.has_changes == 'true'
+        run: |
+          node scripts/sync-pr-summary.ts \
+            --base-ref "origin/$BASE_BRANCH" \
+            --output "$RUNNER_TEMP/sync-pr-body.md"
+
       - name: Create or update the synchronization pull request
         uses: actions/github-script@v9
         env:
           BRANCH_UPDATED: ${{ steps.publish.outputs.updated }}
+          SYNC_PR_BODY_PATH: ${{ runner.temp }}/sync-pr-body.md
         with:
           script: |
+            const { readFile } = require("node:fs/promises");
             const { owner, repo } = context.repo;
             const head = `${owner}:${process.env.SYNC_BRANCH}`;
             const pulls = await github.paginate(github.rest.pulls.list, {
@@ -126,6 +135,8 @@ jobs:
               return;
             }
 
+            const title = "docs: 同步 OpenAI 官方英文文档";
+            const body = await readFile(process.env.SYNC_PR_BODY_PATH, "utf8");
             let created = false;
             if (!pull) {
               const response = await github.rest.pulls.create({
@@ -133,17 +144,20 @@ jobs:
                 repo,
                 base: process.env.BASE_BRANCH,
                 head: process.env.SYNC_BRANCH,
-                title: "docs: sync official English sources",
-                body: [
-                  "Automated weekly mirror update from the official OpenAI Markdown indexes.",
-                  "",
-                  "- The source synchronizer validates indexes and page responses before writing.",
-                  "- Large removals still require an explicit maintainer override and are not automated.",
-                  "- Merge this PR only after the required `Quality gate` succeeds.",
-                ].join("\n"),
+                title,
+                body,
               });
               pull = response.data;
               created = true;
+            } else {
+              const response = await github.rest.pulls.update({
+                owner,
+                repo,
+                pull_number: pull.number,
+                title,
+                body,
+              });
+              pull = response.data;
             }
 
             core.notice(`Synchronization PR: ${pull.html_url}`);
