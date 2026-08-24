@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "preserve": [
+    "OpenAI",
+    "API",
+    "Chat Completions API",
+    "Responses API"
+  ],
+  "terms": {}
+}

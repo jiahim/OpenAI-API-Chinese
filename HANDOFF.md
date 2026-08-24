@@ -1,12 +1,12 @@
 # Handoff：OpenAI 中文文档翻译库
 
-> **给后续执行者：** 官方英文镜像同步器、自动同步 PR 和稳定的质量门已经完成首次远端验收。当前先合入中文同步摘要改造并刷新自动同步 PR #6，再配置 `main` Ruleset。不要恢复旧 Python 翻译脚本，也不要清洗 `docs/en` 中的官方原文格式。
+> **给后续执行者：** 官方英文镜像、自动同步 PR、中文差异摘要、稳定 CI 和 `main` Ruleset 已全部闭环。当前在 `codex/translation-foundation` 建设中文翻译流水线；不要恢复旧 Python 翻译脚本，不要清洗 `docs/en`，也不要让自动任务覆盖未登记或人工修改的中文文件。
 
 **更新时间：** 2026-08-24（Asia/Singapore）
 
 ## 1. 当前阶段结论
 
-英文来源同步模块与自动同步 PR 工作流均已合入远端：
+英文来源基础设施已经完成，中文翻译进入规划基础阶段：
 
 - PR：`https://github.com/jiahim/OpenAI-API-Chinese/pull/3`。
 - 合并提交：`8f32e86`（`Merge pull request #3 from jiahim/feat-auto-translate`）。
@@ -16,13 +16,13 @@
 - 测试稳定性 PR：`https://github.com/jiahim/OpenAI-API-Chinese/pull/5`；合并提交：`db395f6`。
 - 测试文件保留进程隔离并通过 `--test-concurrency=1` 串行执行；PR 与合并后的 `main` CI 均成功。
 - Actions 已允许 `GITHUB_TOKEN` 创建 PR。首次同步验收 run `32710251773` 成功，自动创建 PR #6，并显式触发成功的 `Quality gate` run `32710653491`。
-- 自动同步 PR #6 当前包含 421 篇官方页面：新增 3 篇、内容更新 98 篇、删除 0 篇；尚未合入 `main`。
-- 当前中文摘要改造分支：`codex/chinese-sync-summary`；当前隔离工作树：`.worktrees/codex-chinese-sync-summary`。
-- GitHub `main` 在 PR #3 合并前没有 Ruleset；完成自动同步 PR 的远端验收后再设置门禁。
-- 英文镜像：418 篇，约 88.2 MiB，0 个 removed。
-- TypeScript typecheck 通过，28 项测试通过。
+- 自动同步 PR #6 已以中文标题、分类统计和完整文件路径合入；合并提交：`70f28d7`。
+- 英文镜像：421 篇（guides=183、reference=238），0 个 removed。
+- `main` Ruleset：`main-quality-gate`（ID `21281153`），enforcement=`active`，默认分支受保护，必须通过 PR 和 `Quality gate`，禁止删除与 force push，空 bypass。
+- 当前分支：`codex/translation-foundation`；当前隔离工作树：`.worktrees/codex-translation-foundation`。
+- 当前基础切片已实现翻译配置、策略哈希、manifest contract、非破坏性状态机以及只读 `translate:status` / `translate:plan`。
 
-中文生成、翻译提示词、术语策略和增量译文尚未实现。中文同步摘要、PR #6 合入和 Ruleset 是进入翻译模块设计前的最后一组基础设施步骤。
+真实模型调用、Markdown adapter、中文译文落盘和自动翻译 PR 尚未实现。当前基础切片明确不读取 API key、不调用模型，也不创建 `docs/zh`。
 
 ## 2. 已完成能力
 
@@ -33,7 +33,7 @@
 - 来源索引：
   - `https://developers.openai.com/api/docs/llms.txt`
   - `https://developers.openai.com/api/reference/llms.txt`
-- guides：180 篇。
+- guides：183 篇。
 - reference：238 篇。
 - `.source-manifest.json` 记录 URL、本地路径、栏目、哈希、大小、来源时间、active/removed 状态。
 
@@ -107,16 +107,29 @@ pnpm test
 
 仓库已在 **Settings → Actions → General → Workflow permissions** 启用 **Allow GitHub Actions to create and approve pull requests**。`GITHUB_TOKEN` 创建或更新 PR 时会产生 approval-required 的 `pull_request` 事件，因此 `ci.yml` 会把该事件隔离为非门禁 job；同步工作流随后使用允许递归触发的 `workflow_dispatch` 在自动化分支上运行真正的 `Quality gate`。
 
+### 2.5 中文翻译规划基础
+
+设计文档：`docs/translation-design.md`。
+
+- `docs/zh` 严格镜像 `docs/en` 的相对路径。
+- `docs/zh/.translation-manifest.json` 将记录源 SHA、目标 SHA、策略 SHA、翻译时间和 `machine/reviewed` 状态；首篇译文完成前不创建。
+- 翻译策略 SHA 由目标语言、提示词、术语表和 Markdown adapter 版本共同决定。
+- 页面状态：`pending`、`stale-source`、`stale-policy`、`missing-target`、`untracked-target`、`modified-target`、`current`、`removed-source`。
+- `untracked-target` 与 `modified-target` 会阻塞自动覆盖；`removed-source` 不自动删除中文译文。
+- 规划前逐页核对英文磁盘 SHA 与 source manifest，拒绝翻译本地脏改动。
+- Easy Translate Core/Providers 负责通用执行能力；本仓库只负责 Markdown、路径、manifest、术语和文档级增量。
+
 ## 3. 当前验证证据
 
-2026-08-24 中文摘要改造验证：
+2026-08-24 翻译规划基础验证：
 
 - `pnpm typecheck`：通过。
-- `pnpm test`：31/31 通过。
-- `pnpm docs:status`：418 active、0 removed、88.2 MiB。
-- workflow YAML、全部 shell block 和内嵌 GitHub Script 语法：通过。
-- 使用远端 `automation/sync-openai-docs` 的真实差异演练：新增 3、修改 100（包含 manifest 等管理文件）、删除 0，共 103 个文件；生成 PR 正文约 5.8 KiB。
-- `git diff --check`：通过。
+- `pnpm test`：38/38 通过。
+- `pnpm docs:status`：421 active、0 removed、89.0 MiB。
+- `pnpm translate:status`：421 pending，其他状态为 0；没有创建 `docs/zh`。
+- `pnpm translate:plan -- --section guides --match quickstart --limit 5`：正确选择 2 篇 quickstart 页面。
+- 定向测试覆盖路径越界、八种状态、策略 stale、未登记/人工修改保护、源 SHA 脏改动拒绝和 orphan 记录保留。
+- CI 已增加完全离线的 `pnpm translate:status`。
 
 不要对完整 `docs/en` 使用格式化器或以 `git diff --check` 作为质量门。官方原文包含尾随空格和形似冲突标记的正文，镜像策略要求保持原样。
 
@@ -135,26 +148,18 @@ pnpm test
 
 ## 4. 下一步
 
-### 必做：合入中文摘要并完成门禁
+### 必做：合入翻译规划基础
 
-1. 推送 `codex/chinese-sync-summary` 并通过 PR 合入 `main`。
-2. 再次手动运行 **Sync official English docs**，让现有 PR #6 自动刷新为中文标题、分类统计和完整文件路径，并重新通过显式 dispatch 的 `Quality gate`。
-3. 检查并合入自动同步 PR #6，确认合并后的 `main` CI 成功。
-4. 为 `main` 配置 Ruleset：必须通过 PR、必须通过 `Quality gate`、禁止 force push、空 bypass。
+1. 完成 `codex/translation-foundation` 的完整测试、typecheck、状态命令和 workflow 语法验证。
+2. 仅推送该功能分支并通过 PR 合入 `main`；不得直接 push `main`。
 
-### 后续：设计中文翻译流水线
+### 后续：Markdown adapter 与本地执行器
 
-门禁闭环后，再设计：
-
-- `docs/en` 到中文译文目录的路径与 manifest 关系。
-- Markdown AST/代码块/链接保护策略。
-- 术语表、提示词版本和人工校对状态。
-- 增量翻译、失败恢复、成本预算与并发限制。
-- Easy Translate Core/Providers 的复用边界。
-- 翻译质量检查、CI 和发布方式。
-
-翻译模块属于新的架构阶段，实施前需要单独完成设计确认。
+1. 实现基于源位置的 Markdown 文本提取/还原，确保代码、链接目标、HTML/MDX、表格和标记不被重写。
+2. 接入已发布的 `@easy-translate/core@0.3.0` 与 `@easy-translate/providers@0.1.0`，实现单篇 checkpoint 和文档级原子提交。
+3. 增加结构、保护标记、代码块、链接和术语质量检查。
+4. 先对少量 guides 做人工验收，再扩展批量翻译和自动 PR。
 
 ## 5. 新任务开场指令
 
-先阅读本文件并运行 `git status --short --branch`。不要清理现有改动，不要使用 `git reset --hard` 或 `git checkout --`。先合入中文同步摘要、刷新并合入 PR #6、配置 `main` Ruleset，再设计中文翻译流水线。默认使用 TypeScript；`docs/en` 必须保持官方原文，不做格式化或人工修正。
+先阅读本文件和 `docs/translation-design.md`，再运行 `git status --short --branch`。不要清理现有改动，不要使用 `git reset --hard` 或 `git checkout --`。默认使用 TypeScript；`docs/en` 必须保持官方原文；任何远端代码变更只允许通过功能分支 PR 合入。
