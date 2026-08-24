@@ -6,7 +6,7 @@
 
 本仓库负责 Markdown 结构保护、英文/中文路径映射、术语与提示词、翻译 manifest、增量选择和文档级质量门。批处理、并发、Provider 输出校验、重试、checkpoint、进度和取消复用已发布的 `@easy-translate/core`；OpenAI 与兼容接口复用 `@easy-translate/providers`。本仓库不复制 Provider 或通用翻译引擎。
 
-当前基础切片只提供离线的 `translate:status` 和 `translate:plan`，不调用模型、不读取 API key，也不写入 `docs/zh`。
+当前本地切片提供离线的 `translate:status`、`translate:plan` 和 Markdown adapter；不调用模型、不读取 API key，也不写入 `docs/zh`。
 
 ## 目录与持久化契约
 
@@ -57,14 +57,16 @@ manifest 不保存 API key、完整模型响应或供应商凭据。
 
 ## Markdown 保护策略
 
-后续 Markdown adapter 必须基于源位置替换可翻译文本，不能把整篇文档重新 stringify。以下内容必须保持字节级或语义级稳定：
+Markdown adapter 基于 mdast/micromark 的 GFM、frontmatter 与 MDX 语法树定位 source range，不能把整篇文档重新 stringify。它实现已发布 `@easy-translate/core@0.3.0` 的 `DocumentAdapter` 编译期契约，prepare 只输出翻译 plan 和不可变 format state，render 只对已登记区间倒序回填。以下内容必须保持字节级或语义级稳定：
 
 - fenced/indented code、inline code、命令、JSON、类型签名和模型 ID。
 - 链接目标、锚点、图片地址、HTML/MDX 标签和属性。
 - Markdown 标记、表格结构、列表层级和空白意图。
 - 占位符、环境变量、文件路径、URL、版本号和 API 字段名。
 
-adapter 会为每个文本单元提供 heading/body/table/list 等上下文，并在 render 后重新解析结构；任何保护标记丢失、结构数量变化或代码内容变化都必须拒绝落盘。
+adapter 为每个文本单元提供 `heading/body/table/list/quote` block context，以及 `text/link-label/image-alt` kind；链接标签和图片 alt 可翻译，链接、图片目标和 title 不进入翻译单元。fenced/indented code、inline code、HTML/MDX 整棵子树、frontmatter、自动链接、HTML 注释、转义符和字符实体都受到保护。由于 MDX 规范禁用缩进代码并拒绝 CommonMark 角括号自动链接，适配器会额外用 CommonMark AST 识别代码区间，并对自动链接/HTML 注释做等长掩码；等长掩码只用于解析，原始字节始终保存在 format state。
+
+render 拒绝缺失或多余单元、空文本、换行/控制字符、被篡改或重叠的区间和策略版本不匹配；回填后再次解析并比较受保护结构签名，结构、代码或 URL 变化时拒绝输出。恒等翻译不会改动任何字节。
 
 ## 增量、恢复与质量门
 
@@ -77,7 +79,7 @@ adapter 会为每个文本单元提供 heading/body/table/list 等上下文，�
 ## 分阶段交付
 
 1. **规划基础（当前）**：配置、路径映射、策略哈希、manifest contract、状态/计划 CLI。
-2. **Markdown adapter**：提取/还原、保护不变量、fixture 测试；接入 `@easy-translate/core` 的 `DocumentAdapter`。
+2. **Markdown adapter（当前本地分支）**：source-position 提取/还原、保护不变量、fixture 测试，并对齐 `@easy-translate/core` 的 `DocumentAdapter`。
 3. **本地翻译执行器**：接入已发布 Core/Providers、checkpoint、限流、选择参数和原子提交。
 4. **质量与人工校对**：结构检查、术语检查、adopt/review 命令和 stale 传播。
 5. **自动翻译 PR**：在英文同步 PR 合入后生成或更新中文翻译 PR，继续服从 `Quality gate` 和 `main` Ruleset。
