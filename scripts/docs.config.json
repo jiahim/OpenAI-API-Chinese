@@ -1,0 +1,17 @@
+{
+  "concurrency": 2,
+  "indexUrls": {
+    "guides": "https://developers.openai.com/api/docs/llms.txt",
+    "reference": "https://developers.openai.com/api/reference/llms.txt"
+  },
+  "manifestPath": "docs/en/.source-manifest.json",
+  "maxRetries": 3,
+  "requestIntervalMaxMs": 800,
+  "requestIntervalMinMs": 300,
+  "requestTimeoutMs": 30000,
+  "retryBaseDelayMs": 30000,
+  "retryJitterMs": 1000,
+  "retryMaxDelayMs": 300000,
+  "sourceRoot": "docs/en",
+  "vercelMitigationCooldownMs": 300000
+}

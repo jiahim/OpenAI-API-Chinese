@@ -1,0 +1,17 @@
+{
+  "concurrency": 1,
+  "indexUrls": {
+    "guides": "https://developers.openai.com/api/docs/llms.txt",
+    "reference": "https://developers.openai.com/api/reference/llms.txt"
+  },
+  "manifestPath": "scripts/tests/fixtures/en/.source-manifest.json",
+  "maxRetries": 1,
+  "requestIntervalMaxMs": 0,
+  "requestIntervalMinMs": 0,
+  "requestTimeoutMs": 1000,
+  "retryBaseDelayMs": 1,
+  "retryJitterMs": 0,
+  "retryMaxDelayMs": 1,
+  "sourceRoot": "scripts/tests/fixtures/en",
+  "vercelMitigationCooldownMs": 1
+}
