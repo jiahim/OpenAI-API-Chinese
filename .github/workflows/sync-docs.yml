@@ -6,25 +6,44 @@ on:
     - cron: "17 3 * * 1"
 
 permissions:
+  actions: write
   contents: write
+  pull-requests: write
 
 concurrency:
   group: sync-openai-english-docs
   cancel-in-progress: false
+
+env:
+  BASE_BRANCH: main
+  SYNC_BRANCH: automation/sync-openai-docs
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out main with history
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: main
 
-      - uses: actions/setup-node@v4
+      - name: Prepare the automation branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin "refs/heads/$SYNC_BRANCH:refs/remotes/origin/$SYNC_BRANCH" || true
+          git checkout -B "$SYNC_BRANCH" "origin/$BASE_BRANCH"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
         with:
           node-version: "24"
-
-      - name: Enable pnpm
-        run: corepack enable
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -37,14 +56,103 @@ jobs:
       - name: Synchronize official Markdown
         run: pnpm docs:sync --prune
 
-      - name: Commit source updates
+      - name: Publish the automation branch
+        id: publish
         run: |
-          if [[ -z "$(git status --porcelain -- docs/en)" ]]; then
-            echo "No official documentation changes."
-            exit 0
+          if [[ -n "$(git status --porcelain -- docs/en)" ]]; then
+            git add docs/en
+            git commit -m "docs: sync official English sources"
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/en
-          git commit -m "docs: sync official English sources"
-          git push
+
+          if git diff --quiet "origin/$BASE_BRANCH...HEAD" -- docs/en; then
+            echo "No official documentation changes relative to $BASE_BRANCH."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
+
+          if git show-ref --verify --quiet "refs/remotes/origin/$SYNC_BRANCH"; then
+            if git diff --quiet "refs/remotes/origin/$SYNC_BRANCH" HEAD --; then
+              echo "Automation branch is already current."
+              echo "updated=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            expected="$(git rev-parse "refs/remotes/origin/$SYNC_BRANCH")"
+            git push \
+              --force-with-lease="refs/heads/$SYNC_BRANCH:$expected" \
+              --set-upstream origin "HEAD:refs/heads/$SYNC_BRANCH"
+          elif git diff --quiet "origin/$BASE_BRANCH...HEAD" -- docs/en; then
+            echo "No automation branch is needed."
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          else
+            git push --set-upstream origin "HEAD:refs/heads/$SYNC_BRANCH"
+          fi
+
+          echo "updated=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create or update the synchronization pull request
+        uses: actions/github-script@v9
+        env:
+          BRANCH_UPDATED: ${{ steps.publish.outputs.updated }}
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const head = `${owner}:${process.env.SYNC_BRANCH}`;
+            const pulls = await github.paginate(github.rest.pulls.list, {
+              owner,
+              repo,
+              base: process.env.BASE_BRANCH,
+              head,
+              state: "open",
+              per_page: 100,
+            });
+
+            let pull = pulls[0];
+            const hasChanges = "${{ steps.publish.outputs.has_changes }}" === "true";
+            if (!hasChanges) {
+              if (pull) {
+                await github.rest.pulls.update({
+                  owner,
+                  repo,
+                  pull_number: pull.number,
+                  state: "closed",
+                });
+                core.notice(`Closed obsolete synchronization PR: ${pull.html_url}`);
+              } else {
+                core.notice("No official documentation changes and no open synchronization PR.");
+              }
+              return;
+            }
+
+            let created = false;
+            if (!pull) {
+              const response = await github.rest.pulls.create({
+                owner,
+                repo,
+                base: process.env.BASE_BRANCH,
+                head: process.env.SYNC_BRANCH,
+                title: "docs: sync official English sources",
+                body: [
+                  "Automated weekly mirror update from the official OpenAI Markdown indexes.",
+                  "",
+                  "- The source synchronizer validates indexes and page responses before writing.",
+                  "- Large removals still require an explicit maintainer override and are not automated.",
+                  "- Merge this PR only after the required `Quality gate` succeeds.",
+                ].join("\n"),
+              });
+              pull = response.data;
+              created = true;
+            }
+
+            core.notice(`Synchronization PR: ${pull.html_url}`);
+            if (created || process.env.BRANCH_UPDATED === "true") {
+              await github.rest.actions.createWorkflowDispatch({
+                owner,
+                repo,
+                workflow_id: "ci.yml",
+                ref: process.env.SYNC_BRANCH,
+              });
+              core.notice(`Dispatched Quality gate for ${process.env.SYNC_BRANCH}.`);
+            }

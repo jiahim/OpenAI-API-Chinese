@@ -19,7 +19,8 @@
 │   │   └── .source-manifest.json
 │   └── legacy/               # 早期手工中文译文及图片归档
 └── .github/workflows/
-    └── sync-docs.yml         # 每周检查并提交官方更新
+    ├── ci.yml                # PR、main 与手动触发的质量门禁
+    └── sync-docs.yml         # 每周检查并创建官方更新 PR
 ```
 
 英文文件严格按照官网 URL 的路径保存。例如：
@@ -54,7 +55,9 @@ pnpm docs:sync
 
 ## 自动更新
 
-GitHub Actions 每周读取官方 `llms.txt` 索引、运行测试并同步英文 Markdown。只有 `docs/en/` 实际发生变化时才会提交。
+GitHub Actions 每周读取官方 `llms.txt` 索引、运行测试并同步英文 Markdown。只有 `docs/en/` 相对 `main` 实际发生变化时，机器人分支 `automation/sync-openai-docs` 才会创建或更新 PR；机器人不会直接写入 `main`。自动 PR 会显式触发 `Quality gate`，仍需维护者审核并合并。
+
+仓库必须在 **Settings → Actions → General → Workflow permissions** 中启用 **Allow GitHub Actions to create and approve pull requests**。`main` 的 Ruleset 可以因此保持空 bypass，并要求所有更新通过 PR 和 `Quality gate`。
 
 本阶段不包含中文文档生成或静态网站生成。
 
