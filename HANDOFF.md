@@ -1,23 +1,23 @@
 # Handoff：OpenAI 中文文档翻译库
 
-> **给后续执行者：** 当前先完成官方英文镜像同步器的安全合入，再进入中文翻译流水线。不要恢复旧 Python 翻译脚本，不要清洗 `docs/en` 中的官方原文格式，也不要在缺少远端 CI 证据时直接合并到 `main`。
+> **给后续执行者：** 官方英文镜像同步器已安全合入；当前完成自动同步 PR 与远端门禁闭环，然后进入中文翻译流水线。不要恢复旧 Python 翻译脚本，也不要清洗 `docs/en` 中的官方原文格式。
 
 **更新时间：** 2026-08-24（Asia/Singapore）
 
 ## 1. 当前阶段结论
 
-英文来源同步模块已经具备完整实现和本地验证，但尚未进入远端：
+英文来源同步模块已通过 PR #3 合入远端：
 
-- 当前分支：`feat-auto-translate`。
-- 数据抓取基线提交：`591898e`（`feat: 数据抓取模块`）。
-- 当前分支在该提交之上包含同步安全加固、补充测试、文档修订和 PR CI；在查看具体 SHA 前应先运行 `git log -3 --oneline`。
-- 远端默认分支 `main` 仍为 `efb1cac`。
-- `feat-auto-translate` 尚未推送，远端尚无 PR 和 CI 运行证据。
-- GitHub `main` 当前没有 Ruleset，`protected: false`。
+- PR：`https://github.com/jiahim/OpenAI-API-Chinese/pull/3`。
+- 合并提交：`8f32e86`（`Merge pull request #3 from jiahim/feat-auto-translate`）。
+- PR 的 `Quality gate` 已成功；合并后的本地 `main` 也完成 typecheck、测试和 manifest 状态复验。
+- 当前自动同步门禁改造分支：`codex/auto-sync-pr`。
+- 当前隔离工作树：`.worktrees/codex-auto-sync-pr`。
+- GitHub `main` 在 PR #3 合并前没有 Ruleset；完成自动同步 PR 的远端验收后再设置门禁。
 - 英文镜像：418 篇，约 88.2 MiB，0 个 removed。
 - TypeScript typecheck 通过，28 项测试通过。
 
-中文生成、翻译提示词、术语策略和增量译文尚未实现。应先把英文同步基线通过 PR 合入，再设计翻译模块。
+中文生成、翻译提示词、术语策略和增量译文尚未实现。自动同步 PR 与门禁闭环是进入翻译模块设计前的最后一个基础设施步骤。
 
 ## 2. 已完成能力
 
@@ -89,15 +89,20 @@ pnpm test
 工作流：`.github/workflows/sync-docs.yml`。
 
 - 每周一 03:17 UTC 运行，也支持手动触发。
+- 基于 `main` 创建或更新固定分支 `automation/sync-openai-docs`。
+- 每次都从受信任的 `main` 重建该分支；专用分支更新使用 `--force-with-lease`，不会运行分支自身修改过的脚本。
 - 先运行 typecheck 和测试，再执行 `pnpm docs:sync --prune`。
-- 只在 `docs/en/` 真实变化时提交。
+- 只在 `docs/en/` 相对 `main` 真实变化时推送分支。
+- 创建或复用面向 `main` 的同步 PR，并显式 dispatch 该分支的 `Quality gate`。
+- 当官方内容重新与 `main` 一致时，重置专用分支并关闭已经失效的同步 PR。
+- 不直接 push `main`，因此门禁不需要机器人 bypass。
 - Job 超时为 45 分钟。
 
-该工作流尚未在远端运行。当前设计会直接 push 所在分支；如果后续为 `main` 配置必须 PR 的 Ruleset，需要为机器人改为“自动创建更新 PR”或配置最小化 bypass，不能直接照搬 Easy Translate 的空 bypass 规则。
+远端首次验收前，必须在 **Settings → Actions → General → Workflow permissions** 启用 **Allow GitHub Actions to create and approve pull requests**。`GITHUB_TOKEN` 创建或更新 PR 时会产生 approval-required 的 `pull_request` 事件，因此 `ci.yml` 会把该事件隔离为非门禁 job；同步工作流随后使用允许递归触发的 `workflow_dispatch` 在自动化分支上运行真正的 `Quality gate`。
 
 ## 3. 当前验证证据
 
-2026-08-24 本地验证：
+2026-08-24 英文同步基线验证：
 
 - `pnpm typecheck`：通过。
 - `pnpm test`：28/28 通过。
@@ -121,17 +126,17 @@ pnpm test
 
 ## 4. 下一步
 
-### 必做：完成英文同步基线合入
+### 必做：完成自动同步 PR 与门禁
 
-1. 提交当前安全补丁、文档和 `.github/workflows/ci.yml`。
-2. 推送 `feat-auto-translate`。
-3. 创建 PR 到 `main`，等待远端 `Quality gate`。
-4. CI 通过后再合并。
-5. 根据定时同步策略配置远端门禁，避免阻断机器人更新。
+1. 提交并推送 `codex/auto-sync-pr`，创建 PR 到 `main`。
+2. 等待该 PR 的 `Quality gate` 成功后合并。
+3. 在 Actions 设置中允许 `GITHUB_TOKEN` 创建 PR。
+4. 手动运行一次 **Sync official English docs**，验证无变化时不会创建空 PR；若官方来源恰有变化，验证自动 PR 和 dispatch 的 `Quality gate`。
+5. 为 `main` 配置 Ruleset：必须通过 PR、必须通过 `Quality gate`、禁止 force push、空 bypass。
 
 ### 后续：设计中文翻译流水线
 
-英文同步基线合入后，再设计：
+门禁闭环后，再设计：
 
 - `docs/en` 到中文译文目录的路径与 manifest 关系。
 - Markdown AST/代码块/链接保护策略。
@@ -144,4 +149,4 @@ pnpm test
 
 ## 5. 新任务开场指令
 
-先阅读本文件并运行 `git status --short --branch`。不要清理现有改动，不要使用 `git reset --hard` 或 `git checkout --`。先完成英文同步器的 PR、CI 和门禁闭环，再设计中文翻译流水线。默认使用 TypeScript；`docs/en` 必须保持官方原文，不做格式化或人工修正。
+先阅读本文件并运行 `git status --short --branch`。不要清理现有改动，不要使用 `git reset --hard` 或 `git checkout --`。先完成 `codex/auto-sync-pr` 的 PR、首次远端同步验收和 `main` Ruleset，再设计中文翻译流水线。默认使用 TypeScript；`docs/en` 必须保持官方原文，不做格式化或人工修正。
