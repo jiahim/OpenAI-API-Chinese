@@ -1,6 +1,6 @@
 # Handoff：OpenAI 中文文档翻译库
 
-> **给后续执行者：** 官方英文镜像同步器和自动同步 PR 工作流已安全合入；当前先修复合并后暴露的 Node 测试运行器偶发故障，再完成首次远端同步与门禁验收。不要恢复旧 Python 翻译脚本，也不要清洗 `docs/en` 中的官方原文格式。
+> **给后续执行者：** 官方英文镜像同步器、自动同步 PR 和稳定的质量门已经完成首次远端验收。当前先合入中文同步摘要改造并刷新自动同步 PR #6，再配置 `main` Ruleset。不要恢复旧 Python 翻译脚本，也不要清洗 `docs/en` 中的官方原文格式。
 
 **更新时间：** 2026-08-24（Asia/Singapore）
 
@@ -13,15 +13,16 @@
 - PR #3 的 `Quality gate` 已成功；合并后的本地 `main` 也完成 typecheck、测试和 manifest 状态复验。
 - 自动同步 PR：`https://github.com/jiahim/OpenAI-API-Chinese/pull/4`。
 - 自动同步合并提交：`ee93ed0`（`Merge pull request #4 from jiahim/codex/auto-sync-pr`）。
-- PR #4 的 `Quality gate` 已成功；合并后的 CI #4 在 `Run tests` 偶发失败，错误为 Node 24 测试运行器无法反序列化子进程数据。
-- 同型错误曾在本地多测试文件并行时出现一次，单独运行失败文件及后续完整运行均通过，确认不是确定性测试失败。
-- 当前修复分支：`codex/stabilize-node-tests`；修复策略是保留进程隔离，将测试文件串行执行（`--test-concurrency=1`）。
-- 当前隔离工作树：`.worktrees/codex-stabilize-node-tests`。
+- 测试稳定性 PR：`https://github.com/jiahim/OpenAI-API-Chinese/pull/5`；合并提交：`db395f6`。
+- 测试文件保留进程隔离并通过 `--test-concurrency=1` 串行执行；PR 与合并后的 `main` CI 均成功。
+- Actions 已允许 `GITHUB_TOKEN` 创建 PR。首次同步验收 run `32710251773` 成功，自动创建 PR #6，并显式触发成功的 `Quality gate` run `32710653491`。
+- 自动同步 PR #6 当前包含 421 篇官方页面：新增 3 篇、内容更新 98 篇、删除 0 篇；尚未合入 `main`。
+- 当前中文摘要改造分支：`codex/chinese-sync-summary`；当前隔离工作树：`.worktrees/codex-chinese-sync-summary`。
 - GitHub `main` 在 PR #3 合并前没有 Ruleset；完成自动同步 PR 的远端验收后再设置门禁。
 - 英文镜像：418 篇，约 88.2 MiB，0 个 removed。
 - TypeScript typecheck 通过，28 项测试通过。
 
-中文生成、翻译提示词、术语策略和增量译文尚未实现。测试稳定性、首次自动同步与门禁闭环是进入翻译模块设计前的最后一组基础设施步骤。
+中文生成、翻译提示词、术语策略和增量译文尚未实现。中文同步摘要、PR #6 合入和 Ruleset 是进入翻译模块设计前的最后一组基础设施步骤。
 
 ## 2. 已完成能力
 
@@ -98,20 +99,24 @@ pnpm test
 - 先运行 typecheck 和测试，再执行 `pnpm docs:sync --prune`。
 - 只在 `docs/en/` 相对 `main` 真实变化时推送分支。
 - 创建或复用面向 `main` 的同步 PR，并显式 dispatch 该分支的 `Quality gate`。
+- 自动 commit、PR 标题和 PR 说明使用中文；PR 说明按真实 Git 差异区分新增、修改和删除，并列出每个 `docs/en` 文件路径。
+- 已存在的同步 PR 会在后续运行时刷新标题和说明，不会保留过期摘要。
 - 当官方内容重新与 `main` 一致时，重置专用分支并关闭已经失效的同步 PR。
 - 不直接 push `main`，因此门禁不需要机器人 bypass。
 - Job 超时为 45 分钟。
 
-远端首次验收前，必须在 **Settings → Actions → General → Workflow permissions** 启用 **Allow GitHub Actions to create and approve pull requests**。`GITHUB_TOKEN` 创建或更新 PR 时会产生 approval-required 的 `pull_request` 事件，因此 `ci.yml` 会把该事件隔离为非门禁 job；同步工作流随后使用允许递归触发的 `workflow_dispatch` 在自动化分支上运行真正的 `Quality gate`。
+仓库已在 **Settings → Actions → General → Workflow permissions** 启用 **Allow GitHub Actions to create and approve pull requests**。`GITHUB_TOKEN` 创建或更新 PR 时会产生 approval-required 的 `pull_request` 事件，因此 `ci.yml` 会把该事件隔离为非门禁 job；同步工作流随后使用允许递归触发的 `workflow_dispatch` 在自动化分支上运行真正的 `Quality gate`。
 
 ## 3. 当前验证证据
 
-2026-08-24 英文同步基线验证：
+2026-08-24 中文摘要改造验证：
 
 - `pnpm typecheck`：通过。
-- `pnpm test`：28/28 通过。
+- `pnpm test`：31/31 通过。
 - `pnpm docs:status`：418 active、0 removed、88.2 MiB。
-- 自有代码与配置（排除 `docs/en`、`docs/legacy`）的 `git diff --check`：通过。
+- workflow YAML、全部 shell block 和内嵌 GitHub Script 语法：通过。
+- 使用远端 `automation/sync-openai-docs` 的真实差异演练：新增 3、修改 100（包含 manifest 等管理文件）、删除 0，共 103 个文件；生成 PR 正文约 5.8 KiB。
+- `git diff --check`：通过。
 
 不要对完整 `docs/en` 使用格式化器或以 `git diff --check` 作为质量门。官方原文包含尾随空格和形似冲突标记的正文，镜像策略要求保持原样。
 
@@ -130,13 +135,12 @@ pnpm test
 
 ## 4. 下一步
 
-### 必做：修复测试稳定性并完成门禁
+### 必做：合入中文摘要并完成门禁
 
-1. 验证并提交 `codex/stabilize-node-tests`，通过 PR 合入 `main`。
-2. 确认合并后的 `Quality gate` 成功，消除偶发红灯。
-3. 在 Actions 设置中允许 `GITHUB_TOKEN` 创建 PR。
-4. 手动运行一次 **Sync official English docs**，验证无变化时不会创建空 PR；若官方来源恰有变化，验证自动 PR 和 dispatch 的 `Quality gate`。
-5. 为 `main` 配置 Ruleset：必须通过 PR、必须通过 `Quality gate`、禁止 force push、空 bypass。
+1. 推送 `codex/chinese-sync-summary` 并通过 PR 合入 `main`。
+2. 再次手动运行 **Sync official English docs**，让现有 PR #6 自动刷新为中文标题、分类统计和完整文件路径，并重新通过显式 dispatch 的 `Quality gate`。
+3. 检查并合入自动同步 PR #6，确认合并后的 `main` CI 成功。
+4. 为 `main` 配置 Ruleset：必须通过 PR、必须通过 `Quality gate`、禁止 force push、空 bypass。
 
 ### 后续：设计中文翻译流水线
 
@@ -153,4 +157,4 @@ pnpm test
 
 ## 5. 新任务开场指令
 
-先阅读本文件并运行 `git status --short --branch`。不要清理现有改动，不要使用 `git reset --hard` 或 `git checkout --`。先完成测试稳定性修复、首次远端同步验收和 `main` Ruleset，再设计中文翻译流水线。默认使用 TypeScript；`docs/en` 必须保持官方原文，不做格式化或人工修正。
+先阅读本文件并运行 `git status --short --branch`。不要清理现有改动，不要使用 `git reset --hard` 或 `git checkout --`。先合入中文同步摘要、刷新并合入 PR #6、配置 `main` Ruleset，再设计中文翻译流水线。默认使用 TypeScript；`docs/en` 必须保持官方原文，不做格式化或人工修正。

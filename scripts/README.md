@@ -96,6 +96,6 @@ node scripts/sync-docs.ts sync --prune --allow-large-prune
 
 ## 定时任务
 
-`.github/workflows/sync-docs.yml` 每周从受信任的 `main` 重建固定分支 `automation/sync-openai-docs`，运行完整同步和 `--prune`，并只提交 `docs/en/` 的真实变化。专用分支使用 `--force-with-lease` 安全更新，工作流不会执行分支自身修改过的脚本。随后创建或更新面向 `main` 的 PR，并通过 `workflow_dispatch` 在该分支显式运行 `Quality gate`；不会直接 push `main`。官方内容重新与 `main` 一致时，失效的同步 PR 会被关闭。Job 最长运行 45 分钟，避免上游持续故障或异常 `Retry-After` 无限占用执行器。
+`.github/workflows/sync-docs.yml` 每周从受信任的 `main` 重建固定分支 `automation/sync-openai-docs`，运行完整同步和 `--prune`，并只提交 `docs/en/` 的真实变化。专用分支使用 `--force-with-lease` 安全更新，工作流不会执行分支自身修改过的脚本。随后创建或更新面向 `main` 的中文 PR；`scripts/sync-pr-summary.ts` 根据实际 Git 差异区分新增、修改和删除，并在 PR 中列出对应文件路径。工作流通过 `workflow_dispatch` 在该分支显式运行 `Quality gate`，不会直接 push `main`。官方内容重新与 `main` 一致时，失效的同步 PR 会被关闭。Job 最长运行 45 分钟，避免上游持续故障或异常 `Retry-After` 无限占用执行器。
 
 首次启用前，需要在仓库 **Settings → Actions → General → Workflow permissions** 勾选 **Allow GitHub Actions to create and approve pull requests**。随后可对 `main` 设置必须通过 PR 和 `Quality gate` 的 Ruleset，无需给同步机器人配置 bypass。
