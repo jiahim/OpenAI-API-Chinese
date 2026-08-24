@@ -1,0 +1,266 @@
+import assert from "node:assert/strict";
+import { test } from "node:test";
+
+import type { TranslationResult } from "@easy-translate/core";
+
+import {
+  markdownDocumentAdapter,
+  type MarkdownFormatState,
+} from "../translation/markdown-adapter.ts";
+import { MARKDOWN_ADAPTER_POLICY_VERSION } from "../translation/planner.ts";
+
+function result(translations: ReadonlyMap<string, string>): TranslationResult {
+  return {
+    checkpoint: {
+      documentId: "test",
+      schemaVersion: 1,
+      targetLanguage: "zh-CN",
+      translations: [],
+    },
+    stats: {
+      batches: 0,
+      characters: 0,
+      freshlyTranslatedUnits: 0,
+      fromCheckpointUnits: 0,
+      translatedUnits: translations.size,
+      uniqueUnits: translations.size,
+    },
+    translations,
+  };
+}
+
+async function identity(source: string): Promise<string> {
+  const prepared = await markdownDocumentAdapter.prepare({
+    content: source,
+    id: "fixture.md",
+  });
+  return markdownDocumentAdapter.render(
+    prepared.formatState,
+    result(new Map(prepared.plan.units.map((unit) => [unit.id, unit.text]))),
+  );
+}
+
+test("identity render preserves every Markdown byte and excludes protected content", async () => {
+  const source = `---
+title: Never translate
+---
+# Translate this
+
+Paragraph with \`inline_code()\` and <https://example.com/raw>.
+
+Visible before<!-- protected HTML comment -->visible after.
+
+    indented_code("never")
+
+\`\`\`ts
+const secret = "never";
+\`\`\`
+
+<Callout title="Never">Hidden **MDX body**</Callout>
+
+{/* MDX comment */}
+`;
+  const prepared = await markdownDocumentAdapter.prepare({ content: source, id: "fixture.md" });
+  const texts = prepared.plan.units.map((unit) => unit.text).join("|");
+  assert.match(texts, /Translate this/u);
+  assert.doesNotMatch(
+    texts,
+    /Never translate|inline_code|indented_code|secret|MDX body|example\.com|protected HTML comment/u,
+  );
+  assert.ok(prepared.plan.units.some((unit) => unit.text === "Visible before"));
+  assert.ok(prepared.plan.units.some((unit) => unit.text === "visible after."));
+  assert.ok(
+    prepared.plan.units.every((unit) => unit.text.trim() === unit.text),
+  );
+  assert.equal(prepared.formatState.policyVersion, MARKDOWN_ADAPTER_POLICY_VERSION);
+  assert.equal(await identity(source), source);
+});
+
+test("headings, body, lists, quotes, tables, link labels and image alt are replaceable", async () => {
+  const source = `# Heading
+
+Body text.
+
+- List item
+
+> Quote text
+
+| Name | Value |
+| --- | --- |
+| Alpha | One |
+
+[OpenAI docs](https://example.com/path?q=1) and ![A chart](./chart.png "title")
+`;
+  const prepared = await markdownDocumentAdapter.prepare({ content: source, id: "fixture.md" });
+  const replacements = new Map([
+    ["Heading", "标题"],
+    ["Body text.", "正文。"],
+    ["List item", "列表项"],
+    ["Quote text", "引用文本"],
+    ["Name", "名称"],
+    ["Value", "值"],
+    ["Alpha", "阿尔法"],
+    ["One", "一"],
+    ["OpenAI docs", "OpenAI 文档"],
+    ["and", "以及"],
+    ["A chart", "一张图表"],
+  ]);
+  const translations = new Map(
+    prepared.plan.units.map((unit) => [
+      unit.id,
+      replacements.get(unit.text) ?? unit.text,
+    ]),
+  );
+  const rendered = await markdownDocumentAdapter.render(
+    prepared.formatState,
+    result(translations),
+  );
+  assert.match(rendered, /^# 标题$/mu);
+  assert.match(rendered, /^- 列表项$/mu);
+  assert.match(rendered, /^> 引用文本$/mu);
+  assert.match(rendered, /\| 名称 \| 值 \|/u);
+  assert.match(rendered, /\[OpenAI 文档\]\(https:\/\/example\.com\/path\?q=1\)/u);
+  assert.match(rendered, /!\[一张图表\]\(\.\/chart\.png "title"\)/u);
+  assert.deepEqual(
+    new Set(prepared.plan.units.map((unit) => unit.context.block)),
+    new Set(["heading", "body", "list", "quote", "table"]),
+  );
+  assert.equal(
+    prepared.plan.units.find((unit) => unit.text === "OpenAI docs")?.context.kind,
+    "link-label",
+  );
+  assert.equal(
+    prepared.plan.units.find((unit) => unit.text === "A chart")?.context.kind,
+    "image-alt",
+  );
+});
+
+test("multiline list and quote source ranges never consume continuation markers", async () => {
+  const source = `- first line
+  second line
+
+> quoted first
+> quoted second
+`;
+  const prepared = await markdownDocumentAdapter.prepare({ content: source, id: "fixture.md" });
+  assert.deepEqual(
+    prepared.plan.units.map((unit) => unit.text),
+    ["first line", "second line", "quoted first", "quoted second"],
+  );
+  const rendered = await markdownDocumentAdapter.render(
+    prepared.formatState,
+    result(
+      new Map(
+        prepared.plan.units.map((unit) => [unit.id, `译:${unit.text}`]),
+      ),
+    ),
+  );
+  assert.equal(
+    rendered,
+    `- 译:first line
+  译:second line
+
+> 译:quoted first
+> 译:quoted second
+`,
+  );
+});
+
+test("render rejects incomplete, unknown, multiline and structure-changing results", async () => {
+  const prepared = await markdownDocumentAdapter.prepare({
+    content: "# Safe heading\n\nBody text.\n",
+    id: "fixture.md",
+  });
+  const [first, second] = prepared.plan.units;
+  assert.ok(first && second);
+  await assert.rejects(
+    markdownDocumentAdapter.render(
+      prepared.formatState,
+      result(new Map([[first.id, first.text]])),
+    ),
+    /缺少单元/u,
+  );
+  await assert.rejects(
+    markdownDocumentAdapter.render(
+      prepared.formatState,
+      result(
+        new Map([
+          [first.id, first.text],
+          [second.id, second.text],
+          ["unknown", "未知"],
+        ]),
+      ),
+    ),
+    /未知单元/u,
+  );
+  await assert.rejects(
+    markdownDocumentAdapter.render(
+      prepared.formatState,
+      result(
+        new Map([
+          [first.id, "line one\nline two"],
+          [second.id, second.text],
+        ]),
+      ),
+    ),
+    /换行/u,
+  );
+  for (const invalid of ["   ", " padded ", "control\u0001character"]) {
+    await assert.rejects(
+      markdownDocumentAdapter.render(
+        prepared.formatState,
+        result(
+          new Map([
+            [first.id, invalid],
+            [second.id, second.text],
+          ]),
+        ),
+      ),
+      /空白边界|控制字符/u,
+    );
+  }
+  await assert.rejects(
+    markdownDocumentAdapter.render(
+      prepared.formatState,
+      result(
+        new Map([
+          [first.id, "**injected**"],
+          [second.id, second.text],
+        ]),
+      ),
+    ),
+    /受保护结构/u,
+  );
+});
+
+test("render rejects tampered ranges and prepare rejects invalid source hashes", async () => {
+  const prepared = await markdownDocumentAdapter.prepare({
+    content: "Body text.\n",
+    id: "fixture.md",
+  });
+  const unit = prepared.plan.units[0];
+  assert.ok(unit);
+  const tampered: MarkdownFormatState = {
+    ...prepared.formatState,
+    ranges: [{ ...prepared.formatState.ranges[0]!, end: 999 }],
+  };
+  await assert.rejects(
+    markdownDocumentAdapter.render(tampered, result(new Map([[unit.id, "正文"]]))),
+    /区间无效/u,
+  );
+  await assert.rejects(
+    markdownDocumentAdapter.render(
+      { ...prepared.formatState, structureSignature: "0".repeat(64) },
+      result(new Map([[unit.id, "正文"]])),
+    ),
+    /结构签名不匹配/u,
+  );
+  await assert.rejects(
+    markdownDocumentAdapter.prepare({
+      content: "Body text.\n",
+      id: "fixture.md",
+      sourceHash: "0".repeat(64),
+    }),
+    /sourceHash/u,
+  );
+});

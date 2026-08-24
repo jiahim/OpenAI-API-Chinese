@@ -43,3 +43,6 @@ jobs:
 
       - name: Report source manifest status
         run: pnpm docs:status
+
+      - name: Report translation plan status
+        run: pnpm translate:status
