@@ -15,7 +15,7 @@ docs/en/                              # 只读官方英文镜像
 docs/en/.source-manifest.json         # 英文来源事实
 docs/zh/                              # 生成的简体中文 Markdown
 docs/zh/.translation-manifest.json    # 中文翻译事实
-scripts/translation.config.json       # 路径与语言配置
+scripts/translation.config.json       # 带 schemaVersion 的路径与语言配置
 scripts/translation/                  # 翻译规划、提示词和术语表
 ```
 
@@ -35,6 +35,8 @@ docs/en/api/docs/guides/images-vision.md
 - `translatedAt` 和 `reviewStatus`（`machine` 或 `reviewed`）。
 
 manifest 不保存 API key、完整模型响应或供应商凭据。
+
+翻译配置、术语表和 translation manifest 都使用显式的 `schemaVersion: 1`。持久化记录拒绝未知字段、非规范路径、重复 source/target 路径和无效 UTC 时间；所有读取都必须解析真实路径并拒绝逃逸仓库的符号链接。术语表以排序后的语义内容参与策略哈希，JSON 排版和对象键顺序不影响增量状态。
 
 ## 状态机与覆盖安全
 

@@ -1,12 +1,13 @@
 import { createHash } from "node:crypto";
-import { readFile } from "node:fs/promises";
-import { isAbsolute, posix, relative, resolve, sep } from "node:path";
+import { lstat, readFile, realpath } from "node:fs/promises";
+import { dirname, isAbsolute, posix, relative, resolve, sep } from "node:path";
 
 import type {
   SourcePageSnapshot,
   SourcePageStatus,
   SourceSection,
   TranslationConfig,
+  TranslationGlossary,
   TranslationManifest,
   TranslationPageInspection,
   TranslationPageRecord,
@@ -16,7 +17,7 @@ import type {
 } from "./types.ts";
 
 const SHA256_PATTERN = /^[a-f0-9]{64}$/u;
-const MARKDOWN_ADAPTER_POLICY_VERSION = "markdown-source-ranges-v1";
+export const MARKDOWN_ADAPTER_POLICY_VERSION = "markdown-source-ranges-v1";
 
 function sha256(content: string): string {
   return createHash("sha256").update(content, "utf8").digest("hex");
@@ -35,10 +36,59 @@ function requiredString(
   label: string,
 ): string {
   const value = object[key];
-  if (typeof value !== "string" || !value.trim()) {
+  if (typeof value !== "string" || !value.trim() || value !== value.trim()) {
     throw new Error(`${label}.${key} 必须是非空字符串。`);
   }
   return value;
+}
+
+function optionalIsoTimestamp(
+  object: Record<string, unknown>,
+  key: string,
+  label: string,
+): string | undefined {
+  const value = object[key];
+  if (value === undefined) return undefined;
+  const canonical =
+    typeof value === "string" && Number.isFinite(Date.parse(value))
+      ? new Date(value).toISOString()
+      : undefined;
+  const normalizedInput =
+    typeof value === "string" && !value.includes(".")
+      ? value.replace(/Z$/u, ".000Z")
+      : value;
+  if (
+    typeof value !== "string" ||
+    !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/u.test(value) ||
+    canonical !== normalizedInput
+  ) {
+    throw new Error(`${label}.${key} 必须是 UTC ISO 8601 时间。`);
+  }
+  return value;
+}
+
+function requiredIsoTimestamp(
+  object: Record<string, unknown>,
+  key: string,
+  label: string,
+): string {
+  const value = optionalIsoTimestamp(object, key, label);
+  if (value === undefined) {
+    throw new Error(`${label}.${key} 必须是 UTC ISO 8601 时间。`);
+  }
+  return value;
+}
+
+function assertKnownKeys(
+  object: Record<string, unknown>,
+  keys: readonly string[],
+  label: string,
+): void {
+  const known = new Set(keys);
+  const unexpected = Object.keys(object).filter((key) => !known.has(key));
+  if (unexpected.length) {
+    throw new Error(`${label} 包含未知字段：${unexpected.sort().join("、")}`);
+  }
 }
 
 function requiredSha256(
@@ -64,11 +114,18 @@ function repositoryPath(repositoryRoot: string, value: string): string {
 }
 
 function normalizedRepositoryPath(value: string, label: string): string {
-  if (!value || isAbsolute(value) || value.includes("\\")) {
+  if (
+    !value ||
+    isAbsolute(value) ||
+    value.includes("\\") ||
+    value.includes("\0") ||
+    value.endsWith("/")
+  ) {
     throw new Error(`${label} 必须是仓库内的 POSIX 相对路径：${value}`);
   }
   const normalized = posix.normalize(value);
   if (
+    normalized !== value ||
     normalized === "." ||
     normalized === ".." ||
     normalized.startsWith("../")
@@ -106,6 +163,23 @@ export function mirroredTranslationPath(
 
 function parseConfig(raw: unknown): TranslationConfig {
   const object = asObject(raw, "翻译配置");
+  assertKnownKeys(
+    object,
+    [
+      "glossaryPath",
+      "promptPath",
+      "schemaVersion",
+      "sourceManifestPath",
+      "sourceRoot",
+      "targetLanguage",
+      "targetRoot",
+      "translationManifestPath",
+    ],
+    "翻译配置",
+  );
+  if (object.schemaVersion !== 1) {
+    throw new Error("翻译配置.schemaVersion 必须是 1。");
+  }
   const config: TranslationConfig = {
     glossaryPath: normalizedRepositoryPath(
       requiredString(object, "glossaryPath", "翻译配置"),
@@ -115,6 +189,7 @@ function parseConfig(raw: unknown): TranslationConfig {
       requiredString(object, "promptPath", "翻译配置"),
       "翻译配置.promptPath",
     ),
+    schemaVersion: 1,
     sourceManifestPath: normalizedRepositoryPath(
       requiredString(object, "sourceManifestPath", "翻译配置"),
       "翻译配置.sourceManifestPath",
@@ -135,6 +210,11 @@ function parseConfig(raw: unknown): TranslationConfig {
   };
 
   pathInsideRoot(
+    config.sourceRoot,
+    config.sourceManifestPath,
+    "英文 source manifest",
+  );
+  pathInsideRoot(
     config.targetRoot,
     config.translationManifestPath,
     "翻译 manifest",
@@ -149,23 +229,50 @@ function parseConfig(raw: unknown): TranslationConfig {
   return config;
 }
 
-function validateGlossary(raw: unknown): void {
+function validateGlossary(raw: unknown): TranslationGlossary {
   const glossary = asObject(raw, "中文术语表");
+  assertKnownKeys(glossary, ["preserve", "schemaVersion", "terms"], "中文术语表");
   if (glossary.schemaVersion !== 1) {
     throw new Error("中文术语表.schemaVersion 必须是 1。");
   }
   if (
     !Array.isArray(glossary.preserve) ||
-    glossary.preserve.some((value) => typeof value !== "string" || !value.trim())
+    glossary.preserve.some(
+      (value) =>
+        typeof value !== "string" || !value.trim() || value !== value.trim(),
+    )
   ) {
     throw new Error("中文术语表.preserve 必须是非空字符串数组。");
   }
   const terms = asObject(glossary.terms, "中文术语表.terms");
   for (const [source, target] of Object.entries(terms)) {
-    if (!source.trim() || typeof target !== "string" || !target.trim()) {
+    if (
+      !source.trim() ||
+      source !== source.trim() ||
+      typeof target !== "string" ||
+      !target.trim() ||
+      target !== target.trim()
+    ) {
       throw new Error("中文术语表.terms 的 key 和 value 必须是非空字符串。");
     }
   }
+  const preserve = glossary.preserve as string[];
+  if (new Set(preserve).size !== preserve.length) {
+    throw new Error("中文术语表.preserve 不能包含重复项。");
+  }
+  const conflicts = preserve.filter((term) => Object.hasOwn(terms, term));
+  if (conflicts.length) {
+    throw new Error(`中文术语表的 preserve 与 terms 冲突：${conflicts.sort().join("、")}`);
+  }
+  return {
+    preserve: [...preserve].sort(),
+    schemaVersion: 1,
+    terms: Object.fromEntries(
+      Object.entries(terms)
+        .sort(([left], [right]) => left.localeCompare(right, "en"))
+        .map(([source, target]) => [source, target as string]),
+    ),
+  };
 }
 
 function parseSourceManifest(raw: unknown): SourcePageSnapshot[] {
@@ -210,6 +317,20 @@ function parseTranslationRecord(
 ): TranslationPageRecord {
   const label = `中文翻译记录 ${sourceUrl}`;
   const record = asObject(raw, label);
+  assertKnownKeys(
+    record,
+    [
+      "policySha256",
+      "reviewStatus",
+      "sourcePath",
+      "sourceSha256",
+      "sourceUrl",
+      "targetPath",
+      "targetSha256",
+      "translatedAt",
+    ],
+    label,
+  );
   if (requiredString(record, "sourceUrl", label) !== sourceUrl) {
     throw new Error(`${label} 的 key 与 sourceUrl 不一致。`);
   }
@@ -220,12 +341,18 @@ function parseTranslationRecord(
   return {
     policySha256: requiredSha256(record, "policySha256", label),
     reviewStatus: reviewStatus as TranslationReviewStatus,
-    sourcePath: requiredString(record, "sourcePath", label),
+    sourcePath: normalizedRepositoryPath(
+      requiredString(record, "sourcePath", label),
+      `${label}.sourcePath`,
+    ),
     sourceSha256: requiredSha256(record, "sourceSha256", label),
     sourceUrl,
-    targetPath: requiredString(record, "targetPath", label),
+    targetPath: normalizedRepositoryPath(
+      requiredString(record, "targetPath", label),
+      `${label}.targetPath`,
+    ),
     targetSha256: requiredSha256(record, "targetSha256", label),
-    translatedAt: requiredString(record, "translatedAt", label),
+    translatedAt: requiredIsoTimestamp(record, "translatedAt", label),
   };
 }
 
@@ -238,6 +365,11 @@ function parseTranslationManifest(
   targetLanguage: string,
 ): TranslationManifest {
   const manifest = asObject(raw, "中文 translation manifest");
+  assertKnownKeys(
+    manifest,
+    ["generatedAt", "pages", "schemaVersion", "targetLanguage"],
+    "中文 translation manifest",
+  );
   if (manifest.schemaVersion !== 1) {
     throw new Error("中文 translation manifest.schemaVersion 必须是 1。");
   }
@@ -245,24 +377,108 @@ function parseTranslationManifest(
     throw new Error(`中文 translation manifest 的目标语言必须是 ${targetLanguage}。`);
   }
   const pages = asObject(manifest.pages, "中文 translation manifest.pages");
-  return {
-    generatedAt:
-      typeof manifest.generatedAt === "string" ? manifest.generatedAt : undefined,
-    pages: Object.fromEntries(
+  const parsedPages = Object.fromEntries(
       Object.entries(pages).map(([sourceUrl, value]) => [
         sourceUrl,
         parseTranslationRecord(value, sourceUrl),
       ]),
+    );
+  const targetOwners = new Map<string, string>();
+  for (const [sourceUrl, record] of Object.entries(parsedPages)) {
+    const owner = targetOwners.get(record.targetPath);
+    if (owner) {
+      throw new Error(
+        `中文 translation manifest 的 targetPath 重复：${record.targetPath}（${owner}、${sourceUrl}）`,
+      );
+    }
+    targetOwners.set(record.targetPath, sourceUrl);
+  }
+  return {
+    generatedAt: optionalIsoTimestamp(
+      manifest,
+      "generatedAt",
+      "中文 translation manifest",
     ),
+    pages: parsedPages,
     schemaVersion: 1,
     targetLanguage,
   };
 }
 
-async function readJson(filePath: string, label: string): Promise<unknown> {
+function assertPathInsideRepository(
+  repositoryRoot: string,
+  realFilePath: string,
+  label: string,
+): void {
+  const fromRoot = relative(repositoryRoot, realFilePath);
+  if (fromRoot === ".." || fromRoot.startsWith(`..${sep}`) || isAbsolute(fromRoot)) {
+    throw new Error(`${label} 的符号链接不能指向仓库外：${realFilePath}`);
+  }
+}
+
+async function readRepositoryFile(
+  repositoryRoot: string,
+  filePath: string,
+  label: string,
+): Promise<string> {
+  const realFilePath = await realpath(filePath);
+  assertPathInsideRepository(repositoryRoot, realFilePath, label);
+  return readFile(realFilePath, "utf8");
+}
+
+async function assertMissingPathStaysInsideRepository(
+  repositoryRoot: string,
+  filePath: string,
+  label: string,
+): Promise<void> {
+  try {
+    await lstat(filePath);
+    throw new Error(`${label} 是无法解析的符号链接：${filePath}`);
+  } catch (error) {
+    if (
+      !(
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "ENOENT"
+      )
+    ) {
+      throw error;
+    }
+  }
+
+  let ancestor = dirname(filePath);
+  while (true) {
+    try {
+      const realAncestor = await realpath(ancestor);
+      assertPathInsideRepository(repositoryRoot, realAncestor, label);
+      return;
+    } catch (error) {
+      if (
+        !(
+          typeof error === "object" &&
+          error !== null &&
+          "code" in error &&
+          error.code === "ENOENT"
+        )
+      ) {
+        throw error;
+      }
+      const parent = dirname(ancestor);
+      if (parent === ancestor) throw error;
+      ancestor = parent;
+    }
+  }
+}
+
+async function readJson(
+  repositoryRoot: string,
+  filePath: string,
+  label: string,
+): Promise<unknown> {
   let content: string;
   try {
-    content = await readFile(filePath, "utf8");
+    content = await readRepositoryFile(repositoryRoot, filePath, label);
   } catch (error) {
     throw new Error(`无法读取${label}：${filePath}`, { cause: error });
   }
@@ -274,12 +490,19 @@ async function readJson(filePath: string, label: string): Promise<unknown> {
 }
 
 async function readOptionalTranslationManifest(
+  repositoryRoot: string,
   filePath: string,
   targetLanguage: string,
 ): Promise<TranslationManifest> {
   try {
     return parseTranslationManifest(
-      JSON.parse(await readFile(filePath, "utf8")) as unknown,
+      JSON.parse(
+        await readRepositoryFile(
+          repositoryRoot,
+          filePath,
+          "中文 translation manifest",
+        ),
+      ) as unknown,
       targetLanguage,
     );
   } catch (error) {
@@ -289,15 +512,29 @@ async function readOptionalTranslationManifest(
       "code" in error &&
       error.code === "ENOENT"
     ) {
+      await assertMissingPathStaysInsideRepository(
+        repositoryRoot,
+        filePath,
+        "中文 translation manifest",
+      );
       return emptyTranslationManifest(targetLanguage);
+    }
+    if (error instanceof SyntaxError) {
+      throw new Error(`中文 translation manifest 不是有效 JSON：${filePath}`, {
+        cause: error,
+      });
     }
     throw error;
   }
 }
 
-async function fileSha256(filePath: string): Promise<string | undefined> {
+async function fileSha256(
+  repositoryRoot: string,
+  filePath: string,
+  label: string,
+): Promise<string | undefined> {
   try {
-    return sha256(await readFile(filePath, "utf8"));
+    return sha256(await readRepositoryFile(repositoryRoot, filePath, label));
   } catch (error) {
     if (
       typeof error === "object" &&
@@ -305,6 +542,11 @@ async function fileSha256(filePath: string): Promise<string | undefined> {
       "code" in error &&
       error.code === "ENOENT"
     ) {
+      await assertMissingPathStaysInsideRepository(
+        repositoryRoot,
+        filePath,
+        label,
+      );
       return undefined;
     }
     throw error;
@@ -331,33 +573,40 @@ export async function buildTranslationStatusReport(
   repositoryRoot: string,
   configPath = "scripts/translation.config.json",
 ): Promise<TranslationStatusReport> {
-  const root = resolve(repositoryRoot);
+  const root = await realpath(resolve(repositoryRoot));
   const config = parseConfig(
-    await readJson(repositoryPath(root, configPath), "翻译配置"),
+    await readJson(root, repositoryPath(root, configPath), "翻译配置"),
   );
   const sourcePages = parseSourceManifest(
     await readJson(
+      root,
       repositoryPath(root, config.sourceManifestPath),
       "英文 source manifest",
     ),
   );
   const translationManifest = await readOptionalTranslationManifest(
+    root,
     repositoryPath(root, config.translationManifestPath),
     config.targetLanguage,
   );
-  const prompt = await readFile(repositoryPath(root, config.promptPath), "utf8");
+  const prompt = await readRepositoryFile(
+    root,
+    repositoryPath(root, config.promptPath),
+    "翻译提示词",
+  );
   if (!prompt.trim()) throw new Error("翻译提示词不能为空。");
-  const glossary = await readFile(
+  const glossaryContent = await readRepositoryFile(
+    root,
     repositoryPath(root, config.glossaryPath),
-    "utf8",
+    "中文术语表",
   );
   let parsedGlossary: unknown;
   try {
-    parsedGlossary = JSON.parse(glossary) as unknown;
+    parsedGlossary = JSON.parse(glossaryContent) as unknown;
   } catch (error) {
     throw new Error("中文术语表不是有效 JSON。", { cause: error });
   }
-  validateGlossary(parsedGlossary);
+  const glossary = validateGlossary(parsedGlossary);
   const policySha256 = sha256(
     JSON.stringify({
       adapter: MARKDOWN_ADAPTER_POLICY_VERSION,
@@ -368,6 +617,21 @@ export async function buildTranslationStatusReport(
   );
 
   const sourceByUrl = new Map(sourcePages.map((page) => [page.sourceUrl, page]));
+  const sourcePathOwners = new Map<string, string>();
+  for (const source of sourcePages) {
+    const normalizedSourcePath = pathInsideRoot(
+      config.sourceRoot,
+      source.sourcePath,
+      "英文页面路径",
+    );
+    const owner = sourcePathOwners.get(normalizedSourcePath);
+    if (owner) {
+      throw new Error(
+        `英文 source manifest 的 localPath 重复：${source.sourcePath}（${owner}、${source.sourceUrl}）`,
+      );
+    }
+    sourcePathOwners.set(normalizedSourcePath, source.sourceUrl);
+  }
   for (const record of Object.values(translationManifest.pages)) {
     const expectedTargetPath = mirroredTranslationPath(
       record.sourcePath,
@@ -393,7 +657,9 @@ export async function buildTranslationStatusReport(
     }
     if (source.status === "active") {
       const localSourceSha256 = await fileSha256(
+        root,
         repositoryPath(root, source.sourcePath),
+        "英文页面",
       );
       if (!localSourceSha256) {
         throw new Error(`英文页面文件不存在：${source.sourcePath}`);
@@ -402,7 +668,11 @@ export async function buildTranslationStatusReport(
         throw new Error(`英文页面文件与 source manifest SHA 不一致：${source.sourcePath}`);
       }
     }
-    const targetSha256 = await fileSha256(repositoryPath(root, targetPath));
+    const targetSha256 = await fileSha256(
+      root,
+      repositoryPath(root, targetPath),
+      "中文页面",
+    );
     entries.push({
       record,
       source,

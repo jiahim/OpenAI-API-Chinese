@@ -4,6 +4,7 @@ import {
   mkdir,
   mkdtemp,
   rm,
+  symlink,
   unlink,
   writeFile,
 } from "node:fs/promises";
@@ -73,6 +74,7 @@ async function createFixture(): Promise<string> {
     JSON.stringify({
       glossaryPath: "scripts/translation/glossary.zh-CN.json",
       promptPath: "scripts/translation/prompt.zh-CN.md",
+      schemaVersion: 1,
       sourceManifestPath: "docs/en/.source-manifest.json",
       sourceRoot: "docs/en",
       targetLanguage: "zh-CN",
@@ -159,7 +161,7 @@ test("mirroredTranslationPath preserves hierarchy and rejects unsafe paths", () 
   );
   assert.throws(
     () => mirroredTranslationPath("docs/en/../secret.md", "docs/en", "docs/zh"),
-    /必须位于 docs\/en 内/,
+    /必须是仓库内的 POSIX 相对路径/,
   );
   assert.throws(
     () => mirroredTranslationPath("docs/en/page.txt", "docs/en", "docs/zh"),
@@ -197,10 +199,25 @@ test("classifyTranslationPage covers every non-destructive state", () => {
   assert.equal(
     classifiedState({
       record,
-      source: sourcePage({ status: "removed" }),
-      targetSha256: targetHash,
+      source: sourcePage({ sha256: "d".repeat(64), status: "removed" }),
+      targetSha256: "c".repeat(64),
     }),
     "removed-source",
+  );
+  assert.equal(
+    classifiedState({
+      record,
+      source: sourcePage({ sha256: "d".repeat(64) }),
+      targetSha256: "c".repeat(64),
+    }),
+    "modified-target",
+  );
+  assert.equal(
+    classifiedState({
+      record,
+      source: sourcePage({ sha256: "d".repeat(64) }),
+    }),
+    "missing-target",
   );
 });
 
@@ -285,6 +302,146 @@ test("planner refuses dirty English sources and unsafe translation paths", async
   }
 });
 
+test("planner requires a versioned config and keeps the source manifest under sourceRoot", async () => {
+  const root = await createFixture();
+  const configPath = join(root, "scripts/translation.config.json");
+  const baseConfig = {
+    glossaryPath: "scripts/translation/glossary.zh-CN.json",
+    promptPath: "scripts/translation/prompt.zh-CN.md",
+    schemaVersion: 1,
+    sourceManifestPath: "docs/en/.source-manifest.json",
+    sourceRoot: "docs/en",
+    targetLanguage: "zh-CN",
+    targetRoot: "docs/zh",
+    translationManifestPath: "docs/zh/.translation-manifest.json",
+  };
+  try {
+    await writeFile(configPath, JSON.stringify({ ...baseConfig, schemaVersion: 2 }));
+    await assert.rejects(buildTranslationStatusReport(root), /schemaVersion 必须是 1/);
+
+    await writeFile(
+      configPath,
+      JSON.stringify({
+        ...baseConfig,
+        sourceManifestPath: "scripts/source-manifest.json",
+      }),
+    );
+    await assert.rejects(
+      buildTranslationStatusReport(root),
+      /英文 source manifest 必须位于 docs\/en 内/,
+    );
+
+    await writeFile(
+      configPath,
+      JSON.stringify({ ...baseConfig, unexpected: true }),
+    );
+    await assert.rejects(buildTranslationStatusReport(root), /包含未知字段：unexpected/);
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("planner rejects duplicate persisted paths and invalid manifest timestamps", async () => {
+  const root = await createFixture();
+  try {
+    await writeSourceManifest(root, [
+      sourcePage(),
+      sourcePage({ sourceUrl: "https://developers.openai.com/api/docs/duplicate.md" }),
+    ]);
+    await assert.rejects(
+      buildTranslationStatusReport(root),
+      /localPath 重复/,
+    );
+
+    await writeSourceManifest(root, [sourcePage()]);
+    await writeTranslationManifest(root, {
+      [SOURCE_URL]: translationRecord({ translatedAt: "2026-02-30T00:00:00Z" }),
+    });
+    await assert.rejects(
+      buildTranslationStatusReport(root),
+      /translatedAt 必须是 UTC ISO 8601 时间/,
+    );
+
+    await writeTranslationManifest(root, {
+      [SOURCE_URL]: translationRecord(),
+      "https://developers.openai.com/api/docs/other.md": translationRecord({
+        sourceUrl: "https://developers.openai.com/api/docs/other.md",
+      }),
+    });
+    await assert.rejects(
+      buildTranslationStatusReport(root),
+      /targetPath 重复/,
+    );
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("planner canonicalizes glossary ordering and rejects ambiguous glossary rules", async () => {
+  const root = await createFixture();
+  try {
+    const glossaryPath = join(root, "scripts/translation/glossary.zh-CN.json");
+    await writeFile(
+      glossaryPath,
+      JSON.stringify({
+        preserve: ["OpenAI", "API"],
+        schemaVersion: 1,
+        terms: { endpoint: "端点", request: "请求" },
+      }),
+    );
+    const first = await buildTranslationStatusReport(root);
+    await writeFile(
+      glossaryPath,
+      JSON.stringify({
+        terms: { request: "请求", endpoint: "端点" },
+        schemaVersion: 1,
+        preserve: ["API", "OpenAI"],
+      }, null, 2),
+    );
+    const reordered = await buildTranslationStatusReport(root);
+    assert.equal(reordered.policySha256, first.policySha256);
+
+    await writeFile(
+      glossaryPath,
+      JSON.stringify({
+        preserve: ["OpenAI"],
+        schemaVersion: 1,
+        terms: { OpenAI: "开放人工智能" },
+      }),
+    );
+    await assert.rejects(buildTranslationStatusReport(root), /preserve 与 terms 冲突/);
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("planner rejects repository paths that escape through symbolic links", async () => {
+  const root = await createFixture();
+  const outside = await mkdtemp(join(tmpdir(), "translation-outside-"));
+  try {
+    const promptPath = join(root, "scripts/translation/prompt.zh-CN.md");
+    const outsidePrompt = join(outside, "prompt.md");
+    await writeFile(outsidePrompt, "outside prompt");
+    await unlink(promptPath);
+    await symlink(outsidePrompt, promptPath);
+    await assert.rejects(buildTranslationStatusReport(root), /符号链接不能指向仓库外/);
+
+    await unlink(promptPath);
+    await writeFile(promptPath, "translate accurately");
+    await symlink(outside, join(root, "docs/zh"));
+    await assert.rejects(buildTranslationStatusReport(root), /符号链接不能指向仓库外/);
+
+    await writeSourceManifest(root, []);
+    await assert.rejects(
+      buildTranslationStatusReport(root),
+      /符号链接不能指向仓库外/,
+    );
+  } finally {
+    await rm(root, { force: true, recursive: true });
+    await rm(outside, { force: true, recursive: true });
+  }
+});
+
 test("translation CLI parses filters without changing defaults", () => {
   assert.deepEqual(parseCliOptions(["status"]), {
     command: "status",
@@ -315,5 +472,9 @@ test("translation CLI parses filters without changing defaults", () => {
   assert.throws(
     () => parseCliOptions(["plan", "--limit", "0"]),
     /必须是正整数/,
+  );
+  assert.throws(
+    () => parseCliOptions(["status", "--match", "quickstart"]),
+    /仅适用于 plan/,
   );
 });

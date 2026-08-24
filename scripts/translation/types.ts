@@ -5,11 +5,18 @@ export type TranslationReviewStatus = "machine" | "reviewed";
 export interface TranslationConfig {
   glossaryPath: string;
   promptPath: string;
+  schemaVersion: 1;
   sourceManifestPath: string;
   sourceRoot: string;
   targetLanguage: string;
   targetRoot: string;
   translationManifestPath: string;
+}
+
+export interface TranslationGlossary {
+  preserve: string[];
+  schemaVersion: 1;
+  terms: Record<string, string>;
 }
 
 export interface SourcePageSnapshot {

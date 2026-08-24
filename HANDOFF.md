@@ -117,6 +117,9 @@ pnpm test
 - 页面状态：`pending`、`stale-source`、`stale-policy`、`missing-target`、`untracked-target`、`modified-target`、`current`、`removed-source`。
 - `untracked-target` 与 `modified-target` 会阻塞自动覆盖；`removed-source` 不自动删除中文译文。
 - 规划前逐页核对英文磁盘 SHA 与 source manifest，拒绝翻译本地脏改动。
+- 翻译配置使用 `schemaVersion: 1`；配置、术语表和 translation manifest 拒绝未知字段，持久化路径和时间戳均严格校验。
+- source/target 路径必须唯一且保持规范 POSIX 形式；读取时拒绝通过符号链接逃逸仓库，未来写入器仍须复用同等的父目录安全检查。
+- 术语表按语义内容计算策略 SHA，单纯调整 JSON 排版、terms 键顺序或 preserve 顺序不会让全部译文误判为 stale。
 - Easy Translate Core/Providers 负责通用执行能力；本仓库只负责 Markdown、路径、manifest、术语和文档级增量。
 
 ## 3. 当前验证证据
@@ -124,11 +127,11 @@ pnpm test
 2026-08-24 翻译规划基础验证：
 
 - `pnpm typecheck`：通过。
-- `pnpm test`：38/38 通过。
+- `pnpm test`：42/42 通过。
 - `pnpm docs:status`：421 active、0 removed、89.0 MiB。
 - `pnpm translate:status`：421 pending，其他状态为 0；没有创建 `docs/zh`。
 - `pnpm translate:plan -- --section guides --match quickstart --limit 5`：正确选择 2 篇 quickstart 页面。
-- 定向测试覆盖路径越界、八种状态、策略 stale、未登记/人工修改保护、源 SHA 脏改动拒绝和 orphan 记录保留。
+- 定向测试覆盖路径/符号链接越界、八种状态及安全优先级、策略 stale、未登记/人工修改保护、源 SHA 脏改动拒绝、重复路径、manifest 时间/版本契约、术语冲突和 orphan 记录保留。
 - CI 已增加完全离线的 `pnpm translate:status`。
 
 不要对完整 `docs/en` 使用格式化器或以 `git diff --check` 作为质量门。官方原文包含尾随空格和形似冲突标记的正文，镜像策略要求保持原样。

@@ -77,6 +77,14 @@ export function parseCliOptions(argv: string[]): CliOptions {
       throw new Error(`未知参数：${argument}`);
     }
   }
+  if (
+    options.command === "status" &&
+    (options.limit !== undefined ||
+      options.matches.length > 0 ||
+      options.section !== "all")
+  ) {
+    throw new Error("--limit、--match 和 --section 仅适用于 plan 命令。");
+  }
   return options;
 }
 
