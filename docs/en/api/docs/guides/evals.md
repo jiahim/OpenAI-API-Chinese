@@ -109,6 +109,39 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.List;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(
+            List.of(
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.DEVELOPER)
+                        .content(
+                            "You are an expert in categorizing IT support tickets. Categorize each request as Hardware, Software, or Other. Respond with only one of those words.")
+                        .build()),
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.USER)
+                        .content("My monitor won't turn on - help!")
+                        .build())))
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -408,6 +441,25 @@ func main() {
 	}
 	fmt.Println(uploaded.ID)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.files.FileCreateParams;
+import com.openai.models.files.FilePurpose;
+import java.nio.file.Path;
+
+var file =
+    client
+        .files()
+        .create(
+            FileCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_FILE_PATH")))
+                .purpose(FilePurpose.EVALS)
+                .build());
+
+System.out.println(file.id());
 ```
 
 ```ruby

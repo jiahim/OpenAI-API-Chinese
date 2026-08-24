@@ -77,6 +77,24 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.http.StreamResponse;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseStreamEvent;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Say 'double bubble bath' ten times fast.")
+        .build();
+
+try (StreamResponse<ResponseStreamEvent> stream = client.responses().createStreaming(params)) {
+  stream.stream().forEach(System.out::println);
+}
+```
+
 ```csharp
 using OpenAI.Responses;
 #pragma warning disable OPENAI001
@@ -154,6 +172,21 @@ StreamingEvent = (
 
 ```go
 type StreamingEvent = responses.ResponseStreamEventUnion
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.http.StreamResponse;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseStreamEvent;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder().model("gpt-5.5").input("Say hello.").build();
+
+try (StreamResponse<ResponseStreamEvent> stream = client.responses().createStreaming(params)) {
+  stream.stream().forEach(System.out::println);
+}
 ```
 
 ```ruby

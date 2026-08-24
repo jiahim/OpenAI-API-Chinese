@@ -103,6 +103,23 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.videos.VideoCreateParams;
+
+var video =
+    client
+        .videos()
+        .create(
+            VideoCreateParams.builder()
+                .model("sora-2")
+                .prompt("A paper airplane flying over a forest")
+                .build());
+
+System.out.println(video.id());
+```
+
 ```ruby
 require "openai"
 
@@ -257,6 +274,32 @@ func main() {
 	}
 	fmt.Println("Video creation failed. Status:", video.Status)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.videos.Video;
+import com.openai.models.videos.VideoCreateParams;
+
+var video =
+    client
+        .videos()
+        .create(
+            VideoCreateParams.builder()
+                .model("sora-2")
+                .prompt("A paper airplane flying over a forest")
+                .build());
+
+while (video.status().equals(Video.Status.QUEUED)
+    || video.status().equals(Video.Status.IN_PROGRESS)) {
+  Thread.sleep(1000);
+  video = client.videos().retrieve(video.id());
+}
+if (!video.status().equals(Video.Status.COMPLETED)) {
+  throw new IllegalStateException("Video generation failed: " + video.status());
+}
+System.out.println("Video completed: " + video.id());
 ```
 
 ```ruby
@@ -464,6 +507,38 @@ func main() {
 	}
 	fmt.Println("Wrote video.mp4")
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.videos.Video;
+import com.openai.models.videos.VideoCreateParams;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+
+var video =
+    client
+        .videos()
+        .create(
+            VideoCreateParams.builder()
+                .model("sora-2")
+                .prompt("A video of the words 'Thank you' in sparkling letters")
+                .build());
+
+while (video.status().equals(Video.Status.QUEUED)
+    || video.status().equals(Video.Status.IN_PROGRESS)) {
+  Thread.sleep(1000);
+  video = client.videos().retrieve(video.id());
+}
+if (!video.status().equals(Video.Status.COMPLETED)) {
+  throw new IllegalStateException("Video generation failed: " + video.status());
+}
+try (var content = client.videos().downloadContent(video.id())) {
+  Files.copy(content.body(), Path.of("video.mp4"), StandardCopyOption.REPLACE_EXISTING);
+}
+System.out.println("Wrote video.mp4");
 ```
 
 ```ruby

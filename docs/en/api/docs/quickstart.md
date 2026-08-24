@@ -190,7 +190,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.51.0</version>
+  <version>4.52.0</version>
 </dependency>
 ```
 
@@ -485,6 +485,40 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputImage;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.List;
+
+ResponseInputItem imageInput =
+    ResponseInputItem.ofMessage(
+        ResponseInputItem.Message.builder()
+            .role(ResponseInputItem.Message.Role.USER)
+            .addInputTextContent("What teams are playing in this image?")
+            .addContent(
+                ResponseInputImage.builder()
+                    .detail(ResponseInputImage.Detail.AUTO)
+                    .imageUrl(
+                        "https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg")
+                    .build())
+            .build());
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(List.of(imageInput))
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```csharp
 using OpenAI.Responses;
 #pragma warning disable OPENAI001
@@ -681,6 +715,39 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputFile;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.List;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(
+            List.of(
+                ResponseInputItem.ofMessage(
+                    ResponseInputItem.Message.builder()
+                        .role(ResponseInputItem.Message.Role.USER)
+                        .addInputTextContent(
+                            "Analyze the letter and provide a summary of the key points.")
+                        .addContent(
+                            ResponseInputFile.builder()
+                                .fileUrl(
+                                    "https://www.berkshirehathaway.com/letters/2024ltr.pdf")
+                                .build())
+                        .build())))
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```csharp
@@ -889,6 +956,49 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.files.FileCreateParams;
+import com.openai.models.files.FilePurpose;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputFile;
+import com.openai.models.responses.ResponseInputItem;
+import java.nio.file.Path;
+import java.util.List;
+
+var file =
+    client
+        .files()
+        .create(
+            FileCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_FILE_PATH")))
+                .purpose(FilePurpose.USER_DATA)
+                .build());
+
+var response =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.6")
+                .inputOfResponse(
+                    List.of(
+                        ResponseInputItem.ofMessage(
+                            ResponseInputItem.Message.builder()
+                                .role(ResponseInputItem.Message.Role.USER)
+                                .addContent(
+                                    ResponseInputFile.builder().fileId(file.id()).build())
+                                .addInputTextContent("What is the first dragon in the book?")
+                                .build())))
+                .build());
+response.output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```csharp
 using OpenAI.Files;
 using OpenAI.Responses;
@@ -1055,6 +1165,26 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.WebSearchTool;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("What was a positive news story from today?")
+        .addTool(WebSearchTool.builder().type(WebSearchTool.Type.WEB_SEARCH).build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```csharp
 using OpenAI.Responses;
 #pragma warning disable OPENAI001
@@ -1173,6 +1303,28 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import java.util.List;
+
+String vectorStoreId = "<vector_store_id>";
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("What is deep research by OpenAI?")
+        .addFileSearchTool(List.of(vectorStoreId))
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```csharp
 using OpenAI.Responses;
 #pragma warning disable OPENAI001
@@ -1282,6 +1434,29 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.Tool;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("I need to solve the equation 3x + 11 = 14. Can you help me?")
+        .instructions(
+            "You are a personal math tutor. When asked a math question, write and run code to answer the question.")
+        .addCodeInterpreterTool(
+            Tool.CodeInterpreter.Container.CodeInterpreterToolAuto.builder().build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -1441,6 +1616,45 @@ func main() {
 	}
 	fmt.Println(response.Output)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.FunctionTool;
+import com.openai.models.responses.ResponseCreateParams;
+import java.util.List;
+import java.util.Map;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("What is the weather like in Paris today?")
+        .addTool(
+            FunctionTool.builder()
+                .name("get_weather")
+                .description("Get current temperature for a given location.")
+                .parameters(
+                    FunctionTool.Parameters.builder()
+                        .putAdditionalProperty("type", JsonValue.from("object"))
+                        .putAdditionalProperty(
+                            "properties",
+                            JsonValue.from(
+                                Map.of(
+                                    "location",
+                                    Map.of(
+                                        "type", "string",
+                                        "description",
+                                            "City and country e.g. Bogotá, Colombia"))))
+                        .putAdditionalProperty("required", JsonValue.from(List.of("location")))
+                        .putAdditionalProperty("additionalProperties", JsonValue.from(false))
+                        .build())
+                .strict(true)
+                .build())
+        .build();
+
+client.responses().create(params).output().forEach(System.out::println);
 ```
 
 ```csharp
@@ -1661,6 +1875,33 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.Tool;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Roll 2d4+1")
+        .addTool(
+            Tool.Mcp.builder()
+                .serverLabel("dmcp")
+                .serverDescription(
+                    "A Dungeons and Dragons MCP server to assist with dice rolling.")
+                .serverUrl("https://dmcp-server.deno.dev/mcp")
+                .requireApproval(Tool.Mcp.RequireApproval.McpToolApprovalSetting.NEVER)
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```csharp
 using OpenAI.Responses;
 #pragma warning disable OPENAI001
@@ -1788,6 +2029,24 @@ func main() {
 	if err := stream.Err(); err != nil {
 		panic(err)
 	}
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.http.StreamResponse;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseStreamEvent;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Say 'double bubble bath' ten times fast.")
+        .build();
+
+try (StreamResponse<ResponseStreamEvent> stream = client.responses().createStreaming(params)) {
+  stream.stream().forEach(System.out::println);
 }
 ```
 

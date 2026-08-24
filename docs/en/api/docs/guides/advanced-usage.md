@@ -134,6 +134,24 @@ response = client.chat.completions.create(
 print(f"{response.usage.prompt_tokens} prompt tokens used.")
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.chat.completions.ChatCompletionCreateParams;
+
+ChatCompletionCreateParams params =
+    ChatCompletionCreateParams.builder()
+        .model("gpt-3.5-turbo-0613")
+        .addUserMessage("Translate this sentence into plain English.")
+        .temperature(0)
+        .build();
+
+var completion = client.chat().completions().create(params);
+var usage =
+    completion.usage().orElseThrow(() -> new IllegalStateException("No usage returned"));
+System.out.println(usage.promptTokens() + " prompt tokens used.");
+```
+
 
 
 To see how many tokens are in a text string without making an API call, use OpenAI’s [tiktoken](https://github.com/openai/tiktoken) Python library. Example code can be found in the OpenAI Cookbook’s guide on [how to count tokens with tiktoken](https://developers.openai.com/cookbook/examples/how_to_count_tokens_with_tiktoken).

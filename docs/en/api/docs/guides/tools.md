@@ -64,6 +64,26 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.WebSearchTool;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("What was a positive news story from today?")
+        .addTool(WebSearchTool.builder().type(WebSearchTool.Type.WEB_SEARCH).build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```csharp
 using OpenAI.Responses;
 #pragma warning disable OPENAI001
@@ -180,6 +200,28 @@ func main() {
 	}
 	fmt.Println(response)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import java.util.List;
+
+String vectorStoreId = "<vector_store_id>";
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("What is deep research by OpenAI?")
+        .addFileSearchTool(List.of(vectorStoreId))
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```csharp
@@ -386,6 +428,67 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.NamespaceTool;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ToolSearchTool;
+import java.util.List;
+import java.util.Map;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("List open orders for customer CUST-12345.")
+        .parallelToolCalls(false)
+        .addTool(
+            NamespaceTool.builder()
+                .name("crm")
+                .description("CRM tools for customer lookup and order management.")
+                .addTool(
+                    NamespaceTool.Tool.Function.builder()
+                        .name("get_customer_profile")
+                        .description("Fetch a customer profile by customer ID.")
+                        .strict(true)
+                        .parameters(
+                            JsonValue.from(
+                                Map.of(
+                                    "type",
+                                    "object",
+                                    "properties",
+                                    Map.of("customer_id", Map.of("type", "string")),
+                                    "required",
+                                    List.of("customer_id"),
+                                    "additionalProperties",
+                                    false)))
+                        .build())
+                .addTool(
+                    NamespaceTool.Tool.Function.builder()
+                        .name("list_open_orders")
+                        .description("List open orders for a customer ID.")
+                        .deferLoading(true)
+                        .strict(true)
+                        .parameters(
+                            JsonValue.from(
+                                Map.of(
+                                    "type",
+                                    "object",
+                                    "properties",
+                                    Map.of("customer_id", Map.of("type", "string")),
+                                    "required",
+                                    List.of("customer_id"),
+                                    "additionalProperties",
+                                    false)))
+                        .build())
+                .build())
+        .addTool(ToolSearchTool.builder().execution(ToolSearchTool.Execution.SERVER).build())
+        .build();
+
+client.responses().create(params).output().forEach(System.out::println);
+```
+
 ```ruby
 require "openai"
 
@@ -548,6 +651,45 @@ func main() {
 	}
 	fmt.Println(response.Output)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.FunctionTool;
+import com.openai.models.responses.ResponseCreateParams;
+import java.util.List;
+import java.util.Map;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("What is the weather like in Paris today?")
+        .addTool(
+            FunctionTool.builder()
+                .name("get_weather")
+                .description("Get current temperature for a given location.")
+                .parameters(
+                    FunctionTool.Parameters.builder()
+                        .putAdditionalProperty("type", JsonValue.from("object"))
+                        .putAdditionalProperty(
+                            "properties",
+                            JsonValue.from(
+                                Map.of(
+                                    "location",
+                                    Map.of(
+                                        "type", "string",
+                                        "description",
+                                            "City and country e.g. Bogotá, Colombia"))))
+                        .putAdditionalProperty("required", JsonValue.from(List.of("location")))
+                        .putAdditionalProperty("additionalProperties", JsonValue.from(false))
+                        .build())
+                .strict(true)
+                .build())
+        .build();
+
+client.responses().create(params).output().forEach(System.out::println);
 ```
 
 ```csharp
@@ -766,6 +908,33 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.Tool;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Roll 2d4+1")
+        .addTool(
+            Tool.Mcp.builder()
+                .serverLabel("dmcp")
+                .serverDescription(
+                    "A Dungeons and Dragons MCP server to assist with dice rolling.")
+                .serverUrl("https://dmcp-server.deno.dev/mcp")
+                .requireApproval(Tool.Mcp.RequireApproval.McpToolApprovalSetting.NEVER)
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```csharp

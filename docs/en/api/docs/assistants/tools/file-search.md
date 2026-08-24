@@ -58,6 +58,29 @@ if err != nil {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.assistants.AssistantCreateParams;
+import com.openai.models.beta.assistants.FileSearchTool;
+
+var assistant =
+    client
+        .beta()
+        .assistants()
+        .create(
+            AssistantCreateParams.builder()
+                .model("gpt-4o")
+                .name("Financial Analyst Assistant")
+                .instructions(
+                    "You are an expert financial analyst. Use you knowledge base to answer"
+                        + " questions about audited financial statements.")
+                .addTool(FileSearchTool.builder().build())
+                .build());
+
+System.out.println(assistant.id());
+```
+
 ```ruby
 require "openai"
 
@@ -162,6 +185,36 @@ _, err := client.Beta.Assistants.Update(context.Background(), "asst_abc123", ope
 if err != nil {
 	panic(err)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.assistants.AssistantUpdateParams;
+import com.openai.models.beta.assistants.FileSearchTool;
+
+String assistantId = "asst_abc123";
+
+String vectorStoreId = "vs_abc123";
+
+var assistant =
+    client
+        .beta()
+        .assistants()
+        .update(
+            assistantId,
+            AssistantUpdateParams.builder()
+                .addTool(FileSearchTool.builder().build())
+                .toolResources(
+                    AssistantUpdateParams.ToolResources.builder()
+                        .fileSearch(
+                            AssistantUpdateParams.ToolResources.FileSearch.builder()
+                                .addVectorStoreId(vectorStoreId)
+                                .build())
+                        .build())
+                .build());
+
+System.out.println(assistant.id());
 ```
 
 ```ruby
@@ -467,6 +520,37 @@ if err != nil {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.vectorstores.VectorStoreCreateParams;
+
+String fileId1 = "file_1";
+
+String fileId2 = "file_2";
+
+String fileId3 = "file_3";
+
+String fileId4 = "file_4";
+
+String fileId5 = "file_5";
+
+var store =
+    client
+        .vectorStores()
+        .create(
+            VectorStoreCreateParams.builder()
+                .name("Product Documentation")
+                .addFileId(fileId1)
+                .addFileId(fileId2)
+                .addFileId(fileId3)
+                .addFileId(fileId4)
+                .addFileId(fileId5)
+                .build());
+
+System.out.println(store.id());
+```
+
 ```ruby
 require "openai"
 
@@ -513,6 +597,32 @@ _, err := client.VectorStores.Files.NewAndPoll(context.Background(), "vs_abc123"
 if err != nil {
 	panic(err)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.vectorstores.files.FileCreateParams;
+import com.openai.models.vectorstores.files.FileRetrieveParams;
+import com.openai.models.vectorstores.files.VectorStoreFile;
+
+String vectorStoreId = "vs_abc123";
+String fileId = "file-abc123";
+var file =
+    client
+        .vectorStores()
+        .files()
+        .create(vectorStoreId, FileCreateParams.builder().fileId(fileId).build());
+while (file.status().equals(VectorStoreFile.Status.IN_PROGRESS)) {
+  Thread.sleep(1000);
+  file =
+      client
+          .vectorStores()
+          .files()
+          .retrieve(
+              file.id(), FileRetrieveParams.builder().vectorStoreId(vectorStoreId).build());
+}
+System.out.println(file.status());
 ```
 
 ```ruby
@@ -601,6 +711,56 @@ _, err := client.VectorStores.FileBatches.NewAndPoll(context.Background(), "vs_a
 if err != nil {
 	panic(err)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.vectorstores.StaticFileChunkingStrategy;
+import com.openai.models.vectorstores.filebatches.FileBatchCreateParams;
+import com.openai.models.vectorstores.filebatches.FileBatchRetrieveParams;
+import com.openai.models.vectorstores.filebatches.VectorStoreFileBatch;
+
+String vectorStoreId = "vs_abc123";
+String fileId = "file_1";
+String fileId2 = "file_2";
+var first =
+    FileBatchCreateParams.File.builder()
+        .fileId(fileId)
+        .attributes(
+            FileBatchCreateParams.File.Attributes.builder()
+                .putAdditionalProperty("category", JsonValue.from("finance"))
+                .build())
+        .build();
+var second =
+    FileBatchCreateParams.File.builder()
+        .fileId(fileId2)
+        .staticChunkingStrategy(
+            StaticFileChunkingStrategy.builder()
+                .maxChunkSizeTokens(1000)
+                .chunkOverlapTokens(200)
+                .build())
+        .build();
+
+var batch =
+    client
+        .vectorStores()
+        .fileBatches()
+        .create(
+            vectorStoreId,
+            FileBatchCreateParams.builder().addFile(first).addFile(second).build());
+while (batch.status().equals(VectorStoreFileBatch.Status.IN_PROGRESS)) {
+  Thread.sleep(1000);
+  batch =
+      client
+          .vectorStores()
+          .fileBatches()
+          .retrieve(
+              batch.id(),
+              FileBatchRetrieveParams.builder().vectorStoreId(vectorStoreId).build());
+}
+System.out.println(batch.status());
 ```
 
 ```ruby
@@ -706,6 +866,60 @@ thread, err := client.Beta.Threads.New(context.Background(), openai.BetaThreadNe
 if err != nil {
 	panic(err)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.assistants.AssistantCreateParams;
+import com.openai.models.beta.assistants.FileSearchTool;
+import com.openai.models.beta.threads.ThreadCreateParams;
+
+String vectorStoreId = "vs_1";
+
+String vectorStoreId2 = "vs_2";
+
+var assistant =
+    client
+        .beta()
+        .assistants()
+        .create(
+            AssistantCreateParams.builder()
+                .model("gpt-4o")
+                .instructions(
+                    "You are a helpful product support assistant and you answer questions based"
+                        + " on the files provided to you.")
+                .addTool(FileSearchTool.builder().build())
+                .toolResources(
+                    AssistantCreateParams.ToolResources.builder()
+                        .fileSearch(
+                            AssistantCreateParams.ToolResources.FileSearch.builder()
+                                .addVectorStoreId(vectorStoreId)
+                                .build())
+                        .build())
+                .build());
+
+var thread =
+    client
+        .beta()
+        .threads()
+        .create(
+            ThreadCreateParams.builder()
+                .addMessage(
+                    ThreadCreateParams.Message.builder()
+                        .role(ThreadCreateParams.Message.Role.USER)
+                        .content("How do I cancel my subscription?")
+                        .build())
+                .toolResources(
+                    ThreadCreateParams.ToolResources.builder()
+                        .fileSearch(
+                            ThreadCreateParams.ToolResources.FileSearch.builder()
+                                .addVectorStoreId(vectorStoreId2)
+                                .build())
+                        .build())
+                .build());
+
+System.out.println(assistant.id() + " " + thread.id());
 ```
 
 ```ruby
@@ -904,6 +1118,43 @@ if err != nil {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.vectorstores.VectorStoreCreateParams;
+
+String fileId1 = "file_1";
+
+String fileId2 = "file_2";
+
+String fileId3 = "file_3";
+
+String fileId4 = "file_4";
+
+String fileId5 = "file_5";
+
+var store =
+    client
+        .vectorStores()
+        .create(
+            VectorStoreCreateParams.builder()
+                .name("Product Documentation")
+                .addFileId(fileId1)
+                .addFileId(fileId2)
+                .addFileId(fileId3)
+                .addFileId(fileId4)
+                .addFileId(fileId5)
+                .expiresAfter(
+                    VectorStoreCreateParams.ExpiresAfter.builder()
+                        .anchor(JsonValue.from("last_active_at"))
+                        .days(7)
+                        .build())
+                .build());
+
+System.out.println(store.id());
+```
+
 ```ruby
 require "openai"
 
@@ -998,6 +1249,62 @@ for start := 0; start < len(fileIDs); start += 100 {
 		panic(err)
 	}
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.threads.ThreadUpdateParams;
+import com.openai.models.vectorstores.VectorStoreCreateParams;
+import com.openai.models.vectorstores.filebatches.FileBatchCreateParams;
+import com.openai.models.vectorstores.filebatches.FileBatchRetrieveParams;
+import com.openai.models.vectorstores.filebatches.VectorStoreFileBatch;
+import java.util.ArrayList;
+
+String vectorStoreId = "vs_expired";
+String threadId = "thread_abc123";
+var files = client.vectorStores().files().list(vectorStoreId).autoPager();
+var replacement =
+    client.vectorStores().create(VectorStoreCreateParams.builder().name("rag-store").build());
+client
+    .beta()
+    .threads()
+    .update(
+        threadId,
+        ThreadUpdateParams.builder()
+            .toolResources(
+                ThreadUpdateParams.ToolResources.builder()
+                    .fileSearch(
+                        ThreadUpdateParams.ToolResources.FileSearch.builder()
+                            .addVectorStoreId(replacement.id())
+                            .build())
+                    .build())
+            .build());
+
+var fileIds = new ArrayList<String>();
+for (var file : files) fileIds.add(file.id());
+for (int offset = 0; offset < fileIds.size(); offset += 100) {
+  var ids = fileIds.subList(offset, Math.min(offset + 100, fileIds.size()));
+  var batch =
+      client
+          .vectorStores()
+          .fileBatches()
+          .create(replacement.id(), FileBatchCreateParams.builder().fileIds(ids).build());
+  while (batch.status().equals(VectorStoreFileBatch.Status.IN_PROGRESS)) {
+    Thread.sleep(1000);
+    batch =
+        client
+            .vectorStores()
+            .fileBatches()
+            .retrieve(
+                batch.id(),
+                FileBatchRetrieveParams.builder().vectorStoreId(replacement.id()).build());
+  }
+  if (!batch.status().equals(VectorStoreFileBatch.Status.COMPLETED)) {
+    throw new IllegalStateException("File batch ended with status: " + batch.status());
+  }
+}
+System.out.println(replacement.id());
 ```
 
 ```ruby

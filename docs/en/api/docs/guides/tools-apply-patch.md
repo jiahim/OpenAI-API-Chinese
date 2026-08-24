@@ -106,6 +106,25 @@ for _, item := range response.Output {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ApplyPatchTool;
+import com.openai.models.responses.ResponseCreateParams;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input(
+            "Rename fib() to fibonacci() in lib/fib.py and update run.py to use the new name.")
+        .addTool(ApplyPatchTool.builder().build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.applyPatchCall().stream())
+    .forEach(System.out::println);
+```
+
 ```ruby
 require "openai"
 
@@ -197,6 +216,36 @@ _, err = client.Responses.New(context.Background(), responses.ResponseNewParams{
 if err != nil {
 	panic(err)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ApplyPatchTool;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.List;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(
+            List.of(
+                ResponseInputItem.ofApplyPatchCallOutput(
+                    ResponseInputItem.ApplyPatchCallOutput.builder()
+                        .callId(System.getenv("OPENAI_EXAMPLE_APPLY_PATCH_CALL_ID"))
+                        .status(ResponseInputItem.ApplyPatchCallOutput.Status.COMPLETED)
+                        .output("Patch applied successfully.")
+                        .build())))
+        .previousResponseId(System.getenv("OPENAI_EXAMPLE_PREVIOUS_RESPONSE_ID"))
+        .addTool(ApplyPatchTool.builder().build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby

@@ -171,6 +171,37 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.chat.completions.ChatCompletionAudioParam;
+import com.openai.models.chat.completions.ChatCompletionCreateParams;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+
+ChatCompletionCreateParams params =
+    ChatCompletionCreateParams.builder()
+        .model("gpt-audio-1.5")
+        .addUserMessage("Is a golden retriever a good family dog?")
+        .addModality(ChatCompletionCreateParams.Modality.TEXT)
+        .addModality(ChatCompletionCreateParams.Modality.AUDIO)
+        .audio(
+            ChatCompletionAudioParam.builder()
+                .voice("alloy")
+                .format(ChatCompletionAudioParam.Format.WAV)
+                .build())
+        .store(true)
+        .build();
+
+var message = client.chat().completions().create(params).choices().get(0).message();
+var audio =
+    message.audio().orElseThrow(() -> new IllegalStateException("No audio output returned"));
+Files.write(Path.of("dog.wav"), Base64.getDecoder().decode(audio.data()));
+message.content().ifPresent(System.out::println);
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -319,6 +350,63 @@ func main() {
 	}
 	fmt.Println(response.Choices[0])
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.chat.completions.ChatCompletionAudioParam;
+import com.openai.models.chat.completions.ChatCompletionContentPart;
+import com.openai.models.chat.completions.ChatCompletionContentPartInputAudio;
+import com.openai.models.chat.completions.ChatCompletionContentPartText;
+import com.openai.models.chat.completions.ChatCompletionCreateParams;
+import com.openai.models.chat.completions.ChatCompletionUserMessageParam;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+import java.util.List;
+
+String encodedAudio =
+    Base64.getEncoder()
+        .encodeToString(
+            Files.readAllBytes(Path.of(System.getenv("OPENAI_EXAMPLE_AUDIO_PATH"))));
+
+ChatCompletionCreateParams params =
+    ChatCompletionCreateParams.builder()
+        .model("gpt-audio-1.5")
+        .addMessage(
+            ChatCompletionUserMessageParam.builder()
+                .contentOfArrayOfContentParts(
+                    List.of(
+                        ChatCompletionContentPart.ofText(
+                            ChatCompletionContentPartText.builder()
+                                .text("What is in this recording?")
+                                .build()),
+                        ChatCompletionContentPart.ofInputAudio(
+                            ChatCompletionContentPartInputAudio.builder()
+                                .inputAudio(
+                                    ChatCompletionContentPartInputAudio.InputAudio.builder()
+                                        .data(encodedAudio)
+                                        .format(
+                                            ChatCompletionContentPartInputAudio.InputAudio
+                                                .Format.WAV)
+                                        .build())
+                                .build())))
+                .build())
+        .addModality(ChatCompletionCreateParams.Modality.TEXT)
+        .addModality(ChatCompletionCreateParams.Modality.AUDIO)
+        .audio(
+            ChatCompletionAudioParam.builder()
+                .voice("alloy")
+                .format(ChatCompletionAudioParam.Format.WAV)
+                .build())
+        .store(true)
+        .build();
+
+client.chat().completions().create(params).choices().stream()
+    .flatMap(choice -> choice.message().content().stream())
+    .forEach(System.out::println);
 ```
 
 ```ruby

@@ -75,6 +75,24 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.inputtokens.InputTokenCountParams;
+
+var count =
+    client
+        .responses()
+        .inputTokens()
+        .count(
+            InputTokenCountParams.builder()
+                .model("gpt-5.6")
+                .input("Tell me a joke.")
+                .build());
+
+System.out.println(count.inputTokens());
+```
+
 ```ruby
 require "openai"
 
@@ -171,6 +189,43 @@ func main() {
 	}
 	fmt.Println(count.InputTokens)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.inputtokens.InputTokenCountParams;
+import java.util.List;
+
+var count =
+    client
+        .responses()
+        .inputTokens()
+        .count(
+            InputTokenCountParams.builder()
+                .model("gpt-5.6")
+                .inputOfResponseInputItems(
+                    List.of(
+                        ResponseInputItem.ofEasyInputMessage(
+                            EasyInputMessage.builder()
+                                .role(EasyInputMessage.Role.USER)
+                                .content("What is 2 + 2?")
+                                .build()),
+                        ResponseInputItem.ofEasyInputMessage(
+                            EasyInputMessage.builder()
+                                .role(EasyInputMessage.Role.ASSISTANT)
+                                .content("2 + 2 equals 4.")
+                                .build()),
+                        ResponseInputItem.ofEasyInputMessage(
+                            EasyInputMessage.builder()
+                                .role(EasyInputMessage.Role.USER)
+                                .content("What about 3 + 3?")
+                                .build())))
+                .build());
+
+System.out.println(count.inputTokens());
 ```
 
 ```ruby
@@ -275,6 +330,25 @@ func main() {
 	}
 	fmt.Println(count.InputTokens)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.inputtokens.InputTokenCountParams;
+
+var count =
+    client
+        .responses()
+        .inputTokens()
+        .count(
+            InputTokenCountParams.builder()
+                .model("gpt-5.6")
+                .input("Explain quantum computing in one sentence.")
+                .instructions("You are a helpful assistant that explains concepts simply.")
+                .build());
+
+System.out.println(count.inputTokens());
 ```
 
 ```ruby
@@ -399,6 +473,39 @@ func main() {
 	}
 	fmt.Println(count.InputTokens)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseInputImage;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.inputtokens.InputTokenCountParams;
+import java.util.List;
+
+var count =
+    client
+        .responses()
+        .inputTokens()
+        .count(
+            InputTokenCountParams.builder()
+                .model("gpt-5.6")
+                .inputOfResponseInputItems(
+                    List.of(
+                        ResponseInputItem.ofMessage(
+                            ResponseInputItem.Message.builder()
+                                .role(ResponseInputItem.Message.Role.USER)
+                                .addContent(
+                                    ResponseInputImage.builder()
+                                        .detail(ResponseInputImage.Detail.AUTO)
+                                        .imageUrl(
+                                            "https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg")
+                                        .build())
+                                .addInputTextContent("Summarize this chart.")
+                                .build())))
+                .build());
+
+System.out.println(count.inputTokens());
 ```
 
 ```ruby
@@ -550,6 +657,46 @@ func main() {
 	}
 	fmt.Println(count.InputTokens)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.FunctionTool;
+import com.openai.models.responses.inputtokens.InputTokenCountParams;
+import java.util.List;
+import java.util.Map;
+
+var count =
+    client
+        .responses()
+        .inputTokens()
+        .count(
+            InputTokenCountParams.builder()
+                .model("gpt-5.6")
+                .input("What is the weather in San Francisco?")
+                .addTool(
+                    FunctionTool.builder()
+                        .name("get_weather")
+                        .description("Get the current weather in a location")
+                        .strict(true)
+                        .parameters(
+                            FunctionTool.Parameters.builder()
+                                .putAdditionalProperty("type", JsonValue.from("object"))
+                                .putAdditionalProperty(
+                                    "properties",
+                                    JsonValue.from(
+                                        Map.of("location", Map.of("type", "string"))))
+                                .putAdditionalProperty(
+                                    "required", JsonValue.from(List.of("location")))
+                                .putAdditionalProperty(
+                                    "additionalProperties", JsonValue.from(false))
+                                .build())
+                        .build())
+                .build());
+
+System.out.println(count.inputTokens());
 ```
 
 ```ruby

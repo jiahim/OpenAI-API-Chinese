@@ -80,6 +80,46 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.files.FileCreateParams;
+import com.openai.models.files.FilePurpose;
+import com.openai.models.vectorstores.VectorStoreCreateParams;
+import com.openai.models.vectorstores.files.FileRetrieveParams;
+import com.openai.models.vectorstores.files.VectorStoreFile;
+import java.nio.file.Path;
+
+var store =
+    client.vectorStores().create(VectorStoreCreateParams.builder().name("Support FAQ").build());
+var uploaded =
+    client
+        .files()
+        .create(
+            FileCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_FILE_PATH")))
+                .purpose(FilePurpose.ASSISTANTS)
+                .build());
+var file =
+    client
+        .vectorStores()
+        .files()
+        .create(
+            store.id(),
+            com.openai.models.vectorstores.files.FileCreateParams.builder()
+                .fileId(uploaded.id())
+                .build());
+while (file.status().equals(VectorStoreFile.Status.IN_PROGRESS)) {
+  Thread.sleep(1000);
+  file =
+      client
+          .vectorStores()
+          .files()
+          .retrieve(file.id(), FileRetrieveParams.builder().vectorStoreId(store.id()).build());
+}
+System.out.println(store.id());
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -141,6 +181,23 @@ func main() {
 	}
 	fmt.Println(results.Data)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.vectorstores.VectorStoreSearchParams;
+
+String vectorStoreId = "vs_123";
+
+var results =
+    client
+        .vectorStores()
+        .search(
+            vectorStoreId,
+            VectorStoreSearchParams.builder().query("What is the return policy?").build());
+
+System.out.println(results.data());
 ```
 
 ```ruby
@@ -212,6 +269,25 @@ func main() {
 	}
 	fmt.Println(results.Data)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.vectorstores.VectorStoreSearchParams;
+
+String vectorStoreId = "vs_123";
+
+var results =
+    client
+        .vectorStores()
+        .search(
+            vectorStoreId,
+            VectorStoreSearchParams.builder()
+                .query("How many woodchucks are allowed per passenger?")
+                .build());
+
+System.out.println(results.data());
 ```
 
 ```ruby
@@ -513,6 +589,22 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.vectorstores.VectorStoreCreateParams;
+
+String fileId = "file_123";
+
+var store =
+    client
+        .vectorStores()
+        .create(
+            VectorStoreCreateParams.builder().name("Support FAQ").addFileId(fileId).build());
+
+System.out.println(store.id());
+```
+
 ```ruby
 require "openai"
 
@@ -561,6 +653,15 @@ func main() {
 	}
 	fmt.Println(vectorStore.ID)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+
+String vectorStoreId = "vs_123";
+
+System.out.println(client.vectorStores().retrieve(vectorStoreId).id());
 ```
 
 ```ruby
@@ -615,6 +716,23 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.vectorstores.VectorStoreUpdateParams;
+
+String vectorStoreId = "vs_123";
+
+var store =
+    client
+        .vectorStores()
+        .update(
+            vectorStoreId,
+            VectorStoreUpdateParams.builder().name("Updated knowledge base").build());
+
+System.out.println(store.name());
+```
+
 ```ruby
 require "openai"
 
@@ -662,6 +780,15 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+
+String vectorStoreId = "vs_123";
+
+System.out.println(client.vectorStores().delete(vectorStoreId).deleted());
+```
+
 ```ruby
 require "openai"
 
@@ -705,6 +832,13 @@ func main() {
 	}
 	fmt.Println(vectorStores.Data)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+
+System.out.println(client.vectorStores().list().data());
 ```
 
 ```ruby
@@ -762,6 +896,24 @@ func main() {
 	}
 	fmt.Println(file.ID)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.vectorstores.files.FileCreateParams;
+
+String vectorStoreId = "vs_123";
+
+String fileId = "file_123";
+
+var file =
+    client
+        .vectorStores()
+        .files()
+        .create(vectorStoreId, FileCreateParams.builder().fileId(fileId).build());
+
+System.out.println(file.id());
 ```
 
 ```ruby
@@ -822,6 +974,45 @@ func main() {
 	}
 	fmt.Println(result.ID)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.files.FileCreateParams;
+import com.openai.models.files.FilePurpose;
+import com.openai.models.vectorstores.files.FileRetrieveParams;
+import com.openai.models.vectorstores.files.VectorStoreFile;
+import java.nio.file.Path;
+
+String vectorStoreId = "vs_123";
+var uploaded =
+    client
+        .files()
+        .create(
+            FileCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_FILE_PATH")))
+                .purpose(FilePurpose.ASSISTANTS)
+                .build());
+var file =
+    client
+        .vectorStores()
+        .files()
+        .create(
+            vectorStoreId,
+            com.openai.models.vectorstores.files.FileCreateParams.builder()
+                .fileId(uploaded.id())
+                .build());
+while (file.status().equals(VectorStoreFile.Status.IN_PROGRESS)) {
+  Thread.sleep(1000);
+  file =
+      client
+          .vectorStores()
+          .files()
+          .retrieve(
+              file.id(), FileRetrieveParams.builder().vectorStoreId(vectorStoreId).build());
+}
+System.out.println(file.id());
 ```
 
 ```ruby
@@ -887,6 +1078,26 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+
+String fileId = "file_123";
+
+String vectorStoreId = "vs_123";
+
+System.out.println(
+    client
+        .vectorStores()
+        .files()
+        .retrieve(
+            fileId,
+            com.openai.models.vectorstores.files.FileRetrieveParams.builder()
+                .vectorStoreId(vectorStoreId)
+                .build())
+        .id());
+```
+
 ```ruby
 require "openai"
 
@@ -943,6 +1154,33 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.vectorstores.files.FileUpdateParams;
+
+String fileId = "file_123";
+
+String vectorStoreId = "vs_123";
+
+var file =
+    client
+        .vectorStores()
+        .files()
+        .update(
+            fileId,
+            FileUpdateParams.builder()
+                .vectorStoreId(vectorStoreId)
+                .attributes(
+                    FileUpdateParams.Attributes.builder()
+                        .putAdditionalProperty("category", JsonValue.from("policy"))
+                        .build())
+                .build());
+
+System.out.println(file.id());
+```
+
 ```ruby
 require "openai"
 
@@ -993,6 +1231,26 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+
+String fileId = "file_123";
+
+String vectorStoreId = "vs_123";
+
+System.out.println(
+    client
+        .vectorStores()
+        .files()
+        .delete(
+            fileId,
+            com.openai.models.vectorstores.files.FileDeleteParams.builder()
+                .vectorStoreId(vectorStoreId)
+                .build())
+        .deleted());
+```
+
 ```ruby
 require "openai"
 
@@ -1038,6 +1296,15 @@ func main() {
 	}
 	fmt.Println(files.Data)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+
+String vectorStoreId = "vs_123";
+
+System.out.println(client.vectorStores().files().list(vectorStoreId).data());
 ```
 
 ```ruby
@@ -1134,6 +1401,56 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.vectorstores.StaticFileChunkingStrategy;
+import com.openai.models.vectorstores.filebatches.FileBatchCreateParams;
+import com.openai.models.vectorstores.filebatches.FileBatchRetrieveParams;
+import com.openai.models.vectorstores.filebatches.VectorStoreFileBatch;
+
+String vectorStoreId = "vs_123";
+String fileId = "file_123";
+String fileId2 = "file_456";
+var first =
+    FileBatchCreateParams.File.builder()
+        .fileId(fileId)
+        .attributes(
+            FileBatchCreateParams.File.Attributes.builder()
+                .putAdditionalProperty("department", JsonValue.from("finance"))
+                .build())
+        .build();
+var second =
+    FileBatchCreateParams.File.builder()
+        .fileId(fileId2)
+        .staticChunkingStrategy(
+            StaticFileChunkingStrategy.builder()
+                .maxChunkSizeTokens(1200)
+                .chunkOverlapTokens(200)
+                .build())
+        .build();
+
+var batch =
+    client
+        .vectorStores()
+        .fileBatches()
+        .create(
+            vectorStoreId,
+            FileBatchCreateParams.builder().addFile(first).addFile(second).build());
+while (batch.status().equals(VectorStoreFileBatch.Status.IN_PROGRESS)) {
+  Thread.sleep(1000);
+  batch =
+      client
+          .vectorStores()
+          .fileBatches()
+          .retrieve(
+              batch.id(),
+              FileBatchRetrieveParams.builder().vectorStoreId(vectorStoreId).build());
+}
+System.out.println(batch.status());
+```
+
 ```ruby
 require "openai"
 
@@ -1204,6 +1521,26 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+
+String fileBatchId = "vsfb_123";
+
+String vectorStoreId = "vs_123";
+
+System.out.println(
+    client
+        .vectorStores()
+        .fileBatches()
+        .retrieve(
+            fileBatchId,
+            com.openai.models.vectorstores.filebatches.FileBatchRetrieveParams.builder()
+                .vectorStoreId(vectorStoreId)
+                .build())
+        .status());
+```
+
 ```ruby
 require "openai"
 
@@ -1257,6 +1594,26 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+
+String fileBatchId = "vsfb_123";
+
+String vectorStoreId = "vs_123";
+
+System.out.println(
+    client
+        .vectorStores()
+        .fileBatches()
+        .cancel(
+            fileBatchId,
+            com.openai.models.vectorstores.filebatches.FileBatchCancelParams.builder()
+                .vectorStoreId(vectorStoreId)
+                .build())
+        .status());
+```
+
 ```ruby
 require "openai"
 
@@ -1308,6 +1665,26 @@ func main() {
 	}
 	fmt.Println(files.Data)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+
+String fileBatchId = "vsfb_123";
+
+String vectorStoreId = "vs_123";
+
+System.out.println(
+    client
+        .vectorStores()
+        .fileBatches()
+        .listFiles(
+            fileBatchId,
+            com.openai.models.vectorstores.filebatches.FileBatchListFilesParams.builder()
+                .vectorStoreId(vectorStoreId)
+                .build())
+        .data());
 ```
 
 ```ruby
@@ -1383,6 +1760,33 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.vectorstores.files.FileCreateParams;
+
+String vectorStoreId = "<vector_store_id>";
+
+String fileId = "file_123";
+
+var file =
+    client
+        .vectorStores()
+        .files()
+        .create(
+            vectorStoreId,
+            FileCreateParams.builder()
+                .fileId(fileId)
+                .attributes(
+                    FileCreateParams.Attributes.builder()
+                        .putAdditionalProperty("category", JsonValue.from("policy"))
+                        .build())
+                .build());
+
+System.out.println(file.id());
+```
+
 ```ruby
 require "openai"
 
@@ -1437,6 +1841,30 @@ func main() {
 	}
 	fmt.Println(vectorStore.ExpiresAfter)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.vectorstores.VectorStoreUpdateParams;
+
+String vectorStoreId = "vs_123";
+
+var store =
+    client
+        .vectorStores()
+        .update(
+            vectorStoreId,
+            VectorStoreUpdateParams.builder()
+                .expiresAfter(
+                    VectorStoreUpdateParams.ExpiresAfter.builder()
+                        .anchor(JsonValue.from("last_active_at"))
+                        .days(7)
+                        .build())
+                .build());
+
+System.out.println(store.expiresAfter().orElseThrow());
 ```
 
 ```ruby
@@ -1548,6 +1976,23 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.vectorstores.VectorStoreSearchParams;
+
+String vectorStoreId = "vs_123";
+
+var results =
+    client
+        .vectorStores()
+        .search(
+            vectorStoreId,
+            VectorStoreSearchParams.builder().query("What is the return policy?").build());
+
+System.out.println(results.data());
+```
+
 ```ruby
 require "openai"
 
@@ -1656,6 +2101,53 @@ func formatResults(results []openai.VectorStoreSearchResponse) string {
 	sources.WriteString("</sources>")
 	return sources.String()
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.chat.completions.ChatCompletionCreateParams;
+import com.openai.models.vectorstores.VectorStoreSearchParams;
+import java.util.stream.Collectors;
+
+String vectorStoreId = "vs_123";
+
+String query = "What is the return policy?";
+var results =
+    client
+        .vectorStores()
+        .search(vectorStoreId, VectorStoreSearchParams.builder().query(query).build());
+String sources =
+    results.data().stream()
+        .map(
+            result ->
+                "<result file_id='"
+                    + result.fileId()
+                    + "' file_name='"
+                    + result.filename()
+                    + "'>"
+                    + result.content().stream()
+                        .map(content -> "<content>" + content.text() + "</content>")
+                        .collect(Collectors.joining())
+                    + "</result>")
+        .collect(Collectors.joining());
+
+var completion =
+    client
+        .chat()
+        .completions()
+        .create(
+            ChatCompletionCreateParams.builder()
+                .model("gpt-5.6")
+                .addDeveloperMessage(
+                    "Answer the query concisely using only the provided sources.")
+                .addUserMessage(
+                    "Sources: <sources>" + sources + "</sources>\n\nQuery: " + query)
+                .build());
+
+completion.choices().stream()
+    .flatMap(choice -> choice.message().content().stream())
+    .forEach(System.out::println);
 ```
 
 ```ruby

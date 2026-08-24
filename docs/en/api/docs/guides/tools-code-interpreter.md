@@ -104,6 +104,28 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.Tool;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("I need to solve the equation 3x + 11 = 14. Can you help me?")
+        .instructions(
+            "You are a personal math tutor. Write and run Python code to answer each math question.")
+        .addCodeInterpreterTool(
+            Tool.CodeInterpreter.Container.CodeInterpreterToolAuto.builder()
+                .memoryLimit(
+                    Tool.CodeInterpreter.Container.CodeInterpreterToolAuto.MemoryLimit._4G)
+                .build())
+        .build();
+
+client.responses().create(params).output().forEach(System.out::println);
+```
+
 ```ruby
 require "openai"
 
@@ -244,6 +266,40 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.containers.ContainerCreateParams;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ToolChoiceOptions;
+
+var container =
+    client
+        .containers()
+        .create(
+            ContainerCreateParams.builder()
+                .name("analysis")
+                .memoryLimit(ContainerCreateParams.MemoryLimit._4G)
+                .build());
+
+var response =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.6")
+                .input("Calculate 4 * 3.82, then take the square root twice.")
+                .toolChoice(ToolChoiceOptions.REQUIRED)
+                .addCodeInterpreterTool(container.id())
+                .build());
+
+response.output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby

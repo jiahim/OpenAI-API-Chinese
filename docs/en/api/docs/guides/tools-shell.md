@@ -125,6 +125,28 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ContainerAuto;
+import com.openai.models.responses.FunctionShellTool;
+import com.openai.models.responses.ResponseCreateParams;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Run ls -lah /mnt/data, then show the Python and Node.js versions.")
+        .addTool(
+            FunctionShellTool.builder().environment(ContainerAuto.builder().build()).build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -231,6 +253,27 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.containers.ContainerCreateParams;
+
+var container =
+    client
+        .containers()
+        .create(
+            ContainerCreateParams.builder()
+                .name("analysis")
+                .expiresAfter(
+                    ContainerCreateParams.ExpiresAfter.builder()
+                        .anchor(ContainerCreateParams.ExpiresAfter.Anchor.LAST_ACTIVE_AT)
+                        .minutes(20)
+                        .build())
+                .build());
+
+System.out.println(container.id());
+```
+
 ```ruby
 require "openai"
 
@@ -329,6 +372,28 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.FunctionShellTool;
+import com.openai.models.responses.ResponseCreateParams;
+
+String containerId = "cntr_08f3d96c87a585390069118b594f7481a088b16cda7d9415fe";
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("List files in the container and show disk usage.")
+        .addTool(FunctionShellTool.builder().containerReferenceEnvironment(containerId).build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -442,6 +507,31 @@ func main() {
 	}
 	fmt.Println(container.ID)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.containers.ContainerCreateParams;
+import com.openai.models.responses.SkillReference;
+
+String skillId = "skill_4db6f1a2c9e73508b41f9da06e2c7b5f";
+
+var container =
+    client
+        .containers()
+        .create(
+            ContainerCreateParams.builder()
+                .name("skill-container")
+                .addSkill(SkillReference.builder().skillId(skillId).build())
+                .addSkill(
+                    SkillReference.builder()
+                        .skillId("openai-spreadsheets")
+                        .version("latest")
+                        .build())
+                .build());
+
+System.out.println(container.id());
 ```
 
 ```ruby
@@ -601,6 +691,41 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ContainerAuto;
+import com.openai.models.responses.ContainerNetworkPolicyAllowlist;
+import com.openai.models.responses.FunctionShellTool;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ToolChoiceOptions;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Fetch release pages and write /mnt/data/release_digest.md.")
+        .toolChoice(ToolChoiceOptions.REQUIRED)
+        .addTool(
+            FunctionShellTool.builder()
+                .environment(
+                    ContainerAuto.builder()
+                        .networkPolicy(
+                            ContainerNetworkPolicyAllowlist.builder()
+                                .addAllowedDomain("pypi.org")
+                                .addAllowedDomain("files.pythonhosted.org")
+                                .addAllowedDomain("github.com")
+                                .build())
+                        .build())
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -888,6 +1013,17 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+
+String containerId = "container_id";
+
+client.containers().delete(containerId);
+
+System.out.println("Container deleted.");
+```
+
 ```ruby
 require "openai"
 
@@ -1067,6 +1203,49 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ContainerAuto;
+import com.openai.models.responses.ContainerNetworkPolicyAllowlist;
+import com.openai.models.responses.ContainerNetworkPolicyDomainSecret;
+import com.openai.models.responses.FunctionShellTool;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ToolChoiceOptions;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input(
+            "Use curl to call https://httpbin.org/status/204 with an "
+                + "Authorization: Bearer $API_KEY header. Print only the HTTP status code; "
+                + "never print request headers or secret values.")
+        .toolChoice(ToolChoiceOptions.REQUIRED)
+        .addTool(
+            FunctionShellTool.builder()
+                .environment(
+                    ContainerAuto.builder()
+                        .networkPolicy(
+                            ContainerNetworkPolicyAllowlist.builder()
+                                .addAllowedDomain("httpbin.org")
+                                .addDomainSecret(
+                                    ContainerNetworkPolicyDomainSecret.builder()
+                                        .domain("httpbin.org")
+                                        .name("API_KEY")
+                                        .value(System.getenv("OPENAI_EXAMPLE_DOMAIN_SECRET"))
+                                        .build())
+                                .build())
+                        .build())
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -1199,6 +1378,31 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.FunctionShellTool;
+import com.openai.models.responses.ResponseCreateParams;
+
+String responseId = "resp_2a8e5c9174d63b0f18a4c572de9f64a1b3c76d508e12f9ab47";
+
+String containerId = "cntr_f19c2b51e4a06793d82d54a7be0fc9154d3361ab28ce7f6041";
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Read /mnt/data/top5.csv and report the top candidate.")
+        .previousResponseId(responseId)
+        .addTool(FunctionShellTool.builder().containerReferenceEnvironment(containerId).build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -1317,6 +1521,31 @@ func main() {
 	}
 	fmt.Println(response.Output)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.ResponseCreateParams;
+import java.util.List;
+import java.util.Map;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Find the largest PDF in ~/Documents.")
+        .instructions("The local shell environment is macOS.")
+        .putAdditionalBodyProperty(
+            "tools",
+            JsonValue.from(
+                List.of(Map.of("type", "shell", "environment", Map.of("type", "local")))))
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.shellCall().stream())
+    .flatMap(call -> call.action().commands().stream())
+    .forEach(System.out::println);
 ```
 
 ```ruby

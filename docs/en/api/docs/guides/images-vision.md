@@ -132,6 +132,32 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.Tool;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
+        .addTool(Tool.ImageGeneration.builder().build())
+        .build();
+
+String imageResult =
+    client.responses().create(params).output().stream()
+        .flatMap(item -> item.imageGenerationCall().stream())
+        .flatMap(call -> call.result().stream())
+        .findFirst()
+        .orElseThrow(() -> new IllegalStateException("No generated image returned"));
+Files.write(Path.of("cat_and_otter.png"), Base64.getDecoder().decode(imageResult));
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -290,6 +316,40 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputImage;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.List;
+
+ResponseInputItem imageInput =
+    ResponseInputItem.ofMessage(
+        ResponseInputItem.Message.builder()
+            .role(ResponseInputItem.Message.Role.USER)
+            .addInputTextContent("What's in this image?")
+            .addContent(
+                ResponseInputImage.builder()
+                    .detail(ResponseInputImage.Detail.AUTO)
+                    .imageUrl(
+                        "https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg")
+                    .build())
+            .build());
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(List.of(imageInput))
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```csharp
@@ -500,6 +560,48 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputImage;
+import com.openai.models.responses.ResponseInputItem;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+import java.util.List;
+
+String imageBase64 =
+    Base64.getEncoder()
+        .encodeToString(
+            Files.readAllBytes(Path.of(System.getenv("OPENAI_EXAMPLE_IMAGE_PATH"))));
+
+ResponseInputItem imageInput =
+    ResponseInputItem.ofMessage(
+        ResponseInputItem.Message.builder()
+            .role(ResponseInputItem.Message.Role.USER)
+            .addInputTextContent("What's in this image?")
+            .addContent(
+                ResponseInputImage.builder()
+                    .detail(ResponseInputImage.Detail.AUTO)
+                    .imageUrl("data:image/png;base64," + imageBase64)
+                    .build())
+            .build());
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(List.of(imageInput))
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```csharp
@@ -716,6 +818,52 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.files.FileCreateParams;
+import com.openai.models.files.FilePurpose;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputImage;
+import com.openai.models.responses.ResponseInputItem;
+import java.nio.file.Path;
+import java.util.List;
+
+var file =
+    client
+        .files()
+        .create(
+            FileCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_FILE_PATH")))
+                .purpose(FilePurpose.VISION)
+                .build());
+
+var response =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.6")
+                .inputOfResponse(
+                    List.of(
+                        ResponseInputItem.ofMessage(
+                            ResponseInputItem.Message.builder()
+                                .role(ResponseInputItem.Message.Role.USER)
+                                .addInputTextContent("What's in this image?")
+                                .addContent(
+                                    ResponseInputImage.builder()
+                                        .detail(ResponseInputImage.Detail.AUTO)
+                                        .fileId(file.id())
+                                        .build())
+                                .build())))
+                .build());
+response.output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```csharp

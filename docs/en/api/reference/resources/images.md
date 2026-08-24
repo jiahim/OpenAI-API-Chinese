@@ -210,7 +210,7 @@ Creates an edited or extended image given one or more source images and a prompt
 
 - `background: optional "transparent" or "opaque" or "auto" or null`
 
-  Background behavior for generated image output.
+  Set the background of the generated image output. Transparent backgrounds are available for supported GPT Image models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in preview. When using `transparent`, set the output format to `png` or `webp`.
 
   - `"transparent"`
 
@@ -239,17 +239,21 @@ Creates an edited or extended image given one or more source images and a prompt
 
     A fully qualified URL or base64-encoded data URL.
 
-- `model: optional string or "gpt-image-1.5" or "gpt-image-1" or "gpt-image-1-mini" or "chatgpt-image-latest" or null`
+- `model: optional string or "gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 3 more or null`
 
-  The model to use for image editing.
+  The GPT image model to use for image editing, including `gpt-image-2` and its dated snapshot `gpt-image-2-2026-04-21`.
 
   - `string`
 
-  - `"gpt-image-1.5" or "gpt-image-1" or "gpt-image-1-mini" or "chatgpt-image-latest"`
+  - `"gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 3 more`
 
-    The model to use for image editing.
+    The GPT image model to use for image editing, including `gpt-image-2` and its dated snapshot `gpt-image-2-2026-04-21`.
 
     - `"gpt-image-1.5"`
+
+    - `"gpt-image-2"`
+
+    - `"gpt-image-2-2026-04-21"`
 
     - `"gpt-image-1"`
 
@@ -533,13 +537,14 @@ Creates an image given a prompt. [Learn more](/docs/guides/images).
 
 - `background: optional "transparent" or "opaque" or "auto" or null`
 
-  Allows to set transparency for the background of the generated image(s).
-  This parameter is only supported for the GPT image models. Must be one of
-  `transparent`, `opaque` or `auto` (default value). When `auto` is used, the
-  model will automatically determine the best background for the image.
+  Set the background of the generated image(s). This parameter is only
+  supported for the GPT image models. Must be one of `transparent`, `opaque`,
+  or `auto` (default value). When `auto` is used, the model will automatically
+  determine the best background for the image.
 
-  If `transparent`, the output format needs to support transparency, so it
-  should be set to either `png` (default value) or `webp`.
+  Transparent backgrounds are available for supported GPT Image models. For
+  `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in preview. When
+  using `transparent`, set the output format to `png` or `webp`.
 
   - `"transparent"`
 
@@ -549,13 +554,17 @@ Creates an image given a prompt. [Learn more](/docs/guides/images).
 
 - `model: optional string or ImageModel or null`
 
-  The model to use for image generation. One of `dall-e-2`, `dall-e-3`, or a GPT image model (`gpt-image-1`, `gpt-image-1-mini`, `gpt-image-1.5`). Defaults to `dall-e-2` unless a parameter specific to the GPT image models is used.
+  The model to use for image generation. One of `dall-e-2`, `dall-e-3`, or a GPT image model (`gpt-image-1`, `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, `gpt-image-2-2026-04-21`). Defaults to `dall-e-2` unless a parameter specific to the GPT image models is used.
 
   - `string`
 
-  - `ImageModel = "gpt-image-1.5" or "dall-e-2" or "dall-e-3" or 2 more`
+  - `ImageModel = "gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 4 more`
 
     - `"gpt-image-1.5"`
+
+    - `"gpt-image-2"`
+
+    - `"gpt-image-2-2026-04-21"`
 
     - `"dall-e-2"`
 
@@ -1558,9 +1567,13 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
 ### Image Model
 
-- `ImageModel = "gpt-image-1.5" or "dall-e-2" or "dall-e-3" or 2 more`
+- `ImageModel = "gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 4 more`
 
   - `"gpt-image-1.5"`
+
+  - `"gpt-image-2"`
+
+  - `"gpt-image-2-2026-04-21"`
 
   - `"dall-e-2"`
 

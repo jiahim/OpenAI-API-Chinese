@@ -118,6 +118,37 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.finetuning.jobs.JobCreateParams;
+import com.openai.models.finetuning.methods.SupervisedHyperparameters;
+import com.openai.models.finetuning.methods.SupervisedMethod;
+
+String fileId = "file-abc123";
+
+var job =
+    client
+        .fineTuning()
+        .jobs()
+        .create(
+            JobCreateParams.builder()
+                .model("gpt-4.1-mini-2025-04-14")
+                .trainingFile(fileId)
+                .method(
+                    JobCreateParams.Method.builder()
+                        .type(JobCreateParams.Method.Type.SUPERVISED)
+                        .supervised(
+                            SupervisedMethod.builder()
+                                .hyperparameters(
+                                    SupervisedHyperparameters.builder().nEpochs(2).build())
+                                .build())
+                        .build())
+                .build());
+
+System.out.println(job.id());
+```
+
 ```ruby
 require "openai"
 

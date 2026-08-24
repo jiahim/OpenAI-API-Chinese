@@ -82,6 +82,29 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import java.time.Duration;
+
+client = client.withOptions(options -> options.timeout(Duration.ofMinutes(15)));
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("<very long text of book here>")
+        .instructions("List and describe all the metaphors used in this book.")
+        .serviceTier(ResponseCreateParams.ServiceTier.FLEX)
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 

@@ -133,7 +133,7 @@ The objects you receive back from these APIs will differ slightly. In Chat Compl
 ### Additional differences
 
 - Responses are stored by default. Chat completions are stored by default for new accounts. To disable storage in either API, set `store: false`.
-- [Reasoning](https://developers.openai.com/api/docs/guides/reasoning) models have a richer experience in the Responses API with [improved tool usage](https://developers.openai.com/api/docs/guides/reasoning#keeping-reasoning-items-in-context). Starting with GPT-5.4, tool calling is not supported in Chat Completions with `reasoning: none`.
+- [Reasoning](https://developers.openai.com/api/docs/guides/reasoning) models have a richer experience in the Responses API with [improved tool usage](https://developers.openai.com/api/docs/guides/reasoning#keeping-reasoning-items-in-context). Starting with GPT-5.4, Chat Completions does not support tool calling with `reasoning_effort` values other than `none`.
 - Structured Outputs API shape is different. Instead of `response_format`, use `text.format` in Responses. Learn more in the [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) guide.
 - The function-calling API shape is different, both for the function config on the request, and function calls sent back in the response. See the full difference in the [function calling guide](https://developers.openai.com/api/docs/guides/function-calling).
 - The Responses SDK has an `output_text` helper, which the Chat Completions SDK does not have.
@@ -218,6 +218,55 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.chat.completions.ChatCompletionCreateParams;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.List;
+
+var completion =
+    client
+        .chat()
+        .completions()
+        .create(
+            ChatCompletionCreateParams.builder()
+                .model("gpt-5.6")
+                .addSystemMessage("You are a helpful assistant.")
+                .addUserMessage("Hello!")
+                .build());
+completion.choices().stream()
+    .flatMap(choice -> choice.message().content().stream())
+    .forEach(System.out::println);
+
+var response =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.6")
+                .inputOfResponse(
+                    List.of(
+                        ResponseInputItem.ofEasyInputMessage(
+                            EasyInputMessage.builder()
+                                .role(EasyInputMessage.Role.SYSTEM)
+                                .content("You are a helpful assistant.")
+                                .build()),
+                        ResponseInputItem.ofEasyInputMessage(
+                            EasyInputMessage.builder()
+                                .role(EasyInputMessage.Role.USER)
+                                .content("Hello!")
+                                .build())))
+                .build());
+response.output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -330,6 +379,23 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.chat.completions.ChatCompletionCreateParams;
+
+ChatCompletionCreateParams params =
+    ChatCompletionCreateParams.builder()
+        .model("gpt-5.6")
+        .addSystemMessage("You are a helpful assistant.")
+        .addUserMessage("Hello!")
+        .build();
+
+client.chat().completions().create(params).choices().stream()
+    .flatMap(choice -> choice.message().content().stream())
+    .forEach(System.out::println);
+```
+
 ```ruby
 require "openai"
 
@@ -419,6 +485,25 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Hello!")
+        .instructions("You are a helpful assistant.")
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -542,6 +627,33 @@ func main() {
 	}
 	fmt.Println(second.Choices[0].Message.Content)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.chat.completions.ChatCompletionCreateParams;
+
+var params =
+    ChatCompletionCreateParams.builder()
+        .model("gpt-5.6")
+        .addSystemMessage("You are a helpful assistant.")
+        .addUserMessage("What is the capital of France?")
+        .build();
+var first = client.chat().completions().create(params);
+
+var second =
+    client
+        .chat()
+        .completions()
+        .create(
+            params.toBuilder()
+                .addAssistantMessage(first.choices().get(0).message().content().orElseThrow())
+                .addUserMessage("And its population?")
+                .build());
+second.choices().stream()
+    .flatMap(choice -> choice.message().content().stream())
+    .forEach(System.out::println);
 ```
 
 ```ruby
@@ -669,6 +781,49 @@ func outputAsInput(output []responses.ResponseOutputItemUnion) []responses.Respo
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.ArrayList;
+
+var history = new ArrayList<ResponseInputItem>();
+history.add(
+    ResponseInputItem.ofEasyInputMessage(
+        EasyInputMessage.builder()
+            .role(EasyInputMessage.Role.USER)
+            .content("What is the capital of France?")
+            .build()));
+
+var first =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder().model("gpt-5.6").inputOfResponse(history).build());
+first.output().stream()
+    .map(item -> JsonValue.from(item).convert(ResponseInputItem.class))
+    .forEach(history::add);
+history.add(
+    ResponseInputItem.ofEasyInputMessage(
+        EasyInputMessage.builder()
+            .role(EasyInputMessage.Role.USER)
+            .content("And its population?")
+            .build()));
+
+client
+    .responses()
+    .create(ResponseCreateParams.builder().model("gpt-5.6").inputOfResponse(history).build())
+    .output()
+    .stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -756,6 +911,38 @@ func main() {
 	}
 	fmt.Println(second.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+
+var first =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.6")
+                .input("What is the capital of France?")
+                .store(true)
+                .build());
+
+var second =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.6")
+                .input("And its population?")
+                .previousResponseId(first.id())
+                .store(true)
+                .build());
+second.output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -983,6 +1170,53 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.ReasoningEffort;
+import com.openai.models.chat.completions.ChatCompletionCreateParams;
+import java.util.List;
+import java.util.Map;
+
+ChatCompletionCreateParams params =
+    ChatCompletionCreateParams.builder()
+        .model("gpt-5.6")
+        .reasoningEffort(ReasoningEffort.MEDIUM)
+        .addUserMessage("Jane, 54 years old")
+        .putAdditionalBodyProperty(
+            "response_format",
+            JsonValue.from(
+                Map.of(
+                    "type",
+                    "json_schema",
+                    "json_schema",
+                    Map.of(
+                        "name",
+                        "person",
+                        "strict",
+                        true,
+                        "schema",
+                        Map.of(
+                            "type",
+                            "object",
+                            "properties",
+                            Map.of(
+                                "name",
+                                Map.of("type", "string", "minLength", 1),
+                                "age",
+                                Map.of("type", "number", "minimum", 0, "maximum", 130)),
+                            "required",
+                            List.of("name", "age"),
+                            "additionalProperties",
+                            false)))))
+        .build();
+
+client.chat().completions().create(params).choices().stream()
+    .flatMap(choice -> choice.message().content().stream())
+    .forEach(System.out::println);
+```
+
 ```ruby
 require "openai"
 
@@ -1149,6 +1383,55 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseFormatTextJsonSchemaConfig;
+import com.openai.models.responses.ResponseTextConfig;
+import java.util.List;
+import java.util.Map;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Jane, 54 years old")
+        .text(
+            ResponseTextConfig.builder()
+                .format(
+                    ResponseFormatTextJsonSchemaConfig.builder()
+                        .name("person")
+                        .strict(true)
+                        .schema(
+                            ResponseFormatTextJsonSchemaConfig.Schema.builder()
+                                .putAdditionalProperty("type", JsonValue.from("object"))
+                                .putAdditionalProperty(
+                                    "properties",
+                                    JsonValue.from(
+                                        Map.of(
+                                            "name",
+                                            Map.of("type", "string", "minLength", 1),
+                                            "age",
+                                            Map.of(
+                                                "type", "number", "minimum", 0, "maximum",
+                                                130))))
+                                .putAdditionalProperty(
+                                    "required", JsonValue.from(List.of("name", "age")))
+                                .putAdditionalProperty(
+                                    "additionalProperties", JsonValue.from(false))
+                                .build())
+                        .build())
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -1337,6 +1620,42 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.FunctionParameters;
+import com.openai.models.ReasoningEffort;
+import com.openai.models.chat.completions.ChatCompletionCreateParams;
+import java.util.List;
+import java.util.Map;
+
+ChatCompletionCreateParams params =
+    ChatCompletionCreateParams.builder()
+        .model("gpt-5.6")
+        .reasoningEffort(ReasoningEffort.NONE)
+        .addSystemMessage("You are a helpful assistant.")
+        .addUserMessage("Who is the current president of France?")
+        .addFunction(
+            ChatCompletionCreateParams.Function.builder()
+                .name("web_search")
+                .description("Search the web for information")
+                .parameters(
+                    FunctionParameters.builder()
+                        .putAdditionalProperty("type", JsonValue.from("object"))
+                        .putAdditionalProperty(
+                            "properties",
+                            JsonValue.from(Map.of("query", Map.of("type", "string"))))
+                        .putAdditionalProperty("required", JsonValue.from(List.of("query")))
+                        .build())
+                .build())
+        .build();
+
+client.chat().completions().create(params).choices().stream()
+    .map(choice -> choice.message())
+    .forEach(System.out::println);
+```
+
 ```ruby
 require "openai"
 
@@ -1427,6 +1746,26 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.WebSearchTool;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Who is the current president of France?")
+        .addTool(WebSearchTool.builder().type(WebSearchTool.Type.WEB_SEARCH).build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby

@@ -76,6 +76,25 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.audio.transcriptions.TranscriptionCreateParams;
+import java.nio.file.Path;
+
+var result =
+    client
+        .audio()
+        .transcriptions()
+        .create(
+            TranscriptionCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_AUDIO_PATH")))
+                .model("gpt-transcribe")
+                .build());
+
+System.out.println(result.asTranscription().text());
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -200,6 +219,31 @@ func main() {
 	}
 	fmt.Println(transcription.Text)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.audio.transcriptions.TranscriptionCreateParams;
+import java.nio.file.Path;
+import java.util.List;
+
+var result =
+    client
+        .audio()
+        .transcriptions()
+        .create(
+            TranscriptionCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_AUDIO_PATH")))
+                .model("gpt-transcribe")
+                .prompt("A customer support call about a premium plan and account AC-42.")
+                .putAdditionalBodyProperty(
+                    "keywords", JsonValue.from(List.of("premium plan", "AC-42", "billing")))
+                .putAdditionalBodyProperty("languages", JsonValue.from(List.of("en", "fr")))
+                .build());
+
+System.out.println(result.asTranscription().text());
 ```
 
 ```ruby
@@ -365,6 +409,55 @@ func main() {
 }
 ```
 
+```java
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.audio.AudioResponseFormat;
+import com.openai.models.audio.transcriptions.TranscriptionCreateParams;
+import com.openai.models.audio.transcriptions.TranscriptionDiarized;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+
+Path audio = Path.of(System.getenv("OPENAI_EXAMPLE_AUDIO_PATH"));
+Path speakerAudio = Path.of(System.getenv("OPENAI_EXAMPLE_SPEAKER_AUDIO_PATH"));
+String speakerReference =
+    "data:audio/wav;base64,"
+        + Base64.getEncoder().encodeToString(Files.readAllBytes(speakerAudio));
+
+var result =
+    client
+        .audio()
+        .transcriptions()
+        .create(
+            TranscriptionCreateParams.builder()
+                .file(audio)
+                .model("gpt-4o-transcribe-diarize")
+                .responseFormat(AudioResponseFormat.DIARIZED_JSON)
+                .chunkingStrategyAuto()
+                .addKnownSpeakerName("agent")
+                .addKnownSpeakerReference(speakerReference)
+                .build());
+
+TranscriptionDiarized diarized =
+    result.isDiarized()
+        ? result.asDiarized()
+        : new JsonMapper()
+            .readValue(result.asTranscription().text(), TranscriptionDiarized.class);
+for (var segment : diarized.segments()) {
+  System.out.println(
+      segment.speaker()
+          + ": "
+          + segment.text()
+          + " ("
+          + segment.start()
+          + "-"
+          + segment.end()
+          + ")");
+}
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -476,6 +569,25 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.audio.translations.TranslationCreateParams;
+import java.nio.file.Path;
+
+var result =
+    client
+        .audio()
+        .translations()
+        .create(
+            TranslationCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_AUDIO_PATH")))
+                .model("whisper-1")
+                .build());
+
+System.out.println(result.asTranslation().text());
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -584,6 +696,33 @@ func main() {
 	}
 	fmt.Println(transcription.Words)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.audio.AudioResponseFormat;
+import com.openai.models.audio.transcriptions.TranscriptionCreateParams;
+import java.nio.file.Path;
+
+var result =
+    client
+        .audio()
+        .transcriptions()
+        .create(
+            TranscriptionCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_AUDIO_PATH")))
+                .model("whisper-1")
+                .responseFormat(AudioResponseFormat.VERBOSE_JSON)
+                .addTimestampGranularity(TranscriptionCreateParams.TimestampGranularity.WORD)
+                .build());
+
+result
+    .asVerbose()
+    .words()
+    .orElseThrow()
+    .forEach(
+        word -> System.out.println(word.word() + ": " + word.start() + " - " + word.end()));
 ```
 
 ```ruby
@@ -863,6 +1002,35 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.http.HttpResponse;
+import com.openai.models.audio.AudioResponseFormat;
+import com.openai.models.audio.transcriptions.TranscriptionCreateParams;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+
+try (HttpResponse result =
+    client
+        .audio()
+        .transcriptions()
+        .withRawResponse()
+        .create(
+            TranscriptionCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_AUDIO_PATH")))
+                .model("whisper-1")
+                .responseFormat(AudioResponseFormat.TEXT)
+                .prompt(
+                    "ZyntriQix, Digique Plus, CynapseFive, VortiQore V8, EchoNix Array, "
+                        + "OrbitalLink Seven, DigiFractal Matrix, PULSE, RAPT, B.R.I.C.K., "
+                        + "Q.U.A.R.T.Z., F.L.I.N.T.")
+                .build())) {
+  System.out.println(new String(result.body().readAllBytes(), StandardCharsets.UTF_8));
+}
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -1006,6 +1174,51 @@ func main() {
 	}
 	fmt.Println(completion.Choices[0].Message.Content)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.audio.transcriptions.TranscriptionCreateParams;
+import com.openai.models.chat.completions.ChatCompletionCreateParams;
+import java.nio.file.Path;
+
+String systemPrompt =
+    """
+    You are a helpful assistant for the company ZyntriQix. Your task is to
+    correct any spelling discrepancies in the transcribed text. Make sure that
+    the names of the following products are spelled correctly: ZyntriQix,
+    Digique Plus, CynapseFive, VortiQore V8, EchoNix Array, OrbitalLink Seven,
+    DigiFractal Matrix, PULSE, RAPT, B.R.I.C.K., Q.U.A.R.T.Z., F.L.I.N.T.
+    Only add necessary punctuation such as periods, commas, and capitalization,
+    and use only the context provided.
+    """;
+
+var result =
+    client
+        .audio()
+        .transcriptions()
+        .create(
+            TranscriptionCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_AUDIO_PATH")))
+                .model("gpt-4o-transcribe")
+                .build());
+
+var completion =
+    client
+        .chat()
+        .completions()
+        .create(
+            ChatCompletionCreateParams.builder()
+                .model("gpt-4.1")
+                .temperature(0.0)
+                .store(true)
+                .addSystemMessage(systemPrompt)
+                .addUserMessage(result.asTranscription().text())
+                .build());
+completion.choices().stream()
+    .flatMap(choice -> choice.message().content().stream())
+    .forEach(System.out::println);
 ```
 
 ```ruby

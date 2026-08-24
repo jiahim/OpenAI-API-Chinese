@@ -4,6 +4,8 @@
 
 Use SPIFFE as a Workload Identity Provider by exchanging a SPIFFE JWT-SVID for a short-lived OpenAI access token. This lets workloads authenticated by SPIRE or another SPIFFE-compatible identity provider call the OpenAI API without storing long-lived API keys.
 
+For Codex, use this page to get and inspect the JWT-SVID. Then [configure Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) to write that token to a file and point Codex to it. The service-account mapping and SDK examples on this page apply to the OpenAI API.
+
 OpenAI supports SPIFFE JWT-SVIDs that can be validated as JWT subject tokens with an issuer, audience, expiration, issued-at timestamp, and JWKS-backed signature. OpenAI doesn't support SPIFFE X.509-SVIDs as workload identity federation subject tokens.
 
 The JWT-SVID specification requires the `sub`, `aud`, and `exp` claims. To use a JWT-SVID with OpenAI, the token must also include `iss` and `iat` claims and a `kid` header so OpenAI can validate the token against the Workload Identity Provider configuration.

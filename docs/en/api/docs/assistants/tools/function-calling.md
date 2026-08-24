@@ -170,6 +170,78 @@ func weatherTools(strict bool) []openai.AssistantToolUnionParam {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.FunctionDefinition;
+import com.openai.models.FunctionParameters;
+import com.openai.models.beta.assistants.AssistantCreateParams;
+import java.util.List;
+import java.util.Map;
+
+var assistant =
+    client
+        .beta()
+        .assistants()
+        .create(
+            AssistantCreateParams.builder()
+                .model("gpt-4o")
+                .instructions(
+                    "You are a weather bot. Use the provided functions to answer questions.")
+                .addFunctionTool(
+                    FunctionDefinition.builder()
+                        .name("get_current_temperature")
+                        .description("Get the current temperature for a specific location")
+                        .parameters(
+                            FunctionParameters.builder()
+                                .putAdditionalProperty("type", JsonValue.from("object"))
+                                .putAdditionalProperty(
+                                    "properties",
+                                    JsonValue.from(
+                                        Map.of(
+                                            "location",
+                                                Map.of(
+                                                    "type", "string",
+                                                    "description",
+                                                        "The city and state, e.g., San Francisco, CA"),
+                                            "unit",
+                                                Map.of(
+                                                    "type",
+                                                    "string",
+                                                    "enum",
+                                                    List.of("Celsius", "Fahrenheit"),
+                                                    "description",
+                                                    "The temperature unit to use. Infer this from the user's location."))))
+                                .putAdditionalProperty(
+                                    "required", JsonValue.from(List.of("location", "unit")))
+                                .build())
+                        .build())
+                .addFunctionTool(
+                    FunctionDefinition.builder()
+                        .name("get_rain_probability")
+                        .description("Get the probability of rain for a specific location")
+                        .parameters(
+                            FunctionParameters.builder()
+                                .putAdditionalProperty("type", JsonValue.from("object"))
+                                .putAdditionalProperty(
+                                    "properties",
+                                    JsonValue.from(
+                                        Map.of(
+                                            "location",
+                                            Map.of(
+                                                "type", "string",
+                                                "description",
+                                                    "The city and state, e.g., San Francisco, CA"))))
+                                .putAdditionalProperty(
+                                    "required", JsonValue.from(List.of("location")))
+                                .build())
+                        .build())
+                .build());
+
+System.out.println(assistant.id());
+```
+
 ```ruby
 require "openai"
 
@@ -247,6 +319,28 @@ _, err = client.Beta.Threads.Messages.New(context.Background(), thread.ID, opena
 if err != nil {
 	panic(err)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.threads.ThreadCreateParams;
+import com.openai.models.beta.threads.messages.MessageCreateParams;
+
+var thread = client.beta().threads().create(ThreadCreateParams.builder().build());
+var message =
+    client
+        .beta()
+        .threads()
+        .messages()
+        .create(
+            thread.id(),
+            MessageCreateParams.builder()
+                .role(MessageCreateParams.Role.USER)
+                .content("What's the weather in San Francisco today, and will it rain?")
+                .build());
+
+System.out.println(message.id());
 ```
 
 ```ruby
@@ -609,6 +703,73 @@ func pollRun(client openai.Client, threadID string, run *openai.Run) *openai.Run
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.threads.runs.Run;
+import com.openai.models.beta.threads.runs.RunCreateParams;
+import com.openai.models.beta.threads.runs.RunRetrieveParams;
+import com.openai.models.beta.threads.runs.RunStatus;
+import com.openai.models.beta.threads.runs.RunSubmitToolOutputsParams;
+import java.util.ArrayList;
+
+String threadId = System.getenv("OPENAI_EXAMPLE_THREAD_ID");
+Run run =
+    client
+        .beta()
+        .threads()
+        .runs()
+        .create(
+            threadId,
+            RunCreateParams.builder()
+                .assistantId(System.getenv("OPENAI_EXAMPLE_ASSISTANT_ID"))
+                .build());
+run = poll(client, threadId, run);
+
+if (run.status().equals(RunStatus.REQUIRES_ACTION)) {
+  var action =
+      run.requiredAction()
+          .orElseThrow(() -> new IllegalStateException("Run has no required action"));
+  var outputs = new ArrayList<RunSubmitToolOutputsParams.ToolOutput>();
+  for (var call : action.submitToolOutputs().toolCalls()) {
+    String output =
+        switch (call.function().name()) {
+          case "get_current_temperature" -> "57";
+          case "get_rain_probability" -> "0.06";
+          default -> null;
+        };
+    if (output != null) {
+      outputs.add(
+          RunSubmitToolOutputsParams.ToolOutput.builder()
+              .toolCallId(call.id())
+              .output(output)
+              .build());
+    }
+  }
+  if (outputs.isEmpty()) throw new IllegalStateException("No supported tool calls requested");
+  run =
+      client
+          .beta()
+          .threads()
+          .runs()
+          .submitToolOutputs(
+              run.id(),
+              RunSubmitToolOutputsParams.builder()
+                  .threadId(threadId)
+                  .toolOutputs(outputs)
+                  .build());
+  run = poll(client, threadId, run);
+}
+
+if (!run.status().equals(RunStatus.COMPLETED)) {
+  throw new IllegalStateException("Run ended with status: " + run.status());
+}
+client.beta().threads().messages().list(threadId).items().stream()
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.text().stream())
+    .forEach(content -> System.out.println(content.text().value()));
+```
+
 ```ruby
 require "openai"
 
@@ -830,6 +991,84 @@ func weatherTools() []openai.AssistantToolUnionParam {
 		}),
 	}
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.FunctionDefinition;
+import com.openai.models.FunctionParameters;
+import com.openai.models.beta.assistants.AssistantCreateParams;
+import java.util.List;
+import java.util.Map;
+
+var assistant =
+    client
+        .beta()
+        .assistants()
+        .create(
+            AssistantCreateParams.builder()
+                .model("gpt-4o-2024-08-06")
+                .instructions(
+                    "You are a weather bot. Use the provided functions to answer questions.")
+                .addFunctionTool(
+                    FunctionDefinition.builder()
+                        .name("get_current_temperature")
+                        .description("Get the current temperature for a specific location")
+                        .strict(true)
+                        .parameters(
+                            FunctionParameters.builder()
+                                .putAdditionalProperty("type", JsonValue.from("object"))
+                                .putAdditionalProperty(
+                                    "properties",
+                                    JsonValue.from(
+                                        Map.of(
+                                            "location",
+                                                Map.of(
+                                                    "type", "string",
+                                                    "description",
+                                                        "The city and state, e.g., San Francisco, CA"),
+                                            "unit",
+                                                Map.of(
+                                                    "type",
+                                                    "string",
+                                                    "enum",
+                                                    List.of("Celsius", "Fahrenheit"),
+                                                    "description",
+                                                    "The temperature unit to use. Infer this from the user's location."))))
+                                .putAdditionalProperty(
+                                    "required", JsonValue.from(List.of("location", "unit")))
+                                .putAdditionalProperty(
+                                    "additionalProperties", JsonValue.from(false))
+                                .build())
+                        .build())
+                .addFunctionTool(
+                    FunctionDefinition.builder()
+                        .name("get_rain_probability")
+                        .description("Get the probability of rain for a specific location")
+                        .strict(true)
+                        .parameters(
+                            FunctionParameters.builder()
+                                .putAdditionalProperty("type", JsonValue.from("object"))
+                                .putAdditionalProperty(
+                                    "properties",
+                                    JsonValue.from(
+                                        Map.of(
+                                            "location",
+                                            Map.of(
+                                                "type", "string",
+                                                "description",
+                                                    "The city and state, e.g., San Francisco, CA"))))
+                                .putAdditionalProperty(
+                                    "required", JsonValue.from(List.of("location")))
+                                .putAdditionalProperty(
+                                    "additionalProperties", JsonValue.from(false))
+                                .build())
+                        .build())
+                .build());
+
+System.out.println(assistant.id());
 ```
 
 ```ruby
