@@ -64,6 +64,7 @@ interface SourceManifest {
 }
 
 interface CliOptions {
+  allowLargePrune: boolean;
   command: Command;
   configPath: string;
   help: boolean;
@@ -99,6 +100,8 @@ type ChangeKind = "added" | "changed" | "local-missing" | "local-modified" | "un
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DEFAULT_CONFIG_PATH = "scripts/docs.config.json";
+const MAX_AUTOMATIC_REMOVAL_COUNT = 20;
+const MAX_AUTOMATIC_REMOVAL_RATIO = 0.1;
 const INDEX_LINK_PATTERN =
   /^- \[([^\]]+)\]\((https:\/\/developers\.openai\.com\/api\/(?:docs|reference)\/[^)\s]+\.md)\)(?::\s*(.*))?\s*$/gm;
 
@@ -138,6 +141,65 @@ export function mirroredRelativePath(sourceUrl: string): string {
     throw new Error(`文档路径不能包含 ..：${sourceUrl}`);
   }
   return relativePath;
+}
+
+function mirroredLocalPath(sourceUrl: string, sourceRoot: string): string {
+  return `${sourceRoot.replace(/\/+$/, "")}/${mirroredRelativePath(sourceUrl)}`;
+}
+
+function pathInsideSourceRoot(sourceRoot: string, localPath: string): string {
+  const absoluteRoot = pathInsideRepository(sourceRoot);
+  const absolutePath = pathInsideRepository(localPath);
+  const fromSourceRoot = relative(absoluteRoot, absolutePath);
+  if (
+    fromSourceRoot === "" ||
+    fromSourceRoot === ".." ||
+    fromSourceRoot.startsWith(`..${sep}`)
+  ) {
+    throw new Error(`文档路径必须位于 sourceRoot 内：${localPath}`);
+  }
+  return absolutePath;
+}
+
+function safePruneLocalPath(
+  manifestKey: string,
+  record: SourcePageRecord,
+  sourceRoot: string,
+  reservedLocalPaths: ReadonlySet<string>,
+): string {
+  if (manifestKey !== record.sourceUrl) {
+    throw new Error(`manifest 页面键与 sourceUrl 不一致：${manifestKey}`);
+  }
+  const source = new URL(manifestKey);
+  const expectedPrefix =
+    record.section === "guides" ? "/api/docs/" : "/api/reference/";
+  if (!source.pathname.startsWith(expectedPrefix) || !source.pathname.endsWith(".md")) {
+    throw new Error(`manifest 页面来源与栏目不匹配或不是 Markdown：${manifestKey}`);
+  }
+  const localPath = mirroredLocalPath(manifestKey, sourceRoot);
+  pathInsideSourceRoot(sourceRoot, localPath);
+  if (reservedLocalPaths.has(localPath)) {
+    throw new Error(`待删除页面与本轮有效文件冲突：${localPath}`);
+  }
+  return localPath;
+}
+
+function validatePageDownload(entry: IndexEntry, fetched: FetchResult): void {
+  const trimmed = fetched.content.trimStart();
+  if (trimmed.trim().length === 0) {
+    throw new Error(`页面正文为空：${entry.sourceUrl}`);
+  }
+  const mediaType = fetched.contentType?.split(";", 1)[0]?.trim().toLowerCase();
+  if (
+    mediaType === "text/html" ||
+    mediaType === "application/xhtml+xml" ||
+    /^<!doctype\s+html\b/i.test(trimmed) ||
+    /^<html\b/i.test(trimmed)
+  ) {
+    throw new Error(
+      `页面响应不是 Markdown${mediaType ? `（content-type=${mediaType}）` : ""}：${entry.sourceUrl}`,
+    );
+  }
 }
 
 export function parseIndex(
@@ -292,11 +354,12 @@ export async function mapConcurrent<T, R>(
   values: T[],
   concurrency: number,
   mapper: (value: T, index: number) => Promise<R>,
+  shouldStop: () => boolean = () => false,
 ): Promise<R[]> {
   const results = new Array<R>(values.length);
   let cursor = 0;
   async function worker(): Promise<void> {
-    while (cursor < values.length) {
+    while (cursor < values.length && !shouldStop()) {
       const index = cursor;
       cursor += 1;
       const value = values[index];
@@ -307,7 +370,7 @@ export async function mapConcurrent<T, R>(
   await Promise.all(
     Array.from({ length: Math.min(concurrency, values.length) }, () => worker()),
   );
-  return results;
+  return results.filter((result) => result !== undefined);
 }
 
 function stableManifest(manifest: SourceManifest): SourceManifest {
@@ -394,12 +457,17 @@ async function runSyncOrCheck(
 
     const parsed = parseIndex(fetched.content, section, config.sourceRoot);
     console.log(`发现 ${parsed.length} 个 ${section} 页面`);
+    if (parsed.length === 0) {
+      console.error(`索引校验失败：${section} 未发现任何 Markdown 页面，已中止本轮操作。`);
+      return 2;
+    }
     allEntries.push(...parsed);
   }
 
   const selectedEntries = selectEntries(allEntries, options.matches, options.limit);
   console.log(`${command === "check" ? "检查" : "同步"} ${selectedEntries.length} 个页面`);
   const counters = new Map<ChangeKind, number>();
+  let stopDownloads = false;
 
   const results = await mapConcurrent(
     selectedEntries,
@@ -407,6 +475,7 @@ async function runSyncOrCheck(
     async (entry): Promise<DownloadResult> => {
       try {
         const fetchResult = await fetcher.fetchText(entry.sourceUrl);
+        validatePageDownload(entry, fetchResult);
         return {
           content: fetchResult.content,
           entry,
@@ -415,6 +484,7 @@ async function runSyncOrCheck(
           sha256: sha256(fetchResult.content),
         };
       } catch (error) {
+        stopDownloads = true;
         return {
           entry,
           error: error instanceof Error ? error : new Error(String(error)),
@@ -422,6 +492,7 @@ async function runSyncOrCheck(
         };
       }
     },
+    () => stopDownloads,
   );
 
   let failures = 0;
@@ -465,20 +536,59 @@ async function runSyncOrCheck(
   const removedPaths: string[] = [];
   if (fullSectionScan) {
     const currentUrls = new Set(allEntries.map((entry) => entry.sourceUrl));
+    const reservedLocalPaths = new Set([
+      ...indexDownloads.map((download) => download.localPath),
+      ...allEntries.map((entry) => entry.localPath),
+    ]);
+    for (const section of sections) {
+      const activeInSection = Object.entries(manifest.pages).filter(
+        ([, previous]) => previous.section === section && previous.status === "active",
+      );
+      const removedInSection = activeInSection.filter(
+        ([sourceUrl]) => !currentUrls.has(sourceUrl),
+      ).length;
+      const removalRatio =
+        activeInSection.length === 0 ? 0 : removedInSection / activeInSection.length;
+      if (
+        !options.allowLargePrune &&
+        (removedInSection > MAX_AUTOMATIC_REMOVAL_COUNT ||
+          removalRatio > MAX_AUTOMATIC_REMOVAL_RATIO)
+      ) {
+        console.error(
+          `索引校验失败：${section} 将移除 ${removedInSection}/${activeInSection.length} 个页面，超过自动安全阈值，已中止本轮操作。`,
+        );
+        return 2;
+      }
+    }
     for (const [sourceUrl, previous] of Object.entries(manifest.pages)) {
       if (
         sections.includes(previous.section) &&
         previous.status === "active" &&
         !currentUrls.has(sourceUrl)
       ) {
+        let safeLocalPath: string;
+        try {
+          safeLocalPath = safePruneLocalPath(
+            sourceUrl,
+            previous,
+            config.sourceRoot,
+            reservedLocalPaths,
+          );
+        } catch (error) {
+          console.error(
+            `manifest 删除校验失败：${error instanceof Error ? error.message : String(error)}`,
+          );
+          return 2;
+        }
         removed += 1;
         detectedChanges += 1;
         nextManifest.pages[sourceUrl] = {
           ...previous,
+          localPath: safeLocalPath,
           removedAt: observedAt,
           status: "removed",
         };
-        if (options.prune) removedPaths.push(previous.localPath);
+        if (options.prune) removedPaths.push(safeLocalPath);
       }
     }
   }
@@ -499,7 +609,7 @@ async function runSyncOrCheck(
     }
     for (const removedPath of removedPaths) {
       try {
-        await unlink(pathInsideRepository(removedPath));
+        await unlink(pathInsideSourceRoot(config.sourceRoot, removedPath));
       } catch (error) {
         if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
       }
@@ -660,6 +770,7 @@ function parseCli(argv: string[]): CliOptions {
     command !== "sync"
   ) {
     return {
+      allowLargePrune: false,
       command: "status",
       configPath: DEFAULT_CONFIG_PATH,
       help: true,
@@ -669,6 +780,7 @@ function parseCli(argv: string[]): CliOptions {
     };
   }
   const options: CliOptions = {
+    allowLargePrune: false,
     command,
     configPath: DEFAULT_CONFIG_PATH,
     help: false,
@@ -680,6 +792,8 @@ function parseCli(argv: string[]): CliOptions {
     const argument = argv[index];
     if (argument === "--help" || argument === "-h") {
       options.help = true;
+    } else if (argument === "--allow-large-prune") {
+      options.allowLargePrune = true;
     } else if (argument === "--prune") {
       options.prune = true;
     } else if (argument === "--config") {
@@ -705,6 +819,9 @@ function parseCli(argv: string[]): CliOptions {
   if (options.command !== "sync" && options.prune) {
     throw new Error("--prune 只能与 sync 一起使用");
   }
+  if (options.allowLargePrune && (options.command !== "sync" || !options.prune)) {
+    throw new Error("--allow-large-prune 只能与 sync --prune 一起使用");
+  }
   return options;
 }
 
@@ -722,6 +839,8 @@ function printHelp(): void {
   --match TEXT       按标题、URL 或本地路径筛选，可重复
   --limit N          最多处理 N 页
   --prune            sync 时删除已从官方完整索引移除的本地页面
+  --allow-large-prune
+                     明确允许超过安全阈值的大规模删除；仅可与 sync --prune 一起使用
   --config PATH      配置路径，默认 scripts/docs.config.json
 `);
 }

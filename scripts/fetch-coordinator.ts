@@ -24,6 +24,7 @@ export interface FetchLogger {
 
 export interface TextFetchResult {
   content: string;
+  contentType?: string;
   etag?: string;
   lastModified?: string;
 }
@@ -182,8 +183,10 @@ export class FetchCoordinator {
           continue;
         }
         const result: TextFetchResult = { content };
+        const contentType = response.headers.get("content-type");
         const etag = response.headers.get("etag");
         const lastModified = response.headers.get("last-modified");
+        if (contentType) result.contentType = contentType;
         if (etag) result.etag = etag;
         if (lastModified) result.lastModified = lastModified;
         return result;

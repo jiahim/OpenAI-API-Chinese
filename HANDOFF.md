@@ -1,45 +1,45 @@
-# Handoff：英文文档同步器
+# Handoff：OpenAI 中文文档翻译库
 
-更新时间：2026-08-17（Asia/Singapore）
+> **给后续执行者：** 当前先完成官方英文镜像同步器的安全合入，再进入中文翻译流水线。不要恢复旧 Python 翻译脚本，不要清洗 `docs/en` 中的官方原文格式，也不要在缺少远端 CI 证据时直接合并到 `main`。
 
-## 本阶段范围
+**更新时间：** 2026-08-24（Asia/Singapore）
 
-本阶段只处理：
+## 1. 当前阶段结论
 
-1. 旧版手工中文文档迁移；
-2. 使用 TypeScript 获取、保存和检查 OpenAI API 官方英文 Markdown；
-3. 通过定时任务更新英文镜像和来源 manifest。
+英文来源同步模块已经具备完整实现和本地验证，但尚未进入远端：
 
-不在本阶段实现：中文生成、翻译模型、提示词、OpenAI API Key、静态网站或部署。
+- 当前分支：`feat-auto-translate`。
+- 数据抓取基线提交：`591898e`（`feat: 数据抓取模块`）。
+- 当前分支在该提交之上包含同步安全加固、补充测试、文档修订和 PR CI；在查看具体 SHA 前应先运行 `git log -3 --oneline`。
+- 远端默认分支 `main` 仍为 `efb1cac`。
+- `feat-auto-translate` 尚未推送，远端尚无 PR 和 CI 运行证据。
+- GitHub `main` 当前没有 Ruleset，`protected: false`。
+- 英文镜像：418 篇，约 88.2 MiB，0 个 removed。
+- TypeScript typecheck 通过，28 项测试通过。
 
-## 已完成
+中文生成、翻译提示词、术语策略和增量译文尚未实现。应先把英文同步基线通过 PR 合入，再设计翻译模块。
 
-### 目录迁移
+## 2. 已完成能力
 
-- 旧版中文文档及图片已经整体迁移到 `docs/legacy/`，共 26 个文件。
-- 原目录 `API参考/`、`指引/`、`其他/`、`image/` 在 Git 中表现为删除，新目录目前是未跟踪文件；尚未执行 Git stage 或 commit。
+### 2.1 目录与来源数据
 
-### 英文原文镜像
-
+- 旧版手工中文文档及图片已迁移到 `docs/legacy/`。
+- 官方英文 Markdown 镜像位于 `docs/en/`。
 - 来源索引：
   - `https://developers.openai.com/api/docs/llms.txt`
   - `https://developers.openai.com/api/reference/llms.txt`
-- 本地根目录：`docs/en/`
-- guides：180 篇；reference：238 篇；合计 418 篇 Markdown。
-- `docs/en/` 总计 421 个文件：418 个 `.md`、2 个 `llms.txt`、1 个 `.source-manifest.json`，约 89 MB。
-- 完整性检查结果：索引内缺失 0、空文件 0、manifest 哈希不一致 0。
-- 当前英文文件于 2026-08-17 15:31–15:32（+08:00）成功拉取。
+- guides：180 篇。
+- reference：238 篇。
+- `.source-manifest.json` 记录 URL、本地路径、栏目、哈希、大小、来源时间、active/removed 状态。
 
-URL 路径直接映射为本地路径，例如：
+URL 按官方路径直接映射，不修改 Markdown 正文：
 
 ```text
 https://developers.openai.com/api/docs/guides/images-vision.md
 → docs/en/api/docs/guides/images-vision.md
 ```
 
-同步器不修改 Markdown 正文，因此相对链接保持原有相对关系，外部链接保持官方原始地址。
-
-### TypeScript 同步器
+### 2.2 TypeScript 同步器
 
 核心文件：
 
@@ -48,93 +48,100 @@ https://developers.openai.com/api/docs/guides/images-vision.md
 - `scripts/docs.config.json`
 - `scripts/tests/fetch-coordinator.test.ts`
 - `scripts/tests/sync-docs.test.ts`
-- `scripts/tests/fixtures/docs.config.json`
-- `package.json`
-- `pnpm-lock.yaml`
-- `tsconfig.json`
 
 命令：
 
 ```bash
-pnpm docs:bootstrap  # 从现有 docs/en 离线初始化 manifest
-pnpm docs:status     # 离线查看 manifest 摘要
-pnpm docs:check      # 联网比较，不写文件；有变化时退出码 1
-pnpm docs:sync       # 联网同步英文 Markdown 和 manifest
+pnpm docs:bootstrap
+pnpm docs:status
+pnpm docs:check
+pnpm docs:sync
 pnpm typecheck
 pnpm test
 ```
 
-`sync --prune` 在完整扫描中删除官方索引已经移除的本地文件，并在 manifest 保留 removed 记录。使用 `--match` 或 `--limit` 时不会判断移除，避免误删未扫描页面。
+同步器支持：
 
-### Manifest
+- bootstrap、status、check、sync 和完整扫描 prune。
+- `--section`、`--match`、`--limit`、`--prune`。
+- 低并发、全局请求间隔、网络/429/5xx 重试和 `Retry-After`。
+- Vercel `403 + x-vercel-mitigated: deny` 全局熔断。
+- 下载阶段全部成功后才进入文件提交阶段。
+- 部分扫描不会判断 removed，也不会 prune 未扫描页面。
+- 页面失败后停止派发新的页面请求。
 
-文件：`docs/en/.source-manifest.json`
+### 2.3 删除与响应安全
 
-每个页面记录：
+代码审查后补齐以下保护：
 
-- `sourceUrl`、`localPath`、`section`、标题和描述；
-- `sha256`、`bytes`；
-- `firstSeenAt`、`sourceUpdatedAt`；
-- 可用时记录 `etag`、`sourceLastModified`；
-- `active` 或 `removed` 状态。
+- 空索引或无法解析出 Markdown 页面的索引直接中止。
+- 单个栏目拟移除超过 20 页或 10% 时自动中止。
+- 真实的大规模删除必须显式使用 `--allow-large-prune`。
+- prune 不信任 manifest 的历史 `localPath`，而是从受验证的官方 `.md` URL 重新计算。
+- manifest key 必须等于记录内 `sourceUrl`，URL 路径必须匹配记录栏目。
+- 删除目标必须严格位于 `sourceRoot`，且不能与本轮索引或有效页面冲突。
+- 空白页面、HTML/XHTML 响应或明显 HTML 文档正文不会覆盖 Markdown 镜像。
 
-重复执行 `pnpm docs:bootstrap` 已验证不会产生 manifest 变化。
+提交阶段对单个文件使用临时文件和原子 rename，但多个文件之间不承诺数据库式事务性。磁盘写满、权限变化或进程被强制中断后，应重新运行 status/check/sync 核对恢复。
 
-### 定时任务
+### 2.4 自动同步工作流
 
-工作流：`.github/workflows/sync-docs.yml`
+工作流：`.github/workflows/sync-docs.yml`。
 
-- 每周一 03:17 UTC，即新加坡时间 11:17；
-- 使用 Node.js 24 和 pnpm；
-- 先执行 typecheck 和测试；
-- 再执行 `pnpm docs:sync --prune`；
-- 只有 `docs/en/` 发生变化才提交；
-- 尚未在 GitHub Actions 上实际运行，需要确认仓库 Actions 写权限和分支保护允许机器人 push。
+- 每周一 03:17 UTC 运行，也支持手动触发。
+- 先运行 typecheck 和测试，再执行 `pnpm docs:sync --prune`。
+- 只在 `docs/en/` 真实变化时提交。
+- Job 超时为 45 分钟。
 
-## 已处理风险：Vercel 403
+该工作流尚未在远端运行。当前设计会直接 push 所在分支；如果后续为 `main` 配置必须 PR 的 Ruleset，需要为机器人改为“自动创建更新 PR”或配置最小化 bypass，不能直接照搬 Easy Translate 的空 bypass 规则。
 
-在英文镜像成功拉取后，再次运行完整同步时，第一个 guides 索引请求就收到：
+## 3. 当前验证证据
 
-```text
-HTTP 403
-x-vercel-mitigated: deny
-```
+2026-08-24 本地验证：
 
-随后用 `curl`、默认 User-Agent 和浏览器 User-Agent 单独访问仍为 403。浏览器代理仍能读取官方索引。现有证据更符合 Vercel 对当前出口 IP 的临时风控，不能证明单个请求或 TypeScript 请求头有问题；前一轮并发拉取 418 页可能是诱因。
+- `pnpm typecheck`：通过。
+- `pnpm test`：28/28 通过。
+- `pnpm docs:status`：418 active、0 removed、88.2 MiB。
+- 自有代码与配置（排除 `docs/en`、`docs/legacy`）的 `git diff --check`：通过。
 
-同步器现在通过 `scripts/fetch-coordinator.ts` 统一协调索引、页面和重试请求：
+不要对完整 `docs/en` 使用格式化器或以 `git diff --check` 作为质量门。官方原文包含尾随空格和形似冲突标记的正文，镜像策略要求保持原样。
 
-- 默认并发 2；全局请求启动间隔 300–800ms；
-- 网络错误、429 和 5xx 最多重试 3 次，基础等待 30/60/120 秒，加入 0–1 秒抖动，本地上限 5 分钟；
-- 429 支持秒数和 HTTP-date 两种 `Retry-After`，服务端等待不会被本地上限缩短；
-- `403 + x-vercel-mitigated: deny` 触发所有 worker 共享的全局熔断，冷却 5 分钟后只探测一次；再次拒绝则整轮失败；
-- 400、401、404 等永久错误不重试；
-- 日志区分网络错误、HTTP 状态、重试次数、下一次等待、熔断和最终失败。
+测试覆盖：
 
-同步流程已经拆成下载和提交两个阶段。索引或任一页面最终失败时，不写入本轮索引、页面和 manifest，也不执行 prune。
+- 重试、jitter、`Retry-After`、并发和全局请求间隔。
+- Vercel 全局熔断和永久错误。
+- URL 路径映射与索引解析。
+- 下载失败零写入。
+- 空索引和异常大规模删除拒绝。
+- 显式大规模 prune、真实删除和越界删除防护。
+- 活跃索引冲突防护。
+- 页面失败后停止派发。
+- 成功同步、幂等重复运行和部分扫描保留。
+- 空白/HTML 响应拒绝。
 
-测试注入 fetch、clock、sleep 和 random，不会真实等待 30/60/120 秒或 5 分钟。目前覆盖退避、jitter、等待上限、`Retry-After`、并发上限、全局请求间隔、Vercel 熔断、永久错误和失败零写入。
+## 4. 下一步
 
-### 后续可选优化
+### 必做：完成英文同步基线合入
 
-ETag/Last-Modified 条件请求可以显著减少每周重复下载约 89 MB，但可与本次退避/限流改造分开实现，避免扩大任务范围。
+1. 提交当前安全补丁、文档和 `.github/workflows/ci.yml`。
+2. 推送 `feat-auto-translate`。
+3. 创建 PR 到 `main`，等待远端 `Quality gate`。
+4. CI 通过后再合并。
+5. 根据定时同步策略配置远端门禁，避免阻断机器人更新。
 
-## 当前验证结果
+### 后续：设计中文翻译流水线
 
-最近一次本地验证：
+英文同步基线合入后，再设计：
 
-- TypeScript typecheck：通过；
-- Node test：16 个测试全部通过；
-- manifest：418 个 active、0 个 removed；
-- guides/reference：180/238；
-- 缺失文件：0；
-- 空文件：0；
-- SHA-256 不一致：0；
-- `git diff --check`：通过。
+- `docs/en` 到中文译文目录的路径与 manifest 关系。
+- Markdown AST/代码块/链接保护策略。
+- 术语表、提示词版本和人工校对状态。
+- 增量翻译、失败恢复、成本预算与并发限制。
+- Easy Translate Core/Providers 的复用边界。
+- 翻译质量检查、CI 和发布方式。
 
-## 工作区注意事项
+翻译模块属于新的架构阶段，实施前需要单独完成设计确认。
 
-- 当前工作区包含本次迁移和新同步器的大量未提交改动。
-- 不要清理或覆盖这些改动，不要使用 `git reset --hard` 或 `git checkout --`。
-- Python 翻译脚本、配置、测试和旧翻译工作流已经删除；不要在下一阶段恢复。
-- 后续继续修改前应先阅读本文件，并检查 `git status --short`，避免覆盖本阶段未提交改动。
+## 5. 新任务开场指令
+
+先阅读本文件并运行 `git status --short --branch`。不要清理现有改动，不要使用 `git reset --hard` 或 `git checkout --`。先完成英文同步器的 PR、CI 和门禁闭环，再设计中文翻译流水线。默认使用 TypeScript；`docs/en` 必须保持官方原文，不做格式化或人工修正。

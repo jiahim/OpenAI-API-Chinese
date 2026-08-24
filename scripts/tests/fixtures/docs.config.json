@@ -1,5 +1,5 @@
 {
-  "concurrency": 2,
+  "concurrency": 1,
   "indexUrls": {
     "guides": "https://developers.openai.com/api/docs/llms.txt",
     "reference": "https://developers.openai.com/api/reference/llms.txt"
