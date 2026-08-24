@@ -51,6 +51,25 @@ if err != nil {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.files.FileCreateParams;
+import com.openai.models.files.FilePurpose;
+import java.nio.file.Path;
+
+var file =
+    client
+        .files()
+        .create(
+            FileCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_FILE_PATH")))
+                .purpose(FilePurpose.ASSISTANTS)
+                .build());
+
+System.out.println(file.id());
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -109,6 +128,40 @@ assistant, err := client.Beta.Assistants.New(context.Background(), openai.BetaAs
 if err != nil {
 	panic(err)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.assistants.AssistantCreateParams;
+import com.openai.models.beta.assistants.CodeInterpreterTool;
+
+String fileId = "file-BK7bzQj3FfZFXr7DbL6xJwfo";
+
+var assistant =
+    client
+        .beta()
+        .assistants()
+        .create(
+            AssistantCreateParams.builder()
+                .name("Data visualizer")
+                .model("gpt-4o")
+                .description(
+                    "You are great at creating beautiful data visualizations. You analyze data"
+                        + " present in .csv files, understand trends, and come up with data"
+                        + " visualizations relevant to those trends. You also share a brief text"
+                        + " summary of the trends observed.")
+                .addTool(CodeInterpreterTool.builder().build())
+                .toolResources(
+                    AssistantCreateParams.ToolResources.builder()
+                        .codeInterpreter(
+                            AssistantCreateParams.ToolResources.CodeInterpreter.builder()
+                                .addFileId(fileId)
+                                .build())
+                        .build())
+                .build());
+
+System.out.println(assistant.id());
 ```
 
 ```ruby
@@ -203,6 +256,36 @@ thread, err := client.Beta.Threads.New(context.Background(), openai.BetaThreadNe
 if err != nil {
 	panic(err)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.assistants.CodeInterpreterTool;
+import com.openai.models.beta.threads.ThreadCreateParams;
+
+String fileId = "file-ACq8OjcLQm2eIG0BvRM4z5qX";
+
+var thread =
+    client
+        .beta()
+        .threads()
+        .create(
+            ThreadCreateParams.builder()
+                .addMessage(
+                    ThreadCreateParams.Message.builder()
+                        .role(ThreadCreateParams.Message.Role.USER)
+                        .content(
+                            "Create 3 data visualizations based on the trends in this file.")
+                        .addAttachment(
+                            ThreadCreateParams.Message.Attachment.builder()
+                                .fileId(fileId)
+                                .addTool(CodeInterpreterTool.builder().build())
+                                .build())
+                        .build())
+                .build());
+
+System.out.println(thread.id());
 ```
 
 ```ruby
@@ -336,6 +419,66 @@ if err != nil {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.threads.ThreadCreateParams;
+import com.openai.models.beta.threads.messages.ImageFile;
+import com.openai.models.beta.threads.messages.ImageFileContentBlock;
+import com.openai.models.beta.threads.messages.ImageUrl;
+import com.openai.models.beta.threads.messages.ImageUrlContentBlock;
+import com.openai.models.beta.threads.messages.MessageContentPartParam;
+import com.openai.models.beta.threads.messages.TextContentBlockParam;
+import com.openai.models.files.FileCreateParams;
+import com.openai.models.files.FilePurpose;
+import java.nio.file.Path;
+import java.util.List;
+
+var file =
+    client
+        .files()
+        .create(
+            FileCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_FILE_PATH")))
+                .purpose(FilePurpose.VISION)
+                .build());
+
+var imageUrl =
+    ImageUrl.builder()
+        .url("https://openai-documentation.vercel.app/images/cat_and_otter.png")
+        .build();
+var thread =
+    client
+        .beta()
+        .threads()
+        .create(
+            ThreadCreateParams.builder()
+                .addMessage(
+                    ThreadCreateParams.Message.builder()
+                        .role(ThreadCreateParams.Message.Role.USER)
+                        .content(
+                            ThreadCreateParams.Message.Content.ofArrayOfContentParts(
+                                List.of(
+                                    MessageContentPartParam.ofText(
+                                        TextContentBlockParam.builder()
+                                            .text(
+                                                "What is the difference between these images?")
+                                            .build()),
+                                    MessageContentPartParam.ofImageUrl(
+                                        ImageUrlContentBlock.builder()
+                                            .imageUrl(imageUrl)
+                                            .build()),
+                                    MessageContentPartParam.ofImageFile(
+                                        ImageFileContentBlock.builder()
+                                            .imageFile(
+                                                ImageFile.builder().fileId(file.id()).build())
+                                            .build()))))
+                        .build())
+                .build());
+
+System.out.println(thread.id());
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -464,6 +607,47 @@ thread, err := client.Beta.Threads.New(context.Background(), openai.BetaThreadNe
 if err != nil {
 	panic(err)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.threads.ThreadCreateParams;
+import com.openai.models.beta.threads.messages.ImageUrl;
+import com.openai.models.beta.threads.messages.ImageUrlContentBlock;
+import com.openai.models.beta.threads.messages.MessageContentPartParam;
+import com.openai.models.beta.threads.messages.TextContentBlockParam;
+import java.util.List;
+
+var thread =
+    client
+        .beta()
+        .threads()
+        .create(
+            ThreadCreateParams.builder()
+                .addMessage(
+                    ThreadCreateParams.Message.builder()
+                        .role(ThreadCreateParams.Message.Role.USER)
+                        .content(
+                            ThreadCreateParams.Message.Content.ofArrayOfContentParts(
+                                List.of(
+                                    MessageContentPartParam.ofText(
+                                        TextContentBlockParam.builder()
+                                            .text("What is this an image of?")
+                                            .build()),
+                                    MessageContentPartParam.ofImageUrl(
+                                        ImageUrlContentBlock.builder()
+                                            .imageUrl(
+                                                ImageUrl.builder()
+                                                    .url(
+                                                        "https://openai-documentation.vercel.app/images/cat_and_otter.png")
+                                                    .detail(ImageUrl.Detail.HIGH)
+                                                    .build())
+                                            .build()))))
+                        .build())
+                .build());
+
+System.out.println(thread.id());
 ```
 
 ```ruby
@@ -647,6 +831,66 @@ messageContent.Value += "\n" + strings.Join(citations, "\n")
 fmt.Println(messageContent.Value)
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.threads.messages.MessageRetrieveParams;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+String messageId = "msg_abc123";
+
+String threadId = "thread_abc123";
+
+var message =
+    client
+        .beta()
+        .threads()
+        .messages()
+        .retrieve(messageId, MessageRetrieveParams.builder().threadId(threadId).build());
+
+var text =
+    message.content().stream()
+        .flatMap(content -> content.text().stream())
+        .findFirst()
+        .orElseThrow(() -> new IllegalStateException("No text content returned"))
+        .text();
+String rendered = text.value();
+var references = new ArrayList<String>();
+for (int index = 0; index < text.annotations().size(); index++) {
+  var annotation = text.annotations().get(index);
+  if (annotation.isFileCitation()) {
+    var citation = annotation.asFileCitation();
+    rendered =
+        rendered.replaceFirst(
+            Pattern.quote(citation.text()), Matcher.quoteReplacement(" [" + index + "]"));
+    var file = client.files().retrieve(citation.fileCitation().fileId());
+    references.add("[" + index + "] " + file.filename());
+  } else if (annotation.isFilePath()) {
+    var filePath = annotation.asFilePath();
+    rendered =
+        rendered.replaceFirst(
+            Pattern.quote(filePath.text()), Matcher.quoteReplacement(" [" + index + "]"));
+    String fileId = filePath.filePath().fileId();
+    var file = client.files().retrieve(fileId);
+    Path downloads = Path.of("downloads");
+    Files.createDirectories(downloads);
+    Path target = downloads.resolve(Path.of(file.filename()).getFileName()).normalize();
+    if (!target.startsWith(downloads)) throw new IllegalArgumentException("Unsafe filename");
+    try (var content = client.files().content(fileId)) {
+      Files.copy(content.body(), target, StandardCopyOption.REPLACE_EXISTING);
+    }
+    references.add("[" + index + "] Downloaded " + target);
+  }
+}
+System.out.println(rendered);
+references.forEach(System.out::println);
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -711,6 +955,25 @@ if err != nil {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.threads.runs.RunCreateParams;
+
+String threadId = "thread_abc123";
+
+String assistantId = "asst_ToSF7Gb04YMj8AMMm50ZLLtY";
+
+var run =
+    client
+        .beta()
+        .threads()
+        .runs()
+        .create(threadId, RunCreateParams.builder().assistantId(assistantId).build());
+
+System.out.println(run.status());
+```
+
 ```ruby
 require "openai"
 
@@ -764,6 +1027,35 @@ _, err := client.Beta.Threads.Runs.New(context.Background(), "thread_abc123", op
 if err != nil {
 	panic(err)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.assistants.CodeInterpreterTool;
+import com.openai.models.beta.assistants.FileSearchTool;
+import com.openai.models.beta.threads.runs.RunCreateParams;
+
+String threadId = "thread_abc123";
+
+String assistantId = "asst_ToSF7Gb04YMj8AMMm50ZLLtY";
+
+var run =
+    client
+        .beta()
+        .threads()
+        .runs()
+        .create(
+            threadId,
+            RunCreateParams.builder()
+                .assistantId(assistantId)
+                .model("gpt-4o")
+                .instructions("New instructions that override the Assistant instructions")
+                .addTool(CodeInterpreterTool.builder().build())
+                .addTool(FileSearchTool.builder().build())
+                .build());
+
+System.out.println(run.status());
 ```
 
 ```ruby

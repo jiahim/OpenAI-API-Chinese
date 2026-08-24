@@ -141,6 +141,29 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.images.ImageGenerateParams;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+
+var images =
+    client
+        .images()
+        .generate(
+            ImageGenerateParams.builder()
+                .model("gpt-image-2")
+                .prompt("A watercolor robot reading in a library")
+                .build());
+
+Files.write(
+    Path.of("generated-image.png"),
+    Base64.getDecoder().decode(images.data().orElseThrow().get(0).b64Json().orElseThrow()));
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -277,6 +300,32 @@ func saveFirstGeneratedImage(response *responses.Response, filename string) {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.Tool;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
+        .addTool(Tool.ImageGeneration.builder().build())
+        .build();
+
+var image =
+    client.responses().create(params).output().stream()
+        .flatMap(item -> item.imageGenerationCall().stream())
+        .findFirst()
+        .orElseThrow(() -> new IllegalStateException("No image generation call returned"));
+String encoded =
+    image.result().orElseThrow(() -> new IllegalStateException("No image returned"));
+Files.write(Path.of("otter.png"), Base64.getDecoder().decode(encoded));
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -397,6 +446,35 @@ func main() {
 	}
 	panic("response did not include an image generation call")
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.Tool;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
+        .addTool(
+            Tool.ImageGeneration.builder().action(Tool.ImageGeneration.Action.GENERATE).build())
+        .build();
+
+String imageResult =
+    client.responses().create(params).output().stream()
+        .flatMap(item -> item.imageGenerationCall().stream())
+        .flatMap(call -> call.result().stream())
+        .findFirst()
+        .orElseThrow(() -> new IllegalStateException("No generated image returned"));
+Path output = Path.of(System.getenv().getOrDefault("OPENAI_EXAMPLE_OUTPUT_PATH", "otter.png"));
+Files.write(output, Base64.getDecoder().decode(imageResult));
+System.out.println(output);
 ```
 
 ```ruby
@@ -578,6 +656,63 @@ func saveFirstGeneratedImage(response *responses.Response, filename string) {
 	}
 	panic("response did not include an image generation call")
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.Tool;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+
+var first =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.6")
+                .input(
+                    "Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
+                .addTool(Tool.ImageGeneration.builder().build())
+                .build());
+var firstImage =
+    first.output().stream()
+        .flatMap(item -> item.imageGenerationCall().stream())
+        .findFirst()
+        .orElseThrow(() -> new IllegalStateException("No image generation call returned"));
+Files.write(
+    Path.of("cat_and_otter.png"),
+    Base64.getDecoder()
+        .decode(
+            firstImage
+                .result()
+                .orElseThrow(() -> new IllegalStateException("No image returned"))));
+
+var second =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.6")
+                .input("Now make it look realistic.")
+                .previousResponseId(first.id())
+                .addTool(Tool.ImageGeneration.builder().build())
+                .build());
+var secondImage =
+    second.output().stream()
+        .flatMap(item -> item.imageGenerationCall().stream())
+        .findFirst()
+        .orElseThrow(
+            () -> new IllegalStateException("No follow-up image generation call returned"));
+Files.write(
+    Path.of("cat_and_otter_realistic.png"),
+    Base64.getDecoder()
+        .decode(
+            secondImage
+                .result()
+                .orElseThrow(() -> new IllegalStateException("No follow-up image returned"))));
 ```
 
 ```ruby
@@ -810,6 +945,75 @@ func saveImage(filename, encoded string) {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.Tool;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
+
+var first =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.6")
+                .input(
+                    "Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
+                .addTool(Tool.ImageGeneration.builder().build())
+                .build());
+var firstImage =
+    first.output().stream()
+        .flatMap(item -> item.imageGenerationCall().stream())
+        .findFirst()
+        .orElseThrow(() -> new IllegalStateException("No image generation call returned"));
+Files.write(
+    Path.of("cat_and_otter.png"),
+    Base64.getDecoder()
+        .decode(
+            firstImage
+                .result()
+                .orElseThrow(() -> new IllegalStateException("No image returned"))));
+
+var second =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.6")
+                .inputOfResponse(
+                    List.of(
+                        ResponseInputItem.ofMessage(
+                            ResponseInputItem.Message.builder()
+                                .role(ResponseInputItem.Message.Role.USER)
+                                .addInputTextContent("Now make it look realistic.")
+                                .build()),
+                        JsonValue.from(
+                                Map.of("type", "image_generation_call", "id", firstImage.id()))
+                            .convert(ResponseInputItem.class)))
+                .addTool(Tool.ImageGeneration.builder().build())
+                .build());
+var secondImage =
+    second.output().stream()
+        .flatMap(item -> item.imageGenerationCall().stream())
+        .findFirst()
+        .orElseThrow(
+            () -> new IllegalStateException("No follow-up image generation call returned"));
+Files.write(
+    Path.of("cat_and_otter_realistic.png"),
+    Base64.getDecoder()
+        .decode(
+            secondImage
+                .result()
+                .orElseThrow(() -> new IllegalStateException("No follow-up image returned"))));
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -1029,6 +1233,54 @@ func saveImage(filename, encoded string) {
 	if err := os.WriteFile(filename, image, 0o600); err != nil {
 		panic(err)
 	}
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.http.StreamResponse;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseStreamEvent;
+import com.openai.models.responses.Tool;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Generate an image of a river made of white owl feathers.")
+        .addTool(Tool.ImageGeneration.builder().partialImages(2).build())
+        .build();
+
+try (StreamResponse<ResponseStreamEvent> stream = client.responses().createStreaming(params)) {
+  var events = stream.stream().iterator();
+  while (events.hasNext()) {
+    ResponseStreamEvent event = events.next();
+    if (event.imageGenerationCallPartialImage().isPresent()) {
+      var partial = event.imageGenerationCallPartialImage().orElseThrow();
+      Files.write(
+          Path.of("river-partial-" + partial.partialImageIndex() + ".png"),
+          Base64.getDecoder().decode(partial.partialImageB64()));
+    }
+    if (event.completed().isPresent()) {
+      var image =
+          event.completed().orElseThrow().response().output().stream()
+              .flatMap(item -> item.imageGenerationCall().stream())
+              .findFirst()
+              .orElseThrow(() -> new IllegalStateException("No generated image returned"));
+      Files.write(
+          Path.of("river-final.png"),
+          Base64.getDecoder()
+              .decode(
+                  image
+                      .result()
+                      .orElseThrow(
+                          () -> new IllegalStateException("No final image returned"))));
+    }
+  }
 }
 ```
 
@@ -1307,6 +1559,25 @@ func main() {
 	}
 	fmt.Println(uploaded.ID)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.files.FileCreateParams;
+import com.openai.models.files.FilePurpose;
+import java.nio.file.Path;
+
+var file =
+    client
+        .files()
+        .create(
+            FileCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_FILE_PATH")))
+                .purpose(FilePurpose.VISION)
+                .build());
+
+System.out.println(file.id());
 ```
 
 ```ruby
@@ -1593,6 +1864,89 @@ func saveFirstGeneratedImage(response *responses.Response, filename string) {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.files.FileCreateParams;
+import com.openai.models.files.FilePurpose;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputImage;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.Tool;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+import java.util.List;
+
+Path lotionImage = Path.of(System.getenv("OPENAI_EXAMPLE_IMAGE_PATH"));
+Path soapImage = Path.of(System.getenv("OPENAI_EXAMPLE_IMAGE_PATH_2"));
+Path bathBombImage = Path.of(System.getenv("OPENAI_EXAMPLE_IMAGE_PATH_3"));
+Path incenseImage = Path.of(System.getenv("OPENAI_EXAMPLE_IMAGE_PATH_4"));
+String lotionBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(lotionImage));
+String soapBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(soapImage));
+var firstFile =
+    client
+        .files()
+        .create(
+            FileCreateParams.builder().file(bathBombImage).purpose(FilePurpose.VISION).build());
+var secondFile =
+    client
+        .files()
+        .create(
+            FileCreateParams.builder().file(incenseImage).purpose(FilePurpose.VISION).build());
+String prompt =
+    """
+    Generate a photorealistic image of a gift basket on a white background
+    labeled 'Relax & Unwind' with a ribbon and handwriting-like font,
+    containing all the items in the reference pictures.
+    """;
+var input =
+    ResponseInputItem.ofMessage(
+        ResponseInputItem.Message.builder()
+            .role(ResponseInputItem.Message.Role.USER)
+            .addInputTextContent(prompt)
+            .addContent(
+                ResponseInputImage.builder()
+                    .detail(ResponseInputImage.Detail.AUTO)
+                    .imageUrl("data:image/png;base64," + lotionBase64)
+                    .build())
+            .addContent(
+                ResponseInputImage.builder()
+                    .detail(ResponseInputImage.Detail.AUTO)
+                    .imageUrl("data:image/png;base64," + soapBase64)
+                    .build())
+            .addContent(
+                ResponseInputImage.builder()
+                    .detail(ResponseInputImage.Detail.AUTO)
+                    .fileId(firstFile.id())
+                    .build())
+            .addContent(
+                ResponseInputImage.builder()
+                    .detail(ResponseInputImage.Detail.AUTO)
+                    .fileId(secondFile.id())
+                    .build())
+            .build());
+var response =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.6")
+                .inputOfResponse(List.of(input))
+                .addTool(Tool.ImageGeneration.builder().build())
+                .build());
+var image =
+    response.output().stream()
+        .flatMap(item -> item.imageGenerationCall().stream())
+        .findFirst()
+        .orElseThrow(() -> new IllegalStateException("No image generation call returned"));
+Files.write(
+    Path.of("gift-basket.png"),
+    Base64.getDecoder()
+        .decode(
+            image.result().orElseThrow(() -> new IllegalStateException("No image returned"))));
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -1784,6 +2138,54 @@ func saveImage(filename, encoded string) {
 	if err := os.WriteFile(filename, image, 0o600); err != nil {
 		panic(err)
 	}
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.MultipartField;
+import com.openai.models.images.ImageEditParams;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+import java.util.List;
+
+Path lotion = Path.of(System.getenv("OPENAI_EXAMPLE_IMAGE_PATH"));
+Path soap = Path.of(System.getenv("OPENAI_EXAMPLE_IMAGE_PATH_2"));
+Path bathBomb = Path.of(System.getenv("OPENAI_EXAMPLE_IMAGE_PATH_3"));
+Path incense = Path.of(System.getenv("OPENAI_EXAMPLE_IMAGE_PATH_4"));
+try (InputStream lotionImage = Files.newInputStream(lotion);
+    InputStream bathBombImage = Files.newInputStream(bathBomb);
+    InputStream incenseImage = Files.newInputStream(incense);
+    InputStream soapImage = Files.newInputStream(soap)) {
+  var images =
+      client
+          .images()
+          .edit(
+              ImageEditParams.builder()
+                  .model("gpt-image-2")
+                  .image(
+                      MultipartField.<ImageEditParams.Image>builder()
+                          .value(
+                              ImageEditParams.Image.ofInputStreams(
+                                  List.of(lotionImage, bathBombImage, incenseImage, soapImage)))
+                          .contentType("image/png")
+                          .filename("gift-basket-reference.png")
+                          .build())
+                  .prompt(
+                      """
+                      Generate a photorealistic image of a gift basket on a white background
+                      labeled 'Relax & Unwind' with a ribbon and handwriting-like font,
+                      containing all the items in the reference pictures.
+                      """)
+                  .build());
+
+  Files.write(
+      Path.of("gift-basket.png"),
+      Base64.getDecoder().decode(images.data().orElseThrow().get(0).b64Json().orElseThrow()));
 }
 ```
 
@@ -2034,6 +2436,75 @@ func saveFirstGeneratedImage(response *responses.Response, filename string) {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.files.FileCreateParams;
+import com.openai.models.files.FilePurpose;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputImage;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.Tool;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+import java.util.List;
+
+var image =
+    client
+        .files()
+        .create(
+            FileCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_FILE_PATH")))
+                .purpose(FilePurpose.VISION)
+                .build());
+
+var mask =
+    client
+        .files()
+        .create(
+            FileCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_IMAGE_MASK_PATH")))
+                .purpose(FilePurpose.VISION)
+                .build());
+
+var response =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.6")
+                .inputOfResponse(
+                    List.of(
+                        ResponseInputItem.ofMessage(
+                            ResponseInputItem.Message.builder()
+                                .role(ResponseInputItem.Message.Role.USER)
+                                .addInputTextContent("Add a flamingo to the pool.")
+                                .addContent(
+                                    ResponseInputImage.builder()
+                                        .detail(ResponseInputImage.Detail.AUTO)
+                                        .fileId(image.id())
+                                        .build())
+                                .build())))
+                .addTool(
+                    Tool.ImageGeneration.builder()
+                        .inputImageMask(
+                            Tool.ImageGeneration.InputImageMask.builder()
+                                .fileId(mask.id())
+                                .build())
+                        .build())
+                .build());
+
+String imageResult =
+    response.output().stream()
+        .flatMap(item -> item.imageGenerationCall().stream())
+        .flatMap(call -> call.result().stream())
+        .findFirst()
+        .orElseThrow(() -> new IllegalStateException("No generated image returned"));
+Files.write(Path.of("lounge.png"), Base64.getDecoder().decode(imageResult));
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -2160,6 +2631,48 @@ func main() {
 	if err := os.WriteFile("lounge.png", result, 0o600); err != nil {
 		panic(err)
 	}
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.MultipartField;
+import com.openai.models.images.ImageEditParams;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+
+Path imagePath = Path.of(System.getenv("OPENAI_EXAMPLE_FILE_PATH"));
+Path maskPath = Path.of(System.getenv("OPENAI_EXAMPLE_IMAGE_MASK_PATH"));
+try (InputStream image = Files.newInputStream(imagePath);
+    InputStream mask = Files.newInputStream(maskPath)) {
+  var images =
+      client
+          .images()
+          .edit(
+              ImageEditParams.builder()
+                  .model("gpt-image-2")
+                  .image(
+                      MultipartField.<ImageEditParams.Image>builder()
+                          .value(ImageEditParams.Image.ofInputStream(image))
+                          .contentType("image/png")
+                          .filename(imagePath.getFileName().toString())
+                          .build())
+                  .prompt("A sunlit indoor lounge area with a pool containing a flamingo")
+                  .mask(
+                      MultipartField.<InputStream>builder()
+                          .value(mask)
+                          .contentType("image/png")
+                          .filename(maskPath.getFileName().toString())
+                          .build())
+                  .build());
+
+  Files.write(
+      Path.of("lounge.png"),
+      Base64.getDecoder().decode(images.data().orElseThrow().get(0).b64Json().orElseThrow()));
 }
 ```
 
@@ -2316,12 +2829,13 @@ You can configure the following output options:
 - **Quality**: Rendering quality (for example, `low`, `medium`, `high`)
 - **Format**: File output format
 - **Compression**: Compression level (0-100%) for JPEG and WebP formats
-- **Background**: Opaque or automatic
+- **Background**: Transparent, opaque, or automatic
 
 `size`, `quality`, and `background` support the `auto` option, where the model will automatically select the best option based on the prompt.
 
-`gpt-image-2` doesn't currently support transparent backgrounds. Requests with
-  `background: "transparent"` aren't supported for this model.
+Transparent backgrounds are available in preview for `gpt-image-2`. Set
+  `background: "transparent"` to request one. Use `png` (the default) or `webp`;
+  `jpeg` isn't supported with transparent backgrounds.
 
 ### Size and quality options
 
@@ -2611,6 +3125,47 @@ func main() {
 	}
 
 	fmt.Printf("Image generation blocked (%s): %s\n", apiError.Code, hint)
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.errors.BadRequestException;
+import com.openai.models.images.ImageGenerateParams;
+import java.util.List;
+import java.util.Map;
+
+try {
+  var images =
+      client
+          .images()
+          .generate(
+              ImageGenerateParams.builder()
+                  .model("gpt-image-2")
+                  .prompt("Create a poster humiliating my coworker with insulting captions")
+                  .build());
+
+  System.out.println(images.data().orElseThrow().get(0).b64Json().orElseThrow());
+} catch (BadRequestException error) {
+  if (!error.code().orElse("").equals("moderation_blocked")) {
+    throw error;
+  }
+  Map<?, ?> body = error.body().convert(Map.class);
+  Object detailsValue = body.get("moderation_details");
+  Map<?, ?> details = detailsValue instanceof Map<?, ?> values ? values : Map.of();
+  Object categories = details.get("categories");
+  Object stage = details.get("moderation_stage");
+
+  String hint = "This request did not meet safety requirements.";
+  if (categories instanceof List<?> values && values.contains("harassment")) {
+    hint = "Remove abusive or targeting language and focus on neutral visual details.";
+  } else if ("input".equals(stage)) {
+    hint = "Revise the prompt or input images, then submit the request again.";
+  } else if ("output".equals(stage)) {
+    hint = "Change the prompt and generate again; the generated result was blocked.";
+  }
+  System.err.println("Image generation blocked (" + error.code().orElseThrow() + "): " + hint);
 }
 ```
 

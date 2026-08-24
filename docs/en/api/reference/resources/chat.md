@@ -5685,7 +5685,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
 ### Chat Completion Chunk
 
-- `ChatCompletionChunk object { id, choices, created, 6 more }`
+- `ChatCompletionChunk object { id, choices, created, 7 more }`
 
   Represents a streamed chunk of a chat completion response returned
   by the model, based on the provided input.
@@ -5997,6 +5997,12 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
           The object type, which is always `error`.
 
           - `"error"`
+
+  - `obfuscation: optional string`
+
+    An obfuscation string added to normalize the size of streamed chunks as a
+    mitigation to certain side-channel attacks. The field is included by
+    default and omitted when `stream_options.include_obfuscation` is `false`.
 
   - `service_tier: optional "auto" or "default" or "flex" or 3 more or null`
 

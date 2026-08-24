@@ -4,6 +4,8 @@
 
 Use Oracle Cloud Infrastructure (OCI) as a Workload Identity Provider by exchanging an Oracle Identity Cloud Service (IDCS) access token for a short-lived OpenAI access token. An OCI instance principal signs a token exchange request to an identity domain in the same tenancy. OpenAI validates the resulting token and authorizes the OCI workload to act as a mapped OpenAI service account.
 
+For Codex, use this page to get and inspect the Oracle token. Then [configure Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) to write that token to a file and point Codex to it. The service-account mapping and SDK examples on this page apply to the OpenAI API.
+
 This setup does not require an OpenAI API key, a custom Oracle OAuth resource application, or dynamic group grants to a custom application.
 
 ## Set up the OCI workload

@@ -1965,8 +1965,11 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Background type for the generated image. One of `transparent`,
-            `opaque`, or `auto`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`,
+            `opaque`, or `auto`. Transparent backgrounds are available for
+            supported GPT Image models. For `gpt-image-2` and
+            `gpt-image-2-2026-04-21`, this support is in preview. When using
+            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
 
             - `"transparent"`
 
@@ -1995,21 +1998,31 @@ Learn when and how to compact long-running conversations in the [conversation st
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              The image generation model to use. Default: `gpt-image-1`.
+              The image generation model to use. One of `gpt-image-1`,
+              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-1`.
 
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
 
               - `"gpt-image-1.5"`
+
+              - `"gpt-image-2"`
+
+              - `"gpt-image-2-2026-04-21"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -2972,8 +2985,11 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Background type for the generated image. One of `transparent`,
-            `opaque`, or `auto`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`,
+            `opaque`, or `auto`. Transparent backgrounds are available for
+            supported GPT Image models. For `gpt-image-2` and
+            `gpt-image-2-2026-04-21`, this support is in preview. When using
+            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
 
             - `"transparent"`
 
@@ -3002,21 +3018,31 @@ Learn when and how to compact long-running conversations in the [conversation st
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              The image generation model to use. Default: `gpt-image-1`.
+              The image generation model to use. One of `gpt-image-1`,
+              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-1`.
 
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
 
               - `"gpt-image-1.5"`
+
+              - `"gpt-image-2"`
+
+              - `"gpt-image-2-2026-04-21"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -5507,8 +5533,11 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Background type for the generated image. One of `transparent`,
-            `opaque`, or `auto`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`,
+            `opaque`, or `auto`. Transparent backgrounds are available for
+            supported GPT Image models. For `gpt-image-2` and
+            `gpt-image-2-2026-04-21`, this support is in preview. When using
+            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
 
             - `"transparent"`
 
@@ -5537,21 +5566,31 @@ Learn when and how to compact long-running conversations in the [conversation st
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              The image generation model to use. Default: `gpt-image-1`.
+              The image generation model to use. One of `gpt-image-1`,
+              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-1`.
 
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
 
               - `"gpt-image-1.5"`
+
+              - `"gpt-image-2"`
+
+              - `"gpt-image-2-2026-04-21"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -6510,8 +6549,11 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Background type for the generated image. One of `transparent`,
-            `opaque`, or `auto`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`,
+            `opaque`, or `auto`. Transparent backgrounds are available for
+            supported GPT Image models. For `gpt-image-2` and
+            `gpt-image-2-2026-04-21`, this support is in preview. When using
+            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
 
             - `"transparent"`
 
@@ -6540,21 +6582,31 @@ Learn when and how to compact long-running conversations in the [conversation st
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              The image generation model to use. Default: `gpt-image-1`.
+              The image generation model to use. One of `gpt-image-1`,
+              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-1`.
 
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
 
               - `"gpt-image-1.5"`
+
+              - `"gpt-image-2"`
+
+              - `"gpt-image-2-2026-04-21"`
 
           - `moderation: optional "auto" or "low"`
 

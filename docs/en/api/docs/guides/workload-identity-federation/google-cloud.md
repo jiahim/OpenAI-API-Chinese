@@ -7,6 +7,8 @@ Use Google Cloud as a Workload Identity Provider in either of these scenarios:
 - **Google workload identity:** Exchange a Google-signed OIDC token issued to an attached Google service account for a short-lived OpenAI access token.
 - **Google Kubernetes Engine:** Exchange a projected GKE service account token for a short-lived OpenAI access token.
 
+For Codex, use this page to get and inspect the Google token. Then [configure Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) to write that token to a file and point Codex to it. The service-account mapping and SDK examples on this page apply to the OpenAI API.
+
 
 
 ## Google workload identity

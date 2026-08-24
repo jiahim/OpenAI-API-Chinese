@@ -29,11 +29,6 @@ See [how OpenAI uses your data](/api/docs/guides/your-data.md) and review [depre
 - [davinci-002](/api/docs/models/davinci-002.md): Replacement for the GPT-3 curie and davinci base models
 - [Daybreak Blue](/api/docs/models/daybreak-blue-latest.md): An alias for frontier general-purpose models with safeguards for defensive cybersecurity work.
 - [Daybreak Red](/api/docs/models/daybreak-red-latest.md): An alias for advanced cybersecurity models for authorized vulnerability research and security testing.
-- [GPT Image 1](/api/docs/models/gpt-image-1.md): Our previous image generation model
-- [GPT Image 1.5](/api/docs/models/gpt-image-1.5.md): Our previous image generation model
-- [GPT Image 2](/api/docs/models/gpt-image-2.md): State-of-the-art image generation model
-- [GPT Live Transcribe](/api/docs/models/gpt-live-transcribe.md): Low-latency speech-to-text model for realtime transcription
-- [GPT Transcribe](/api/docs/models/gpt-transcribe.md): High-accuracy speech-to-text model for file and Realtime input transcription
 - [GPT-3.5 Turbo](/api/docs/models/gpt-3.5-turbo.md): Legacy GPT model for cheaper chat and non-chat tasks
 - [GPT-4](/api/docs/models/gpt-4.md): An older high-intelligence GPT model
 - [GPT-4 Turbo](/api/docs/models/gpt-4-turbo.md): An older high-intelligence GPT model
@@ -81,10 +76,14 @@ See [how OpenAI uses your data](/api/docs/guides/your-data.md) and review [depre
 - [GPT-5.6 Luna](/api/docs/models/gpt-5.6-luna.md): GPT-5.6 model optimized for cost-sensitive workloads
 - [GPT-5.6 Sol](/api/docs/models/gpt-5.6-sol.md): Frontier model for complex professional work
 - [GPT-5.6 Terra](/api/docs/models/gpt-5.6-terra.md): GPT-5.6 model that balances intelligence and cost
-- [gpt-audio](/api/docs/models/gpt-audio.md): For audio inputs and outputs with Chat Completions API
-- [gpt-audio-1.5](/api/docs/models/gpt-audio-1.5.md): The best voice model for audio in, audio out with Chat Completions.
-- [gpt-audio-mini](/api/docs/models/gpt-audio-mini.md): A cost-efficient version of GPT Audio
-- [gpt-image-1-mini](/api/docs/models/gpt-image-1-mini.md): A cost-efficient version of GPT Image 1
+- [GPT-Audio](/api/docs/models/gpt-audio.md): For audio inputs and outputs with Chat Completions API
+- [GPT-Audio mini](/api/docs/models/gpt-audio-mini.md): A cost-efficient version of GPT Audio
+- [GPT-Audio-1.5](/api/docs/models/gpt-audio-1.5.md): The best voice model for audio in, audio out with Chat Completions.
+- [GPT-Image-1](/api/docs/models/gpt-image-1.md): Our previous image generation model
+- [GPT-Image-1 mini](/api/docs/models/gpt-image-1-mini.md): A cost-efficient version of GPT Image 1
+- [GPT-Image-1.5](/api/docs/models/gpt-image-1.5.md): Our previous image generation model
+- [GPT-Image-2](/api/docs/models/gpt-image-2.md): State-of-the-art image generation model
+- [GPT-Live-Transcribe](/api/docs/models/gpt-live-transcribe.md): Low-latency speech-to-text model for realtime transcription
 - [gpt-oss-120b](/api/docs/models/gpt-oss-120b.md): Most powerful open-weight model, fits into an H100 GPU
 - [gpt-oss-20b](/api/docs/models/gpt-oss-20b.md): Medium-sized open-weight model for low latency
 - [GPT-Realtime](/api/docs/models/gpt-realtime.md): Model capable of realtime text and audio inputs and outputs
@@ -95,6 +94,7 @@ See [how OpenAI uses your data](/api/docs/guides/your-data.md) and review [depre
 - [GPT-Realtime-2.1 mini](/api/docs/models/gpt-realtime-2.1-mini.md): Reasoning model with tool use
 - [GPT-Realtime-Translate](/api/docs/models/gpt-realtime-translate.md): Streaming speech-to-speech translation model
 - [GPT-Realtime-Whisper](/api/docs/models/gpt-realtime-whisper.md): Streaming speech-to-text model for realtime transcription
+- [GPT-Transcribe](/api/docs/models/gpt-transcribe.md): High-accuracy speech-to-text model for file and Realtime input transcription
 - [o1](/api/docs/models/o1.md): Previous full o-series reasoning model
 - [o1 Preview](/api/docs/models/o1-preview.md): Preview of our first o-series reasoning model
 - [o1-mini](/api/docs/models/o1-mini.md): A small model alternative to o1

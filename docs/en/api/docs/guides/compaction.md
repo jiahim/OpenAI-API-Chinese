@@ -139,6 +139,57 @@ func outputAsInput(output []responses.ResponseOutputItemUnion) []responses.Respo
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+var conversation = new ArrayList<ResponseInputItem>();
+conversation.add(
+    ResponseInputItem.ofEasyInputMessage(
+        EasyInputMessage.builder()
+            .role(EasyInputMessage.Role.USER)
+            .content("Let's begin a long coding task.")
+            .build()));
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.3-codex")
+        .inputOfResponse(conversation)
+        .store(false)
+        .putAdditionalBodyProperty(
+            "context_management",
+            JsonValue.from(List.of(Map.of("type", "compaction", "compact_threshold", 200000))))
+        .build();
+
+var response = client.responses().create(params);
+response.output().stream()
+    .map(item -> JsonValue.from(item).convert(ResponseInputItem.class))
+    .forEach(conversation::add);
+conversation.add(
+    ResponseInputItem.ofEasyInputMessage(
+        EasyInputMessage.builder()
+            .role(EasyInputMessage.Role.USER)
+            .content("Now implement the next step.")
+            .build()));
+
+client
+    .responses()
+    .create(params.toBuilder().inputOfResponse(conversation).build())
+    .output()
+    .stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -290,6 +341,61 @@ func outputAsInput(output []responses.ResponseOutputItemUnion) []responses.Respo
 	}
 	return input
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCompactParams;
+import com.openai.models.responses.ResponseCompactionItemParam;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.ArrayList;
+
+var compacted =
+    client
+        .responses()
+        .compact(
+            ResponseCompactParams.builder()
+                .model("gpt-5.6")
+                .input("Plan a trip to Kyoto.")
+                .build());
+var input = new ArrayList<ResponseInputItem>();
+for (var item : compacted.output()) {
+  item.message().map(ResponseInputItem::ofResponseOutputMessage).ifPresent(input::add);
+  item.reasoning().map(ResponseInputItem::ofReasoning).ifPresent(input::add);
+  item.compaction()
+      .map(
+          value ->
+              ResponseInputItem.ofCompaction(
+                  ResponseCompactionItemParam.builder()
+                      .id(value.id())
+                      .encryptedContent(value.encryptedContent())
+                      .build()))
+      .ifPresent(input::add);
+}
+input.add(
+    ResponseInputItem.ofEasyInputMessage(
+        EasyInputMessage.builder()
+            .role(EasyInputMessage.Role.USER)
+            .content("Add restaurant recommendations.")
+            .build()));
+
+client
+    .responses()
+    .create(
+        ResponseCreateParams.builder()
+            .model("gpt-5.6")
+            .inputOfResponse(input)
+            .store(false)
+            .build())
+    .output()
+    .stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby

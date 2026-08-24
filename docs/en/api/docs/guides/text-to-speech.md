@@ -98,6 +98,31 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.http.HttpResponse;
+import com.openai.models.audio.speech.SpeechCreateParams;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+
+try (HttpResponse audio =
+    client
+        .audio()
+        .speech()
+        .create(
+            SpeechCreateParams.builder()
+                .model("gpt-4o-mini-tts")
+                .voice("coral")
+                .input("Today is a wonderful day to build something people love!")
+                .instructions("Speak in a cheerful and positive tone.")
+                .build())) {
+  Files.copy(audio.body(), Path.of("speech.mp3"), StandardCopyOption.REPLACE_EXISTING);
+}
+```
+
 ```ruby
 require "openai"
 
@@ -248,6 +273,55 @@ func main() {
 	if _, err := io.Copy(os.Stdout, response.Body); err != nil {
 		panic(err)
 	}
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.http.HttpResponse;
+import com.openai.models.audio.speech.SpeechCreateParams;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
+
+try (HttpResponse audio =
+    client
+        .audio()
+        .speech()
+        .create(
+            SpeechCreateParams.builder()
+                .model("gpt-4o-mini-tts")
+                .voice("coral")
+                .input("Today is a wonderful day to build something people love!")
+                .instructions("Speak in a cheerful and positive tone.")
+                .responseFormat(SpeechCreateParams.ResponseFormat.PCM)
+                .streamFormat(SpeechCreateParams.StreamFormat.AUDIO)
+                .build())) {
+  AudioFormat format = new AudioFormat(24_000, 16, 1, true, false);
+  String outputPath = System.getenv("OPENAI_EXAMPLE_AUDIO_OUTPUT_PATH");
+  if (outputPath == null || outputPath.isBlank()) {
+    try (SourceDataLine speakers = AudioSystem.getSourceDataLine(format)) {
+      speakers.open(format);
+      speakers.start();
+      byte[] chunk = new byte[1024];
+      int bytesRead;
+      while ((bytesRead = audio.body().read(chunk)) != -1) {
+        speakers.write(chunk, 0, bytesRead);
+      }
+      speakers.drain();
+    }
+  } else {
+    try (OutputStream output = Files.newOutputStream(Path.of(outputPath))) {
+      long bytes = audio.body().transferTo(output);
+      System.out.println(bytes + " audio bytes");
+    }
+  }
 }
 ```
 

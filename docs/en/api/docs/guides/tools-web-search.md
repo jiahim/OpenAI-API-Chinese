@@ -78,6 +78,26 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.WebSearchTool;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("What was a positive news story from today?")
+        .addTool(WebSearchTool.builder().type(WebSearchTool.Type.WEB_SEARCH).build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```csharp
 using OpenAI.Responses;
 #pragma warning disable OPENAI001
@@ -269,6 +289,30 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.WebSearchTool;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("What movie won best picture in 2025?")
+        .addTool(
+            WebSearchTool.builder()
+                .type(WebSearchTool.Type.WEB_SEARCH)
+                .searchContextSize(WebSearchTool.SearchContextSize.LOW)
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```csharp
 using OpenAI.Responses;
 #pragma warning disable OPENAI001
@@ -434,6 +478,35 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.Reasoning;
+import com.openai.models.ReasoningEffort;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.WebSearchTool;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input(
+            "Research the economic impact of semaglutide on global healthcare systems. Include current figures and citations.")
+        .reasoning(Reasoning.builder().effort(ReasoningEffort.XHIGH).build())
+        .addTool(
+            WebSearchTool.builder()
+                .type(WebSearchTool.Type.WEB_SEARCH)
+                .putAdditionalProperty("return_token_budget", JsonValue.from("unlimited"))
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -578,6 +651,56 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.Reasoning;
+import com.openai.models.ReasoningEffort;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseIncludable;
+import com.openai.models.responses.WebSearchTool;
+import java.util.List;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Search for how semaglutide is used in the treatment of diabetes.")
+        .reasoning(Reasoning.builder().effort(ReasoningEffort.LOW).build())
+        .addInclude(ResponseIncludable.of("web_search_call.action.sources"))
+        .addTool(
+            WebSearchTool.builder()
+                .type(WebSearchTool.Type.WEB_SEARCH)
+                .filters(
+                    WebSearchTool.Filters.builder()
+                        .allowedDomains(
+                            List.of(
+                                "pubmed.ncbi.nlm.nih.gov",
+                                "clinicaltrials.gov",
+                                "www.who.int",
+                                "www.cdc.gov",
+                                "www.fda.gov"))
+                        .putAdditionalProperty(
+                            "blocked_domains",
+                            JsonValue.from(List.of("reddit.com", "quora.com", "wikipedia.org")))
+                        .build())
+                .build())
+        .build();
+
+var response = client.responses().create(params);
+response.output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+response.output().stream()
+    .flatMap(item -> item.webSearchCall().stream())
+    .flatMap(call -> call.action().search().stream())
+    .flatMap(action -> action.sources().stream())
+    .flatMap(List::stream)
+    .forEach(source -> System.out.println(source.url()));
 ```
 
 ```ruby
@@ -755,6 +878,42 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.Reasoning;
+import com.openai.models.ReasoningEffort;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseIncludable;
+import com.openai.models.responses.WebSearchTool;
+import java.util.List;
+import java.util.Map;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input(
+            "Search for recent images and supporting text sources about the Golden Gate Bridge at sunset.")
+        .reasoning(Reasoning.builder().effort(ReasoningEffort.LOW).build())
+        .addInclude(ResponseIncludable.of("web_search_call.results"))
+        .addTool(
+            WebSearchTool.builder()
+                .type(WebSearchTool.Type.WEB_SEARCH)
+                .putAdditionalProperty(
+                    "search_content_types", JsonValue.from(List.of("image", "text")))
+                .putAdditionalProperty(
+                    "image_settings", JsonValue.from(Map.of("max_results", 3, "caption", true)))
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.webSearchCall().stream())
+    .map(call -> call._additionalProperties().get("results"))
+    .filter(java.util.Objects::nonNull)
+    .forEach(System.out::println);
+```
+
 ```ruby
 require "openai"
 
@@ -922,6 +1081,36 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.WebSearchTool;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("What are the best restaurants near me?")
+        .addTool(
+            WebSearchTool.builder()
+                .type(WebSearchTool.Type.WEB_SEARCH)
+                .userLocation(
+                    WebSearchTool.UserLocation.builder()
+                        .type(WebSearchTool.UserLocation.Type.APPROXIMATE)
+                        .city("London")
+                        .country("GB")
+                        .region("London")
+                        .build())
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```csharp
 using OpenAI.Responses;
 #pragma warning disable OPENAI001
@@ -1075,6 +1264,31 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.WebSearchTool;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Find when the Eiffel Tower opened to the public and cite the source.")
+        .addTool(
+            WebSearchTool.builder()
+                .type(WebSearchTool.Type.WEB_SEARCH)
+                .putAdditionalProperty("external_web_access", JsonValue.from(false))
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby

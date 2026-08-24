@@ -320,6 +320,26 @@ response = client.responses.create(
 )
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ApplyPatchTool;
+import com.openai.models.responses.ResponseCreateParams;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.1")
+        .input("Update the README title and fix the failing test.")
+        .addTool(ApplyPatchTool.builder().build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 
 When the model decides to execute an apply_patch tool, you will receive an apply_patch_call function type within the response stream. Within the operation object, you’ll receive a type field (with one of `create_file`, `update_file`, or `delete_file`) and the diff to implement.
 

@@ -160,6 +160,36 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.finetuning.jobs.JobCreateParams;
+import com.openai.models.finetuning.methods.DpoHyperparameters;
+import com.openai.models.finetuning.methods.DpoMethod;
+
+String fileId = "file-all-about-the-weather";
+
+var job =
+    client
+        .fineTuning()
+        .jobs()
+        .create(
+            JobCreateParams.builder()
+                .model("gpt-4.1-mini-2025-04-14")
+                .trainingFile(fileId)
+                .method(
+                    JobCreateParams.Method.builder()
+                        .type(JobCreateParams.Method.Type.DPO)
+                        .dpo(
+                            DpoMethod.builder()
+                                .hyperparameters(DpoHyperparameters.builder().beta(0.1).build())
+                                .build())
+                        .build())
+                .build());
+
+System.out.println(job.id());
+```
+
 ```ruby
 require "openai"
 

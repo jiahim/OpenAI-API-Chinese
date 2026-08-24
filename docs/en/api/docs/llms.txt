@@ -58,6 +58,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Citation Formatting](https://developers.openai.com/api/docs/guides/citation-formatting.md): Learn practical citation formatting patterns that help models generate reliable citations.
 - [Code generation](https://developers.openai.com/api/docs/guides/code-generation.md): Learn how to use OpenAI models and Codex to generate code.
 - [Code Interpreter](https://developers.openai.com/api/docs/guides/tools-code-interpreter.md): Allow models to write and run Python to solve problems.
+- [Codex federation rule reference](https://developers.openai.com/api/docs/guides/workload-identity-federation/federation-rules.md): Reference for Codex workload identity subjects, audiences, exact claims, CEL conditions, scopes, token lifetimes, and lifecycle behavior.
 - [Compaction](https://developers.openai.com/api/docs/guides/compaction.md): Manage long-running conversations with server-side and standalone compaction.
 - [Completions API](https://developers.openai.com/api/docs/guides/completions.md)
 - [Computer use](https://developers.openai.com/api/docs/guides/tools-computer-use.md): Use the Responses API computer tool to click, type, scroll, and inspect screenshots.
@@ -73,6 +74,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Conversation state](https://developers.openai.com/api/docs/guides/conversation-state.md): Learn how to manage conversation state during a model interaction with the OpenAI API.
 - [Cost optimization](https://developers.openai.com/api/docs/guides/cost-optimization.md): Lower your OpenAI model costs by trying our tools and strategies.
 - [Counting tokens](https://developers.openai.com/api/docs/guides/token-counting.md): Use the Responses API to count input tokens for text, images, files, tools, and more—without estimation or tiktoken.
+- [CSAM guidance](https://developers.openai.com/api/docs/guides/csam-guidance.md): Learn practical guidance for addressing CSAM risks in products built with OpenAI.
 - [Cybersecurity checks](https://developers.openai.com/api/docs/guides/safety-checks/cybersecurity.md)
 - [Data controls in the OpenAI platform](https://developers.openai.com/api/docs/guides/your-data.md): Your data is your data. An overview of how OpenAI uses your data, including retention and usage policies.
 - [Deep research](https://developers.openai.com/api/docs/guides/deep-research.md): Use deep research models for complex analysis and research tasks.
@@ -101,6 +103,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [IP egress ranges](https://developers.openai.com/api/docs/guides/ip-addresses.md): Find the published IP egress ranges used by OpenAI products.
 - [Latency optimization](https://developers.openai.com/api/docs/guides/latency-optimization.md): Improve latency across a wide variety of LLM-related use cases.
 - [Local shell](https://developers.openai.com/api/docs/guides/tools-local-shell.md): Enable agents to run commands in a local shell.
+- [Manage Codex workload identity with the Admin API](https://developers.openai.com/api/docs/guides/workload-identity-federation/admin-api.md): Programmatically create, list, update, disable, and archive Codex workload identity providers and federation rules.
 - [Manage permissions in the OpenAI platform](https://developers.openai.com/api/docs/guides/rbac.md): Learn how to use role-based access control to assign permissions, create custom roles, group users, and scope access across both the OpenAI API and dashboard.
 - [Manage projects and access with Terraform](https://developers.openai.com/api/docs/guides/terraform/projects-and-access.md): Create an OpenAI project, define least-privilege roles, and manage group and user access with Terraform.
 - [Manage service accounts with Terraform](https://developers.openai.com/api/docs/guides/terraform/service-accounts.md): Create OpenAI project service accounts, assign least-privilege roles, and manage API keys outside Terraform state.
@@ -188,9 +191,9 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Web search](https://developers.openai.com/api/docs/guides/tools-web-search.md): Allow models to search the web for the latest information before generating a response.
 - [Webhooks](https://developers.openai.com/api/docs/guides/webhooks.md): Use webhooks to receive real-time updates from the OpenAI API.
 - [Webhooks and server-side controls](https://developers.openai.com/api/docs/guides/realtime-server-controls.md): Learn how to use webhooks and server-side controls with the Realtime API.
-- [WebSocket Mode](https://developers.openai.com/api/docs/guides/websocket-mode.md): Learn how to use Responses API WebSocket mode with response.create and previous_response_id.
+- [WebSocket Mode](https://developers.openai.com/api/docs/guides/websocket-mode.md): Learn how to use Responses API WebSocket mode with response creation, continuation, and multiplexing.
 - [Working with evals](https://developers.openai.com/api/docs/guides/evals.md): Learn how to test and improve AI model outputs through evaluations.
-- [Workload identity federation](https://developers.openai.com/api/docs/guides/workload-identity-federation.md): Authenticate to OpenAI APIs with short-lived credentials through workload identity federation instead of storing static long-lived API keys.
+- [Workload identity federation](https://developers.openai.com/api/docs/guides/workload-identity-federation.md): Authenticate trusted workloads to the OpenAI API and Codex with short-lived identity-provider tokens.
 
 ## Libraries
 - [SDKs and CLI](https://developers.openai.com/api/docs/libraries.md): Discover official OpenAI SDKs, the OpenAI CLI, and the Agents SDK.

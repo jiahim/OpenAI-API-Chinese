@@ -81,6 +81,36 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponsePrompt;
+
+String promptId = "pmpt_123";
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .prompt(
+            ResponsePrompt.builder()
+                .id(promptId)
+                .version("1")
+                .variables(
+                    ResponsePrompt.Variables.builder()
+                        .putAdditionalProperty("customer_name", JsonValue.from("Acme"))
+                        .putAdditionalProperty("issue", JsonValue.from("billing question"))
+                        .build())
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -192,6 +222,40 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.List;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(
+            List.of(
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.SYSTEM)
+                        .content(
+                            "You are a helpful support assistant. Be concise, accurate, and friendly.")
+                        .build()),
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.USER)
+                        .content(
+                            "Customer name: Acme. Issue: billing question. Write a response to the customer.")
+                        .build())))
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -344,6 +408,47 @@ func buildSupportPrompt(customerName string, issue string) responses.ResponseInp
 		responses.ResponseInputItemParamOfMessage(fmt.Sprintf("Customer name: %s. Issue: %s. Write a response to the customer.", customerName, issue), responses.EasyInputMessageRoleUser),
 	}
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.List;
+
+private static List<ResponseInputItem> buildSupportPrompt(String customerName, String issue) {
+  return List.of(
+      ResponseInputItem.ofEasyInputMessage(
+          EasyInputMessage.builder()
+              .role(EasyInputMessage.Role.SYSTEM)
+              .content(
+                  "You are a helpful support assistant. Be concise, accurate, and friendly. Do not invent policy details.")
+              .build()),
+      ResponseInputItem.ofEasyInputMessage(
+          EasyInputMessage.builder()
+              .role(EasyInputMessage.Role.USER)
+              .content(
+                  "Customer name: "
+                      + customerName
+                      + ". Issue: "
+                      + issue
+                      + ". Write a response to the customer.")
+              .build()));
+}
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(buildSupportPrompt("Acme", "billing question"))
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby

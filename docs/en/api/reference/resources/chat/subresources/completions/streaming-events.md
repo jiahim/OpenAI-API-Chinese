@@ -45,6 +45,9 @@ Schema name: `CreateChatCompletionStreamResponse`
           "ident": "moderation"
         },
         {
+          "ident": "obfuscation"
+        },
+        {
           "ident": "service_tier"
         },
         {
@@ -63,6 +66,7 @@ Schema name: `CreateChatCompletionStreamResponse`
       "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) model",
       "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) object",
       "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation",
+      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) obfuscation",
       "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) service_tier",
       "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) system_fingerprint",
       "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) usage"
@@ -200,6 +204,20 @@ Schema name: `CreateChatCompletionStreamResponse`
       "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input",
       "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output"
     ]
+  },
+  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) obfuscation": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/obfuscation",
+    "deprecated": false,
+    "key": "obfuscation",
+    "docstring": "An obfuscation string added to normalize the size of streamed chunks as a\nmitigation to certain side-channel attacks. The field is included by\ndefault and omitted when `stream_options.include_obfuscation` is `false`.\n",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) service_tier": {
     "kind": "HttpDeclProperty",
@@ -2152,11 +2170,11 @@ Schema name: `CreateChatCompletionStreamResponse`
 ### Example
 
 ```json
-{"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-4o-mini", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}]}
+{"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-4o-mini", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"obfuscation":"r4N7vQ2m"}
 
-{"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-4o-mini", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
+{"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-4o-mini", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}],"obfuscation":"p9K3xT6w"}
 
 ....
 
-{"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-4o-mini", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}]}
+{"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-4o-mini", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"obfuscation":""}
 ```

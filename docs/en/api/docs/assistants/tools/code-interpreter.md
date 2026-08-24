@@ -46,6 +46,28 @@ if err != nil {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.assistants.AssistantCreateParams;
+import com.openai.models.beta.assistants.CodeInterpreterTool;
+
+var assistant =
+    client
+        .beta()
+        .assistants()
+        .create(
+            AssistantCreateParams.builder()
+                .model("gpt-4o")
+                .instructions(
+                    "You are a personal math tutor. When asked a math question, write and run"
+                        + " code to answer the question.")
+                .addTool(CodeInterpreterTool.builder().build())
+                .build());
+
+System.out.println(assistant.id());
+```
+
 ```ruby
 require "openai"
 
@@ -136,6 +158,43 @@ assistant, err := client.Beta.Assistants.New(context.Background(), openai.BetaAs
 if err != nil {
 	panic(err)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.assistants.AssistantCreateParams;
+import com.openai.models.beta.assistants.CodeInterpreterTool;
+import com.openai.models.files.FileCreateParams;
+import com.openai.models.files.FilePurpose;
+import java.nio.file.Path;
+
+var file =
+    client
+        .files()
+        .create(
+            FileCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_FILE_PATH")))
+                .purpose(FilePurpose.ASSISTANTS)
+                .build());
+var assistant =
+    client
+        .beta()
+        .assistants()
+        .create(
+            AssistantCreateParams.builder()
+                .model("gpt-4o")
+                .instructions("When asked a math question, write and run code to answer it.")
+                .addTool(CodeInterpreterTool.builder().build())
+                .toolResources(
+                    AssistantCreateParams.ToolResources.builder()
+                        .codeInterpreter(
+                            AssistantCreateParams.ToolResources.CodeInterpreter.builder()
+                                .addFileId(file.id())
+                                .build())
+                        .build())
+                .build());
+System.out.println(assistant.id());
 ```
 
 ```ruby
@@ -230,6 +289,36 @@ thread, err := client.Beta.Threads.New(context.Background(), openai.BetaThreadNe
 if err != nil {
 	panic(err)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.assistants.CodeInterpreterTool;
+import com.openai.models.beta.threads.ThreadCreateParams;
+
+String fileId = "file-ACq8OjcLQm2eIG0BvRM4z5qX";
+
+var thread =
+    client
+        .beta()
+        .threads()
+        .create(
+            ThreadCreateParams.builder()
+                .addMessage(
+                    ThreadCreateParams.Message.builder()
+                        .role(ThreadCreateParams.Message.Role.USER)
+                        .content(
+                            "I need to solve the equation `3x + 11 = 14`. Can you help me?")
+                        .addAttachment(
+                            ThreadCreateParams.Message.Attachment.builder()
+                                .fileId(fileId)
+                                .addTool(CodeInterpreterTool.builder().build())
+                                .build())
+                        .build())
+                .build());
+
+System.out.println(thread.id());
 ```
 
 ```ruby
@@ -352,6 +441,22 @@ if _, err := io.Copy(output, response.Body); err != nil {
 }
 if err := output.Close(); err != nil {
 	panic(err)
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.http.HttpResponse;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+
+String fileId = "file-abc123";
+
+try (HttpResponse content = client.files().content(fileId)) {
+  Files.copy(content.body(), Path.of("my-image.png"), StandardCopyOption.REPLACE_EXISTING);
 }
 ```
 

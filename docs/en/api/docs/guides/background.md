@@ -10,6 +10,14 @@ Background requests from Zero Data Retention (ZDR) projects run with
   `store=false`. Response data is temporarily stored to disk for roughly 10
   minutes to enable asynchronous execution and polling.
 
+For projects using [Modified Abuse
+Monitoring](https://developers.openai.com/api/docs/guides/your-data#modified-abuse-monitoring), including
+enhanced Modified Abuse Monitoring, foreground requests follow standard
+retention when `store` is omitted or set to `true`. Background responses are
+retained after the polling period only when `store=true` is explicitly provided.
+If `store` is omitted or set to `false` for a background request, the response
+is deleted after roughly 10 minutes.
+
 Generate a response in the background
 
 ```bash
@@ -77,6 +85,22 @@ func main() {
 
 	fmt.Println(response.Status)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Write a detailed market analysis.")
+        .background(true)
+        .build();
+
+var response = client.responses().create(params);
+System.out.println(response.status().orElseThrow());
 ```
 
 ```ruby
@@ -183,6 +207,34 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseStatus;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Write a very long novel about otters in space.")
+        .background(true)
+        .build();
+
+var response = client.responses().create(params);
+while (response.status().filter(ResponseStatus.QUEUED::equals).isPresent()
+    || response.status().filter(ResponseStatus.IN_PROGRESS::equals).isPresent()) {
+  System.out.println("Current status: " + response.status().orElseThrow());
+  Thread.sleep(1000);
+  response = client.responses().retrieve(response.id());
+}
+System.out.println("Final status: " + response.status().orElseThrow());
+response.output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -258,6 +310,17 @@ func main() {
 
 	fmt.Println(canceled.Status)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+
+String responseId = "resp_123";
+
+var response = client.responses().cancel(responseId);
+
+System.out.println(response.status());
 ```
 
 ```ruby
@@ -389,6 +452,75 @@ func main() {
 	// for resumed.Next() {
 	// 	fmt.Println(resumed.Current().Type)
 	// }
+}
+```
+
+```java
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.http.StreamResponse;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseRetrieveParams;
+import com.openai.models.responses.ResponseStreamEvent;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Write a very long novel about otters in space.")
+        .background(true)
+        .build();
+
+AtomicLong lastSequenceNumber = new AtomicLong(-1);
+AtomicReference<String> responseId = new AtomicReference<>("");
+AtomicBoolean streamCompleted = new AtomicBoolean(false);
+JsonMapper json = new JsonMapper();
+try (StreamResponse<ResponseStreamEvent> stream = client.responses().createStreaming(params)) {
+  stream.stream()
+      .forEach(
+          event -> {
+            lastSequenceNumber.set(json.valueToTree(event).path("sequence_number").asLong());
+            event
+                .created()
+                .ifPresent(
+                    created -> {
+                      responseId.set(created.response().id());
+                      System.out.println("response.created");
+                    });
+            event
+                .outputTextDelta()
+                .ifPresent(
+                    delta -> {
+                      System.out.println("response.output_text.delta");
+                    });
+            event
+                .completed()
+                .ifPresent(
+                    completed -> {
+                      streamCompleted.set(true);
+                      System.out.println("response.completed");
+                    });
+          });
+}
+System.out.println(
+    "Response " + responseId.get() + "; last sequence number " + lastSequenceNumber.get());
+if (!streamCompleted.get()) {
+  try (StreamResponse<ResponseStreamEvent> resumed =
+      client
+          .responses()
+          .retrieveStreaming(
+              ResponseRetrieveParams.builder()
+                  .responseId(responseId.get())
+                  .startingAfter(lastSequenceNumber.get())
+                  .build())) {
+    resumed.stream()
+        .forEach(
+            event ->
+                event.outputTextDelta().ifPresent(delta -> System.out.println(delta.delta())));
+  }
 }
 ```
 

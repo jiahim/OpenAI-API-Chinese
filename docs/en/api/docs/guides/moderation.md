@@ -134,6 +134,49 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.ResponseCreateParams;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input(
+            "A user asks for instructions to make a harmful weapon. Draft a brief refusal and offer a safer alternative.")
+        .putAdditionalBodyProperty(
+            "moderation", JsonValue.from(Map.of("model", "omni-moderation-latest")))
+        .build();
+
+var response = client.responses().create(params);
+JsonValue moderation = response._additionalProperties().get("moderation");
+if (moderation == null) {
+  throw new IllegalStateException("The response did not include moderation results");
+}
+Map<?, ?> results = moderation.convert(Map.class);
+List<Boolean> flags = new ArrayList<>();
+for (String side : List.of("input", "output")) {
+  if (!(results.get(side) instanceof Map<?, ?> result)) {
+    throw new IllegalStateException("Missing " + side + " moderation result");
+  }
+  if ("error".equals(result.get("type"))) {
+    throw new IllegalStateException(String.valueOf(result.get("message")));
+  }
+  if (!"moderation_result".equals(result.get("type"))) {
+    throw new IllegalStateException("Unexpected " + side + " moderation result type");
+  }
+  if (!(result.get("flagged") instanceof Boolean flagged)) {
+    throw new IllegalStateException("Missing " + side + " moderation flag");
+  }
+  flags.add(flagged);
+}
+flags.forEach(System.out::println);
+```
+
 ```ruby
 require "openai"
 
@@ -225,6 +268,23 @@ func main() {
 
 	fmt.Println(moderation.Results[0].Flagged)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.moderations.ModerationCreateParams;
+
+var moderation =
+    client
+        .moderations()
+        .create(
+            ModerationCreateParams.builder()
+                .model("omni-moderation-latest")
+                .input("Text to classify goes here.")
+                .build());
+
+System.out.println(moderation.results().get(0).flagged());
 ```
 
 ```ruby
@@ -338,6 +398,40 @@ func main() {
 
 	fmt.Println(moderation.Results[0].Flagged)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.moderations.ModerationCreateParams;
+import com.openai.models.moderations.ModerationImageUrlInput;
+import com.openai.models.moderations.ModerationMultiModalInput;
+import com.openai.models.moderations.ModerationTextInput;
+import java.util.List;
+
+var moderation =
+    client
+        .moderations()
+        .create(
+            ModerationCreateParams.builder()
+                .model("omni-moderation-latest")
+                .inputOfModerationMultiModalArray(
+                    List.of(
+                        ModerationMultiModalInput.ofText(
+                            ModerationTextInput.builder()
+                                .text("Text to classify goes here.")
+                                .build()),
+                        ModerationMultiModalInput.ofImageUrl(
+                            ModerationImageUrlInput.builder()
+                                .imageUrl(
+                                    ModerationImageUrlInput.ImageUrl.builder()
+                                        .url(
+                                            "https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg")
+                                        .build())
+                                .build())))
+                .build());
+
+System.out.println(moderation.results().get(0).flagged());
 ```
 
 ```ruby

@@ -4,6 +4,8 @@
 
 Use Kubernetes as a Workload Identity Provider by exchanging a projected Kubernetes service account token for a short-lived OpenAI access token.
 
+For Codex, use this page to get and inspect the projected token. Then [configure Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) to point Codex to the mounted token file. The service-account mapping and SDK examples on this page apply to the OpenAI API.
+
 ## Setting up Kubernetes
 
 This guide assumes Kubernetes service account token projection is enabled, which is available by default in modern Kubernetes releases. OpenAI workload identity federation requires OIDC-compatible projected service account tokens. Legacy Kubernetes service account tokens stored in Secrets are not supported.

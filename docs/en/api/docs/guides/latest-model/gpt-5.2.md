@@ -112,6 +112,27 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.Reasoning;
+import com.openai.models.ReasoningEffort;
+import com.openai.models.responses.ResponseCreateParams;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.2")
+        .input("Explain the bug and propose a fix.")
+        .reasoning(Reasoning.builder().effort(ReasoningEffort.NONE).build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -205,6 +226,26 @@ func main() {
 	}
 	fmt.Println(response)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseTextConfig;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.2")
+        .input("Explain the bug and propose a fix.")
+        .text(ResponseTextConfig.builder().verbosity(ResponseTextConfig.Verbosity.LOW).build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -702,6 +743,41 @@ compacted_response = client.responses.compact(
 
 
 print(json.dumps(compacted_response.model_dump(), indent=2))
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCompactParams;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.ArrayList;
+
+var input = new ArrayList<ResponseInputItem>();
+input.add(
+    ResponseInputItem.ofEasyInputMessage(
+        EasyInputMessage.builder()
+            .role(EasyInputMessage.Role.USER)
+            .content("Write a very long poem about a dog.")
+            .build()));
+var response =
+    client
+        .responses()
+        .create(ResponseCreateParams.builder().model("gpt-5.2").inputOfResponse(input).build());
+response.output().stream()
+    .map(item -> JsonValue.from(item).convert(ResponseInputItem.class))
+    .forEach(input::add);
+var compacted =
+    client
+        .responses()
+        .compact(
+            ResponseCompactParams.builder()
+                .model("gpt-5.2")
+                .inputOfResponseInputItems(input)
+                .build());
+System.out.println(compacted.output());
 ```
 
 ```ruby

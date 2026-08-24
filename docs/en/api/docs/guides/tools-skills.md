@@ -169,6 +169,48 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.ResponseCreateParams;
+import java.util.List;
+import java.util.Map;
+
+String skillId = "<skill_id>";
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input(
+            "Use the skills to add 144 and 377, then compute a triangle area with base 9 and height 13.")
+        .putAdditionalBodyProperty(
+            "tools",
+            JsonValue.from(
+                List.of(
+                    Map.of(
+                        "type",
+                        "shell",
+                        "environment",
+                        Map.of(
+                            "type",
+                            "container_auto",
+                            "skills",
+                            List.of(
+                                Map.of("type", "skill_reference", "skill_id", skillId),
+                                Map.of(
+                                    "type", "skill_reference",
+                                    "skill_id", skillId,
+                                    "version", "2")))))))
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -317,6 +359,47 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.ResponseCreateParams;
+import java.util.List;
+import java.util.Map;
+
+String skillPath = "<path-to-skill-folder>";
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Use the csv-insights skill to summarize today's CSV reports.")
+        .putAdditionalBodyProperty(
+            "tools",
+            JsonValue.from(
+                List.of(
+                    Map.of(
+                        "type",
+                        "shell",
+                        "environment",
+                        Map.of(
+                            "type",
+                            "local",
+                            "skills",
+                            List.of(
+                                Map.of(
+                                    "name", "csv-insights",
+                                    "description",
+                                        "Summarize CSV files and produce a Markdown report.",
+                                    "path", skillPath)))))))
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby

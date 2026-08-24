@@ -69,6 +69,25 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6-sol")
+        .input("What does 'fit check for my napalm era' mean?")
+        .serviceTier(ResponseCreateParams.ServiceTier.of("fast"))
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -138,6 +157,8 @@ Scale Tier and Fast mode are separate. Fast mode requests have separate billing 
 ### How is Fast mode billed?
 
 Fast mode charges a per-token premium compared with Standard processing. All processing modes count toward your annual Enterprise spend commitment, and eligible cached input tokens receive the same discounts available for Standard processing.
+
+For GPT-5.6 Sol, Fast mode costs twice the corresponding Standard rate. Short-context requests cost $8 per 1 million input tokens and $40 per 1 million output tokens; long-context requests cost $16 per 1 million input tokens and $60 per 1 million output tokens. GPT-5.6 Sol’s promotional pricing is available at least through November 21, 2026. See [pricing details](https://developers.openai.com/api/docs/pricing?latest-pricing=fast).
 
 To review usage, open the usage dashboard, select Responses or Chat Completions, and group by service tier. To review costs, group by line item.
 

@@ -213,7 +213,6 @@ The information below represents feature availability as of July 13, 2026.
 | Capability                | OpenAI API                    | Amazon Bedrock                                    |
 | ------------------------- | ----------------------------- | ------------------------------------------------- |
 | Text generation           | Available                     | Available                                         |
-| Audio input               | Available                     | Not available                                     |
 | Image input               | Available                     | Available                                         |
 | File input                | Available                     | Available for supported file types                |
 | Structured outputs        | Available                     | Available                                         |

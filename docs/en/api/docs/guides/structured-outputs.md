@@ -124,6 +124,67 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseFormatTextJsonSchemaConfig;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.ResponseTextConfig;
+import java.util.List;
+import java.util.Map;
+
+Map<String, Object> schema =
+    Map.of(
+        "type",
+        "object",
+        "properties",
+        Map.of(
+            "name", Map.of("type", "string"),
+            "date", Map.of("type", "string"),
+            "participants", Map.of("type", "array", "items", Map.of("type", "string"))),
+        "required",
+        List.of("name", "date", "participants"),
+        "additionalProperties",
+        false);
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(
+            List.of(
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.SYSTEM)
+                        .content("Extract the event information.")
+                        .build()),
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.USER)
+                        .content("Alice and Bob are going to a science fair on Friday.")
+                        .build())))
+        .text(
+            ResponseTextConfig.builder()
+                .format(
+                    ResponseFormatTextJsonSchemaConfig.builder()
+                        .name("event")
+                        .strict(true)
+                        .schema(
+                            JsonValue.from(schema)
+                                .convert(ResponseFormatTextJsonSchemaConfig.Schema.class))
+                        .build())
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -367,6 +428,82 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseFormatTextJsonSchemaConfig;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.ResponseTextConfig;
+import java.util.List;
+import java.util.Map;
+
+Map<String, Object> schema =
+    Map.of(
+        "type",
+        "object",
+        "properties",
+        Map.of(
+            "steps",
+                Map.of(
+                    "type",
+                    "array",
+                    "items",
+                    Map.of(
+                        "type",
+                        "object",
+                        "properties",
+                        Map.of(
+                            "explanation", Map.of("type", "string"),
+                            "output", Map.of("type", "string")),
+                        "required",
+                        List.of("explanation", "output"),
+                        "additionalProperties",
+                        false)),
+            "final_answer", Map.of("type", "string")),
+        "required",
+        List.of("steps", "final_answer"),
+        "additionalProperties",
+        false);
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(
+            List.of(
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.SYSTEM)
+                        .content(
+                            "You are a helpful math tutor. Guide the user through the solution step by step.")
+                        .build()),
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.USER)
+                        .content("How can I solve 8x + 7 = -23?")
+                        .build())))
+        .text(
+            ResponseTextConfig.builder()
+                .format(
+                    ResponseFormatTextJsonSchemaConfig.builder()
+                        .name("math_reasoning")
+                        .strict(true)
+                        .schema(
+                            JsonValue.from(schema)
+                                .convert(ResponseFormatTextJsonSchemaConfig.Schema.class))
+                        .build())
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -634,6 +771,78 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseFormatTextJsonSchemaConfig;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.ResponseTextConfig;
+import java.util.List;
+import java.util.Map;
+
+Map<String, Object> schema =
+    Map.of(
+        "type",
+        "object",
+        "properties",
+        Map.of(
+            "title", Map.of("type", "string"),
+            "authors", Map.of("type", "array", "items", Map.of("type", "string")),
+            "abstract", Map.of("type", "string"),
+            "keywords", Map.of("type", "array", "items", Map.of("type", "string"))),
+        "required",
+        List.of("title", "authors", "abstract", "keywords"),
+        "additionalProperties",
+        false);
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(
+            List.of(
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.SYSTEM)
+                        .content(
+                            "You are an expert at structured data extraction. You will be given"
+                                + " unstructured text from a research paper and should convert"
+                                + " it into the given structure.")
+                        .build()),
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.USER)
+                        .content(
+                            "Attention Is All You Need by Ashish Vaswani, Noam Shazeer,"
+                                + " Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez,"
+                                + " Łukasz Kaiser, and Illia Polosukhin. We propose the"
+                                + " Transformer, a"
+                                + " sequence transduction architecture based entirely on"
+                                + " attention. Keywords: transformers, attention, sequence"
+                                + " transduction.")
+                        .build())))
+        .text(
+            ResponseTextConfig.builder()
+                .format(
+                    ResponseFormatTextJsonSchemaConfig.builder()
+                        .name("research_paper_extraction")
+                        .strict(true)
+                        .schema(
+                            JsonValue.from(schema)
+                                .convert(ResponseFormatTextJsonSchemaConfig.Schema.class))
+                        .build())
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -904,6 +1113,96 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseFormatTextJsonSchemaConfig;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.ResponseTextConfig;
+import java.util.List;
+import java.util.Map;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(
+            List.of(
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.SYSTEM)
+                        .content("Convert the user request into a UI definition.")
+                        .build()),
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.USER)
+                        .content("Make a user profile form.")
+                        .build())))
+        .text(
+            ResponseTextConfig.builder()
+                .format(
+                    ResponseFormatTextJsonSchemaConfig.builder()
+                        .name("ui")
+                        .description("A dynamically generated UI")
+                        .strict(true)
+                        .schema(
+                            ResponseFormatTextJsonSchemaConfig.Schema.builder()
+                                .putAdditionalProperty("type", JsonValue.from("object"))
+                                .putAdditionalProperty(
+                                    "properties",
+                                    JsonValue.from(
+                                        Map.of(
+                                            "type",
+                                                Map.of(
+                                                    "type",
+                                                    "string",
+                                                    "enum",
+                                                    List.of(
+                                                        "div", "button", "header", "section",
+                                                        "field", "form")),
+                                            "label", Map.of("type", "string"),
+                                            "children",
+                                                Map.of(
+                                                    "type",
+                                                    "array",
+                                                    "items",
+                                                    Map.of("$ref", "#")),
+                                            "attributes",
+                                                Map.of(
+                                                    "type",
+                                                    "array",
+                                                    "items",
+                                                    Map.of(
+                                                        "type",
+                                                        "object",
+                                                        "properties",
+                                                        Map.of(
+                                                            "name", Map.of("type", "string"),
+                                                            "value", Map.of("type", "string")),
+                                                        "required",
+                                                        List.of("name", "value"),
+                                                        "additionalProperties",
+                                                        false)))))
+                                .putAdditionalProperty(
+                                    "required",
+                                    JsonValue.from(
+                                        List.of("type", "label", "children", "attributes")))
+                                .putAdditionalProperty(
+                                    "additionalProperties", JsonValue.from(false))
+                                .build())
+                        .build())
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -1238,6 +1537,82 @@ func contentComplianceSchema() map[string]any {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseFormatTextJsonSchemaConfig;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.ResponseTextConfig;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+Map<String, Object> schema =
+    Map.of(
+        "type",
+        "object",
+        "properties",
+        Map.of(
+            "is_violating",
+                Map.of(
+                    "type", "boolean",
+                    "description", "Whether the content violates the guidelines"),
+            "category",
+                Map.of(
+                    "type", List.of("string", "null"),
+                    "enum", Arrays.asList("violence", "sexual", "self_harm", null),
+                    "description", "The violation category, or null when content is allowed"),
+            "explanation_if_violating",
+                Map.of(
+                    "type",
+                    List.of("string", "null"),
+                    "description",
+                    "Why the content violates the guidelines, or null")),
+        "required",
+        List.of("is_violating", "category", "explanation_if_violating"),
+        "additionalProperties",
+        false);
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(
+            List.of(
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.SYSTEM)
+                        .content(
+                            "Determine whether the user input violates the guidelines and explain any violation.")
+                        .build()),
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.USER)
+                        .content("How do I prepare for a job interview?")
+                        .build())))
+        .text(
+            ResponseTextConfig.builder()
+                .format(
+                    ResponseFormatTextJsonSchemaConfig.builder()
+                        .name("content_compliance")
+                        .description("Determines whether content violates moderation rules")
+                        .strict(true)
+                        .schema(
+                            JsonValue.from(schema)
+                                .convert(ResponseFormatTextJsonSchemaConfig.Schema.class))
+                        .build())
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -1520,6 +1895,82 @@ func mathSchema() map[string]any {
 		"additionalProperties": false,
 	}
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseFormatTextJsonSchemaConfig;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.ResponseTextConfig;
+import java.util.List;
+import java.util.Map;
+
+Map<String, Object> schema =
+    Map.of(
+        "type",
+        "object",
+        "properties",
+        Map.of(
+            "steps",
+                Map.of(
+                    "type",
+                    "array",
+                    "items",
+                    Map.of(
+                        "type",
+                        "object",
+                        "properties",
+                        Map.of(
+                            "explanation", Map.of("type", "string"),
+                            "output", Map.of("type", "string")),
+                        "required",
+                        List.of("explanation", "output"),
+                        "additionalProperties",
+                        false)),
+            "final_answer", Map.of("type", "string")),
+        "required",
+        List.of("steps", "final_answer"),
+        "additionalProperties",
+        false);
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(
+            List.of(
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.SYSTEM)
+                        .content(
+                            "You are a helpful math tutor. Guide the user through the solution step by step.")
+                        .build()),
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.USER)
+                        .content("How can I solve 8x + 7 = -23?")
+                        .build())))
+        .text(
+            ResponseTextConfig.builder()
+                .format(
+                    ResponseFormatTextJsonSchemaConfig.builder()
+                        .name("math_response")
+                        .strict(true)
+                        .schema(
+                            JsonValue.from(schema)
+                                .convert(ResponseFormatTextJsonSchemaConfig.Schema.class))
+                        .build())
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -1841,6 +2292,102 @@ func mathSchema() map[string]any {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseFormatTextJsonSchemaConfig;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.ResponseStatus;
+import com.openai.models.responses.ResponseTextConfig;
+import java.util.List;
+import java.util.Map;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(
+            List.of(
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.SYSTEM)
+                        .content(
+                            "You are a helpful math tutor. Guide the user through the solution step by step.")
+                        .build()),
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.USER)
+                        .content("How can I solve 8x + 7 = -23?")
+                        .build())))
+        .text(
+            ResponseTextConfig.builder()
+                .format(
+                    ResponseFormatTextJsonSchemaConfig.builder()
+                        .name("math_response")
+                        .strict(true)
+                        .schema(
+                            ResponseFormatTextJsonSchemaConfig.Schema.builder()
+                                .putAdditionalProperty("type", JsonValue.from("object"))
+                                .putAdditionalProperty(
+                                    "properties",
+                                    JsonValue.from(
+                                        Map.of(
+                                            "steps",
+                                            Map.of(
+                                                "type",
+                                                "array",
+                                                "items",
+                                                Map.of(
+                                                    "type",
+                                                    "object",
+                                                    "properties",
+                                                    Map.of(
+                                                        "explanation",
+                                                        Map.of("type", "string"),
+                                                        "output",
+                                                        Map.of("type", "string")),
+                                                    "required",
+                                                    List.of("explanation", "output"),
+                                                    "additionalProperties",
+                                                    false)),
+                                            "final_answer",
+                                            Map.of("type", "string"))))
+                                .putAdditionalProperty(
+                                    "required",
+                                    JsonValue.from(List.of("steps", "final_answer")))
+                                .putAdditionalProperty(
+                                    "additionalProperties", JsonValue.from(false))
+                                .build())
+                        .build())
+                .build())
+        .maxOutputTokens(1_024L)
+        .build();
+
+var response = client.responses().create(params);
+if (response.status().filter(ResponseStatus.INCOMPLETE::equals).isPresent()) {
+  throw new IllegalStateException("Incomplete response");
+}
+
+var content =
+    response.output().stream()
+        .flatMap(item -> item.message().stream())
+        .flatMap(message -> message.content().stream())
+        .findFirst()
+        .orElseThrow(() -> new IllegalStateException("No response content"));
+
+if (content.refusal().isPresent()) {
+  System.out.println(content.refusal().orElseThrow().refusal());
+} else {
+  System.out.println(
+      content
+          .outputText()
+          .orElseThrow(() -> new IllegalStateException("No response content"))
+          .text());
+}
+```
+
 ```ruby
 require "openai"
 
@@ -2066,6 +2613,88 @@ func mathSchema() map[string]any {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseFormatTextJsonSchemaConfig;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.ResponseTextConfig;
+import java.util.List;
+import java.util.Map;
+
+Map<String, Object> schema =
+    Map.of(
+        "type",
+        "object",
+        "properties",
+        Map.of(
+            "steps",
+                Map.of(
+                    "type",
+                    "array",
+                    "items",
+                    Map.of(
+                        "type",
+                        "object",
+                        "properties",
+                        Map.of(
+                            "explanation", Map.of("type", "string"),
+                            "output", Map.of("type", "string")),
+                        "required",
+                        List.of("explanation", "output"),
+                        "additionalProperties",
+                        false)),
+            "final_answer", Map.of("type", "string")),
+        "required",
+        List.of("steps", "final_answer"),
+        "additionalProperties",
+        false);
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(
+            List.of(
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.SYSTEM)
+                        .content(
+                            "You are a helpful math tutor. Guide the user through the solution step by step.")
+                        .build()),
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.USER)
+                        .content("How can I solve 8x + 7 = -23?")
+                        .build())))
+        .text(
+            ResponseTextConfig.builder()
+                .format(
+                    ResponseFormatTextJsonSchemaConfig.builder()
+                        .name("math_reasoning")
+                        .strict(true)
+                        .schema(
+                            JsonValue.from(schema)
+                                .convert(ResponseFormatTextJsonSchemaConfig.Schema.class))
+                        .build())
+                .build())
+        .build();
+
+var response = client.responses().create(params);
+for (var output : response.output()) {
+  if (output.message().isEmpty()) continue;
+  for (var content : output.message().orElseThrow().content()) {
+    if (content.refusal().isPresent()) {
+      System.out.println(content.refusal().orElseThrow().refusal());
+    } else {
+      content.outputText().ifPresent(text -> System.out.println(text.text()));
+    }
+  }
+}
+```
+
 ```ruby
 require "openai"
 
@@ -2285,6 +2914,95 @@ with client.responses.stream(
 
     final_response = stream.get_final_response()
     print(final_response)
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.core.http.StreamResponse;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseFormatTextJsonSchemaConfig;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.ResponseStreamEvent;
+import com.openai.models.responses.ResponseTextConfig;
+import java.util.List;
+import java.util.Map;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(
+            List.of(
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.SYSTEM)
+                        .content("Extract entities from the input text")
+                        .build()),
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.USER)
+                        .content(
+                            "The quick brown fox jumps over the lazy dog with piercing blue eyes")
+                        .build())))
+        .text(
+            ResponseTextConfig.builder()
+                .format(
+                    ResponseFormatTextJsonSchemaConfig.builder()
+                        .name("entities")
+                        .strict(true)
+                        .schema(
+                            ResponseFormatTextJsonSchemaConfig.Schema.builder()
+                                .putAdditionalProperty("type", JsonValue.from("object"))
+                                .putAdditionalProperty(
+                                    "properties",
+                                    JsonValue.from(
+                                        Map.of(
+                                            "attributes",
+                                            Map.of(
+                                                "type",
+                                                "array",
+                                                "items",
+                                                Map.of("type", "string")),
+                                            "colors",
+                                            Map.of(
+                                                "type",
+                                                "array",
+                                                "items",
+                                                Map.of("type", "string")),
+                                            "animals",
+                                            Map.of(
+                                                "type",
+                                                "array",
+                                                "items",
+                                                Map.of("type", "string")))))
+                                .putAdditionalProperty(
+                                    "required",
+                                    JsonValue.from(List.of("attributes", "colors", "animals")))
+                                .putAdditionalProperty(
+                                    "additionalProperties", JsonValue.from(false))
+                                .build())
+                        .build())
+                .build())
+        .build();
+
+try (StreamResponse<ResponseStreamEvent> stream = client.responses().createStreaming(params)) {
+  stream.stream()
+      .forEach(
+          event -> {
+            event.outputTextDelta().ifPresent(delta -> System.out.print(delta.delta()));
+            event.refusalDelta().ifPresent(refusal -> System.out.print(refusal.delta()));
+            event.error().ifPresent(error -> System.out.println(error.message()));
+            event
+                .completed()
+                .ifPresent(
+                    completed -> {
+                      System.out.println("Completed");
+                      System.out.println(completed.response());
+                    });
+          });
+}
 ```
 
 
@@ -2982,6 +3700,70 @@ func main() {
 		}
 		fmt.Println(value)
 	}
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.errors.OpenAIServiceException;
+import com.openai.models.ResponseFormatJsonObject;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.ResponseStatus;
+import com.openai.models.responses.ResponseTextConfig;
+import java.util.List;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(
+            List.of(
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.SYSTEM)
+                        .content("You are a helpful assistant designed to output JSON.")
+                        .build()),
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.USER)
+                        .content(
+                            "Who won the World Series in 2020? Respond in the format {winner: ...}.")
+                        .build())))
+        .text(
+            ResponseTextConfig.builder()
+                .format(ResponseFormatJsonObject.builder().build())
+                .build())
+        .build();
+
+try {
+  var response = client.responses().create(params);
+  if (response.status().filter(ResponseStatus.INCOMPLETE::equals).isPresent()) {
+    String reason =
+        response
+            .incompleteDetails()
+            .flatMap(details -> details.reason())
+            .map(Object::toString)
+            .orElse("unknown");
+    System.out.println("The JSON response is incomplete. Reason: " + reason);
+    return;
+  }
+
+  for (var output : response.output()) {
+    if (output.message().isEmpty()) continue;
+    for (var content : output.message().orElseThrow().content()) {
+      if (content.refusal().isPresent()) {
+        System.out.println(content.refusal().orElseThrow().refusal());
+        return;
+      }
+      if (response.status().filter(ResponseStatus.COMPLETED::equals).isPresent()) {
+        content.outputText().ifPresent(text -> System.out.println(text.text()));
+      }
+    }
+  }
+} catch (OpenAIServiceException error) {
+  System.out.println("Request failed: " + error.getMessage());
 }
 ```
 

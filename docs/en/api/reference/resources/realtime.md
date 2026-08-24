@@ -14536,8 +14536,9 @@
 
 - `RealtimeTranslationOutputAudioDeltaEvent object { delta, event_id, type, 4 more }`
 
-  Returned when translated output audio is available. Output audio deltas are
-  200 ms frames of PCM16 audio.
+  Returned when translated output audio is available. The `delta` contains a
+  PCM16 audio chunk whose length can vary. Clients should decode and queue the
+  complete delta instead of assuming a fixed byte or sample count.
 
   - `delta: string`
 
@@ -14814,8 +14815,9 @@
 
   - `RealtimeTranslationOutputAudioDeltaEvent object { delta, event_id, type, 4 more }`
 
-    Returned when translated output audio is available. Output audio deltas are
-    200 ms frames of PCM16 audio.
+    Returned when translated output audio is available. The `delta` contains a
+    PCM16 audio chunk whose length can vary. Clients should decode and queue the
+    complete delta instead of assuming a fixed byte or sample count.
 
     - `delta: string`
 

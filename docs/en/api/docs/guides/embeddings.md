@@ -75,6 +75,23 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.embeddings.EmbeddingCreateParams;
+
+var embedding =
+    client
+        .embeddings()
+        .create(
+            EmbeddingCreateParams.builder()
+                .model("text-embedding-3-small")
+                .input("The food was delicious and the waiter...")
+                .build());
+
+System.out.println(embedding.data().get(0).embedding());
+```
+
 ```ruby
 require "openai"
 
@@ -177,6 +194,42 @@ df["ada_embedding"] = df.combined.apply(
 df.to_csv("output/embedded_1k_reviews.csv", index=False)
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.embeddings.EmbeddingCreateParams;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
+static String csvField(String value) {
+  return "\"" + value.replace("\"", "\"\"") + "\"";
+}
+
+List<String> reviews = List.of("A rich cup of coffee.", "A bright herbal tea.");
+Path output = Path.of("output", "embedded_1k_reviews.csv");
+Files.createDirectories(output.getParent());
+try (var writer = Files.newBufferedWriter(output)) {
+  writer.write("combined,ada_embedding\n");
+  for (String review : reviews) {
+    var embedding =
+        client
+            .embeddings()
+            .create(
+                EmbeddingCreateParams.builder()
+                    .model("text-embedding-3-small")
+                    .inputOfArrayOfStrings(List.of(review.replace("\n", " ")))
+                    .build())
+            .data()
+            .get(0)
+            .embedding();
+    writer.write(csvField(review) + "," + csvField(embedding.toString()) + "\n");
+  }
+}
+System.out.println(output);
+```
+
 
 To load the data from a saved file, you can run the following:
 
@@ -225,6 +278,31 @@ norm_dim = normalize_l2(cut_dim)
 print(norm_dim)
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.embeddings.EmbeddingCreateParams;
+import java.util.List;
+
+private static List<Double> normalizeL2(List<Float> embedding) {
+  double norm = Math.sqrt(embedding.stream().mapToDouble(value -> value * value).sum());
+  return embedding.stream().map(value -> norm == 0 ? 0.0 : value / norm).toList();
+}
+
+var embedding =
+    client
+        .embeddings()
+        .create(
+            EmbeddingCreateParams.builder()
+                .model("text-embedding-3-small")
+                .input("Testing 123")
+                .encodingFormat(EmbeddingCreateParams.EncodingFormat.FLOAT)
+                .build());
+
+List<Float> shortened = embedding.data().get(0).embedding().subList(0, 256);
+System.out.println(normalizeL2(shortened));
+```
+
 
 Dynamically changing the dimensions enables very flexible usage. For example, when using a vector data store that only supports embeddings up to 1024 dimensions long, developers can now still use our best embedding model `text-embedding-3-large` and specify a value of 1024 for the `dimensions` API parameter, which will shorten the embedding down from 3072 dimensions, trading off some accuracy in exchange for the smaller vector size.
 
@@ -262,6 +340,33 @@ response = client.chat.completions.create(
 print(response.choices[0].message.content)
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.chat.completions.ChatCompletionCreateParams;
+
+String article =
+    "At the 2022 Winter Olympics, Great Britain won women's curling and Sweden won men's curling.";
+String question =
+    "Use the below article on the 2022 Winter Olympics to answer the subsequent question. "
+        + "If the answer cannot be found, write \"I don't know.\"\n\n"
+        + "Article:\n"
+        + article
+        + "\n\nQuestion: Which athletes won the gold medal in curling at the 2022 Winter Olympics?";
+
+ChatCompletionCreateParams params =
+    ChatCompletionCreateParams.builder()
+        .model("gpt-4.1-mini")
+        .addSystemMessage("You answer questions about the 2022 Winter Olympics.")
+        .addUserMessage(question)
+        .temperature(0)
+        .build();
+
+client.chat().completions().create(params).choices().stream()
+    .flatMap(choice -> choice.message().content().stream())
+    .forEach(System.out::println);
+```
+
 
 Text search using embeddings
 
@@ -283,6 +388,52 @@ def search_reviews(df, product_description, n=3, pprint=True):
 
 
 res = search_reviews(df, "delicious beans", n=3)
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.embeddings.EmbeddingCreateParams;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.IntStream;
+
+List<String> reviews =
+    List.of(
+        "A rich cup of coffee.",
+        "Smooth beans in tomato sauce.",
+        "Dark chocolate with orange.");
+var reviewEmbeddings =
+    client
+        .embeddings()
+        .create(
+            EmbeddingCreateParams.builder()
+                .model("text-embedding-3-small")
+                .inputOfArrayOfStrings(reviews)
+                .build())
+        .data();
+List<Float> query =
+    client
+        .embeddings()
+        .create(
+            EmbeddingCreateParams.builder()
+                .model("text-embedding-3-small")
+                .inputOfArrayOfStrings(List.of("delicious beans"))
+                .build())
+        .data()
+        .get(0)
+        .embedding();
+
+IntStream.range(0, reviews.size())
+    .boxed()
+    .sorted(
+        Comparator.comparingDouble(
+                (Integer index) ->
+                    cosineSimilarity(query, reviewEmbeddings.get(index).embedding()))
+            .reversed())
+    .limit(3)
+    .map(reviews::get)
+    .forEach(System.out::println);
 ```
 
 
@@ -314,6 +465,47 @@ def search_functions(df, code_query, n=3, pprint=True, n_lines=7):
 
 
 res = search_functions(df, "Completions API tests", n=3)
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.embeddings.EmbeddingCreateParams;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.IntStream;
+
+List<String> functions =
+    List.of("def add(a, b): return a + b", "def complete(prompt): return prompt");
+var functionEmbeddings =
+    client
+        .embeddings()
+        .create(
+            EmbeddingCreateParams.builder()
+                .model("text-embedding-3-small")
+                .inputOfArrayOfStrings(functions)
+                .build())
+        .data();
+List<Float> query =
+    client
+        .embeddings()
+        .create(
+            EmbeddingCreateParams.builder()
+                .model("text-embedding-3-small")
+                .input("Completions API tests")
+                .build())
+        .data()
+        .get(0)
+        .embedding();
+IntStream.range(0, functions.size())
+    .boxed()
+    .sorted(
+        Comparator.comparingDouble(
+                (Integer index) ->
+                    cosineSimilarity(query, functionEmbeddings.get(index).embedding()))
+            .reversed())
+    .map(functions::get)
+    .forEach(System.out::println);
 ```
 
 
@@ -352,6 +544,53 @@ def recommendations_from_strings(
         distances
     )
     return indices_of_nearest_neighbors
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.embeddings.EmbeddingCreateParams;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.IntStream;
+
+List<String> strings =
+    List.of(
+        "A cheetah is a fast land animal.",
+        "A peregrine falcon is a fast bird.",
+        "A tortoise moves slowly.");
+
+var embeddings =
+    client
+        .embeddings()
+        .create(
+            EmbeddingCreateParams.builder()
+                .model("text-embedding-3-small")
+                .inputOfArrayOfStrings(strings)
+                .build())
+        .data();
+
+List<Float> query = embeddings.get(0).embedding();
+var nearestNeighbors =
+    IntStream.range(0, embeddings.size())
+        .boxed()
+        .sorted(
+            Comparator.comparingDouble(
+                (Integer index) -> {
+                  List<Float> candidate = embeddings.get(index).embedding();
+                  double dotProduct = 0;
+                  double queryMagnitude = 0;
+                  double candidateMagnitude = 0;
+                  for (int dimension = 0; dimension < query.size(); dimension++) {
+                    dotProduct += query.get(dimension) * candidate.get(dimension);
+                    queryMagnitude += query.get(dimension) * query.get(dimension);
+                    candidateMagnitude += candidate.get(dimension) * candidate.get(dimension);
+                  }
+                  return 1 - dotProduct / Math.sqrt(queryMagnitude * candidateMagnitude);
+                }))
+        .toList();
+
+System.out.println(nearestNeighbors);
 ```
 
 
@@ -487,6 +726,28 @@ def label_score(review_embedding, label_embeddings):
 prediction = (
     "positive" if label_score(get_embedding("Sample Review", model=model), label_embeddings) > 0 else "negative"
 )
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.embeddings.EmbeddingCreateParams;
+import java.util.List;
+
+var embeddings =
+    client
+        .embeddings()
+        .create(
+            EmbeddingCreateParams.builder()
+                .model("text-embedding-3-small")
+                .inputOfArrayOfStrings(List.of("negative", "positive", "Sample Review"))
+                .build())
+        .data();
+
+List<Float> review = embeddings.get(2).embedding();
+double negative = cosineSimilarity(review, embeddings.get(0).embedding());
+double positive = cosineSimilarity(review, embeddings.get(1).embedding());
+System.out.println(positive > negative ? "positive" : "negative");
 ```
 
 

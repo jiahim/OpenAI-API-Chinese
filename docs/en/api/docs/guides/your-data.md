@@ -91,9 +91,9 @@ The table below indicates when application state is stored for each endpoint. Ze
 
 #### `/v1/responses`
 
-- The Responses API has a 30 day Application State retention period by default, or when the `store` parameter is set to `true`. Response data will be stored for at least 30 days.
+- Except as noted below, the Responses API has a 30 day Application State retention period by default, or when the `store` parameter is set to `true`. In those cases, response data will be stored for at least 30 days.
 - When Zero Data Retention is enabled for an organization, the `store` parameter will always be treated as `false`, even if the request attempts to set the value to `true`.
-- Background mode stores response data to disk for roughly 10 minutes to enable polling.
+- Background mode stores response data to disk for roughly 10 minutes to enable polling. For projects using [Modified Abuse Monitoring](#modified-abuse-monitoring), including enhanced Modified Abuse Monitoring, foreground requests follow standard retention when `store` is omitted or set to `true`. Background responses follow the standard retention period only when the request explicitly sets `store=true`. If `store` is omitted or set to `false` for a background request, the response is deleted after the temporary polling period.
 - Audio outputs application state is stored for 1 hour to enable [multi-turn conversations](https://developers.openai.com/api/docs/guides/audio).
 - See [image and file inputs](#image-and-file-inputs).
 - MCP servers (used with the [remote MCP server tool](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)) are third-party services, and data sent to an MCP server is subject to their data retention policies.
@@ -165,6 +165,46 @@ Data residency is configured per-project within your API Organization.
 To configure data residency for regional storage, select the appropriate region from the dropdown when creating a new project.
 
 For requests to projects with data residency configured, add the domain prefix as defined in the table below to each request.
+
+#### Select a processing region per request
+
+As an alternative to creating a region-specific project, you can select regional processing for an individual request by using the prefixed domain with an API key from a project having Global geography.
+
+Existing eligibility and data retention control requirements still apply. The selected endpoint and model must also support regional processing, as shown in the table below.
+
+The following example reuses one client and an API key from a Global project for global, US, and EU requests:
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+# No processing constraint.
+response = client.responses.create(
+    model="gpt-5.6-terra",
+    input="Reply with OK.",
+)
+print(response.output_text)
+
+# US processing and storage.
+response = client.with_options(
+    base_url="https://us.api.openai.com/v1",
+).responses.create(
+    model="gpt-5.6-terra",
+    input="Reply with OK.",
+)
+print(response.output_text)
+
+# EU processing and storage.
+response = client.with_options(
+    base_url="https://eu.api.openai.com/v1",
+).responses.create(
+    model="gpt-5.6-terra",
+    input="Reply with OK.",
+)
+print(response.output_text)
+```
+
 
 ### Which models and features are eligible for data residency?
 

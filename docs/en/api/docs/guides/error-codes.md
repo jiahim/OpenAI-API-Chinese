@@ -291,6 +291,29 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.errors.OpenAIServiceException;
+import com.openai.models.responses.ResponseCreateParams;
+
+try {
+  var response =
+      client
+          .responses()
+          .create(
+              ResponseCreateParams.builder().model("gpt-5.6").input("Say hello.").build());
+
+  response.output().stream()
+      .flatMap(item -> item.message().stream())
+      .flatMap(message -> message.content().stream())
+      .flatMap(content -> content.outputText().stream())
+      .forEach(text -> System.out.println(text.text()));
+} catch (OpenAIServiceException error) {
+  System.err.println(error.getMessage());
+}
+```
+
 ```ruby
 require "openai"
 

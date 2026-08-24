@@ -160,6 +160,25 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.files.FileCreateParams;
+import com.openai.models.files.FilePurpose;
+import java.nio.file.Path;
+
+var file =
+    client
+        .files()
+        .create(
+            FileCreateParams.builder()
+                .file(Path.of(System.getenv("OPENAI_EXAMPLE_FILE_PATH")))
+                .purpose(FilePurpose.BATCH)
+                .build());
+
+System.out.println(file.id());
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -235,6 +254,26 @@ func main() {
 	}
 	fmt.Println(batch.ID)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.batches.BatchCreateParams;
+
+String fileId = "file-abc123";
+
+var batch =
+    client
+        .batches()
+        .create(
+            BatchCreateParams.builder()
+                .inputFileId(fileId)
+                .endpoint(BatchCreateParams.Endpoint.V1_RESPONSES)
+                .completionWindow(BatchCreateParams.CompletionWindow._24H)
+                .build());
+
+System.out.println(batch.id());
 ```
 
 ```ruby
@@ -331,6 +370,17 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+
+String batchId = "batch_abc123";
+
+var batch = client.batches().retrieve(batchId);
+
+System.out.println(batch.status());
+```
+
 ```ruby
 require "openai"
 
@@ -418,6 +468,23 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.http.HttpResponse;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+
+String fileId = "file-xyz123";
+
+try (HttpResponse content = client.files().content(fileId)) {
+  Files.copy(
+      content.body(), Path.of("batch_output.jsonl"), StandardCopyOption.REPLACE_EXISTING);
+}
+```
+
 ```ruby
 require "openai"
 
@@ -499,6 +566,15 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+
+String batchId = "batch_abc123";
+
+System.out.println(client.batches().cancel(batchId).status());
+```
+
 ```ruby
 require "openai"
 
@@ -565,6 +641,18 @@ func main() {
 		panic(err)
 	}
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.batches.BatchListParams;
+
+client
+    .batches()
+    .list(BatchListParams.builder().limit(10).build())
+    .autoPager()
+    .forEach(batch -> System.out.println(batch.id()));
 ```
 
 ```ruby

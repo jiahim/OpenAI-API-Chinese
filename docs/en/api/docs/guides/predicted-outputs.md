@@ -149,6 +149,40 @@ with code, and with no markdown formatting.
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.chat.completions.ChatCompletionCreateParams;
+import com.openai.models.chat.completions.ChatCompletionPredictionContent;
+
+String code =
+    """
+    class User {
+      firstName: string = "";
+      lastName: string = "";
+      username: string = "";
+    }
+
+    export default User;
+    """;
+String refactorPrompt =
+    "Replace the \"username\" property with an \"email\" property. "
+        + "Respond only with code, and with no markdown formatting.";
+
+ChatCompletionCreateParams params =
+    ChatCompletionCreateParams.builder()
+        .model("gpt-4.1")
+        .addUserMessage(refactorPrompt)
+        .addUserMessage(code)
+        .prediction(ChatCompletionPredictionContent.builder().content(code).build())
+        .store(true)
+        .build();
+
+client.chat().completions().create(params).choices().stream()
+    .flatMap(choice -> choice.message().content().stream())
+    .forEach(System.out::println);
+```
+
 ```ruby
 require "openai"
 
@@ -366,6 +400,46 @@ with code, and with no markdown formatting.
 	if err := stream.Err(); err != nil {
 		panic(err)
 	}
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.http.StreamResponse;
+import com.openai.models.chat.completions.ChatCompletionChunk;
+import com.openai.models.chat.completions.ChatCompletionCreateParams;
+import com.openai.models.chat.completions.ChatCompletionPredictionContent;
+
+String code =
+    """
+    class User {
+      firstName: string = "";
+      lastName: string = "";
+      username: string = "";
+    }
+
+    export default User;
+    """;
+String refactorPrompt =
+    "Replace the \"username\" property with an \"email\" property. "
+        + "Respond only with code, and with no markdown formatting.";
+
+ChatCompletionCreateParams params =
+    ChatCompletionCreateParams.builder()
+        .model("gpt-4.1")
+        .addUserMessage(refactorPrompt)
+        .addUserMessage(code)
+        .prediction(ChatCompletionPredictionContent.builder().content(code).build())
+        .store(true)
+        .build();
+
+try (StreamResponse<ChatCompletionChunk> stream =
+    client.chat().completions().createStreaming(params)) {
+  stream.stream()
+      .flatMap(chunk -> chunk.choices().stream())
+      .flatMap(choice -> choice.delta().content().stream())
+      .forEach(System.out::print);
 }
 ```
 

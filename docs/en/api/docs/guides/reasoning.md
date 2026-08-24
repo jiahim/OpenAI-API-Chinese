@@ -93,6 +93,34 @@ format '[1,2],[3,4],[5,6]' and prints the transpose in the same format.`
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.Reasoning;
+import com.openai.models.ReasoningEffort;
+import com.openai.models.responses.ResponseCreateParams;
+
+String prompt =
+    """
+    Write a bash script that takes a matrix represented as a string with format
+    '[1,2],[3,4],[5,6]' and prints the transpose in the same format.
+    """
+        .strip();
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input(prompt)
+        .reasoning(Reasoning.builder().effort(ReasoningEffort.LOW).build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -326,6 +354,41 @@ format '[1,2],[3,4],[5,6]' and prints the transpose in the same format.`
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.Reasoning;
+import com.openai.models.ReasoningEffort;
+import com.openai.models.responses.Response;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseStatus;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input(
+            "Write a bash script that takes a matrix represented as a string with format "
+                + "'[1,2],[3,4],[5,6]' and prints the transpose in the same format.")
+        .maxOutputTokens(300)
+        .reasoning(Reasoning.builder().effort(ReasoningEffort.MEDIUM).build())
+        .build();
+
+var response = client.responses().create(params);
+if (response.status().filter(ResponseStatus.INCOMPLETE::equals).isPresent()
+    && response
+        .incompleteDetails()
+        .flatMap(Response.IncompleteDetails::reason)
+        .filter(Response.IncompleteDetails.Reason.MAX_OUTPUT_TOKENS::equals)
+        .isPresent()) {
+  System.out.println("Ran out of tokens");
+  response.output().stream()
+      .flatMap(item -> item.message().stream())
+      .flatMap(message -> message.content().stream())
+      .flatMap(content -> content.outputText().stream())
+      .forEach(text -> System.out.println("Partial output: " + text.text()));
+}
+```
+
 ```ruby
 require "openai"
 
@@ -473,6 +536,46 @@ func main() {
 
 	fmt.Println(second.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.Reasoning;
+import com.openai.models.responses.ResponseCreateParams;
+
+var first =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.6")
+                .input("Inspect this repository and identify the likely bug.")
+                .reasoning(
+                    Reasoning.builder()
+                        .putAdditionalProperty("context", JsonValue.from("current_turn"))
+                        .build())
+                .build());
+
+var second =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.6")
+                .input("Now patch the bug and explain the change.")
+                .previousResponseId(first.id())
+                .reasoning(
+                    Reasoning.builder()
+                        .putAdditionalProperty("context", JsonValue.from("all_turns"))
+                        .build())
+                .build());
+second.output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -658,6 +761,67 @@ func outputAsInput(output []responses.ResponseOutputItemUnion) []responses.Respo
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.Reasoning;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.ArrayList;
+
+var history = new ArrayList<ResponseInputItem>();
+history.add(
+    ResponseInputItem.ofEasyInputMessage(
+        EasyInputMessage.builder()
+            .role(EasyInputMessage.Role.USER)
+            .content("Inspect this repository and identify the likely bug.")
+            .build()));
+
+var first =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.6")
+                .inputOfResponse(history)
+                .store(false)
+                .reasoning(
+                    Reasoning.builder()
+                        .putAdditionalProperty("context", JsonValue.from("current_turn"))
+                        .build())
+                .build());
+first.output().stream()
+    .map(item -> JsonValue.from(item).convert(ResponseInputItem.class))
+    .forEach(history::add);
+history.add(
+    ResponseInputItem.ofEasyInputMessage(
+        EasyInputMessage.builder()
+            .role(EasyInputMessage.Role.USER)
+            .content("Now patch the bug and explain the change.")
+            .build()));
+
+client
+    .responses()
+    .create(
+        ResponseCreateParams.builder()
+            .model("gpt-5.6")
+            .inputOfResponse(history)
+            .store(false)
+            .reasoning(
+                Reasoning.builder()
+                    .putAdditionalProperty("context", JsonValue.from("all_turns"))
+                    .build())
+            .build())
+    .output()
+    .stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -758,6 +922,30 @@ func main() {
 
 	fmt.Println(response.Output)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.Reasoning;
+import com.openai.models.ReasoningEffort;
+import com.openai.models.responses.ResponseCreateParams;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("What is the capital of France?")
+        .reasoning(
+            Reasoning.builder()
+                .effort(ReasoningEffort.LOW)
+                .summary(Reasoning.Summary.AUTO)
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.reasoning().stream())
+    .flatMap(reasoning -> reasoning.summary().stream())
+    .forEach(summary -> System.out.println(summary.text()));
 ```
 
 ```ruby
@@ -929,6 +1117,46 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.List;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .inputOfResponse(
+            List.of(
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.ASSISTANT)
+                        .phase(EasyInputMessage.Phase.COMMENTARY)
+                        .content(
+                            "I'll inspect the logs and then summarize root cause and remediation.")
+                        .build()),
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.ASSISTANT)
+                        .phase(EasyInputMessage.Phase.FINAL_ANSWER)
+                        .content("Root cause: cache invalidation race.")
+                        .build()),
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.USER)
+                        .content("Great—now give me a rollout-safe fix plan.")
+                        .build())))
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -1115,6 +1343,36 @@ const books = [
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+
+String prompt =
+    """
+    Instructions:
+    - Given the React component below, change it so that nonfiction books have red text.
+    - Return only the code in your reply.
+    - Do not include any additional formatting, such as markdown code blocks.
+
+    const books = [
+    { title: 'Dune', category: 'fiction', id: 1 },
+    { title: 'Frankenstein', category: 'fiction', id: 2 },
+    { title: 'Moneyball', category: 'nonfiction', id: 3 },
+    ];
+    """
+        .strip();
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder().model("gpt-5.6").input(prompt).build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -1246,6 +1504,30 @@ directory structure you will need, then return each file in full.`
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+
+String prompt =
+    """
+    I want to build a Python app that looks up user questions in a database where
+    they are mapped to answers. If there is a close match, it retrieves the answer.
+    Otherwise, it asks the user for an answer and stores the question and answer.
+    Plan the directory structure, then return each file in full.
+    """
+        .strip();
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder().model("gpt-5.6").input(prompt).build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -1352,6 +1634,28 @@ research into new antibiotics? Why should we consider them?`
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+
+String prompt =
+    """
+    What are three compounds we should consider investigating to advance research
+    into new antibiotics? Why should we consider them?
+    """
+        .strip();
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder().model("gpt-5.6").input(prompt).build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby

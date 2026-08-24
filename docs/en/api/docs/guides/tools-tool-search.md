@@ -233,6 +233,67 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.NamespaceTool;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ToolSearchTool;
+import java.util.List;
+import java.util.Map;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("List open orders for customer CUST-12345.")
+        .parallelToolCalls(false)
+        .addTool(
+            NamespaceTool.builder()
+                .name("crm")
+                .description("CRM tools for customer lookup and order management.")
+                .addTool(
+                    NamespaceTool.Tool.Function.builder()
+                        .name("get_customer_profile")
+                        .description("Fetch a customer profile by customer ID.")
+                        .strict(true)
+                        .parameters(
+                            JsonValue.from(
+                                Map.of(
+                                    "type",
+                                    "object",
+                                    "properties",
+                                    Map.of("customer_id", Map.of("type", "string")),
+                                    "required",
+                                    List.of("customer_id"),
+                                    "additionalProperties",
+                                    false)))
+                        .build())
+                .addTool(
+                    NamespaceTool.Tool.Function.builder()
+                        .name("list_open_orders")
+                        .description("List open orders for a customer ID.")
+                        .deferLoading(true)
+                        .strict(true)
+                        .parameters(
+                            JsonValue.from(
+                                Map.of(
+                                    "type",
+                                    "object",
+                                    "properties",
+                                    Map.of("customer_id", Map.of("type", "string")),
+                                    "required",
+                                    List.of("customer_id"),
+                                    "additionalProperties",
+                                    false)))
+                        .build())
+                .build())
+        .addTool(ToolSearchTool.builder().execution(ToolSearchTool.Execution.SERVER).build())
+        .build();
+
+client.responses().create(params).output().forEach(System.out::println);
+```
+
 ```ruby
 require "openai"
 
@@ -564,6 +625,90 @@ func main() {
 	}
 	fmt.Println(second.Output)
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.FunctionTool;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.ResponseToolSearchOutputItemParam;
+import com.openai.models.responses.ToolSearchTool;
+import java.util.List;
+import java.util.Map;
+
+ResponseCreateParams searchRequest =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Find the shipping ETA tool, then use it for order_42.")
+        .parallelToolCalls(false)
+        .addTool(
+            ToolSearchTool.builder()
+                .execution(ToolSearchTool.Execution.CLIENT)
+                .description("Find the project tools needed to continue the task.")
+                .parameters(
+                    JsonValue.from(
+                        Map.of(
+                            "type",
+                            "object",
+                            "properties",
+                            Map.of("goal", Map.of("type", "string")),
+                            "required",
+                            List.of("goal"),
+                            "additionalProperties",
+                            false)))
+                .build())
+        .build();
+
+var search = client.responses().create(searchRequest);
+var searchCall =
+    search.output().stream()
+        .flatMap(item -> item.toolSearchCall().stream())
+        .findFirst()
+        .orElseThrow(() -> new IllegalStateException("No tool search call returned"));
+
+FunctionTool shippingTool =
+    FunctionTool.builder()
+        .name("get_shipping_eta")
+        .description("Look up shipping details for an order.")
+        .deferLoading(true)
+        .strict(true)
+        .parameters(
+            FunctionTool.Parameters.builder()
+                .putAdditionalProperty("type", JsonValue.from("object"))
+                .putAdditionalProperty(
+                    "properties", JsonValue.from(Map.of("order_id", Map.of("type", "string"))))
+                .putAdditionalProperty("required", JsonValue.from(List.of("order_id")))
+                .putAdditionalProperty("additionalProperties", JsonValue.from(false))
+                .build())
+        .build();
+
+var searchOutput =
+    ResponseToolSearchOutputItemParam.builder()
+        .callId(searchCall.callId().orElseThrow())
+        .execution(ResponseToolSearchOutputItemParam.Execution.CLIENT)
+        .status(ResponseToolSearchOutputItemParam.Status.COMPLETED)
+        .addTool(shippingTool)
+        .build();
+
+var response =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.6")
+                .previousResponseId(search.id())
+                .inputOfResponse(List.of(ResponseInputItem.ofToolSearchOutput(searchOutput)))
+                .build());
+
+var loadedCalls =
+    response.output().stream().flatMap(item -> item.functionCall().stream()).toList();
+if (loadedCalls.isEmpty()) {
+  throw new IllegalStateException("No loaded function call returned");
+}
+loadedCalls.forEach(call -> System.out.println(call.name() + "(" + call.arguments() + ")"));
 ```
 
 ```ruby

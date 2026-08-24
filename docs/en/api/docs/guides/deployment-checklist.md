@@ -150,6 +150,33 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.Reasoning;
+import com.openai.models.ReasoningEffort;
+import com.openai.models.responses.ResponseCreateParams;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input(
+            "Our CI job started failing after a dependency bump. Error: TypeError: Timeout.__init__() got an unexpected keyword argument 'connect'. Identify the likeliest root cause and the smallest safe fix.")
+        .reasoning(
+            Reasoning.builder()
+                .effort(ReasoningEffort.XHIGH)
+                .putAdditionalProperty("mode", JsonValue.from("pro"))
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -265,6 +292,27 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseTextConfig;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input(
+            "Summarize this incident for the next on-call engineer: checkout latency spiked from 220 ms to 4.8 s, only us-east-1 was affected, rollback is complete, and the likely trigger was a cache stampede.")
+        .text(ResponseTextConfig.builder().verbosity(ResponseTextConfig.Verbosity.LOW).build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -553,6 +601,71 @@ func namespaceTool(namespace, namespaceDescription, name, description, argument 
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.NamespaceTool;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ToolSearchTool;
+import java.util.List;
+import java.util.Map;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input(
+            "Find the right billing tool and explain why invoice INV-1043 still shows overdue after a payment yesterday.")
+        .addTool(
+            namespace(
+                "billing",
+                "Billing tools for invoices, payments, taxes, and credits.",
+                "lookup_invoice",
+                "Look up invoice state, taxes, credits, and payment attempts.",
+                "invoice_id"))
+        .addTool(
+            namespace(
+                "crm",
+                "CRM tools for account ownership, plans, health, and payment history.",
+                "get_account",
+                "Fetch account owner, plan, health, and payment history.",
+                "account_id"))
+        .addTool(ToolSearchTool.builder().execution(ToolSearchTool.Execution.SERVER).build())
+        .build();
+
+client.responses().create(params).output().forEach(System.out::println);
+
+private static NamespaceTool namespace(
+    String name,
+    String description,
+    String function,
+    String functionDescription,
+    String argument) {
+  return NamespaceTool.builder()
+      .name(name)
+      .description(description)
+      .addTool(
+          NamespaceTool.Tool.Function.builder()
+              .name(function)
+              .description(functionDescription)
+              .deferLoading(true)
+              .strict(true)
+              .parameters(
+                  JsonValue.from(
+                      Map.of(
+                          "type",
+                          "object",
+                          "properties",
+                          Map.of(argument, Map.of("type", "string")),
+                          "required",
+                          List.of(argument),
+                          "additionalProperties",
+                          false)))
+              .build())
+      .build();
+}
+```
+
 ```ruby
 require "openai"
 
@@ -834,6 +947,62 @@ func outputAsInput(output []responses.ResponseOutputItemUnion) []responses.Respo
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCompactParams;
+import com.openai.models.responses.ResponseCompactionItemParam;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.ArrayList;
+
+var compacted =
+    client
+        .responses()
+        .compact(
+            ResponseCompactParams.builder()
+                .model("gpt-5.6")
+                .input("Find the cache invalidation bug in this debugging session.")
+                .build());
+var input = new ArrayList<ResponseInputItem>();
+for (var item : compacted.output()) {
+  item.message().map(ResponseInputItem::ofResponseOutputMessage).ifPresent(input::add);
+  item.reasoning().map(ResponseInputItem::ofReasoning).ifPresent(input::add);
+  item.compaction()
+      .map(
+          value ->
+              ResponseInputItem.ofCompaction(
+                  ResponseCompactionItemParam.builder()
+                      .id(value.id())
+                      .encryptedContent(value.encryptedContent())
+                      .build()))
+      .ifPresent(input::add);
+}
+input.add(
+    ResponseInputItem.ofEasyInputMessage(
+        EasyInputMessage.builder()
+            .role(EasyInputMessage.Role.USER)
+            .content(
+                "We found the bad cache invalidation path. Write the fix plan and the verification checklist.")
+            .build()));
+
+client
+    .responses()
+    .create(
+        ResponseCreateParams.builder()
+            .model("gpt-5.6")
+            .inputOfResponse(input)
+            .store(false)
+            .build())
+    .output()
+    .stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -968,6 +1137,29 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .instructions(
+            "You are the support agent for Acme.\n"
+                + "Follow the Acme support policy and escalation rubric.\n"
+                + "Use the same tone, safety rules, and tool plan for each ticket.")
+        .input("Summarize the current escalation for the on-call lead.")
+        .promptCacheKey("tenant-acme-support-agent")
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -1147,6 +1339,71 @@ func outputAsInput(output []responses.ResponseOutputItemUnion) []responses.Respo
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.Reasoning;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseIncludable;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.ArrayList;
+
+var history = new ArrayList<ResponseInputItem>();
+history.add(
+    ResponseInputItem.ofEasyInputMessage(
+        EasyInputMessage.builder()
+            .role(EasyInputMessage.Role.USER)
+            .content("Investigate why invoice INV-1043 has mismatched tax totals.")
+            .build()));
+
+var first =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.6")
+                .inputOfResponse(history)
+                .store(false)
+                .reasoning(
+                    Reasoning.builder()
+                        .effort(com.openai.models.ReasoningEffort.MEDIUM)
+                        .putAdditionalProperty("context", JsonValue.from("current_turn"))
+                        .build())
+                .addInclude(ResponseIncludable.of("reasoning.encrypted_content"))
+                .build());
+first.output().stream()
+    .map(item -> JsonValue.from(item).convert(ResponseInputItem.class))
+    .forEach(history::add);
+history.add(
+    ResponseInputItem.ofEasyInputMessage(
+        EasyInputMessage.builder()
+            .role(EasyInputMessage.Role.USER)
+            .content("Now write the customer-facing explanation in plain English.")
+            .build()));
+
+client
+    .responses()
+    .create(
+        ResponseCreateParams.builder()
+            .model("gpt-5.6")
+            .inputOfResponse(history)
+            .store(false)
+            .reasoning(
+                Reasoning.builder()
+                    .effort(com.openai.models.ReasoningEffort.MEDIUM)
+                    .putAdditionalProperty("context", JsonValue.from("all_turns"))
+                    .build())
+            .build())
+    .output()
+    .stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -1312,6 +1569,45 @@ func main() {
 	}
 	fmt.Println(job.OutputText())
 }
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseStatus;
+import com.openai.models.responses.Tool;
+
+String fileId = "file_abc123";
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Analyze this large log bundle and cluster the primary failure modes.")
+        .background(true)
+        .store(false)
+        .addCodeInterpreterTool(
+            Tool.CodeInterpreter.Container.CodeInterpreterToolAuto.builder()
+                .addFileId(fileId)
+                .build())
+        .build();
+
+var response = client.responses().create(params);
+while (response.status().filter(ResponseStatus.QUEUED::equals).isPresent()
+    || response.status().filter(ResponseStatus.IN_PROGRESS::equals).isPresent()) {
+  Thread.sleep(1000);
+  response = client.responses().retrieve(response.id());
+}
+if (response.status().filter(ResponseStatus.COMPLETED::equals).isEmpty()) {
+  throw new IllegalStateException(
+      "Research ended with status: " + response.status().orElseThrow());
+}
+
+response.output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby

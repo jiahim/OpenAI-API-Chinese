@@ -7,6 +7,8 @@ Use AWS as a Workload Identity Provider in either of these scenarios:
 - **AWS outbound identity federation:** Exchange an AWS STS-issued OIDC JWT from `GetWebIdentityToken` for a short-lived OpenAI access token.
 - **Amazon EKS:** Exchange a projected Amazon EKS service account token for a short-lived OpenAI access token.
 
+For Codex, use this page to get and inspect the AWS token. Then [configure Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) to write that token to a file and point Codex to it. The service-account mapping and SDK examples on this page apply to the OpenAI API.
+
 OpenAI supports AWS-issued OIDC JWTs from outbound identity federation and
   Kubernetes projected service account tokens issued by Amazon EKS. OpenAI does
   not support SigV4-signed requests or AWS STS temporary access key credentials

@@ -160,6 +160,22 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.6")
+        .input("Write a detailed market analysis.")
+        .background(true)
+        .build();
+
+var response = client.responses().create(params);
+System.out.println(response.status().orElseThrow());
+```
+
 ```ruby
 require "openai"
 

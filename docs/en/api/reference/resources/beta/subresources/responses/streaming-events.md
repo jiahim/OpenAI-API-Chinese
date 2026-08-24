@@ -17654,7 +17654,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -17744,7 +17744,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -17767,6 +17767,14 @@ Schema name: `BetaResponseCreatedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -22227,7 +22235,7 @@ Schema name: `BetaResponseCreatedEvent`
       "kind": "HttpTypeString"
     },
     "constraints": {
-      "maxLength": 10485760
+      "maxLength": 20971520
     },
     "optional": false,
     "nullable": false,
@@ -30385,7 +30393,7 @@ Schema name: `BetaResponseCreatedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -30402,6 +30410,14 @@ Schema name: `BetaResponseCreatedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -30409,7 +30425,9 @@ Schema name: `BetaResponseCreatedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -38305,7 +38323,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -38395,7 +38413,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -38418,6 +38436,14 @@ Schema name: `BetaResponseCreatedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -40348,7 +40374,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -40438,7 +40464,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -40461,6 +40487,14 @@ Schema name: `BetaResponseCreatedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -42708,6 +42742,20 @@ Schema name: `BetaResponseCreatedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -45542,7 +45590,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -45632,7 +45680,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -45655,6 +45703,14 @@ Schema name: `BetaResponseCreatedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -47585,7 +47641,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -47675,7 +47731,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -47698,6 +47754,14 @@ Schema name: `BetaResponseCreatedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -50608,7 +50672,7 @@ Schema name: `BetaResponseCreatedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -50625,6 +50689,14 @@ Schema name: `BetaResponseCreatedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -50632,7 +50704,9 @@ Schema name: `BetaResponseCreatedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -51800,7 +51874,7 @@ Schema name: `BetaResponseCreatedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -51817,6 +51891,14 @@ Schema name: `BetaResponseCreatedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -51824,7 +51906,9 @@ Schema name: `BetaResponseCreatedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -54381,7 +54465,7 @@ Schema name: `BetaResponseCreatedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -54398,6 +54482,14 @@ Schema name: `BetaResponseCreatedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -54405,7 +54497,9 @@ Schema name: `BetaResponseCreatedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -55573,7 +55667,7 @@ Schema name: `BetaResponseCreatedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -55590,6 +55684,14 @@ Schema name: `BetaResponseCreatedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -55597,7 +55699,9 @@ Schema name: `BetaResponseCreatedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -56806,6 +56910,20 @@ Schema name: `BetaResponseCreatedEvent`
       "literal": "gpt-image-1.5"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -57704,6 +57822,20 @@ Schema name: `BetaResponseCreatedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -59128,6 +59260,20 @@ Schema name: `BetaResponseCreatedEvent`
       "literal": "gpt-image-1.5"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -60026,6 +60172,20 @@ Schema name: `BetaResponseCreatedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -81671,7 +81831,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -81761,7 +81921,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -81784,6 +81944,14 @@ Schema name: `BetaResponseInProgressEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -86244,7 +86412,7 @@ Schema name: `BetaResponseInProgressEvent`
       "kind": "HttpTypeString"
     },
     "constraints": {
-      "maxLength": 10485760
+      "maxLength": 20971520
     },
     "optional": false,
     "nullable": false,
@@ -94402,7 +94570,7 @@ Schema name: `BetaResponseInProgressEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -94419,6 +94587,14 @@ Schema name: `BetaResponseInProgressEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -94426,7 +94602,9 @@ Schema name: `BetaResponseInProgressEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -102322,7 +102500,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -102412,7 +102590,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -102435,6 +102613,14 @@ Schema name: `BetaResponseInProgressEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -104365,7 +104551,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -104455,7 +104641,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -104478,6 +104664,14 @@ Schema name: `BetaResponseInProgressEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -106725,6 +106919,20 @@ Schema name: `BetaResponseInProgressEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -109559,7 +109767,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -109649,7 +109857,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -109672,6 +109880,14 @@ Schema name: `BetaResponseInProgressEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -111602,7 +111818,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -111692,7 +111908,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -111715,6 +111931,14 @@ Schema name: `BetaResponseInProgressEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -114625,7 +114849,7 @@ Schema name: `BetaResponseInProgressEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -114642,6 +114866,14 @@ Schema name: `BetaResponseInProgressEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -114649,7 +114881,9 @@ Schema name: `BetaResponseInProgressEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -115817,7 +116051,7 @@ Schema name: `BetaResponseInProgressEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -115834,6 +116068,14 @@ Schema name: `BetaResponseInProgressEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -115841,7 +116083,9 @@ Schema name: `BetaResponseInProgressEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -118398,7 +118642,7 @@ Schema name: `BetaResponseInProgressEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -118415,6 +118659,14 @@ Schema name: `BetaResponseInProgressEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -118422,7 +118674,9 @@ Schema name: `BetaResponseInProgressEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -119590,7 +119844,7 @@ Schema name: `BetaResponseInProgressEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -119607,6 +119861,14 @@ Schema name: `BetaResponseInProgressEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -119614,7 +119876,9 @@ Schema name: `BetaResponseInProgressEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -120823,6 +121087,20 @@ Schema name: `BetaResponseInProgressEvent`
       "literal": "gpt-image-1.5"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -121721,6 +121999,20 @@ Schema name: `BetaResponseInProgressEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -123145,6 +123437,20 @@ Schema name: `BetaResponseInProgressEvent`
       "literal": "gpt-image-1.5"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -124043,6 +124349,20 @@ Schema name: `BetaResponseInProgressEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -145688,7 +146008,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -145778,7 +146098,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -145801,6 +146121,14 @@ Schema name: `BetaResponseCompletedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -150261,7 +150589,7 @@ Schema name: `BetaResponseCompletedEvent`
       "kind": "HttpTypeString"
     },
     "constraints": {
-      "maxLength": 10485760
+      "maxLength": 20971520
     },
     "optional": false,
     "nullable": false,
@@ -158419,7 +158747,7 @@ Schema name: `BetaResponseCompletedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -158436,6 +158764,14 @@ Schema name: `BetaResponseCompletedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -158443,7 +158779,9 @@ Schema name: `BetaResponseCompletedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -166339,7 +166677,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -166429,7 +166767,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -166452,6 +166790,14 @@ Schema name: `BetaResponseCompletedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -168382,7 +168728,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -168472,7 +168818,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -168495,6 +168841,14 @@ Schema name: `BetaResponseCompletedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -170742,6 +171096,20 @@ Schema name: `BetaResponseCompletedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -173576,7 +173944,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -173666,7 +174034,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -173689,6 +174057,14 @@ Schema name: `BetaResponseCompletedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -175619,7 +175995,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -175709,7 +176085,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -175732,6 +176108,14 @@ Schema name: `BetaResponseCompletedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -178642,7 +179026,7 @@ Schema name: `BetaResponseCompletedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -178659,6 +179043,14 @@ Schema name: `BetaResponseCompletedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -178666,7 +179058,9 @@ Schema name: `BetaResponseCompletedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -179834,7 +180228,7 @@ Schema name: `BetaResponseCompletedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -179851,6 +180245,14 @@ Schema name: `BetaResponseCompletedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -179858,7 +180260,9 @@ Schema name: `BetaResponseCompletedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -182415,7 +182819,7 @@ Schema name: `BetaResponseCompletedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -182432,6 +182836,14 @@ Schema name: `BetaResponseCompletedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -182439,7 +182851,9 @@ Schema name: `BetaResponseCompletedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -183607,7 +184021,7 @@ Schema name: `BetaResponseCompletedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -183624,6 +184038,14 @@ Schema name: `BetaResponseCompletedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -183631,7 +184053,9 @@ Schema name: `BetaResponseCompletedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -184840,6 +185264,20 @@ Schema name: `BetaResponseCompletedEvent`
       "literal": "gpt-image-1.5"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -185738,6 +186176,20 @@ Schema name: `BetaResponseCompletedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -187162,6 +187614,20 @@ Schema name: `BetaResponseCompletedEvent`
       "literal": "gpt-image-1.5"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -188060,6 +188526,20 @@ Schema name: `BetaResponseCompletedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -209722,7 +210202,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -209812,7 +210292,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -209835,6 +210315,14 @@ Schema name: `BetaResponseFailedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -214295,7 +214783,7 @@ Schema name: `BetaResponseFailedEvent`
       "kind": "HttpTypeString"
     },
     "constraints": {
-      "maxLength": 10485760
+      "maxLength": 20971520
     },
     "optional": false,
     "nullable": false,
@@ -222453,7 +222941,7 @@ Schema name: `BetaResponseFailedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -222470,6 +222958,14 @@ Schema name: `BetaResponseFailedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -222477,7 +222973,9 @@ Schema name: `BetaResponseFailedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -230373,7 +230871,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -230463,7 +230961,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -230486,6 +230984,14 @@ Schema name: `BetaResponseFailedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -232416,7 +232922,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -232506,7 +233012,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -232529,6 +233035,14 @@ Schema name: `BetaResponseFailedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -234776,6 +235290,20 @@ Schema name: `BetaResponseFailedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -237610,7 +238138,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -237700,7 +238228,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -237723,6 +238251,14 @@ Schema name: `BetaResponseFailedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -239653,7 +240189,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -239743,7 +240279,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -239766,6 +240302,14 @@ Schema name: `BetaResponseFailedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -242676,7 +243220,7 @@ Schema name: `BetaResponseFailedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -242693,6 +243237,14 @@ Schema name: `BetaResponseFailedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -242700,7 +243252,9 @@ Schema name: `BetaResponseFailedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -243868,7 +244422,7 @@ Schema name: `BetaResponseFailedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -243885,6 +244439,14 @@ Schema name: `BetaResponseFailedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -243892,7 +244454,9 @@ Schema name: `BetaResponseFailedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -246449,7 +247013,7 @@ Schema name: `BetaResponseFailedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -246466,6 +247030,14 @@ Schema name: `BetaResponseFailedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -246473,7 +247045,9 @@ Schema name: `BetaResponseFailedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -247641,7 +248215,7 @@ Schema name: `BetaResponseFailedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -247658,6 +248232,14 @@ Schema name: `BetaResponseFailedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -247665,7 +248247,9 @@ Schema name: `BetaResponseFailedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -248874,6 +249458,20 @@ Schema name: `BetaResponseFailedEvent`
       "literal": "gpt-image-1.5"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -249772,6 +250370,20 @@ Schema name: `BetaResponseFailedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -251196,6 +251808,20 @@ Schema name: `BetaResponseFailedEvent`
       "literal": "gpt-image-1.5"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -252094,6 +252720,20 @@ Schema name: `BetaResponseFailedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -273737,7 +274377,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -273827,7 +274467,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -273850,6 +274490,14 @@ Schema name: `BetaResponseIncompleteEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -278310,7 +278958,7 @@ Schema name: `BetaResponseIncompleteEvent`
       "kind": "HttpTypeString"
     },
     "constraints": {
-      "maxLength": 10485760
+      "maxLength": 20971520
     },
     "optional": false,
     "nullable": false,
@@ -286468,7 +287116,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -286485,6 +287133,14 @@ Schema name: `BetaResponseIncompleteEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -286492,7 +287148,9 @@ Schema name: `BetaResponseIncompleteEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -294388,7 +295046,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -294478,7 +295136,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -294501,6 +295159,14 @@ Schema name: `BetaResponseIncompleteEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -296431,7 +297097,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -296521,7 +297187,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -296544,6 +297210,14 @@ Schema name: `BetaResponseIncompleteEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -298791,6 +299465,20 @@ Schema name: `BetaResponseIncompleteEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -301625,7 +302313,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -301715,7 +302403,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -301738,6 +302426,14 @@ Schema name: `BetaResponseIncompleteEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -303668,7 +304364,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -303758,7 +304454,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -303781,6 +304477,14 @@ Schema name: `BetaResponseIncompleteEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -306691,7 +307395,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -306708,6 +307412,14 @@ Schema name: `BetaResponseIncompleteEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -306715,7 +307427,9 @@ Schema name: `BetaResponseIncompleteEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -307883,7 +308597,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -307900,6 +308614,14 @@ Schema name: `BetaResponseIncompleteEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -307907,7 +308629,9 @@ Schema name: `BetaResponseIncompleteEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -310464,7 +311188,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -310481,6 +311205,14 @@ Schema name: `BetaResponseIncompleteEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -310488,7 +311220,9 @@ Schema name: `BetaResponseIncompleteEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -311656,7 +312390,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -311673,6 +312407,14 @@ Schema name: `BetaResponseIncompleteEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -311680,7 +312422,9 @@ Schema name: `BetaResponseIncompleteEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -312889,6 +313633,20 @@ Schema name: `BetaResponseIncompleteEvent`
       "literal": "gpt-image-1.5"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -313787,6 +314545,20 @@ Schema name: `BetaResponseIncompleteEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -315211,6 +315983,20 @@ Schema name: `BetaResponseIncompleteEvent`
       "literal": "gpt-image-1.5"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -316109,6 +316895,20 @@ Schema name: `BetaResponseIncompleteEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -335751,7 +336551,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -335841,7 +336641,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -335864,6 +336664,14 @@ Schema name: `BetaResponseOutputItemAddedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -337794,7 +338602,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -337884,7 +338692,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -337907,6 +338715,14 @@ Schema name: `BetaResponseOutputItemAddedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -341143,7 +341959,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -341160,6 +341976,14 @@ Schema name: `BetaResponseOutputItemAddedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -341167,7 +341991,9 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -342410,7 +343236,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -342427,6 +343253,14 @@ Schema name: `BetaResponseOutputItemAddedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -342434,7 +343268,9 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -343699,6 +344535,20 @@ Schema name: `BetaResponseOutputItemAddedEvent`
       "literal": "gpt-image-1.5"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -344837,6 +345687,20 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -363220,7 +364084,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -363310,7 +364174,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -363333,6 +364197,14 @@ Schema name: `BetaResponseOutputItemDoneEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -365263,7 +366135,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -365353,7 +366225,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -365376,6 +366248,14 @@ Schema name: `BetaResponseOutputItemDoneEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -368612,7 +369492,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -368629,6 +369509,14 @@ Schema name: `BetaResponseOutputItemDoneEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -368636,7 +369524,9 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -369879,7 +370769,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -369896,6 +370786,14 @@ Schema name: `BetaResponseOutputItemDoneEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -369903,7 +370801,9 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -371168,6 +372068,20 @@ Schema name: `BetaResponseOutputItemDoneEvent`
       "literal": "gpt-image-1.5"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -372306,6 +373220,20 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -402710,7 +403638,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -402800,7 +403728,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -402823,6 +403751,14 @@ Schema name: `BetaResponseQueuedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -407283,7 +408219,7 @@ Schema name: `BetaResponseQueuedEvent`
       "kind": "HttpTypeString"
     },
     "constraints": {
-      "maxLength": 10485760
+      "maxLength": 20971520
     },
     "optional": false,
     "nullable": false,
@@ -415441,7 +416377,7 @@ Schema name: `BetaResponseQueuedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -415458,6 +416394,14 @@ Schema name: `BetaResponseQueuedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -415465,7 +416409,9 @@ Schema name: `BetaResponseQueuedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -423361,7 +424307,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -423451,7 +424397,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -423474,6 +424420,14 @@ Schema name: `BetaResponseQueuedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -425404,7 +426358,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -425494,7 +426448,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -425517,6 +426471,14 @@ Schema name: `BetaResponseQueuedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -427764,6 +428726,20 @@ Schema name: `BetaResponseQueuedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -430598,7 +431574,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -430688,7 +431664,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -430711,6 +431687,14 @@ Schema name: `BetaResponseQueuedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -432641,7 +433625,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Background type for the generated image. One of `transparent`,\n`opaque`, or `auto`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -432731,7 +433715,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -432754,6 +433738,14 @@ Schema name: `BetaResponseQueuedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-1.5"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2-2026-04-21"
             }
           ]
         }
@@ -435664,7 +436656,7 @@ Schema name: `BetaResponseQueuedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -435681,6 +436673,14 @@ Schema name: `BetaResponseQueuedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -435688,7 +436688,9 @@ Schema name: `BetaResponseQueuedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -436856,7 +437858,7 @@ Schema name: `BetaResponseQueuedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -436873,6 +437875,14 @@ Schema name: `BetaResponseQueuedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -436880,7 +437890,9 @@ Schema name: `BetaResponseQueuedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -439437,7 +440449,7 @@ Schema name: `BetaResponseQueuedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -439454,6 +440466,14 @@ Schema name: `BetaResponseQueuedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -439461,7 +440481,9 @@ Schema name: `BetaResponseQueuedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -440629,7 +441651,7 @@ Schema name: `BetaResponseQueuedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. Default: `gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -440646,6 +441668,14 @@ Schema name: `BetaResponseQueuedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-1.5"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2-2026-04-21"
         }
       ]
     },
@@ -440653,7 +441683,9 @@ Schema name: `BetaResponseQueuedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -441862,6 +442894,20 @@ Schema name: `BetaResponseQueuedEvent`
       "literal": "gpt-image-1.5"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -442760,6 +443806,20 @@ Schema name: `BetaResponseQueuedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -444184,6 +445244,20 @@ Schema name: `BetaResponseQueuedEvent`
       "literal": "gpt-image-1.5"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -445082,6 +446156,20 @@ Schema name: `BetaResponseQueuedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-1.5"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2-2026-04-21"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {

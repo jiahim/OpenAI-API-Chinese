@@ -384,7 +384,7 @@ wrote hero.png
 
 Current limitation: image commands do not yet have native `--output` support, so image generation still requires extracting `b64_json` and decoding it yourself.
 
-For `gpt-image-2`, omit `--input-fidelity`; image inputs are always processed at high fidelity. Do not use `--background transparent` with `gpt-image-2`. The model also supports broader `--size` values than earlier GPT Image models, as long as the requested resolution satisfies the Image API size constraints.
+For `gpt-image-2`, omit `--input-fidelity`; image inputs are always processed at high fidelity. Transparent backgrounds are available in preview; use `--background transparent` with `png` (the default) or `webp`. `jpeg` isn't supported with transparent backgrounds. The model also supports broader `--size` values than earlier GPT Image models, as long as the requested resolution satisfies the Image API size constraints.
 
 ### Edit an image
 
