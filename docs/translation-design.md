@@ -6,7 +6,7 @@
 
 本仓库负责 Markdown 结构保护、英文/中文路径映射、术语与提示词、翻译 manifest、增量选择和文档级质量门。批处理、并发、Provider 输出校验、重试、checkpoint、进度和取消复用已发布的 `@easy-translate/core`；OpenAI 与兼容接口复用 `@easy-translate/providers`。本仓库不复制 Provider 或通用翻译引擎。
 
-当前实现提供离线的 `translate:status`、`translate:check`、`translate:plan`、Markdown adapter 和单篇 `translate:simulate`；另提供严格限定单篇的 `translate:run`，以及供受信任远端 workflow 使用的受预算约束 `translate:auto`，两者通过 `@easy-translate/providers` 接入 DeepSeek。simulate 不调用模型、不读取 API key，也不写入 `docs/zh`。
+当前实现提供离线的 `translate:status`、`translate:check`、`translate:plan`、Markdown adapter 和单篇 `translate:simulate`；另提供严格限定单篇的 `translate:run`，以及供受信任远端 workflow 使用的受预算约束批量 `translate:auto`，两者通过 `@easy-translate/providers` 接入 DeepSeek。simulate 不调用模型、不读取 API key，也不写入 `docs/zh`。
 
 ## 目录与持久化契约
 
@@ -89,7 +89,7 @@ Runner 只接受 Planner 判定为 `pending`、`stale-source`、`stale-policy` �
 2. **Markdown adapter（已完成）**：source-position 提取/还原、保护不变量、fixture 测试，并对齐 `@easy-translate/core` 的 `DocumentAdapter`。
 3. **本地翻译执行器（已完成）**：Core、checkpoint、单篇选择、质量策略、DeepSeek profile 和显式原子提交。
 4. **质量与人工校对（已完成基础闭环）**：结构检查、术语检查、显式 review 收录和 stale 传播；后续补充未登记文件的 adopt 流程。
-5. **自动翻译 PR（已完成首轮生产验收）**：英文变化合入 `main` 后立即触发，并每天补充执行；每轮一篇、20,000 源字符上限、单一待审核 PR，继续服从 `Quality gate` 和 `main` Ruleset。
+5. **自动翻译 PR（已完成首轮生产验收）**：英文变化合入 `main` 后立即触发，并每天补充执行；每轮最多十篇、单篇 20,000 源字符上限、单一待审核 PR，继续服从 `Quality gate` 和 `main` Ruleset。
 6. **内容积累（当前）**：按核心文档优先级积累中文页面，观察流水线稳定性后再扩大单轮吞吐。
 
 任何阶段都不得把模型凭据写入仓库，也不得直接 push `main`。

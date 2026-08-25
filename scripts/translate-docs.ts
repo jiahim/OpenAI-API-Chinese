@@ -41,9 +41,14 @@ interface CliOptions {
   section: SourceSection | "all";
 }
 
+type SourcedTranslationPageInspection = TranslationPageInspection & {
+  source: NonNullable<TranslationPageInspection["source"]>;
+};
+
 const REPOSITORY_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DEFAULT_CONFIG_PATH = "scripts/translation.config.json";
 const AUTO_MAX_SOURCE_CHARACTERS = 20_000;
+const AUTO_PAGE_LIMIT = 10;
 const TRANSLATABLE_STATES = new Set<TranslationPageState>([
   "missing-target",
   "pending",
@@ -134,9 +139,13 @@ export function parseCliOptions(argv: string[]): CliOptions {
   }
   if (
     options.command === "auto" &&
-    (options.limit !== 1 || options.matches.length > 0 || options.commit)
+    (options.limit !== AUTO_PAGE_LIMIT ||
+      options.matches.length > 0 ||
+      options.commit)
   ) {
-    throw new Error("auto 必须提供 --limit 1，且不允许 --match 或 --commit。");
+    throw new Error(
+      `auto 必须提供 --limit ${AUTO_PAGE_LIMIT}，且不允许 --match 或 --commit。`,
+    );
   }
   return options;
 }
@@ -350,8 +359,10 @@ async function auto(
   options: CliOptions,
 ): Promise<void> {
   const priority = await loadTranslationPriorityConfig(workspace);
-  let selected: TranslationPageInspection | undefined;
-  let sourceCharacters = 0;
+  const selected: Array<{
+    entry: SourcedTranslationPageInspection;
+    sourceCharacters: number;
+  }> = [];
   for (const entry of automaticTranslationCandidates(
     workspace.entries,
     options.section,
@@ -364,33 +375,47 @@ async function auto(
       "自动翻译英文页面",
     );
     if (source.length <= AUTO_MAX_SOURCE_CHARACTERS) {
-      selected = entry;
-      sourceCharacters = source.length;
-      break;
+      selected.push({
+        entry: { ...entry, source: entry.source },
+        sourceCharacters: source.length,
+      });
+      if (selected.length === options.limit) break;
+      continue;
     }
     console.log(
       `跳过超出自动预算的页面：${entry.source.sourcePath} (${source.length} > ${AUTO_MAX_SOURCE_CHARACTERS})`,
     );
   }
-  if (!selected?.source) {
+  if (selected.length === 0) {
     console.log("自动翻译：没有符合状态与字符预算的页面。");
     return;
   }
-  const result = await runTranslationPage(workspace, selected.source.sourceUrl, {
-    commit: true,
-    provider: createConfiguredProvider(workspace.config.provider),
-    useCheckpoint: false,
-  });
-  console.log(`自动翻译页面：${result.sourceUrl}`);
-  console.log(`state=${selected.state}`);
-  const priorityIndex = priority.sourcePaths.indexOf(selected.source.sourcePath);
-  console.log(`priority=${priorityIndex >= 0 ? priorityIndex + 1 : "fallback"}`);
-  console.log(`source=${selected.source.sourcePath}`);
-  console.log(`target=${result.targetPath}`);
-  console.log(`sourceCharacters=${sourceCharacters}`);
-  console.log(`units=${result.result.stats.uniqueUnits}`);
-  console.log(`characters=${result.result.stats.characters}`);
-  console.log("写入：是（译文及 manifest，reviewStatus=machine）");
+  const provider = createConfiguredProvider(workspace.config.provider);
+  for (const [index, selection] of selected.entries()) {
+    const result = await runTranslationPage(
+      workspace,
+      selection.entry.source.sourceUrl,
+      {
+        commit: true,
+        provider,
+        useCheckpoint: false,
+      },
+    );
+    console.log(`自动翻译页面：${result.sourceUrl}`);
+    console.log(`page=${index + 1}/${selected.length}`);
+    console.log(`state=${selection.entry.state}`);
+    const priorityIndex = priority.sourcePaths.indexOf(
+      selection.entry.source.sourcePath,
+    );
+    console.log(`priority=${priorityIndex >= 0 ? priorityIndex + 1 : "fallback"}`);
+    console.log(`source=${selection.entry.source.sourcePath}`);
+    console.log(`target=${result.targetPath}`);
+    console.log(`sourceCharacters=${selection.sourceCharacters}`);
+    console.log(`units=${result.result.stats.uniqueUnits}`);
+    console.log(`characters=${result.result.stats.characters}`);
+    console.log("写入：是（译文及 manifest，reviewStatus=machine）");
+  }
+  console.log(`自动翻译完成：translated=${selected.length}`);
 }
 
 async function review(
