@@ -6,7 +6,7 @@
 
 本仓库负责 Markdown 结构保护、英文/中文路径映射、术语与提示词、翻译 manifest、增量选择和文档级质量门。批处理、并发、Provider 输出校验、重试、checkpoint、进度和取消复用已发布的 `@easy-translate/core`；OpenAI 与兼容接口复用 `@easy-translate/providers`。本仓库不复制 Provider 或通用翻译引擎。
 
-当前本地切片提供离线的 `translate:status`、`translate:check`、`translate:plan`、Markdown adapter 和单篇 `translate:simulate`；另提供严格限定单篇的 `translate:run`，以及供受信任远端 workflow 使用的受预算约束 `translate:auto`，两者通过 `@easy-translate/providers` 接入 DeepSeek。simulate 不调用模型、不读取 API key，也不写入 `docs/zh`。
+当前实现提供离线的 `translate:status`、`translate:check`、`translate:plan`、Markdown adapter 和单篇 `translate:simulate`；另提供严格限定单篇的 `translate:run`，以及供受信任远端 workflow 使用的受预算约束 `translate:auto`，两者通过 `@easy-translate/providers` 接入 DeepSeek。simulate 不调用模型、不读取 API key，也不写入 `docs/zh`。
 
 ## 目录与持久化契约
 
@@ -16,6 +16,7 @@ docs/en/.source-manifest.json         # 英文来源事实
 docs/zh/                              # 生成的简体中文 Markdown
 docs/zh/.translation-manifest.json    # 中文翻译事实
 scripts/translation.config.json       # 带 schemaVersion 的路径与语言配置
+scripts/translation/priority.zh-CN.json # 自动翻译核心文档优先级
 scripts/translation/                  # 翻译规划、提示词和术语表
 ```
 
@@ -36,7 +37,7 @@ docs/en/api/docs/guides/images-vision.md
 
 manifest 不保存 API key、完整模型响应或供应商凭据。
 
-翻译配置、术语表和 translation manifest 都使用显式的 `schemaVersion: 1`。持久化记录拒绝未知字段、非规范路径、重复 source/target 路径和无效 UTC 时间；所有读取都必须解析真实路径并拒绝逃逸仓库的符号链接。术语表以排序后的语义内容参与策略哈希，JSON 排版和对象键顺序不影响增量状态。
+翻译配置因加入必填的 `priorityPath` 使用 `schemaVersion: 2`；术语表、优先级配置和 translation manifest 使用各自的 `schemaVersion: 1`。持久化记录拒绝未知字段、非规范路径、重复 source/target 路径和无效 UTC 时间；所有读取都必须解析真实路径并拒绝逃逸仓库的符号链接。术语表以排序后的语义内容参与策略哈希，JSON 排版和对象键顺序不影响增量状态。
 
 ## 状态机与覆盖安全
 
@@ -71,6 +72,7 @@ render 拒绝缺失或多余单元、空文本、换行/控制字符、被篡改
 ## 增量、恢复与质量门
 
 - 文档级选择由源 SHA 和 `policySha256` 决定。
+- 自动队列先按 `stale-source`、`stale-policy`、`missing-target`、`pending` 维护状态排序；同一状态内按版本化的核心文档清单排序，未列入清单的页面按稳定路径回退。选择优先级不改变译文内容，因此不参与 `policySha256`。
 - 单篇文档内部使用 Easy Translate checkpoint；只有整篇 render 和质量检查成功后才原子更新译文与 manifest。
 - 批量任务默认低并发，先支持 `--section`、`--match` 和 `--limit`，再开放全量运行。
 - 质量检查至少覆盖：Markdown 可重新解析、保护内容一致、无空译文、链接目标一致、代码块一致、manifest/文件 SHA 一致。
@@ -83,10 +85,11 @@ Runner 只接受 Planner 判定为 `pending`、`stale-source`、`stale-policy` �
 
 ## 分阶段交付
 
-1. **规划基础（当前）**：配置、路径映射、策略哈希、manifest contract、状态/计划 CLI。
-2. **Markdown adapter（当前本地分支）**：source-position 提取/还原、保护不变量、fixture 测试，并对齐 `@easy-translate/core` 的 `DocumentAdapter`。
-3. **本地翻译执行器（当前本地分支）**：已完成 Core、checkpoint、单篇选择、质量策略、DeepSeek profile 和显式原子提交。
-4. **质量与人工校对（当前本地分支）**：结构检查、术语检查、显式 review 收录和 stale 传播；后续补充未登记文件的 adopt 流程。
-5. **自动翻译 PR（当前本地分支）**：英文变化合入 `main` 后立即触发，并每天补充执行；每轮一篇、20,000 源字符上限、单一待审核 PR，继续服从 `Quality gate` 和 `main` Ruleset。
+1. **规划基础（已完成）**：配置、路径映射、策略哈希、manifest contract、状态/计划 CLI。
+2. **Markdown adapter（已完成）**：source-position 提取/还原、保护不变量、fixture 测试，并对齐 `@easy-translate/core` 的 `DocumentAdapter`。
+3. **本地翻译执行器（已完成）**：Core、checkpoint、单篇选择、质量策略、DeepSeek profile 和显式原子提交。
+4. **质量与人工校对（已完成基础闭环）**：结构检查、术语检查、显式 review 收录和 stale 传播；后续补充未登记文件的 adopt 流程。
+5. **自动翻译 PR（已完成首轮生产验收）**：英文变化合入 `main` 后立即触发，并每天补充执行；每轮一篇、20,000 源字符上限、单一待审核 PR，继续服从 `Quality gate` 和 `main` Ruleset。
+6. **内容积累（当前）**：按核心文档优先级积累中文页面，观察流水线稳定性后再扩大单轮吞吐。
 
 任何阶段都不得把模型凭据写入仓库，也不得直接 push `main`。

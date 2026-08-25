@@ -4,9 +4,10 @@ export type TranslationReviewStatus = "machine" | "reviewed";
 
 export interface TranslationConfig {
   glossaryPath: string;
+  priorityPath: string;
   promptPath: string;
   provider: TranslationProviderProfile;
-  schemaVersion: 1;
+  schemaVersion: 2;
   sourceManifestPath: string;
   sourceRoot: string;
   targetLanguage: string;
