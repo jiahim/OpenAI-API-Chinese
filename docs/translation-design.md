@@ -6,7 +6,7 @@
 
 本仓库负责 Markdown 结构保护、英文/中文路径映射、术语与提示词、翻译 manifest、增量选择和文档级质量门。批处理、并发、Provider 输出校验、重试、checkpoint、进度和取消复用已发布的 `@easy-translate/core`；OpenAI 与兼容接口复用 `@easy-translate/providers`。本仓库不复制 Provider 或通用翻译引擎。
 
-当前本地切片提供离线的 `translate:status`、`translate:plan` 和 Markdown adapter；不调用模型、不读取 API key，也不写入 `docs/zh`。
+当前本地切片提供离线的 `translate:status`、`translate:check`、`translate:plan`、Markdown adapter 和单篇 `translate:simulate`；另提供严格限定单篇的 `translate:run`，以及供受信任远端 workflow 使用的受预算约束 `translate:auto`，两者通过 `@easy-translate/providers` 接入 DeepSeek。simulate 不调用模型、不读取 API key，也不写入 `docs/zh`。
 
 ## 目录与持久化契约
 
@@ -31,7 +31,7 @@ docs/en/api/docs/guides/images-vision.md
 - `sourceUrl`、`sourcePath`、`targetPath`。
 - 本次翻译对应的 `sourceSha256`。
 - 落盘中文文件的 `targetSha256`。
-- 由目标语言、提示词、术语表和 Markdown adapter 版本共同计算的 `policySha256`。
+- 由目标语言、提示词、术语表、Markdown adapter 版本及 provider/model profile 共同计算的 `policySha256`。
 - `translatedAt` 和 `reviewStatus`（`machine` 或 `reviewed`）。
 
 manifest 不保存 API key、完整模型响应或供应商凭据。
@@ -53,7 +53,7 @@ manifest 不保存 API key、完整模型响应或供应商凭据。
 | `current` | 源、策略、目标文件均匹配 | 跳过 |
 | `removed-source` | 英文来源已经移除 | 保留并交给维护者处理 |
 
-`untracked-target` 与 `modified-target` 必须通过后续显式的 adopt/review 流程处理，自动任务不得覆盖。英文来源移除时也不自动删除中文文件。
+`untracked-target` 必须通过后续显式 adopt 流程处理；`modified-target` 只能通过当前已实现的显式 review 流程收录。自动任务不得覆盖这两种状态，英文来源移除时也不自动删除中文文件。
 
 ## Markdown 保护策略
 
@@ -64,7 +64,7 @@ Markdown adapter 基于 mdast/micromark 的 GFM、frontmatter 与 MDX 语法树�
 - Markdown 标记、表格结构、列表层级和空白意图。
 - 占位符、环境变量、文件路径、URL、版本号和 API 字段名。
 
-adapter 为每个文本单元提供 `heading/body/table/list/quote` block context，以及 `text/link-label/image-alt` kind；链接标签和图片 alt 可翻译，链接、图片目标和 title 不进入翻译单元。fenced/indented code、inline code、HTML/MDX 整棵子树、frontmatter、自动链接、HTML 注释、转义符和字符实体都受到保护。由于 MDX 规范禁用缩进代码并拒绝 CommonMark 角括号自动链接，适配器会额外用 CommonMark AST 识别代码区间，并对自动链接/HTML 注释做等长掩码；等长掩码只用于解析，原始字节始终保存在 format state。
+adapter 为每个文本单元提供 `heading/body/table/list/quote` block context，以及 `text/link-label/image-alt` kind；链接标签和图片 alt 可翻译，链接、图片目标和 title 不进入翻译单元。相邻正文与链接标签共享批次，使模型能结合完整句子翻译分段内容。fenced/indented code、inline code、HTML/MDX 整棵子树、frontmatter、自动链接、HTML 注释、转义符和字符实体都受到保护。由于 MDX 规范禁用缩进代码并拒绝 CommonMark 角括号自动链接，适配器会额外用 CommonMark AST 识别代码区间，并对自动链接/HTML 注释做等长掩码；等长掩码只用于解析，原始字节始终保存在 format state。官方索引页使用的多行导航卡片会被受限模式单独识别，只开放标签和说明文本，仍保护缩进、闭合标记和官方 URL。
 
 render 拒绝缺失或多余单元、空文本、换行/控制字符、被篡改或重叠的区间和策略版本不匹配；回填后再次解析并比较受保护结构签名，结构、代码或 URL 变化时拒绝输出。恒等翻译不会改动任何字节。
 
@@ -75,13 +75,18 @@ render 拒绝缺失或多余单元、空文本、换行/控制字符、被篡改
 - 批量任务默认低并发，先支持 `--section`、`--match` 和 `--limit`，再开放全量运行。
 - 质量检查至少覆盖：Markdown 可重新解析、保护内容一致、无空译文、链接目标一致、代码块一致、manifest/文件 SHA 一致。
 - 机器译文以 PR 形式进入 `main`；人工校对只提升 `reviewStatus`，英文或策略变化后仍会重新标记 stale。
+- 人工润色会先自然进入 `modified-target`；显式 `translate:review` 只在源与策略仍有效、且中英文 Markdown 受保护结构一致时收录新的目标 SHA，并把记录提升为 `reviewed`。
+
+Runner 只接受 Planner 判定为 `pending`、`stale-source`、`stale-policy` 或 `missing-target` 的单篇页面。checkpoint 位于 Git 忽略的 `.cache/translation-checkpoints/`；提交前重新加载工作区并再次验证状态、源 SHA、策略 SHA 和目标路径。写入顺序固定为译文后 manifest，因此异常中断会转化为可检测的阻塞状态，而不会产生虚假的 current 记录。
+
+真实 profile 固定为 `deepseek` / `deepseek-chat`，key 只从 `DEEPSEEK_API_KEY` 注入；`translate:run` 自动加载仓库根目录下被 Git 忽略的 `.env`，现有进程环境优先。该命令必须提供 `--match` 与 `--limit 1`；默认调用模型但不写 `docs/zh` 或 manifest（可能更新 Git 忽略的 checkpoint），只有显式 `--commit` 才原子写入译文与 manifest。API key 不进入配置、策略哈希、日志、checkpoint 或 manifest；provider/model 变更会产生新的策略 SHA 和 checkpoint 路径。
 
 ## 分阶段交付
 
 1. **规划基础（当前）**：配置、路径映射、策略哈希、manifest contract、状态/计划 CLI。
 2. **Markdown adapter（当前本地分支）**：source-position 提取/还原、保护不变量、fixture 测试，并对齐 `@easy-translate/core` 的 `DocumentAdapter`。
-3. **本地翻译执行器**：接入已发布 Core/Providers、checkpoint、限流、选择参数和原子提交。
-4. **质量与人工校对**：结构检查、术语检查、adopt/review 命令和 stale 传播。
-5. **自动翻译 PR**：在英文同步 PR 合入后生成或更新中文翻译 PR，继续服从 `Quality gate` 和 `main` Ruleset。
+3. **本地翻译执行器（当前本地分支）**：已完成 Core、checkpoint、单篇选择、质量策略、DeepSeek profile 和显式原子提交。
+4. **质量与人工校对（当前本地分支）**：结构检查、术语检查、显式 review 收录和 stale 传播；后续补充未登记文件的 adopt 流程。
+5. **自动翻译 PR（当前本地分支）**：英文变化合入 `main` 后立即触发，并每天补充执行；每轮一篇、20,000 源字符上限、单一待审核 PR，继续服从 `Quality gate` 和 `main` Ruleset。
 
 任何阶段都不得把模型凭据写入仓库，也不得直接 push `main`。

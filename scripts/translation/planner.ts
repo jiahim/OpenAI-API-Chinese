@@ -12,12 +12,14 @@ import type {
   TranslationPageInspection,
   TranslationPageRecord,
   TranslationPageState,
+  TranslationProviderProfile,
   TranslationReviewStatus,
   TranslationStatusReport,
+  TranslationWorkspaceSnapshot,
 } from "./types.ts";
 
 const SHA256_PATTERN = /^[a-f0-9]{64}$/u;
-export const MARKDOWN_ADAPTER_POLICY_VERSION = "markdown-source-ranges-v1";
+export const MARKDOWN_ADAPTER_POLICY_VERSION = "markdown-source-ranges-v3";
 
 function sha256(content: string): string {
   return createHash("sha256").update(content, "utf8").digest("hex");
@@ -168,6 +170,7 @@ function parseConfig(raw: unknown): TranslationConfig {
     [
       "glossaryPath",
       "promptPath",
+      "provider",
       "schemaVersion",
       "sourceManifestPath",
       "sourceRoot",
@@ -189,6 +192,7 @@ function parseConfig(raw: unknown): TranslationConfig {
       requiredString(object, "promptPath", "翻译配置"),
       "翻译配置.promptPath",
     ),
+    provider: parseProviderProfile(object.provider),
     schemaVersion: 1,
     sourceManifestPath: normalizedRepositoryPath(
       requiredString(object, "sourceManifestPath", "翻译配置"),
@@ -227,6 +231,22 @@ function parseConfig(raw: unknown): TranslationConfig {
     throw new Error("英文根目录和中文根目录不能相同或互相嵌套。");
   }
   return config;
+}
+
+function parseProviderProfile(raw: unknown): TranslationProviderProfile {
+  const object = asObject(raw, "翻译配置.provider");
+  assertKnownKeys(object, ["apiKeyEnv", "id", "model"], "翻译配置.provider");
+  if (object.id !== "deepseek") {
+    throw new Error("翻译配置.provider.id 目前必须是 deepseek。");
+  }
+  if (object.apiKeyEnv !== "DEEPSEEK_API_KEY") {
+    throw new Error("翻译配置.provider.apiKeyEnv 必须是 DEEPSEEK_API_KEY。");
+  }
+  return {
+    apiKeyEnv: "DEEPSEEK_API_KEY",
+    id: "deepseek",
+    model: requiredString(object, "model", "翻译配置.provider"),
+  };
 }
 
 function validateGlossary(raw: unknown): TranslationGlossary {
@@ -569,10 +589,10 @@ export function classifyTranslationPage(input: {
   return "current";
 }
 
-export async function buildTranslationStatusReport(
+export async function loadTranslationWorkspace(
   repositoryRoot: string,
   configPath = "scripts/translation.config.json",
-): Promise<TranslationStatusReport> {
+): Promise<TranslationWorkspaceSnapshot> {
   const root = await realpath(resolve(repositoryRoot));
   const config = parseConfig(
     await readJson(root, repositoryPath(root, configPath), "翻译配置"),
@@ -612,6 +632,7 @@ export async function buildTranslationStatusReport(
       adapter: MARKDOWN_ADAPTER_POLICY_VERSION,
       glossary,
       prompt,
+      provider: config.provider,
       targetLanguage: config.targetLanguage,
     }),
   );
@@ -692,10 +713,40 @@ export async function buildTranslationStatusReport(
   }
 
   return {
+    config,
+    configPath,
     entries: entries.sort((left, right) =>
       left.targetPath.localeCompare(right.targetPath, "en"),
     ),
+    glossary,
     policySha256,
+    prompt,
+    repositoryRoot: root,
     targetLanguage: config.targetLanguage,
+    translationManifest,
   };
+}
+
+export async function buildTranslationStatusReport(
+  repositoryRoot: string,
+  configPath = "scripts/translation.config.json",
+): Promise<TranslationStatusReport> {
+  const workspace = await loadTranslationWorkspace(repositoryRoot, configPath);
+  return {
+    entries: workspace.entries,
+    policySha256: workspace.policySha256,
+    targetLanguage: workspace.targetLanguage,
+  };
+}
+
+export async function readTranslationWorkspaceFile(
+  workspace: TranslationWorkspaceSnapshot,
+  path: string,
+  label: string,
+): Promise<string> {
+  return readRepositoryFile(
+    workspace.repositoryRoot,
+    repositoryPath(workspace.repositoryRoot, path),
+    label,
+  );
 }

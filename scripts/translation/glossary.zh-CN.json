@@ -3,8 +3,22 @@
   "preserve": [
     "OpenAI",
     "API",
+    "SDK",
     "Chat Completions API",
     "Responses API"
   ],
-  "terms": {}
+  "terms": {
+    "Agent": "智能体",
+    "agent": "智能体",
+    "continuation": "延续",
+    "file search": "文件搜索",
+    "guardrail": "护栏",
+    "handoff": "交接",
+    "hosted tool": "托管工具",
+    "server-side": "服务端",
+    "trace": "追踪",
+    "tracing": "追踪",
+    "web search": "网页搜索",
+    "workflow": "工作流"
+  }
 }

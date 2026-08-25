@@ -3,7 +3,8 @@ name: Sync official English docs
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 3 * * 1"
+    # 00:00 Asia/Shanghai (UTC+8)
+    - cron: "0 16 * * *"
 
 permissions:
   actions: write

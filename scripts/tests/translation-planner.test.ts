@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import {
   mkdir,
   mkdtemp,
+  readFile,
   rm,
   symlink,
   unlink,
@@ -19,10 +20,15 @@ import {
 } from "../translation/planner.ts";
 import type {
   SourcePageSnapshot,
+  TranslationPageInspection,
   TranslationPageRecord,
   TranslationPageState,
 } from "../translation/types.ts";
-import { parseCliOptions } from "../translate-docs.ts";
+import {
+  assertTranslationIntegrity,
+  automaticTranslationCandidates,
+  parseCliOptions,
+} from "../translate-docs.ts";
 
 const SOURCE_URL = "https://developers.openai.com/api/docs/quickstart.md";
 const SOURCE_PATH = "docs/en/api/docs/quickstart.md";
@@ -74,6 +80,11 @@ async function createFixture(): Promise<string> {
     JSON.stringify({
       glossaryPath: "scripts/translation/glossary.zh-CN.json",
       promptPath: "scripts/translation/prompt.zh-CN.md",
+      provider: {
+        apiKeyEnv: "DEEPSEEK_API_KEY",
+        id: "deepseek",
+        model: "deepseek-chat",
+      },
       schemaVersion: 1,
       sourceManifestPath: "docs/en/.source-manifest.json",
       sourceRoot: "docs/en",
@@ -308,6 +319,11 @@ test("planner requires a versioned config and keeps the source manifest under so
   const baseConfig = {
     glossaryPath: "scripts/translation/glossary.zh-CN.json",
     promptPath: "scripts/translation/prompt.zh-CN.md",
+    provider: {
+      apiKeyEnv: "DEEPSEEK_API_KEY",
+      id: "deepseek",
+      model: "deepseek-chat",
+    },
     schemaVersion: 1,
     sourceManifestPath: "docs/en/.source-manifest.json",
     sourceRoot: "docs/en",
@@ -415,6 +431,33 @@ test("planner canonicalizes glossary ordering and rejects ambiguous glossary rul
   }
 });
 
+test("planner includes the non-sensitive provider profile in policy identity", async () => {
+  const root = await createFixture();
+  try {
+    const configPath = join(root, "scripts/translation.config.json");
+    const original = JSON.parse(await readFile(configPath, "utf8")) as Record<
+      string,
+      unknown
+    >;
+    const first = await buildTranslationStatusReport(root);
+    await writeFile(
+      configPath,
+      JSON.stringify({
+        ...original,
+        provider: {
+          apiKeyEnv: "DEEPSEEK_API_KEY",
+          id: "deepseek",
+          model: "deepseek-reasoner",
+        },
+      }),
+    );
+    const changed = await buildTranslationStatusReport(root);
+    assert.notEqual(changed.policySha256, first.policySha256);
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
 test("planner rejects repository paths that escape through symbolic links", async () => {
   const root = await createFixture();
   const outside = await mkdtemp(join(tmpdir(), "translation-outside-"));
@@ -445,6 +488,7 @@ test("planner rejects repository paths that escape through symbolic links", asyn
 test("translation CLI parses filters without changing defaults", () => {
   assert.deepEqual(parseCliOptions(["status"]), {
     command: "status",
+    commit: false,
     configPath: "scripts/translation.config.json",
     matches: [],
     section: "all",
@@ -462,19 +506,103 @@ test("translation CLI parses filters without changing defaults", () => {
     ]),
     {
       command: "plan",
+      commit: false,
       configPath: "scripts/translation.config.json",
       limit: 5,
       matches: ["quickstart"],
       section: "guides",
     },
   );
-  assert.throws(() => parseCliOptions(["translate"]), /plan 或 status/);
+  assert.throws(
+    () => parseCliOptions(["translate"]),
+    /auto、check、plan、review、run、simulate 或 status/,
+  );
   assert.throws(
     () => parseCliOptions(["plan", "--limit", "0"]),
     /必须是正整数/,
   );
   assert.throws(
     () => parseCliOptions(["status", "--match", "quickstart"]),
-    /仅适用于 plan/,
+    /不适用于 status/,
   );
+  assert.deepEqual(
+    parseCliOptions(["simulate", "--match", "quickstart", "--limit", "1"]),
+    {
+      command: "simulate",
+      commit: false,
+      configPath: "scripts/translation.config.json",
+      limit: 1,
+      matches: ["quickstart"],
+      section: "all",
+    },
+  );
+  assert.throws(
+    () => parseCliOptions(["simulate", "--match", "quickstart"]),
+    /--limit 1/,
+  );
+  assert.deepEqual(
+    parseCliOptions(["run", "--match", "quickstart", "--limit", "1", "--commit"]),
+    {
+      command: "run",
+      commit: true,
+      configPath: "scripts/translation.config.json",
+      limit: 1,
+      matches: ["quickstart"],
+      section: "all",
+    },
+  );
+  assert.throws(() => parseCliOptions(["run", "--match", "quickstart"]), /--limit 1/);
+  assert.throws(() => parseCliOptions(["plan", "--commit"]), /仅适用于 run/);
+  assert.deepEqual(
+    parseCliOptions(["review", "--match", "quickstart", "--limit", "1"]),
+    {
+      command: "review",
+      commit: false,
+      configPath: "scripts/translation.config.json",
+      limit: 1,
+      matches: ["quickstart"],
+      section: "all",
+    },
+  );
+  assert.deepEqual(parseCliOptions(["check"]), {
+    command: "check",
+    commit: false,
+    configPath: "scripts/translation.config.json",
+    matches: [],
+    section: "all",
+  });
+  assert.deepEqual(parseCliOptions(["auto", "--limit", "1"]), {
+    command: "auto",
+    commit: false,
+    configPath: "scripts/translation.config.json",
+    limit: 1,
+    matches: [],
+    section: "all",
+  });
+  assert.throws(() => parseCliOptions(["auto"]), /--limit 1/u);
+  assert.throws(
+    () => parseCliOptions(["auto", "--limit", "1", "--match", "page"]),
+    /不允许 --match/u,
+  );
+});
+
+test("automatic selection prioritizes stale work and integrity rejects target drift", () => {
+  const base: Pick<TranslationPageInspection, "targetPath"> = {
+    targetPath: "docs/zh/pending.md",
+  };
+  const entries: TranslationPageInspection[] = [
+    { ...base, state: "pending" },
+    { ...base, state: "stale-policy", targetPath: "docs/zh/policy.md" },
+    { ...base, state: "stale-source", targetPath: "docs/zh/source.md" },
+    { ...base, state: "modified-target", targetPath: "docs/zh/modified.md" },
+  ];
+  assert.deepEqual(
+    automaticTranslationCandidates(entries).map((entry) => entry.state),
+    ["stale-source", "stale-policy", "pending"],
+  );
+  assert.throws(
+    () => assertTranslationIntegrity(entries),
+    /modified-target:docs\/zh\/modified\.md/u,
+  );
+  assert.doesNotThrow(() => assertTranslationIntegrity(entries.slice(0, 3)));
 });

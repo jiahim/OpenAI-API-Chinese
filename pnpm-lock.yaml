@@ -11,6 +11,9 @@ importers:
       '@easy-translate/core':
         specifier: 0.3.0
         version: 0.3.0
+      '@easy-translate/providers':
+        specifier: 0.1.0
+        version: 0.1.0
       '@types/node':
         specifier: ^24.0.0
         version: 24.13.3
@@ -43,6 +46,10 @@ packages:
 
   '@easy-translate/core@0.3.0':
     resolution: {integrity: sha512-RB8ynnlONxL8fR/9AkBu8KVYZBvI4SF0qLgoau7I3cI6QBuEv/STYvLZ4h3SCOjnzOw8ZRmRoZMq6OcU1efXXQ==}
+    engines: {node: '>=20'}
+
+  '@easy-translate/providers@0.1.0':
+    resolution: {integrity: sha512-usRjhBmJIrJlN2r8iMx0DH/OeV0b9dzRMZObF6iY0w5J2lOciGILdv6DyRwMPO/enG4lAExigKd8DZKKKH4VwA==}
     engines: {node: '>=20'}
 
   '@types/debug@4.1.13':
@@ -348,6 +355,10 @@ packages:
 snapshots:
 
   '@easy-translate/core@0.3.0': {}
+
+  '@easy-translate/providers@0.1.0':
+    dependencies:
+      '@easy-translate/core': 0.3.0
 
   '@types/debug@4.1.13':
     dependencies:
