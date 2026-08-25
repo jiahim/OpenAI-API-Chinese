@@ -141,6 +141,6 @@ pnpm translate:review -- --match guides/agents/quickstart.md --limit 1
 
 `.github/workflows/translate-docs.yml` 在 `docs/en` 变更合入 `main` 后触发，并每天北京时间 01:00（UTC 17:00）补充运行。工作流只检出受信任的 `main`，在类型检查、测试和 `translate:check` 全部通过后，才把 `translation-production` 环境中的 `DEEPSEEK_API_KEY` 注入翻译步骤。
 
-`translate:auto -- --limit 1` 按 `stale-source`、`stale-policy`、`missing-target`、`pending` 的顺序选择页面；同一状态内按 `translation/priority.zh-CN.json` 的 `sourcePaths` 顺序优先处理模型、API 概览、文本生成、流式输出、工具、Realtime、Agents 和生产最佳实践等核心文档，未列入清单的页面按稳定路径回退。`translate:plan` 使用相同顺序展示队列。每轮最多一篇，并跳过超过 20,000 个源字符的页面。生成结果只推送到 `automation/translate-openai-docs` 并创建 PR。已有翻译 PR 时工作流直接停止，避免重复调用模型和堆积未审核译文。
+`translate:auto -- --limit 10` 按 `stale-source`、`stale-policy`、`missing-target`、`pending` 的顺序选择页面；同一状态内按 `translation/priority.zh-CN.json` 的 `sourcePaths` 顺序优先处理模型、API 概览、文本生成、流式输出、工具、Realtime、Agents 和生产最佳实践等核心文档，未列入清单的页面按稳定路径回退。`translate:plan` 使用相同顺序展示队列。每轮最多十篇，每篇都不超过 20,000 个源字符。生成结果只推送到 `automation/translate-openai-docs` 并创建一个 PR。已有翻译 PR 时工作流直接停止，避免重复调用模型和堆积未审核译文。
 
 CI 使用完全离线的 `translate:check` 验证 translation manifest；它允许尚未翻译或因英文更新而 stale 的页面存在，但拒绝 `missing-target`、`untracked-target` 和 `modified-target`。自动 PR 仍需通过 `Quality gate` 和 `main` Ruleset。

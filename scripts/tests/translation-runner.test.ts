@@ -30,6 +30,9 @@ import type { MarkdownTranslationContext } from "../translation/markdown-adapter
 const SOURCE_URL = "https://developers.openai.com/api/docs/quickstart.md";
 const SOURCE_PATH = "docs/en/api/docs/quickstart.md";
 const TARGET_PATH = "docs/zh/api/docs/quickstart.md";
+const SECOND_SOURCE_URL = "https://developers.openai.com/api/docs/models.md";
+const SECOND_SOURCE_PATH = "docs/en/api/docs/models.md";
+const SECOND_TARGET_PATH = "docs/zh/api/docs/models.md";
 const DEFAULT_SOURCE = "# Hello OpenAI\n\nRequest API data.\n";
 
 function sha256(content: string): string {
@@ -143,6 +146,52 @@ test("runner commits the page first and a traceable manifest second", async () =
 
     const refreshed = await loadTranslationWorkspace(root);
     assert.equal(refreshed.entries[0]?.state, "current");
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("runner accumulates manifest records across a batch using one workspace snapshot", async () => {
+  const root = await createFixture();
+  try {
+    await writeFile(join(root, SECOND_SOURCE_PATH), DEFAULT_SOURCE);
+    const sourceManifestPath = join(root, "docs/en/.source-manifest.json");
+    const sourceManifest = JSON.parse(
+      await readFile(sourceManifestPath, "utf8"),
+    ) as {
+      pages: Record<string, Record<string, unknown>>;
+    };
+    sourceManifest.pages[SECOND_SOURCE_URL] = {
+      localPath: SECOND_SOURCE_PATH,
+      section: "guides",
+      sha256: sha256(DEFAULT_SOURCE),
+      sourceUrl: SECOND_SOURCE_URL,
+      status: "active",
+    };
+    await writeFile(sourceManifestPath, JSON.stringify(sourceManifest));
+
+    const workspace = await loadTranslationWorkspace(root);
+    await runTranslationPage(workspace, SOURCE_URL, {
+      commit: true,
+      provider: translatedProvider(),
+      useCheckpoint: false,
+    });
+    await runTranslationPage(workspace, SECOND_SOURCE_URL, {
+      commit: true,
+      provider: translatedProvider(),
+      useCheckpoint: false,
+    });
+
+    const manifest = JSON.parse(
+      await readFile(join(root, "docs/zh/.translation-manifest.json"), "utf8"),
+    ) as { pages: Record<string, { targetPath: string }> };
+    assert.equal(manifest.pages[SOURCE_URL]?.targetPath, TARGET_PATH);
+    assert.equal(
+      manifest.pages[SECOND_SOURCE_URL]?.targetPath,
+      SECOND_TARGET_PATH,
+    );
+    await readFile(join(root, TARGET_PATH), "utf8");
+    await readFile(join(root, SECOND_TARGET_PATH), "utf8");
   } finally {
     await rm(root, { force: true, recursive: true });
   }

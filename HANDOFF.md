@@ -125,7 +125,7 @@ pnpm test
 - render 严格检查 source hash、adapter policy、区间、单元全集、空/多行/控制字符，并在回填后重解析、比较受保护结构签名；恒等翻译测试要求字节级不变。
 - PR #8 合入时交付离线 adapter；PR #9 已在其上合入真实 Provider、首篇译文和 review 流程。
 
-### 2.7 单篇执行器与自动翻译（已合入）
+### 2.7 单篇执行器与批量自动翻译（已合入）
 
 - `runner.ts` 复用 Planner 的同一份安全工作区快照，执行前再次核对英文 SHA 和可翻译状态。
 - Easy Translate Core 负责批次、串行 checkpoint 和恢复；默认 batch=20、concurrency=1、max characters=4000。
@@ -137,7 +137,7 @@ pnpm test
 - provider/model 已进入策略哈希，checkpoint 路径也绑定策略 SHA。`translate:run` 仍限定单篇，默认无写入，只有显式 `--commit` 才落盘。
 - 多行官方导航卡片已纳入受限翻译范围；相邻正文和链接标签共享批次，减少行内链接拆分导致的语序问题。
 - `translate:review` 只接受 `current` 或 `modified-target`，重新核对源、策略和 Markdown 受保护结构后登记人工版本的目标 SHA，并将状态提升为 `reviewed`。
-- `translate:auto -- --limit 1` 按 `stale-source`、`stale-policy`、`missing-target`、`pending` 处理；同一状态内按 `scripts/translation/priority.zh-CN.json` 的核心文档顺序筛选，最后回退到稳定路径排序。每轮一篇并跳过超过 20,000 个源字符的页面。
+- `translate:auto -- --limit 10` 按 `stale-source`、`stale-policy`、`missing-target`、`pending` 处理；同一状态内按 `scripts/translation/priority.zh-CN.json` 的核心文档顺序筛选，最后回退到稳定路径排序。每轮最多十篇，每篇都不超过 20,000 个源字符。
 - `translate-docs.yml` 只检出 `main`，先跑离线门禁，再仅向 DeepSeek 步骤注入环境 secret；已有翻译 PR 时停止。它在英文合入后触发，并每天北京时间 01:00 补充运行。
 - CI 已改用 `translate:check`，允许 pending/stale，但拒绝缺失、未登记或被修改而未 review 的目标文件。
 
@@ -176,9 +176,9 @@ pnpm test
 
 ### 后续：积累高价值中文内容并准备静态站
 
-1. 将核心文档优先级配置通过 PR 合入，继续观察 3–5 轮定时自动翻译，确认测试没有持续性偶发失败。
+1. 将核心文档优先级配置和十篇批量翻译通过 PR 合入，继续观察 3–5 轮定时自动翻译，确认测试没有持续性偶发失败。
 2. 优先积累模型、Responses/Chat 概览、文本生成、流式输出、工具、Realtime、Agents 和生产最佳实践等中文页面；逐篇审核机器译文。
-3. 稳定后评估把每轮吞吐从一篇扩大到 3–5 篇小页面，同时保持字符预算、单一待审核 PR 和完整性门禁。
+3. 稳定后根据模型成本、执行时长和审核负担评估是否继续调整单轮吞吐，同时保持单篇字符预算、单一待审核 PR 和完整性门禁。
 4. 中文核心内容形成后启动静态网站 MVP；不要直接把约 89 MiB、含超大单文件的完整英文镜像交给站点生成器。
 
 ## 5. 新任务开场指令

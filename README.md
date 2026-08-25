@@ -24,7 +24,7 @@
 └── .github/workflows/
     ├── ci.yml                # PR、main 与手动触发的质量门禁
     ├── sync-docs.yml         # 每天检查并创建官方更新 PR
-    └── translate-docs.yml    # 受预算约束的单篇自动翻译 PR
+    └── translate-docs.yml    # 受预算约束的批量自动翻译 PR
 ```
 
 英文文件严格按照官网 URL 的路径保存。例如：
@@ -65,11 +65,11 @@ pnpm translate:simulate -- --match guides/agents/quickstart.md --limit 1
 
 GitHub Actions 每天北京时间 00:00 读取官方 `llms.txt` 索引、运行测试并同步英文 Markdown。只有 `docs/en/` 相对 `main` 实际发生变化时，机器人分支 `automation/sync-openai-docs` 才会创建或更新 PR；机器人不会直接写入 `main`。自动 PR 仍须在维护者批准工作流运行后通过 `Quality gate`，并由维护者审核合并。
 
-中文翻译 Action 在英文变更合入 `main` 后立即运行，并每天北京时间 01:00 补充执行。它只检出受信任的 `main`，从 `translation-production` 环境读取 `DEEPSEEK_API_KEY`，每轮最多翻译一篇不超过 20,000 个源字符的页面，并通过 `automation/translate-openai-docs` 创建 PR。已有翻译 PR 等待审核时不会继续调用模型。自动选择先按 stale/missing 状态维护既有译文，再在同一状态内按 `scripts/translation/priority.zh-CN.json` 的核心文档顺序处理，未列入清单的页面保持稳定路径排序。
+中文翻译 Action 在英文变更合入 `main` 后立即运行，并每天北京时间 01:00 补充执行。它只检出受信任的 `main`，从 `translation-production` 环境读取 `DEEPSEEK_API_KEY`，每轮最多翻译十篇页面，每篇不超过 20,000 个源字符，并通过 `automation/translate-openai-docs` 创建一个 PR。已有翻译 PR 等待审核时不会继续调用模型。自动选择先按 stale/missing 状态维护既有译文，再在同一状态内按 `scripts/translation/priority.zh-CN.json` 的核心文档顺序处理，未列入清单的页面保持稳定路径排序。
 
 仓库必须在 **Settings → Actions → General → Workflow permissions** 中启用 **Allow GitHub Actions to create and approve pull requests**。`main` 的 Ruleset 可以因此保持空 bypass，并要求所有更新通过 PR 和 `Quality gate`。
 
-`translate:status` 离线汇总全部页面的增量状态，`translate:check` 额外拒绝目标文件缺失、未登记或与 manifest 不一致；`translate:plan` 按自动队列优先级只读列出下一轮可翻译或阻塞的页面。`translate:simulate` 使用 Echo/Fake Provider 执行无 key、无写入闭环。`translate:run` 用于本地精确单篇翻译，`translate:auto` 为远端选择一篇受预算约束的页面；人工润色后用 `translate:review` 收录目标 SHA 并标记 `reviewed`。完整翻译设计见 [`docs/translation-design.md`](docs/translation-design.md)。静态网站作为核心中文内容形成后的下一阶段推进。
+`translate:status` 离线汇总全部页面的增量状态，`translate:check` 额外拒绝目标文件缺失、未登记或与 manifest 不一致；`translate:plan` 按自动队列优先级只读列出下一轮可翻译或阻塞的页面。`translate:simulate` 使用 Echo/Fake Provider 执行无 key、无写入闭环。`translate:run` 用于本地精确单篇翻译，`translate:auto` 为远端按优先级选择最多十篇受预算约束的页面；人工润色后用 `translate:review` 收录目标 SHA 并标记 `reviewed`。完整翻译设计见 [`docs/translation-design.md`](docs/translation-design.md)。静态网站作为核心中文内容形成后的下一阶段推进。
 
 ## 许可证与内容归属
 
