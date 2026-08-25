@@ -12,7 +12,6 @@ on:
     - cron: "0 17 * * *"
 
 permissions:
-  actions: write
   contents: write
   pull-requests: write
 
@@ -127,7 +126,7 @@ jobs:
         if: steps.publish.outputs.has_changes == 'true'
         run: git diff --name-only "origin/$BASE_BRANCH...HEAD" -- docs/zh > "$RUNNER_TEMP/translation-paths.txt"
 
-      - name: Create the translation pull request and dispatch its gate
+      - name: Create the translation pull request
         if: steps.publish.outputs.has_changes == 'true'
         uses: actions/github-script@v9
         env:
@@ -187,10 +186,3 @@ jobs:
               pull = response.data;
             }
             core.notice(`Translation PR: ${pull.html_url}`);
-            await github.rest.actions.createWorkflowDispatch({
-              owner,
-              repo,
-              workflow_id: "ci.yml",
-              ref: process.env.TRANSLATION_BRANCH,
-            });
-            core.notice(`Dispatched Quality gate for ${process.env.TRANSLATION_BRANCH}.`);

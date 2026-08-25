@@ -99,14 +99,14 @@ pnpm test
 - 每次都从受信任的 `main` 重建该分支；专用分支更新使用 `--force-with-lease`，不会运行分支自身修改过的脚本。
 - 先运行 typecheck 和测试，再执行 `pnpm docs:sync --prune`。
 - 只在 `docs/en/` 相对 `main` 真实变化时推送分支。
-- 创建或复用面向 `main` 的同步 PR，并显式 dispatch 该分支的 `Quality gate`。
+- 创建或复用面向 `main` 的同步 PR；维护者批准工作流运行后，由标准 `pull_request` CI 上报 `Quality gate`。
 - 自动 commit、PR 标题和 PR 说明使用中文；PR 说明按真实 Git 差异区分新增、修改和删除，并列出每个 `docs/en` 文件路径。
 - 已存在的同步 PR 会在后续运行时刷新标题和说明，不会保留过期摘要。
 - 当官方内容重新与 `main` 一致时，重置专用分支并关闭已经失效的同步 PR。
 - 不直接 push `main`，因此门禁不需要机器人 bypass。
 - Job 超时为 45 分钟。
 
-仓库已在 **Settings → Actions → General → Workflow permissions** 启用 **Allow GitHub Actions to create and approve pull requests**。`GITHUB_TOKEN` 创建或更新 PR 时会产生 approval-required 的 `pull_request` 事件，因此 `ci.yml` 会把该事件隔离为非门禁 job；同步工作流随后使用允许递归触发的 `workflow_dispatch` 在自动化分支上运行真正的 `Quality gate`。
+仓库已在 **Settings → Actions → General → Workflow permissions** 启用 **Allow GitHub Actions to create and approve pull requests**。`GITHUB_TOKEN` 创建或更新 PR 时会产生 approval-required 的 `pull_request` 事件；维护者批准后，`ci.yml` 会运行固定名称的 `Quality gate` 并满足 `main` Ruleset。
 
 ### 2.5 中文翻译规划基础
 

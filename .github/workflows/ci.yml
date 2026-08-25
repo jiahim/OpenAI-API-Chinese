@@ -14,8 +14,7 @@ permissions:
 
 jobs:
   quality:
-    name: ${{ github.event_name == 'pull_request' && (github.head_ref == 'automation/sync-openai-docs' || github.head_ref == 'automation/translate-openai-docs') && 'Automation PR dispatch guard' || 'Quality gate' }}
-    if: ${{ github.event_name != 'pull_request' || (github.head_ref != 'automation/sync-openai-docs' && github.head_ref != 'automation/translate-openai-docs') }}
+    name: Quality gate
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
