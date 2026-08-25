@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-25T07:49:12.815Z",
+  "generatedAt": "2026-08-25T08:48:32.630Z",
   "pages": {
     "https://developers.openai.com/api/docs/actions/actions-library.md": {
       "policySha256": "b18300a2aaceaee8134772e495bf788fe6ec97924bf2ca7836d1dd2bbdf9be13",
@@ -20,6 +20,16 @@
       "targetPath": "docs/zh/api/docs/guides/agents/quickstart.md",
       "targetSha256": "503691259beed4831439420591de2a33ea7628ca9ebb8a17d8775f6e9fb1cf7e",
       "translatedAt": "2026-08-24T15:41:03.515Z"
+    },
+    "https://developers.openai.com/api/docs/models.md": {
+      "policySha256": "b18300a2aaceaee8134772e495bf788fe6ec97924bf2ca7836d1dd2bbdf9be13",
+      "reviewStatus": "machine",
+      "sourcePath": "docs/en/api/docs/models.md",
+      "sourceSha256": "07ec134689106583a9f98705e1e9eedd2c12a9af320a19a397b18b82ad8b44a6",
+      "sourceUrl": "https://developers.openai.com/api/docs/models.md",
+      "targetPath": "docs/zh/api/docs/models.md",
+      "targetSha256": "5242db100e02916c11bb8a28ad8217dce6898a3915bc4d287b29d0c6d6aec287",
+      "translatedAt": "2026-08-25T08:48:32.630Z"
     }
   },
   "schemaVersion": 1,
