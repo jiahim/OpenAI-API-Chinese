@@ -61,13 +61,14 @@ async function createFixture(source = DEFAULT_SOURCE): Promise<string> {
     join(root, "scripts/translation.config.json"),
     JSON.stringify({
       glossaryPath: "scripts/translation/glossary.zh-CN.json",
+      priorityPath: "scripts/translation/priority.zh-CN.json",
       promptPath: "scripts/translation/prompt.zh-CN.md",
       provider: {
         apiKeyEnv: "DEEPSEEK_API_KEY",
         id: "deepseek",
         model: "deepseek-chat",
       },
-      schemaVersion: 1,
+      schemaVersion: 2,
       sourceManifestPath: "docs/en/.source-manifest.json",
       sourceRoot: "docs/en",
       targetLanguage: "zh-CN",

@@ -169,6 +169,7 @@ function parseConfig(raw: unknown): TranslationConfig {
     object,
     [
       "glossaryPath",
+      "priorityPath",
       "promptPath",
       "provider",
       "schemaVersion",
@@ -180,20 +181,24 @@ function parseConfig(raw: unknown): TranslationConfig {
     ],
     "翻译配置",
   );
-  if (object.schemaVersion !== 1) {
-    throw new Error("翻译配置.schemaVersion 必须是 1。");
+  if (object.schemaVersion !== 2) {
+    throw new Error("翻译配置.schemaVersion 必须是 2。");
   }
   const config: TranslationConfig = {
     glossaryPath: normalizedRepositoryPath(
       requiredString(object, "glossaryPath", "翻译配置"),
       "翻译配置.glossaryPath",
     ),
+    priorityPath: normalizedRepositoryPath(
+      requiredString(object, "priorityPath", "翻译配置"),
+      "翻译配置.priorityPath",
+    ),
     promptPath: normalizedRepositoryPath(
       requiredString(object, "promptPath", "翻译配置"),
       "翻译配置.promptPath",
     ),
     provider: parseProviderProfile(object.provider),
-    schemaVersion: 1,
+    schemaVersion: 2,
     sourceManifestPath: normalizedRepositoryPath(
       requiredString(object, "sourceManifestPath", "翻译配置"),
       "翻译配置.sourceManifestPath",

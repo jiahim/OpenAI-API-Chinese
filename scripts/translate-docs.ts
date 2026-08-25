@@ -6,7 +6,6 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { createEchoProvider } from "@easy-translate/core";
 
 import {
-  buildTranslationStatusReport,
   loadTranslationWorkspace,
   readTranslationWorkspaceFile,
 } from "./translation/planner.ts";
@@ -15,6 +14,7 @@ import {
   runTranslationPage,
 } from "./translation/runner.ts";
 import { createConfiguredProvider } from "./translation/provider.ts";
+import { loadTranslationPriorityConfig } from "./translation/priority.ts";
 import type { MarkdownTranslationContext } from "./translation/markdown-adapter.ts";
 import type {
   SourceSection,
@@ -200,6 +200,7 @@ const AUTO_STATE_PRIORITY: Readonly<Record<TranslationPageState, number>> = {
 export function automaticTranslationCandidates(
   entries: TranslationPageInspection[],
   section: SourceSection | "all" = "all",
+  prioritySourcePaths: readonly string[] = [],
 ): TranslationPageInspection[] {
   return entries
     .filter(
@@ -207,21 +208,38 @@ export function automaticTranslationCandidates(
         TRANSLATABLE_STATES.has(entry.state) &&
         (section === "all" || entry.source?.section === section),
     )
-    .sort(
-      (left, right) =>
-        AUTO_STATE_PRIORITY[left.state] - AUTO_STATE_PRIORITY[right.state] ||
-        left.targetPath.localeCompare(right.targetPath, "en"),
-    );
+    .sort(translationCandidateComparator(prioritySourcePaths));
+}
+
+function translationCandidateComparator(
+  prioritySourcePaths: readonly string[],
+): (
+  left: TranslationPageInspection,
+  right: TranslationPageInspection,
+) => number {
+  const sourcePriority = new Map(
+    prioritySourcePaths.map((sourcePath, index) => [sourcePath, index]),
+  );
+  return (left, right) =>
+    AUTO_STATE_PRIORITY[left.state] - AUTO_STATE_PRIORITY[right.state] ||
+    (sourcePriority.get(left.source?.sourcePath ?? "") ??
+      Number.MAX_SAFE_INTEGER) -
+      (sourcePriority.get(right.source?.sourcePath ?? "") ??
+        Number.MAX_SAFE_INTEGER) ||
+    left.targetPath.localeCompare(right.targetPath, "en");
 }
 
 function selectedEntries(
   entries: TranslationPageInspection[],
   options: CliOptions,
+  prioritySourcePaths: readonly string[] = [],
 ): TranslationPageInspection[] {
-  const selected = matchingEntries(entries, options).filter(
-    (entry) =>
-      TRANSLATABLE_STATES.has(entry.state) || BLOCKED_STATES.has(entry.state),
-  );
+  const selected = matchingEntries(entries, options)
+    .filter(
+      (entry) =>
+        TRANSLATABLE_STATES.has(entry.state) || BLOCKED_STATES.has(entry.state),
+    )
+    .sort(translationCandidateComparator(prioritySourcePaths));
   return options.limit === undefined ? selected : selected.slice(0, options.limit);
 }
 
@@ -331,11 +349,13 @@ async function auto(
   workspace: TranslationWorkspaceSnapshot,
   options: CliOptions,
 ): Promise<void> {
+  const priority = await loadTranslationPriorityConfig(workspace);
   let selected: TranslationPageInspection | undefined;
   let sourceCharacters = 0;
   for (const entry of automaticTranslationCandidates(
     workspace.entries,
     options.section,
+    priority.sourcePaths,
   )) {
     if (!entry.source) continue;
     const source = await readTranslationWorkspaceFile(
@@ -363,6 +383,8 @@ async function auto(
   });
   console.log(`自动翻译页面：${result.sourceUrl}`);
   console.log(`state=${selected.state}`);
+  const priorityIndex = priority.sourcePaths.indexOf(selected.source.sourcePath);
+  console.log(`priority=${priorityIndex >= 0 ? priorityIndex + 1 : "fallback"}`);
   console.log(`source=${selected.source.sourcePath}`);
   console.log(`target=${result.targetPath}`);
   console.log(`sourceCharacters=${sourceCharacters}`);
@@ -391,47 +413,37 @@ async function review(
 
 export async function main(argv = process.argv.slice(2)): Promise<number> {
   const options = parseCliOptions(argv);
-  if (options.command === "auto") {
-    await auto(
-      await loadTranslationWorkspace(REPOSITORY_ROOT, options.configPath),
-      options,
-    );
-    return 0;
-  }
-  if (options.command === "review") {
-    await review(
-      await loadTranslationWorkspace(REPOSITORY_ROOT, options.configPath),
-      options,
-    );
-    return 0;
-  }
-  if (options.command === "run") {
-    await run(
-      await loadTranslationWorkspace(REPOSITORY_ROOT, options.configPath),
-      options,
-    );
-    return 0;
-  }
-  if (options.command === "simulate") {
-    await simulate(
-      await loadTranslationWorkspace(REPOSITORY_ROOT, options.configPath),
-      options,
-    );
-    return 0;
-  }
-  const report = await buildTranslationStatusReport(
+  const workspace = await loadTranslationWorkspace(
     REPOSITORY_ROOT,
     options.configPath,
   );
+  if (options.command === "auto") {
+    await auto(workspace, options);
+    return 0;
+  }
+  if (options.command === "review") {
+    await review(workspace, options);
+    return 0;
+  }
+  if (options.command === "run") {
+    await run(workspace, options);
+    return 0;
+  }
+  if (options.command === "simulate") {
+    await simulate(workspace, options);
+    return 0;
+  }
   if (options.command === "check" || options.command === "status") {
-    printStatus(report.entries, report.policySha256);
+    printStatus(workspace.entries, workspace.policySha256);
     if (options.command === "check") {
-      assertTranslationIntegrity(report.entries);
+      assertTranslationIntegrity(workspace.entries);
+      await loadTranslationPriorityConfig(workspace);
       console.log("中文翻译完整性：通过");
     }
     return 0;
   }
-  printPlan(selectedEntries(report.entries, options));
+  const priority = await loadTranslationPriorityConfig(workspace);
+  printPlan(selectedEntries(workspace.entries, options, priority.sourcePaths));
   return 0;
 }
 

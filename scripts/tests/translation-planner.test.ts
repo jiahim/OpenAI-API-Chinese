@@ -29,6 +29,7 @@ import {
   automaticTranslationCandidates,
   parseCliOptions,
 } from "../translate-docs.ts";
+import { parseTranslationPriorityConfig } from "../translation/priority.ts";
 
 const SOURCE_URL = "https://developers.openai.com/api/docs/quickstart.md";
 const SOURCE_PATH = "docs/en/api/docs/quickstart.md";
@@ -79,13 +80,14 @@ async function createFixture(): Promise<string> {
     join(root, "scripts/translation.config.json"),
     JSON.stringify({
       glossaryPath: "scripts/translation/glossary.zh-CN.json",
+      priorityPath: "scripts/translation/priority.zh-CN.json",
       promptPath: "scripts/translation/prompt.zh-CN.md",
       provider: {
         apiKeyEnv: "DEEPSEEK_API_KEY",
         id: "deepseek",
         model: "deepseek-chat",
       },
-      schemaVersion: 1,
+      schemaVersion: 2,
       sourceManifestPath: "docs/en/.source-manifest.json",
       sourceRoot: "docs/en",
       targetLanguage: "zh-CN",
@@ -318,13 +320,14 @@ test("planner requires a versioned config and keeps the source manifest under so
   const configPath = join(root, "scripts/translation.config.json");
   const baseConfig = {
     glossaryPath: "scripts/translation/glossary.zh-CN.json",
+    priorityPath: "scripts/translation/priority.zh-CN.json",
     promptPath: "scripts/translation/prompt.zh-CN.md",
     provider: {
       apiKeyEnv: "DEEPSEEK_API_KEY",
       id: "deepseek",
       model: "deepseek-chat",
     },
-    schemaVersion: 1,
+    schemaVersion: 2,
     sourceManifestPath: "docs/en/.source-manifest.json",
     sourceRoot: "docs/en",
     targetLanguage: "zh-CN",
@@ -332,8 +335,8 @@ test("planner requires a versioned config and keeps the source manifest under so
     translationManifestPath: "docs/zh/.translation-manifest.json",
   };
   try {
-    await writeFile(configPath, JSON.stringify({ ...baseConfig, schemaVersion: 2 }));
-    await assert.rejects(buildTranslationStatusReport(root), /schemaVersion 必须是 1/);
+    await writeFile(configPath, JSON.stringify({ ...baseConfig, schemaVersion: 3 }));
+    await assert.rejects(buildTranslationStatusReport(root), /schemaVersion 必须是 2/);
 
     await writeFile(
       configPath,
@@ -605,4 +608,85 @@ test("automatic selection prioritizes stale work and integrity rejects target dr
     /modified-target:docs\/zh\/modified\.md/u,
   );
   assert.doesNotThrow(() => assertTranslationIntegrity(entries.slice(0, 3)));
+});
+
+test("automatic selection uses curated source order within the same state", () => {
+  const fallback = sourcePage({
+    sourcePath: "docs/en/api/docs/fallback.md",
+    sourceUrl: "https://developers.openai.com/api/docs/fallback.md",
+  });
+  const preferred = sourcePage({
+    sourcePath: "docs/en/api/docs/preferred.md",
+    sourceUrl: "https://developers.openai.com/api/docs/preferred.md",
+  });
+  const stale = sourcePage({
+    sourcePath: "docs/en/api/docs/stale.md",
+    sourceUrl: "https://developers.openai.com/api/docs/stale.md",
+  });
+  const entries: TranslationPageInspection[] = [
+    { source: fallback, state: "pending", targetPath: "docs/zh/api/docs/fallback.md" },
+    {
+      source: preferred,
+      state: "pending",
+      targetPath: "docs/zh/api/docs/preferred.md",
+    },
+    { source: stale, state: "stale-source", targetPath: "docs/zh/api/docs/stale.md" },
+  ];
+
+  assert.deepEqual(
+    automaticTranslationCandidates(entries, "all", [preferred.sourcePath]).map(
+      (entry) => entry.source?.sourcePath,
+    ),
+    [stale.sourcePath, preferred.sourcePath, fallback.sourcePath],
+  );
+});
+
+test("translation priority config validates canonical unique source paths", () => {
+  assert.deepEqual(
+    parseTranslationPriorityConfig(
+      {
+        schemaVersion: 1,
+        sourcePaths: ["docs/en/api/docs/quickstart.md"],
+      },
+      "docs/en",
+    ),
+    {
+      schemaVersion: 1,
+      sourcePaths: ["docs/en/api/docs/quickstart.md"],
+    },
+  );
+  assert.throws(
+    () =>
+      parseTranslationPriorityConfig(
+        {
+          schemaVersion: 1,
+          sourcePaths: [
+            "docs/en/api/docs/quickstart.md",
+            "docs/en/api/docs/quickstart.md",
+          ],
+        },
+        "docs/en",
+      ),
+    /不能包含重复路径/u,
+  );
+  assert.throws(
+    () =>
+      parseTranslationPriorityConfig(
+        { schemaVersion: 1, sourcePaths: ["docs/outside.md"] },
+        "docs/en",
+      ),
+    /sourcePath 无效/u,
+  );
+  assert.throws(
+    () =>
+      parseTranslationPriorityConfig(
+        {
+          schemaVersion: 1,
+          sourcePaths: ["docs/en/api/docs/quickstart.md"],
+          unexpected: true,
+        },
+        "docs/en",
+      ),
+    /包含未知字段：unexpected/u,
+  );
 });
