@@ -63,7 +63,7 @@ pnpm translate:simulate -- --match guides/agents/quickstart.md --limit 1
 
 ## 自动更新
 
-GitHub Actions 每天北京时间 00:00 读取官方 `llms.txt` 索引、运行测试并同步英文 Markdown。只有 `docs/en/` 相对 `main` 实际发生变化时，机器人分支 `automation/sync-openai-docs` 才会创建或更新 PR；机器人不会直接写入 `main`。自动 PR 会显式触发 `Quality gate`，仍需维护者审核并合并。
+GitHub Actions 每天北京时间 00:00 读取官方 `llms.txt` 索引、运行测试并同步英文 Markdown。只有 `docs/en/` 相对 `main` 实际发生变化时，机器人分支 `automation/sync-openai-docs` 才会创建或更新 PR；机器人不会直接写入 `main`。自动 PR 仍须在维护者批准工作流运行后通过 `Quality gate`，并由维护者审核合并。
 
 中文翻译 Action 在英文变更合入 `main` 后立即运行，并每天北京时间 01:00 补充执行。它只检出受信任的 `main`，从 `translation-production` 环境读取 `DEEPSEEK_API_KEY`，每轮最多翻译一篇不超过 20,000 个源字符的页面，并通过 `automation/translate-openai-docs` 创建 PR。已有翻译 PR 等待审核时不会继续调用模型。
 
