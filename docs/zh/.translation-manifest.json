@@ -1,6 +1,16 @@
 {
-  "generatedAt": "2026-08-24T15:46:04.137Z",
+  "generatedAt": "2026-08-25T06:45:51.480Z",
   "pages": {
+    "https://developers.openai.com/api/docs/actions/actions-library.md": {
+      "policySha256": "b18300a2aaceaee8134772e495bf788fe6ec97924bf2ca7836d1dd2bbdf9be13",
+      "reviewStatus": "machine",
+      "sourcePath": "docs/en/api/docs/actions/actions-library.md",
+      "sourceSha256": "50d08031f037850bc7a99558fa83c24dd8720ad75cc809522684292b1bbd3c3c",
+      "sourceUrl": "https://developers.openai.com/api/docs/actions/actions-library.md",
+      "targetPath": "docs/zh/api/docs/actions/actions-library.md",
+      "targetSha256": "cf5e154b63953047d4505bf4bda3bb3cfe1827121026c2b810819cb2d7950d54",
+      "translatedAt": "2026-08-25T06:45:51.480Z"
+    },
     "https://developers.openai.com/api/docs/guides/agents/quickstart.md": {
       "policySha256": "b18300a2aaceaee8134772e495bf788fe6ec97924bf2ca7836d1dd2bbdf9be13",
       "reviewStatus": "reviewed",
