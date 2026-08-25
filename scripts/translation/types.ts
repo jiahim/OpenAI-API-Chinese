@@ -5,12 +5,19 @@ export type TranslationReviewStatus = "machine" | "reviewed";
 export interface TranslationConfig {
   glossaryPath: string;
   promptPath: string;
+  provider: TranslationProviderProfile;
   schemaVersion: 1;
   sourceManifestPath: string;
   sourceRoot: string;
   targetLanguage: string;
   targetRoot: string;
   translationManifestPath: string;
+}
+
+export interface TranslationProviderProfile {
+  apiKeyEnv: "DEEPSEEK_API_KEY";
+  id: "deepseek";
+  model: string;
 }
 
 export interface TranslationGlossary {
@@ -66,4 +73,13 @@ export interface TranslationStatusReport {
   entries: TranslationPageInspection[];
   policySha256: string;
   targetLanguage: string;
+}
+
+export interface TranslationWorkspaceSnapshot extends TranslationStatusReport {
+  config: TranslationConfig;
+  configPath: string;
+  glossary: TranslationGlossary;
+  prompt: string;
+  repositoryRoot: string;
+  translationManifest: TranslationManifest;
 }

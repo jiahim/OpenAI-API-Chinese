@@ -96,17 +96,51 @@ node scripts/sync-docs.ts sync --prune --allow-large-prune
 
 ## 定时任务
 
-`.github/workflows/sync-docs.yml` 每周从受信任的 `main` 重建固定分支 `automation/sync-openai-docs`，运行完整同步和 `--prune`，并只提交 `docs/en/` 的真实变化。专用分支使用 `--force-with-lease` 安全更新，工作流不会执行分支自身修改过的脚本。随后创建或更新面向 `main` 的中文 PR；`scripts/sync-pr-summary.ts` 根据实际 Git 差异区分新增、修改和删除，并在 PR 中列出对应文件路径。工作流通过 `workflow_dispatch` 在该分支显式运行 `Quality gate`，不会直接 push `main`。官方内容重新与 `main` 一致时，失效的同步 PR 会被关闭。Job 最长运行 45 分钟，避免上游持续故障或异常 `Retry-After` 无限占用执行器。
+`.github/workflows/sync-docs.yml` 每天北京时间 00:00（UTC 16:00）从受信任的 `main` 重建固定分支 `automation/sync-openai-docs`，运行完整同步和 `--prune`，并只提交 `docs/en/` 的真实变化。专用分支使用 `--force-with-lease` 安全更新，工作流不会执行分支自身修改过的脚本。随后创建或更新面向 `main` 的中文 PR；`scripts/sync-pr-summary.ts` 根据实际 Git 差异区分新增、修改和删除，并在 PR 中列出对应文件路径。工作流通过 `workflow_dispatch` 在该分支显式运行 `Quality gate`，不会直接 push `main`。官方内容重新与 `main` 一致时，失效的同步 PR 会被关闭。Job 最长运行 45 分钟，避免上游持续故障或异常 `Retry-After` 无限占用执行器。
 
 首次启用前，需要在仓库 **Settings → Actions → General → Workflow permissions** 勾选 **Allow GitHub Actions to create and approve pull requests**。随后可对 `main` 设置必须通过 PR 和 `Quality gate` 的 Ruleset，无需给同步机器人配置 bypass。
 
 ## 中文翻译规划
 
-中文翻译基础配置位于 `translation.config.json`，提示词和术语表位于 `translation/`。当前提供两个完全离线、只读的命令：
+中文翻译基础配置位于 `translation.config.json`，提示词和术语表位于 `translation/`。状态、计划和模拟命令完全离线：
 
 ```bash
 pnpm translate:status
 pnpm translate:plan -- --section guides --match quickstart --limit 10
+pnpm translate:simulate -- --match guides/agents/quickstart.md --limit 1
 ```
 
-`translate:status` 根据英文 source manifest、中文 translation manifest、源/目标 SHA 和翻译策略 SHA 推导页面状态。`translate:plan` 列出下一轮可翻译页面，并把未登记的中文文件或 manifest 之外的人工修改标为 blocked，绝不自动覆盖。完整契约见 [`../docs/translation-design.md`](../docs/translation-design.md)。
+`translate:status` 根据英文 source manifest、中文 translation manifest、源/目标 SHA 和翻译策略 SHA 推导页面状态。`translate:plan` 列出下一轮可翻译页面，并把未登记的中文文件或 manifest 之外的人工修改标为 blocked，绝不自动覆盖。
+
+`translate:simulate` 必须提供 `--match` 和 `--limit 1`，使用 Echo/Fake Provider 走完 Planner → Adapter → Core → Quality → Render，但不会读取 API key，也不会写入中文页面、manifest 或 checkpoint。
+
+真实翻译预配置为 DeepSeek `deepseek-chat`。key 只从 `DEEPSEEK_API_KEY` 读取，不得写进仓库。`translate:run` 会自动加载仓库根目录下被 Git 忽略的 `.env`，也可以使用当前 shell 已导出的变量：
+
+```bash
+# .env
+DEEPSEEK_API_KEY="你的 key"
+
+# 或仅在当前 shell 中配置
+export DEEPSEEK_API_KEY="你的 key"
+pnpm translate:run -- --match guides/agents/quickstart.md --limit 1
+# 上一步不写 docs/zh/manifest，但可能更新 Git 忽略的 checkpoint；人工检查后再显式落盘：
+pnpm translate:run -- --match guides/agents/quickstart.md --limit 1 --commit
+```
+
+provider/model 会进入 `policySha256`；更换模型会把现有译文标记为 `stale-policy`。真实执行也严格限定单篇，只有 `--commit` 会写中文页面与 manifest。完整契约见 [`../docs/translation-design.md`](../docs/translation-design.md)。
+
+人工润色已登记的译文后，状态会变为 `modified-target`。确认英文来源和翻译策略仍然有效后，用精确路径登记审核结果：
+
+```bash
+pnpm translate:review -- --match guides/agents/quickstart.md --limit 1
+```
+
+`translate:review` 只接受 `current` 或 `modified-target`，先重新比较英文与中文的 Markdown 受保护结构，再更新 manifest 中的目标 SHA 和 `reviewStatus=reviewed`；遇到代码/URL/结构变化、stale、缺失目标或未登记文件时拒绝收录。
+
+## 自动中文翻译
+
+`.github/workflows/translate-docs.yml` 在 `docs/en` 变更合入 `main` 后触发，并每天北京时间 01:00（UTC 17:00）补充运行。工作流只检出受信任的 `main`，在类型检查、测试和 `translate:check` 全部通过后，才把 `translation-production` 环境中的 `DEEPSEEK_API_KEY` 注入翻译步骤。
+
+`translate:auto -- --limit 1` 按 `stale-source`、`stale-policy`、`missing-target`、`pending` 的顺序选择页面；每轮最多一篇，并跳过超过 20,000 个源字符的页面。生成结果只推送到 `automation/translate-openai-docs` 并创建 PR。已有翻译 PR 时工作流直接停止，避免重复调用模型和堆积未审核译文。
+
+CI 使用完全离线的 `translate:check` 验证 translation manifest；它允许尚未翻译或因英文更新而 stale 的页面存在，但拒绝 `missing-target`、`untracked-target` 和 `modified-target`。自动 PR 仍需通过 `Quality gate` 和 `main` Ruleset。

@@ -1,0 +1,196 @@
+name: Translate Chinese docs
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "docs/en/**"
+  schedule:
+    # 01:00 Asia/Shanghai (UTC+8), one hour after the English sync starts.
+    - cron: "0 17 * * *"
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: translate-openai-chinese-docs
+  cancel-in-progress: false
+
+env:
+  BASE_BRANCH: main
+  TRANSLATION_BRANCH: automation/translate-openai-docs
+
+jobs:
+  translate:
+    if: github.ref == 'refs/heads/main'
+    environment: translation-production
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Stop while a translation PR is awaiting review
+        id: open-pr
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const pulls = await github.paginate(github.rest.pulls.list, {
+              owner,
+              repo,
+              base: process.env.BASE_BRANCH,
+              head: `${owner}:${process.env.TRANSLATION_BRANCH}`,
+              state: "open",
+              per_page: 100,
+            });
+            const exists = pulls.length > 0;
+            core.setOutput("exists", String(exists));
+            if (exists) {
+              core.notice(`Translation PR is awaiting review: ${pulls[0].html_url}`);
+            }
+
+      - name: Check out trusted main with history
+        if: steps.open-pr.outputs.exists != 'true'
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Prepare the automation branch
+        if: steps.open-pr.outputs.exists != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin "refs/heads/$TRANSLATION_BRANCH:refs/remotes/origin/$TRANSLATION_BRANCH" || true
+          git checkout -B "$TRANSLATION_BRANCH" "origin/$BASE_BRANCH"
+
+      - name: Install pnpm
+        if: steps.open-pr.outputs.exists != 'true'
+        uses: pnpm/action-setup@v6
+
+      - name: Set up Node.js
+        if: steps.open-pr.outputs.exists != 'true'
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: pnpm
+
+      - name: Install locked dependencies without lifecycle scripts
+        if: steps.open-pr.outputs.exists != 'true'
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Verify trusted translation code before injecting the secret
+        if: steps.open-pr.outputs.exists != 'true'
+        run: |
+          pnpm typecheck
+          pnpm test
+          pnpm translate:check
+
+      - name: Translate one budgeted page with DeepSeek
+        if: steps.open-pr.outputs.exists != 'true'
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: |
+          if [[ -z "$DEEPSEEK_API_KEY" ]]; then
+            echo "DEEPSEEK_API_KEY is not configured for translation-production." >&2
+            exit 1
+          fi
+          pnpm translate:auto -- --limit 1
+
+      - name: Publish the translation branch
+        if: steps.open-pr.outputs.exists != 'true'
+        id: publish
+        run: |
+          if [[ -z "$(git status --porcelain -- docs/zh)" ]]; then
+            echo "No translation changes were generated."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git add docs/zh
+          git commit -m "docs: 自动更新 OpenAI 中文翻译"
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+
+          if git show-ref --verify --quiet "refs/remotes/origin/$TRANSLATION_BRANCH"; then
+            expected="$(git rev-parse "refs/remotes/origin/$TRANSLATION_BRANCH")"
+            git push \
+              --force-with-lease="refs/heads/$TRANSLATION_BRANCH:$expected" \
+              --set-upstream origin "HEAD:refs/heads/$TRANSLATION_BRANCH"
+          else
+            git push --set-upstream origin "HEAD:refs/heads/$TRANSLATION_BRANCH"
+          fi
+
+      - name: List translated files for the pull request
+        if: steps.publish.outputs.has_changes == 'true'
+        run: git diff --name-only "origin/$BASE_BRANCH...HEAD" -- docs/zh > "$RUNNER_TEMP/translation-paths.txt"
+
+      - name: Create the translation pull request and dispatch its gate
+        if: steps.publish.outputs.has_changes == 'true'
+        uses: actions/github-script@v9
+        env:
+          TRANSLATION_PATHS_FILE: ${{ runner.temp }}/translation-paths.txt
+        with:
+          script: |
+            const { readFile } = require("node:fs/promises");
+            const { owner, repo } = context.repo;
+            const head = `${owner}:${process.env.TRANSLATION_BRANCH}`;
+            const pulls = await github.paginate(github.rest.pulls.list, {
+              owner,
+              repo,
+              base: process.env.BASE_BRANCH,
+              head,
+              state: "open",
+              per_page: 100,
+            });
+            const paths = (await readFile(process.env.TRANSLATION_PATHS_FILE, "utf8"))
+              .trim()
+              .split("\n")
+              .filter(Boolean);
+            const body = [
+              "## 自动中文翻译",
+              "",
+              "本 PR 由受信任的 `main` 工作流使用 DeepSeek 自动生成，每次最多处理一篇受预算约束的页面。",
+              "",
+              "### 文件",
+              "",
+              ...paths.map((path) => `- \`${path}\``),
+              "",
+              "### 审核要求",
+              "",
+              "- 检查中文准确性、术语和可读性。",
+              "- 不要直接修改代码、URL、模型 ID 或 Markdown 结构。",
+              "- 人工润色后运行 `pnpm translate:review -- --match <精确路径> --limit 1`。",
+              "- 合入仍须通过 `Quality gate` 和 `main` Ruleset。",
+            ].join("\n");
+            let pull = pulls[0];
+            if (!pull) {
+              const response = await github.rest.pulls.create({
+                owner,
+                repo,
+                base: process.env.BASE_BRANCH,
+                head: process.env.TRANSLATION_BRANCH,
+                title: "docs: 自动更新 OpenAI 中文翻译",
+                body,
+              });
+              pull = response.data;
+            } else {
+              const response = await github.rest.pulls.update({
+                owner,
+                repo,
+                pull_number: pull.number,
+                title: "docs: 自动更新 OpenAI 中文翻译",
+                body,
+              });
+              pull = response.data;
+            }
+            core.notice(`Translation PR: ${pull.html_url}`);
+            await github.rest.actions.createWorkflowDispatch({
+              owner,
+              repo,
+              workflow_id: "ci.yml",
+              ref: process.env.TRANSLATION_BRANCH,
+            });
+            core.notice(`Dispatched Quality gate for ${process.env.TRANSLATION_BRANCH}.`);

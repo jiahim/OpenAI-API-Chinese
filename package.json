@@ -10,12 +10,18 @@
     "docs:status": "node scripts/sync-docs.ts status",
     "docs:sync": "node scripts/sync-docs.ts sync",
     "test": "node --test --test-concurrency=1 scripts/tests/*.test.ts",
+    "translate:auto": "node --env-file-if-exists=.env scripts/translate-docs.ts auto",
+    "translate:check": "node scripts/translate-docs.ts check",
     "translate:plan": "node scripts/translate-docs.ts plan",
+    "translate:review": "node scripts/translate-docs.ts review",
+    "translate:run": "node --env-file-if-exists=.env scripts/translate-docs.ts run",
+    "translate:simulate": "node scripts/translate-docs.ts simulate",
     "translate:status": "node scripts/translate-docs.ts status",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@easy-translate/core": "0.3.0",
+    "@easy-translate/providers": "0.1.0",
     "@types/node": "^24.0.0",
     "mdast-util-from-markdown": "^2.0.0",
     "mdast-util-frontmatter": "^2.0.0",

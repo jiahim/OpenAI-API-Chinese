@@ -3,17 +3,38 @@
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-import { buildTranslationStatusReport } from "./translation/planner.ts";
+import { createEchoProvider } from "@easy-translate/core";
+
+import {
+  buildTranslationStatusReport,
+  loadTranslationWorkspace,
+  readTranslationWorkspaceFile,
+} from "./translation/planner.ts";
+import {
+  reviewTranslationPage,
+  runTranslationPage,
+} from "./translation/runner.ts";
+import { createConfiguredProvider } from "./translation/provider.ts";
+import type { MarkdownTranslationContext } from "./translation/markdown-adapter.ts";
 import type {
   SourceSection,
   TranslationPageInspection,
   TranslationPageState,
+  TranslationWorkspaceSnapshot,
 } from "./translation/types.ts";
 
-type Command = "plan" | "status";
+type Command =
+  | "auto"
+  | "check"
+  | "plan"
+  | "review"
+  | "run"
+  | "simulate"
+  | "status";
 
 interface CliOptions {
   command: Command;
+  commit: boolean;
   configPath: string;
   limit?: number | undefined;
   matches: string[];
@@ -22,6 +43,7 @@ interface CliOptions {
 
 const REPOSITORY_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DEFAULT_CONFIG_PATH = "scripts/translation.config.json";
+const AUTO_MAX_SOURCE_CHARACTERS = 20_000;
 const TRANSLATABLE_STATES = new Set<TranslationPageState>([
   "missing-target",
   "pending",
@@ -43,12 +65,21 @@ function parsePositiveInteger(value: string | undefined, option: string): number
 
 export function parseCliOptions(argv: string[]): CliOptions {
   const command = argv[0];
-  if (command !== "plan" && command !== "status") {
-    throw new Error("命令必须是 plan 或 status。");
+  if (
+    command !== "auto" &&
+    command !== "check" &&
+    command !== "plan" &&
+    command !== "review" &&
+    command !== "run" &&
+    command !== "simulate" &&
+    command !== "status"
+  ) {
+    throw new Error("命令必须是 auto、check、plan、review、run、simulate 或 status。");
   }
 
   const options: CliOptions = {
     command,
+    commit: false,
     configPath: DEFAULT_CONFIG_PATH,
     matches: [],
     section: "all",
@@ -57,6 +88,8 @@ export function parseCliOptions(argv: string[]): CliOptions {
     const argument = argv[index];
     if (argument === "--") {
       continue;
+    } else if (argument === "--commit") {
+      options.commit = true;
     } else if (argument === "--config") {
       const value = argv[++index];
       if (!value) throw new Error("--config 缺少路径。");
@@ -78,12 +111,32 @@ export function parseCliOptions(argv: string[]): CliOptions {
     }
   }
   if (
-    options.command === "status" &&
+    (options.command === "check" || options.command === "status") &&
     (options.limit !== undefined ||
       options.matches.length > 0 ||
-      options.section !== "all")
+      options.section !== "all" ||
+      options.commit)
   ) {
-    throw new Error("--limit、--match 和 --section 仅适用于 plan 命令。");
+    throw new Error(
+      `--limit、--match、--section 和 --commit 不适用于 ${options.command} 命令。`,
+    );
+  }
+  if (options.commit && options.command !== "run") {
+    throw new Error("--commit 仅适用于 run 命令。");
+  }
+  if (
+    (options.command === "review" ||
+      options.command === "simulate" ||
+      options.command === "run") &&
+    (options.limit !== 1 || options.matches.length === 0)
+  ) {
+    throw new Error(`${options.command} 必须同时提供 --match 和 --limit 1。`);
+  }
+  if (
+    options.command === "auto" &&
+    (options.limit !== 1 || options.matches.length > 0 || options.commit)
+  ) {
+    throw new Error("auto 必须提供 --limit 1，且不允许 --match 或 --commit。");
   }
   return options;
 }
@@ -114,14 +167,69 @@ function printStatus(entries: TranslationPageInspection[], policySha256: string)
   console.log(`policy=${policySha256}`);
 }
 
+export function assertTranslationIntegrity(
+  entries: TranslationPageInspection[],
+): void {
+  const unsafe = entries.filter((entry) =>
+    new Set<TranslationPageState>([
+      "missing-target",
+      "modified-target",
+      "untracked-target",
+    ]).has(entry.state),
+  );
+  if (unsafe.length) {
+    throw new Error(
+      `中文翻译完整性检查失败：${unsafe
+        .map((entry) => `${entry.state}:${entry.targetPath}`)
+        .join("、")}`,
+    );
+  }
+}
+
+const AUTO_STATE_PRIORITY: Readonly<Record<TranslationPageState, number>> = {
+  "stale-source": 0,
+  "stale-policy": 1,
+  "missing-target": 2,
+  pending: 3,
+  current: 4,
+  "modified-target": 4,
+  "removed-source": 4,
+  "untracked-target": 4,
+};
+
+export function automaticTranslationCandidates(
+  entries: TranslationPageInspection[],
+  section: SourceSection | "all" = "all",
+): TranslationPageInspection[] {
+  return entries
+    .filter(
+      (entry) =>
+        TRANSLATABLE_STATES.has(entry.state) &&
+        (section === "all" || entry.source?.section === section),
+    )
+    .sort(
+      (left, right) =>
+        AUTO_STATE_PRIORITY[left.state] - AUTO_STATE_PRIORITY[right.state] ||
+        left.targetPath.localeCompare(right.targetPath, "en"),
+    );
+}
+
 function selectedEntries(
   entries: TranslationPageInspection[],
   options: CliOptions,
 ): TranslationPageInspection[] {
+  const selected = matchingEntries(entries, options).filter(
+    (entry) =>
+      TRANSLATABLE_STATES.has(entry.state) || BLOCKED_STATES.has(entry.state),
+  );
+  return options.limit === undefined ? selected : selected.slice(0, options.limit);
+}
+
+function matchingEntries(
+  entries: TranslationPageInspection[],
+  options: CliOptions,
+): TranslationPageInspection[] {
   const selected = entries.filter((entry) => {
-    if (!TRANSLATABLE_STATES.has(entry.state) && !BLOCKED_STATES.has(entry.state)) {
-      return false;
-    }
     if (
       options.section !== "all" &&
       entry.source?.section !== options.section
@@ -139,7 +247,7 @@ function selectedEntries(
       .toLowerCase();
     return options.matches.every((match) => haystack.includes(match));
   });
-  return options.limit === undefined ? selected : selected.slice(0, options.limit);
+  return selected;
 }
 
 function printPlan(entries: TranslationPageInspection[]): void {
@@ -156,14 +264,171 @@ function printPlan(entries: TranslationPageInspection[]): void {
   console.log(`计划：可翻译=${translatable} 阻塞=${blocked} 总计=${entries.length}`);
 }
 
+function simulateProvider(workspace: TranslationWorkspaceSnapshot) {
+  return createEchoProvider<MarkdownTranslationContext>((text) => {
+    let translated = text;
+    for (const [source, target] of Object.entries(workspace.glossary.terms)) {
+      translated = translated.split(source).join(target);
+    }
+    return translated;
+  });
+}
+
+async function simulate(
+  workspace: TranslationWorkspaceSnapshot,
+  options: CliOptions,
+): Promise<void> {
+  const entries = selectedEntries(workspace.entries, options);
+  if (entries.length !== 1 || !entries[0]?.source) {
+    throw new Error(`simulate 必须且只能匹配 1 篇可翻译页面，当前为 ${entries.length} 篇。`);
+  }
+  if (!TRANSLATABLE_STATES.has(entries[0].state)) {
+    throw new Error(`页面状态 ${entries[0].state} 阻塞模拟执行。`);
+  }
+  const run = await runTranslationPage(
+    workspace,
+    entries[0].source.sourceUrl,
+    {
+      commit: false,
+      provider: simulateProvider(workspace),
+      useCheckpoint: false,
+    },
+  );
+  console.log(`模拟页面：${run.sourceUrl}`);
+  console.log(`source=${entries[0].source.sourcePath}`);
+  console.log(`target=${run.targetPath}`);
+  console.log(`units=${run.result.stats.uniqueUnits}`);
+  console.log(`characters=${run.result.stats.characters}`);
+  console.log("写入：否（simulate 不创建译文或 manifest）");
+}
+
+async function run(
+  workspace: TranslationWorkspaceSnapshot,
+  options: CliOptions,
+): Promise<void> {
+  const entries = selectedEntries(workspace.entries, options);
+  if (entries.length !== 1 || !entries[0]?.source) {
+    throw new Error(`run 必须且只能匹配 1 篇可翻译页面，当前为 ${entries.length} 篇。`);
+  }
+  if (!TRANSLATABLE_STATES.has(entries[0].state)) {
+    throw new Error(`页面状态 ${entries[0].state} 阻塞真实翻译。`);
+  }
+  const result = await runTranslationPage(workspace, entries[0].source.sourceUrl, {
+    commit: options.commit,
+    provider: createConfiguredProvider(workspace.config.provider),
+  });
+  console.log(`翻译页面：${result.sourceUrl}`);
+  console.log(`provider=${workspace.config.provider.id}`);
+  console.log(`model=${workspace.config.provider.model}`);
+  console.log(`source=${entries[0].source.sourcePath}`);
+  console.log(`target=${result.targetPath}`);
+  console.log(`units=${result.result.stats.uniqueUnits}`);
+  console.log(`characters=${result.result.stats.characters}`);
+  console.log(`写入：${result.committed ? "是（译文及 manifest）" : "否（未提供 --commit）"}`);
+}
+
+async function auto(
+  workspace: TranslationWorkspaceSnapshot,
+  options: CliOptions,
+): Promise<void> {
+  let selected: TranslationPageInspection | undefined;
+  let sourceCharacters = 0;
+  for (const entry of automaticTranslationCandidates(
+    workspace.entries,
+    options.section,
+  )) {
+    if (!entry.source) continue;
+    const source = await readTranslationWorkspaceFile(
+      workspace,
+      entry.source.sourcePath,
+      "自动翻译英文页面",
+    );
+    if (source.length <= AUTO_MAX_SOURCE_CHARACTERS) {
+      selected = entry;
+      sourceCharacters = source.length;
+      break;
+    }
+    console.log(
+      `跳过超出自动预算的页面：${entry.source.sourcePath} (${source.length} > ${AUTO_MAX_SOURCE_CHARACTERS})`,
+    );
+  }
+  if (!selected?.source) {
+    console.log("自动翻译：没有符合状态与字符预算的页面。");
+    return;
+  }
+  const result = await runTranslationPage(workspace, selected.source.sourceUrl, {
+    commit: true,
+    provider: createConfiguredProvider(workspace.config.provider),
+    useCheckpoint: false,
+  });
+  console.log(`自动翻译页面：${result.sourceUrl}`);
+  console.log(`state=${selected.state}`);
+  console.log(`source=${selected.source.sourcePath}`);
+  console.log(`target=${result.targetPath}`);
+  console.log(`sourceCharacters=${sourceCharacters}`);
+  console.log(`units=${result.result.stats.uniqueUnits}`);
+  console.log(`characters=${result.result.stats.characters}`);
+  console.log("写入：是（译文及 manifest，reviewStatus=machine）");
+}
+
+async function review(
+  workspace: TranslationWorkspaceSnapshot,
+  options: CliOptions,
+): Promise<void> {
+  const entries = matchingEntries(workspace.entries, options);
+  if (entries.length !== 1 || !entries[0]?.source) {
+    throw new Error(`review 必须且只能匹配 1 篇已登记页面，当前为 ${entries.length} 篇。`);
+  }
+  const result = await reviewTranslationPage(
+    workspace,
+    entries[0].source.sourceUrl,
+  );
+  console.log(`审核页面：${result.sourceUrl}`);
+  console.log(`target=${result.targetPath}`);
+  console.log(`targetSha256=${result.targetSha256}`);
+  console.log("reviewStatus=reviewed");
+}
+
 export async function main(argv = process.argv.slice(2)): Promise<number> {
   const options = parseCliOptions(argv);
+  if (options.command === "auto") {
+    await auto(
+      await loadTranslationWorkspace(REPOSITORY_ROOT, options.configPath),
+      options,
+    );
+    return 0;
+  }
+  if (options.command === "review") {
+    await review(
+      await loadTranslationWorkspace(REPOSITORY_ROOT, options.configPath),
+      options,
+    );
+    return 0;
+  }
+  if (options.command === "run") {
+    await run(
+      await loadTranslationWorkspace(REPOSITORY_ROOT, options.configPath),
+      options,
+    );
+    return 0;
+  }
+  if (options.command === "simulate") {
+    await simulate(
+      await loadTranslationWorkspace(REPOSITORY_ROOT, options.configPath),
+      options,
+    );
+    return 0;
+  }
   const report = await buildTranslationStatusReport(
     REPOSITORY_ROOT,
     options.configPath,
   );
-  if (options.command === "status") {
+  if (options.command === "check" || options.command === "status") {
     printStatus(report.entries, report.policySha256);
+    if (options.command === "check") {
+      assertTranslationIntegrity(report.entries);
+      console.log("中文翻译完整性：通过");
+    }
     return 0;
   }
   printPlan(selectedEntries(report.entries, options));

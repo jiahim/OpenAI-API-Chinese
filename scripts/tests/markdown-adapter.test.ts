@@ -133,6 +133,10 @@ Body text.
     prepared.plan.units.find((unit) => unit.text === "A chart")?.context.kind,
     "image-alt",
   );
+  assert.equal(
+    prepared.plan.units.find((unit) => unit.text === "OpenAI docs")?.batchKey,
+    prepared.plan.units.find((unit) => unit.text === "and")?.batchKey,
+  );
 });
 
 test("multiline list and quote source ranges never consume continuation markers", async () => {
@@ -162,6 +166,47 @@ test("multiline list and quote source ranges never consume continuation markers"
 
 > 译:quoted first
 > 译:quoted second
+`,
+  );
+});
+
+test("generated multiline navigation cards translate labels and descriptions", async () => {
+  const source = `  [Agent definitions
+
+
+
+        Shape one specialist cleanly before you scale the workflow.](https://developers.openai.com/api/docs/guides/agents/define-agents)
+`;
+  const prepared = await markdownDocumentAdapter.prepare({
+    content: source,
+    id: "fixture.md",
+  });
+  assert.deepEqual(
+    prepared.plan.units.map((unit) => unit.text),
+    [
+      "Agent definitions",
+      "Shape one specialist cleanly before you scale the workflow.",
+    ],
+  );
+  assert.ok(
+    prepared.plan.units.every((unit) => unit.context.kind === "link-label"),
+  );
+  const rendered = await markdownDocumentAdapter.render(
+    prepared.formatState,
+    result(
+      new Map([
+        [prepared.plan.units[0]!.id, "智能体定义"],
+        [prepared.plan.units[1]!.id, "在扩展工作流之前，先清晰地定义一个专家。"],
+      ]),
+    ),
+  );
+  assert.equal(
+    rendered,
+    `  [智能体定义
+
+
+
+        在扩展工作流之前，先清晰地定义一个专家。](https://developers.openai.com/api/docs/guides/agents/define-agents)
 `,
   );
 });

@@ -81,6 +81,10 @@ const PROTECTED_TEXT_PATTERN = /\\[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]|&(?:#[xX
 const CONTROL_CHARACTER_PATTERN = /[\u0000-\u001F\u007F]/u;
 const AUTOLINK_PATTERN = /<(?:https?:\/\/|mailto:)[^<>\r\n]+>|<[A-Za-z\d.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z\d.-]+\.[A-Za-z]{2,}>/gu;
 const HTML_COMMENT_PATTERN = /<!--[\s\S]*?-->/gu;
+const GENERATED_CARD_PATTERN =
+  /^[ \t]{1,3}\[([^\]\r\n]+)\r?\n(?:[ \t]*\r?\n)+[ \t]{4,}([^\]\r\n]+)\]\((https:\/\/developers\.openai\.com\/[^)\r\n]+)\)[ \t]*$/gmu;
+const GENERATED_CARD_CODE_PATTERN =
+  /^([ \t]{4,})[^\]\r\n]+(\]\(https:\/\/developers\.openai\.com\/[^)\r\n]+\))[ \t]*$/u;
 
 function sha256(value: string): string {
   return createHash("sha256").update(value, "utf8").digest("hex");
@@ -285,6 +289,30 @@ function textNodeRanges(
   return ranges;
 }
 
+function generatedCardTextRanges(
+  source: string,
+): Array<{ end: number; start: number }> {
+  const ranges: Array<{ end: number; start: number }> = [];
+  GENERATED_CARD_PATTERN.lastIndex = 0;
+  for (const match of source.matchAll(GENERATED_CARD_PATTERN)) {
+    const matchStart = match.index ?? 0;
+    const label = match[1];
+    const description = match[2];
+    if (!label || !description) continue;
+    const labelOffset = match[0].indexOf(label);
+    const descriptionOffset = match[0].lastIndexOf(description);
+    if (labelOffset < 0 || descriptionOffset < 0) continue;
+    ranges.push(
+      { end: matchStart + labelOffset + label.length, start: matchStart + labelOffset },
+      {
+        end: matchStart + descriptionOffset + description.length,
+        start: matchStart + descriptionOffset,
+      },
+    );
+  }
+  return ranges;
+}
+
 function imageAltRange(node: MarkdownNode, source: string): { end: number; start: number } {
   const range = nodeOffsets(node);
   if (source.slice(range.start, range.start + 2) !== "![") {
@@ -307,8 +335,21 @@ function imageAltRange(node: MarkdownNode, source: string): { end: number; start
 }
 
 function collectRanges(root: MarkdownNode, source: string): MarkdownSourceRange[] {
-  const pending: Array<Omit<MarkdownSourceRange, "id">> = [];
-  const sourceProtectedRanges = commonMarkCodeRanges(source);
+  const generatedCardRanges = generatedCardTextRanges(source);
+  const pending: Array<Omit<MarkdownSourceRange, "id">> = generatedCardRanges.map(
+    (range) => ({
+      block: "body",
+      end: range.end,
+      kind: "link-label",
+      policyVersion: MARKDOWN_ADAPTER_POLICY_VERSION,
+      sourceText: source.slice(range.start, range.end),
+      start: range.start,
+    }),
+  );
+  const sourceProtectedRanges = [
+    ...commonMarkCodeRanges(source),
+    ...generatedCardRanges,
+  ];
 
   function visit(node: MarkdownNode, ancestors: readonly MarkdownNode[]): void {
     if (SKIPPED_SUBTREES.has(node.type)) return;
@@ -350,10 +391,20 @@ function collectRanges(root: MarkdownNode, source: string): MarkdownSourceRange[
   }));
 }
 
+function normalizedProtectedRaw(node: MarkdownNode, source: string): string {
+  const range = nodeOffsets(node);
+  const raw = source.slice(range.start, range.end);
+  return node.type === "code"
+    ? raw.replace(
+        GENERATED_CARD_CODE_PATTERN,
+        "$1<generated-card-description>$2",
+      )
+    : raw;
+}
+
 function protectedStructure(node: MarkdownNode, source: string): unknown {
   if (PROTECTED_RAW_NODES.has(node.type)) {
-    const range = nodeOffsets(node);
-    return { raw: source.slice(range.start, range.end), type: node.type };
+    return { raw: normalizedProtectedRaw(node, source), type: node.type };
   }
   const record: Record<string, unknown> = { type: node.type };
   for (const key of [
@@ -379,9 +430,13 @@ function protectedStructure(node: MarkdownNode, source: string): unknown {
 }
 
 function structureSignature(root: MarkdownNode, source: string): string {
-  const commonMarkCode = commonMarkCodeRanges(source).map((range) =>
-    source.slice(range.start, range.end),
-  );
+  const commonMarkCode = commonMarkCodeRanges(source).map((range) => {
+    const raw = source.slice(range.start, range.end);
+    return raw.replace(
+      GENERATED_CARD_CODE_PATTERN,
+      "$1<generated-card-description>$2",
+    );
+  });
   return sha256(
     JSON.stringify({ commonMarkCode, tree: protectedStructure(root, source) }),
   );
@@ -457,7 +512,9 @@ export const markdownDocumentAdapter: DocumentAdapter<
     const ranges = collectRanges(tree, input.content);
     const units: TranslationPlan<MarkdownTranslationContext>["units"] = ranges.map(
       ({ id, sourceText, ...context }) => ({
-        batchKey: `${context.block}:${context.kind}`,
+        // Keep adjacent prose and inline link labels together so the provider
+        // can translate the complete sentence instead of isolated fragments.
+        batchKey: context.block,
         context,
         id,
         text: sourceText,

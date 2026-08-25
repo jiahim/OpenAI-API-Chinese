@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-08-24T15:46:04.137Z",
+  "pages": {
+    "https://developers.openai.com/api/docs/guides/agents/quickstart.md": {
+      "policySha256": "b18300a2aaceaee8134772e495bf788fe6ec97924bf2ca7836d1dd2bbdf9be13",
+      "reviewStatus": "reviewed",
+      "sourcePath": "docs/en/api/docs/guides/agents/quickstart.md",
+      "sourceSha256": "3e487d7fe63a728fd48840a516b85af53e272a298b0fa2f2303fc830737959bb",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents/quickstart.md",
+      "targetPath": "docs/zh/api/docs/guides/agents/quickstart.md",
+      "targetSha256": "503691259beed4831439420591de2a33ea7628ca9ebb8a17d8775f6e9fb1cf7e",
+      "translatedAt": "2026-08-24T15:41:03.515Z"
+    }
+  },
+  "schemaVersion": 1,
+  "targetLanguage": "zh-CN"
+}

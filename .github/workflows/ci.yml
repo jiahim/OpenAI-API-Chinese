@@ -14,8 +14,8 @@ permissions:
 
 jobs:
   quality:
-    name: ${{ github.event_name == 'pull_request' && github.head_ref == 'automation/sync-openai-docs' && 'Automation PR dispatch guard' || 'Quality gate' }}
-    if: ${{ github.event_name != 'pull_request' || github.head_ref != 'automation/sync-openai-docs' }}
+    name: ${{ github.event_name == 'pull_request' && (github.head_ref == 'automation/sync-openai-docs' || github.head_ref == 'automation/translate-openai-docs') && 'Automation PR dispatch guard' || 'Quality gate' }}
+    if: ${{ github.event_name != 'pull_request' || (github.head_ref != 'automation/sync-openai-docs' && github.head_ref != 'automation/translate-openai-docs') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -44,5 +44,5 @@ jobs:
       - name: Report source manifest status
         run: pnpm docs:status
 
-      - name: Report translation plan status
-        run: pnpm translate:status
+      - name: Verify translation manifest integrity
+        run: pnpm translate:check
