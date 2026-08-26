@@ -3,7 +3,14 @@
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-import { createEchoProvider } from "@easy-translate/core";
+import {
+  createEchoProvider,
+  isTranslationCoreError,
+  type RetryOperationOptions,
+  type TranslationProvider,
+  type TranslationRetryEvent,
+  type TranslationRetryPolicy,
+} from "@easy-translate/core";
 
 import {
   loadTranslationWorkspace,
@@ -12,6 +19,7 @@ import {
 import {
   reviewTranslationPage,
   runTranslationPage,
+  runTranslationPageWithRetry,
 } from "./translation/runner.ts";
 import { createConfiguredProvider } from "./translation/provider.ts";
 import { loadTranslationPriorityConfig } from "./translation/priority.ts";
@@ -49,6 +57,18 @@ const REPOSITORY_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DEFAULT_CONFIG_PATH = "scripts/translation.config.json";
 const AUTO_MAX_SOURCE_CHARACTERS = 20_000;
 const AUTO_PAGE_LIMIT = 10;
+const TRANSLATION_BATCH_RETRY_POLICY = {
+  baseDelayMs: 1_000,
+  jitterMs: 250,
+  maxDelayMs: 8_000,
+  maxRetries: 2,
+} satisfies TranslationRetryPolicy;
+const TRANSLATION_PAGE_RETRY_POLICY = {
+  baseDelayMs: 10_000,
+  jitterMs: 2_000,
+  maxDelayMs: 15_000,
+  maxRetries: 1,
+} satisfies TranslationRetryPolicy;
 const TRANSLATABLE_STATES = new Set<TranslationPageState>([
   "missing-target",
   "pending",
@@ -59,6 +79,72 @@ const BLOCKED_STATES = new Set<TranslationPageState>([
   "modified-target",
   "untracked-target",
 ]);
+
+interface ProductionTranslationPage {
+  sourcePath: string;
+  sourceUrl: string;
+  targetPath: string;
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function translationUnitId(error: unknown): string | undefined {
+  if (!isTranslationCoreError(error)) return undefined;
+  const unitId = error.details.unitId;
+  return typeof unitId === "string" && unitId ? unitId : undefined;
+}
+
+function logRetry(
+  level: "batch" | "page",
+  page: ProductionTranslationPage,
+  event: TranslationRetryEvent,
+): void {
+  const maximum =
+    level === "batch"
+      ? TRANSLATION_BATCH_RETRY_POLICY.maxRetries
+      : TRANSLATION_PAGE_RETRY_POLICY.maxRetries;
+  const unitId = translationUnitId(event.error);
+  console.warn(
+    `翻译${level === "batch" ? "批次" : "页面"}重试：source=${page.sourcePath} ` +
+      `retry=${event.attempt}/${maximum} reason=${event.reason} delay=${event.delayMs}ms` +
+      `${unitId ? ` unit=${unitId}` : ""}；${errorMessage(event.error)}`,
+  );
+}
+
+function translationFailure(page: ProductionTranslationPage, error: unknown): Error {
+  const code = isTranslationCoreError(error) ? ` code=${error.code}` : "";
+  const unitId = translationUnitId(error);
+  return new Error(
+    `翻译页面最终失败：source=${page.sourcePath} target=${page.targetPath}${code}` +
+      `${unitId ? ` unit=${unitId}` : ""}；${errorMessage(error)}`,
+    { cause: error },
+  );
+}
+
+async function runProductionTranslationPage(
+  workspace: TranslationWorkspaceSnapshot,
+  page: ProductionTranslationPage,
+  provider: TranslationProvider<MarkdownTranslationContext>,
+  commit: boolean,
+) {
+  const pageRetry: RetryOperationOptions = {
+    ...TRANSLATION_PAGE_RETRY_POLICY,
+    onRetry: (event) => logRetry("page", page, event),
+  };
+  try {
+    return await runTranslationPageWithRetry(workspace, page.sourceUrl, {
+      commit,
+      onRetry: (event) => logRetry("batch", page, event),
+      pageRetry,
+      provider,
+      retry: TRANSLATION_BATCH_RETRY_POLICY,
+    });
+  } catch (error) {
+    throw translationFailure(page, error);
+  }
+}
 
 function parsePositiveInteger(value: string | undefined, option: string): number {
   const parsed = Number(value);
@@ -340,10 +426,21 @@ async function run(
   if (!TRANSLATABLE_STATES.has(entries[0].state)) {
     throw new Error(`页面状态 ${entries[0].state} 阻塞真实翻译。`);
   }
-  const result = await runTranslationPage(workspace, entries[0].source.sourceUrl, {
-    commit: options.commit,
-    provider: createConfiguredProvider(workspace.config.provider),
-  });
+  const page = {
+    sourcePath: entries[0].source.sourcePath,
+    sourceUrl: entries[0].source.sourceUrl,
+    targetPath: entries[0].targetPath,
+  };
+  const result = await runProductionTranslationPage(
+    workspace,
+    page,
+    createConfiguredProvider(
+      workspace.config.provider,
+      process.env,
+      workspace.glossary.preserve,
+    ),
+    options.commit,
+  );
   console.log(`翻译页面：${result.sourceUrl}`);
   console.log(`provider=${workspace.config.provider.id}`);
   console.log(`model=${workspace.config.provider.model}`);
@@ -390,16 +487,21 @@ async function auto(
     console.log("自动翻译：没有符合状态与字符预算的页面。");
     return;
   }
-  const provider = createConfiguredProvider(workspace.config.provider);
+  const provider = createConfiguredProvider(
+    workspace.config.provider,
+    process.env,
+    workspace.glossary.preserve,
+  );
   for (const [index, selection] of selected.entries()) {
-    const result = await runTranslationPage(
+    const result = await runProductionTranslationPage(
       workspace,
-      selection.entry.source.sourceUrl,
       {
-        commit: true,
-        provider,
-        useCheckpoint: false,
+        sourcePath: selection.entry.source.sourcePath,
+        sourceUrl: selection.entry.source.sourceUrl,
+        targetPath: selection.entry.targetPath,
       },
+      provider,
+      true,
     );
     console.log(`自动翻译页面：${result.sourceUrl}`);
     console.log(`page=${index + 1}/${selected.length}`);

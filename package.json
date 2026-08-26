@@ -9,7 +9,7 @@
     "docs:check": "node scripts/sync-docs.ts check",
     "docs:status": "node scripts/sync-docs.ts status",
     "docs:sync": "node scripts/sync-docs.ts sync",
-    "test": "node --test --test-concurrency=1 scripts/tests/*.test.ts",
+    "test": "node --test --test-concurrency=1 --test-isolation=none scripts/tests/*.test.ts",
     "translate:auto": "node --env-file-if-exists=.env scripts/translate-docs.ts auto",
     "translate:check": "node scripts/translate-docs.ts check",
     "translate:plan": "node scripts/translate-docs.ts plan",

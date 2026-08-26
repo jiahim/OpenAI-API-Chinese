@@ -15,6 +15,8 @@ import test from "node:test";
 import {
   createEchoProvider,
   defineProvider,
+  TranslationErrorCode,
+  TranslationResponseError,
   type TranslationProvider,
 } from "@easy-translate/core";
 
@@ -24,6 +26,7 @@ import {
   createTranslationQualityPolicy,
   reviewTranslationPage,
   runTranslationPage,
+  runTranslationPageWithRetry,
 } from "../translation/runner.ts";
 import type { MarkdownTranslationContext } from "../translation/markdown-adapter.ts";
 
@@ -292,6 +295,52 @@ test("runner resumes from the last serialized checkpoint", async () => {
     assert.equal(run.result.stats.fromCheckpointUnits, 1);
     assert.equal(resumedCalls, run.result.stats.uniqueUnits - 1);
     assert.equal(run.rendered, "# One\n\nTwo.\n\nThree.\n");
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("page retry resumes its checkpoint after batch retries are exhausted", async () => {
+  const root = await createFixture("# One\n\nTwo.\n\nThree.\n");
+  try {
+    const workspace = await loadTranslationWorkspace(root);
+    let calls = 0;
+    const provider = defineProvider<MarkdownTranslationContext>({
+      async translateBatch(request) {
+        calls += 1;
+        if (calls === 2) {
+          throw new TranslationResponseError(
+            TranslationErrorCode.ResponseQualityRejected,
+            "simulated quality failure",
+          );
+        }
+        return request.items.map((item) => ({ id: item.id, text: item.text }));
+      },
+    });
+    const pageRetries: number[] = [];
+    const run = await runTranslationPageWithRetry(workspace, SOURCE_URL, {
+      batchSize: 1,
+      concurrency: 1,
+      pageRetry: {
+        baseDelayMs: 0,
+        jitterMs: 0,
+        maxDelayMs: 0,
+        maxRetries: 1,
+        onRetry: (event) => {
+          pageRetries.push(event.attempt);
+        },
+        runtime: {
+          random: () => 0,
+          sleep: async () => undefined,
+        },
+      },
+      provider,
+      retry: 0,
+    });
+
+    assert.deepEqual(pageRetries, [1]);
+    assert.equal(run.result.stats.fromCheckpointUnits, 1);
+    assert.equal(calls, run.result.stats.uniqueUnits + 1);
   } finally {
     await rm(root, { force: true, recursive: true });
   }
