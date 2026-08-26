@@ -7,6 +7,7 @@ import {
   createConfiguredProvider,
   createFragmentedArticleFallbackProvider,
   createPreserveTermsProvider,
+  createSourceLineBreakNormalizationProvider,
   createTerminologyProvider,
 } from "../translation/provider.ts";
 import type { TranslationProviderProfile } from "../translation/types.ts";
@@ -99,6 +100,30 @@ test("fragmented article provider does not mask ordinary missing output", async 
   });
 
   assert.deepEqual(output, []);
+});
+
+test("source line-break provider flattens matching translated layout breaks", async () => {
+  const provider = defineProvider({
+    async translateBatch(request) {
+      return request.items.map((item) => ({
+        id: item.id,
+        text: item.id === "multiline" ? "OpenAI 托管的\n ChatKit" : "新增\n换行",
+      }));
+    },
+  });
+  const normalizedProvider = createSourceLineBreakNormalizationProvider(provider);
+  const output = await normalizedProvider.translateBatch({
+    items: [
+      { context: {}, id: "multiline", text: "OpenAI-hosted\nChatKit" },
+      { context: {}, id: "single-line", text: "Added line break" },
+    ],
+    targetLanguage: "zh-CN",
+  });
+
+  assert.deepEqual(output, [
+    { id: "multiline", text: "OpenAI 托管的 ChatKit" },
+    { id: "single-line", text: "新增\n换行" },
+  ]);
 });
 
 test("preserve-term provider masks longest matches and restores exact terms", async () => {

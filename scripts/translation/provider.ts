@@ -455,6 +455,28 @@ export function createFragmentedArticleFallbackProvider(
   };
 }
 
+export function createSourceLineBreakNormalizationProvider<TContext>(
+  provider: TranslationProvider<TContext>,
+): TranslationProvider<TContext> {
+  return {
+    name: provider.name,
+    async translateBatch(request, signal, onActivity) {
+      const output = await provider.translateBatch(request, signal, onActivity);
+      const sourceById = new Map(
+        request.items.map((item) => [item.id, item.text]),
+      );
+      return output.map((item) => {
+        const source = sourceById.get(item.id);
+        if (source === undefined || !/[\r\n]/u.test(source)) return item;
+        return {
+          ...item,
+          text: item.text.replace(/[ \t]*\r?\n[ \t]*/gu, " "),
+        };
+      });
+    },
+  };
+}
+
 export function createConfiguredProvider(
   profile: TranslationProviderProfile,
   environment: NodeJS.ProcessEnv = process.env,
@@ -467,14 +489,16 @@ export function createConfiguredProvider(
       `缺少环境变量 ${profile.apiKeyEnv}；请在本地配置 DeepSeek API key 后重试。`,
     );
   }
-  return createFragmentedArticleFallbackProvider(
-    createPreserveTermsProvider(
-      createTerminologyProvider(
-        createDeepSeekProvider({ apiKey, model: profile.model }),
+  return createSourceLineBreakNormalizationProvider(
+    createFragmentedArticleFallbackProvider(
+      createPreserveTermsProvider(
+        createTerminologyProvider(
+          createDeepSeekProvider({ apiKey, model: profile.model }),
+          preserveTerms,
+          terminology,
+        ),
         preserveTerms,
-        terminology,
       ),
-      preserveTerms,
     ),
   );
 }
