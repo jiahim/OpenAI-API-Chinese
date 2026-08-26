@@ -129,6 +129,40 @@ function localizedBoundaryPunctuation(
     .join("");
 }
 
+function restoreLiteralStrongDelimiterWhitespace(
+  range: MarkdownSourceRange,
+  translated: string,
+): string {
+  const delimiter = "**";
+  const sourceParts = range.sourceText.split(delimiter);
+  const translatedParts = translated.split(delimiter);
+  if (sourceParts.length === 1 || sourceParts.length !== translatedParts.length) {
+    return translated;
+  }
+  const lastIndex = sourceParts.length - 1;
+  return translatedParts
+    .map((translatedPart, index) => {
+      const sourcePart = sourceParts[index]!;
+      let normalizedPart = translatedPart;
+      if (index > 0) {
+        if (/^[\s]/u.test(sourcePart)) {
+          if (!/^[\s]/u.test(normalizedPart)) normalizedPart = ` ${normalizedPart}`;
+        } else {
+          normalizedPart = normalizedPart.replace(/^[ \t]+/u, "");
+        }
+      }
+      if (index < lastIndex) {
+        if (/[\s]$/u.test(sourcePart)) {
+          if (!/[\s]$/u.test(normalizedPart)) normalizedPart += " ";
+        } else {
+          normalizedPart = normalizedPart.replace(/[ \t]+$/u, "");
+        }
+      }
+      return normalizedPart;
+    })
+    .join(delimiter);
+}
+
 function restoreFragmentBoundaryPunctuation(
   range: MarkdownSourceRange,
   translated: string,
@@ -648,6 +682,7 @@ export const markdownDocumentAdapter: DocumentAdapter<
           `翻译结果包含空文本、内部换行或控制字符：${range.id}`,
         );
       }
+      normalized = restoreLiteralStrongDelimiterWhitespace(range, normalized);
       normalized = restoreFragmentBoundaryPunctuation(range, normalized);
       return { ...range, translated: normalized };
     });

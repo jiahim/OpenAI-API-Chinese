@@ -323,6 +323,29 @@ test("render restores punctuation at fragmented Markdown boundaries", async () =
   );
 });
 
+test("render preserves literal strong-delimiter whitespace", async () => {
+  const source =
+    "> 1.** Boil water**\n\n> Dolphins** are playful animals.**\n";
+  const prepared = await markdownDocumentAdapter.prepare({
+    content: source,
+    id: "fixture.md",
+  });
+  const translations = new Map(
+    prepared.plan.units.map((unit) => [
+      unit.id,
+      unit.text.startsWith("1.") ? "1. **烧开水**" : "海豚**是顽皮的动物。**",
+    ]),
+  );
+
+  assert.equal(
+    await markdownDocumentAdapter.render(
+      prepared.formatState,
+      result(translations),
+    ),
+    "> 1.** 烧开水**\n\n> 海豚** 是顽皮的动物。**\n",
+  );
+});
+
 test("render rejects tampered ranges and prepare rejects invalid source hashes", async () => {
   const prepared = await markdownDocumentAdapter.prepare({
     content: "Body text.\n",
