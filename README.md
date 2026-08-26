@@ -67,7 +67,7 @@ GitHub Actions 每天北京时间 00:00 读取官方 `llms.txt` 索引、运行�
 
 中文翻译 Action 在英文变更合入 `main` 后立即运行，并每天北京时间 01:00 补充执行。它只检出受信任的 `main`，从 `translation-production` 环境读取 `DEEPSEEK_API_KEY`，每轮最多翻译十篇页面，每篇不超过 20,000 个源字符，并通过 `automation/translate-openai-docs` 创建一个 PR。已有翻译 PR 等待审核时不会继续调用模型。自动选择先按 stale/missing 状态维护既有译文，再在同一状态内按 `scripts/translation/priority.zh-CN.json` 的核心文档顺序处理，未列入清单的页面保持稳定路径排序。术语表中的 `preserve` 项会在请求前替换为可恢复占位符；单批请求耗尽有限重试后，页面还会基于 checkpoint 额外恢复一次，认证、配置和完整性错误不会盲目重试。
 
-仓库必须在 **Settings → Actions → General → Workflow permissions** 中启用 **Allow GitHub Actions to create and approve pull requests**。`main` 的 Ruleset 可以因此保持空 bypass，并要求所有更新通过 PR 和 `Quality gate`。
+仓库必须在 **Settings → Actions → General → Workflow permissions** 中启用 **Allow GitHub Actions to create and approve pull requests**。`main` 的 Ruleset 可以因此保持空 bypass，并要求所有更新通过 PR 和 `Quality gate`。PR 标题必须以 `[AI] ` 或 `[Human] ` 标明来源，其中 `codex/` 与 `automation/` 分支强制使用 `[AI] `。
 
 `translate:status` 离线汇总全部页面的增量状态，`translate:check` 额外拒绝目标文件缺失、未登记或与 manifest 不一致；`translate:plan` 按自动队列优先级只读列出下一轮可翻译或阻塞的页面。`translate:simulate` 使用 Echo/Fake Provider 执行无 key、无写入闭环。`translate:run` 用于本地精确单篇翻译，`translate:auto` 为远端按优先级选择最多十篇受预算约束的页面；人工润色后用 `translate:review` 收录目标 SHA 并标记 `reviewed`。完整翻译设计见 [`docs/translation-design.md`](docs/translation-design.md)。静态网站作为核心中文内容形成后的下一阶段推进。
 

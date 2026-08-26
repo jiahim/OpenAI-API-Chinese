@@ -92,11 +92,12 @@ pnpm test
 - 先运行 typecheck 和测试，再执行 `pnpm docs:sync --prune`。
 - 只在 `docs/en/` 相对 `main` 真实变化时推送分支。
 - 创建或复用面向 `main` 的同步 PR；维护者批准工作流运行后，由标准 `pull_request` CI 上报 `Quality gate`。
-- 自动 commit、PR 标题和 PR 说明使用中文；PR 说明按真实 Git 差异区分新增、修改和删除，并列出每个 `docs/en` 文件路径。
+- 自动 commit、PR 标题和 PR 说明使用中文；自动 PR 标题以 `[AI] ` 开头，PR 说明按真实 Git 差异区分新增、修改和删除，并列出每个 `docs/en` 文件路径。
 - 已存在的同步 PR 会在后续运行时刷新标题和说明，不会保留过期摘要。
 - 当官方内容重新与 `main` 一致时，重置专用分支并关闭已经失效的同步 PR。
 - 不直接 push `main`，因此门禁不需要机器人 bypass。
 - Job 超时为 45 分钟。
+- 仓库级指令使用 Codex 标准文件名 `AGENTS.md`；Codex commit 和 PR/MR 标题必须以 `[AI] ` 开头，人工版本使用 `[Human] `。`Quality gate` 会校验所有 PR 标题，并对 `codex/`、`automation/` 分支强制要求 `[AI] `。
 
 仓库已在 **Settings → Actions → General → Workflow permissions** 启用 **Allow GitHub Actions to create and approve pull requests**。`GITHUB_TOKEN` 创建或更新 PR 时会产生 approval-required 的 `pull_request` 事件；维护者批准后，`ci.yml` 会运行固定名称的 `Quality gate` 并满足 `main` Ruleset。
 
@@ -149,7 +150,7 @@ pnpm test
 2026-08-26 翻译规划、Markdown adapter、runner 与自动化验证：
 
 - `pnpm typecheck`：通过。
-- `pnpm test`：63/63 通过（包含 planner、provider、runner、优先级配置与选择、review 结构保护及既有同步/adapter 测试）。
+- `pnpm test`：65/65 通过（包含 PR 标题门禁、planner、provider、runner、优先级配置与选择、review 结构保护及既有同步/adapter 测试）。
 - `pnpm docs:status`：421 active、0 removed、89.0 MiB。
 - `pnpm translate:check`：通过；3 current、418 pending，其他阻塞状态为 0。
 - `pnpm translate:plan -- --limit 12`：按核心文档清单优先列出模型、API 概览、文本生成、流式输出、后台任务、Code Interpreter、生产最佳实践和 Realtime 文档。

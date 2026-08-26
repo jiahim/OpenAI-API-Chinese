@@ -31,6 +31,13 @@ jobs:
           node-version: "24"
           cache: pnpm
 
+      - name: Verify pull request title
+        if: github.event_name == 'pull_request'
+        env:
+          PR_HEAD_REF: ${{ github.head_ref }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: node scripts/check-pr-title.ts
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
