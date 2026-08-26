@@ -26,6 +26,12 @@ interface LiteralBacktickReplacement {
   token: string;
 }
 
+interface LiteralMarkdownDelimiterReplacement {
+  delimiter: string;
+  itemId: string;
+  token: string;
+}
+
 const PRESERVE_MARKER_INSTRUCTION =
   "Paired {{ET_KEEP_*_START}} and {{ET_KEEP_*_END}} markers wrap protected source text. " +
   "Emit every protected span exactly once and copy the complete marker pair with its enclosed text verbatim. " +
@@ -46,6 +52,10 @@ const MISSING_ID_RECOVERY_INSTRUCTION =
   "MISSING ID RECOVERY: This request is a smaller recovery sub-batch. " +
   "Return every requested id exactly once, even when adjacent text fragments form one sentence.";
 const LITERAL_BACKTICK_PATTERN = /`+/gu;
+const LITERAL_MARKDOWN_DELIMITER_INSTRUCTION =
+  "{{ET_MD_*}} tokens represent protected literal Markdown emphasis or strikethrough delimiter runs. " +
+  "Copy every token exactly once in the same response item. Do not add unmarked **, __, or ~~ formatting.";
+const LITERAL_MARKDOWN_DELIMITER_PATTERN = /\*{2,}|_{2,}|~{2,}/gu;
 const TERMINOLOGY_EXCLUSIONS = [
   "USER AGENT",
   "USER AGENTS",
@@ -700,6 +710,85 @@ export function createLiteralBacktickProvider<TContext>(
   };
 }
 
+export function createLiteralMarkdownDelimiterProvider<TContext>(
+  provider: TranslationProvider<TContext>,
+): TranslationProvider<TContext> {
+  let requestIndex = 0;
+  return {
+    name: provider.name,
+    async translateBatch(request, signal, onActivity) {
+      const currentRequest = requestIndex;
+      requestIndex += 1;
+      const replacements: LiteralMarkdownDelimiterReplacement[] = [];
+      const items = request.items.map((item, itemIndex) => {
+        let tokenIndex = 0;
+        return {
+          ...item,
+          text: item.text.replace(
+            LITERAL_MARKDOWN_DELIMITER_PATTERN,
+            (delimiter) => {
+              let token = `{{ET_MD_${currentRequest}_${itemIndex}_${tokenIndex}}}`;
+              while (
+                request.items.some((candidate) => candidate.text.includes(token))
+              ) {
+                tokenIndex += 1;
+                token = `{{ET_MD_${currentRequest}_${itemIndex}_${tokenIndex}}}`;
+              }
+              tokenIndex += 1;
+              replacements.push({ delimiter, itemId: item.id, token });
+              return token;
+            },
+          ),
+        };
+      });
+      const protectedRequest: TranslationBatchRequest<TContext> = {
+        ...request,
+        items,
+        instructions: [
+          request.instructions,
+          LITERAL_MARKDOWN_DELIMITER_INSTRUCTION,
+        ]
+          .filter(Boolean)
+          .join("\n"),
+      };
+      const output = await provider.translateBatch(
+        protectedRequest,
+        signal,
+        onActivity,
+      );
+      for (const replacement of replacements) {
+        let totalOccurrences = 0;
+        let matchingOccurrences = 0;
+        for (const item of output) {
+          const occurrences = item.text.split(replacement.token).length - 1;
+          totalOccurrences += occurrences;
+          if (item.id === replacement.itemId) matchingOccurrences += occurrences;
+        }
+        if (totalOccurrences === 1 && matchingOccurrences === 1) continue;
+        throw new TranslationResponseError(
+          TranslationErrorCode.ResponseQualityRejected,
+          "字面 Markdown 分隔符保护标记被遗漏、复制、移动或改写。",
+          {
+            details: {
+              issueCode: "translation.literal_markdown_marker_changed",
+              unitId: replacement.itemId,
+            },
+            retryInstruction: LITERAL_MARKDOWN_DELIMITER_INSTRUCTION,
+          },
+        );
+      }
+      return output.map((item) => {
+        let text = item.text.replace(LITERAL_MARKDOWN_DELIMITER_PATTERN, "");
+        for (const replacement of replacements) {
+          if (replacement.itemId !== item.id) continue;
+          text = text.split(replacement.token).join(replacement.delimiter);
+        }
+        return { ...item, text };
+      });
+    },
+  };
+}
+
 export function createConfiguredProvider(
   profile: TranslationProviderProfile,
   environment: NodeJS.ProcessEnv = process.env,
@@ -714,16 +803,18 @@ export function createConfiguredProvider(
   }
   return createSourceLineBreakNormalizationProvider(
     createFragmentedArticleFallbackProvider(
-      createLiteralBacktickProvider(
-        createPreserveTermsProvider(
-          createTerminologyProvider(
-            createMissingIdRecoveryProvider(
-              createDeepSeekProvider({ apiKey, model: profile.model }),
+      createLiteralMarkdownDelimiterProvider(
+        createLiteralBacktickProvider(
+          createPreserveTermsProvider(
+            createTerminologyProvider(
+              createMissingIdRecoveryProvider(
+                createDeepSeekProvider({ apiKey, model: profile.model }),
+              ),
+              preserveTerms,
+              terminology,
             ),
             preserveTerms,
-            terminology,
           ),
-          preserveTerms,
         ),
       ),
     ),

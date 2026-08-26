@@ -11,6 +11,7 @@ import {
   createConfiguredProvider,
   createFragmentedArticleFallbackProvider,
   createLiteralBacktickProvider,
+  createLiteralMarkdownDelimiterProvider,
   createMissingIdRecoveryProvider,
   createPreserveTermsProvider,
   createSourceLineBreakNormalizationProvider,
@@ -277,6 +278,60 @@ test("literal-backtick provider rejects markers moved across items", async () =>
       targetLanguage: "zh-CN",
     }),
     /保护标记被遗漏、复制、移动或改写/u,
+  );
+});
+
+test("literal Markdown provider preserves source runs and removes added formatting", async () => {
+  let observedText = "";
+  const provider = defineProvider({
+    async translateBatch(request) {
+      observedText = request.items[0]?.text ?? "";
+      return request.items.map((item) => ({
+        id: item.id,
+        text: `${item.text} and **added**`,
+      }));
+    },
+  });
+  const protectedProvider = createLiteralMarkdownDelimiterProvider(provider);
+  const output = await protectedProvider.translateBatch({
+    items: [{ context: {}, id: "unit", text: "literal ** delimiter" }],
+    targetLanguage: "zh-CN",
+  });
+
+  assert.match(observedText, /\{\{ET_MD_0_0_0\}\}/u);
+  assert.equal(output[0]?.text, "literal ** delimiter and added");
+});
+
+test("literal Markdown provider rejects delimiter markers moved across items", async () => {
+  const provider = defineProvider({
+    async translateBatch(request) {
+      const token = request.items[0]?.text.match(/\{\{ET_MD_[^}]+\}\}/u)?.[0];
+      assert.ok(token);
+      return [
+        { id: request.items[0]!.id, text: "第一项" },
+        { id: request.items[1]!.id, text: `${token}第二项` },
+      ];
+    },
+  });
+  const protectedProvider = createLiteralMarkdownDelimiterProvider(provider);
+
+  await assert.rejects(
+    protectedProvider.translateBatch({
+      items: [
+        { context: {}, id: "first", text: "literal ** delimiter" },
+        { context: {}, id: "second", text: "plain" },
+      ],
+      targetLanguage: "zh-CN",
+    }),
+    (error: unknown) => {
+      assert.ok(error instanceof TranslationResponseError);
+      assert.equal(error.details.unitId, "first");
+      assert.equal(
+        error.details.issueCode,
+        "translation.literal_markdown_marker_changed",
+      );
+      return true;
+    },
   );
 });
 
