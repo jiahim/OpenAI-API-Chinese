@@ -323,6 +323,28 @@ test("render restores punctuation at fragmented Markdown boundaries", async () =
   );
 });
 
+test("render neutralizes translated email autolinks absent from the source", async () => {
+  const source = "Assistant: that is c-h-e-n at example dot com, right?\n";
+  const prepared = await markdownDocumentAdapter.prepare({
+    content: source,
+    id: "fixture.md",
+  });
+  const translations = new Map(
+    prepared.plan.units.map((unit) => [
+      unit.id,
+      "助手：确认一下，是 c-h-e-n@example.com，对吗？",
+    ]),
+  );
+
+  assert.equal(
+    await markdownDocumentAdapter.render(
+      prepared.formatState,
+      result(translations),
+    ),
+    "助手：确认一下，是 c-h-e-n@\u200Cexample.com，对吗？\n",
+  );
+});
+
 test("render preserves literal strong-delimiter whitespace", async () => {
   const source =
     "> 1.** Boil water**\n\n> Dolphins** are playful animals.**\n";

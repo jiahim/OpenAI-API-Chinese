@@ -88,6 +88,8 @@ const CONTROL_CHARACTER_PATTERN = /[\u0000-\u001F\u007F]/u;
 const LEADING_PUNCTUATION_PATTERN = /^\p{P}+/u;
 const TRAILING_PUNCTUATION_PATTERN = /\p{P}+$/u;
 const AUTOLINK_PATTERN = /<(?:https?:\/\/|mailto:)[^<>\r\n]+>|<[A-Za-z\d.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z\d.-]+\.[A-Za-z]{2,}>/gu;
+const EMAIL_AUTOLINK_PATTERN =
+  /[A-Za-z\d.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z\d.-]+\.[A-Za-z]{2,}/gu;
 const HTML_COMMENT_PATTERN = /<!--[\s\S]*?-->/gu;
 const GENERATED_CARD_PATTERN =
   /^[ \t]{1,3}\[([^\]\r\n]+)\r?\n(?:[ \t]*\r?\n)+[ \t]{4,}([^\]\r\n]+)\]\((https:\/\/developers\.openai\.com\/[^)\r\n]+)\)[ \t]*$/gmu;
@@ -178,6 +180,19 @@ function restoreFragmentBoundaryPunctuation(
     restored += localizedBoundaryPunctuation(trailing, "trailing");
   }
   return restored;
+}
+
+function normalizeIntroducedEmailAutolinks(
+  range: MarkdownSourceRange,
+  translated: string,
+): string {
+  const expectedEmails = range.sourceText.match(EMAIL_AUTOLINK_PATTERN)?.length ?? 0;
+  let seenEmails = 0;
+  return translated.replace(EMAIL_AUTOLINK_PATTERN, (email) => {
+    seenEmails += 1;
+    if (seenEmails <= expectedEmails) return email;
+    return email.replace("@", "@\u200C");
+  });
 }
 
 function parseMarkdown(source: string): MarkdownNode {
@@ -698,6 +713,7 @@ export const markdownDocumentAdapter: DocumentAdapter<
       }
       normalized = restoreLiteralStrongDelimiterWhitespace(range, normalized);
       normalized = restoreFragmentBoundaryPunctuation(range, normalized);
+      normalized = normalizeIntroducedEmailAutolinks(range, normalized);
       return { ...range, translated: normalized };
     });
     let rendered = state.source;
