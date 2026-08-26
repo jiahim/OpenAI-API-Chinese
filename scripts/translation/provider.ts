@@ -23,7 +23,9 @@ const PRESERVE_MARKER_INSTRUCTION =
   "Paired {{ET_KEEP_*_START}} and {{ET_KEEP_*_END}} markers wrap protected source text. " +
   "Emit every protected span exactly once and copy the complete marker pair with its enclosed text verbatim. " +
   "Keep it in the matching item when possible; if Chinese word order requires moving it across adjacent " +
-  "fragmented items, move the entire pair instead of copying it. Never translate, omit, duplicate, or split a protected span.";
+  "fragmented items, move the entire pair instead of copying it. Never translate, omit, duplicate, or split a protected span." +
+  " Do not introduce additional unmarked occurrences of protected terms, including by expanding generic or " +
+  "possessive references into product or company names.";
 const PRESERVE_MARKER_RESIDUE_PATTERN = /ET_KEEP_\d+_\d+_\d+/u;
 const TERMINOLOGY_MARKER_INSTRUCTION =
   "Paired {{ET_TERM_*_START}} and {{ET_TERM_*_END}} markers wrap glossary source terms. " +

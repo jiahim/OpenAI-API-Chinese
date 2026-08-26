@@ -161,6 +161,7 @@ test("preserve-term provider masks longest matches and restores exact terms", as
       "{{ET_KEEP_0_0_1_START}}API{{ET_KEEP_0_0_1_END}}&#x20;",
   );
   assert.match(observedInstructions, /Emit every protected span exactly once/u);
+  assert.match(observedInstructions, /Do not introduce additional unmarked occurrences/u);
   assert.equal(output[0]?.text, "Responses API 与 API&#x20;");
 });
 
