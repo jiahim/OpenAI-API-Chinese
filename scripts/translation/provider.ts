@@ -17,8 +17,9 @@ interface PreserveReplacement {
 
 const PRESERVE_MARKER_INSTRUCTION =
   "Paired {{ET_KEEP_*_START}} and {{ET_KEEP_*_END}} markers wrap protected source text. " +
-  "Copy every marker pair and its enclosed text verbatim into the matching translation item; " +
-  "never translate, omit, or move a protected span.";
+  "Emit every protected span exactly once and copy the complete marker pair with its enclosed text verbatim. " +
+  "Keep it in the matching item when possible; if Chinese word order requires moving it across adjacent " +
+  "fragmented items, move the entire pair instead of copying it. Never translate, omit, duplicate, or split a protected span.";
 const PRESERVE_MARKER_RESIDUE_PATTERN = /ET_KEEP_\d+_\d+_\d+/u;
 
 function escapeRegExp(value: string): string {
@@ -205,7 +206,9 @@ export function createPreserveTermsProvider<TContext>(
               issueCode: "translation.preserve_count_changed",
               ...(unitId === undefined ? {} : { unitId }),
             },
-            retryInstruction: PRESERVE_MARKER_INSTRUCTION,
+            retryInstruction:
+              `${PRESERVE_MARKER_INSTRUCTION} The previous response emitted ${actual} ` +
+              `occurrence(s) of ${JSON.stringify(term)}; emit exactly ${expected}.`,
           },
         );
       }

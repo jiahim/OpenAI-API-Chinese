@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { defineProvider } from "@easy-translate/core";
+import { defineProvider, TranslationResponseError } from "@easy-translate/core";
 
 import {
   createConfiguredProvider,
@@ -60,7 +60,7 @@ test("preserve-term provider masks longest matches and restores exact terms", as
     "{{ET_KEEP_0_0_0_START}}Responses API{{ET_KEEP_0_0_0_END}} and " +
       "{{ET_KEEP_0_0_1_START}}API{{ET_KEEP_0_0_1_END}}&#x20;",
   );
-  assert.match(observedInstructions, /Copy every marker pair/u);
+  assert.match(observedInstructions, /Emit every protected span exactly once/u);
   assert.equal(output[0]?.text, "Responses API 与 API&#x20;");
 });
 
@@ -140,7 +140,12 @@ test("preserve-term provider rejects a missing protected span", async () => {
       items: [{ context: {}, id: "unit", text: "Realtime API rejects it." }],
       targetLanguage: "zh-CN",
     }),
-    /保留词数量发生变化：API/u,
+    (error: unknown) => {
+      assert.ok(error instanceof TranslationResponseError);
+      assert.match(error.message, /保留词数量发生变化：API/u);
+      assert.match(error.retryInstruction ?? "", /emit exactly 1/u);
+      return true;
+    },
   );
 });
 
