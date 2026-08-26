@@ -143,6 +143,6 @@ pnpm translate:review -- --match guides/agents/quickstart.md --limit 1
 
 `translate:auto -- --limit 10` 按 `stale-source`、`stale-policy`、`missing-target`、`pending` 的顺序选择页面；同一状态内按 `translation/priority.zh-CN.json` 的 `sourcePaths` 顺序优先处理模型、API 概览、文本生成、流式输出、工具、Realtime、Agents 和生产最佳实践等核心文档，未列入清单的页面按稳定路径回退。`translate:plan` 使用相同顺序展示队列。每轮最多十篇，每篇都不超过 20,000 个源字符。生成结果只推送到 `automation/translate-openai-docs` 并创建一个 PR。已有翻译 PR 时工作流直接停止，避免重复调用模型和堆积未审核译文。
 
-生产翻译采用分层恢复：术语表的 `preserve` 项在发送前替换为唯一占位符，模型返回后再逐字恢复；指定译法按完整单词或短语匹配，并忽略已整体保留的产品名，避免将 `Agent` 误匹配到 `Agents SDK`。当一个 Markdown 语义块被链接、图片、代码或换行拆成多个翻译单元时，术语表仍随完整批次发送给模型，但质量门不再要求每个片段各自包含目标术语，避免中文调整语序后被误判。每个批次对格式、质量、网络、限流、超时和服务端临时错误最多重试 2 次，并记录页面、单元、原因和退避时间。批次仍失败时，整页等待 10–12 秒后额外恢复 1 次，已完成批次从 Git 忽略的 checkpoint 继续，不重复调用。认证失败、无效请求、配置、路径和仓库完整性错误不会重试。
+生产翻译采用分层恢复：术语表的 `preserve` 项在发送前按最长匹配包裹为唯一的成对保护标记，标记内保留可见原词；模型复制标记、去掉外壳或改写成对标记内文本时，返回后都会恢复原词，任何保护标记残留都会被拒绝。指定译法按完整单词或短语匹配，并忽略已整体保留的产品名，避免将 `Agent` 误匹配到 `Agents SDK`。当一个 Markdown 语义块被链接、图片、代码或换行拆成多个翻译单元时，术语表仍随完整批次发送给模型，但质量门不再要求每个片段各自包含目标术语，避免中文调整语序后被误判。每个批次对格式、质量、网络、限流、超时和服务端临时错误最多重试 2 次，并记录页面、单元、原因和退避时间；同一质量错误再次出现时提前终止。批次仍失败时，只有格式响应错误和可重试 Provider 错误会在等待 10–12 秒后从 checkpoint 做一次页面恢复，质量错误不再整页重试。认证失败、无效请求、配置、路径和仓库完整性错误不会重试。
 
 CI 使用完全离线的 `translate:check` 验证 translation manifest；它允许尚未翻译或因英文更新而 stale 的页面存在，但拒绝 `missing-target`、`untracked-target` 和 `modified-target`。自动 PR 仍需通过 `Quality gate` 和 `main` Ruleset。

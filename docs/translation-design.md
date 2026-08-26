@@ -73,7 +73,7 @@ render 拒绝缺失或多余单元、空文本、换行/控制字符、被篡改
 
 - 文档级选择由源 SHA 和 `policySha256` 决定。
 - 自动队列先按 `stale-source`、`stale-policy`、`missing-target`、`pending` 维护状态排序；同一状态内按版本化的核心文档清单排序，未列入清单的页面按稳定路径回退。选择优先级不改变译文内容，因此不参与 `policySha256`。
-- 单篇文档内部使用 Easy Translate checkpoint；批次对格式、质量和可重试 Provider 错误做有限指数退避，批次耗尽后页面可从 checkpoint 额外恢复一次。认证、配置、路径和完整性错误不重试。只有整篇 render 和质量检查成功后才原子更新译文与 manifest。
+- 单篇文档内部使用 Easy Translate checkpoint；批次对格式、质量和可重试 Provider 错误做有限指数退避。质量错误会携带定向修正提示重试，但同一单元、规则和消息再次失败时立即停止；批次耗尽后，只有格式响应错误和可重试 Provider 错误可以从 checkpoint 做一次页面级恢复，质量错误不再整页重试。认证、配置、路径和完整性错误不重试。只有整篇 render 和质量检查成功后才原子更新译文与 manifest。
 - 批量任务默认低并发，先支持 `--section`、`--match` 和 `--limit`，再开放全量运行。
 - 质量检查至少覆盖：Markdown 可重新解析、保护内容一致、无空译文、链接目标一致、代码块一致、manifest/文件 SHA 一致。
 - 机器译文以 PR 形式进入 `main`；人工校对只提升 `reviewStatus`，英文或策略变化后仍会重新标记 stale。
@@ -81,7 +81,7 @@ render 拒绝缺失或多余单元、空文本、换行/控制字符、被篡改
 
 Runner 只接受 Planner 判定为 `pending`、`stale-source`、`stale-policy` 或 `missing-target` 的单篇页面。checkpoint 位于 Git 忽略的 `.cache/translation-checkpoints/`；提交前重新加载工作区并再次验证状态、源 SHA、策略 SHA 和目标路径。写入顺序固定为译文后 manifest，因此异常中断会转化为可检测的阻塞状态，而不会产生虚假的 current 记录。
 
-真实 profile 固定为 `deepseek` / `deepseek-chat`，key 只从 `DEEPSEEK_API_KEY` 注入；`translate:run` 自动加载仓库根目录下被 Git 忽略的 `.env`，现有进程环境优先。术语表的 `preserve` 项在 Provider 请求前按最长匹配替换为批次内唯一占位符，响应后再逐字恢复；指定译法只检查完整单词或短语，并排除已整体保留的产品名。质量策略会独立复核术语与占位符，但当同一 Markdown 语义块被链接、图片、代码或换行拆成多个翻译单元时，不再对单个片段强制指定译法，因为中文语序可能把术语移动到相邻片段；术语表仍会随完整批次发送给模型。该命令必须提供 `--match` 与 `--limit 1`；默认调用模型但不写 `docs/zh` 或 manifest（可能更新 Git 忽略的 checkpoint），只有显式 `--commit` 才原子写入译文与 manifest。API key 不进入配置、策略哈希、日志、checkpoint 或 manifest；provider/model 变更会产生新的策略 SHA 和 checkpoint 路径。
+真实 profile 固定为 `deepseek` / `deepseek-chat`，key 只从 `DEEPSEEK_API_KEY` 注入；`translate:run` 自动加载仓库根目录下被 Git 忽略的 `.env`，现有进程环境优先。术语表的 `preserve` 项在 Provider 请求前按最长匹配包裹为批次内唯一的成对保护标记，标记内部保留可见原词；响应后无论模型复制标记、只去掉标记外壳，还是改写成对标记内的内容，都恢复为原词，残留或被破坏的标记会被质量错误拒绝。指定译法只检查完整单词或短语，并排除已整体保留的产品名。质量策略会独立复核术语与占位符，但当同一 Markdown 语义块被链接、图片、代码或换行拆成多个翻译单元时，不再对单个片段强制指定译法，因为中文语序可能把术语移动到相邻片段；术语表仍会随完整批次发送给模型。该命令必须提供 `--match` 与 `--limit 1`；默认调用模型但不写 `docs/zh` 或 manifest（可能更新 Git 忽略的 checkpoint），只有显式 `--commit` 才原子写入译文与 manifest。API key 不进入配置、策略哈希、日志、checkpoint 或 manifest；provider/model 变更会产生新的策略 SHA 和 checkpoint 路径。
 
 ## 分阶段交付
 

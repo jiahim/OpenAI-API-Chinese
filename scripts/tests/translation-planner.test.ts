@@ -14,6 +14,12 @@ import { join } from "node:path";
 import test from "node:test";
 
 import {
+  TranslationErrorCode,
+  TranslationProviderError,
+  TranslationResponseError,
+} from "@easy-translate/core";
+
+import {
   buildTranslationStatusReport,
   classifyTranslationPage,
   mirroredTranslationPath,
@@ -27,7 +33,9 @@ import type {
 import {
   assertTranslationIntegrity,
   automaticTranslationCandidates,
+  createProductionBatchRetryPolicy,
   parseCliOptions,
+  shouldRetryProductionPage,
 } from "../translate-docs.ts";
 import { parseTranslationPriorityConfig } from "../translation/priority.ts";
 
@@ -37,6 +45,48 @@ const TARGET_PATH = "docs/zh/api/docs/quickstart.md";
 const SOURCE_CONTENT = "# Quickstart\n";
 const SOURCE_HASH = sha256(SOURCE_CONTENT);
 const TARGET_CONTENT = "# 快速开始\n";
+
+test("production retries one targeted correction but stops repeated quality failures", () => {
+  const quality = new TranslationResponseError(
+    TranslationErrorCode.ResponseQualityRejected,
+    "必须保留术语：API",
+    {
+      details: {
+        issueCode: "translation.preserve_missing",
+        unitId: "markdown-54-4751-4880",
+      },
+    },
+  );
+  const otherQuality = new TranslationResponseError(
+    TranslationErrorCode.ResponseQualityRejected,
+    "必须保留术语：SDK",
+    {
+      details: {
+        issueCode: "translation.preserve_missing",
+        unitId: "markdown-55-4881-4900",
+      },
+    },
+  );
+  const malformed = new TranslationResponseError(
+    TranslationErrorCode.ResponseInvalidContainer,
+    "invalid JSON",
+  );
+  const network = new TranslationProviderError(
+    TranslationErrorCode.ProviderNetwork,
+    "network failure",
+    { retryable: true },
+  );
+  const policy = createProductionBatchRetryPolicy();
+
+  assert.equal(policy.shouldRetry?.(quality, 0), true);
+  assert.equal(policy.shouldRetry?.(quality, 1), false);
+  assert.equal(policy.shouldRetry?.(otherQuality, 1), true);
+  assert.equal(policy.shouldRetry?.(malformed, 0), true);
+  assert.equal(policy.shouldRetry?.(network, 0), true);
+  assert.equal(shouldRetryProductionPage(quality), false);
+  assert.equal(shouldRetryProductionPage(malformed), true);
+  assert.equal(shouldRetryProductionPage(network), true);
+});
 
 function sha256(content: string): string {
   return createHash("sha256").update(content, "utf8").digest("hex");
