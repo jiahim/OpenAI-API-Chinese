@@ -438,31 +438,33 @@ export function createFragmentedArticleFallbackProvider(
   return {
     name: provider.name,
     async translateBatch(request, signal, onActivity) {
-      const rawOutput = await provider.translateBatch(
-        request,
-        signal,
-        onActivity,
+      const fallbackById = new Map(
+        request.items.flatMap((item) => {
+          const fallback = fragmentedArticleFallback(
+            item,
+            request.targetLanguage,
+          );
+          return fallback === undefined ? [] : [[item.id, fallback] as const];
+        }),
       );
-      const output = [...rawOutput];
-      for (const item of request.items) {
-        const fallback = fragmentedArticleFallback(
-          item,
-          request.targetLanguage,
-        );
-        if (!fallback) continue;
-        const matches = output
-          .map((translated, index) => ({ index, translated }))
-          .filter(({ translated }) => translated.id === item.id);
-        if (matches.length === 0) {
-          output.push({ id: item.id, text: fallback });
-        } else if (
-          matches.length === 1 &&
-          !matches[0]!.translated.text.trim()
-        ) {
-          output[matches[0]!.index] = { id: item.id, text: fallback };
-        }
-      }
-      return output;
+      const delegatedItems = request.items.filter(
+        (item) => !fallbackById.has(item.id),
+      );
+      const output =
+        delegatedItems.length === 0
+          ? []
+          : await provider.translateBatch(
+              { ...request, items: delegatedItems },
+              signal,
+              onActivity,
+            );
+      return [
+        ...output,
+        ...request.items.flatMap((item) => {
+          const fallback = fallbackById.get(item.id);
+          return fallback === undefined ? [] : [{ id: item.id, text: fallback }];
+        }),
+      ];
     },
   };
 }

@@ -31,8 +31,10 @@ test("configured DeepSeek provider requires its key without exposing credentials
 });
 
 test("fragmented article provider completes omitted Chinese article fragments", async () => {
+  const delegatedIds: string[][] = [];
   const provider = defineProvider({
     async translateBatch(request) {
+      delegatedIds.push(request.items.map((item) => item.id));
       return request.items
         .filter((item) => item.id === "lead")
         .map((item) => ({ id: item.id, text: "请参阅" }));
@@ -73,6 +75,38 @@ test("fragmented article provider completes omitted Chinese article fragments", 
     { id: "lead", text: "请参阅" },
     { id: "article", text: "该" },
   ]);
+  assert.deepEqual(delegatedIds, [["lead"]]);
+});
+
+test("fragmented article provider skips model calls for deterministic-only batches", async () => {
+  let calls = 0;
+  const provider = defineProvider({
+    async translateBatch() {
+      calls += 1;
+      return [];
+    },
+  });
+  const fallbackProvider = createFragmentedArticleFallbackProvider(provider);
+  const output = await fallbackProvider.translateBatch({
+    items: [
+      {
+        context: {
+          block: "body",
+          end: 3,
+          fragmented: true,
+          kind: "text",
+          policyVersion: "markdown-source-ranges-v4",
+          start: 0,
+        },
+        id: "article",
+        text: "the",
+      },
+    ],
+    targetLanguage: "zh-CN",
+  });
+
+  assert.deepEqual(output, [{ id: "article", text: "该" }]);
+  assert.equal(calls, 0);
 });
 
 test("fragmented article provider does not mask ordinary missing output", async () => {
