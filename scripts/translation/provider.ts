@@ -254,6 +254,7 @@ function normalizeSurplusUnmarkedPreserveTerms(
   if (!targetLanguage.toLowerCase().startsWith("zh")) return [...output];
 
   const protectedCounts = new Map(terms.map((term) => [term, 0]));
+  const seenProtectedReplacements = new Set<PreserveReplacement>();
   let nextSpanIndex = 0;
   const masked = output.map((item) => {
     const spans = new Map<string, string>();
@@ -269,6 +270,12 @@ function normalizeSurplusUnmarkedPreserveTerms(
       );
       text = text.replace(pattern, (span, protectedContent: string) => {
         if (protectedContent.includes("{{ET_KEEP_")) return span;
+        if (seenProtectedReplacements.has(replacement)) {
+          return (
+            SURPLUS_PRESERVE_TERM_REPLACEMENTS[replacement.term] ?? "该术语"
+          );
+        }
+        seenProtectedReplacements.add(replacement);
         let token = `\uE000ET_SPAN_${nextSpanIndex}\uE001`;
         while (output.some((candidate) => candidate.text.includes(token))) {
           nextSpanIndex += 1;

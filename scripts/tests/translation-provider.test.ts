@@ -519,6 +519,24 @@ test("preserve-term provider normalizes model-added unmarked term duplicates", a
   ]);
 });
 
+test("preserve-term provider normalizes duplicated protected marker pairs", async () => {
+  const provider = defineProvider({
+    async translateBatch(request) {
+      return request.items.map((item) => ({
+        id: item.id,
+        text: `${item.text} / ${item.text}`,
+      }));
+    },
+  });
+  const protectedProvider = createPreserveTermsProvider(provider, ["API"]);
+  const output = await protectedProvider.translateBatch({
+    items: [{ context: {}, id: "unit", text: "API" }],
+    targetLanguage: "zh-CN",
+  });
+
+  assert.deepEqual(output, [{ id: "unit", text: "API / 接口" }]);
+});
+
 test("preserve-term provider rejects a missing protected span", async () => {
   const protectedSpanPattern =
     /\{\{ET_KEEP_\d+_\d+_\d+_START\}\}API\{\{ET_KEEP_\d+_\d+_\d+_END\}\}/u;
