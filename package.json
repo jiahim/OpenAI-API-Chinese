@@ -17,7 +17,12 @@
     "translate:run": "node --env-file-if-exists=.env scripts/translate-docs.ts run",
     "translate:simulate": "node scripts/translate-docs.ts simulate",
     "translate:status": "node scripts/translate-docs.ts status",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "web:build": "pnpm --dir apps/web build",
+    "web:dev": "pnpm --dir apps/web dev",
+    "web:lint": "pnpm --dir apps/web lint",
+    "web:typecheck": "pnpm --dir apps/web typecheck",
+    "web:test": "pnpm --dir apps/web test"
   },
   "devDependencies": {
     "@easy-translate/core": "0.3.0",

@@ -8,6 +8,7 @@
 
 ```text
 .
+├── apps/web/               # Next.js 双语静态站（Vercel）
 ├── scripts/
 │   ├── sync-docs.ts          # 英文文档发现、同步和更新检查
 │   ├── translate-docs.ts     # 中文翻译状态和增量计划
@@ -69,7 +70,23 @@ GitHub Actions 每天北京时间 00:00 读取官方 `llms.txt` 索引、运行�
 
 仓库必须在 **Settings → Actions → General → Workflow permissions** 中启用 **Allow GitHub Actions to create and approve pull requests**。`main` 的 Ruleset 可以因此保持空 bypass，并要求所有更新通过 PR 和 `Quality gate`。PR 标题必须以 `[AI] ` 或 `[Human] ` 标明来源，其中 `codex/` 与 `automation/` 分支强制使用 `[AI] `。
 
-`translate:status` 离线汇总全部页面的增量状态，`translate:check` 额外拒绝目标文件缺失、未登记或与 manifest 不一致；`translate:plan` 按自动队列优先级只读列出下一轮可翻译或阻塞的页面。`translate:simulate` 使用 Echo/Fake Provider 执行无 key、无写入闭环。`translate:run` 用于本地精确单篇翻译，`translate:auto` 为远端按优先级选择最多十篇受预算约束的页面；人工润色后用 `translate:review` 收录目标 SHA 并标记 `reviewed`。完整翻译设计见 [`docs/translation-design.md`](docs/translation-design.md)。静态网站作为核心中文内容形成后的下一阶段推进。
+`translate:status` 离线汇总全部页面的增量状态，`translate:check` 额外拒绝目标文件缺失、未登记或与 manifest 不一致；`translate:plan` 按自动队列优先级只读列出下一轮可翻译或阻塞的页面。`translate:simulate` 使用 Echo/Fake Provider 执行无 key、无写入闭环。`translate:run` 用于本地精确单篇翻译，`translate:auto` 为远端按优先级选择最多十篇受预算约束的页面；人工润色后用 `translate:review` 收录目标 SHA 并标记 `reviewed`。完整翻译设计见 [`docs/translation-design.md`](docs/translation-design.md)。
+
+## 静态双语文档站
+
+当前仓库同时维护首个可用站点 [`apps/web`](apps/web)。它在构建期读取 source/translation manifest 和磁盘 Markdown，按官方 `llms.txt` 的分组与顺序生成完整导航：421 篇英文源页面都有稳定静态路由，其中 414 篇直接渲染正文；7 篇超过 1 MB 的事件/资源总表暂时生成轻量说明页，避免单页 HTML 和 Vercel 产物异常膨胀。已有中文译文显示在同路径的 `/zh/` 页面，其余中文路径保留原目录位置并引导到本站英文原文。Markdown 中指向 `developers.openai.com/api/docs` 与 `/api/reference` 的链接会转换为当前语言的本站路由，外部链接保持明确标识。
+
+```bash
+pnpm web:dev
+pnpm web:typecheck
+pnpm web:lint
+pnpm web:test
+pnpm web:build
+```
+
+站点使用 Next.js 静态导出，Vercel 项目 Root Directory 设置为 `apps/web`，并在 Root Directory 设置中启用 **Include source files outside of the Root Directory in the Build Step**，让构建读取仓库根部 `docs/`。站点无需数据库或运行时服务；生产环境建议设置 `NEXT_PUBLIC_SITE_ORIGIN` 为正式域名。首页会把 [OpenAI 官方开发者文档](https://developers.openai.com/api/) 明确展示为权威内容源，本项目不冒充官方网站。
+
+首个实现暂留在当前仓库，以便同步、翻译和展示闭环快速演进；代码内部保持内容适配、结构导航、Markdown 渲染和部署配置的边界。出现第二个真实翻译站后，再把通用部分提取为独立包或仓库。演进方案见 [`docs/static-site-architecture.md`](docs/static-site-architecture.md)。
 
 ## 许可证与内容归属
 
