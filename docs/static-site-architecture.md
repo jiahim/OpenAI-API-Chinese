@@ -242,10 +242,12 @@ Vercel 项目设置：
 | Framework Preset | Next.js |
 | Install Command | `pnpm install` |
 | Build Command | `pnpm build` |
-| Output Directory | `out` |
+| Output Directory | 不覆盖，由 Next.js Preset 自动检测 |
 | 环境变量 | `NEXT_PUBLIC_SITE_ORIGIN=https://正式域名` |
 
 Root Directory 设置必须启用 **Include source files outside of the Root Directory in the Build Step**；Vercel 默认禁止项目访问 Root Directory 外的文件，而当前内容位于仓库根部 `docs/`。
+
+Vercel 的 Output Directory 必须保持未覆盖。虽然 Next.js `output: "export"` 会为通用静态托管生成本地 `apps/web/out`，Vercel 的 Next.js 构建器仍需按框架约定收集产物；把 Output Directory 强制设为 `out` 会导致 `routes-manifest.json` 查找失败。
 
 部署原则：
 

@@ -147,7 +147,7 @@ pnpm test
 
 ### 2.8 Vercel 静态站与后续抽取
 
-- 首个站点当前放在 `apps/web`，使用 Next.js `output: export`，Vercel Root Directory 为 `apps/web`，输出目录为 `out`。
+- 首个站点当前放在 `apps/web`，使用 Next.js `output: export`，本地静态产物位于 `apps/web/out`；Vercel Root Directory 为 `apps/web`，Output Directory 必须保持未覆盖并交由 Next.js Preset 自动检测。
 - `Quality gate` 会独立安装 Web 子项目依赖，并运行内容生成、typecheck、lint、链接测试和完整静态构建。
 - 构建器读取 source/translation manifest，并严格按两份官方 `llms.txt` 的分组和顺序生成导航；421 个 active 页面必须全部且仅出现一次。
 - 421 篇英文 Markdown 全部生成静态路径；414 篇直接渲染正文，7 篇超过 1 MB 的事件/资源总表先保留轻量说明页，后续按结构拆分。中文译文沿用相同路径；中文尚未生成时仍保留结构化状态页，并优先链接本站英文原文。
