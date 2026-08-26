@@ -19,7 +19,7 @@ import type {
 } from "./types.ts";
 
 const SHA256_PATTERN = /^[a-f0-9]{64}$/u;
-export const MARKDOWN_ADAPTER_POLICY_VERSION = "markdown-source-ranges-v3";
+export const MARKDOWN_ADAPTER_POLICY_VERSION = "markdown-source-ranges-v4";
 
 function sha256(content: string): string {
   return createHash("sha256").update(content, "utf8").digest("hex");

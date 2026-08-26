@@ -364,20 +364,22 @@ export function createTranslationQualityPolicy(
         };
       }
     }
-    const terminologySource = withoutPreservedTerms(
-      item.text,
-      glossary.preserve,
-    );
-    for (const [source, target] of Object.entries(glossary.terms)) {
-      if (
-        containsCompleteTerm(terminologySource, source) &&
-        !translatedText.includes(target)
-      ) {
-        return {
-          issueCode: "translation.term_missing",
-          message: `术语 ${source} 必须翻译为 ${target}。`,
-          retryInstruction: `使用指定术语：${source} → ${target}。`,
-        };
+    if (!item.context.fragmented) {
+      const terminologySource = withoutPreservedTerms(
+        item.text,
+        glossary.preserve,
+      );
+      for (const [source, target] of Object.entries(glossary.terms)) {
+        if (
+          containsCompleteTerm(terminologySource, source) &&
+          !translatedText.includes(target)
+        ) {
+          return {
+            issueCode: "translation.term_missing",
+            message: `术语 ${source} 必须翻译为 ${target}。`,
+            retryInstruction: `使用指定术语：${source} → ${target}。`,
+          };
+        }
       }
     }
     const sourceTokens = sortedTokens(item.text);
