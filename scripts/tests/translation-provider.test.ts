@@ -5,6 +5,7 @@ import { defineProvider, TranslationResponseError } from "@easy-translate/core";
 
 import {
   createConfiguredProvider,
+  createFragmentedArticleFallbackProvider,
   createPreserveTermsProvider,
   createTerminologyProvider,
 } from "../translation/provider.ts";
@@ -25,6 +26,79 @@ test("configured DeepSeek provider requires its key without exposing credentials
   assert.doesNotThrow(() =>
     createConfiguredProvider(PROFILE, { DEEPSEEK_API_KEY: secret }),
   );
+});
+
+test("fragmented article provider completes omitted Chinese article fragments", async () => {
+  const provider = defineProvider({
+    async translateBatch(request) {
+      return request.items
+        .filter((item) => item.id === "lead")
+        .map((item) => ({ id: item.id, text: "请参阅" }));
+    },
+  });
+  const fallbackProvider = createFragmentedArticleFallbackProvider(provider);
+  const output = await fallbackProvider.translateBatch({
+    items: [
+      {
+        context: {
+          block: "body",
+          end: 8,
+          fragmented: true,
+          kind: "text",
+          policyVersion: "markdown-source-ranges-v4",
+          start: 0,
+        },
+        id: "lead",
+        text: "See",
+      },
+      {
+        context: {
+          block: "body",
+          end: 12,
+          fragmented: true,
+          kind: "text",
+          policyVersion: "markdown-source-ranges-v4",
+          start: 9,
+        },
+        id: "article",
+        text: "the",
+      },
+    ],
+    targetLanguage: "zh-CN",
+  });
+
+  assert.deepEqual(output, [
+    { id: "lead", text: "请参阅" },
+    { id: "article", text: "该" },
+  ]);
+});
+
+test("fragmented article provider does not mask ordinary missing output", async () => {
+  const provider = defineProvider({
+    async translateBatch() {
+      return [];
+    },
+  });
+  const fallbackProvider = createFragmentedArticleFallbackProvider(provider);
+  const output = await fallbackProvider.translateBatch({
+    items: [
+      {
+        context: {
+          block: "body",
+          end: 17,
+          fragmented: true,
+          kind: "text",
+          policyVersion: "markdown-source-ranges-v4",
+          start: 0,
+        },
+        id: "ordinary",
+        text: "important details",
+      },
+    ],
+    targetLanguage: "zh-CN",
+  });
+
+  assert.deepEqual(output, []);
 });
 
 test("preserve-term provider masks longest matches and restores exact terms", async () => {

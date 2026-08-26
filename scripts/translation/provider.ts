@@ -40,6 +40,11 @@ const TERMINOLOGY_EXCLUSIONS = [
   "user-agent",
   "user-agents",
 ] as const;
+const FRAGMENTED_ARTICLE_FALLBACKS: Readonly<Record<string, string>> = {
+  a: "一个",
+  an: "一个",
+  the: "该",
+};
 
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
@@ -404,6 +409,52 @@ export function createTerminologyProvider<TContext>(
   };
 }
 
+function fragmentedArticleFallback(
+  item: TranslationBatchRequest<MarkdownTranslationContext>["items"][number],
+  targetLanguage: string,
+): string | undefined {
+  if (!targetLanguage.toLowerCase().startsWith("zh")) return undefined;
+  if (!item.context.fragmented || item.context.kind !== "text") {
+    return undefined;
+  }
+  return FRAGMENTED_ARTICLE_FALLBACKS[item.text.trim().toLowerCase()];
+}
+
+export function createFragmentedArticleFallbackProvider(
+  provider: TranslationProvider<MarkdownTranslationContext>,
+): TranslationProvider<MarkdownTranslationContext> {
+  return {
+    name: provider.name,
+    async translateBatch(request, signal, onActivity) {
+      const rawOutput = await provider.translateBatch(
+        request,
+        signal,
+        onActivity,
+      );
+      const output = [...rawOutput];
+      for (const item of request.items) {
+        const fallback = fragmentedArticleFallback(
+          item,
+          request.targetLanguage,
+        );
+        if (!fallback) continue;
+        const matches = output
+          .map((translated, index) => ({ index, translated }))
+          .filter(({ translated }) => translated.id === item.id);
+        if (matches.length === 0) {
+          output.push({ id: item.id, text: fallback });
+        } else if (
+          matches.length === 1 &&
+          !matches[0]!.translated.text.trim()
+        ) {
+          output[matches[0]!.index] = { id: item.id, text: fallback };
+        }
+      }
+      return output;
+    },
+  };
+}
+
 export function createConfiguredProvider(
   profile: TranslationProviderProfile,
   environment: NodeJS.ProcessEnv = process.env,
@@ -416,12 +467,14 @@ export function createConfiguredProvider(
       `缺少环境变量 ${profile.apiKeyEnv}；请在本地配置 DeepSeek API key 后重试。`,
     );
   }
-  return createPreserveTermsProvider(
-    createTerminologyProvider(
-      createDeepSeekProvider({ apiKey, model: profile.model }),
+  return createFragmentedArticleFallbackProvider(
+    createPreserveTermsProvider(
+      createTerminologyProvider(
+        createDeepSeekProvider({ apiKey, model: profile.model }),
+        preserveTerms,
+        terminology,
+      ),
       preserveTerms,
-      terminology,
     ),
-    preserveTerms,
   );
 }
