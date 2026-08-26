@@ -423,3 +423,58 @@ test("quality policy preserves glossary terms and placeholders", async () => {
     "translation.placeholder_changed",
   );
 });
+
+test("quality policy does not match terms inside product names or longer words", async () => {
+  const policy = createTranslationQualityPolicy({
+    preserve: ["Agents SDK"],
+    schemaVersion: 1,
+    terms: {
+      Agent: "智能体",
+      Agents: "智能体",
+      agent: "智能体",
+      agents: "智能体",
+      workflow: "工作流",
+    },
+  });
+  const input = (text: string, translatedText: string) => ({
+    item: {
+      context: {} as MarkdownTranslationContext,
+      id: "unit",
+      text,
+    },
+    plan: {
+      document: { format: "markdown", id: "doc" },
+      schemaVersion: 1 as const,
+      units: [],
+    },
+    request: {
+      items: [],
+      targetLanguage: "zh-CN",
+    },
+    translatedText,
+  });
+
+  assert.equal(
+    await policy(
+      input(
+        "It uses the Agents SDK with WebRTC.",
+        "它通过 WebRTC 使用 Agents SDK。",
+      ),
+    ),
+    undefined,
+  );
+  assert.equal(
+    await policy(input("Agentic workflows evolve.", "Agentic workflows 持续演进。")),
+    undefined,
+  );
+  assert.equal(
+    (await policy(input("An Agent runs a workflow.", "一个代理运行流程。")))
+      ?.issueCode,
+    "translation.term_missing",
+  );
+  assert.equal(
+    (await policy(input("Agents coordinate tools.", "Agents 协调工具。")))
+      ?.issueCode,
+    "translation.term_missing",
+  );
+});
