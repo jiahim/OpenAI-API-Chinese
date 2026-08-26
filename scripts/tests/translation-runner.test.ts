@@ -424,7 +424,7 @@ test("quality policy preserves glossary terms and placeholders", async () => {
   );
 });
 
-test("quality policy does not match terms inside product names or longer words", async () => {
+test("quality policy handles product names, longer words, and Markdown fragments", async () => {
   const policy = createTranslationQualityPolicy({
     preserve: ["Agents SDK"],
     schemaVersion: 1,
@@ -436,9 +436,13 @@ test("quality policy does not match terms inside product names or longer words",
       workflow: "工作流",
     },
   });
-  const input = (text: string, translatedText: string) => ({
+  const input = (
+    text: string,
+    translatedText: string,
+    fragmented = false,
+  ) => ({
     item: {
-      context: {} as MarkdownTranslationContext,
+      context: { fragmented } as MarkdownTranslationContext,
       id: "unit",
       text,
     },
@@ -465,6 +469,10 @@ test("quality policy does not match terms inside product names or longer words",
   );
   assert.equal(
     await policy(input("Agentic workflows evolve.", "Agentic workflows 持续演进。")),
+    undefined,
+  );
+  assert.equal(
+    await policy(input("Agents like", "诸如", true)),
     undefined,
   );
   assert.equal(

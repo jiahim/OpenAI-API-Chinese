@@ -43,6 +43,7 @@ export interface MarkdownDocumentInput {
 export interface MarkdownTranslationContext {
   block: MarkdownBlockKind;
   end: number;
+  fragmented: boolean;
   kind: MarkdownUnitKind;
   policyVersion: typeof MARKDOWN_ADAPTER_POLICY_VERSION;
   start: number;
@@ -52,6 +53,11 @@ export interface MarkdownSourceRange extends MarkdownTranslationContext {
   id: string;
   sourceText: string;
 }
+
+type PendingMarkdownSourceRange = Omit<
+  MarkdownSourceRange,
+  "fragmented" | "id"
+> & { groupKey: string };
 
 export interface MarkdownFormatState {
   documentId: string;
@@ -154,6 +160,19 @@ function blockKind(ancestors: readonly MarkdownNode[]): MarkdownBlockKind {
   if (ancestors.some((node) => node.type === "listItem")) return "list";
   if (ancestors.some((node) => node.type === "blockquote")) return "quote";
   return "body";
+}
+
+const TRANSLATION_GROUP_NODES = new Set(["heading", "paragraph", "tableCell"]);
+
+function translationGroupKey(
+  node: MarkdownNode,
+  ancestors: readonly MarkdownNode[],
+): string {
+  const group = [...ancestors, node]
+    .reverse()
+    .find((candidate) => TRANSLATION_GROUP_NODES.has(candidate.type));
+  const range = nodeOffsets(group ?? node);
+  return `${range.start}:${range.end}`;
 }
 
 function enclosingLink(
@@ -291,8 +310,8 @@ function textNodeRanges(
 
 function generatedCardTextRanges(
   source: string,
-): Array<{ end: number; start: number }> {
-  const ranges: Array<{ end: number; start: number }> = [];
+): Array<{ end: number; groupKey: string; start: number }> {
+  const ranges: Array<{ end: number; groupKey: string; start: number }> = [];
   GENERATED_CARD_PATTERN.lastIndex = 0;
   for (const match of source.matchAll(GENERATED_CARD_PATTERN)) {
     const matchStart = match.index ?? 0;
@@ -302,10 +321,16 @@ function generatedCardTextRanges(
     const labelOffset = match[0].indexOf(label);
     const descriptionOffset = match[0].lastIndexOf(description);
     if (labelOffset < 0 || descriptionOffset < 0) continue;
+    const groupKey = `${matchStart}:${matchStart + match[0].length}`;
     ranges.push(
-      { end: matchStart + labelOffset + label.length, start: matchStart + labelOffset },
+      {
+        end: matchStart + labelOffset + label.length,
+        groupKey,
+        start: matchStart + labelOffset,
+      },
       {
         end: matchStart + descriptionOffset + description.length,
+        groupKey,
         start: matchStart + descriptionOffset,
       },
     );
@@ -336,10 +361,11 @@ function imageAltRange(node: MarkdownNode, source: string): { end: number; start
 
 function collectRanges(root: MarkdownNode, source: string): MarkdownSourceRange[] {
   const generatedCardRanges = generatedCardTextRanges(source);
-  const pending: Array<Omit<MarkdownSourceRange, "id">> = generatedCardRanges.map(
-    (range) => ({
+  const pending: PendingMarkdownSourceRange[] = generatedCardRanges.map(
+    ({ groupKey, ...range }) => ({
       block: "body",
       end: range.end,
+      groupKey,
       kind: "link-label",
       policyVersion: MARKDOWN_ADAPTER_POLICY_VERSION,
       sourceText: source.slice(range.start, range.end),
@@ -356,10 +382,12 @@ function collectRanges(root: MarkdownNode, source: string): MarkdownSourceRange[
     const contextBlock = blockKind(ancestors);
     if (node.type === "text" && !isAutolinkText(node, ancestors)) {
       const kind: MarkdownUnitKind = enclosingLink(ancestors) ? "link-label" : "text";
+      const groupKey = translationGroupKey(node, ancestors);
       for (const range of textNodeRanges(source, node, sourceProtectedRanges)) {
         pending.push({
           block: contextBlock,
           end: range.end,
+          groupKey,
           kind,
           policyVersion: MARKDOWN_ADAPTER_POLICY_VERSION,
           sourceText: source.slice(range.start, range.end),
@@ -372,6 +400,7 @@ function collectRanges(root: MarkdownNode, source: string): MarkdownSourceRange[
         pending.push({
           block: contextBlock,
           end: range.end,
+          groupKey: translationGroupKey(node, ancestors),
           kind: "image-alt",
           policyVersion: MARKDOWN_ADAPTER_POLICY_VERSION,
           sourceText: source.slice(range.start, range.end),
@@ -385,8 +414,13 @@ function collectRanges(root: MarkdownNode, source: string): MarkdownSourceRange[
 
   visit(root, []);
   pending.sort((left, right) => left.start - right.start || left.end - right.end);
-  return pending.map((range, index) => ({
+  const groupSizes = new Map<string, number>();
+  for (const range of pending) {
+    groupSizes.set(range.groupKey, (groupSizes.get(range.groupKey) ?? 0) + 1);
+  }
+  return pending.map(({ groupKey, ...range }, index) => ({
     ...range,
+    fragmented: (groupSizes.get(groupKey) ?? 0) > 1,
     id: `markdown-${index + 1}-${range.start}-${range.end}`,
   }));
 }
@@ -467,6 +501,7 @@ function assertValidState(state: MarkdownFormatState): void {
       range.end <= range.start ||
       range.end > state.source.length ||
       state.source.slice(range.start, range.end) !== range.sourceText ||
+      typeof range.fragmented !== "boolean" ||
       range.policyVersion !== MARKDOWN_ADAPTER_POLICY_VERSION
     ) {
       throw new Error(`Markdown 翻译区间无效：${range.id}`);

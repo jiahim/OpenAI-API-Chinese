@@ -134,6 +134,15 @@ Body text.
     "image-alt",
   );
   assert.equal(
+    prepared.plan.units.find((unit) => unit.text === "Body text.")?.context.fragmented,
+    false,
+  );
+  assert.ok(
+    prepared.plan.units
+      .filter((unit) => ["OpenAI docs", "and", "A chart"].includes(unit.text))
+      .every((unit) => unit.context.fragmented),
+  );
+  assert.equal(
     prepared.plan.units.find((unit) => unit.text === "OpenAI docs")?.batchKey,
     prepared.plan.units.find((unit) => unit.text === "and")?.batchKey,
   );
@@ -191,6 +200,7 @@ test("generated multiline navigation cards translate labels and descriptions", a
   assert.ok(
     prepared.plan.units.every((unit) => unit.context.kind === "link-label"),
   );
+  assert.ok(prepared.plan.units.every((unit) => unit.context.fragmented));
   const rendered = await markdownDocumentAdapter.render(
     prepared.formatState,
     result(
