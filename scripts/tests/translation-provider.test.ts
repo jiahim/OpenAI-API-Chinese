@@ -407,6 +407,35 @@ test("preserve-term provider completes an omitted preserve-only punctuation item
   ]);
 });
 
+test("preserve-term provider normalizes model-added unmarked term duplicates", async () => {
+  const provider = defineProvider({
+    async translateBatch(request) {
+      return request.items.map((item) => ({
+        id: item.id,
+        text: `${item.text} / Responses API`,
+      }));
+    },
+  });
+  const protectedProvider = createPreserveTermsProvider(provider, [
+    "API",
+    "Responses API",
+  ]);
+  const output = await protectedProvider.translateBatch({
+    items: [
+      {
+        context: {},
+        id: "unit",
+        text: "Responses API",
+      },
+    ],
+    targetLanguage: "zh-CN",
+  });
+
+  assert.deepEqual(output, [
+    { id: "unit", text: "Responses API / 响应接口" },
+  ]);
+});
+
 test("preserve-term provider rejects a missing protected span", async () => {
   const protectedSpanPattern =
     /\{\{ET_KEEP_\d+_\d+_\d+_START\}\}API\{\{ET_KEEP_\d+_\d+_\d+_END\}\}/u;

@@ -61,6 +61,14 @@ const FRAGMENTED_ARTICLE_FALLBACKS: Readonly<Record<string, string>> = {
   an: "一个",
   the: "该",
 };
+const SURPLUS_PRESERVE_TERM_REPLACEMENTS: Readonly<Record<string, string>> = {
+  API: "接口",
+  "Agents SDK": "智能体开发工具包",
+  "Chat Completions API": "聊天补全接口",
+  OpenAI: "该公司",
+  "Responses API": "响应接口",
+  SDK: "开发工具包",
+};
 
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
@@ -227,6 +235,80 @@ function countPreservedTerms(
   return counts;
 }
 
+function normalizeSurplusUnmarkedPreserveTerms(
+  output: readonly TranslationOutputItem[],
+  replacements: readonly PreserveReplacement[],
+  terms: readonly string[],
+  targetLanguage: string,
+): TranslationOutputItem[] {
+  if (!targetLanguage.toLowerCase().startsWith("zh")) return [...output];
+
+  const protectedCounts = new Map(terms.map((term) => [term, 0]));
+  let nextSpanIndex = 0;
+  const masked = output.map((item) => {
+    const spans = new Map<string, string>();
+    let text = item.text;
+    for (const replacement of replacements) {
+      const maximumProtectedLength = Math.max(
+        replacement.term.length * 4,
+        replacement.term.length + 32,
+      );
+      const pattern = new RegExp(
+        `${escapeRegExp(replacement.openToken)}([\\s\\S]{0,${maximumProtectedLength}}?)${escapeRegExp(replacement.closeToken)}`,
+        "gu",
+      );
+      text = text.replace(pattern, (span, protectedContent: string) => {
+        if (protectedContent.includes("{{ET_KEEP_")) return span;
+        let token = `\uE000ET_SPAN_${nextSpanIndex}\uE001`;
+        while (output.some((candidate) => candidate.text.includes(token))) {
+          nextSpanIndex += 1;
+          token = `\uE000ET_SPAN_${nextSpanIndex}\uE001`;
+        }
+        nextSpanIndex += 1;
+        spans.set(token, span);
+        protectedCounts.set(
+          replacement.term,
+          (protectedCounts.get(replacement.term) ?? 0) + 1,
+        );
+        return token;
+      });
+    }
+    return { item, spans, text };
+  });
+
+  const expectedCounts = new Map(terms.map((term) => [term, 0]));
+  for (const replacement of replacements) {
+    expectedCounts.set(
+      replacement.term,
+      (expectedCounts.get(replacement.term) ?? 0) + 1,
+    );
+  }
+  const allowedRawCounts = new Map(
+    terms.map((term) => [
+      term,
+      Math.max(
+        0,
+        (expectedCounts.get(term) ?? 0) - (protectedCounts.get(term) ?? 0),
+      ),
+    ]),
+  );
+  const seenRawCounts = new Map(terms.map((term) => [term, 0]));
+  const pattern = new RegExp(terms.map(escapeRegExp).join("|"), "gu");
+
+  return masked.map(({ item, spans, text }) => {
+    let normalized = text.replace(pattern, (term) => {
+      const seen = seenRawCounts.get(term) ?? 0;
+      seenRawCounts.set(term, seen + 1);
+      if (seen < (allowedRawCounts.get(term) ?? 0)) return term;
+      return SURPLUS_PRESERVE_TERM_REPLACEMENTS[term] ?? "该术语";
+    });
+    for (const [token, span] of spans) {
+      normalized = normalized.split(token).join(span);
+    }
+    return { ...item, text: normalized };
+  });
+}
+
 function preserveOnlyPunctuationFallback(
   text: string,
   terms: readonly string[],
@@ -303,7 +385,13 @@ export function createPreserveTermsProvider<TContext>(
         }
       }
       const allReplacements = [...replacementsById.values()].flat();
-      const restoredOutput = output.map((item) => {
+      const normalizedOutput = normalizeSurplusUnmarkedPreserveTerms(
+        output,
+        allReplacements,
+        terms,
+        request.targetLanguage,
+      );
+      const restoredOutput = normalizedOutput.map((item) => {
         // Chinese word order can move a protected span into an adjacent
         // fragmented unit. Restore every batch token regardless of which
         // output item currently contains it.
