@@ -473,6 +473,7 @@ async function run(
       workspace.config.provider,
       process.env,
       workspace.glossary.preserve,
+      workspace.glossary.terms,
     ),
     options.commit,
   );
@@ -526,6 +527,7 @@ async function auto(
     workspace.config.provider,
     process.env,
     workspace.glossary.preserve,
+    workspace.glossary.terms,
   );
   for (const [index, selection] of selected.entries()) {
     const result = await runProductionTranslationPage(

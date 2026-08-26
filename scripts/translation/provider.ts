@@ -15,15 +15,106 @@ interface PreserveReplacement {
   term: string;
 }
 
+interface TerminologyReplacement extends PreserveReplacement {
+  source: string;
+}
+
 const PRESERVE_MARKER_INSTRUCTION =
   "Paired {{ET_KEEP_*_START}} and {{ET_KEEP_*_END}} markers wrap protected source text. " +
   "Emit every protected span exactly once and copy the complete marker pair with its enclosed text verbatim. " +
   "Keep it in the matching item when possible; if Chinese word order requires moving it across adjacent " +
   "fragmented items, move the entire pair instead of copying it. Never translate, omit, duplicate, or split a protected span.";
 const PRESERVE_MARKER_RESIDUE_PATTERN = /ET_KEEP_\d+_\d+_\d+/u;
+const TERMINOLOGY_MARKER_INSTRUCTION =
+  "Paired {{ET_TERM_*_START}} and {{ET_TERM_*_END}} markers wrap glossary source terms. " +
+  "Copy every complete marker pair exactly once; never translate, omit, duplicate, split, or alter a marker pair. " +
+  "The application replaces each marked span with the configured target term after translation.";
+const TERMINOLOGY_MARKER_RESIDUE_PATTERN = /ET_TERM_\d+_\d+_\d+/u;
+const TERMINOLOGY_EXCLUSIONS = [
+  "USER AGENT",
+  "USER AGENTS",
+  "User agent",
+  "User agents",
+  "user agent",
+  "user agents",
+  "user-agent",
+  "user-agents",
+] as const;
 
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
+}
+
+function completeSourcePattern(sources: readonly string[]): RegExp {
+  const wordCharacter = "[\\p{L}\\p{N}_]";
+  const alternatives = [...new Set(sources)]
+    .sort(
+      (left, right) =>
+        right.length - left.length || left.localeCompare(right, "en"),
+    )
+    .map((source) => {
+      const startsWithWord = /^[\p{L}\p{N}_]/u.test(source);
+      const endsWithWord = /[\p{L}\p{N}_]$/u.test(source);
+      return (
+        `${startsWithWord ? `(?<!${wordCharacter})` : ""}` +
+        `${escapeRegExp(source)}` +
+        `${endsWithWord ? `(?!${wordCharacter})` : ""}`
+      );
+    });
+  return new RegExp(alternatives.join("|"), "gu");
+}
+
+function protectTerminology(
+  text: string,
+  preserveTerms: ReadonlySet<string>,
+  terminology: Readonly<Record<string, string>>,
+  requestIndex: number,
+  itemIndex: number,
+): { replacements: TerminologyReplacement[]; text: string } {
+  const replacements: TerminologyReplacement[] = [];
+  const pattern = completeSourcePattern([
+    ...preserveTerms,
+    ...TERMINOLOGY_EXCLUSIONS,
+    ...Object.keys(terminology),
+  ]);
+  let nextTokenIndex = 0;
+  const protectedText = text.replace(pattern, (source) => {
+    if (preserveTerms.has(source) || /^user(?:\s+|-+)agents?$/iu.test(source)) {
+      return source;
+    }
+    const target = terminology[source];
+    if (target === undefined) return source;
+    let tokenIndex = nextTokenIndex;
+    let openToken = `{{ET_TERM_${requestIndex}_${itemIndex}_${tokenIndex}_START}}`;
+    let closeToken = `{{ET_TERM_${requestIndex}_${itemIndex}_${tokenIndex}_END}}`;
+    while (text.includes(openToken) || text.includes(closeToken)) {
+      tokenIndex += 1;
+      openToken = `{{ET_TERM_${requestIndex}_${itemIndex}_${tokenIndex}_START}}`;
+      closeToken = `{{ET_TERM_${requestIndex}_${itemIndex}_${tokenIndex}_END}}`;
+    }
+    nextTokenIndex = tokenIndex + 1;
+    replacements.push({ closeToken, openToken, source, term: target });
+    return `${openToken}${source}${closeToken}`;
+  });
+  return { replacements, text: protectedText };
+}
+
+function replaceRawTerminology(
+  text: string,
+  preserveTerms: ReadonlySet<string>,
+  terminology: Readonly<Record<string, string>>,
+): string {
+  const pattern = completeSourcePattern([
+    ...preserveTerms,
+    ...TERMINOLOGY_EXCLUSIONS,
+    ...Object.keys(terminology),
+  ]);
+  return text.replace(pattern, (source) => {
+    if (preserveTerms.has(source) || /^user(?:\s+|-+)agents?$/iu.test(source)) {
+      return source;
+    }
+    return terminology[source] ?? source;
+  });
 }
 
 function protectPreserveTerms(
@@ -247,10 +338,77 @@ export function createPreserveTermsProvider<TContext>(
   };
 }
 
+export function createTerminologyProvider<TContext>(
+  provider: TranslationProvider<TContext>,
+  preserveTerms: readonly string[],
+  terminology: Readonly<Record<string, string>>,
+): TranslationProvider<TContext> {
+  if (Object.keys(terminology).length === 0) return provider;
+  const preserve = new Set(preserveTerms);
+  let requestIndex = 0;
+  return {
+    name: provider.name,
+    async translateBatch(request, signal, onActivity) {
+      const currentRequest = requestIndex;
+      requestIndex += 1;
+      const replacementsById = new Map<string, TerminologyReplacement[]>();
+      const items = request.items.map((item, itemIndex) => {
+        const protectedItem = protectTerminology(
+          item.text,
+          preserve,
+          terminology,
+          currentRequest,
+          itemIndex,
+        );
+        replacementsById.set(item.id, protectedItem.replacements);
+        return { ...item, text: protectedItem.text };
+      });
+      const allReplacements = [...replacementsById.values()].flat();
+      const protectedRequest: TranslationBatchRequest<TContext> = {
+        ...request,
+        items,
+        ...(allReplacements.length > 0
+          ? {
+              instructions: [request.instructions, TERMINOLOGY_MARKER_INSTRUCTION]
+                .filter(Boolean)
+                .join("\n"),
+            }
+          : {}),
+      };
+      const output = await provider.translateBatch(
+        protectedRequest,
+        signal,
+        onActivity,
+      );
+      return output.map((item) => {
+        const restored = restorePreserveTerms(item.text, allReplacements);
+        if (TERMINOLOGY_MARKER_RESIDUE_PATTERN.test(restored)) {
+          throw new TranslationResponseError(
+            TranslationErrorCode.ResponseQualityRejected,
+            "指定译法保护标记被模型改写。",
+            {
+              details: {
+                issueCode: "translation.terminology_marker_changed",
+                unitId: item.id,
+              },
+              retryInstruction: TERMINOLOGY_MARKER_INSTRUCTION,
+            },
+          );
+        }
+        return {
+          ...item,
+          text: replaceRawTerminology(restored, preserve, terminology),
+        };
+      });
+    },
+  };
+}
+
 export function createConfiguredProvider(
   profile: TranslationProviderProfile,
   environment: NodeJS.ProcessEnv = process.env,
   preserveTerms: readonly string[] = [],
+  terminology: Readonly<Record<string, string>> = {},
 ): TranslationProvider<MarkdownTranslationContext> {
   const apiKey = environment[profile.apiKeyEnv]?.trim();
   if (!apiKey) {
@@ -259,7 +417,11 @@ export function createConfiguredProvider(
     );
   }
   return createPreserveTermsProvider(
-    createDeepSeekProvider({ apiKey, model: profile.model }),
+    createTerminologyProvider(
+      createDeepSeekProvider({ apiKey, model: profile.model }),
+      preserveTerms,
+      terminology,
+    ),
     preserveTerms,
   );
 }

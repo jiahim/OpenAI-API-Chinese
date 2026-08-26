@@ -6,6 +6,7 @@ import { defineProvider, TranslationResponseError } from "@easy-translate/core";
 import {
   createConfiguredProvider,
   createPreserveTermsProvider,
+  createTerminologyProvider,
 } from "../translation/provider.ts";
 import type { TranslationProviderProfile } from "../translation/types.ts";
 
@@ -196,5 +197,40 @@ test("preserve-term provider rejects marker residue instead of leaking it", asyn
       targetLanguage: "zh-CN",
     }),
     /保留词保护标记被模型改写/u,
+  );
+});
+
+test("terminology provider applies target terms without touching exclusions", async () => {
+  let observedText = "";
+  const provider = defineProvider({
+    async translateBatch(request) {
+      observedText = request.items[0]?.text ?? "";
+      return request.items.map((item) => ({
+        id: item.id,
+        text: item.text.replace("Open ", "打开 "),
+      }));
+    },
+  });
+  const terminologyProvider = createTerminologyProvider(
+    provider,
+    ["Agents SDK"],
+    { Agent: "智能体", Agents: "智能体", agent: "智能体", agents: "智能体" },
+  );
+  const output = await terminologyProvider.translateBatch({
+    items: [
+      {
+        context: {},
+        id: "unit",
+        text: "Open Agent Builder with Agents SDK and user agents.",
+      },
+    ],
+    targetLanguage: "zh-CN",
+  });
+
+  assert.match(observedText, /ET_TERM_0_0_0_START/u);
+  assert.doesNotMatch(observedText, /ET_TERM[^}]*Agents SDK/u);
+  assert.equal(
+    output[0]?.text,
+    "打开 智能体 Builder with Agents SDK and user agents.",
   );
 });
