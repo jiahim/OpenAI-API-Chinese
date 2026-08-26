@@ -198,10 +198,24 @@ function parseMarkdown(source: string): MarkdownNode {
         mdxFromMarkdown(),
       ],
     }) as MarkdownNode;
-  } catch (error) {
-    throw new Error("Markdown 无法按 GFM/frontmatter/MDX 语法解析。", {
-      cause: error,
-    });
+  } catch (mdxError) {
+    // Official Markdown exports can contain valid raw HTML that is not valid
+    // JSX, such as an intentionally unclosed icon span inside a link label.
+    // Fall back to GFM so raw HTML stays protected instead of blocking the
+    // entire page.
+    try {
+      return fromMarkdown(parseSource, {
+        extensions: [frontmatter(["yaml", "toml"]), gfm()],
+        mdastExtensions: [
+          frontmatterFromMarkdown(["yaml", "toml"]),
+          gfmFromMarkdown(),
+        ],
+      }) as MarkdownNode;
+    } catch (gfmError) {
+      throw new Error("Markdown 无法按 GFM/frontmatter 或 MDX 语法解析。", {
+        cause: new AggregateError([mdxError, gfmError]),
+      });
+    }
   }
 }
 

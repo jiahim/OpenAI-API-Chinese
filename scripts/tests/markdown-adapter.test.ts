@@ -346,6 +346,35 @@ test("render preserves literal strong-delimiter whitespace", async () => {
   );
 });
 
+test("adapter falls back to GFM for protected raw HTML that is invalid JSX", async () => {
+  const source = `[<span
+  aria-hidden="true"
+>
+
+  Elevated risk](https://example.com)
+
+## What is developer mode
+`;
+  const prepared = await markdownDocumentAdapter.prepare({
+    content: source,
+    id: "fixture.md",
+  });
+  const translations = new Map(
+    prepared.plan.units.map((unit) => [
+      unit.id,
+      unit.text === "What is developer mode" ? "什么是开发者模式" : unit.text,
+    ]),
+  );
+
+  assert.equal(
+    await markdownDocumentAdapter.render(
+      prepared.formatState,
+      result(translations),
+    ),
+    source.replace("What is developer mode", "什么是开发者模式"),
+  );
+});
+
 test("render rejects tampered ranges and prepare rejects invalid source hashes", async () => {
   const prepared = await markdownDocumentAdapter.prepare({
     content: "Body text.\n",
