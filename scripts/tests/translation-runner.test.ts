@@ -438,6 +438,17 @@ test("quality policy preserves glossary terms and placeholders", async () => {
     }),
     undefined,
   );
+  assert.equal(
+    await policy({
+      ...base,
+      item: {
+        ...base.item,
+        context: { fragmented: true } as MarkdownTranslationContext,
+      },
+      translatedText: "请求系统获取 {{VALUE}} 和 $API_KEY",
+    }),
+    undefined,
+  );
 });
 
 test("quality policy handles product names, longer words, and Markdown fragments", async () => {

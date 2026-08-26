@@ -364,16 +364,16 @@ export function createTranslationQualityPolicy(
         retryInstruction: "每个翻译单元必须返回不含换行或控制字符的单行文本。",
       };
     }
-    for (const term of glossary.preserve) {
-      if (item.text.includes(term) && !normalizedTranslatedText.includes(term)) {
-        return {
-          issueCode: "translation.preserve_missing",
-          message: `必须保留术语：${term}`,
-          retryInstruction: `原样保留 ${term}。`,
-        };
-      }
-    }
     if (!item.context.fragmented) {
+      for (const term of glossary.preserve) {
+        if (item.text.includes(term) && !normalizedTranslatedText.includes(term)) {
+          return {
+            issueCode: "translation.preserve_missing",
+            message: `必须保留术语：${term}`,
+            retryInstruction: `原样保留 ${term}。`,
+          };
+        }
+      }
       const terminologySource = withoutPreservedTerms(
         item.text,
         glossary.preserve,

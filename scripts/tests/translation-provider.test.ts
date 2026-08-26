@@ -94,6 +94,56 @@ test("preserve-term provider recovers when markers or protected text change", as
   );
 });
 
+test("preserve-term provider restores spans moved across fragmented items", async () => {
+  const protectedSpanPattern =
+    /\{\{ET_KEEP_\d+_\d+_\d+_START\}\}API\{\{ET_KEEP_\d+_\d+_\d+_END\}\}/u;
+  const provider = defineProvider({
+    async translateBatch(request) {
+      const protectedSpan = request.items[0]?.text.match(protectedSpanPattern)?.[0];
+      assert.ok(protectedSpan);
+      return [
+        { id: request.items[0]!.id, text: "实时转录服务会拒绝请求" },
+        { id: request.items[1]!.id, text: `${protectedSpan} 超出模型长度限制。` },
+      ];
+    },
+  });
+  const protectedProvider = createPreserveTermsProvider(provider, ["API"]);
+  const output = await protectedProvider.translateBatch({
+    items: [
+      { context: {}, id: "fragment-1", text: "The Realtime API rejects it or" },
+      { context: {}, id: "fragment-2", text: "exceeds the model length limit." },
+    ],
+    targetLanguage: "zh-CN",
+  });
+
+  assert.deepEqual(
+    output.map((item) => item.text),
+    ["实时转录服务会拒绝请求", "API 超出模型长度限制。"],
+  );
+});
+
+test("preserve-term provider rejects a missing protected span", async () => {
+  const protectedSpanPattern =
+    /\{\{ET_KEEP_\d+_\d+_\d+_START\}\}API\{\{ET_KEEP_\d+_\d+_\d+_END\}\}/u;
+  const provider = defineProvider({
+    async translateBatch(request) {
+      return request.items.map((item) => ({
+        id: item.id,
+        text: item.text.replace(protectedSpanPattern, ""),
+      }));
+    },
+  });
+  const protectedProvider = createPreserveTermsProvider(provider, ["API"]);
+
+  await assert.rejects(
+    protectedProvider.translateBatch({
+      items: [{ context: {}, id: "unit", text: "Realtime API rejects it." }],
+      targetLanguage: "zh-CN",
+    }),
+    /保留词数量发生变化：API/u,
+  );
+});
+
 test("preserve-term provider rejects marker residue instead of leaking it", async () => {
   const provider = defineProvider({
     async translateBatch(request) {

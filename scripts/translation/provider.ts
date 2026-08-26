@@ -99,6 +99,21 @@ function restorePreserveTerms(
   return restored;
 }
 
+function countPreservedTerms(
+  texts: readonly string[],
+  terms: readonly string[],
+): Map<string, number> {
+  const counts = new Map(terms.map((term) => [term, 0]));
+  const pattern = new RegExp(terms.map(escapeRegExp).join("|"), "gu");
+  for (const text of texts) {
+    for (const match of text.matchAll(pattern)) {
+      const term = match[0];
+      counts.set(term, (counts.get(term) ?? 0) + 1);
+    }
+  }
+  return counts;
+}
+
 export function createPreserveTermsProvider<TContext>(
   provider: TranslationProvider<TContext>,
   preserveTerms: readonly string[],
@@ -144,11 +159,12 @@ export function createPreserveTermsProvider<TContext>(
         signal,
         onActivity,
       );
-      return output.map((item) => {
-        const text = restorePreserveTerms(
-          item.text,
-          replacementsById.get(item.id) ?? [],
-        );
+      const allReplacements = [...replacementsById.values()].flat();
+      const restoredOutput = output.map((item) => {
+        // Chinese word order can move a protected span into an adjacent
+        // fragmented unit. Restore every batch token regardless of which
+        // output item currently contains it.
+        const text = restorePreserveTerms(item.text, allReplacements);
         if (PRESERVE_MARKER_RESIDUE_PATTERN.test(text)) {
           throw new TranslationResponseError(
             TranslationErrorCode.ResponseQualityRejected,
@@ -164,6 +180,36 @@ export function createPreserveTermsProvider<TContext>(
         }
         return { ...item, text };
       });
+      const expectedCounts = new Map<string, number>();
+      for (const replacement of allReplacements) {
+        expectedCounts.set(
+          replacement.term,
+          (expectedCounts.get(replacement.term) ?? 0) + 1,
+        );
+      }
+      const actualCounts = countPreservedTerms(
+        restoredOutput.map((item) => item.text),
+        terms,
+      );
+      for (const [term, expected] of expectedCounts) {
+        const actual = actualCounts.get(term) ?? 0;
+        if (actual === expected) continue;
+        const unitId = [...replacementsById].find(([, replacements]) =>
+          replacements.some((replacement) => replacement.term === term),
+        )?.[0];
+        throw new TranslationResponseError(
+          TranslationErrorCode.ResponseQualityRejected,
+          `保留词数量发生变化：${term}（期望 ${expected}，实际 ${actual}）。`,
+          {
+            details: {
+              issueCode: "translation.preserve_count_changed",
+              ...(unitId === undefined ? {} : { unitId }),
+            },
+            retryInstruction: PRESERVE_MARKER_INSTRUCTION,
+          },
+        );
+      }
+      return restoredOutput;
     },
   };
 }
