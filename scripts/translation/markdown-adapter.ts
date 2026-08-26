@@ -85,6 +85,8 @@ const SKIPPED_SUBTREES = new Set([
 const PROTECTED_RAW_NODES = new Set(SKIPPED_SUBTREES);
 const PROTECTED_TEXT_PATTERN = /\\[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]|&(?:#[xX][\da-fA-F]+|#\d+|[A-Za-z][A-Za-z\d]+);/gu;
 const CONTROL_CHARACTER_PATTERN = /[\u0000-\u001F\u007F]/u;
+const LEADING_PUNCTUATION_PATTERN = /^\p{P}+/u;
+const TRAILING_PUNCTUATION_PATTERN = /\p{P}+$/u;
 const AUTOLINK_PATTERN = /<(?:https?:\/\/|mailto:)[^<>\r\n]+>|<[A-Za-z\d.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z\d.-]+\.[A-Za-z]{2,}>/gu;
 const HTML_COMMENT_PATTERN = /<!--[\s\S]*?-->/gu;
 const GENERATED_CARD_PATTERN =
@@ -98,6 +100,50 @@ function sha256(value: string): string {
 
 export function containsMarkdownControlCharacter(value: string): boolean {
   return CONTROL_CHARACTER_PATTERN.test(value);
+}
+
+function localizedBoundaryPunctuation(
+  value: string,
+  boundary: "leading" | "trailing",
+): string {
+  const localized: Readonly<Record<string, string>> = {
+    "!": "！",
+    "(": "（",
+    ")": "）",
+    ",": "，",
+    ".": "。",
+    ":": "：",
+    ";": "；",
+    "?": "？",
+    "[": "［",
+    "]": "］",
+    "{": "｛",
+    "}": "｝",
+  };
+  return [...value]
+    .map((character) => {
+      if (character === '"') return boundary === "leading" ? "“" : "”";
+      if (character === "'") return boundary === "leading" ? "‘" : "’";
+      return localized[character] ?? character;
+    })
+    .join("");
+}
+
+function restoreFragmentBoundaryPunctuation(
+  range: MarkdownSourceRange,
+  translated: string,
+): string {
+  if (!range.fragmented) return translated;
+  let restored = translated;
+  const leading = range.sourceText.match(LEADING_PUNCTUATION_PATTERN)?.[0];
+  if (leading && !LEADING_PUNCTUATION_PATTERN.test(restored)) {
+    restored = localizedBoundaryPunctuation(leading, "leading") + restored;
+  }
+  const trailing = range.sourceText.match(TRAILING_PUNCTUATION_PATTERN)?.[0];
+  if (trailing && !TRAILING_PUNCTUATION_PATTERN.test(restored)) {
+    restored += localizedBoundaryPunctuation(trailing, "trailing");
+  }
+  return restored;
 }
 
 function parseMarkdown(source: string): MarkdownNode {
@@ -593,7 +639,7 @@ export const markdownDocumentAdapter: DocumentAdapter<
       if (typeof translated !== "string") {
         throw new Error(`翻译结果缺少单元：${range.id}`);
       }
-      const normalized = translated.trim();
+      let normalized = translated.trim();
       if (
         !normalized ||
         containsMarkdownControlCharacter(normalized)
@@ -602,6 +648,7 @@ export const markdownDocumentAdapter: DocumentAdapter<
           `翻译结果包含空文本、内部换行或控制字符：${range.id}`,
         );
       }
+      normalized = restoreFragmentBoundaryPunctuation(range, normalized);
       return { ...range, translated: normalized };
     });
     let rendered = state.source;

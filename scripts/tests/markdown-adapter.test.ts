@@ -301,6 +301,28 @@ test("render normalizes boundary whitespace and rejects unsafe results", async (
   );
 });
 
+test("render restores punctuation at fragmented Markdown boundaries", async () => {
+  const source = "Use **`gpt-5.6`**. It works.\n";
+  const prepared = await markdownDocumentAdapter.prepare({
+    content: source,
+    id: "fixture.md",
+  });
+  const translations = new Map(
+    prepared.plan.units.map((unit) => [
+      unit.id,
+      unit.text === "Use" ? "使用" : "它可以工作。",
+    ]),
+  );
+
+  assert.equal(
+    await markdownDocumentAdapter.render(
+      prepared.formatState,
+      result(translations),
+    ),
+    "使用 **`gpt-5.6`**。它可以工作。\n",
+  );
+});
+
 test("render rejects tampered ranges and prepare rejects invalid source hashes", async () => {
   const prepared = await markdownDocumentAdapter.prepare({
     content: "Body text.\n",
