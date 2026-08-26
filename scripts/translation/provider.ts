@@ -19,6 +19,12 @@ interface TerminologyReplacement extends PreserveReplacement {
   source: string;
 }
 
+interface LiteralBacktickReplacement {
+  backticks: string;
+  itemId: string;
+  token: string;
+}
+
 const PRESERVE_MARKER_INSTRUCTION =
   "Paired {{ET_KEEP_*_START}} and {{ET_KEEP_*_END}} markers wrap protected source text. " +
   "Emit every protected span exactly once and copy the complete marker pair with its enclosed text verbatim. " +
@@ -32,6 +38,10 @@ const TERMINOLOGY_MARKER_INSTRUCTION =
   "Copy every complete marker pair exactly once; never translate, omit, duplicate, split, or alter a marker pair. " +
   "The application replaces each marked span with the configured target term after translation.";
 const TERMINOLOGY_MARKER_RESIDUE_PATTERN = /ET_TERM_\d+_\d+_\d+/u;
+const LITERAL_BACKTICK_INSTRUCTION =
+  "{{ET_BT_*}} tokens represent protected literal Markdown backtick runs. " +
+  "Copy every token exactly once in the same response item. Never omit, duplicate, move, split, or alter a token.";
+const LITERAL_BACKTICK_PATTERN = /`+/gu;
 const TERMINOLOGY_EXCLUSIONS = [
   "USER AGENT",
   "USER AGENTS",
@@ -479,6 +489,81 @@ export function createSourceLineBreakNormalizationProvider<TContext>(
   };
 }
 
+export function createLiteralBacktickProvider<TContext>(
+  provider: TranslationProvider<TContext>,
+): TranslationProvider<TContext> {
+  let requestIndex = 0;
+  return {
+    name: provider.name,
+    async translateBatch(request, signal, onActivity) {
+      const currentRequest = requestIndex;
+      requestIndex += 1;
+      const replacements: LiteralBacktickReplacement[] = [];
+      const items = request.items.map((item, itemIndex) => {
+        let tokenIndex = 0;
+        return {
+          ...item,
+          text: item.text.replace(LITERAL_BACKTICK_PATTERN, (backticks) => {
+            let token = `{{ET_BT_${currentRequest}_${itemIndex}_${tokenIndex}}}`;
+            while (request.items.some((candidate) => candidate.text.includes(token))) {
+              tokenIndex += 1;
+              token = `{{ET_BT_${currentRequest}_${itemIndex}_${tokenIndex}}}`;
+            }
+            tokenIndex += 1;
+            replacements.push({ backticks, itemId: item.id, token });
+            return token;
+          }),
+        };
+      });
+      const protectedRequest: TranslationBatchRequest<TContext> = {
+        ...request,
+        items,
+        ...(replacements.length > 0
+          ? {
+              instructions: [request.instructions, LITERAL_BACKTICK_INSTRUCTION]
+                .filter(Boolean)
+                .join("\n"),
+            }
+          : {}),
+      };
+      const output = await provider.translateBatch(
+        protectedRequest,
+        signal,
+        onActivity,
+      );
+      for (const replacement of replacements) {
+        let totalOccurrences = 0;
+        let matchingOccurrences = 0;
+        for (const item of output) {
+          const occurrences = item.text.split(replacement.token).length - 1;
+          totalOccurrences += occurrences;
+          if (item.id === replacement.itemId) matchingOccurrences += occurrences;
+        }
+        if (totalOccurrences === 1 && matchingOccurrences === 1) continue;
+        throw new TranslationResponseError(
+          TranslationErrorCode.ResponseQualityRejected,
+          "字面 Markdown 反引号保护标记被遗漏、复制、移动或改写。",
+          {
+            details: {
+              issueCode: "translation.literal_backtick_marker_changed",
+              unitId: replacement.itemId,
+            },
+            retryInstruction: LITERAL_BACKTICK_INSTRUCTION,
+          },
+        );
+      }
+      return output.map((item) => {
+        let text = item.text;
+        for (const replacement of replacements) {
+          if (replacement.itemId !== item.id) continue;
+          text = text.split(replacement.token).join(replacement.backticks);
+        }
+        return { ...item, text };
+      });
+    },
+  };
+}
+
 export function createConfiguredProvider(
   profile: TranslationProviderProfile,
   environment: NodeJS.ProcessEnv = process.env,
@@ -493,13 +578,15 @@ export function createConfiguredProvider(
   }
   return createSourceLineBreakNormalizationProvider(
     createFragmentedArticleFallbackProvider(
-      createPreserveTermsProvider(
-        createTerminologyProvider(
-          createDeepSeekProvider({ apiKey, model: profile.model }),
+      createLiteralBacktickProvider(
+        createPreserveTermsProvider(
+          createTerminologyProvider(
+            createDeepSeekProvider({ apiKey, model: profile.model }),
+            preserveTerms,
+            terminology,
+          ),
           preserveTerms,
-          terminology,
         ),
-        preserveTerms,
       ),
     ),
   );

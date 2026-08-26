@@ -6,6 +6,7 @@ import { defineProvider, TranslationResponseError } from "@easy-translate/core";
 import {
   createConfiguredProvider,
   createFragmentedArticleFallbackProvider,
+  createLiteralBacktickProvider,
   createPreserveTermsProvider,
   createSourceLineBreakNormalizationProvider,
   createTerminologyProvider,
@@ -124,6 +125,64 @@ test("source line-break provider flattens matching translated layout breaks", as
     { id: "multiline", text: "OpenAI 托管的 ChatKit" },
     { id: "single-line", text: "新增\n换行" },
   ]);
+});
+
+test("literal-backtick provider restores exact runs in their original item", async () => {
+  let observedInstructions = "";
+  let observedText = "";
+  const provider = defineProvider({
+    async translateBatch(request) {
+      observedInstructions = request.instructions ?? "";
+      observedText = request.items[0]?.text ?? "";
+      return request.items.map((item) => ({
+        id: item.id,
+        text: item.text.replace("IDs for the", "用于"),
+      }));
+    },
+  });
+  const protectedProvider = createLiteralBacktickProvider(provider);
+  const output = await protectedProvider.translateBatch({
+    items: [
+      {
+        context: {},
+        id: "unit",
+        text: "IDs for the `code_interpreter`` tool",
+      },
+    ],
+    targetLanguage: "zh-CN",
+  });
+
+  assert.doesNotMatch(observedText, /`/u);
+  assert.match(observedText, /ET_BT_0_0_0/u);
+  assert.match(observedInstructions, /same response item/u);
+  assert.deepEqual(output, [
+    { id: "unit", text: "用于 `code_interpreter`` tool" },
+  ]);
+});
+
+test("literal-backtick provider rejects markers moved across items", async () => {
+  const provider = defineProvider({
+    async translateBatch(request) {
+      const token = request.items[0]?.text.match(/\{\{ET_BT_[^{}]+\}\}/u)?.[0];
+      assert.ok(token);
+      return [
+        { id: request.items[0]!.id, text: "第一段" },
+        { id: request.items[1]!.id, text: `第二段 ${token}` },
+      ];
+    },
+  });
+  const protectedProvider = createLiteralBacktickProvider(provider);
+
+  await assert.rejects(
+    protectedProvider.translateBatch({
+      items: [
+        { context: {}, id: "first", text: "Use `code`" },
+        { context: {}, id: "second", text: "here" },
+      ],
+      targetLanguage: "zh-CN",
+    }),
+    /保护标记被遗漏、复制、移动或改写/u,
+  );
 });
 
 test("preserve-term provider masks longest matches and restores exact terms", async () => {

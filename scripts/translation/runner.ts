@@ -55,6 +55,7 @@ const TRANSLATABLE_STATES = new Set([
 ]);
 const PLACEHOLDER_PATTERN =
   /\$\{[A-Z][A-Z\d_]*\}|\$[A-Z][A-Z\d_]*|\{\{[^{}\r\n]+\}\}|%[difso]/gu;
+const LITERAL_BACKTICK_PATTERN = /`+/gu;
 
 export interface TranslationPageRunOptions {
   batchSize?: number | undefined;
@@ -317,6 +318,12 @@ function sortedTokens(content: string): string[] {
     .sort();
 }
 
+function sortedLiteralBackticks(content: string): string[] {
+  return [...content.matchAll(LITERAL_BACKTICK_PATTERN)]
+    .map((match) => match[0])
+    .sort();
+}
+
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
 }
@@ -368,6 +375,16 @@ export function createTranslationQualityPolicy(
         issueCode: "translation.control_character",
         message: "译文不能包含内部换行或控制字符。",
         retryInstruction: "每个翻译单元必须返回不含换行或控制字符的单行文本。",
+      };
+    }
+    const sourceBackticks = sortedLiteralBackticks(item.text);
+    const targetBackticks = sortedLiteralBackticks(normalizedTranslatedText);
+    if (JSON.stringify(sourceBackticks) !== JSON.stringify(targetBackticks)) {
+      return {
+        issueCode: "translation.literal_backtick_changed",
+        message: "译文改变了字面 Markdown 反引号序列。",
+        retryInstruction:
+          "逐字保留每个反引号序列及其所属翻译单元；不要增删、合并或移动反引号。",
       };
     }
     if (!item.context.fragmented) {

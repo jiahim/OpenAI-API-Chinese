@@ -449,6 +449,19 @@ test("quality policy preserves glossary terms and placeholders", async () => {
     }),
     undefined,
   );
+  assert.equal(
+    (
+      await policy({
+        ...base,
+        item: {
+          ...base.item,
+          text: "IDs for the `code_interpreter`` tool",
+        },
+        translatedText: "用于 `code_interpreter` 工具的 ID",
+      })
+    )?.issueCode,
+    "translation.literal_backtick_changed",
+  );
 });
 
 test("quality policy handles product names, longer words, and Markdown fragments", async () => {
