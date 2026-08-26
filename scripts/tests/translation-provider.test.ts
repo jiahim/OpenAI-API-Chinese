@@ -122,6 +122,36 @@ test("preserve-term provider restores spans moved across fragmented items", asyn
   );
 });
 
+test("preserve-term provider completes an omitted preserve-only punctuation item", async () => {
+  const protectedSpanPattern =
+    /\{\{ET_KEEP_\d+_\d+_\d+_START\}\}API\{\{ET_KEEP_\d+_\d+_\d+_END\}\}/u;
+  const provider = defineProvider({
+    async translateBatch(request) {
+      const protectedSpan = request.items[1]?.text.match(protectedSpanPattern)?.[0];
+      assert.ok(protectedSpan);
+      return [
+        {
+          id: request.items[0]!.id,
+          text: `来源信号由 ${protectedSpan} 检查`,
+        },
+      ];
+    },
+  });
+  const protectedProvider = createPreserveTermsProvider(provider, ["API"]);
+  const output = await protectedProvider.translateBatch({
+    items: [
+      { context: {}, id: "fragment-1", text: "signals checked by the" },
+      { context: {}, id: "fragment-2", text: "API." },
+    ],
+    targetLanguage: "zh-CN",
+  });
+
+  assert.deepEqual(output, [
+    { id: "fragment-1", text: "来源信号由 API 检查" },
+    { id: "fragment-2", text: "." },
+  ]);
+});
+
 test("preserve-term provider rejects a missing protected span", async () => {
   const protectedSpanPattern =
     /\{\{ET_KEEP_\d+_\d+_\d+_START\}\}API\{\{ET_KEEP_\d+_\d+_\d+_END\}\}/u;

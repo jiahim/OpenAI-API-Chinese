@@ -81,7 +81,7 @@ render 会安全移除模型偶发添加在译文单元首尾的空白，同时�
 
 Runner 只接受 Planner 判定为 `pending`、`stale-source`、`stale-policy` 或 `missing-target` 的单篇页面。checkpoint 位于 Git 忽略的 `.cache/translation-checkpoints/`；提交前重新加载工作区并再次验证状态、源 SHA、策略 SHA 和目标路径。写入顺序固定为译文后 manifest，因此异常中断会转化为可检测的阻塞状态，而不会产生虚假的 current 记录。
 
-真实 profile 固定为 `deepseek` / `deepseek-chat`，key 只从 `DEEPSEEK_API_KEY` 注入；`translate:run` 自动加载仓库根目录下被 Git 忽略的 `.env`，现有进程环境优先。术语表的 `preserve` 项在 Provider 请求前按最长匹配包裹为批次内唯一的成对保护标记，标记内部保留可见原词；响应后无论模型复制标记、只去掉标记外壳、改写成对标记内的内容，还是因中文语序把完整标记移动到相邻翻译单元，都会在整个批次范围恢复为原词。恢复后会按最长匹配核对批次级保留词数量，残留、被破坏、遗漏或额外增加的保护内容会被质量错误拒绝。指定译法只检查完整单词或短语，并排除已整体保留的产品名。质量策略会独立复核术语与占位符，但当同一 Markdown 语义块被链接、图片、代码或换行拆成多个翻译单元时，不再对单个片段强制保留词或指定译法，因为中文语序可能把它们移动到相邻片段；术语表仍会随完整批次发送给模型。该命令必须提供 `--match` 与 `--limit 1`；默认调用模型但不写 `docs/zh` 或 manifest（可能更新 Git 忽略的 checkpoint），只有显式 `--commit` 才原子写入译文与 manifest。API key 不进入配置、策略哈希、日志、checkpoint 或 manifest；provider/model 变更会产生新的策略 SHA 和 checkpoint 路径。
+真实 profile 固定为 `deepseek` / `deepseek-chat`，key 只从 `DEEPSEEK_API_KEY` 注入；`translate:run` 自动加载仓库根目录下被 Git 忽略的 `.env`，现有进程环境优先。术语表的 `preserve` 项在 Provider 请求前按最长匹配包裹为批次内唯一的成对保护标记，标记内部保留可见原词；响应后无论模型复制标记、只去掉标记外壳、改写成对标记内的内容，还是因中文语序把完整标记移动到相邻翻译单元，都会在整个批次范围恢复为原词。恢复后会按最长匹配核对批次级保留词数量，残留、被破坏、遗漏或额外增加的保护内容会被质量错误拒绝。如果模型在移动保留词后省略了只含保留词和标点的原碎片 ID，Provider 只会在该碎片仍有非空标点时补回标点以满足响应契约；普通自然语言缺项继续拒绝。指定译法只检查完整单词或短语，并排除已整体保留的产品名。质量策略会独立复核术语与占位符，但当同一 Markdown 语义块被链接、图片、代码或换行拆成多个翻译单元时，不再对单个片段强制保留词或指定译法，因为中文语序可能把它们移动到相邻片段；术语表仍会随完整批次发送给模型。该命令必须提供 `--match` 与 `--limit 1`；默认调用模型但不写 `docs/zh` 或 manifest（可能更新 Git 忽略的 checkpoint），只有显式 `--commit` 才原子写入译文与 manifest。API key 不进入配置、策略哈希、日志、checkpoint 或 manifest；provider/model 变更会产生新的策略 SHA 和 checkpoint 路径。
 
 ## 分阶段交付
 

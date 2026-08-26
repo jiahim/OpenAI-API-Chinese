@@ -115,6 +115,21 @@ function countPreservedTerms(
   return counts;
 }
 
+function preserveOnlyPunctuationFallback(
+  text: string,
+  terms: readonly string[],
+): string | undefined {
+  const withoutTerms = text.replace(
+    new RegExp(terms.map(escapeRegExp).join("|"), "gu"),
+    "",
+  );
+  if (withoutTerms.replace(/[\p{P}\p{S}\s]+/gu, "")) return undefined;
+  const punctuation = [...withoutTerms]
+    .filter((character) => /[\p{P}\p{S}]/u.test(character))
+    .join("");
+  return punctuation || undefined;
+}
+
 export function createPreserveTermsProvider<TContext>(
   provider: TranslationProvider<TContext>,
   preserveTerms: readonly string[],
@@ -155,11 +170,26 @@ export function createPreserveTermsProvider<TContext>(
             }
           : {}),
       };
-      const output = await provider.translateBatch(
+      const rawOutput = await provider.translateBatch(
         protectedRequest,
         signal,
         onActivity,
       );
+      const output = [...rawOutput];
+      for (const item of request.items) {
+        if ((replacementsById.get(item.id)?.length ?? 0) === 0) continue;
+        const matches = output
+          .map((translated, index) => ({ index, translated }))
+          .filter(({ translated }) => translated.id === item.id);
+        if (matches.length > 1) continue;
+        const fallback = preserveOnlyPunctuationFallback(item.text, terms);
+        if (!fallback) continue;
+        if (matches.length === 0) {
+          output.push({ id: item.id, text: fallback });
+        } else if (!matches[0]!.translated.text.trim()) {
+          output[matches[0]!.index] = { id: item.id, text: fallback };
+        }
+      }
       const allReplacements = [...replacementsById.values()].flat();
       const restoredOutput = output.map((item) => {
         // Chinese word order can move a protected span into an adjacent
