@@ -316,6 +316,34 @@ function sortedTokens(content: string): string[] {
     .sort();
 }
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
+}
+
+function containsCompleteTerm(content: string, term: string): boolean {
+  const wordCharacter = "[\\p{L}\\p{N}_]";
+  const startsWithWord = /^[\p{L}\p{N}_]/u.test(term);
+  const endsWithWord = /[\p{L}\p{N}_]$/u.test(term);
+  const pattern =
+    `${startsWithWord ? `(?<!${wordCharacter})` : ""}${escapeRegExp(term)}` +
+    `${endsWithWord ? `(?!${wordCharacter})` : ""}`;
+  return new RegExp(pattern, "u").test(content);
+}
+
+function withoutPreservedTerms(
+  content: string,
+  preserveTerms: readonly string[],
+): string {
+  let unprotected = content;
+  const terms = [...preserveTerms].sort(
+    (left, right) => right.length - left.length || left.localeCompare(right, "en"),
+  );
+  for (const term of terms) {
+    unprotected = unprotected.split(term).join(" ".repeat(term.length));
+  }
+  return unprotected;
+}
+
 export function createTranslationQualityPolicy(
   glossary: TranslationGlossary,
 ): TranslationQualityPolicy<MarkdownTranslationContext> {
@@ -336,8 +364,15 @@ export function createTranslationQualityPolicy(
         };
       }
     }
+    const terminologySource = withoutPreservedTerms(
+      item.text,
+      glossary.preserve,
+    );
     for (const [source, target] of Object.entries(glossary.terms)) {
-      if (item.text.includes(source) && !translatedText.includes(target)) {
+      if (
+        containsCompleteTerm(terminologySource, source) &&
+        !translatedText.includes(target)
+      ) {
         return {
           issueCode: "translation.term_missing",
           message: `术语 ${source} 必须翻译为 ${target}。`,

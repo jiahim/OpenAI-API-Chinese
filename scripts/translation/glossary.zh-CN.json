@@ -4,12 +4,15 @@
     "OpenAI",
     "API",
     "SDK",
+    "Agents SDK",
     "Chat Completions API",
     "Responses API"
   ],
   "terms": {
     "Agent": "智能体",
+    "Agents": "智能体",
     "agent": "智能体",
+    "agents": "智能体",
     "continuation": "延续",
     "file search": "文件搜索",
     "guardrail": "护栏",
