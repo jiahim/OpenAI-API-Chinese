@@ -12,7 +12,7 @@ import {
   createFragmentedArticleFallbackProvider,
   createLiteralBacktickProvider,
   createLiteralMarkdownDelimiterProvider,
-  createMissingIdRecoveryProvider,
+  createInvalidIdRecoveryProvider,
   createPreserveTermsProvider,
   createSourceLineBreakNormalizationProvider,
   createTerminologyProvider,
@@ -143,7 +143,7 @@ test("fragmented article provider does not mask ordinary missing output", async 
   assert.deepEqual(output, []);
 });
 
-test("missing-id provider recursively splits a failed multi-item batch", async () => {
+test("invalid-id provider recursively splits a failed multi-item batch", async () => {
   const batchSizes: number[] = [];
   const provider = defineProvider({
     async translateBatch(request) {
@@ -160,7 +160,7 @@ test("missing-id provider recursively splits a failed multi-item batch", async (
       }));
     },
   });
-  const recoveryProvider = createMissingIdRecoveryProvider(provider);
+  const recoveryProvider = createInvalidIdRecoveryProvider(provider);
   const output = await recoveryProvider.translateBatch({
     items: [
       { context: {}, id: "one", text: "one" },
@@ -178,7 +178,35 @@ test("missing-id provider recursively splits a failed multi-item batch", async (
   assert.deepEqual(batchSizes, [3, 2, 1, 1, 1]);
 });
 
-test("missing-id provider preserves a terminal single-item failure", async () => {
+test("invalid-id provider recovers unexpected and duplicate ids", async () => {
+  for (const code of [
+    TranslationErrorCode.ResponseUnexpectedId,
+    TranslationErrorCode.ResponseDuplicateId,
+  ]) {
+    const provider = defineProvider({
+      async translateBatch(request) {
+        if (request.items.length > 1) {
+          throw new TranslationResponseError(code, "invalid id mapping");
+        }
+        return request.items.map((item) => ({ id: item.id, text: item.text }));
+      },
+    });
+    const recoveryProvider = createInvalidIdRecoveryProvider(provider);
+    const output = await recoveryProvider.translateBatch({
+      items: [
+        { context: {}, id: "one", text: "one" },
+        { context: {}, id: "two", text: "two" },
+      ],
+      targetLanguage: "zh-CN",
+    });
+    assert.deepEqual(output, [
+      { id: "one", text: "one" },
+      { id: "two", text: "two" },
+    ]);
+  }
+});
+
+test("invalid-id provider preserves a terminal single-item failure", async () => {
   const expected = new TranslationResponseError(
     TranslationErrorCode.ResponseMissingId,
     "missing id",
@@ -188,7 +216,7 @@ test("missing-id provider preserves a terminal single-item failure", async () =>
       throw expected;
     },
   });
-  const recoveryProvider = createMissingIdRecoveryProvider(provider);
+  const recoveryProvider = createInvalidIdRecoveryProvider(provider);
 
   await assert.rejects(
     recoveryProvider.translateBatch({
