@@ -28,9 +28,11 @@ test("configured DeepSeek provider requires its key without exposing credentials
 
 test("preserve-term provider masks longest matches and restores exact terms", async () => {
   let observedText = "";
+  let observedInstructions = "";
   const provider = defineProvider({
     async translateBatch(request) {
       observedText = request.items[0]?.text ?? "";
+      observedInstructions = request.instructions ?? "";
       return request.items.map((item) => ({
         id: item.id,
         text: item.text.replace(" and ", " 与 "),
@@ -46,13 +48,68 @@ test("preserve-term provider masks longest matches and restores exact terms", as
       {
         context: {},
         id: "unit",
-        text: "Responses API and API",
+        text: "Responses API and API&#x20;",
       },
+    ],
+    instructions: "Translate accurately.",
+    targetLanguage: "zh-CN",
+  });
+
+  assert.equal(
+    observedText,
+    "{{ET_KEEP_0_0_0_START}}Responses API{{ET_KEEP_0_0_0_END}} and " +
+      "{{ET_KEEP_0_0_1_START}}API{{ET_KEEP_0_0_1_END}}&#x20;",
+  );
+  assert.match(observedInstructions, /Copy every marker pair/u);
+  assert.equal(output[0]?.text, "Responses API 与 API&#x20;");
+});
+
+test("preserve-term provider recovers when markers or protected text change", async () => {
+  const markerPattern = /\{\{ET_KEEP_\d+_\d+_\d+_(?:START|END)\}\}/gu;
+  const pairedContentPattern =
+    /(\{\{ET_KEEP_\d+_\d+_\d+_START\}\})[^{}]*(\{\{ET_KEEP_\d+_\d+_\d+_END\}\})/gu;
+  const provider = defineProvider({
+    async translateBatch(request) {
+      return request.items.map((item) => ({
+        id: item.id,
+        text:
+          item.id === "markers-removed"
+            ? item.text.replace(markerPattern, "")
+            : item.text.replace(pairedContentPattern, "$1接口$2"),
+      }));
+    },
+  });
+  const protectedProvider = createPreserveTermsProvider(provider, ["API"]);
+  const output = await protectedProvider.translateBatch({
+    items: [
+      { context: {}, id: "markers-removed", text: "Realtime API rejects it." },
+      { context: {}, id: "content-changed", text: "Realtime API rejects it." },
     ],
     targetLanguage: "zh-CN",
   });
 
-  assert.equal(observedText.includes("API"), false);
-  assert.equal(observedText.match(/\{\{ET_KEEP_/gu)?.length, 2);
-  assert.equal(output[0]?.text, "Responses API 与 API");
+  assert.deepEqual(
+    output.map((item) => item.text),
+    ["Realtime API rejects it.", "Realtime API rejects it."],
+  );
+});
+
+test("preserve-term provider rejects marker residue instead of leaking it", async () => {
+  const provider = defineProvider({
+    async translateBatch(request) {
+      return request.items.map((item) => ({
+        id: item.id,
+        text: item.text.replace("_START}}", "_START_CHANGED}}"),
+      }));
+    },
+  });
+  const protectedProvider = createPreserveTermsProvider(provider, ["API"]);
+
+  await assert.rejects(
+    protectedProvider.translateBatch({
+      items: [{ context: {}, id: "unit", text: "Realtime API rejects it." }],
+      targetLanguage: "zh-CN",
+    }),
+    /保留词保护标记被模型改写/u,
+  );
 });

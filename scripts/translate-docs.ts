@@ -6,6 +6,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import {
   createEchoProvider,
   isTranslationCoreError,
+  TranslationProviderError,
+  TranslationResponseError,
   type RetryOperationOptions,
   type TranslationProvider,
   type TranslationRetryEvent,
@@ -68,6 +70,7 @@ const TRANSLATION_PAGE_RETRY_POLICY = {
   jitterMs: 2_000,
   maxDelayMs: 15_000,
   maxRetries: 1,
+  shouldRetry: shouldRetryProductionPage,
 } satisfies TranslationRetryPolicy;
 const TRANSLATABLE_STATES = new Set<TranslationPageState>([
   "missing-target",
@@ -94,6 +97,37 @@ function translationUnitId(error: unknown): string | undefined {
   if (!isTranslationCoreError(error)) return undefined;
   const unitId = error.details.unitId;
   return typeof unitId === "string" && unitId ? unitId : undefined;
+}
+
+function qualityFailureFingerprint(error: TranslationResponseError): string {
+  const unitId = error.details.unitId;
+  const issueCode = error.details.issueCode;
+  return JSON.stringify([
+    typeof unitId === "string" ? unitId : "",
+    typeof issueCode === "string" ? issueCode : "",
+    error.message,
+  ]);
+}
+
+export function createProductionBatchRetryPolicy(): TranslationRetryPolicy {
+  const seenQualityFailures = new Set<string>();
+  return {
+    ...TRANSLATION_BATCH_RETRY_POLICY,
+    shouldRetry(error) {
+      if (error instanceof TranslationProviderError) return error.retryable;
+      if (!(error instanceof TranslationResponseError)) return false;
+      if (error.reason !== "quality") return true;
+      const fingerprint = qualityFailureFingerprint(error);
+      if (seenQualityFailures.has(fingerprint)) return false;
+      seenQualityFailures.add(fingerprint);
+      return true;
+    },
+  };
+}
+
+export function shouldRetryProductionPage(error: unknown): boolean {
+  if (error instanceof TranslationProviderError) return error.retryable;
+  return error instanceof TranslationResponseError && error.reason !== "quality";
 }
 
 function logRetry(
@@ -129,6 +163,7 @@ async function runProductionTranslationPage(
   provider: TranslationProvider<MarkdownTranslationContext>,
   commit: boolean,
 ) {
+  const batchRetry = createProductionBatchRetryPolicy();
   const pageRetry: RetryOperationOptions = {
     ...TRANSLATION_PAGE_RETRY_POLICY,
     onRetry: (event) => logRetry("page", page, event),
@@ -139,7 +174,7 @@ async function runProductionTranslationPage(
       onRetry: (event) => logRetry("batch", page, event),
       pageRetry,
       provider,
-      retry: TRANSLATION_BATCH_RETRY_POLICY,
+      retry: batchRetry,
     });
   } catch (error) {
     throw translationFailure(page, error);

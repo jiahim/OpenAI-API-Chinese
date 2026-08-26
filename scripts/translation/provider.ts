@@ -1,15 +1,28 @@
 import { createDeepSeekProvider } from "@easy-translate/providers";
-import type {
-  TranslationBatchRequest,
-  TranslationProvider,
+import {
+  TranslationErrorCode,
+  TranslationResponseError,
+  type TranslationBatchRequest,
+  type TranslationProvider,
 } from "@easy-translate/core";
 
 import type { MarkdownTranslationContext } from "./markdown-adapter.ts";
 import type { TranslationProviderProfile } from "./types.ts";
 
 interface PreserveReplacement {
+  closeToken: string;
+  openToken: string;
   term: string;
-  token: string;
+}
+
+const PRESERVE_MARKER_INSTRUCTION =
+  "Paired {{ET_KEEP_*_START}} and {{ET_KEEP_*_END}} markers wrap protected source text. " +
+  "Copy every marker pair and its enclosed text verbatim into the matching translation item; " +
+  "never translate, omit, or move a protected span.";
+const PRESERVE_MARKER_RESIDUE_PATTERN = /ET_KEEP_\d+_\d+_\d+/u;
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
 }
 
 function protectPreserveTerms(
@@ -18,20 +31,61 @@ function protectPreserveTerms(
   requestIndex: number,
   itemIndex: number,
 ): { replacements: PreserveReplacement[]; text: string } {
-  let protectedText = text;
   const replacements: PreserveReplacement[] = [];
-  for (const [termIndex, term] of terms.entries()) {
-    if (!protectedText.includes(term)) continue;
-    let tokenIndex = termIndex;
-    let token = `{{ET_KEEP_${requestIndex}_${itemIndex}_${tokenIndex}}}`;
-    while (protectedText.includes(token)) {
-      tokenIndex += terms.length;
-      token = `{{ET_KEEP_${requestIndex}_${itemIndex}_${tokenIndex}}}`;
+  const pattern = new RegExp(terms.map(escapeRegExp).join("|"), "gu");
+  let nextTokenIndex = 0;
+  const protectedText = text.replace(pattern, (term) => {
+    let tokenIndex = nextTokenIndex;
+    let openToken = `{{ET_KEEP_${requestIndex}_${itemIndex}_${tokenIndex}_START}}`;
+    let closeToken = `{{ET_KEEP_${requestIndex}_${itemIndex}_${tokenIndex}_END}}`;
+    while (text.includes(openToken) || text.includes(closeToken)) {
+      tokenIndex += 1;
+      openToken = `{{ET_KEEP_${requestIndex}_${itemIndex}_${tokenIndex}_START}}`;
+      closeToken = `{{ET_KEEP_${requestIndex}_${itemIndex}_${tokenIndex}_END}}`;
     }
-    protectedText = protectedText.split(term).join(token);
-    replacements.push({ term, token });
-  }
+    nextTokenIndex = tokenIndex + 1;
+    replacements.push({ closeToken, openToken, term });
+    return `${openToken}${term}${closeToken}`;
+  });
   return { replacements, text: protectedText };
+}
+
+function restorePreserveReplacement(
+  text: string,
+  replacement: PreserveReplacement,
+): string {
+  let restored = text;
+  const maximumProtectedLength = Math.max(
+    replacement.term.length * 4,
+    replacement.term.length + 32,
+  );
+  while (true) {
+    const openIndex = restored.indexOf(replacement.openToken);
+    if (openIndex < 0) break;
+    const contentStart = openIndex + replacement.openToken.length;
+    const closeIndex = restored.indexOf(replacement.closeToken, contentStart);
+    if (closeIndex < 0) {
+      restored =
+        restored.slice(0, openIndex) +
+        restored.slice(openIndex + replacement.openToken.length);
+      continue;
+    }
+    const protectedContent = restored.slice(contentStart, closeIndex);
+    if (
+      protectedContent.length <= maximumProtectedLength &&
+      !protectedContent.includes("{{ET_KEEP_")
+    ) {
+      restored =
+        restored.slice(0, openIndex) +
+        replacement.term +
+        restored.slice(closeIndex + replacement.closeToken.length);
+      continue;
+    }
+    restored =
+      restored.slice(0, openIndex) +
+      restored.slice(openIndex + replacement.openToken.length);
+  }
+  return restored.split(replacement.closeToken).join("");
 }
 
 function restorePreserveTerms(
@@ -40,7 +94,7 @@ function restorePreserveTerms(
 ): string {
   let restored = text;
   for (const replacement of replacements) {
-    restored = restored.split(replacement.token).join(replacement.term);
+    restored = restorePreserveReplacement(restored, replacement);
   }
   return restored;
 }
@@ -71,22 +125,45 @@ export function createPreserveTermsProvider<TContext>(
         replacementsById.set(item.id, protectedItem.replacements);
         return { ...item, text: protectedItem.text };
       });
+      const hasReplacements = [...replacementsById.values()].some(
+        (replacements) => replacements.length > 0,
+      );
       const protectedRequest: TranslationBatchRequest<TContext> = {
         ...request,
         items,
+        ...(hasReplacements
+          ? {
+              instructions: [request.instructions, PRESERVE_MARKER_INSTRUCTION]
+                .filter(Boolean)
+                .join("\n"),
+            }
+          : {}),
       };
       const output = await provider.translateBatch(
         protectedRequest,
         signal,
         onActivity,
       );
-      return output.map((item) => ({
-        ...item,
-        text: restorePreserveTerms(
+      return output.map((item) => {
+        const text = restorePreserveTerms(
           item.text,
           replacementsById.get(item.id) ?? [],
-        ),
-      }));
+        );
+        if (PRESERVE_MARKER_RESIDUE_PATTERN.test(text)) {
+          throw new TranslationResponseError(
+            TranslationErrorCode.ResponseQualityRejected,
+            "保留词保护标记被模型改写。",
+            {
+              details: {
+                issueCode: "translation.preserve_marker_changed",
+                unitId: item.id,
+              },
+              retryInstruction: PRESERVE_MARKER_INSTRUCTION,
+            },
+          );
+        }
+        return { ...item, text };
+      });
     },
   };
 }
