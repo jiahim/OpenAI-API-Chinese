@@ -44,10 +44,12 @@ pnpm build
 | Framework Preset | Next.js |
 | Install Command | `pnpm install` |
 | Build Command | `pnpm build` |
-| Output Directory | `out` |
+| Output Directory | 不覆盖，由 Next.js Preset 自动检测 |
 | Node.js | 22.13 或更高 |
 
 在 Root Directory 设置中启用 **Include source files outside of the Root Directory in the Build Step**。这是必须项：Vercel 默认不允许项目读取 Root Directory 外的文件，而本项目的 Markdown 位于仓库根部 `docs/`。
+
+不要在 Vercel Dashboard 或 `vercel.json` 中把 Output Directory 覆盖为 `out`。`output: "export"` 仍会在本地生成 `apps/web/out`，但 Vercel 的 Next.js 构建器需要自行接管框架产物；强制覆盖会使其在 `out` 中错误查找 `routes-manifest.json`。
 
 设置环境变量：
 

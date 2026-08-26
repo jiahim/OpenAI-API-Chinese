@@ -116,4 +116,13 @@ describe("document link rewriting", () => {
     const expectedSchedule = `每天 ${String(expectedHour).padStart(2, "0")}:${cron[1].padStart(2, "0")} · 北京时间`;
     assert.equal(sourceCheckSchedule, expectedSchedule);
   });
+
+  it("leaves Vercel output detection to the Next.js preset", async () => {
+    const vercelConfig = JSON.parse(
+      await readFile(resolve(process.cwd(), "vercel.json"), "utf8"),
+    ) as Record<string, unknown>;
+    assert.equal(vercelConfig.framework, "nextjs");
+    assert.equal(vercelConfig.buildCommand, "pnpm build");
+    assert.equal("outputDirectory" in vercelConfig, false);
+  });
 });
