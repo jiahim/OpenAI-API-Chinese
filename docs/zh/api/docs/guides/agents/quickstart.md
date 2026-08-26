@@ -1,12 +1,12 @@
-# 快速入门
+# 快速开始
 
-> 有关完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 来获取。
+> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
-如需以最短路径构建一个可运行的基于 SDK 的智能体，请阅读本页。以下 JavaScript 和 Python 示例采用相同的高级概念：定义智能体、运行智能体，然后随着工作流扩展添加工具和专家智能体。
+当你想要找到一条构建可运行的 SDK 智能体的最短路径时，请使用此页面。以下示例在 JavaScript 和 Python 中使用了相同的高级概念：定义一个智能体，运行它，然后随着工作流的增长添加工具和专家智能体。
 
 ## 安装 SDK
 
-创建项目、安装 SDK 并设置你的 API 密钥。
+创建一个项目，安装 SDK，并设置你的 API 密钥。
 
 
 
@@ -29,7 +29,7 @@ export OPENAI_API_KEY=sk-...
 
 ## 创建并运行你的第一个智能体
 
-先从一个职责明确的智能体和一轮对话开始。SDK 会处理模型调用，并返回一个包含最终输出和运行历史的结果对象。
+从一个聚焦的智能体和一轮对话开始。SDK 处理模型调用，并返回一个包含最终输出及运行历史的结果对象。
 
 创建并运行智能体
 
@@ -68,24 +68,24 @@ if __name__ == "__main__":
 ```
 
 
-你应该会在终端中看到简洁的答案。一旦该循环正常工作，保持相同的结构，并逐步增加功能，而不是一开始就设计大型多智能体方案。
+你应在终端中看到简洁的回答。一旦该循环运行正常，保持相同的结构，逐步增加功能，而不是一开始就设计复杂的多智能体架构。
 
-## 将状态延续到下一轮
+## 将状态带入下一轮
 
-第一次运行的结果也是你决定第二轮应使用什么状态的依据。
+第一次运行的结果也是你决定第二轮应使用什么作为状态的依据。
 
-| 如果你想                                           | 从这里开始                                                                                                                               |
+| 如果你想要                                           | 从以下开始                                                                                                                               |
 | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| 在应用中保留完整历史记录             | `result.history`（TypeScript）或 `result.to_input_list()`（Python）                         |
-| 让 SDK 自动加载并保存历史记录             | 一个会话                                                                                                                                |
+| 在应用程序中保留完整历史记录             | `result.history` 使用 TypeScript 或 `result.to_input_list()` 使用 Python                         |
+| 让 SDK 为你加载并保存历史记录             | 一个会话                                                                                                                                |
 | 让 OpenAI 管理延续状态                  | 服务端管理的延续 ID                                                                                                         |
-| 恢复因审批或中断而暂停的运行 | `result.state`（TypeScript）或 `result.to_state()`（Python），并配合 `interruptions` |
+| 恢复因审批或中断而暂停的运行 | `result.state` 使用 TypeScript 或 `result.to_state()` 使用 Python，连同 `interruptions` |
 
-完成交接后，如果该专家智能体应继续掌控流程，请在下一轮复用 TypeScript 中的 `lastAgent` 或 Python 中的 `last_agent`。
+在交接之后，复用 `lastAgent` 在 TypeScript 中，或 `last_agent` 在 Python 中用于下一轮，当该专家应保持控制时。
 
-## 为智能体添加工具
+## 为智能体提供工具
 
-你添加的第一个功能通常是函数工具或 OpenAI 托管工具，例如网页搜索或文件搜索。
+你添加的第一个能力通常是函数工具或托管OpenAI工具，如网页搜索或文件搜索。
 
 添加函数工具
 
@@ -149,11 +149,11 @@ if __name__ == "__main__":
 ```
 
 
-如果需要使用托管工具、工具搜索或将智能体作为工具，请参阅通用的 [使用工具](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk) 指南。
+当你需要托管工具、工具搜索或智能体作为工具时，请使用共享的 [工具使用](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk) 指南。
 
 ## 添加专家智能体
 
-一个常见的后续步骤是将工作流拆分为多个专家，并让路由器通过交接将任务委托给它们。
+常见的下一步是将工作流拆分为多个专家，并让路由器通过交接将任务委派给它们。
 
 路由到专家智能体
 
@@ -225,11 +225,11 @@ if __name__ == "__main__":
 
 ## 尽早检查追踪
 
-常规的服务端 SDK 流程包含追踪功能。首次运行成功后，请先打开 [追踪仪表盘](https://platform.openai.com/traces)，检查模型调用、工具调用、交接和护栏，再开始调整提示词。
+正常的服务端 SDK 路径包含追踪。一旦首次运行成功，打开 [追踪仪表盘](https://platform.openai.com/traces) 以在开始调整提示词之前检查模型调用、工具调用、交接和护栏。
 
 ## 后续步骤
 
-首次运行成功后，继续阅读与你接下来要添加的功能相匹配的指南。
+首个运行成功后，继续阅读与你想要添加的下一项能力相匹配的指南。
 
 
 
@@ -237,19 +237,19 @@ if __name__ == "__main__":
 
 
 
-        先清晰定义一个专家智能体，再扩展工作流。](https://developers.openai.com/api/docs/guides/agents/define-agents)
+        在扩展工作流之前，先将一个专家智能体清晰地塑造好。](https://developers.openai.com/api/docs/guides/agents/define-agents)
   [使用工具
 
 
 
-        添加托管工具、函数工具和作为工具的智能体。](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)
+        添加托管工具、函数工具以及将智能体用作工具。](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)
   [运行智能体
 
 
 
-        了解智能体循环、流式处理和延续策略。](https://developers.openai.com/api/docs/guides/agents/running-agents)
+        了解智能体循环、流式传输和延续策略。](https://developers.openai.com/api/docs/guides/agents/running-agents)
   [编排与交接
 
 
 
-        决定专家智能体何时接管对话。](https://developers.openai.com/api/docs/guides/agents/orchestration)
+        决定专家智能体应何时接管对话。](https://developers.openai.com/api/docs/guides/agents/orchestration)
