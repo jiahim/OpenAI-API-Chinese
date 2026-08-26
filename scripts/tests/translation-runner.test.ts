@@ -422,6 +422,22 @@ test("quality policy preserves glossary terms and placeholders", async () => {
     )?.issueCode,
     "translation.placeholder_changed",
   );
+  assert.equal(
+    (
+      await policy({
+        ...base,
+        translatedText: "请求 OpenAI\n获取 {{VALUE}} 和 $API_KEY",
+      })
+    )?.issueCode,
+    "translation.control_character",
+  );
+  assert.equal(
+    await policy({
+      ...base,
+      translatedText: "\n请求 OpenAI 获取 {{VALUE}} 和 $API_KEY\n",
+    }),
+    undefined,
+  );
 });
 
 test("quality policy handles product names, longer words, and Markdown fragments", async () => {

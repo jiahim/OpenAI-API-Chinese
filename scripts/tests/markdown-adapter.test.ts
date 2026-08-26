@@ -221,13 +221,14 @@ test("generated multiline navigation cards translate labels and descriptions", a
   );
 });
 
-test("render rejects incomplete, unknown, multiline and structure-changing results", async () => {
+test("render normalizes boundary whitespace and rejects unsafe results", async () => {
   const prepared = await markdownDocumentAdapter.prepare({
-    content: "# Safe heading\n\nBody text.\n",
+    content: "# Realtime API with WebRTC\n\nBody text.\n",
     id: "fixture.md",
   });
   const [first, second] = prepared.plan.units;
   assert.ok(first && second);
+  assert.equal(first.id, "markdown-1-2-26");
   await assert.rejects(
     markdownDocumentAdapter.render(
       prepared.formatState,
@@ -260,7 +261,19 @@ test("render rejects incomplete, unknown, multiline and structure-changing resul
     ),
     /换行/u,
   );
-  for (const invalid of ["   ", " padded ", "control\u0001character"]) {
+  assert.equal(
+    await markdownDocumentAdapter.render(
+      prepared.formatState,
+      result(
+        new Map([
+          [first.id, "\r\n  使用 WebRTC 的 Realtime API \t"],
+          [second.id, second.text],
+        ]),
+      ),
+    ),
+    "# 使用 WebRTC 的 Realtime API\n\nBody text.\n",
+  );
+  for (const invalid of ["   ", "control\u0001character"]) {
     await assert.rejects(
       markdownDocumentAdapter.render(
         prepared.formatState,
@@ -271,7 +284,7 @@ test("render rejects incomplete, unknown, multiline and structure-changing resul
           ]),
         ),
       ),
-      /空白边界|控制字符/u,
+      /空文本|控制字符/u,
     );
   }
   await assert.rejects(

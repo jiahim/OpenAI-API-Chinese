@@ -32,6 +32,7 @@ import {
 } from "@easy-translate/core";
 
 import {
+  containsMarkdownControlCharacter,
   markdownDocumentAdapter,
   type MarkdownTranslationContext,
 } from "./markdown-adapter.ts";
@@ -348,15 +349,23 @@ export function createTranslationQualityPolicy(
   glossary: TranslationGlossary,
 ): TranslationQualityPolicy<MarkdownTranslationContext> {
   return ({ item, translatedText }) => {
-    if (!translatedText.trim()) {
+    const normalizedTranslatedText = translatedText.trim();
+    if (!normalizedTranslatedText) {
       return {
         issueCode: "translation.empty",
         message: "译文不能为空。",
         retryInstruction: "必须返回非空译文。",
       };
     }
+    if (containsMarkdownControlCharacter(normalizedTranslatedText)) {
+      return {
+        issueCode: "translation.control_character",
+        message: "译文不能包含内部换行或控制字符。",
+        retryInstruction: "每个翻译单元必须返回不含换行或控制字符的单行文本。",
+      };
+    }
     for (const term of glossary.preserve) {
-      if (item.text.includes(term) && !translatedText.includes(term)) {
+      if (item.text.includes(term) && !normalizedTranslatedText.includes(term)) {
         return {
           issueCode: "translation.preserve_missing",
           message: `必须保留术语：${term}`,
@@ -372,7 +381,7 @@ export function createTranslationQualityPolicy(
       for (const [source, target] of Object.entries(glossary.terms)) {
         if (
           containsCompleteTerm(terminologySource, source) &&
-          !translatedText.includes(target)
+          !normalizedTranslatedText.includes(target)
         ) {
           return {
             issueCode: "translation.term_missing",
@@ -383,7 +392,7 @@ export function createTranslationQualityPolicy(
       }
     }
     const sourceTokens = sortedTokens(item.text);
-    const targetTokens = sortedTokens(translatedText);
+    const targetTokens = sortedTokens(normalizedTranslatedText);
     if (JSON.stringify(sourceTokens) !== JSON.stringify(targetTokens)) {
       return {
         issueCode: "translation.placeholder_changed",

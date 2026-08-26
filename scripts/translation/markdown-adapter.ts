@@ -96,6 +96,10 @@ function sha256(value: string): string {
   return createHash("sha256").update(value, "utf8").digest("hex");
 }
 
+export function containsMarkdownControlCharacter(value: string): boolean {
+  return CONTROL_CHARACTER_PATTERN.test(value);
+}
+
 function parseMarkdown(source: string): MarkdownNode {
   // MDX deliberately rejects CommonMark angle-bracket autolinks and HTML
   // comments. Mask those protected ranges with equal-length text before
@@ -589,16 +593,16 @@ export const markdownDocumentAdapter: DocumentAdapter<
       if (typeof translated !== "string") {
         throw new Error(`翻译结果缺少单元：${range.id}`);
       }
+      const normalized = translated.trim();
       if (
-        !translated.trim() ||
-        translated.trim() !== translated ||
-        CONTROL_CHARACTER_PATTERN.test(translated)
+        !normalized ||
+        containsMarkdownControlCharacter(normalized)
       ) {
         throw new Error(
-          `翻译结果包含空白边界、空文本、换行或控制字符：${range.id}`,
+          `翻译结果包含空文本、内部换行或控制字符：${range.id}`,
         );
       }
-      return { ...range, translated };
+      return { ...range, translated: normalized };
     });
     let rendered = state.source;
     for (const replacement of replacements.reverse()) {
