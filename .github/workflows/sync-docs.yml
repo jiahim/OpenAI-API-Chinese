@@ -134,7 +134,7 @@ jobs:
               return;
             }
 
-            const title = "docs: 同步 OpenAI 官方英文文档";
+            const title = "[AI] docs: 同步 OpenAI 官方英文文档";
             const body = await readFile(process.env.SYNC_PR_BODY_PATH, "utf8");
             if (!pull) {
               const response = await github.rest.pulls.create({

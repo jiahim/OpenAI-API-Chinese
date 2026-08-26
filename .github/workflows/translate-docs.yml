@@ -171,7 +171,7 @@ jobs:
                 repo,
                 base: process.env.BASE_BRANCH,
                 head: process.env.TRANSLATION_BRANCH,
-                title: "docs: 自动更新 OpenAI 中文翻译",
+                title: "[AI] docs: 自动更新 OpenAI 中文翻译",
                 body,
               });
               pull = response.data;
@@ -180,7 +180,7 @@ jobs:
                 owner,
                 repo,
                 pull_number: pull.number,
-                title: "docs: 自动更新 OpenAI 中文翻译",
+                title: "[AI] docs: 自动更新 OpenAI 中文翻译",
                 body,
               });
               pull = response.data;
