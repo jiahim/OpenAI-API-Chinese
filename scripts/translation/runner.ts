@@ -20,11 +20,15 @@ import {
 } from "node:path";
 
 import {
+  retryOperation,
   translatePlan,
+  type RetryOperationOptions,
   type TranslationCheckpoint,
   type TranslationProvider,
   type TranslationQualityPolicy,
   type TranslationResult,
+  type TranslationRetryEvent,
+  type TranslationRetryPolicy,
 } from "@easy-translate/core";
 
 import {
@@ -57,10 +61,18 @@ export interface TranslationPageRunOptions {
   concurrency?: number | undefined;
   maxBatchCharacters?: number | undefined;
   now?: (() => Date) | undefined;
+  onRetry?: ((event: TranslationRetryEvent) => void) | undefined;
   provider: TranslationProvider<MarkdownTranslationContext>;
-  retry?: number | undefined;
+  retry?: number | TranslationRetryPolicy | undefined;
   useCheckpoint?: boolean | undefined;
 }
+
+export type RetriableTranslationPageRunOptions = Omit<
+  TranslationPageRunOptions,
+  "useCheckpoint"
+> & {
+  pageRetry?: number | RetryOperationOptions | undefined;
+};
 
 export interface TranslationPageRunResult {
   checkpointPath: string;
@@ -516,6 +528,7 @@ export async function runTranslationPage(
   const path = checkpointPath(entry.source.sourceUrl, workspace.policySha256);
   const useCheckpoint = options.useCheckpoint ?? true;
   const instructions = instructionsForWorkspace(workspace);
+  let lastReportedRetry: TranslationRetryEvent | undefined;
   const result = await translatePlan(prepared.plan, {
     batchSize: options.batchSize ?? 20,
     checkpoint: useCheckpoint
@@ -536,6 +549,19 @@ export async function runTranslationPage(
     provider: options.provider,
     qualityPolicy: createTranslationQualityPolicy(workspace.glossary),
     retry: options.retry ?? 2,
+    onProgress:
+      options.onRetry === undefined
+        ? undefined
+        : (progress) => {
+            if (
+              progress.lastRetry === undefined ||
+              progress.lastRetry === lastReportedRetry
+            ) {
+              return;
+            }
+            lastReportedRetry = progress.lastRetry;
+            options.onRetry?.(progress.lastRetry);
+          },
     sourceLanguage: "en",
     targetLanguage: workspace.targetLanguage,
   });
@@ -565,4 +591,29 @@ export async function runTranslationPage(
     sourceUrl: entry.source.sourceUrl,
     targetPath: entry.targetPath,
   };
+}
+
+export async function runTranslationPageWithRetry(
+  workspace: TranslationWorkspaceSnapshot,
+  sourceUrl: string,
+  options: RetriableTranslationPageRunOptions,
+): Promise<TranslationPageRunResult> {
+  const { pageRetry, ...runOptions } = options;
+  const retryOptions: RetryOperationOptions =
+    typeof pageRetry === "number"
+      ? { maxRetries: pageRetry }
+      : (pageRetry ?? {
+          baseDelayMs: 10_000,
+          jitterMs: 2_000,
+          maxDelayMs: 10_000,
+          maxRetries: 1,
+        });
+  return retryOperation(
+    () =>
+      runTranslationPage(workspace, sourceUrl, {
+        ...runOptions,
+        useCheckpoint: true,
+      }),
+    retryOptions,
+  );
 }

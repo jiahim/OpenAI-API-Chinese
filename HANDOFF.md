@@ -2,7 +2,7 @@
 
 > **给后续执行者：** 官方英文同步、自动中文翻译、PR 质量门禁和首轮生产验收均已闭环。当前重点是按高价值文档优先级积累中文内容并观察流水线稳定性；不要恢复旧 Python 翻译脚本，不要清洗 `docs/en`，也不要让自动任务覆盖未登记或人工修改的中文文件。
 
-**更新时间：** 2026-08-25（Asia/Singapore）
+**更新时间：** 2026-08-26（Asia/Singapore）
 
 ## 1. 当前阶段结论
 
@@ -13,7 +13,7 @@
 - 翻译规划与 Markdown adapter PR #8 已合入；自动翻译 runner、DeepSeek profile、review/auto 流程和远端 workflow PR #9 已合入。
 - 自动 PR 质量门禁修复 PR #12 已合入。
 - 首轮生产自动翻译成功创建 PR #13，`Quality gate` 最终通过，PR 合入后的 `main` CI 也成功。
-- 当前中文状态：2 current、419 pending；首篇 Agents quickstart 为 `reviewed`，自动生成的 Actions Library 为 `machine`。
+- 当前中文状态：3 current、418 pending；首篇 Agents quickstart 为 `reviewed`，自动生成的页面为 `machine`。
 - 本地与远端仅 `translate:run`、`translate:auto` 会读取 `DEEPSEEK_API_KEY`；key 不进入仓库、日志、checkpoint 或 manifest。
 - 核心文档优先级由 `scripts/translation/priority.zh-CN.json` 维护；同一状态内优先处理配置清单，stale/missing 维护任务仍先于 pending。
 
@@ -131,6 +131,8 @@ pnpm test
 - Easy Translate Core 负责批次、串行 checkpoint 和恢复；默认 batch=20、concurrency=1、max characters=4000。
 - checkpoint 写入被忽略的 `.cache/translation-checkpoints/`，使用临时文件与原子 rename。
 - 单元质量策略检查 preserve 术语、指定译法和占位符数量；Markdown adapter 在整篇 render 后继续检查结构、代码和 URL。
+- 生产 Provider 会按最长匹配将 `preserve` 术语替换为批次内唯一占位符，模型返回后逐字恢复；质量策略仍会独立复核，避免术语保护只依赖提示词。
+- 批次对格式、质量和可重试 Provider 错误最多重试 2 次，采用指数退避与 jitter；批次耗尽后页面等待约 10–12 秒并基于 checkpoint 额外恢复 1 次。认证、配置、路径和完整性错误不重试，日志包含页面、单元、原因和等待时间。
 - 提交前重新加载工作区，拒绝竞态变化；按“先译文、后 manifest”写入。中断只会留下可检测并阻塞覆盖的 `untracked-target` 或 `modified-target`。
 - `translate:simulate` 必须同时提供 `--match` 和 `--limit 1`，使用 Echo/Fake Provider，不写译文、manifest 或 checkpoint。
 - 已接入 `@easy-translate/providers@0.1.0` 的 DeepSeek profile；默认模型 `deepseek-chat`，key 只读 `DEEPSEEK_API_KEY`。
@@ -140,20 +142,22 @@ pnpm test
 - `translate:auto -- --limit 10` 按 `stale-source`、`stale-policy`、`missing-target`、`pending` 处理；同一状态内按 `scripts/translation/priority.zh-CN.json` 的核心文档顺序筛选，最后回退到稳定路径排序。每轮最多十篇，每篇都不超过 20,000 个源字符。
 - `translate-docs.yml` 只检出 `main`，先跑离线门禁，再仅向 DeepSeek 步骤注入环境 secret；已有翻译 PR 时停止。它在英文合入后触发，并每天北京时间 01:00 补充运行。
 - CI 已改用 `translate:check`，允许 pending/stale，但拒绝缺失、未登记或被修改而未 review 的目标文件。
+- Node 测试固定使用 `--test-isolation=none`，规避 Node 24 子进程 IPC 偶发的 cloned data 反序列化失败；测试仍保持单并发。
 
 ## 3. 当前验证证据
 
-2026-08-25 翻译规划、Markdown adapter、runner 与自动化验证：
+2026-08-26 翻译规划、Markdown adapter、runner 与自动化验证：
 
 - `pnpm typecheck`：通过。
-- `pnpm test`：60/60 通过（包含 planner、provider、runner、优先级配置与选择、review 结构保护及既有同步/adapter 测试）。
+- `pnpm test`：63/63 通过（包含 planner、provider、runner、优先级配置与选择、review 结构保护及既有同步/adapter 测试）。
 - `pnpm docs:status`：421 active、0 removed、89.0 MiB。
-- `pnpm translate:status`：2 current、419 pending，其他状态为 0。
+- `pnpm translate:check`：通过；3 current、418 pending，其他阻塞状态为 0。
 - `pnpm translate:plan -- --limit 12`：按核心文档清单优先列出模型、API 概览、文本生成、流式输出、后台任务、Code Interpreter、生产最佳实践和 Realtime 文档。
 - 定向测试覆盖路径/符号链接越界、八种状态及安全优先级、策略 stale、未登记/人工修改保护、源 SHA 脏改动拒绝、重复路径、manifest 时间/版本契约、术语冲突和 orphan 记录保留。
 - Markdown adapter 定向测试覆盖恒等字节不变、标题/正文/列表/引用/表格、链接标签、图片 alt、代码/HTML/MDX/frontmatter/URL 保护、跨行容器标记、无效结果和区间篡改拒绝。
-- Runner 定向测试覆盖无写入模拟、安全提交、checkpoint 中断恢复、阻塞状态、符号链接/非规范路径写入拒绝、术语和占位符保护。
-- `pnpm translate:simulate -- --match guides/agents/quickstart.md --limit 1`：完成 53 个单元、2403 个字符的无 key 单篇闭环，写入为 0。
+- Runner 定向测试覆盖无写入模拟、安全提交、checkpoint 中断恢复、批次耗尽后的页面恢复、阻塞状态、符号链接/非规范路径写入拒绝、术语和占位符保护。
+- Provider 定向测试覆盖最长术语优先掩码和返回后的逐字恢复。
+- `pnpm translate:simulate -- --match api/reference/overview.md --limit 1`：完成 115 个单元、5305 个字符的无 key 单篇闭环，写入为 0。
 - 6 篇真实官方 guides/reference 样本（合计约 251 KiB，包含 MDX、表格与多语言代码）完成 prepare + 恒等 render，输出逐字节一致。
 - CI 已增加完全离线的 `pnpm translate:check`。
 
@@ -176,7 +180,7 @@ pnpm test
 
 ### 后续：积累高价值中文内容并准备静态站
 
-1. 将核心文档优先级配置和十篇批量翻译通过 PR 合入，继续观察 3–5 轮定时自动翻译，确认测试没有持续性偶发失败。
+1. 将本轮定时任务稳定性修复通过 PR 合入，继续观察 3–5 轮自动同步与翻译，确认 Node 测试和 DeepSeek 质量门不再持续性失败。
 2. 优先积累模型、Responses/Chat 概览、文本生成、流式输出、工具、Realtime、Agents 和生产最佳实践等中文页面；逐篇审核机器译文。
 3. 稳定后根据模型成本、执行时长和审核负担评估是否继续调整单轮吞吐，同时保持单篇字符预算、单一待审核 PR 和完整性门禁。
 4. 中文核心内容形成后启动静态网站 MVP；不要直接把约 89 MiB、含超大单文件的完整英文镜像交给站点生成器。
