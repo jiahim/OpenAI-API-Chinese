@@ -146,7 +146,11 @@ Below are the prompts used in each part of the diagram. While they are still onl
 Places where you see placeholders like "**[user input here]**" represent
   dynamic portions, that would be replaced by actual data at runtime.
 
-Query contextualization prompt
+
+
+#### Query contextualization prompt
+
+
 
 Re-writes user query to be a self-contained search query.
 
@@ -168,7 +172,14 @@ Response: "How long does the return policy cover?"
 USER: [JSON-formatted input conversation here]
 ```
 
-Retrieval check prompt
+
+
+
+
+
+
+#### Retrieval check prompt
+
 
 Determines whether a query requires performing retrieval to respond.
 
@@ -186,7 +197,14 @@ Response: "false"
 USER: [input user query here]
 ```
 
-Assistant prompt
+
+
+
+
+
+
+#### Assistant prompt
+
 
 Fills the fields of a JSON to reason through a pre-defined set of steps to produce a final response given a user conversation and relevant retrieved information.
 
@@ -220,6 +238,10 @@ USER: # Relevant Information
 USER: [input user query here]
 ```
 
+
+
+
+
 ### Analysis and optimizations
 
 #### Part 1: Looking at retrieval prompts
@@ -232,7 +254,11 @@ In this case, since the check for retrieval requires the contextualized query, l
 
 ![Assistants object architecture diagram](https://cdn.openai.com/API/docs/images/diagram-latency-customer-service-3.png)
 
-Combined query contextualization and retrieval check prompt
+
+
+##### Combined query contextualization and retrieval check prompt
+
+
 
 **What changed?** Before, we had one prompt to re-write the query and one to determine whether this requires doing a retrieval lookup. Now, this combined prompt does both. Specifically, notice the updated instruction in the first line of the prompt, and the updated output JSON:
 
@@ -282,6 +308,10 @@ Response: {query: "Thank you!", retrieval: "false"}
 
 USER: [JSON-formatted input conversation here]
 ```
+
+
+
+
 
 
 
@@ -344,7 +374,11 @@ The conclusion will vary by case, and the best way to make the determination is 
 
 **Note:** We'll be grouping `response` and `enough_information_in_context` together in the second prompt to avoid passing the retrieved context to both new prompts.
 
-Assistants prompt - reasoning
+
+
+##### Assistants prompt - reasoning
+
+
 
 This prompt will be passed to GPT-3.5 and can be fine-tuned on curated examples.
 
@@ -371,7 +405,15 @@ Assistant Response:
   "user_requesting_to_talk_to_human": "False",
 }
 ```
-Assistants prompt - response
+
+
+
+
+
+
+##### Assistants prompt - response
+
+
 
 This prompt will be processed by GPT-4 and will receive the reasoning steps determined in the prior prompt, as well as the results from retrieval.
 
@@ -403,6 +445,10 @@ USER: # Relevant Information
 [retrieved context]
 ` ` `
 ```
+
+
+
+
 
 
 

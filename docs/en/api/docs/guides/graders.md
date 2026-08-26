@@ -55,7 +55,11 @@ The sample namespace will be populated with variables from the model sampling st
 
 For example, to access the model output content as a string, `{{ sample.output_text }}` can be used within the grader.
 
-Details on grading tool calls
+
+
+#### Details on grading tool calls
+
+
 
 When training a model to improve tool-calling behavior, you will need to write your grader to operate over the `sample.output_tools` variable. The contents of this variable will be the same as the contents of the `response.choices[0].message.tool_calls` ([see function calling docs](https://developers.openai.com/api/docs/guides/function-calling?api-mode=chat)).
 
@@ -87,6 +91,10 @@ A common way of grading tool calls is to use two graders, one that checks the na
 This is a `multi` grader that combined two simple `string_check` graders, the first checks the name of the tool called via the `sample.output_tools[0].function.name` variable, and the second checks the arguments of the called function via the `sample.output_tools[0].function.arguments` variable. The `calculate_output` field is used to combine the two scores into a single score.
 
 The `arguments` grader is prone to under-rewarding the model if the function arguments are subtly incorrect, like if `1` is submitted instead of the floating point `1.0`, or if a state name is given as an abbreviation instead of spelling it out. To avoid this, you can use a `text_similarity` grader instead of a `string_check` grader, or a `score_model` grader to have a LLM check for semantic similarity.
+
+
+
+
 
 ## String check graders
 

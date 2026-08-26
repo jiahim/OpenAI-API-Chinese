@@ -269,6 +269,36 @@ response.output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Chat;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-5.6";
+
+ChatClient chat = new(model, key);
+
+ChatCompletion completion = await chat.CompleteChatAsync(
+    [
+        new SystemChatMessage("You are a helpful assistant."),
+        new UserChatMessage("Hello!"),
+    ]
+);
+Console.WriteLine(completion.Content[0].Text);
+
+ResponsesClient responses = new(key);
+
+ResponseResult response = await responses.CreateResponseAsync(
+    model,
+    [
+        ResponseItem.CreateSystemMessageItem("You are a helpful assistant."),
+        ResponseItem.CreateUserMessageItem("Hello!"),
+    ]
+);
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -396,6 +426,23 @@ client.chat().completions().create(params).choices().stream()
     .forEach(System.out::println);
 ```
 
+```csharp
+using OpenAI.Chat;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-5.6";
+ChatClient client = new(model, key);
+
+ChatCompletion completion = await client.CompleteChatAsync(
+    [
+        new SystemChatMessage("You are a helpful assistant."),
+        new UserChatMessage("Hello!"),
+    ]
+);
+
+Console.WriteLine(completion.Content[0].Text);
+```
+
 ```ruby
 require "openai"
 
@@ -504,6 +551,25 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    Instructions = "You are a helpful assistant.",
+};
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("Hello!"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -654,6 +720,27 @@ var second =
 second.choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Chat;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-5.6";
+ChatClient client = new(model, key);
+
+List<ChatMessage> messages =
+[
+    new SystemChatMessage("You are a helpful assistant."),
+    new UserChatMessage("What is the capital of France?"),
+];
+ChatCompletion first = await client.CompleteChatAsync(messages);
+
+messages.Add(new AssistantChatMessage(first));
+messages.Add(new UserChatMessage("And its population?"));
+ChatCompletion second = await client.CompleteChatAsync(messages);
+
+Console.WriteLine(second.Content[0].Text);
 ```
 
 ```ruby
@@ -945,6 +1032,26 @@ second.output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+ResponseResult first = await client.CreateResponseAsync(
+    "gpt-5.6",
+    "What is the capital of France?"
+);
+ResponseResult second = await client.CreateResponseAsync(
+    "gpt-5.6",
+    "And its population?",
+    previousResponseId: first.Id
+);
+
+Console.WriteLine(second.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -1217,6 +1324,45 @@ client.chat().completions().create(params).choices().stream()
     .forEach(System.out::println);
 ```
 
+```csharp
+using OpenAI.Chat;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-5.6";
+ChatClient client = new(model, key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "age": { "type": "number", "minimum": 0, "maximum": 130 }
+      },
+      "required": ["name", "age"],
+      "additionalProperties": false
+    }
+    """
+);
+ChatCompletionOptions options = new()
+{
+    ReasoningEffortLevel = ChatReasoningEffortLevel.Medium,
+    ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+        "person",
+        schema,
+        jsonSchemaIsStrict: true
+    ),
+};
+
+ChatCompletion completion = await client.CompleteChatAsync(
+    [new UserChatMessage("Jane, 54 years old")],
+    options
+);
+
+Console.WriteLine(completion.Content[0].Text);
+```
+
 ```ruby
 require "openai"
 
@@ -1432,6 +1578,47 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "age": { "type": "number", "minimum": 0, "maximum": 130 }
+      },
+      "required": ["name", "age"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "person",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Jane, 54 years old")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby

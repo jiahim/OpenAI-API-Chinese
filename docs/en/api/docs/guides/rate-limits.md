@@ -109,7 +109,11 @@ Note that unsuccessful requests contribute to your per-minute limit, so continuo
 
 Below are a few example solutions **for Python** that use exponential backoff.
 
-Example 1: Using the Tenacity library
+
+
+##### Example 1: Using the Tenacity library
+
+
 
 Tenacity is an Apache 2.0 licensed general-purpose retrying library, written in Python, to simplify the task of adding retry behavior to just about anything.
 To add exponential backoff to your requests, you can use the `tenacity.retry` decorator. The below example uses the `tenacity.wait_random_exponential` function to add random exponential backoff to a request.
@@ -142,7 +146,15 @@ completion_with_backoff(
 Note that the Tenacity library is a third-party tool, and OpenAI makes no guarantees about
 its reliability or security.
 
-Example 2: Using the backoff library
+
+
+
+
+
+
+##### Example 2: Using the backoff library
+
+
 
 Another python library that provides function decorators for backoff and retry is [backoff](https://pypi.org/project/backoff/):
 
@@ -170,7 +182,14 @@ completions_with_backoff(
 
 Like Tenacity, the backoff library is a third-party tool, and OpenAI makes no guarantees about its reliability or security.
 
-Example 3: Manual backoff implementation
+
+
+
+
+
+
+##### Example 3: Manual backoff implementation
+
 
 If you don't want to use third-party libraries, you can implement your own backoff logic following this example:
 Using manual backoff implementation
@@ -238,6 +257,10 @@ def completions_with_backoff(**kwargs):
 ```
 
 Again, OpenAI makes no guarantees on the security or efficiency of this solution but it can be a good starting place for your own solution.
+
+
+
+
 
 #### Reduce the `max_tokens` to match the size of your completions
 

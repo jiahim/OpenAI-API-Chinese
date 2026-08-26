@@ -401,7 +401,11 @@ response.output[0].phase: "commentary"
 response.output[1].phase: "final_answer"
 ```
 
-Example response phases
+
+
+### Example response phases
+
+
 
 User prompt:
 
@@ -436,6 +440,10 @@ Shortened API response:
   }
 }
 ```
+
+
+
+
 
 ## Handle unclear audio
 
@@ -597,7 +605,11 @@ Example:
 
 ### Entity collection workflow
 
-Example Entity collection workflow
+
+
+#### Example Entity collection workflow
+
+
 
 Use this full workflow when a task requires exact values before any tool call.
 
@@ -656,6 +668,10 @@ Assistant: Could you spell that email address character by character so I can ma
 Never call tools with guessed, partial, ambiguous, or unconfirmed exact values.
 ```
 
+
+
+
+
 ## Avoid literal instruction traps
 
 `gpt-realtime-2` follows instructions more literally than earlier realtime models. Prompts that worked well on older models may need tuning.
@@ -680,7 +696,11 @@ The broad version may cause unnecessary confirmations before harmless read-only 
 
 ### Literal interpretation example
 
-Example literal interpretation trap
+
+
+#### Example literal interpretation trap
+
+
 
 This prompt is too narrow:
 
@@ -701,6 +721,10 @@ Safer rewrite:
 ```text
 When the user provides an exact identifier, including confirmation codes, order IDs, ticket IDs, reset PINs, claim numbers, tracking numbers, or account numbers, repeat the captured value and wait for confirmation before using it in a tool call.
 ```
+
+
+
+
 
 General prompting recommendations:
 
@@ -817,7 +841,11 @@ For long-context use cases, `gpt-realtime-2` performs best when it can tell what
 
 Use a structured pattern when starting a session with a large amount of context, such as retrieved records, prior conversation history, policies, summaries, account notes, or background documents.
 
-Example long-session context template
+
+
+### Example long-session context template
+
+
 
 ```text
 ## Context
@@ -850,6 +878,10 @@ Example long-session context template
 
 - [potentially useful but non-authoritative background]
 ```
+
+
+
+
 
 ## Migrate from earlier realtime models
 

@@ -229,11 +229,12 @@ using OpenAI.Responses;
 #pragma warning disable OPENAI001
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string vectorStoreId = "<vector_store_id>";
 ResponsesClient client = new(key);
 
 CreateResponseOptions options = new() { Model = "gpt-5.6" };
 options.Tools.Add(
-    ResponseTool.CreateFileSearchTool(["<vector_store_id>"])
+    ResponseTool.CreateFileSearchTool([vectorStoreId])
 );
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")
@@ -693,10 +694,7 @@ client.responses().create(params).output().forEach(System.out::println);
 ```
 
 ```csharp
-using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
 using OpenAI.Responses;
-#pragma warning disable CA1869
 #pragma warning disable OPENAI001
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
@@ -729,16 +727,30 @@ options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("What is the weather like in Paris today?")
 );
 
-ResponseResult response = client.CreateResponse(options);
-Console.WriteLine(
-    JsonSerializer.Serialize(
-        response.OutputItems[0],
-        new JsonSerializerOptions
+ResponseResult response = await client.CreateResponseAsync(options);
+foreach (ResponseItem outputItem in response.OutputItems)
+{
+    if (outputItem is FunctionCallResponseItem functionCall)
+    {
+        Console.WriteLine(
+            $"{functionCall.FunctionName}({functionCall.FunctionArguments})"
+        );
+    }
+    else if (outputItem is MessageResponseItem message)
+    {
+        foreach (ResponseContentPart content in message.Content)
         {
-            TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
+            if (content.Kind == ResponseContentPartKind.OutputText)
+            {
+                Console.WriteLine(content.Text);
+            }
+            else if (content.Kind == ResponseContentPartKind.Refusal)
+            {
+                Console.WriteLine(content.Refusal);
+            }
         }
-    )
-);
+    }
+}
 ```
 
 ```ruby

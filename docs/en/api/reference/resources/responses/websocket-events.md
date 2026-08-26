@@ -907,6 +907,9 @@ Schema name: `ResponsesClientEventResponseCreate`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -2710,6 +2713,9 @@ Schema name: `ResponsesClientEventResponseCreate`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -6336,12 +6342,16 @@ Schema name: `ResponsesClientEventResponseCreate`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) responses_client_event > (schema) > (property) input > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) responses_client_event > (schema) > (property) input > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) responses_client_event > (schema) > (property) input > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) responses_client_event > (schema) > (property) input > (variant) 1 > (items) > (variant) 29": {
@@ -14563,6 +14573,23 @@ Schema name: `ResponsesClientEventResponseCreate`
     "children": [
       "(resource) responses > (model) responses_client_event > (schema) > (property) input > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) responses_client_event > (schema) > (property) input > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) responses_client_event > (schema) > (property) input > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -35837,6 +35864,9 @@ Schema name: `ResponseCreatedEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -37903,6 +37933,9 @@ Schema name: `ResponseCreatedEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -43685,12 +43718,16 @@ Schema name: `ResponseCreatedEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -56463,6 +56500,23 @@ Schema name: `ResponseCreatedEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -90148,6 +90202,9 @@ Schema name: `ResponseInProgressEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -92214,6 +92271,9 @@ Schema name: `ResponseInProgressEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -97996,12 +98056,16 @@ Schema name: `ResponseInProgressEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -110774,6 +110838,23 @@ Schema name: `ResponseInProgressEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -144459,6 +144540,9 @@ Schema name: `ResponseCompletedEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -146525,6 +146609,9 @@ Schema name: `ResponseCompletedEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -152307,12 +152394,16 @@ Schema name: `ResponseCompletedEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -165085,6 +165176,23 @@ Schema name: `ResponseCompletedEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -198787,6 +198895,9 @@ Schema name: `ResponseFailedEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -200853,6 +200964,9 @@ Schema name: `ResponseFailedEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -206635,12 +206749,16 @@ Schema name: `ResponseFailedEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -219413,6 +219531,23 @@ Schema name: `ResponseFailedEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -253096,6 +253231,9 @@ Schema name: `ResponseIncompleteEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -255162,6 +255300,9 @@ Schema name: `ResponseIncompleteEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -260944,12 +261085,16 @@ Schema name: `ResponseIncompleteEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -273722,6 +273867,23 @@ Schema name: `ResponseIncompleteEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -364307,6 +364469,9 @@ Schema name: `ResponseQueuedEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -366373,6 +366538,9 @@ Schema name: `ResponseQueuedEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -372155,12 +372323,16 @@ Schema name: `ResponseQueuedEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -384933,6 +385105,23 @@ Schema name: `ResponseQueuedEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",

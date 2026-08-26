@@ -867,14 +867,14 @@ options.Tools.Add(
     )
 );
 
-// STEP 1: Create a response that requests tool-call approval.
+// Step 1: Create a response that requests tool-call approval.
 options.InputItems.Add(ResponseItem.CreateUserMessageItem("Roll 2d4+1"));
 ResponseResult response1 = await client.CreateResponseAsync(options);
 
 McpToolCallApprovalRequestItem approvalRequest =
     response1.OutputItems.OfType<McpToolCallApprovalRequestItem>().Single();
 
-// STEP 2: Approve the tool call and get the final response.
+// Step 2: Approve the tool call and get the final response.
 options.PreviousResponseId = response1.Id;
 options.InputItems.Clear();
 options.InputItems.Add(
@@ -1509,9 +1509,12 @@ An MCP tool call from a Connector will look the same as an MCP tool call from a 
 
 The available tools depend on which scopes your OAuth token has available to it. Expand the tables below to see what tools you can use when connecting to each application.
 
-Dropbox
 
-<table>
+
+#### Dropbox
+
+
+  <table>
     <tr>
       <th>Tool</th>
       <th>Description</th>
@@ -1549,9 +1552,15 @@ Dropbox
     </tr>
   </table>
 
-Gmail
 
-<table>
+
+
+
+
+#### Gmail
+
+
+  <table>
     <tr>
       <th>Tool</th>
       <th>Description</th>
@@ -1589,9 +1598,15 @@ Gmail
     </tr>
   </table>
 
-Google Calendar
 
-<table>
+
+
+
+
+#### Google Calendar
+
+
+  <table>
     <tr>
       <th>Tool</th>
       <th>Description</th>
@@ -1624,9 +1639,15 @@ Google Calendar
     </tr>
   </table>
 
-Google Drive
 
-<table>
+
+
+
+
+#### Google Drive
+
+
+  <table>
     <tr>
       <th>Tool</th>
       <th>Description</th>
@@ -1659,9 +1680,15 @@ Google Drive
     </tr>
   </table>
 
-Microsoft Teams
 
-<table>
+
+
+
+
+#### Microsoft Teams
+
+
+  <table>
     <tr>
       <th>Tool</th>
       <th>Description</th>
@@ -1689,9 +1716,15 @@ Microsoft Teams
     </tr>
   </table>
 
-Outlook Calendar
 
-<table>
+
+
+
+
+#### Outlook Calendar
+
+
+  <table>
     <tr>
       <th>Tool</th>
       <th>Description</th>
@@ -1724,9 +1757,15 @@ Outlook Calendar
     </tr>
   </table>
 
-Outlook Email
 
-<table>
+
+
+
+
+#### Outlook Email
+
+
+  <table>
     <tr>
       <th>Tool</th>
       <th>Description</th>
@@ -1764,9 +1803,15 @@ Outlook Email
     </tr>
   </table>
 
-Sharepoint
 
-<table>
+
+
+
+
+#### Sharepoint
+
+
+  <table>
     <tr>
       <th>Tool</th>
       <th>Description</th>
@@ -1798,6 +1843,9 @@ Sharepoint
       <td>User.Read</td>
     </tr>
   </table>
+
+
+
 
 ## Defer loading tools in an MCP server
 

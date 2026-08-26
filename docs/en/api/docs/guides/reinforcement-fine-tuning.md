@@ -56,7 +56,11 @@ This optimization lets you align the model with nuanced objectives like style, s
 
 During training, the platform cycles through the dataset, samples several responses per prompt, scores them with the grader, and applies policy-gradient updates based on those rewards. The loop continues until we hit the end of your training data or you stop the job at a chosen checkpoint, producing a model optimized for the metric that matters to you.
 
-When should I use reinforcement fine-tuning?
+
+
+## When should I use reinforcement fine-tuning?
+
+
 
 It's useful to understand the strengths and weaknesses of reinforcement fine-tuning to identify opportunities and to avoid wasted effort.
 
@@ -68,11 +72,23 @@ It's useful to understand the strengths and weaknesses of reinforcement fine-tun
 
 See common use cases, specific implementations, and grader examples in the [reinforcement fine-tuning use case guide](https://developers.openai.com/api/docs/guides/rft-use-cases).
 
-What is reinforcement learning?
+
+
+
+
+
+
+## What is reinforcement learning?
+
+
 
 Reinforcement learning is a branch of machine learning in which a model learns by acting, receiving feedback, and readjusting itself to maximise future feedback. Instead of memorising one “right” answer per example, the model explores many possible answers, observes a numeric reward for each, and gradually shifts its behaviour so the high-reward answers become more likely and the low-reward ones disappear. Over repeated rounds, the model converges on a policy—a rule for choosing outputs—that best satisfies the reward signal you define.
 
 In reinforcement fine-tuning (RFT), that reward signal comes from a custom grader that you define for your task. For every prompt in your dataset, the platform samples multiple candidate answers, runs your grader to score them, and applies a policy-gradient update that nudges the model toward answers with higher scores. This cycle—sample, grade, update—continues across the dataset (and successive epochs) until the model reliably optimizes for your grader’s understanding of quality. The grader encodes whatever you care about—accuracy, style, safety, or any metric—so the resulting fine-tuned model reflects those priorities and you don't have to manage reinforcement learning infrastructure.
+
+
+
+
 
 Reinforcement fine-tuning is supported on o-series reasoning models only, and
   currently only for [o4-mini](https://developers.openai.com/api/docs/models/o4-mini).
@@ -293,13 +309,21 @@ Below, find some JSONL data you can use for both training and testing when you c
 {"messages":[{"role":"user","content":"Do you enforce multi-factor authentication (MFA) internally?"}],"compliant":"yes","explanation":"The policy explicitly mentions role-based authentication with multi-factor security."}
 ```
 
-How much training data is needed?
+
+
+### How much training data is needed?
+
+
 
 Start small—between several dozen and a few hundred examples—to determine the usefulness of RFT before investing in a large dataset. For product safety reasons, the training set must first pass through an automated screening process. Large datasets take longer to process. This screening process begins when you start a fine-tuning job with a file, not upon initial file upload. Once a file has successfully completed screening, you can use it repeatedly without delay.
 
 Dozens of examples can be meaningful as long as they're high quality. After screening, more data is better, as long as it remains high quality. With larger datasets, you can use a higher batch size, which tends to improve training stability.
 
 Your training file can contain a maximum of 50,000 examples. Test datasets can contain a maximum of 1,000 examples. Test datasets also go through automated screening.
+
+
+
+
 
 ### Upload your files
 
@@ -341,7 +365,11 @@ If you're fine-tuning a model to return [Structured Outputs](https://developers.
 }
 ```
 
-Generating a JSON schema from a Pydantic model
+
+
+#### Generating a JSON schema from a Pydantic model
+
+
 
 To simplify JSON schema generation, start from a [Pydantic BaseModel](https://docs.pydantic.dev/latest/api/base_model/) class:
 
@@ -369,6 +397,10 @@ response_format = dict(
     json_schema=dict(name=MyCustomClass.__name__, strict=True, schema=schema),
 )
 ```
+
+
+
+
 
 
 ### Create a job with the API
@@ -575,7 +607,11 @@ Each checkpoint specifies:
 
 Before launching in production, review and follow the following safety information.
 
-How we assess for safety
+
+
+### How we assess for safety
+
+
 
 Once a fine-tuning job is completed, we assess the resulting model’s behavior across 13 distinct safety categories. Each category represents a critical area where AI outputs could potentially cause harm if not properly controlled.
 
@@ -597,11 +633,23 @@ Once a fine-tuning job is completed, we assess the resulting model’s behavior 
 
 Each category has a predefined pass threshold; if too many evaluated examples in a given category fail, OpenAI blocks the fine-tuned model from deployment. If your fine-tuned model does not pass the safety checks, OpenAI sends a message in the fine-tuning job explaining which categories don't meet the required thresholds. You can view the results in the moderation checks section of the fine-tuning job.
 
-How to pass safety checks
+
+
+
+
+
+
+### How to pass safety checks
+
+
 
 In addition to reviewing any failed safety checks in the fine-tuning job object, you can retrieve details about which categories failed by querying the [fine-tuning API events endpoint](https://developers.openai.com/api/reference/resources/fine_tuning/subresources/jobs/methods/list). Look for events of type `moderation_checks` for details about category results and enforcement. This information can help you narrow down which categories to target for retraining and improvement. The [model spec](https://cdn.openai.com/spec/model-spec-2024-05-08.html#overview) has rules and examples that can help identify areas for additional training data.
 
 While these evaluations cover a broad range of safety categories, conduct your own evaluations of the fine-tuned model to ensure it's appropriate for your use case.
+
+
+
+
 
 ## Next steps
 
@@ -633,7 +681,11 @@ Reinforcement fine-tuning jobs publish per-step training metrics as [fine-tuning
 
 Learn more about training metrics below.
 
-Full example training metrics
+
+
+#### Full example training metrics
+
+
 
 Below is an example metric event from a real reinforcement fine-tuning job. The various fields in this payload will be discussed in the following sections.
 
@@ -740,7 +792,15 @@ Below is an example metric event from a real reinforcement fine-tuning job. The 
     },
 ```
 
-Score metrics
+
+
+
+
+
+
+#### Score metrics
+
+
 
 The top-level metrics to watch are `train_reward_mean` and `valid_reward_mean`, which indicate the average reward assigned by your graders across all samples in the training and validation datasets, respectively.
 
@@ -750,7 +810,15 @@ From the fine-tuning dashboard, the individual grader metrics will be displayed 
 
 ![Per-Grader Reward Metric Graph](https://cdn.openai.com/API/images/guides/RFT_MultiReward_Chart.png)
 
-Usage metrics
+
+
+
+
+
+
+#### Usage metrics
+
+
 
 An important characteristic of a reasoning model is the number of reasoning tokens it uses before responding to a prompt. Often, during training, the model will drastically change the average number of reasoning tokens it uses to respond to a prompt. This is a sign that the model is changing its behavior in response to the reward signal. The model may learn to use fewer reasoning tokens to achieve the same reward, or it may learn to use more reasoning tokens to achieve a higher reward.
 
@@ -769,7 +837,15 @@ The `_mean` metrics represent the average number of tokens used by the grader to
 
 ![Model Grader Token Usage](https://cdn.openai.com/API/images/guides/RFT_ModelGraderTokenUsage.png)
 
-Timing metrics
+
+
+
+
+
+
+#### Timing metrics
+
+
 
 We include various metrics that help you understand how long each step of the training process is taking and how different parts of the training process are contributing to the per-step timing.
 
@@ -789,6 +865,10 @@ The step timing metrics are also displayed on the fine-tuning dashboard under th
 The `graders` field contains timing information that details the time taken to execute each grader for the current step. Each grader will have its own timing under the `train_execution_latency_mean` and `valid_execution_latency_mean` metrics, which represent the average time taken to execute the grader on the training and validation datasets, respectively.
 
 Graders are executed in parallel with a concurrency limit, so it is not always clear how individual grader latency adds up to the total time taken for grading. However, it is generally true that graders which take longer to execute individually will cause a job to execute more slowly. This means that slower model graders will cause the job to take longer to complete, and more expensive python code will do the same. The fastest graders generally are `string_check` and `text_similarity` as those are executed local to the training loop.
+
+
+
+
 
 ### Evals integration details
 
@@ -827,7 +907,11 @@ Reinforcement fine-tuning is a complex process with many moving parts, and there
 
 The error metrics are available under the `event.data.errors` object, and are aggregated into counts and rates rolled up per-grader. We also display rates and counts of errors on the fine-tuning dashboard.
 
-Grader errors
+
+
+#### Grader errors
+
+
 
 #### Generic grading errors
 

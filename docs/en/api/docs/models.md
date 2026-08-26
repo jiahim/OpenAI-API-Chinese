@@ -34,31 +34,31 @@ See [how OpenAI uses your data](/api/docs/guides/your-data.md) and review [depre
 - [GPT-4 Turbo](/api/docs/models/gpt-4-turbo.md): An older high-intelligence GPT model
 - [GPT-4 Turbo Preview](/api/docs/models/gpt-4-turbo-preview.md): An older fast GPT model
 - [GPT-4.1](/api/docs/models/gpt-4.1.md): Smartest non-reasoning model
-- [GPT-4.1 mini](/api/docs/models/gpt-4.1-mini.md): Smaller, faster version of GPT-4.1
+- [GPT-4.1 Mini](/api/docs/models/gpt-4.1-mini.md): Smaller, faster version of GPT-4.1
 - [GPT-4.1 nano](/api/docs/models/gpt-4.1-nano.md): Fastest, most cost-efficient version of GPT-4.1
 - [GPT-4.5 Preview](/api/docs/models/gpt-4.5-preview.md): Deprecated large model.
 - [GPT-4o](/api/docs/models/gpt-4o.md): Fast, intelligent, flexible GPT model
 - [GPT-4o Audio](/api/docs/models/gpt-4o-audio-preview.md): GPT-4o models capable of audio inputs and outputs
-- [GPT-4o mini](/api/docs/models/gpt-4o-mini.md): Fast, affordable small model for focused tasks
-- [GPT-4o mini Audio](/api/docs/models/gpt-4o-mini-audio-preview.md): Smaller model capable of audio inputs and outputs
-- [GPT-4o mini Realtime](/api/docs/models/gpt-4o-mini-realtime-preview.md): Smaller realtime model for text and audio inputs and outputs
-- [GPT-4o mini Search Preview](/api/docs/models/gpt-4o-mini-search-preview.md): Fast, affordable small model for web search
-- [GPT-4o mini Transcribe](/api/docs/models/gpt-4o-mini-transcribe.md): Speech-to-text model powered by GPT-4o mini
-- [GPT-4o mini TTS](/api/docs/models/gpt-4o-mini-tts.md): Text-to-speech model powered by GPT-4o mini
+- [GPT-4o Mini](/api/docs/models/gpt-4o-mini.md): Fast, affordable small model for focused tasks
+- [GPT-4o Mini Audio](/api/docs/models/gpt-4o-mini-audio-preview.md): Smaller model capable of audio inputs and outputs
+- [GPT-4o Mini Realtime](/api/docs/models/gpt-4o-mini-realtime-preview.md): Smaller realtime model for text and audio inputs and outputs
+- [GPT-4o Mini Search Preview](/api/docs/models/gpt-4o-mini-search-preview.md): Fast, affordable small model for web search
+- [GPT-4o Mini Transcribe](/api/docs/models/gpt-4o-mini-transcribe.md): Speech-to-text model powered by GPT-4o Mini
+- [GPT-4o Mini TTS](/api/docs/models/gpt-4o-mini-tts.md): Text-to-speech model powered by GPT-4o Mini
 - [GPT-4o Realtime](/api/docs/models/gpt-4o-realtime-preview.md): Model capable of realtime text and audio inputs and outputs
 - [GPT-4o Search Preview](/api/docs/models/gpt-4o-search-preview.md): GPT model for web search in Chat Completions
 - [GPT-4o Transcribe](/api/docs/models/gpt-4o-transcribe.md): Speech-to-text model powered by GPT-4o
 - [GPT-4o Transcribe Diarize](/api/docs/models/gpt-4o-transcribe-diarize.md): Transcription model that identifies who's speaking when
 - [GPT-5](/api/docs/models/gpt-5.md): Previous intelligent reasoning model for coding and agentic tasks with configurable reasoning effort
 - [GPT-5 Chat](/api/docs/models/gpt-5-chat-latest.md): GPT-5 model used in ChatGPT
-- [GPT-5 mini](/api/docs/models/gpt-5-mini.md): Near-frontier intelligence for cost sensitive, low latency, high volume workloads
+- [GPT-5 Mini](/api/docs/models/gpt-5-mini.md): Near-frontier intelligence for cost sensitive, low latency, high volume workloads
 - [GPT-5 nano](/api/docs/models/gpt-5-nano.md): Fastest, most cost-efficient version of GPT-5
 - [GPT-5 Pro](/api/docs/models/gpt-5-pro.md): Version of GPT-5 that produces smarter and more precise responses
 - [GPT-5-Codex](/api/docs/models/gpt-5-codex.md): A version of GPT-5 optimized for agentic coding in Codex
 - [GPT-5.1](/api/docs/models/gpt-5.1.md): The best model for coding and agentic tasks with configurable reasoning effort
 - [GPT-5.1 Chat](/api/docs/models/gpt-5.1-chat-latest.md): GPT-5.1 model used in ChatGPT
 - [GPT-5.1-Codex](/api/docs/models/gpt-5.1-codex.md): A version of GPT-5.1 optimized for agentic coding in Codex.
-- [GPT-5.1-Codex mini](/api/docs/models/gpt-5.1-codex-mini.md): Smaller, more cost-effective, less-capable version of GPT-5.1-Codex
+- [GPT-5.1-Codex Mini](/api/docs/models/gpt-5.1-codex-mini.md): Smaller, more cost-effective, less-capable version of GPT-5.1-Codex
 - [GPT-5.1-Codex-Max](/api/docs/models/gpt-5.1-codex-max.md): A version of GPT-5.1-codex optimized for long running tasks.
 - [GPT-5.2](/api/docs/models/gpt-5.2.md): Previous frontier model for professional work with configurable reasoning effort
 - [GPT-5.2 Chat](/api/docs/models/gpt-5.2-chat-latest.md): GPT-5.2 model used in ChatGPT
@@ -67,7 +67,7 @@ See [how OpenAI uses your data](/api/docs/guides/your-data.md) and review [depre
 - [GPT-5.3 Chat](/api/docs/models/gpt-5.3-chat-latest.md): GPT-5.3 Instant model used in ChatGPT
 - [GPT-5.3-Codex](/api/docs/models/gpt-5.3-codex.md): The most capable agentic coding model to date.
 - [GPT-5.4](/api/docs/models/gpt-5.4.md): A more affordable model for coding and professional work.
-- [GPT-5.4 mini](/api/docs/models/gpt-5.4-mini.md): Our strongest mini model yet for coding, computer use, and subagents
+- [GPT-5.4 Mini](/api/docs/models/gpt-5.4-mini.md): Our strongest mini model yet for coding, computer use, and subagents
 - [GPT-5.4 nano](/api/docs/models/gpt-5.4-nano.md): Our cheapest GPT-5.4-class model for simple high-volume tasks
 - [GPT-5.4 Pro](/api/docs/models/gpt-5.4-pro.md): Version of GPT-5.4 that produces smarter and more precise responses.
 - [GPT-5.5](/api/docs/models/gpt-5.5.md): A new class of intelligence for coding and professional work.
@@ -77,21 +77,21 @@ See [how OpenAI uses your data](/api/docs/guides/your-data.md) and review [depre
 - [GPT-5.6 Sol](/api/docs/models/gpt-5.6-sol.md): Frontier model for complex professional work
 - [GPT-5.6 Terra](/api/docs/models/gpt-5.6-terra.md): GPT-5.6 model that balances intelligence and cost
 - [GPT-Audio](/api/docs/models/gpt-audio.md): For audio inputs and outputs with Chat Completions API
-- [GPT-Audio mini](/api/docs/models/gpt-audio-mini.md): A cost-efficient version of GPT Audio
+- [GPT-Audio Mini](/api/docs/models/gpt-audio-mini.md): A cost-efficient version of GPT Audio
 - [GPT-Audio-1.5](/api/docs/models/gpt-audio-1.5.md): The best voice model for audio in, audio out with Chat Completions.
 - [GPT-Image-1](/api/docs/models/gpt-image-1.md): Our previous image generation model
-- [GPT-Image-1 mini](/api/docs/models/gpt-image-1-mini.md): A cost-efficient version of GPT Image 1
+- [GPT-Image-1 Mini](/api/docs/models/gpt-image-1-mini.md): A cost-efficient version of GPT Image 1
 - [GPT-Image-1.5](/api/docs/models/gpt-image-1.5.md): Our previous image generation model
 - [GPT-Image-2](/api/docs/models/gpt-image-2.md): State-of-the-art image generation model
 - [GPT-Live-Transcribe](/api/docs/models/gpt-live-transcribe.md): Low-latency speech-to-text model for realtime transcription
 - [gpt-oss-120b](/api/docs/models/gpt-oss-120b.md): Most powerful open-weight model, fits into an H100 GPU
 - [gpt-oss-20b](/api/docs/models/gpt-oss-20b.md): Medium-sized open-weight model for low latency
 - [GPT-Realtime](/api/docs/models/gpt-realtime.md): Model capable of realtime text and audio inputs and outputs
-- [GPT-Realtime mini](/api/docs/models/gpt-realtime-mini.md): A cost-efficient version of GPT-Realtime
+- [GPT-Realtime Mini](/api/docs/models/gpt-realtime-mini.md): A cost-efficient version of GPT-Realtime
 - [GPT-Realtime-1.5](/api/docs/models/gpt-realtime-1.5.md): The best voice model for audio in, audio out
 - [GPT-Realtime-2](/api/docs/models/gpt-realtime-2.md): Reasoning model with tool use
 - [GPT-Realtime-2.1](/api/docs/models/gpt-realtime-2.1.md): Reasoning model with tool use
-- [GPT-Realtime-2.1 mini](/api/docs/models/gpt-realtime-2.1-mini.md): Reasoning model with tool use
+- [GPT-Realtime-2.1 Mini](/api/docs/models/gpt-realtime-2.1-mini.md): Reasoning model with tool use
 - [GPT-Realtime-Translate](/api/docs/models/gpt-realtime-translate.md): Streaming speech-to-speech translation model
 - [GPT-Realtime-Whisper](/api/docs/models/gpt-realtime-whisper.md): Streaming speech-to-text model for realtime transcription
 - [GPT-Transcribe](/api/docs/models/gpt-transcribe.md): High-accuracy speech-to-text model for file and Realtime input transcription
@@ -103,7 +103,7 @@ See [how OpenAI uses your data](/api/docs/guides/your-data.md) and review [depre
 - [o3-deep-research](/api/docs/models/o3-deep-research.md): Our most powerful deep research model
 - [o3-mini](/api/docs/models/o3-mini.md): A small model alternative to o3
 - [o3-pro](/api/docs/models/o3-pro.md): Version of o3 with more compute for better responses
-- [o4-mini](/api/docs/models/o4-mini.md): Fast, cost-efficient reasoning model, succeeded by GPT-5 mini
+- [o4-mini](/api/docs/models/o4-mini.md): Fast, cost-efficient reasoning model, succeeded by GPT-5 Mini
 - [o4-mini-deep-research](/api/docs/models/o4-mini-deep-research.md): Faster, more affordable deep research model
 - [omni-moderation](/api/docs/models/omni-moderation-latest.md): Identify potentially harmful content in text and images
 - [Sora 2](/api/docs/models/sora-2.md): Flagship video generation with synced audio

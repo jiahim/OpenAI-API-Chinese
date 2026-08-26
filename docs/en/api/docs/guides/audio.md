@@ -202,6 +202,34 @@ Files.write(Path.of("dog.wav"), Base64.getDecoder().decode(audio.data()));
 message.content().ifPresent(System.out::println);
 ```
 
+```csharp
+using OpenAI.Chat;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ChatClient client = new("gpt-audio-1.5", key);
+
+ChatCompletionOptions options = new()
+{
+    ResponseModalities = ChatResponseModalities.Text | ChatResponseModalities.Audio,
+    AudioOptions = new(ChatOutputAudioVoice.Alloy, ChatOutputAudioFormat.Wav),
+    StoredOutputEnabled = true,
+};
+
+ChatCompletion completion = await client.CompleteChatAsync(
+    [new UserChatMessage("Is a golden retriever a good family dog?")],
+    options
+);
+
+if (completion.OutputAudio is not ChatOutputAudio audio)
+{
+    throw new InvalidOperationException("No audio output was returned.");
+}
+
+Console.WriteLine(audio.Transcript);
+await File.WriteAllBytesAsync("dog.wav", audio.AudioBytes.ToArray());
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -407,6 +435,42 @@ ChatCompletionCreateParams params =
 client.chat().completions().create(params).choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Chat;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ChatClient client = new("gpt-audio-1.5", key);
+
+BinaryData audio = BinaryData.FromBytes(
+    await File.ReadAllBytesAsync("audio.wav")
+);
+UserChatMessage message = new(
+    [
+        ChatMessageContentPart.CreateTextPart("What is in this recording?"),
+        ChatMessageContentPart.CreateInputAudioPart(
+            audio,
+            ChatInputAudioFormat.Wav
+        ),
+    ]
+);
+ChatCompletionOptions options = new()
+{
+    ResponseModalities = ChatResponseModalities.Text | ChatResponseModalities.Audio,
+    AudioOptions = new(ChatOutputAudioVoice.Alloy, ChatOutputAudioFormat.Wav),
+    StoredOutputEnabled = true,
+};
+
+ChatCompletion completion = await client.CompleteChatAsync([message], options);
+
+if (completion.OutputAudio is not ChatOutputAudio audioOutput)
+{
+    throw new InvalidOperationException("No audio output was returned.");
+}
+
+Console.WriteLine(audioOutput.Transcript);
 ```
 
 ```ruby

@@ -8,7 +8,7 @@ presents a short-lived token from your identity provider, and OpenAI exchanges
 it for a short-lived OpenAI access token.
 
 OpenAI API workloads can also exchange a verified certificate identity through
-the X.509 workload identity federation beta.
+X.509 workload identity federation.
 
 You can use workload identity federation with the OpenAI API or Codex:
 
@@ -69,7 +69,7 @@ Choose the guide for the environment where your workload runs:
 
 
 
-  - **[X.509 certificates (beta)](https://developers.openai.com/api/docs/guides/workload-identity-federation/x509)**: Configure certificate-backed exchange with the X.509 beta.
+  - **[X.509 certificates](https://developers.openai.com/api/docs/guides/workload-identity-federation/x509)**: Configure certificate-backed exchange for OpenAI API workloads.
 - **[Kubernetes](https://developers.openai.com/api/docs/guides/workload-identity-federation/kubernetes)**: Use projected service account tokens in self-managed clusters.
 - **[AWS](https://developers.openai.com/api/docs/guides/workload-identity-federation/aws)**: Use outbound identity federation or Amazon EKS projected tokens.
 - **[Microsoft Azure](https://developers.openai.com/api/docs/guides/workload-identity-federation/microsoft-azure)**: Use managed identity tokens or AKS projected service account tokens.
@@ -93,22 +93,24 @@ federation supports the OpenAI API path only.
 
 ## Use workload identity with the OpenAI API
 
-Use this path when your workload calls the OpenAI API directly. You must be an
-organization owner to configure it.
+Use this path when your workload calls the OpenAI API directly. You need
+permission to manage Workload Identity Providers and service account mappings
+for the organization.
 
 Go to [Organization Settings > Security > Workload Identity Provider](https://platform.openai.com/settings/organization/security/workload-identity-provider).
 Create the provider first, then configure its service account mappings from the
 provider details page.
 
-### X.509 providers (beta)
-
-X.509 workload identity federation is available in beta. If X.509 doesn't
-  appear as a provider type, contact your system administrator. Your
-  administrator can work with OpenAI to enable the beta for your organization.
+### X.509 providers
 
 An X.509 provider derives workload identity attributes from a client certificate that OpenAI verifies against your organization's existing Mutual TLS configuration. It doesn't store certificates or maintain a separate trust store.
 
-Before creating the provider, configure and activate the trusted CA certificate that anchors your client certificate in [Organization Settings > Security > Mutual TLS](https://platform.openai.com/settings/organization/security/mtls). The [OpenAI Mutual TLS Beta Program](https://help.openai.com/en/articles/10876024-openai-mutual-tls-beta-program) explains certificate requirements, activation scope, supported API endpoints, certificate-chain behavior, and client configuration restrictions.
+Before creating the provider, configure and activate the trusted certificate
+that anchors your client certificate in [Organization Settings > Security >
+Mutual TLS](https://platform.openai.com/settings/organization/security/mtls).
+The [Mutual TLS guide](https://developers.openai.com/api/docs/guides/mutual-tls) explains permissions,
+certificate requirements, activation scope, mTLS hosts, certificate-chain
+behavior, CEL filters, and rotation.
 
 Next, create the X.509 provider, derive one non-empty `openai.subject` value, and map that identity to a project service account with only the permissions the workload needs. The workload presents its certificate to the X.509 token endpoint to obtain a short-lived bearer token, then sends the bearer token and an accepted client certificate to the API mTLS endpoint.
 

@@ -16,7 +16,10 @@ When the model decides to use it, it will automatically call the tool, retrieve 
 
 Prior to using file search with the Responses API, you need to have set up a knowledge base in a vector store and uploaded files to it.
 
-Create a vector store and upload a file
+
+
+### Create a vector store and upload a file
+
 
 Follow these steps to create a vector store and upload a file to it. You can use [this example file](https://cdn.openai.com/API/docs/deep_research_blog.pdf) or upload your own.
 
@@ -337,6 +340,10 @@ puts(files.data&.map(&:status))
 ```
 
 
+
+
+
+
 Once your knowledge base is set up, you can include the `file_search` tool in the list of tools available to the model, along with the list of vector stores in which to search.
 
 File search tool
@@ -423,11 +430,12 @@ using OpenAI.Responses;
 #pragma warning disable OPENAI001
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string vectorStoreId = "<vector_store_id>";
 ResponsesClient client = new(key);
 
 CreateResponseOptions options = new() { Model = "gpt-5.6" };
 options.Tools.Add(
-    ResponseTool.CreateFileSearchTool(["<vector_store_id>"])
+    ResponseTool.CreateFileSearchTool([vectorStoreId])
 );
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")

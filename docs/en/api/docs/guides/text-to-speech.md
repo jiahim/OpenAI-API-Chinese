@@ -123,6 +123,26 @@ try (HttpResponse audio =
 }
 ```
 
+```csharp
+using OpenAI.Audio;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-4o-mini-tts";
+AudioClient client = new(model, key);
+
+BinaryData audio = await client.GenerateSpeechAsync(
+    "Today is a wonderful day to build something people love!",
+    GeneratedSpeechVoice.Coral,
+    new SpeechGenerationOptions
+    {
+        Instructions = "Speak in a cheerful and positive tone.",
+    }
+);
+
+await File.WriteAllBytesAsync("speech.mp3", audio.ToArray());
+```
+
 ```ruby
 require "openai"
 

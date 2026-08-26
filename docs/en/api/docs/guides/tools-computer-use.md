@@ -14,7 +14,11 @@ Run Computer use in an isolated browser or VM, keep a human in the loop for high
 
 Before you begin, prepare an environment that can capture screenshots and run the returned actions. Use an isolated environment whenever possible, and decide up front which sites, accounts, and actions the agent is allowed to reach.
 
-Set up a local browsing environment
+
+
+### Set up a local browsing environment
+
+
 
 If you want the fastest path to a working prototype, start with a browser automation framework such as [Playwright](https://playwright.dev/) or [Selenium](https://www.selenium.dev/).
 
@@ -62,7 +66,15 @@ with sync_playwright() as p:
 ```
 
 
-Set up a local virtual machine
+
+
+
+
+
+
+### Set up a local virtual machine
+
+
 
 If you need a fuller desktop environment, run the model against a local VM or container and translate actions into OS-level input events.
 
@@ -185,6 +197,10 @@ class VM:
 
 vm = VM(display=":99", container_name="cua-image")
 ```
+
+
+
+
 
 
 Whether you use a browser or VM, treat screenshots, page text, tool outputs, PDFs, emails, chats, and other third-party content as untrusted input. Only direct instructions from the user count as permission.
@@ -338,7 +354,11 @@ Later turns can batch actions into the same `computer_call`. Run them in order b
 
 If your runtime uses different names for special keys such as `CTRL`, `META`, or `ARROWLEFT`, or if you want to validate drag paths before executing them, add a small normalization helper once and reuse it in your action handlers.
 
-Add normalization helpers
+
+
+#### Add normalization helpers
+
+
 
 
 
@@ -709,6 +729,10 @@ def normalize_drag_path(path):
             )
     return normalized
 ```
+
+
+
+
 
 
 
@@ -1100,7 +1124,11 @@ def handle_computer_actions(vm, actions):
 
 For modifier-assisted mouse actions such as `Ctrl`+click or `Shift`+drag, see the examples below.
 
-Add modifier-key mouse actions
+
+
+#### Add modifier-key mouse actions
+
+
 
 Mouse actions can include an optional `keys` array for modifier-assisted workflows such as `Ctrl`+click to open a link in a new tab or `Shift`+click to extend a selection. When `keys` is present on `click`, `double_click`, `drag`, `move`, or `scroll`, hold those modifiers for the duration of the mouse action, then release them before continuing to the next action.
 
@@ -1581,6 +1609,10 @@ def handle_computer_actions(vm, actions):
             case _:
                 raise ValueError(f"Unsupported action: {action.type}")
 ```
+
+
+
+
 
 
 

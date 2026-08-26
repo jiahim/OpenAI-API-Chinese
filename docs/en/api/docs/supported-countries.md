@@ -7,11 +7,13 @@ Accessing or offering access to our services outside of the countries and territ
 - Albania
 - Algeria
 - Afghanistan
+- Aland Islands
 - Andorra
 - Angola
 - Antigua and Barbuda
 - Argentina
 - Armenia
+- Aruba
 - Australia
 - Austria
 - Azerbaijan
@@ -21,6 +23,7 @@ Accessing or offering access to our services outside of the countries and territ
 - Barbados
 - Belgium
 - Belize
+- Bermuda
 - Benin
 - Bhutan
 - Bolivia
@@ -35,6 +38,7 @@ Accessing or offering access to our services outside of the countries and territ
 - Cambodia
 - Cameroon
 - Canada
+- Cayman Islands
 - Central African Republic
 - Chad
 - Chile
@@ -59,9 +63,13 @@ Accessing or offering access to our services outside of the countries and territ
 - Estonia
 - Eswatini (Swaziland)
 - Ethiopia
+- Faroe Islands
 - Fiji
 - Finland
 - France
+- French Guiana
+- French Polynesia
+- French Southern Territories
 - Gabon
 - Gambia
 - Georgia
@@ -69,7 +77,9 @@ Accessing or offering access to our services outside of the countries and territ
 - Ghana
 - Greece
 - Grenada
+- Greenland
 - Guatemala
+- Guadeloupe
 - Guinea
 - Guinea-Bissau
 - Guyana
@@ -108,8 +118,10 @@ Accessing or offering access to our services outside of the countries and territ
 - Mali
 - Malta
 - Marshall Islands
+- Martinique
 - Mauritania
 - Mauritius
+- Mayotte
 - Mexico
 - Micronesia
 - Moldova
@@ -123,6 +135,7 @@ Accessing or offering access to our services outside of the countries and territ
 - Nauru
 - Nepal
 - Netherlands
+- New Caledonia
 - New Zealand
 - Nicaragua
 - Niger
@@ -141,10 +154,15 @@ Accessing or offering access to our services outside of the countries and territ
 - Poland
 - Portugal
 - Qatar
+- Réunion
 - Romania
 - Rwanda
+- Saint Barthelemy
+- Saint Helena
 - Saint Kitts and Nevis
 - Saint Lucia
+- Saint Martin (French part)
+- Saint Pierre and Miquelon
 - Saint Vincent and the Grenadines
 - Samoa
 - San Marino
@@ -168,6 +186,7 @@ Accessing or offering access to our services outside of the countries and territ
 - Sweden
 - Switzerland
 - Sudan
+- Svalbard and Jan Mayen
 - Taiwan
 - Tajikistan
 - Tanzania
@@ -189,6 +208,7 @@ Accessing or offering access to our services outside of the countries and territ
 - Uzbekistan
 - Vanuatu
 - Vietnam
+- Wallis and Futuna
 - Yemen
 - Zambia
 - Zimbabwe
