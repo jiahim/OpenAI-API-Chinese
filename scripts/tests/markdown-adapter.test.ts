@@ -76,6 +76,18 @@ const secret = "never";
   assert.equal(await identity(source), source);
 });
 
+test("prepare reuses identical text only within matching Markdown contexts", async () => {
+  const prepared = await markdownDocumentAdapter.prepare({
+    content: "# Repeated\n\nRepeated\n\nRepeated\n",
+    id: "fixture.md",
+  });
+  const repeated = prepared.plan.units.filter((unit) => unit.text === "Repeated");
+
+  assert.equal(repeated.length, 3);
+  assert.notEqual(repeated[0]?.dedupeKey, repeated[1]?.dedupeKey);
+  assert.equal(repeated[1]?.dedupeKey, repeated[2]?.dedupeKey);
+});
+
 test("headings, body, lists, quotes, tables, link labels and image alt are replaceable", async () => {
   const source = `# Heading
 

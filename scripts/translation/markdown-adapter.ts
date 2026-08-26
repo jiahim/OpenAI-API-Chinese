@@ -664,6 +664,14 @@ export const markdownDocumentAdapter: DocumentAdapter<
         // can translate the complete sentence instead of isolated fragments.
         batchKey: context.block,
         context,
+        dedupeKey: sha256(
+          JSON.stringify([
+            context.block,
+            context.kind,
+            context.fragmented,
+            sourceText,
+          ]),
+        ),
         id,
         text: sourceText,
       }),
