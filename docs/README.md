@@ -12,3 +12,4 @@
 
 同步与检查方法见 [`scripts/README.md`](../scripts/README.md)。
 中文翻译架构与状态机见 [`translation-design.md`](translation-design.md)。
+当前 Vercel 静态站、内容契约及未来抽取为通用生成器的演进方案见 [`static-site-architecture.md`](static-site-architecture.md)。

@@ -1,0 +1,7 @@
+.next/
+out/
+dist/
+node_modules/
+.wrangler/
+generated/documents.ts
+*.tsbuildinfo

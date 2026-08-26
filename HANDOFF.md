@@ -13,9 +13,10 @@
 - 翻译规划与 Markdown adapter PR #8 已合入；自动翻译 runner、DeepSeek profile、review/auto 流程和远端 workflow PR #9 已合入。
 - 自动 PR 质量门禁修复 PR #12 已合入。
 - 首轮生产自动翻译成功创建 PR #13，`Quality gate` 最终通过，PR 合入后的 `main` CI 也成功。
-- 当前中文状态：3 current、418 pending；首篇 Agents quickstart 为 `reviewed`，自动生成的页面为 `machine`。
+- 当前中文状态：10 current、411 pending；首篇 Agents quickstart 为 `reviewed`，自动生成的页面为 `machine`。
 - 本地与远端仅 `translate:run`、`translate:auto` 会读取 `DEEPSEEK_API_KEY`；key 不进入仓库、日志、checkpoint 或 manifest。
 - 核心文档优先级由 `scripts/translation/priority.zh-CN.json` 维护；同一状态内优先处理配置清单，stale/missing 维护任务仍先于 pending。
+- `apps/web` 已实现 Vercel/Next.js 静态站：421 篇英文源页面都有结构化路由，414 篇直接渲染正文，7 篇超过 1 MB 的超大参考页使用轻量说明页；中文页面保持同构官网目录，当前 10 篇译文直接可读。
 
 ## 2. 已完成能力
 
@@ -143,6 +144,17 @@ pnpm test
 - `translate:auto -- --limit 10` 按 `stale-source`、`stale-policy`、`missing-target`、`pending` 处理；同一状态内按 `scripts/translation/priority.zh-CN.json` 的核心文档顺序筛选，最后回退到稳定路径排序。每轮最多十篇，每篇都不超过 20,000 个源字符。
 - `translate-docs.yml` 只检出 `main`，先跑离线门禁，再仅向 DeepSeek 步骤注入环境 secret；已有翻译 PR 时停止。它在英文合入后触发，并每天北京时间 01:00 补充运行。
 - CI 已改用 `translate:check`，允许 pending/stale，但拒绝缺失、未登记或被修改而未 review 的目标文件。
+
+### 2.8 Vercel 静态站与后续抽取
+
+- 首个站点当前放在 `apps/web`，使用 Next.js `output: export`，Vercel Root Directory 为 `apps/web`，输出目录为 `out`。
+- `Quality gate` 会独立安装 Web 子项目依赖，并运行内容生成、typecheck、lint、链接测试和完整静态构建。
+- 构建器读取 source/translation manifest，并严格按两份官方 `llms.txt` 的分组和顺序生成导航；421 个 active 页面必须全部且仅出现一次。
+- 421 篇英文 Markdown 全部生成静态路径；414 篇直接渲染正文，7 篇超过 1 MB 的事件/资源总表先保留轻量说明页，后续按结构拆分。中文译文沿用相同路径；中文尚未生成时仍保留结构化状态页，并优先链接本站英文原文。
+- 官网文档内部链接转换为当前 locale 的本站路径；外部链接明确标识，原始 Markdown 不被修改。
+- 首页和文档页突出 `developers.openai.com` 为权威来源，同时明确本项目是非官方社区镜像。
+- Markdown 按页面在构建期读取，generated 文件只含约 421 页轻量元数据，不能把约 89 MiB 原文聚合到客户端 bundle。
+- 当前先在单仓稳定真实站点；出现第二个非 OpenAI 翻译站后，再按 `docs/static-site-architecture.md` 的契约和里程碑抽取通用 core/theme/CLI。
 - Node 测试固定使用 `--test-isolation=none`，规避 Node 24 子进程 IPC 偶发的 cloned data 反序列化失败；测试仍保持单并发。
 
 ## 3. 当前验证证据
@@ -152,7 +164,7 @@ pnpm test
 - `pnpm typecheck`：通过。
 - `pnpm test`：65/65 通过（包含 PR 标题门禁、planner、provider、runner、优先级配置与选择、review 结构保护及既有同步/adapter 测试）。
 - `pnpm docs:status`：421 active、0 removed、89.0 MiB。
-- `pnpm translate:check`：通过；3 current、418 pending，其他阻塞状态为 0。
+- `pnpm translate:check`：通过；10 current、411 pending，其他阻塞状态为 0。
 - `pnpm translate:plan -- --limit 12`：按核心文档清单优先列出模型、API 概览、文本生成、流式输出、后台任务、Code Interpreter、生产最佳实践和 Realtime 文档。
 - 定向测试覆盖路径/符号链接越界、八种状态及安全优先级、策略 stale、未登记/人工修改保护、源 SHA 脏改动拒绝、重复路径、manifest 时间/版本契约、术语冲突和 orphan 记录保留。
 - Markdown adapter 定向测试覆盖恒等字节不变、标题/正文/列表/引用/表格、链接标签、图片 alt、代码/HTML/MDX/frontmatter/URL 保护、跨行容器标记、无效结果和区间篡改拒绝。
@@ -161,6 +173,7 @@ pnpm test
 - `pnpm translate:simulate -- --match api/reference/overview.md --limit 1`：完成 115 个单元、5305 个字符的无 key 单篇闭环，写入为 0。
 - 6 篇真实官方 guides/reference 样本（合计约 251 KiB，包含 MDX、表格与多语言代码）完成 prepare + 恒等 render，输出逐字节一致。
 - CI 已增加完全离线的 `pnpm translate:check`。
+- `apps/web` 的 link/structure 测试通过；Next.js 生产构建成功生成 851 个静态页面（首页、421×2 个语言路径、章节页、robots 和 sitemap）。
 
 不要对完整 `docs/en` 使用格式化器或以 `git diff --check` 作为质量门。官方原文包含尾随空格和形似冲突标记的正文，镜像策略要求保持原样。
 
@@ -179,13 +192,14 @@ pnpm test
 
 ## 4. 下一步
 
-### 后续：积累高价值中文内容并准备静态站
+### 后续：部署并稳定真实站点，同时积累高价值中文内容
 
 1. 将本轮定时任务稳定性修复通过 PR 合入，继续观察 3–5 轮自动同步与翻译，确认 Node 测试和 DeepSeek 质量门不再持续性失败。
 2. 优先积累模型、Responses/Chat 概览、文本生成、流式输出、工具、Realtime、Agents 和生产最佳实践等中文页面；逐篇审核机器译文。
 3. 稳定后根据模型成本、执行时长和审核负担评估是否继续调整单轮吞吐，同时保持单篇字符预算、单一待审核 PR 和完整性门禁。
-4. 中文核心内容形成后启动静态网站 MVP；不要直接把约 89 MiB、含超大单文件的完整英文镜像交给站点生成器。
+4. 在 Vercel 创建/关联项目，Root Directory 设为 `apps/web`，设置正式 `NEXT_PUBLIC_SITE_ORIGIN`，用 PR Preview 验证后再从默认分支发布生产站。
+5. 稳定导航、链接、SEO、产物体积和代表性大页面；出现第二个真实翻译站后再抽取通用生成器，不要提前复制当前目录形成两套实现。
 
 ## 5. 新任务开场指令
 
-先阅读本文件和 `docs/translation-design.md`，再运行 `git status --short --branch`。不要清理现有改动，不要使用 `git reset --hard` 或 `git checkout --`。默认使用 TypeScript；`docs/en` 必须保持官方原文；任何远端代码变更只允许通过功能分支 PR 合入。
+先阅读本文件、`docs/translation-design.md` 和 `docs/static-site-architecture.md`，再运行 `git status --short --branch`。不要清理现有改动，不要使用 `git reset --hard` 或 `git checkout --`。默认使用 TypeScript；`docs/en` 必须保持官方原文；站点改动集中在 `apps/web`，不能把 Markdown 聚合进客户端 bundle；任何远端代码变更只允许通过功能分支 PR 合入。
