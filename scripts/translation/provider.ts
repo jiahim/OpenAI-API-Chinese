@@ -3,6 +3,7 @@ import {
   TranslationErrorCode,
   TranslationResponseError,
   type TranslationBatchRequest,
+  type TranslationOutputItem,
   type TranslationProvider,
 } from "@easy-translate/core";
 
@@ -41,6 +42,9 @@ const TERMINOLOGY_MARKER_RESIDUE_PATTERN = /ET_TERM_\d+_\d+_\d+/u;
 const LITERAL_BACKTICK_INSTRUCTION =
   "{{ET_BT_*}} tokens represent protected literal Markdown backtick runs. " +
   "Copy every token exactly once in the same response item. Never omit, duplicate, move, split, or alter a token.";
+const MISSING_ID_RECOVERY_INSTRUCTION =
+  "MISSING ID RECOVERY: This request is a smaller recovery sub-batch. " +
+  "Return every requested id exactly once, even when adjacent text fragments form one sentence.";
 const LITERAL_BACKTICK_PATTERN = /`+/gu;
 const TERMINOLOGY_EXCLUSIONS = [
   "USER AGENT",
@@ -355,6 +359,48 @@ export function createPreserveTermsProvider<TContext>(
   };
 }
 
+export function createMissingIdRecoveryProvider<TContext>(
+  provider: TranslationProvider<TContext>,
+): TranslationProvider<TContext> {
+  async function translateBatch(
+    request: TranslationBatchRequest<TContext>,
+    signal?: AbortSignal,
+    onActivity?: Parameters<TranslationProvider<TContext>["translateBatch"]>[2],
+  ): Promise<TranslationOutputItem[]> {
+    try {
+      return await provider.translateBatch(request, signal, onActivity);
+    } catch (error) {
+      if (
+        !(error instanceof TranslationResponseError) ||
+        error.code !== TranslationErrorCode.ResponseMissingId ||
+        request.items.length < 2
+      ) {
+        throw error;
+      }
+      const midpoint = Math.ceil(request.items.length / 2);
+      const instructions = [
+        request.instructions,
+        MISSING_ID_RECOVERY_INSTRUCTION,
+      ]
+        .filter(Boolean)
+        .join("\n");
+      const left = await translateBatch(
+        { ...request, instructions, items: request.items.slice(0, midpoint) },
+        signal,
+        onActivity,
+      );
+      const right = await translateBatch(
+        { ...request, instructions, items: request.items.slice(midpoint) },
+        signal,
+        onActivity,
+      );
+      return [...left, ...right];
+    }
+  }
+
+  return { name: provider.name, translateBatch };
+}
+
 export function createTerminologyProvider<TContext>(
   provider: TranslationProvider<TContext>,
   preserveTerms: readonly string[],
@@ -583,7 +629,9 @@ export function createConfiguredProvider(
       createLiteralBacktickProvider(
         createPreserveTermsProvider(
           createTerminologyProvider(
-            createDeepSeekProvider({ apiKey, model: profile.model }),
+            createMissingIdRecoveryProvider(
+              createDeepSeekProvider({ apiKey, model: profile.model }),
+            ),
             preserveTerms,
             terminology,
           ),

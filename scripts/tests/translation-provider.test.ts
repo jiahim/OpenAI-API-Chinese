@@ -1,12 +1,17 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { defineProvider, TranslationResponseError } from "@easy-translate/core";
+import {
+  defineProvider,
+  TranslationErrorCode,
+  TranslationResponseError,
+} from "@easy-translate/core";
 
 import {
   createConfiguredProvider,
   createFragmentedArticleFallbackProvider,
   createLiteralBacktickProvider,
+  createMissingIdRecoveryProvider,
   createPreserveTermsProvider,
   createSourceLineBreakNormalizationProvider,
   createTerminologyProvider,
@@ -135,6 +140,62 @@ test("fragmented article provider does not mask ordinary missing output", async 
   });
 
   assert.deepEqual(output, []);
+});
+
+test("missing-id provider recursively splits a failed multi-item batch", async () => {
+  const batchSizes: number[] = [];
+  const provider = defineProvider({
+    async translateBatch(request) {
+      batchSizes.push(request.items.length);
+      if (request.items.length > 1) {
+        throw new TranslationResponseError(
+          TranslationErrorCode.ResponseMissingId,
+          "missing id",
+        );
+      }
+      return request.items.map((item) => ({
+        id: item.id,
+        text: `译文:${item.text}`,
+      }));
+    },
+  });
+  const recoveryProvider = createMissingIdRecoveryProvider(provider);
+  const output = await recoveryProvider.translateBatch({
+    items: [
+      { context: {}, id: "one", text: "one" },
+      { context: {}, id: "two", text: "two" },
+      { context: {}, id: "three", text: "three" },
+    ],
+    targetLanguage: "zh-CN",
+  });
+
+  assert.deepEqual(output, [
+    { id: "one", text: "译文:one" },
+    { id: "two", text: "译文:two" },
+    { id: "three", text: "译文:three" },
+  ]);
+  assert.deepEqual(batchSizes, [3, 2, 1, 1, 1]);
+});
+
+test("missing-id provider preserves a terminal single-item failure", async () => {
+  const expected = new TranslationResponseError(
+    TranslationErrorCode.ResponseMissingId,
+    "missing id",
+  );
+  const provider = defineProvider({
+    async translateBatch() {
+      throw expected;
+    },
+  });
+  const recoveryProvider = createMissingIdRecoveryProvider(provider);
+
+  await assert.rejects(
+    recoveryProvider.translateBatch({
+      items: [{ context: {}, id: "one", text: "one" }],
+      targetLanguage: "zh-CN",
+    }),
+    (error: unknown) => error === expected,
+  );
 });
 
 test("source line-break provider flattens matching translated layout breaks", async () => {
