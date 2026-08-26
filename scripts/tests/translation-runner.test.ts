@@ -503,6 +503,14 @@ test("quality policy handles product names, longer words, and Markdown fragments
     undefined,
   );
   assert.equal(
+    await policy(input("User agents identify clients.", "用户代理标识客户端。")),
+    undefined,
+  );
+  assert.equal(
+    await policy(input("A user-agent identifies clients.", "用户代理标识客户端。")),
+    undefined,
+  );
+  assert.equal(
     (await policy(input("An Agent runs a workflow.", "一个代理运行流程。")))
       ?.issueCode,
     "translation.term_missing",

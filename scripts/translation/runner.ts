@@ -345,6 +345,12 @@ function withoutPreservedTerms(
   return unprotected;
 }
 
+function withoutAmbiguousAgentTerms(content: string): string {
+  return content.replace(/\buser(?:\s+|-+)agents?\b/giu, (value) =>
+    " ".repeat(value.length),
+  );
+}
+
 export function createTranslationQualityPolicy(
   glossary: TranslationGlossary,
 ): TranslationQualityPolicy<MarkdownTranslationContext> {
@@ -375,7 +381,7 @@ export function createTranslationQualityPolicy(
         }
       }
       const terminologySource = withoutPreservedTerms(
-        item.text,
+        withoutAmbiguousAgentTerms(item.text),
         glossary.preserve,
       );
       for (const [source, target] of Object.entries(glossary.terms)) {
