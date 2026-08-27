@@ -58,7 +58,7 @@ type SourcedTranslationPageInspection = TranslationPageInspection & {
 const REPOSITORY_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DEFAULT_CONFIG_PATH = "scripts/translation.config.json";
 const AUTO_MAX_SOURCE_CHARACTERS = 20_000;
-const AUTO_PAGE_LIMIT = 10;
+const AUTO_PAGE_LIMIT = 100;
 const TRANSLATION_BATCH_RETRY_POLICY = {
   baseDelayMs: 1_000,
   jitterMs: 250,

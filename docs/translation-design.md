@@ -98,7 +98,7 @@ Runner 只接受 Planner 判定为 `pending`、`stale-source`、`stale-policy` �
 2. **Markdown adapter（已完成）**：source-position 提取/还原、保护不变量、fixture 测试，并对齐 `@easy-translate/core` 的 `DocumentAdapter`。
 3. **本地翻译执行器（已完成）**：Core、checkpoint、单篇选择、质量策略、DeepSeek profile 和显式原子提交。
 4. **质量与人工校对（已完成基础闭环）**：结构检查、术语检查、显式 review 收录和 stale 传播；后续补充未登记文件的 adopt 流程。
-5. **自动翻译 PR（已完成首轮生产验收）**：英文变化合入 `main` 后立即触发，并每天补充执行；每轮最多十篇、单篇 20,000 源字符上限、单一待审核 PR，继续服从 `Quality gate` 和 `main` Ruleset。
+5. **自动翻译 PR（已完成首轮生产验收）**：英文变化合入 `main` 后立即触发，并每天补充执行；每轮最多 100 篇、单篇 20,000 源字符上限、单一待审核 PR，继续服从 `Quality gate` 和 `main` Ruleset。
 6. **内容积累（当前）**：按核心文档优先级积累中文页面，观察流水线稳定性后再扩大单轮吞吐。
 
 任何阶段都不得把模型凭据写入仓库，也不得直接 push `main`。

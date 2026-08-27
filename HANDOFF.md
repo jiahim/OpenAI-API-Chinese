@@ -141,7 +141,7 @@ pnpm test
 - provider/model 已进入策略哈希，checkpoint 路径也绑定策略 SHA。`translate:run` 仍限定单篇，默认无写入，只有显式 `--commit` 才落盘。
 - 多行官方导航卡片已纳入受限翻译范围；相邻正文和链接标签共享批次，减少行内链接拆分导致的语序问题。
 - `translate:review` 只接受 `current` 或 `modified-target`，重新核对源、策略和 Markdown 受保护结构后登记人工版本的目标 SHA，并将状态提升为 `reviewed`。
-- `translate:auto -- --limit 10` 按 `stale-source`、`stale-policy`、`missing-target`、`pending` 处理；同一状态内按 `scripts/translation/priority.zh-CN.json` 的核心文档顺序筛选，最后回退到稳定路径排序。每轮最多十篇，每篇都不超过 20,000 个源字符。
+- `translate:auto -- --limit 100` 按 `stale-source`、`stale-policy`、`missing-target`、`pending` 处理；同一状态内按 `scripts/translation/priority.zh-CN.json` 的核心文档顺序筛选，最后回退到稳定路径排序。每轮最多 100 篇，每篇都不超过 20,000 个源字符。
 - `translate-docs.yml` 只检出 `main`，先跑离线门禁，再仅向 DeepSeek 步骤注入环境 secret；已有翻译 PR 时停止。它在英文合入后触发，并每天北京时间 01:00 补充运行。
 - CI 已改用 `translate:check`，允许 pending/stale，但拒绝缺失、未登记或被修改而未 review 的目标文件。
 

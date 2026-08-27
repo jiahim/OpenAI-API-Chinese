@@ -92,12 +92,12 @@ jobs:
           pnpm test
           pnpm translate:check
 
-      - name: Translate up to ten budgeted pages
+      - name: Translate up to 100 budgeted pages
         if: steps.open-pr.outputs.exists != 'true'
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
-        run: pnpm translate:auto -- --limit 10
+        run: pnpm translate:auto -- --limit 100
 
       - name: Publish the translation branch
         if: steps.open-pr.outputs.exists != 'true'
@@ -151,7 +151,7 @@ jobs:
             const body = [
               "## 自动中文翻译",
               "",
-              "本 PR 由受信任的 `main` 工作流使用环境配置的大模型供应商自动生成，每次最多处理十篇受预算约束的页面。",
+              "本 PR 由受信任的 `main` 工作流使用环境配置的大模型供应商自动生成，每次最多处理 100 篇受预算约束的页面。",
               "",
               "### 文件",
               "",

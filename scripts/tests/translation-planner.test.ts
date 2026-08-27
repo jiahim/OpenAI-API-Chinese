@@ -783,20 +783,20 @@ test("translation CLI parses filters without changing defaults", () => {
     matches: [],
     section: "all",
   });
-  assert.deepEqual(parseCliOptions(["auto", "--limit", "10"]), {
+  assert.deepEqual(parseCliOptions(["auto", "--limit", "100"]), {
     command: "auto",
     commit: false,
     configPath: "scripts/translation.config.json",
-    limit: 10,
+    limit: 100,
     matches: [],
     section: "all",
   });
-  assert.throws(() => parseCliOptions(["auto"]), /--limit 10/u);
+  assert.throws(() => parseCliOptions(["auto"]), /--limit 100/u);
   assert.throws(
-    () => parseCliOptions(["auto", "--limit", "10", "--match", "page"]),
+    () => parseCliOptions(["auto", "--limit", "100", "--match", "page"]),
     /不允许 --match/u,
   );
-  assert.throws(() => parseCliOptions(["auto", "--limit", "1"]), /--limit 10/u);
+  assert.throws(() => parseCliOptions(["auto", "--limit", "1"]), /--limit 100/u);
 });
 
 test("automatic selection prioritizes stale work and integrity rejects target drift", () => {
