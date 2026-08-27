@@ -85,7 +85,11 @@ const SKIPPED_SUBTREES = new Set([
 const PROTECTED_RAW_NODES = new Set(SKIPPED_SUBTREES);
 const PROTECTED_TEXT_PATTERN = /\\[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]|&(?:#[xX][\da-fA-F]+|#\d+|[A-Za-z][A-Za-z\d]+);/gu;
 const CONTROL_CHARACTER_PATTERN = /[\u0000-\u001F\u007F]/u;
+const LEADING_PUNCTUATION_PATTERN = /^\p{P}+/u;
+const TRAILING_PUNCTUATION_PATTERN = /\p{P}+$/u;
 const AUTOLINK_PATTERN = /<(?:https?:\/\/|mailto:)[^<>\r\n]+>|<[A-Za-z\d.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z\d.-]+\.[A-Za-z]{2,}>/gu;
+const EMAIL_AUTOLINK_PATTERN =
+  /[A-Za-z\d.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z\d.-]+\.[A-Za-z]{2,}/gu;
 const HTML_COMMENT_PATTERN = /<!--[\s\S]*?-->/gu;
 const GENERATED_CARD_PATTERN =
   /^[ \t]{1,3}\[([^\]\r\n]+)\r?\n(?:[ \t]*\r?\n)+[ \t]{4,}([^\]\r\n]+)\]\((https:\/\/developers\.openai\.com\/[^)\r\n]+)\)[ \t]*$/gmu;
@@ -94,6 +98,101 @@ const GENERATED_CARD_CODE_PATTERN =
 
 function sha256(value: string): string {
   return createHash("sha256").update(value, "utf8").digest("hex");
+}
+
+export function containsMarkdownControlCharacter(value: string): boolean {
+  return CONTROL_CHARACTER_PATTERN.test(value);
+}
+
+function localizedBoundaryPunctuation(
+  value: string,
+  boundary: "leading" | "trailing",
+): string {
+  const localized: Readonly<Record<string, string>> = {
+    "!": "！",
+    "(": "（",
+    ")": "）",
+    ",": "，",
+    ".": "。",
+    ":": "：",
+    ";": "；",
+    "?": "？",
+    "[": "［",
+    "]": "］",
+    "{": "｛",
+    "}": "｝",
+  };
+  return [...value]
+    .map((character) => {
+      if (character === '"') return boundary === "leading" ? "“" : "”";
+      if (character === "'") return boundary === "leading" ? "‘" : "’";
+      return localized[character] ?? character;
+    })
+    .join("");
+}
+
+function restoreLiteralStrongDelimiterWhitespace(
+  range: MarkdownSourceRange,
+  translated: string,
+): string {
+  const delimiter = "**";
+  const sourceParts = range.sourceText.split(delimiter);
+  const translatedParts = translated.split(delimiter);
+  if (sourceParts.length === 1 || sourceParts.length !== translatedParts.length) {
+    return translated;
+  }
+  const lastIndex = sourceParts.length - 1;
+  return translatedParts
+    .map((translatedPart, index) => {
+      const sourcePart = sourceParts[index]!;
+      let normalizedPart = translatedPart;
+      if (index > 0) {
+        if (/^[\s]/u.test(sourcePart)) {
+          if (!/^[\s]/u.test(normalizedPart)) normalizedPart = ` ${normalizedPart}`;
+        } else {
+          normalizedPart = normalizedPart.replace(/^[ \t]+/u, "");
+        }
+      }
+      if (index < lastIndex) {
+        if (/[\s]$/u.test(sourcePart)) {
+          if (!/[\s]$/u.test(normalizedPart)) normalizedPart += " ";
+        } else {
+          normalizedPart = normalizedPart.replace(/[ \t]+$/u, "");
+        }
+      }
+      return normalizedPart;
+    })
+    .join(delimiter);
+}
+
+function restoreFragmentBoundaryPunctuation(
+  range: MarkdownSourceRange,
+  translated: string,
+): string {
+  if (!range.fragmented) return translated;
+  let restored = translated;
+  const leading = range.sourceText.match(LEADING_PUNCTUATION_PATTERN)?.[0];
+  if (leading && !LEADING_PUNCTUATION_PATTERN.test(restored)) {
+    restored = localizedBoundaryPunctuation(leading, "leading") + restored;
+  }
+  const trailing = range.sourceText.match(TRAILING_PUNCTUATION_PATTERN)?.[0];
+  if (trailing && !TRAILING_PUNCTUATION_PATTERN.test(restored)) {
+    restored += localizedBoundaryPunctuation(trailing, "trailing");
+  }
+  return restored;
+}
+
+function normalizeIntroducedEmailAutolinks(
+  range: MarkdownSourceRange,
+  translated: string,
+): string {
+  const expectedEmails = range.sourceText.match(EMAIL_AUTOLINK_PATTERN)?.length ?? 0;
+  let seenEmails = 0;
+  return translated.replace(EMAIL_AUTOLINK_PATTERN, (email) => {
+    seenEmails += 1;
+    if (seenEmails <= expectedEmails) return email;
+    return email.replace("@", "@\u200C");
+  });
 }
 
 function parseMarkdown(source: string): MarkdownNode {
@@ -114,10 +213,24 @@ function parseMarkdown(source: string): MarkdownNode {
         mdxFromMarkdown(),
       ],
     }) as MarkdownNode;
-  } catch (error) {
-    throw new Error("Markdown 无法按 GFM/frontmatter/MDX 语法解析。", {
-      cause: error,
-    });
+  } catch (mdxError) {
+    // Official Markdown exports can contain valid raw HTML that is not valid
+    // JSX, such as an intentionally unclosed icon span inside a link label.
+    // Fall back to GFM so raw HTML stays protected instead of blocking the
+    // entire page.
+    try {
+      return fromMarkdown(parseSource, {
+        extensions: [frontmatter(["yaml", "toml"]), gfm()],
+        mdastExtensions: [
+          frontmatterFromMarkdown(["yaml", "toml"]),
+          gfmFromMarkdown(),
+        ],
+      }) as MarkdownNode;
+    } catch (gfmError) {
+      throw new Error("Markdown 无法按 GFM/frontmatter 或 MDX 语法解析。", {
+        cause: new AggregateError([mdxError, gfmError]),
+      });
+    }
   }
 }
 
@@ -551,6 +664,14 @@ export const markdownDocumentAdapter: DocumentAdapter<
         // can translate the complete sentence instead of isolated fragments.
         batchKey: context.block,
         context,
+        dedupeKey: sha256(
+          JSON.stringify([
+            context.block,
+            context.kind,
+            context.fragmented,
+            sourceText,
+          ]),
+        ),
         id,
         text: sourceText,
       }),
@@ -589,16 +710,19 @@ export const markdownDocumentAdapter: DocumentAdapter<
       if (typeof translated !== "string") {
         throw new Error(`翻译结果缺少单元：${range.id}`);
       }
+      let normalized = translated.trim();
       if (
-        !translated.trim() ||
-        translated.trim() !== translated ||
-        CONTROL_CHARACTER_PATTERN.test(translated)
+        !normalized ||
+        containsMarkdownControlCharacter(normalized)
       ) {
         throw new Error(
-          `翻译结果包含空白边界、空文本、换行或控制字符：${range.id}`,
+          `翻译结果包含空文本、内部换行或控制字符：${range.id}`,
         );
       }
-      return { ...range, translated };
+      normalized = restoreLiteralStrongDelimiterWhitespace(range, normalized);
+      normalized = restoreFragmentBoundaryPunctuation(range, normalized);
+      normalized = normalizeIntroducedEmailAutolinks(range, normalized);
+      return { ...range, translated: normalized };
     });
     let rendered = state.source;
     for (const replacement of replacements.reverse()) {

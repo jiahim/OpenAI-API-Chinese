@@ -422,6 +422,46 @@ test("quality policy preserves glossary terms and placeholders", async () => {
     )?.issueCode,
     "translation.placeholder_changed",
   );
+  assert.equal(
+    (
+      await policy({
+        ...base,
+        translatedText: "请求 OpenAI\n获取 {{VALUE}} 和 $API_KEY",
+      })
+    )?.issueCode,
+    "translation.control_character",
+  );
+  assert.equal(
+    await policy({
+      ...base,
+      translatedText: "\n请求 OpenAI 获取 {{VALUE}} 和 $API_KEY\n",
+    }),
+    undefined,
+  );
+  assert.equal(
+    await policy({
+      ...base,
+      item: {
+        ...base.item,
+        context: { fragmented: true } as MarkdownTranslationContext,
+      },
+      translatedText: "请求系统获取 {{VALUE}} 和 $API_KEY",
+    }),
+    undefined,
+  );
+  assert.equal(
+    (
+      await policy({
+        ...base,
+        item: {
+          ...base.item,
+          text: "IDs for the `code_interpreter`` tool",
+        },
+        translatedText: "用于 `code_interpreter` 工具的 ID",
+      })
+    )?.issueCode,
+    "translation.literal_backtick_changed",
+  );
 });
 
 test("quality policy handles product names, longer words, and Markdown fragments", async () => {
@@ -473,6 +513,14 @@ test("quality policy handles product names, longer words, and Markdown fragments
   );
   assert.equal(
     await policy(input("Agents like", "诸如", true)),
+    undefined,
+  );
+  assert.equal(
+    await policy(input("User agents identify clients.", "用户代理标识客户端。")),
+    undefined,
+  );
+  assert.equal(
+    await policy(input("A user-agent identifies clients.", "用户代理标识客户端。")),
     undefined,
   );
   assert.equal(

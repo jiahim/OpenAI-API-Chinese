@@ -76,6 +76,18 @@ const secret = "never";
   assert.equal(await identity(source), source);
 });
 
+test("prepare reuses identical text only within matching Markdown contexts", async () => {
+  const prepared = await markdownDocumentAdapter.prepare({
+    content: "# Repeated\n\nRepeated\n\nRepeated\n",
+    id: "fixture.md",
+  });
+  const repeated = prepared.plan.units.filter((unit) => unit.text === "Repeated");
+
+  assert.equal(repeated.length, 3);
+  assert.notEqual(repeated[0]?.dedupeKey, repeated[1]?.dedupeKey);
+  assert.equal(repeated[1]?.dedupeKey, repeated[2]?.dedupeKey);
+});
+
 test("headings, body, lists, quotes, tables, link labels and image alt are replaceable", async () => {
   const source = `# Heading
 
@@ -221,13 +233,14 @@ test("generated multiline navigation cards translate labels and descriptions", a
   );
 });
 
-test("render rejects incomplete, unknown, multiline and structure-changing results", async () => {
+test("render normalizes boundary whitespace and rejects unsafe results", async () => {
   const prepared = await markdownDocumentAdapter.prepare({
-    content: "# Safe heading\n\nBody text.\n",
+    content: "# Realtime API with WebRTC\n\nBody text.\n",
     id: "fixture.md",
   });
   const [first, second] = prepared.plan.units;
   assert.ok(first && second);
+  assert.equal(first.id, "markdown-1-2-26");
   await assert.rejects(
     markdownDocumentAdapter.render(
       prepared.formatState,
@@ -260,7 +273,19 @@ test("render rejects incomplete, unknown, multiline and structure-changing resul
     ),
     /换行/u,
   );
-  for (const invalid of ["   ", " padded ", "control\u0001character"]) {
+  assert.equal(
+    await markdownDocumentAdapter.render(
+      prepared.formatState,
+      result(
+        new Map([
+          [first.id, "\r\n  使用 WebRTC 的 Realtime API \t"],
+          [second.id, second.text],
+        ]),
+      ),
+    ),
+    "# 使用 WebRTC 的 Realtime API\n\nBody text.\n",
+  );
+  for (const invalid of ["   ", "control\u0001character"]) {
     await assert.rejects(
       markdownDocumentAdapter.render(
         prepared.formatState,
@@ -271,7 +296,7 @@ test("render rejects incomplete, unknown, multiline and structure-changing resul
           ]),
         ),
       ),
-      /空白边界|控制字符/u,
+      /空文本|控制字符/u,
     );
   }
   await assert.rejects(
@@ -285,6 +310,102 @@ test("render rejects incomplete, unknown, multiline and structure-changing resul
       ),
     ),
     /受保护结构/u,
+  );
+});
+
+test("render restores punctuation at fragmented Markdown boundaries", async () => {
+  const source = "Use **`gpt-5.6`**. It works.\n";
+  const prepared = await markdownDocumentAdapter.prepare({
+    content: source,
+    id: "fixture.md",
+  });
+  const translations = new Map(
+    prepared.plan.units.map((unit) => [
+      unit.id,
+      unit.text === "Use" ? "使用" : "它可以工作。",
+    ]),
+  );
+
+  assert.equal(
+    await markdownDocumentAdapter.render(
+      prepared.formatState,
+      result(translations),
+    ),
+    "使用 **`gpt-5.6`**。它可以工作。\n",
+  );
+});
+
+test("render neutralizes translated email autolinks absent from the source", async () => {
+  const source = "Assistant: that is c-h-e-n at example dot com, right?\n";
+  const prepared = await markdownDocumentAdapter.prepare({
+    content: source,
+    id: "fixture.md",
+  });
+  const translations = new Map(
+    prepared.plan.units.map((unit) => [
+      unit.id,
+      "助手：确认一下，是 c-h-e-n@example.com，对吗？",
+    ]),
+  );
+
+  assert.equal(
+    await markdownDocumentAdapter.render(
+      prepared.formatState,
+      result(translations),
+    ),
+    "助手：确认一下，是 c-h-e-n@\u200Cexample.com，对吗？\n",
+  );
+});
+
+test("render preserves literal strong-delimiter whitespace", async () => {
+  const source =
+    "> 1.** Boil water**\n\n> Dolphins** are playful animals.**\n";
+  const prepared = await markdownDocumentAdapter.prepare({
+    content: source,
+    id: "fixture.md",
+  });
+  const translations = new Map(
+    prepared.plan.units.map((unit) => [
+      unit.id,
+      unit.text.startsWith("1.") ? "1. **烧开水**" : "海豚**是顽皮的动物。**",
+    ]),
+  );
+
+  assert.equal(
+    await markdownDocumentAdapter.render(
+      prepared.formatState,
+      result(translations),
+    ),
+    "> 1.** 烧开水**\n\n> 海豚** 是顽皮的动物。**\n",
+  );
+});
+
+test("adapter falls back to GFM for protected raw HTML that is invalid JSX", async () => {
+  const source = `[<span
+  aria-hidden="true"
+>
+
+  Elevated risk](https://example.com)
+
+## What is developer mode
+`;
+  const prepared = await markdownDocumentAdapter.prepare({
+    content: source,
+    id: "fixture.md",
+  });
+  const translations = new Map(
+    prepared.plan.units.map((unit) => [
+      unit.id,
+      unit.text === "What is developer mode" ? "什么是开发者模式" : unit.text,
+    ]),
+  );
+
+  assert.equal(
+    await markdownDocumentAdapter.render(
+      prepared.formatState,
+      result(translations),
+    ),
+    source.replace("What is developer mode", "什么是开发者模式"),
   );
 });
 

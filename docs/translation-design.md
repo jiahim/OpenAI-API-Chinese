@@ -67,7 +67,7 @@ Markdown adapter 基于 mdast/micromark 的 GFM、frontmatter 与 MDX 语法树�
 
 adapter 为每个文本单元提供 `heading/body/table/list/quote` block context，以及 `text/link-label/image-alt` kind；链接标签和图片 alt 可翻译，链接、图片目标和 title 不进入翻译单元。相邻正文与链接标签共享批次，使模型能结合完整句子翻译分段内容。fenced/indented code、inline code、HTML/MDX 整棵子树、frontmatter、自动链接、HTML 注释、转义符和字符实体都受到保护。由于 MDX 规范禁用缩进代码并拒绝 CommonMark 角括号自动链接，适配器会额外用 CommonMark AST 识别代码区间，并对自动链接/HTML 注释做等长掩码；等长掩码只用于解析，原始字节始终保存在 format state。官方索引页使用的多行导航卡片会被受限模式单独识别，只开放标签和说明文本，仍保护缩进、闭合标记和官方 URL。
 
-render 拒绝缺失或多余单元、空文本、换行/控制字符、被篡改或重叠的区间和策略版本不匹配；回填后再次解析并比较受保护结构签名，结构、代码或 URL 变化时拒绝输出。恒等翻译不会改动任何字节。
+render 会安全移除模型偶发添加在译文单元首尾的空白，同时拒绝缺失或多余单元、空文本、内部换行/控制字符、被篡改或重叠的区间和策略版本不匹配；内部换行/控制字符会在批次质量门阶段先触发一次定向重试。被 Markdown 内联结构拆分的片段如果漏掉源文本开头或结尾的边界标点，render 会按常用中文标点映射安全补回，避免与相邻的强调、链接或行内代码重新结合。回填后再次解析并比较受保护结构签名，结构、代码或 URL 变化时拒绝输出。恒等翻译不会改动任何字节。
 
 ## 增量、恢复与质量门
 
@@ -81,7 +81,7 @@ render 拒绝缺失或多余单元、空文本、换行/控制字符、被篡改
 
 Runner 只接受 Planner 判定为 `pending`、`stale-source`、`stale-policy` 或 `missing-target` 的单篇页面。checkpoint 位于 Git 忽略的 `.cache/translation-checkpoints/`；提交前重新加载工作区并再次验证状态、源 SHA、策略 SHA 和目标路径。写入顺序固定为译文后 manifest，因此异常中断会转化为可检测的阻塞状态，而不会产生虚假的 current 记录。
 
-真实 profile 固定为 `deepseek` / `deepseek-chat`，key 只从 `DEEPSEEK_API_KEY` 注入；`translate:run` 自动加载仓库根目录下被 Git 忽略的 `.env`，现有进程环境优先。术语表的 `preserve` 项在 Provider 请求前按最长匹配包裹为批次内唯一的成对保护标记，标记内部保留可见原词；响应后无论模型复制标记、只去掉标记外壳，还是改写成对标记内的内容，都恢复为原词，残留或被破坏的标记会被质量错误拒绝。指定译法只检查完整单词或短语，并排除已整体保留的产品名。质量策略会独立复核术语与占位符，但当同一 Markdown 语义块被链接、图片、代码或换行拆成多个翻译单元时，不再对单个片段强制指定译法，因为中文语序可能把术语移动到相邻片段；术语表仍会随完整批次发送给模型。该命令必须提供 `--match` 与 `--limit 1`；默认调用模型但不写 `docs/zh` 或 manifest（可能更新 Git 忽略的 checkpoint），只有显式 `--commit` 才原子写入译文与 manifest。API key 不进入配置、策略哈希、日志、checkpoint 或 manifest；provider/model 变更会产生新的策略 SHA 和 checkpoint 路径。
+真实 profile 固定为 `deepseek` / `deepseek-chat`，key 只从 `DEEPSEEK_API_KEY` 注入；`translate:run` 自动加载仓库根目录下被 Git 忽略的 `.env`，现有进程环境优先。术语表的 `preserve` 项在 Provider 请求前按最长匹配包裹为批次内唯一的成对保护标记，标记内部保留可见原词；响应后无论模型复制标记、只去掉标记外壳、改写成对标记内的内容，还是因中文语序把完整标记移动到相邻翻译单元，都会在整个批次范围恢复为原词。恢复后会按最长匹配核对批次级保留词数量，残留、被破坏、遗漏或额外增加的保护内容会被质量错误拒绝。如果模型在移动保留词后省略了只含保留词和标点的原碎片 ID，Provider 只会在该碎片仍有非空标点时补回标点以满足响应契约；普通自然语言缺项继续拒绝。指定译法也使用独立的成对标记，返回后确定性替换为配置的中文目标词，并按完整单词或短语匹配；已整体保留的产品名优先排除，HTTP 语境的 `user agent(s)` / `user-agent(s)` 也不套用 AI `agent(s) → 智能体` 规则。质量策略会再次复核术语与占位符，但当同一 Markdown 语义块被链接、图片、代码或换行拆成多个翻译单元时，不再对单个片段强制保留词或指定译法，因为中文语序可能把它们移动到相邻片段；术语表仍会随完整批次发送给模型。该命令必须提供 `--match` 与 `--limit 1`；默认调用模型但不写 `docs/zh` 或 manifest（可能更新 Git 忽略的 checkpoint），只有显式 `--commit` 才原子写入译文与 manifest。API key 不进入配置、策略哈希、日志、checkpoint 或 manifest；provider/model 变更会产生新的策略 SHA 和 checkpoint 路径。
 
 ## 分阶段交付
 

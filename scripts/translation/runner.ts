@@ -32,6 +32,7 @@ import {
 } from "@easy-translate/core";
 
 import {
+  containsMarkdownControlCharacter,
   markdownDocumentAdapter,
   type MarkdownTranslationContext,
 } from "./markdown-adapter.ts";
@@ -54,6 +55,7 @@ const TRANSLATABLE_STATES = new Set([
 ]);
 const PLACEHOLDER_PATTERN =
   /\$\{[A-Z][A-Z\d_]*\}|\$[A-Z][A-Z\d_]*|\{\{[^{}\r\n]+\}\}|%[difso]/gu;
+const LITERAL_BACKTICK_PATTERN = /`+/gu;
 
 export interface TranslationPageRunOptions {
   batchSize?: number | undefined;
@@ -316,6 +318,12 @@ function sortedTokens(content: string): string[] {
     .sort();
 }
 
+function sortedLiteralBackticks(content: string): string[] {
+  return [...content.matchAll(LITERAL_BACKTICK_PATTERN)]
+    .map((match) => match[0])
+    .sort();
+}
+
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
 }
@@ -344,35 +352,59 @@ function withoutPreservedTerms(
   return unprotected;
 }
 
+function withoutAmbiguousAgentTerms(content: string): string {
+  return content.replace(/\buser(?:\s+|-+)agents?\b/giu, (value) =>
+    " ".repeat(value.length),
+  );
+}
+
 export function createTranslationQualityPolicy(
   glossary: TranslationGlossary,
 ): TranslationQualityPolicy<MarkdownTranslationContext> {
   return ({ item, translatedText }) => {
-    if (!translatedText.trim()) {
+    const normalizedTranslatedText = translatedText.trim();
+    if (!normalizedTranslatedText) {
       return {
         issueCode: "translation.empty",
         message: "译文不能为空。",
         retryInstruction: "必须返回非空译文。",
       };
     }
-    for (const term of glossary.preserve) {
-      if (item.text.includes(term) && !translatedText.includes(term)) {
-        return {
-          issueCode: "translation.preserve_missing",
-          message: `必须保留术语：${term}`,
-          retryInstruction: `原样保留 ${term}。`,
-        };
-      }
+    if (containsMarkdownControlCharacter(normalizedTranslatedText)) {
+      return {
+        issueCode: "translation.control_character",
+        message: "译文不能包含内部换行或控制字符。",
+        retryInstruction: "每个翻译单元必须返回不含换行或控制字符的单行文本。",
+      };
+    }
+    const sourceBackticks = sortedLiteralBackticks(item.text);
+    const targetBackticks = sortedLiteralBackticks(normalizedTranslatedText);
+    if (JSON.stringify(sourceBackticks) !== JSON.stringify(targetBackticks)) {
+      return {
+        issueCode: "translation.literal_backtick_changed",
+        message: "译文改变了字面 Markdown 反引号序列。",
+        retryInstruction:
+          "逐字保留每个反引号序列及其所属翻译单元；不要增删、合并或移动反引号。",
+      };
     }
     if (!item.context.fragmented) {
+      for (const term of glossary.preserve) {
+        if (item.text.includes(term) && !normalizedTranslatedText.includes(term)) {
+          return {
+            issueCode: "translation.preserve_missing",
+            message: `必须保留术语：${term}`,
+            retryInstruction: `原样保留 ${term}。`,
+          };
+        }
+      }
       const terminologySource = withoutPreservedTerms(
-        item.text,
+        withoutAmbiguousAgentTerms(item.text),
         glossary.preserve,
       );
       for (const [source, target] of Object.entries(glossary.terms)) {
         if (
           containsCompleteTerm(terminologySource, source) &&
-          !translatedText.includes(target)
+          !normalizedTranslatedText.includes(target)
         ) {
           return {
             issueCode: "translation.term_missing",
@@ -383,7 +415,7 @@ export function createTranslationQualityPolicy(
       }
     }
     const sourceTokens = sortedTokens(item.text);
-    const targetTokens = sortedTokens(translatedText);
+    const targetTokens = sortedTokens(normalizedTranslatedText);
     if (JSON.stringify(sourceTokens) !== JSON.stringify(targetTokens)) {
       return {
         issueCode: "translation.placeholder_changed",
