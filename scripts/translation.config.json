@@ -4,9 +4,11 @@
   "promptPath": "scripts/translation/prompt.zh-CN.md",
   "reviewNotesPath": "scripts/translation/review-notes.zh-CN.json",
   "provider": {
-    "apiKeyEnv": "DEEPSEEK_API_KEY",
-    "id": "deepseek",
-    "model": "deepseek-chat"
+    "apiKeyEnv": "MINIMAX_API_KEY",
+    "id": "minimax-cn",
+    "model": "MiniMax-M3",
+    "modelEnv": "MINIMAX_MODEL",
+    "providerEnv": "TRANSLATION_PROVIDER"
   },
   "schemaVersion": 2,
   "sourceManifestPath": "docs/en/.source-manifest.json",

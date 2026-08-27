@@ -27,6 +27,10 @@ jobs:
   translate:
     if: github.ref == 'refs/heads/main'
     environment: translation-production
+    env:
+      DEEPSEEK_MODEL: ${{ vars.DEEPSEEK_MODEL }}
+      MINIMAX_MODEL: ${{ vars.MINIMAX_MODEL }}
+      TRANSLATION_PROVIDER: ${{ vars.TRANSLATION_PROVIDER }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
 
@@ -88,16 +92,12 @@ jobs:
           pnpm test
           pnpm translate:check
 
-      - name: Translate up to ten budgeted pages with DeepSeek
+      - name: Translate up to ten budgeted pages
         if: steps.open-pr.outputs.exists != 'true'
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-        run: |
-          if [[ -z "$DEEPSEEK_API_KEY" ]]; then
-            echo "DEEPSEEK_API_KEY is not configured for translation-production." >&2
-            exit 1
-          fi
-          pnpm translate:auto -- --limit 10
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
+        run: pnpm translate:auto -- --limit 10
 
       - name: Publish the translation branch
         if: steps.open-pr.outputs.exists != 'true'
@@ -110,7 +110,7 @@ jobs:
           fi
 
           git add docs/zh
-          git commit -m "docs: 自动更新 OpenAI 中文翻译"
+          git commit -m "[AI] docs: 自动更新 OpenAI 中文翻译"
           echo "has_changes=true" >> "$GITHUB_OUTPUT"
 
           if git show-ref --verify --quiet "refs/remotes/origin/$TRANSLATION_BRANCH"; then
@@ -151,7 +151,7 @@ jobs:
             const body = [
               "## 自动中文翻译",
               "",
-              "本 PR 由受信任的 `main` 工作流使用 DeepSeek 自动生成，每次最多处理十篇受预算约束的页面。",
+              "本 PR 由受信任的 `main` 工作流使用环境配置的大模型供应商自动生成，每次最多处理十篇受预算约束的页面。",
               "",
               "### 文件",
               "",

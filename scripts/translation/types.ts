@@ -16,11 +16,21 @@ export interface TranslationConfig {
   translationManifestPath: string;
 }
 
-export interface TranslationProviderProfile {
-  apiKeyEnv: "DEEPSEEK_API_KEY";
-  id: "deepseek";
-  model: string;
-}
+export type TranslationProviderProfile =
+  | {
+      apiKeyEnv: "DEEPSEEK_API_KEY";
+      id: "deepseek";
+      model: string;
+      modelEnv?: "DEEPSEEK_MODEL";
+      providerEnv?: "TRANSLATION_PROVIDER";
+    }
+  | {
+      apiKeyEnv: "MINIMAX_API_KEY";
+      id: "minimax" | "minimax-cn";
+      model: string;
+      modelEnv?: "MINIMAX_MODEL";
+      providerEnv?: "TRANSLATION_PROVIDER";
+    };
 
 export interface TranslationGlossary {
   preserve: string[];

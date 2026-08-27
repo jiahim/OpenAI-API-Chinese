@@ -1,4 +1,8 @@
-import { createDeepSeekProvider } from "@easy-translate/providers";
+import {
+  createDeepSeekProvider,
+  createMinimaxCNProvider,
+  createMinimaxProvider,
+} from "@easy-translate/providers";
 import {
   TranslationErrorCode,
   TranslationResponseError,
@@ -8,6 +12,7 @@ import {
 } from "@easy-translate/core";
 
 import type { MarkdownTranslationContext } from "./markdown-adapter.ts";
+import { resolveTranslationProviderProfile } from "./provider-profile.ts";
 import type { TranslationProviderProfile } from "./types.ts";
 
 interface PreserveReplacement {
@@ -803,12 +808,40 @@ export function createConfiguredProvider(
   preserveTerms: readonly string[] = [],
   terminology: Readonly<Record<string, string>> = {},
 ): TranslationProvider<MarkdownTranslationContext> {
-  const apiKey = environment[profile.apiKeyEnv]?.trim();
+  const resolvedProfile = resolveTranslationProviderProfile(
+    profile,
+    environment,
+  );
+  const apiKey = environment[resolvedProfile.apiKeyEnv]?.trim();
   if (!apiKey) {
     throw new Error(
-      `缺少环境变量 ${profile.apiKeyEnv}；请在本地配置 DeepSeek API key 后重试。`,
+      `缺少环境变量 ${resolvedProfile.apiKeyEnv}；请配置 ${resolvedProfile.id} API key 后重试。`,
     );
   }
+  const provider =
+    resolvedProfile.id === "deepseek"
+      ? createDeepSeekProvider({ apiKey, model: resolvedProfile.model })
+      : resolvedProfile.id === "minimax-cn"
+        ? createMinimaxCNProvider({
+            apiKey,
+            model: resolvedProfile.model,
+            extraBody: {
+              reasoning_split: true,
+              ...(resolvedProfile.model.startsWith("MiniMax-M3")
+                ? { thinking: { type: "disabled" } }
+                : {}),
+            },
+          })
+        : createMinimaxProvider({
+            apiKey,
+            model: resolvedProfile.model,
+            extraBody: {
+              reasoning_split: true,
+              ...(resolvedProfile.model.startsWith("MiniMax-M3")
+                ? { thinking: { type: "disabled" } }
+                : {}),
+            },
+          });
   return createSourceLineBreakNormalizationProvider(
     createFragmentedArticleFallbackProvider(
       createLiteralMarkdownDelimiterProvider(
@@ -816,7 +849,7 @@ export function createConfiguredProvider(
           createPreserveTermsProvider(
             createTerminologyProvider(
               createInvalidIdRecoveryProvider(
-                createDeepSeekProvider({ apiKey, model: profile.model }),
+                provider,
               ),
               preserveTerms,
               terminology,
