@@ -1,10 +1,10 @@
 # 文本生成
 
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。通过向页面 URL 追加 `.md` 可获取文档页面的 Markdown 版本。
 
-使用 OpenAI API，你可以 [大语言模型](https://developers.openai.com/api/docs/models) 根据提示生成文本，就像使用 [ChatGPT](https://chatgpt.com)一样。模型可以生成几乎任何类型的文本响应——例如代码、数学方程、结构化 JSON 数据或类似人类的散文。
+使用 OpenAI API，你可以使用 [大型语言模型](https://developers.openai.com/api/docs/models) 根据提示生成文本，就像你使用 [ChatGPT](https://chatgpt.com)。一样。模型可以生成几乎任何类型的文本响应——如代码、数学方程、结构化 JSON 数据或类人散文。
 
-使用 [Responses API](https://developers.openai.com/api/reference/resources/responses) 进行此类文本生成调用的直接模型请求。
+对于此类文本生成调用等直接模型请求，请使用 [Responses API](https://developers.openai.com/api/reference/resources/responses) 。
 
 从简单提示生成文本
 
@@ -129,7 +129,7 @@ curl "https://api.openai.com/v1/responses" \
 ```
 
 
-模型生成的内容数组位于响应的 `output` 属性中。在此简单示例中，我们只有一个输出，如下所示：
+响应中的 `output` 属性包含模型生成的内容数组。在这个简单示例中，我们只有一个输出，如下所示：
 
 ```json
 [
@@ -148,36 +148,36 @@ curl "https://api.openai.com/v1/responses" \
 ]
 ```
 
-**该 `output` 数组通常包含多个项目！** 它可能包含工具调用、关于 [推理模型](https://developers.openai.com/api/docs/guides/reasoning)生成的推理 token 的数据以及其他项目。假设模型的文本输出位于 `output[0].content[0].text`.
+**该 `output` 数组通常包含多个项目！** 它可能包含工具调用、关于 [推理模型](https://developers.openai.com/api/docs/guides/reasoning)，生成的推理令牌数据，以及其他项目。假设模型的文本输出位于 `output[0].content[0].text`.
 
-我们的一些 [官方 SDK](https://developers.openai.com/api/docs/libraries) 包括一个 `output_text` 属性，用于方便地聚合模型的所有文本输出为单个字符串。这可以作为获取模型文本输出的快捷方式。
+我们的一些 [官方 SDK](https://developers.openai.com/api/docs/libraries) 包含一个 `output_text` 属性，用于便捷地将模型的所有文本输出聚合为单个字符串。这可以作为访问模型文本输出的快捷方式。
 
-除了纯文本之外，你还可以让模型返回 JSON 格式的结构化数据——这一功能称为 [**结构化输出**](https://developers.openai.com/api/docs/guides/structured-outputs).
+除了纯文本外，你还可以让模型以 JSON 格式返回结构化数据——此功能称为 [**结构化输出**](https://developers.openai.com/api/docs/guides/structured-outputs).
 
-## 提示工程
+## 提示词工程
 
-**提示工程** 是为模型编写有效指令的过程，以便其持续生成满足你要求的内容。
+**提示词工程** 是为模型编写有效指令的过程，使其能持续生成满足你需求的内容。
 
-由于模型生成的内容具有非确定性，通过提示获得期望输出既是一门艺术，也是一门科学。然而，你可以应用技巧和最佳实践来持续获得良好的结果。
+由于模型生成的内容具有非确定性，通过提示词获得预期输出既是艺术也是科学。不过，你可以运用技巧和最佳实践，持续获得良好结果。
 
-某些提示工程技术适用于所有模型，例如使用消息角色。但不同模型可能需要不同的提示方式才能产生最佳结果。即使同一系列模型的不同快照也可能产生不同结果。因此，在构建更复杂的应用时，我们强烈建议：
+某些提示词工程技术适用于所有模型，例如使用消息角色。但不同模型可能需要不同的提示方式才能产生最佳结果。即便是同一系列中不同快照的模型，也可能产生不同结果。因此，随着你构建更复杂的应用，我们强烈建议：
 
-- 将你的生产应用固定到特定的 [模型快照](https://developers.openai.com/api/docs/models) （例如 `gpt-5.5-2026-04-23` ）以确保行为一致
-- 构建测试和评估套件，衡量提示行为，以便在迭代时或更改和升级模型版本时监控性能
+- 将你的生产应用固定到特定 [模型快照](https://developers.openai.com/api/docs/models) （例如 `gpt-5.5-2026-04-23` ）以确保行为一致
+- 构建测试和评估套件，以测量提示行为，以便你在迭代或更改和升级模型版本时监控性能
 
-现在，让我们来考察一些可用于构建提示词的工具和技术。
+现在，让我们看看可用于构建提示词的一些工具和技巧。
 
-## 选择模型和API
+## 选择模型与API
 
-OpenAI 提供多种不同的 [模型](https://developers.openai.com/api/docs/models) ，以及几个 API 供你选择。 [推理模型](https://developers.openai.com/api/docs/guides/reasoning)，如 [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol)，与聊天模型行为不同，对不同的提示有更好的响应。一个重要的注意事项是，当推理模型与 Responses API 配合使用时，它们表现更好，展现出更高的智能。
+OpenAI 有许多不同的 [模型](https://developers.openai.com/api/docs/models) 以及几个可选的 API。 [推理模型](https://developers.openai.com/api/docs/guides/reasoning)，例如 [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol)，与聊天模型行为不同，对不同的提示反应也更好。一个重要注意事项是，推理模型在与 Responses API 一起使用时表现更好，并展现出更高的智能。
 
-如果你在构建任何文本生成应用，我们建议使用 Responses API 而非较旧的 Chat Completions API。如果你在使用推理模型，尤其有用的是 [迁移到 Responses](https://developers.openai.com/api/docs/guides/migrate-to-responses).
+如果你正在构建任何文本生成应用，我们建议使用 Responses API 而不是较旧的 Chat Completions API。而如果你使用推理模型，特别有助于 [迁移到 Responses](https://developers.openai.com/api/docs/guides/migrate-to-responses).
 
 ## 消息角色与指令遵循
 
-你可以通过 [不同级别的权限](https://model-spec.openai.com/2025-02-12.html#chain_of_command) 来向模型提供指令，方法是使用 `instructions` API 参数以及 **消息角色**.
+你可以通过 [不同级别的权限](https://model-spec.openai.com/2025-02-12.html#chain_of_command) 使用 `instructions` API 参数以及 **消息角色**.
 
-。 `instructions` 该参数为模型提供生成响应时应当如何表现的高级指令，包括语气、目标以及正确响应的示例。通过这种方式提供的任何指令都会优先于 `input` 参数中的提示词。
+该 `instructions` 向模型提供指令。该参数为模型提供生成响应时如何表现的高级指令，包括语气、目标以及正确响应的示例。以此方式提供的任何指令将优先于 `input` 参数中的提示。
 
 使用指令生成文本
 
@@ -268,6 +268,31 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    Instructions = "Talk like a pirate.",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Are semicolons optional in JavaScript?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -295,9 +320,9 @@ curl "https://api.openai.com/v1/responses" \
 ```
 
 
-上面的示例大致相当于在 `input` 数组中使用以下输入消息：
+上面的示例大致等同于在 `input` 数组中使用以下输入消息：
 
-使用不同角色生成带消息的文本
+使用不同角色的消息生成文本
 
 ```javascript
 import OpenAI from "openai";
@@ -418,6 +443,33 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateDeveloperMessageItem("Talk like a pirate.")
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Are semicolons optional in JavaScript?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -455,9 +507,9 @@ curl "https://api.openai.com/v1/responses" \
 ```
 
 
-请注意， `instructions` 参数仅适用于当前响应生成请求。如果你正在通过 [管理对话状态](https://developers.openai.com/api/docs/guides/conversation-state) 使用 `previous_response_id` 参数， `instructions` 之前轮次中使用的指令将不会出现在上下文中。
+请注意， `instructions` 参数仅适用于当前响应生成请求。如果你正在 [管理会话状态](https://developers.openai.com/api/docs/guides/conversation-state) 通过 `previous_response_id` 参数，则 `instructions` 在之前轮次中使用的将不会出现在上下文中。
 
-该 [OpenAI 模型规范](https://model-spec.openai.com/2025-02-12.html#chain_of_command) 描述我们的模型如何对不同角色的消息赋予不同的优先级。
+该 [OpenAI 模型规范](https://model-spec.openai.com/2025-02-12.html#chain_of_command) 描述了我们的模型如何对不同角色的消息给予不同级别的优先级。
 
 <table>
   <thead>
@@ -484,38 +536,38 @@ curl "https://api.openai.com/v1/responses" \
   </tbody>
 </table>
 
-多轮对话可能包含多种此类消息，以及你和模型提供的其他内容类型。了解更多 [请参见此处关于管理对话状态的信息](https://developers.openai.com/api/docs/guides/conversation-state).
+多轮对话可能包含多个此类消息，以及你和模型提供的其他内容类型。了解更多关于 [在此处管理对话状态](https://developers.openai.com/api/docs/guides/conversation-state).
 
-你可以将 `developer` 和 `user` 消息想象为编程语言中的函数及其参数。
+你可以将 `developer` 和 `user` 视为编程语言中的函数及其参数。
 
-- `developer` messages 提供系统的规则和业务逻辑，类似于函数定义。
-- `user` messages 提供输入和配置， `developer` message 指令据此应用，类似于函数的参数。
+- `developer` 消息提供系统的规则和业务逻辑，类似于函数定义。
+- `user` 消息提供输入和配置， `developer` 消息指令将应用于这些输入和配置，类似于函数的参数。
 
-## 代码中的版本提示
+## 在代码中版本化提示词
 
-将生产提示词存储在应用程序代码中，而不是创建可重用的提示词对象。代码管理的提示词让你能够使用类型化输入、代码审查、测试以及常规部署流程来更改模型行为。
+将生产环境提示词存储在应用程序代码中，而不是创建可重复使用的提示词对象。由代码管理的提示词让你能够使用类型化输入、代码审查、测试以及常规部署流程来改变模型行为。
 
-OpenAI 正在弃用 API 中的可重用提示词对象。提示词创建将
-  从2026年6月3日起被淡化，并且 `v1/prompts` 计划于
-  2026年11月30日关闭。请参见 [弃用
-  页面](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 了解当前的
+OpenAI 正在弃用API中的可重复使用提示词对象。提示词创建将
+  于2026年6月3日起逐步取消重点支持，并 `v1/prompts` 计划于2026年11月30日
+  关闭。请参阅 [弃用
+  页面](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 了解当前
   时间线。
 
 对于新的文本生成工作：
 
-- 将提示构建器保留在靠近其支持功能的小模块中。
-- 使用类型化函数参数或模式来处理动态值，如客户数据、文件或任务选项。
+- 将提示词构建器放在其支持的功能附近的小模块中。
+- 对动态值（如客户数据、文件或任务选项）使用类型化函数参数或模式。
 - 将生成的 `instructions` 和 `input` 直接传递给 [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create).
-- 在更改生产提示之前添加代表性的固定装置、测试和评估检查。
-- 通过您的部署系统推出提示更改，在需要分阶段发布时使用功能标志或配置。
+- 在更改生产提示词之前，添加具有代表性的固定测试数据和评估检查。
+- 通过部署系统推出提示词更改，在需要分阶段发布时使用功能标记或配置。
 
-如果你的集成已经通过提示词 ID 或版本号调用保存的提示词，请使用 [提示词对象迁移指南](https://developers.openai.com/api/docs/guides/prompting/migrate-from-prompt-object) 将该提示词迁移到代码中。
+如果你的集成已经通过提示词 ID 或版本来调用已保存的提示词，请使用 [提示词对象迁移指南](https://developers.openai.com/api/docs/guides/prompting/migrate-from-prompt-object) 将该提示词移至代码中。
 
 ## 后续步骤
 
-既然你现在已经了解了文本输入和输出的基础知识，接下来不妨看看以下这些资源。
+现在你已经了解了文本输入和输出的基础知识，接下来可以查看以下资源之一。
 
-[在 Playground 中构建提示词
+[在 Playground 中构建提示
 
 
 
@@ -527,7 +579,7 @@ OpenAI 正在弃用 API 中的可重用提示词对象。提示词创建将
 
       Ensure JSON data emitted from a model conforms to a JSON schema.](https://developers.openai.com/api/docs/guides/structured-outputs)
 
-[完整的 API 参考
+[完整 API 参考
 
 
 
