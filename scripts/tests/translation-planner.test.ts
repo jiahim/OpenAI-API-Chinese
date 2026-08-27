@@ -22,7 +22,10 @@ import {
 import {
   buildTranslationStatusReport,
   classifyTranslationPage,
+  loadTranslationWorkspace,
   mirroredTranslationPath,
+  translationPagePolicySha256,
+  translationPolicySha256ForPage,
 } from "../translation/planner.ts";
 import type {
   SourcePageSnapshot,
@@ -512,6 +515,156 @@ test("planner includes the non-sensitive provider profile in policy identity", a
     );
     const changed = await buildTranslationStatusReport(root);
     assert.notEqual(changed.policySha256, first.policySha256);
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("page review notes invalidate only the matching page policy", async () => {
+  const root = await createFixture();
+  try {
+    await writeTarget(root);
+    const initial = await loadTranslationWorkspace(root);
+    await writeTranslationManifest(root, {
+      [SOURCE_URL]: translationRecord({ policySha256: initial.policySha256 }),
+    });
+    assert.equal(
+      (await loadTranslationWorkspace(root)).entries[0]?.state,
+      "current",
+    );
+
+    const note = "保留此页缩写，并按括号中的释义理解上下文。";
+    await writeFile(
+      join(root, "scripts/translation/review-notes.zh-CN.json"),
+      JSON.stringify({
+        pages: { [SOURCE_URL]: [note] },
+        schemaVersion: 1,
+      }),
+    );
+    const changed = await loadTranslationWorkspace(root);
+    assert.equal(changed.policySha256, initial.policySha256);
+    assert.equal(changed.entries[0]?.state, "stale-policy");
+    assert.notEqual(
+      translationPolicySha256ForPage(changed, SOURCE_URL),
+      changed.policySha256,
+    );
+    assert.equal(
+      translationPagePolicySha256(changed.policySha256, []),
+      changed.policySha256,
+    );
+
+    await writeFile(
+      join(root, "scripts/translation/review-notes.zh-CN.json"),
+      JSON.stringify({
+        pages: {
+          "https://developers.openai.com/api/docs/missing.md": [note],
+        },
+        schemaVersion: 1,
+      }),
+    );
+    await assert.rejects(
+      loadTranslationWorkspace(root),
+      /没有对应的英文页面/u,
+    );
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("planner accepts a MiniMax profile and rejects a mismatched key variable", async () => {
+  const root = await createFixture();
+  try {
+    const configPath = join(root, "scripts/translation.config.json");
+    const original = JSON.parse(await readFile(configPath, "utf8")) as Record<
+      string,
+      unknown
+    >;
+    await writeFile(
+      configPath,
+      JSON.stringify({
+        ...original,
+        provider: {
+          apiKeyEnv: "MINIMAX_API_KEY",
+          id: "minimax-cn",
+          model: "MiniMax-M3",
+          modelEnv: "MINIMAX_MODEL",
+          providerEnv: "TRANSLATION_PROVIDER",
+        },
+      }),
+    );
+    const defaultWorkspace = await loadTranslationWorkspace(root, undefined, {});
+    assert.deepEqual(defaultWorkspace.config.provider, {
+      apiKeyEnv: "MINIMAX_API_KEY",
+      id: "minimax-cn",
+      model: "MiniMax-M3",
+      modelEnv: "MINIMAX_MODEL",
+      providerEnv: "TRANSLATION_PROVIDER",
+    });
+    const overriddenWorkspace = await loadTranslationWorkspace(
+      root,
+      undefined,
+      { MINIMAX_MODEL: "MiniMax-M2.7" },
+    );
+    assert.deepEqual(overriddenWorkspace.config.provider, {
+      apiKeyEnv: "MINIMAX_API_KEY",
+      id: "minimax-cn",
+      model: "MiniMax-M2.7",
+      modelEnv: "MINIMAX_MODEL",
+      providerEnv: "TRANSLATION_PROVIDER",
+    });
+    assert.notEqual(
+      overriddenWorkspace.policySha256,
+      defaultWorkspace.policySha256,
+    );
+    const autoSelectedDeepSeek = await loadTranslationWorkspace(
+      root,
+      undefined,
+      { DEEPSEEK_API_KEY: "deepseek-secret" },
+    );
+    assert.deepEqual(autoSelectedDeepSeek.config.provider, {
+      apiKeyEnv: "DEEPSEEK_API_KEY",
+      id: "deepseek",
+      model: "deepseek-chat",
+      modelEnv: "DEEPSEEK_MODEL",
+      providerEnv: "TRANSLATION_PROVIDER",
+    });
+    await assert.rejects(
+      loadTranslationWorkspace(root, undefined, {
+        DEEPSEEK_API_KEY: "deepseek-secret",
+        MINIMAX_API_KEY: "minimax-secret",
+      }),
+      /检测到多个翻译 API Key.*TRANSLATION_PROVIDER/u,
+    );
+    const explicitlySelectedMiniMax = await loadTranslationWorkspace(
+      root,
+      undefined,
+      {
+        DEEPSEEK_API_KEY: "deepseek-secret",
+        MINIMAX_API_KEY: "minimax-secret",
+        MINIMAX_MODEL: "MiniMax-M3",
+        TRANSLATION_PROVIDER: "minimax-cn",
+      },
+    );
+    assert.equal(explicitlySelectedMiniMax.config.provider.id, "minimax-cn");
+    assert.equal(explicitlySelectedMiniMax.config.provider.model, "MiniMax-M3");
+
+    await writeFile(
+      configPath,
+      JSON.stringify({
+        ...original,
+        provider: {
+          apiKeyEnv: "DEEPSEEK_API_KEY",
+          id: "minimax-cn",
+          model: "MiniMax-M3",
+          modelEnv: "MINIMAX_MODEL",
+          providerEnv: "TRANSLATION_PROVIDER",
+        },
+      }),
+    );
+    await assert.rejects(
+      loadTranslationWorkspace(root),
+      /必须与 minimax-cn 匹配为 MINIMAX_API_KEY/u,
+    );
   } finally {
     await rm(root, { force: true, recursive: true });
   }

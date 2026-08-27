@@ -23,6 +23,16 @@ const PROFILE: TranslationProviderProfile = {
   apiKeyEnv: "DEEPSEEK_API_KEY",
   id: "deepseek",
   model: "deepseek-chat",
+  modelEnv: "DEEPSEEK_MODEL",
+  providerEnv: "TRANSLATION_PROVIDER",
+};
+
+const MINIMAX_PROFILE: TranslationProviderProfile = {
+  apiKeyEnv: "MINIMAX_API_KEY",
+  id: "minimax-cn",
+  model: "MiniMax-M3",
+  modelEnv: "MINIMAX_MODEL",
+  providerEnv: "TRANSLATION_PROVIDER",
 };
 
 test("configured DeepSeek provider requires its key without exposing credentials", () => {
@@ -34,6 +44,75 @@ test("configured DeepSeek provider requires its key without exposing credentials
   assert.doesNotThrow(() =>
     createConfiguredProvider(PROFILE, { DEEPSEEK_API_KEY: secret }),
   );
+  assert.throws(
+    () =>
+      createConfiguredProvider(PROFILE, {
+        DEEPSEEK_API_KEY: "deepseek-secret",
+        MINIMAX_API_KEY: "minimax-secret",
+      }),
+    /检测到多个翻译 API Key.*TRANSLATION_PROVIDER/u,
+  );
+  assert.doesNotThrow(() =>
+    createConfiguredProvider(PROFILE, {
+      DEEPSEEK_API_KEY: "deepseek-secret",
+      MINIMAX_API_KEY: "minimax-secret",
+      TRANSLATION_PROVIDER: "deepseek",
+    }),
+  );
+});
+
+test("configured MiniMax CN provider uses the selected model and separates reasoning", async () => {
+  const originalFetch = globalThis.fetch;
+  let requestedUrl = "";
+  let authorization = "";
+  let requestBody: Record<string, unknown> = {};
+  globalThis.fetch = (async (input, init) => {
+    requestedUrl = String(input);
+    authorization = new Headers(init?.headers).get("authorization") ?? "";
+    requestBody = JSON.parse(String(init?.body)) as Record<string, unknown>;
+    return Response.json({
+      choices: [
+        {
+          message: {
+            content:
+              '{"translations":[{"id":"greeting","text":"你好"}]}',
+          },
+        },
+      ],
+    });
+  }) as typeof fetch;
+
+  try {
+    const provider = createConfiguredProvider(MINIMAX_PROFILE, {
+      MINIMAX_API_KEY: "minimax-secret",
+    });
+    const result = await provider.translateBatch({
+      items: [
+        {
+          context: {
+            block: "body",
+            end: 5,
+            fragmented: false,
+            kind: "text",
+            policyVersion: "markdown-source-ranges-v4",
+            start: 0,
+          },
+          id: "greeting",
+          text: "Hello",
+        },
+      ],
+      targetLanguage: "zh-CN",
+    });
+
+    assert.equal(requestedUrl, "https://api.minimaxi.com/v1/chat/completions");
+    assert.equal(authorization, "Bearer minimax-secret");
+    assert.equal(requestBody.model, "MiniMax-M3");
+    assert.equal(requestBody.reasoning_split, true);
+    assert.deepEqual(requestBody.thinking, { type: "disabled" });
+    assert.deepEqual(result, [{ id: "greeting", text: "你好" }]);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 test("fragmented article provider completes omitted Chinese article fragments", async () => {

@@ -18,6 +18,7 @@ import type {
   TranslationStatusReport,
   TranslationWorkspaceSnapshot,
 } from "./types.ts";
+import { resolveTranslationProviderProfile } from "./provider-profile.ts";
 
 const SHA256_PATTERN = /^[a-f0-9]{64}$/u;
 export const MARKDOWN_ADAPTER_POLICY_VERSION = "markdown-source-ranges-v4";
@@ -164,7 +165,10 @@ export function mirroredTranslationPath(
   return posix.join(normalizedTargetRoot, relativePath);
 }
 
-function parseConfig(raw: unknown): TranslationConfig {
+function parseConfig(
+  raw: unknown,
+  environment: NodeJS.ProcessEnv,
+): TranslationConfig {
   const object = asObject(raw, "翻译配置");
   assertKnownKeys(
     object,
@@ -199,7 +203,7 @@ function parseConfig(raw: unknown): TranslationConfig {
       requiredString(object, "promptPath", "翻译配置"),
       "翻译配置.promptPath",
     ),
-    provider: parseProviderProfile(object.provider),
+    provider: parseProviderProfile(object.provider, environment),
     reviewNotesPath:
       object.reviewNotesPath === undefined
         ? undefined
@@ -247,20 +251,81 @@ function parseConfig(raw: unknown): TranslationConfig {
   return config;
 }
 
-function parseProviderProfile(raw: unknown): TranslationProviderProfile {
+function parseProviderProfile(
+  raw: unknown,
+  environment: NodeJS.ProcessEnv,
+): TranslationProviderProfile {
   const object = asObject(raw, "翻译配置.provider");
-  assertKnownKeys(object, ["apiKeyEnv", "id", "model"], "翻译配置.provider");
-  if (object.id !== "deepseek") {
-    throw new Error("翻译配置.provider.id 目前必须是 deepseek。");
+  assertKnownKeys(
+    object,
+    ["apiKeyEnv", "id", "model", "modelEnv", "providerEnv"],
+    "翻译配置.provider",
+  );
+  const id = requiredString(object, "id", "翻译配置.provider");
+  const model = requiredString(object, "model", "翻译配置.provider");
+  if (
+    object.providerEnv !== undefined &&
+    object.providerEnv !== "TRANSLATION_PROVIDER"
+  ) {
+    throw new Error(
+      "翻译配置.provider.providerEnv 目前必须是 TRANSLATION_PROVIDER。",
+    );
   }
-  if (object.apiKeyEnv !== "DEEPSEEK_API_KEY") {
-    throw new Error("翻译配置.provider.apiKeyEnv 必须是 DEEPSEEK_API_KEY。");
+  const providerEnv =
+    object.providerEnv === "TRANSLATION_PROVIDER"
+      ? object.providerEnv
+      : undefined;
+  if (id === "deepseek") {
+    if (object.apiKeyEnv !== "DEEPSEEK_API_KEY") {
+      throw new Error(
+        "翻译配置.provider.apiKeyEnv 必须与 deepseek 匹配为 DEEPSEEK_API_KEY。",
+      );
+    }
+    if (object.modelEnv !== undefined && object.modelEnv !== "DEEPSEEK_MODEL") {
+      throw new Error(
+        "翻译配置.provider.modelEnv 必须与 deepseek 匹配为 DEEPSEEK_MODEL。",
+      );
+    }
+    return resolveTranslationProviderProfile(
+      {
+        apiKeyEnv: "DEEPSEEK_API_KEY",
+        id,
+        model,
+        ...(object.modelEnv === "DEEPSEEK_MODEL"
+          ? { modelEnv: object.modelEnv }
+          : {}),
+        ...(providerEnv ? { providerEnv } : {}),
+      },
+      environment,
+    );
   }
-  return {
-    apiKeyEnv: "DEEPSEEK_API_KEY",
-    id: "deepseek",
-    model: requiredString(object, "model", "翻译配置.provider"),
-  };
+  if (id === "minimax" || id === "minimax-cn") {
+    if (object.apiKeyEnv !== "MINIMAX_API_KEY") {
+      throw new Error(
+        `翻译配置.provider.apiKeyEnv 必须与 ${id} 匹配为 MINIMAX_API_KEY。`,
+      );
+    }
+    if (object.modelEnv !== undefined && object.modelEnv !== "MINIMAX_MODEL") {
+      throw new Error(
+        `翻译配置.provider.modelEnv 必须与 ${id} 匹配为 MINIMAX_MODEL。`,
+      );
+    }
+    return resolveTranslationProviderProfile(
+      {
+        apiKeyEnv: "MINIMAX_API_KEY",
+        id,
+        model,
+        ...(object.modelEnv === "MINIMAX_MODEL"
+          ? { modelEnv: object.modelEnv }
+          : {}),
+        ...(providerEnv ? { providerEnv } : {}),
+      },
+      environment,
+    );
+  }
+  throw new Error(
+    "翻译配置.provider.id 必须是 deepseek、minimax 或 minimax-cn。",
+  );
 }
 
 function validateGlossary(raw: unknown): TranslationGlossary {
@@ -667,10 +732,12 @@ export function classifyTranslationPage(input: {
 export async function loadTranslationWorkspace(
   repositoryRoot: string,
   configPath = "scripts/translation.config.json",
+  environment: NodeJS.ProcessEnv = process.env,
 ): Promise<TranslationWorkspaceSnapshot> {
   const root = await realpath(resolve(repositoryRoot));
   const config = parseConfig(
     await readJson(root, repositoryPath(root, configPath), "翻译配置"),
+    environment,
   );
   const sourcePages = parseSourceManifest(
     await readJson(

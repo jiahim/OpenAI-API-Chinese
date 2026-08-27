@@ -66,7 +66,19 @@ pnpm translate:simulate -- --match guides/agents/quickstart.md --limit 1
 
 GitHub Actions 每天北京时间 00:00 读取官方 `llms.txt` 索引、运行测试并同步英文 Markdown。只有 `docs/en/` 相对 `main` 实际发生变化时，机器人分支 `automation/sync-openai-docs` 才会创建或更新 PR；机器人不会直接写入 `main`。自动 PR 仍须在维护者批准工作流运行后通过 `Quality gate`，并由维护者审核合并。
 
-中文翻译 Action 在英文变更合入 `main` 后立即运行，并每天北京时间 01:00 补充执行。它只检出受信任的 `main`，从 `translation-production` 环境读取 `DEEPSEEK_API_KEY`，每轮最多翻译十篇页面，每篇不超过 20,000 个源字符，并通过 `automation/translate-openai-docs` 创建一个 PR。已有翻译 PR 等待审核时不会继续调用模型。自动选择先按 stale/missing 状态维护既有译文，再在同一状态内按 `scripts/translation/priority.zh-CN.json` 的核心文档顺序处理，未列入清单的页面保持稳定路径排序。术语表中的 `preserve` 项会在请求前替换为可恢复占位符；单批请求耗尽有限重试后，页面还会基于 checkpoint 额外恢复一次，认证、配置和完整性错误不会盲目重试。
+中文翻译 Action 在英文变更合入 `main` 后立即运行，并每天北京时间 01:00 补充执行。它只检出受信任的 `main`，并从 **Settings → Environments → translation-production** 读取运行配置。
+
+`TRANSLATION_PROVIDER` 支持以下键名：
+
+| 键名 | 服务 | API 地址 | Environment secret | 模型变量 | 默认模型 |
+| --- | --- | --- | --- | --- | --- |
+| `deepseek` | DeepSeek | `https://api.deepseek.com/v1` | `DEEPSEEK_API_KEY` | `DEEPSEEK_MODEL` | `deepseek-chat` |
+| `minimax` | MiniMax 国际站 | `https://api.minimax.io/v1` | `MINIMAX_API_KEY` | `MINIMAX_MODEL` | `MiniMax-M3` |
+| `minimax-cn` | MiniMax 国内站（含国内 Token Plan） | `https://api.minimaxi.com/v1` | `MINIMAX_API_KEY` | `MINIMAX_MODEL` | `MiniMax-M3` |
+
+在 **Environment secrets** 中配置 `MINIMAX_API_KEY` 或 `DEEPSEEK_API_KEY`。只有一个 Key 时会自动选择对应供应商；仅有 MiniMax Key 时默认选择国内站 `minimax-cn`。同时存在两个 Key 时必须在 **Environment variables** 中设置 `TRANSLATION_PROVIDER`，值只能是上表中的键名。模型可通过同处的 `MINIMAX_MODEL` 或 `DEEPSEEK_MODEL` 切换，无需修改仓库或创建 PR。MiniMax 国内站 Plan 应使用 `minimax-cn`；国内站与国际站的 Key 和额度按各自接口生效，不应混用。
+
+运行时解析出的实际 provider/model 会进入翻译策略指纹。每轮最多翻译十篇页面，每篇不超过 20,000 个源字符，并通过 `automation/translate-openai-docs` 创建一个 PR。已有翻译 PR 等待审核时不会继续调用模型。自动选择先按 stale/missing 状态维护既有译文，再在同一状态内按 `scripts/translation/priority.zh-CN.json` 的核心文档顺序处理，未列入清单的页面保持稳定路径排序。术语表中的 `preserve` 项会在请求前替换为可恢复占位符；单批请求耗尽有限重试后，页面还会基于 checkpoint 额外恢复一次，认证、配置和完整性错误不会盲目重试。
 
 仓库必须在 **Settings → Actions → General → Workflow permissions** 中启用 **Allow GitHub Actions to create and approve pull requests**。`main` 的 Ruleset 可以因此保持空 bypass，并要求所有更新通过 PR 和 `Quality gate`。PR 标题必须以 `[AI] ` 或 `[Human] ` 标明来源，其中 `codex/` 与 `automation/` 分支强制使用 `[AI] `。
 
