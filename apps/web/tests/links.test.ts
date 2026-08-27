@@ -7,6 +7,7 @@ import {
   generatedDocuments,
   sourceCheckSchedule,
   sourceGeneratedAt,
+  translationStatus,
   translationGeneratedAt,
 } from "../generated/documents.js";
 import {
@@ -115,6 +116,24 @@ describe("document link rewriting", () => {
     const expectedHour = (Number(cron[2]) + 8) % 24;
     const expectedSchedule = `每天 ${String(expectedHour).padStart(2, "0")}:${cron[1].padStart(2, "0")} · 北京时间`;
     assert.equal(sourceCheckSchedule, expectedSchedule);
+  });
+
+  it("derives mutually exclusive homepage translation states", () => {
+    assert.equal(
+      translationStatus.current + translationStatus.stale,
+      bilingualPageCount,
+    );
+    assert.equal(
+      translationStatus.current +
+        translationStatus.stale +
+        translationStatus.pending,
+      sourcePageCount,
+    );
+    assert.equal(
+      translationStatus.stale,
+      translationStatus.staleSource + translationStatus.stalePolicy,
+    );
+    assert.equal(translationStatus.totalActive, sourcePageCount);
   });
 
   it("leaves Vercel output detection to the Next.js preset", async () => {

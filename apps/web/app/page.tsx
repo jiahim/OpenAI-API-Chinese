@@ -6,6 +6,7 @@ import { UpdateBatchList } from "@/components/update-batch-list";
 import {
   sourceCheckSchedule,
   sourceGeneratedAt,
+  translationStatus,
   translationGeneratedAt,
 } from "@/generated/documents";
 import {
@@ -71,25 +72,46 @@ export default function Home() {
         <div className="hero-actions">
           <Link href={localizedRoute("zh", "/api/docs")}>查看中文翻译</Link>
           <Link className="secondary" href={localizedRoute("en", "/api/docs")}>查看英文原文</Link>
-          <span>{sourcePageCount} 篇英文原文 · {bilingualPageCount} 篇中文译文</span>
         </div>
-        <div className="update-panel">
-          <div className="update-status" aria-label="文档更新时间">
-            <div>
-              <span>英文文档同步</span>
-              <time dateTime={sourceGeneratedAt}>{formatBeijingTime(sourceGeneratedAt)}</time>
+        <section className="translation-overview" aria-labelledby="translation-status-title">
+          <header>
+            <h2 id="translation-status-title">中文翻译状态</h2>
+            <p><strong>{bilingualPageCount}</strong> / {sourcePageCount} 篇已有中文译文</p>
+          </header>
+          <div className="translation-status-grid">
+            <div className="translation-state current">
+              <div className="translation-state-heading">
+                <span><i aria-hidden="true" />已翻译且最新</span>
+                <strong>{translationStatus.current}</strong>
+              </div>
+              <small>内容和翻译规则均为最新</small>
             </div>
-            <div>
-              <span>中文翻译更新</span>
-              <time dateTime={translationGeneratedAt}>{formatBeijingTime(translationGeneratedAt)}</time>
+            <div className="translation-state stale">
+              <div className="translation-state-heading">
+                <span><i aria-hidden="true" />待更新</span>
+                <strong>{translationStatus.stale}</strong>
+              </div>
+              <small>
+                原文待同步 {translationStatus.staleSource} · 规则待重译 {translationStatus.stalePolicy}
+              </small>
             </div>
-            <div>
-              <span>预计下次检查</span>
-              <strong>{sourceCheckSchedule}</strong>
+            <div className="translation-state pending">
+              <div className="translation-state-heading">
+                <span><i aria-hidden="true" />尚未翻译</span>
+                <strong>{translationStatus.pending}</strong>
+              </div>
+              <small>暂无可用的中文译文</small>
             </div>
           </div>
-          <p>依据仓库同步记录、翻译清单与自动检查计划</p>
-        </div>
+          <footer aria-label="文档更新时间">
+            <span>英文同步 <time dateTime={sourceGeneratedAt}>{formatBeijingTime(sourceGeneratedAt)}</time></span>
+            <span>翻译更新 <time dateTime={translationGeneratedAt}>{formatBeijingTime(translationGeneratedAt)}</time></span>
+            <span>自动检查 <strong>{sourceCheckSchedule}</strong></span>
+            {translationStatus.removedSource > 0 && (
+              <span>已下线译文 {translationStatus.removedSource}</span>
+            )}
+          </footer>
+        </section>
       </section>
 
       <section className="official-source" aria-label="官方文档来源说明">

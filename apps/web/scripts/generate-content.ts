@@ -2,6 +2,8 @@ import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { loadTranslationWorkspace } from "../../../scripts/translation/planner.ts";
+
 interface SourcePageRecord {
   bytes: number;
   description: string;
@@ -75,6 +77,16 @@ interface SyncReleaseRecord {
   id: string;
   modified: SyncReleaseEntry[];
   removed: SyncReleaseEntry[];
+}
+
+interface TranslationStatusSummary {
+  current: number;
+  pending: number;
+  removedSource: number;
+  stale: number;
+  stalePolicy: number;
+  staleSource: number;
+  totalActive: number;
 }
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
@@ -159,12 +171,17 @@ function navigationGroups(
 
 async function main(): Promise<void> {
   const updatesRoot = resolve(repositoryRoot, "docs/updates");
-  const [sourceManifest, translationManifest, docsIndex, referenceIndex, syncWorkflow, updateFiles] = await Promise.all([
+  const [sourceManifest, translationManifest, translationWorkspace, docsIndex, referenceIndex, syncWorkflow, updateFiles] = await Promise.all([
     readFile(resolve(repositoryRoot, "docs/en/.source-manifest.json"), "utf8").then(
       (value) => JSON.parse(value) as SourceManifest,
     ),
     readFile(resolve(repositoryRoot, "docs/zh/.translation-manifest.json"), "utf8").then(
       (value) => JSON.parse(value) as TranslationManifest,
+    ),
+    loadTranslationWorkspace(
+      repositoryRoot,
+      "scripts/translation.config.json",
+      { NODE_ENV: process.env.NODE_ENV ?? "production" },
     ),
     readFile(resolve(repositoryRoot, "docs/en/api/docs/llms.txt"), "utf8"),
     readFile(resolve(repositoryRoot, "docs/en/api/reference/llms.txt"), "utf8"),
@@ -174,6 +191,48 @@ async function main(): Promise<void> {
       throw error;
     }),
   ]);
+
+  const translationStateCounts = new Map<string, number>();
+  for (const entry of translationWorkspace.entries) {
+    translationStateCounts.set(
+      entry.state,
+      (translationStateCounts.get(entry.state) ?? 0) + 1,
+    );
+  }
+  const unsafeTranslationStates = [
+    "missing-target",
+    "modified-target",
+    "untracked-target",
+  ] as const;
+  const unsafeTranslationPages = unsafeTranslationStates.reduce(
+    (total, state) => total + (translationStateCounts.get(state) ?? 0),
+    0,
+  );
+  if (unsafeTranslationPages > 0) {
+    throw new Error(
+      `中文翻译状态存在 ${unsafeTranslationPages} 个完整性问题，拒绝生成首页统计。`,
+    );
+  }
+  const staleSource = translationStateCounts.get("stale-source") ?? 0;
+  const stalePolicy = translationStateCounts.get("stale-policy") ?? 0;
+  const translationStatus: TranslationStatusSummary = {
+    current: translationStateCounts.get("current") ?? 0,
+    pending: translationStateCounts.get("pending") ?? 0,
+    removedSource: translationStateCounts.get("removed-source") ?? 0,
+    stale: staleSource + stalePolicy,
+    stalePolicy,
+    staleSource,
+    totalActive: translationWorkspace.entries.length -
+      (translationStateCounts.get("removed-source") ?? 0),
+  };
+  if (
+    translationStatus.current +
+      translationStatus.pending +
+      translationStatus.stale !==
+    translationStatus.totalActive
+  ) {
+    throw new Error("首页翻译状态未覆盖全部有效英文页面。");
+  }
 
   const syncReleases = await Promise.all(
     updateFiles
@@ -281,6 +340,7 @@ async function main(): Promise<void> {
     `export const sourceGeneratedAt = ${JSON.stringify(sourceManifest.generatedAt)};\n` +
     `export const translationGeneratedAt = ${JSON.stringify(translationManifest.generatedAt)};\n` +
     `export const sourceCheckSchedule = ${JSON.stringify(beijingScheduleFromWorkflow(syncWorkflow))};\n` +
+    `export const translationStatus = ${JSON.stringify(translationStatus, null, 2)} as const;\n` +
     `export const syncReleases = ${JSON.stringify(syncReleases, null, 2)} as const;\n` +
     `export const documentCatalog = ${JSON.stringify(catalog, null, 2)} as const;\n` +
     `export const navigationSections = ${JSON.stringify(navigationSections, null, 2)} as const;\n` +

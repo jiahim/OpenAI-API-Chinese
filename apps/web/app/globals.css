@@ -202,15 +202,30 @@ h1 { margin: 0; font-size: clamp(2.429rem, 5vw, 3.714rem); line-height: 1.08; le
 .hero-actions { display: flex; margin-top: 34px; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; }
 .hero-actions a { border: 1px solid var(--ink); border-radius: 10px; padding: 12px 18px; background: var(--ink); color: white; font-size: 1rem; font-weight: 800; }
 .hero-actions a.secondary { background: white; color: var(--ink); }
-.hero-actions span { margin-left: 8px; color: #7e8983; font-size: .857rem; }
-.update-panel { width: min(680px, 100%); margin: 28px auto 0; border: 1px solid #d9e4df; border-radius: 14px; padding: 16px 18px 11px; background: rgba(255,255,255,.72); box-shadow: 0 12px 32px rgba(24,55,42,.05); }
-.update-panel > p { margin: 12px 0 0; border-top: 1px solid rgba(130,151,141,.18); padding-top: 9px; color: #929d97; font-size: .786rem; }
-.update-status { display: grid; grid-template-columns: repeat(3, 1fr); text-align: left; }
-.update-status > div { display: flex; min-width: 0; padding: 0 16px; flex-direction: column; gap: 5px; border-left: 1px solid rgba(130,151,141,.24); }
-.update-status > div:first-child { border-left: 0; }
-.update-status span { color: var(--accent); font-size: .857rem; font-weight: 700; }
-.update-status time,
-.update-status strong { color: #34433c; font-size: .929rem; font-weight: 800; }
+.translation-overview { width: min(840px, 100%); margin: 28px auto 0; border: 1px solid #d9e4df; border-radius: 16px; padding: 20px; background: rgba(255,255,255,.84); box-shadow: 0 14px 36px rgba(24,55,42,.06); text-align: left; }
+.translation-overview > header { display: flex; margin-bottom: 18px; align-items: baseline; justify-content: space-between; gap: 20px; }
+.translation-overview > header h2 { margin: 0; color: #34433c; font-size: 1rem; letter-spacing: -.01em; }
+.translation-overview > header p { margin: 0; color: #89948e; font-size: .786rem; }
+.translation-overview > header p strong { color: #34433c; font-size: 1rem; }
+.translation-status-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.translation-state { min-width: 0; border-left: 1px solid rgba(130,151,141,.22); padding: 2px 18px; }
+.translation-state:first-child { border-left: 0; padding-left: 2px; }
+.translation-state:last-child { padding-right: 2px; }
+.translation-state-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.translation-state-heading > span { display: inline-flex; min-width: 0; align-items: center; gap: 8px; color: #34433c; font-size: .929rem; font-weight: 800; }
+.translation-state-heading i { width: 9px; height: 9px; flex: none; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 12%, transparent); }
+.translation-state-heading strong { font-size: 1.714rem; line-height: 1; letter-spacing: -.04em; }
+.translation-state small { display: block; margin-top: 9px; color: #87928c; font-size: .75rem; line-height: 1.55; }
+.translation-state.current .translation-state-heading > span,
+.translation-state.current .translation-state-heading strong { color: #16805b; }
+.translation-state.stale .translation-state-heading > span,
+.translation-state.stale .translation-state-heading strong { color: #946719; }
+.translation-state.pending .translation-state-heading > span,
+.translation-state.pending .translation-state-heading strong { color: #b34d47; }
+.translation-overview > footer { display: flex; margin-top: 16px; align-items: center; flex-wrap: wrap; gap: 8px 20px; border-top: 1px solid rgba(130,151,141,.16); padding-top: 12px; color: #929c97; font-size: .714rem; }
+.translation-overview > footer span { display: inline-flex; align-items: baseline; gap: 5px; }
+.translation-overview > footer time,
+.translation-overview > footer strong { color: #68756f; font-weight: 700; }
 .official-source { display: flex; width: min(1100px, calc(100% - 64px)); margin: 0 auto 92px; align-items: center; justify-content: space-between; gap: 24px; border: 1px solid #b8d8ca; border-radius: 14px; padding: 15px 18px; background: #f3faf7; box-shadow: 0 12px 32px rgba(18,82,58,.05); }
 .official-source > p { margin: 0; color: #53645c; font-size: 1rem; line-height: 1.65; }
 .official-source > a { flex: none; border-radius: 10px; padding: 12px 16px; background: var(--accent-dark); color: white; font-size: .929rem; font-weight: 800; }
@@ -305,12 +320,12 @@ summary:focus-visible { outline: 3px solid rgba(8,122,87,.22); outline-offset: 3
   .hero { padding-top: 72px; }
   .hero-actions { flex-direction: row; }
   .hero-actions a { padding-right: 14px; padding-left: 14px; }
-  .hero-actions span { width: 100%; margin: 5px 0 0; }
-  .update-panel { padding-right: 10px; padding-left: 10px; }
-  .update-status { grid-template-columns: repeat(3, minmax(0, 1fr)); text-align: center; }
-  .update-status > div { padding: 0 8px; }
-  .update-status time,
-  .update-status strong { font-size: .857rem; line-height: 1.45; }
+  .translation-overview { padding-right: 12px; padding-left: 12px; }
+  .translation-state { padding-right: 11px; padding-left: 11px; }
+  .translation-state-heading { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .translation-state-heading > span { font-size: .786rem; }
+  .translation-state small { font-size: .714rem; }
+  .translation-overview > footer { justify-content: center; }
   .official-source { width: calc(100% - 40px); margin: 0 auto 72px; gap: 14px; padding: 14px 16px; }
   .official-source > p { font-size: .929rem; }
   .official-source > a { padding: 10px 12px; font-size: .857rem; }
@@ -329,8 +344,10 @@ summary:focus-visible { outline: 3px solid rgba(8,122,87,.22); outline-offset: 3
 
 @media (max-width: 360px) {
   .hero-actions a { width: 100%; }
-  .update-status { grid-template-columns: 1fr; text-align: center; }
-  .update-status > div { padding: 9px 0; border-top: 1px solid rgba(130,151,141,.2); border-left: 0; }
-  .update-status > div:first-child { border-top: 0; }
+  .translation-status-grid { grid-template-columns: 1fr; }
+  .translation-state { border-top: 1px solid rgba(130,151,141,.2); border-left: 0; padding: 14px 2px; }
+  .translation-state:first-child { border-top: 0; padding-top: 2px; }
+  .translation-state-heading { align-items: center; flex-direction: row; }
+  .translation-overview > header { align-items: flex-start; flex-direction: column; gap: 5px; }
   .official-source { align-items: flex-start; flex-direction: column; }
 }
