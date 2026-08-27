@@ -37,7 +37,14 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="zh-CN">
-      <body>{children}</body>
+      <body>
+        {children}
+        <script
+          data-website-id="7136f50d-7292-484d-a837-e42bddae3a5f"
+          defer
+          src="https://analytics.xiexin.dev/script.js"
+        />
+      </body>
     </html>
   );
 }

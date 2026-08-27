@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -8,6 +8,7 @@ interface SourcePageRecord {
   localPath: string;
   section: "guides" | "reference";
   sourceUrl: string;
+  sourceUpdatedAt: string;
   status: "active" | "removed";
   title: string;
 }
@@ -22,6 +23,7 @@ interface TranslationPageRecord {
   sourcePath: string;
   sourceUrl: string;
   targetPath: string;
+  translatedAt: string;
 }
 
 interface TranslationManifest {
@@ -55,7 +57,24 @@ interface ContentRecord {
   route: string;
   section: "guides" | "reference";
   sourceUrl: string;
+  sourceUpdatedAt: string;
   title: string;
+  translatedAt?: string;
+}
+
+interface SyncReleaseEntry {
+  path: string;
+  route: string;
+  sourceUrl: string;
+  title: string;
+}
+
+interface SyncReleaseRecord {
+  added: SyncReleaseEntry[];
+  generatedAt: string;
+  id: string;
+  modified: SyncReleaseEntry[];
+  removed: SyncReleaseEntry[];
 }
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
@@ -79,28 +98,6 @@ function routeFromSourceUrl(sourceUrl: string): string {
 
 function firstHeading(markdown: string, fallback: string): string {
   return markdown.match(/^#\s+(.+)$/mu)?.[1]?.trim() || fallback;
-}
-
-function pageDescription(markdown: string, fallback: string): string {
-  const lines = markdown.split(/\r?\n/u);
-  let inFence = false;
-  for (const rawLine of lines) {
-    const line = rawLine.trim();
-    if (line.startsWith("```")) {
-      inFence = !inFence;
-      continue;
-    }
-    if (
-      inFence ||
-      !line ||
-      /^#{1,6}\s/u.test(line) ||
-      /^(?:>|[-*+] |\d+\. |\||<)/u.test(line)
-    ) {
-      continue;
-    }
-    return line.replace(/\[([^\]]+)\]\([^)]+\)/gu, "$1").slice(0, 180);
-  }
-  return fallback;
 }
 
 function beijingScheduleFromWorkflow(workflow: string): string {
@@ -161,7 +158,8 @@ function navigationGroups(
 }
 
 async function main(): Promise<void> {
-  const [sourceManifest, translationManifest, docsIndex, referenceIndex, syncWorkflow] = await Promise.all([
+  const updatesRoot = resolve(repositoryRoot, "docs/updates");
+  const [sourceManifest, translationManifest, docsIndex, referenceIndex, syncWorkflow, updateFiles] = await Promise.all([
     readFile(resolve(repositoryRoot, "docs/en/.source-manifest.json"), "utf8").then(
       (value) => JSON.parse(value) as SourceManifest,
     ),
@@ -171,7 +169,20 @@ async function main(): Promise<void> {
     readFile(resolve(repositoryRoot, "docs/en/api/docs/llms.txt"), "utf8"),
     readFile(resolve(repositoryRoot, "docs/en/api/reference/llms.txt"), "utf8"),
     readFile(resolve(repositoryRoot, ".github/workflows/sync-docs.yml"), "utf8"),
+    readdir(updatesRoot).catch((error: unknown) => {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+      throw error;
+    }),
   ]);
+
+  const syncReleases = await Promise.all(
+    updateFiles
+      .filter((fileName) => fileName.endsWith(".json"))
+      .map((fileName) => readFile(resolve(updatesRoot, fileName), "utf8").then(
+        (value) => JSON.parse(value) as SyncReleaseRecord,
+      )),
+  );
+  syncReleases.sort((left, right) => right.generatedAt.localeCompare(left.generatedAt));
 
   const catalog = Object.values(sourceManifest.pages)
     .filter((page) => page.status === "active")
@@ -181,6 +192,7 @@ async function main(): Promise<void> {
       description: page.description,
       section: page.section,
       sourceUrl: page.sourceUrl,
+      sourceUpdatedAt: page.sourceUpdatedAt,
       contentPath: page.localPath,
       bytes: page.bytes,
     }))
@@ -236,6 +248,7 @@ async function main(): Promise<void> {
     bytes: page.bytes,
     section: page.section,
     sourceUrl: page.sourceUrl,
+    sourceUpdatedAt: page.sourceUpdatedAt,
     reviewStatus: "source",
   }));
   for (const page of Object.values(translationManifest.pages)) {
@@ -247,11 +260,15 @@ async function main(): Promise<void> {
       locale: "zh",
       route,
       title: firstHeading(chinese, catalogPage.title),
-      description: pageDescription(chinese, catalogPage.description),
+      // Chinese page metadata must come from an explicitly translated field.
+      // Never infer it from article body text, which would duplicate and reorder content.
+      description: "",
       contentPath: page.targetPath,
       bytes: Buffer.byteLength(chinese, "utf8"),
       section: catalogPage.section,
       sourceUrl: page.sourceUrl,
+      sourceUpdatedAt: catalogPage.sourceUpdatedAt,
+      translatedAt: page.translatedAt,
       reviewStatus: page.reviewStatus,
     });
   }
@@ -264,6 +281,7 @@ async function main(): Promise<void> {
     `export const sourceGeneratedAt = ${JSON.stringify(sourceManifest.generatedAt)};\n` +
     `export const translationGeneratedAt = ${JSON.stringify(translationManifest.generatedAt)};\n` +
     `export const sourceCheckSchedule = ${JSON.stringify(beijingScheduleFromWorkflow(syncWorkflow))};\n` +
+    `export const syncReleases = ${JSON.stringify(syncReleases, null, 2)} as const;\n` +
     `export const documentCatalog = ${JSON.stringify(catalog, null, 2)} as const;\n` +
     `export const navigationSections = ${JSON.stringify(navigationSections, null, 2)} as const;\n` +
     `export const generatedDocuments = ${JSON.stringify(documents, null, 2)} as const;\n`;

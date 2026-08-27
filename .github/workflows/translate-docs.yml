@@ -161,6 +161,7 @@ jobs:
               "",
               "- 检查中文准确性、术语和可读性。",
               "- 不要直接修改代码、URL、模型 ID 或 Markdown 结构。",
+              "- 固定译法写入术语表；单页上下文或官方原文勘误写入 `scripts/translation/review-notes.zh-CN.json`。",
               "- 人工润色后运行 `pnpm translate:review -- --match <精确路径> --limit 1`。",
               "- 合入仍须通过 `Quality gate` 和 `main` Ruleset。",
             ].join("\n");

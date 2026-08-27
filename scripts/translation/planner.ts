@@ -13,6 +13,7 @@ import type {
   TranslationPageRecord,
   TranslationPageState,
   TranslationProviderProfile,
+  TranslationReviewNotes,
   TranslationReviewStatus,
   TranslationStatusReport,
   TranslationWorkspaceSnapshot,
@@ -172,6 +173,7 @@ function parseConfig(raw: unknown): TranslationConfig {
       "priorityPath",
       "promptPath",
       "provider",
+      "reviewNotesPath",
       "schemaVersion",
       "sourceManifestPath",
       "sourceRoot",
@@ -198,6 +200,13 @@ function parseConfig(raw: unknown): TranslationConfig {
       "翻译配置.promptPath",
     ),
     provider: parseProviderProfile(object.provider),
+    reviewNotesPath:
+      object.reviewNotesPath === undefined
+        ? undefined
+        : normalizedRepositoryPath(
+            requiredString(object, "reviewNotesPath", "翻译配置"),
+            "翻译配置.reviewNotesPath",
+          ),
     schemaVersion: 2,
     sourceManifestPath: normalizedRepositoryPath(
       requiredString(object, "sourceManifestPath", "翻译配置"),
@@ -298,6 +307,67 @@ function validateGlossary(raw: unknown): TranslationGlossary {
         .map(([source, target]) => [source, target as string]),
     ),
   };
+}
+
+function validateReviewNotes(raw: unknown): TranslationReviewNotes {
+  const reviewNotes = asObject(raw, "页面级审核备注");
+  assertKnownKeys(reviewNotes, ["pages", "schemaVersion"], "页面级审核备注");
+  if (reviewNotes.schemaVersion !== 1) {
+    throw new Error("页面级审核备注.schemaVersion 必须是 1。");
+  }
+  const pages = asObject(reviewNotes.pages, "页面级审核备注.pages");
+  const normalizedPages: Record<string, string[]> = {};
+  for (const [sourceUrl, rawNotes] of Object.entries(pages)) {
+    let parsedUrl: URL;
+    try {
+      parsedUrl = new URL(sourceUrl);
+    } catch {
+      throw new Error(`页面级审核备注的 sourceUrl 无效：${sourceUrl}`);
+    }
+    if (
+      parsedUrl.protocol !== "https:" ||
+      parsedUrl.hostname !== "developers.openai.com" ||
+      !parsedUrl.pathname.endsWith(".md") ||
+      parsedUrl.search ||
+      parsedUrl.hash
+    ) {
+      throw new Error(`页面级审核备注仅支持官方 Markdown URL：${sourceUrl}`);
+    }
+    if (
+      !Array.isArray(rawNotes) ||
+      rawNotes.length === 0 ||
+      rawNotes.some(
+        (note) =>
+          typeof note !== "string" ||
+          !note.trim() ||
+          note !== note.trim() ||
+          note.length > 1_000,
+      )
+    ) {
+      throw new Error(`页面级审核备注必须是非空且不超过 1000 字的字符串数组：${sourceUrl}`);
+    }
+    const notes = rawNotes as string[];
+    if (new Set(notes).size !== notes.length) {
+      throw new Error(`页面级审核备注不能重复：${sourceUrl}`);
+    }
+    normalizedPages[sourceUrl] = [...notes];
+  }
+  return {
+    pages: Object.fromEntries(
+      Object.entries(normalizedPages).sort(([left], [right]) =>
+        left.localeCompare(right, "en"),
+      ),
+    ),
+    schemaVersion: 1,
+  };
+}
+
+export function translationPagePolicySha256(
+  basePolicySha256: string,
+  notes: readonly string[],
+): string {
+  if (notes.length === 0) return basePolicySha256;
+  return sha256(JSON.stringify({ basePolicySha256, reviewNotes: notes }));
 }
 
 function parseSourceManifest(raw: unknown): SourcePageSnapshot[] {
@@ -632,6 +702,15 @@ export async function loadTranslationWorkspace(
     throw new Error("中文术语表不是有效 JSON。", { cause: error });
   }
   const glossary = validateGlossary(parsedGlossary);
+  const reviewNotes = config.reviewNotesPath
+    ? validateReviewNotes(
+        await readJson(
+          root,
+          repositoryPath(root, config.reviewNotesPath),
+          "页面级审核备注",
+        ),
+      )
+    : { pages: {}, schemaVersion: 1 } satisfies TranslationReviewNotes;
   const policySha256 = sha256(
     JSON.stringify({
       adapter: MARKDOWN_ADAPTER_POLICY_VERSION,
@@ -643,6 +722,11 @@ export async function loadTranslationWorkspace(
   );
 
   const sourceByUrl = new Map(sourcePages.map((page) => [page.sourceUrl, page]));
+  for (const sourceUrl of Object.keys(reviewNotes.pages)) {
+    if (!sourceByUrl.has(sourceUrl)) {
+      throw new Error(`页面级审核备注没有对应的英文页面：${sourceUrl}`);
+    }
+  }
   const sourcePathOwners = new Map<string, string>();
   for (const source of sourcePages) {
     const normalizedSourcePath = pathInsideRoot(
@@ -703,7 +787,10 @@ export async function loadTranslationWorkspace(
       record,
       source,
       state: classifyTranslationPage({
-        policySha256,
+        policySha256: translationPagePolicySha256(
+          policySha256,
+          reviewNotes.pages[source.sourceUrl] ?? [],
+        ),
         record,
         source,
         targetSha256,
@@ -727,9 +814,20 @@ export async function loadTranslationWorkspace(
     policySha256,
     prompt,
     repositoryRoot: root,
+    reviewNotes,
     targetLanguage: config.targetLanguage,
     translationManifest,
   };
+}
+
+export function translationPolicySha256ForPage(
+  workspace: TranslationWorkspaceSnapshot,
+  sourceUrl: string,
+): string {
+  return translationPagePolicySha256(
+    workspace.policySha256,
+    workspace.reviewNotes.pages[sourceUrl] ?? [],
+  );
 }
 
 export async function buildTranslationStatusReport(

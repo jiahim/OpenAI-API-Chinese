@@ -6,6 +6,7 @@ export interface TranslationConfig {
   glossaryPath: string;
   priorityPath: string;
   promptPath: string;
+  reviewNotesPath?: string | undefined;
   provider: TranslationProviderProfile;
   schemaVersion: 2;
   sourceManifestPath: string;
@@ -25,6 +26,11 @@ export interface TranslationGlossary {
   preserve: string[];
   schemaVersion: 1;
   terms: Record<string, string>;
+}
+
+export interface TranslationReviewNotes {
+  pages: Record<string, string[]>;
+  schemaVersion: 1;
 }
 
 export interface SourcePageSnapshot {
@@ -82,5 +88,6 @@ export interface TranslationWorkspaceSnapshot extends TranslationStatusReport {
   glossary: TranslationGlossary;
   prompt: string;
   repositoryRoot: string;
+  reviewNotes: TranslationReviewNotes;
   translationManifest: TranslationManifest;
 }

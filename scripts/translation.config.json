@@ -2,6 +2,7 @@
   "glossaryPath": "scripts/translation/glossary.zh-CN.json",
   "priorityPath": "scripts/translation/priority.zh-CN.json",
   "promptPath": "scripts/translation/prompt.zh-CN.md",
+  "reviewNotesPath": "scripts/translation/review-notes.zh-CN.json",
   "provider": {
     "apiKeyEnv": "DEEPSEEK_API_KEY",
     "id": "deepseek",

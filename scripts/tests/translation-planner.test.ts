@@ -132,6 +132,7 @@ async function createFixture(): Promise<string> {
       glossaryPath: "scripts/translation/glossary.zh-CN.json",
       priorityPath: "scripts/translation/priority.zh-CN.json",
       promptPath: "scripts/translation/prompt.zh-CN.md",
+      reviewNotesPath: "scripts/translation/review-notes.zh-CN.json",
       provider: {
         apiKeyEnv: "DEEPSEEK_API_KEY",
         id: "deepseek",
@@ -152,6 +153,10 @@ async function createFixture(): Promise<string> {
   await writeFile(
     join(root, "scripts/translation/prompt.zh-CN.md"),
     "translate accurately",
+  );
+  await writeFile(
+    join(root, "scripts/translation/review-notes.zh-CN.json"),
+    JSON.stringify({ pages: {}, schemaVersion: 1 }),
   );
   await writeFile(join(root, SOURCE_PATH), SOURCE_CONTENT);
   await writeSourceManifest(root, [sourcePage()]);
@@ -372,6 +377,7 @@ test("planner requires a versioned config and keeps the source manifest under so
     glossaryPath: "scripts/translation/glossary.zh-CN.json",
     priorityPath: "scripts/translation/priority.zh-CN.json",
     promptPath: "scripts/translation/prompt.zh-CN.md",
+    reviewNotesPath: "scripts/translation/review-notes.zh-CN.json",
     provider: {
       apiKeyEnv: "DEEPSEEK_API_KEY",
       id: "deepseek",

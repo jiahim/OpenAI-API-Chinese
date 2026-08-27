@@ -39,6 +39,7 @@ import {
 import {
   loadTranslationWorkspace,
   readTranslationWorkspaceFile,
+  translationPolicySha256ForPage,
 } from "./planner.ts";
 import type {
   TranslationGlossary,
@@ -427,12 +428,21 @@ export function createTranslationQualityPolicy(
   };
 }
 
-function instructionsForWorkspace(workspace: TranslationWorkspaceSnapshot): string {
-  return `${workspace.prompt.trim()}\n\n术语表：\n${JSON.stringify(
+function instructionsForWorkspace(
+  workspace: TranslationWorkspaceSnapshot,
+  sourceUrl: string,
+): string {
+  const base = `${workspace.prompt.trim()}\n\n术语表：\n${JSON.stringify(
     workspace.glossary,
     null,
     2,
   )}`;
+  const notes = workspace.reviewNotes.pages[sourceUrl] ?? [];
+  return notes.length === 0
+    ? base
+    : `${base}\n\n本页人工审核备注（仅适用于当前页面）：\n${notes
+        .map((note) => `- ${note}`)
+        .join("\n")}`;
 }
 
 function stableManifest(
@@ -470,7 +480,8 @@ export async function commitTranslationPage(
     entry.source.sha256 !== record.sourceSha256 ||
     entry.source.sourcePath !== record.sourcePath ||
     entry.targetPath !== record.targetPath ||
-    fresh.policySha256 !== record.policySha256
+    translationPolicySha256ForPage(fresh, record.sourceUrl) !==
+      record.policySha256
   ) {
     throw new Error(`提交前翻译工作区已变化，拒绝写入：${record.sourceUrl}`);
   }
@@ -511,12 +522,10 @@ export async function reviewTranslationPage(
   if (entry.state !== "current" && entry.state !== "modified-target") {
     throw new Error(`页面状态 ${entry.state} 不允许登记人工审核：${sourceUrl}`);
   }
-  if (
-    entry.record.sourceSha256 !== entry.source.sha256 ||
-    entry.record.policySha256 !== fresh.policySha256
-  ) {
-    throw new Error(`英文来源或翻译策略已变化，拒绝登记人工审核：${sourceUrl}`);
+  if (entry.record.sourceSha256 !== entry.source.sha256) {
+    throw new Error(`英文来源已变化，拒绝登记人工审核：${sourceUrl}`);
   }
+  const policySha256 = translationPolicySha256ForPage(fresh, sourceUrl);
   const target = await readTranslationWorkspaceFile(
     fresh,
     entry.targetPath,
@@ -547,6 +556,7 @@ export async function reviewTranslationPage(
   const targetSha256 = sha256(target);
   const record: TranslationPageRecord = {
     ...entry.record,
+    policySha256,
     reviewStatus: "reviewed",
     targetSha256,
   };
@@ -594,9 +604,16 @@ export async function runTranslationPage(
     id: entry.source.sourceUrl,
     sourceHash: entry.source.sha256,
   });
-  const path = checkpointPath(entry.source.sourceUrl, workspace.policySha256);
+  const pagePolicySha256 = translationPolicySha256ForPage(
+    workspace,
+    entry.source.sourceUrl,
+  );
+  const path = checkpointPath(entry.source.sourceUrl, pagePolicySha256);
   const useCheckpoint = options.useCheckpoint ?? true;
-  const instructions = instructionsForWorkspace(workspace);
+  const instructions = instructionsForWorkspace(
+    workspace,
+    entry.source.sourceUrl,
+  );
   let lastReportedRetry: TranslationRetryEvent | undefined;
   const result = await translatePlan(prepared.plan, {
     batchSize: options.batchSize ?? 20,
@@ -640,7 +657,7 @@ export async function runTranslationPage(
   );
   const translatedAt = (options.now ?? (() => new Date()))().toISOString();
   const record: TranslationPageRecord = {
-    policySha256: workspace.policySha256,
+    policySha256: pagePolicySha256,
     reviewStatus: "machine",
     sourcePath: entry.source.sourcePath,
     sourceSha256: entry.source.sha256,

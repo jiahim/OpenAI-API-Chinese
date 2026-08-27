@@ -27,6 +27,21 @@ function markdownHeadings(markdown: string): Array<{ depth: 2 | 3; text: string 
   return result;
 }
 
+export function removeOfficialIndexNotice(markdown: string): string {
+  return markdown
+    .split(/\r?\n/u)
+    .filter((line) => {
+      const normalized = line.trim();
+      return !(
+        normalized.startsWith(">") &&
+        normalized.includes("[llms.txt](/llms.txt)") &&
+        normalized.includes("`.md`")
+      );
+    })
+    .join("\n")
+    .replace(/\n{3,}/gu, "\n\n");
+}
+
 export async function loadDocumentForRoute(
   locale: Locale,
   route: string,
@@ -46,6 +61,6 @@ export async function loadDocumentForRoute(
   if (!contentPath.startsWith(contentRoot + sep)) {
     throw new Error(`文档路径越界：${metadata.contentPath}`);
   }
-  const markdown = await readFile(contentPath, "utf8");
+  const markdown = removeOfficialIndexNotice(await readFile(contentPath, "utf8"));
   return { ...metadata, markdown, headings: markdownHeadings(markdown) };
 }
