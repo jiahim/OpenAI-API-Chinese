@@ -1,22 +1,22 @@
 # 后台模式
 
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取对应文档页面的 Markdown 版本。
 
-像 [Codex](https://openai.com/index/introducing-codex/) 和 [Deep Research](https://openai.com/index/introducing-deep-research/) 展示出推理模型可能需要几分钟来解决复杂问题。背景模式使你能够在 GPT-5.2 和 GPT-5.2 Pro 等模型上可靠地执行长时间运行的任务，无需担心超时或其他连接问题。
+智能体，例如 [Codex](https://openai.com/index/introducing-codex/) 和 [Deep Research](https://openai.com/index/introducing-deep-research/) 表明推理模型可能需要数分钟才能解决复杂问题。后台模式使你能够在 GPT-5.2 和 GPT-5.2 Pro 等模型上可靠地执行长时间运行的任务，而不必担心超时或其他连接问题。
 
-背景模式会异步启动这些任务，开发者可以轮询响应对象以随时间检查状态。要在后台启动响应生成，请发起一个 API 请求，并将 `background` 设置为 `true`:
+后台模式会异步启动这些任务，开发者可以轮询响应对象来随时检查状态。要在后台启动响应生成，请发送一个将API请求的 `background` 设置为 `true`:
 
-来自零数据保留（ZDR）项目的后台请求会以
-  `store=false`方式运行。响应数据会临时存储在磁盘上约 10
-  分钟，以便进行异步执行和轮询。
+来自零数据保留（ZDR）项目的后台请求使用
+  `store=false`。运行。响应数据会临时存储到磁盘上约 10
+  分钟，以支持异步执行和轮询。
 
 对于使用 [Modified Abuse
-Monitoring](https://developers.openai.com/api/docs/guides/your-data#modified-abuse-monitoring)的项目，包括
-增强版 Modified Abuse Monitoring，前台请求在省略
-或将其设置为 `store` 时遵循标准保留策略，而 `true`。后台响应仅在明确提供
-时才在轮询期结束后保留。 `store=true` 时才在轮询期结束后保留。
-如果 `store` 被省略或设置为 `false` 对于后台请求，响应
-在大约 10 分钟后被删除。
+Monitoring](https://developers.openai.com/api/docs/guides/your-data#modified-abuse-monitoring)，的项目，包括
+增强型 Modified Abuse Monitoring，当前台请求省略该字段或将其设为
+时，将遵循标准保留 `store` 策略。后台响应仅在 `true`。被显式提供的情况下
+会在轮询期之后继续保留 `store=true` 。
+如果 `store` 策略。后台响应仅在 `false` 对于后台请求，响应
+会在大约 10 分钟后被删除。
 
 在后台生成响应
 
@@ -119,9 +119,9 @@ puts(response.status)
 
 ## 轮询后台响应
 
-要检查后台请求的状态，请使用 Responses 的 GET 端点。当请求处于 queued 或 in_progress 状态时，持续轮询。当它离开这些状态时，即已达到最终（终态）状态。
+若要检查后台请求的状态，请使用 Responses 的 GET 端点。当请求处于 queued 或 in_progress 状态时持续轮询。一旦离开这些状态，请求即已进入最终（终态）状态。
 
-检索后台执行的响应
+检索在后台执行的 response
 
 ```bash
 curl https://api.openai.com/v1/responses/resp_123 \
@@ -258,7 +258,7 @@ puts(response.output_text)
 
 ## 取消后台响应
 
-你还可以像这样取消正在进行的响应：
+你也可以像这样取消一个进行中的响应：
 
 取消正在进行的响应
 
@@ -332,15 +332,15 @@ puts(response.status)
 ```
 
 
-取消两次是幂等的——后续调用只会返回最终的 `Response` 对象。
+重复取消是幂等的——后续调用只会直接返回最终的 `Response` 对象。
 
 ## 流式传输后台响应
 
-你可以创建一个后台 Response，并立即开始从中流式接收事件。如果你预期客户端会断开流，并希望之后能恢复它，这可能会很有用。要做到这一点，请创建一个同时设置 `background` 和 `stream` 为 `true`的 Response。你需要记录一个与每个流式事件中收到的 `sequence_number` 相对应的“游标”。
+你可以创建一个后台 Response，并立即开始从其中流式传输事件。如果你预期客户端会断开流，并希望保留之后重新接回的选项，这可能会很有帮助。要做到这一点，请在创建 Response 时同时设置 `background` 和 `stream` 设置为 `true`。你需要追踪一个与每个流式事件中收到的 `sequence_number` 相对应的“游标”（cursor）。
 
-目前，从后台响应中收到第一个令牌的时间比同步响应要高。
-  我们正在努力在接下来的几周内减少
-  这一延迟差距。
+目前，从后台响应中收到首个 token 的时间
+  高于同步响应。我们正在努力在未来几周内缩短这一延迟差距。
+  这一延迟差距将在未来几周内得到缩小。
 
 生成并流式传输后台响应
 
@@ -555,7 +555,7 @@ puts("Response #{response_id}; last sequence number #{last_sequence_number}")
 
 ## 限制
 
-1. 后台请求可以使用 `store=false`，但响应数据会暂时
+1. 后台请求可以使用 `store=false`，但响应数据会被临时
    存储以支持异步执行和轮询。
-2. 要取消同步响应，请终止连接
-3. 只有在使用 `stream=true`.
+2. 若要取消同步响应，请终止连接
+3. 只有在使用以下方式创建后台响应后，才能从该响应开始新的流式输出 `stream=true`.

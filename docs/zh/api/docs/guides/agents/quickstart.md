@@ -1,8 +1,8 @@
-# 快速开始
+# 快速入门
 
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
-当你想要找到一条构建可运行的 SDK 智能体的最短路径时，请使用此页面。以下示例在 JavaScript 和 Python 中使用了相同的高级概念：定义一个智能体，运行它，然后随着工作流的增长添加工具和专家智能体。
+如果你想用最短的路径搭建一个可运行的基于 SDK 的 智能体，请使用本页。下面的示例在 JavaScript 和 Python 中使用相同的高层概念：定义一个 智能体，运行它，然后在你的 工作流 不断扩展时，添加工具和专门的 智能体。
 
 ## 安装 SDK
 
@@ -29,9 +29,9 @@ export OPENAI_API_KEY=sk-...
 
 ## 创建并运行你的第一个智能体
 
-从一个聚焦的智能体和一轮对话开始。SDK 处理模型调用，并返回一个包含最终输出及运行历史的结果对象。
+从一个聚焦的智能体和单轮对话开始。SDK 会处理模型调用，并返回一个包含最终输出和运行历史的结果对象。
 
-创建并运行智能体
+创建并运行一个智能体
 
 ```javascript
 import { Agent, run } from "@openai/agents";
@@ -68,24 +68,24 @@ if __name__ == "__main__":
 ```
 
 
-你应在终端中看到简洁的回答。一旦该循环运行正常，保持相同的结构，逐步增加功能，而不是一开始就设计复杂的多智能体架构。
+你应该在终端中看到一个简洁的回答。一旦该循环跑通，就沿用同样的结构逐步添加能力，而不是一开始就设计一个大型多智能体架构。
 
-## 将状态带入下一轮
+## 将状态延续到下一轮
 
-第一次运行的结果也是你决定第二轮应使用什么作为状态的依据。
+第一次运行的结果也决定了第二次回合应使用什么状态。
 
-| 如果你想要                                           | 从以下开始                                                                                                                               |
+| 如果需要                                           | 起始方式                                                                                                                               |
 | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| 在应用程序中保留完整历史记录             | `result.history` 使用 TypeScript 或 `result.to_input_list()` 使用 Python                         |
-| 让 SDK 为你加载并保存历史记录             | 一个会话                                                                                                                                |
-| 让 OpenAI 管理延续状态                  | 服务端管理的延续 ID                                                                                                         |
-| 恢复因审批或中断而暂停的运行 | `result.state` 使用 TypeScript 或 `result.to_state()` 使用 Python，连同 `interruptions` |
+| 在你的应用中保留完整历史             | `result.history` 使用 TypeScript 或 `result.to_input_list()` 使用 Python                         |
+| 由 SDK 为你加载和保存历史             | 一次会话                                                                                                                                |
+| 由 OpenAI 管理 延续 状态                  | 由服务端管理的 延续 ID                                                                                                         |
+| 恢复因等待审批或中断而暂停的运行 | `result.state` 使用 TypeScript 或 `result.to_state()` 使用 Python，配合 `interruptions` |
 
-在交接之后，复用 `lastAgent` 在 TypeScript 中，或 `last_agent` 在 Python 中用于下一轮，当该专家应保持控制时。
+交接之后，复用 `lastAgent` （TypeScript）或 `last_agent` （Python），以便在下一轮中保持该专家智能体的控制权。
 
-## 为智能体提供工具
+## 为该智能体添加工具
 
-你添加的第一个能力通常是函数工具或托管OpenAI工具，如网页搜索或文件搜索。
+你添加的第一个能力通常是函数工具或托管的 OpenAI 工具，例如网页搜索或文件搜索。
 
 添加函数工具
 
@@ -149,11 +149,11 @@ if __name__ == "__main__":
 ```
 
 
-当你需要托管工具、工具搜索或智能体作为工具时，请使用共享的 [工具使用](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk) 指南。
+在需要托管工具、工具搜索或将 [使用工具](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk) 用作工具时，参考共享指南。智能体-as-tools。
 
-## 添加专家智能体
+## 添加专属 智能体
 
-常见的下一步是将工作流拆分为多个专家，并让路由器通过交接将任务委派给它们。
+一个常见的下一步是将工作流拆分为多个专家智能体，并让路由器通过交接将任务委托给它们。
 
 路由到专家智能体
 
@@ -225,11 +225,11 @@ if __name__ == "__main__":
 
 ## 尽早检查追踪
 
-正常的服务端 SDK 路径包含追踪。一旦首次运行成功，打开 [追踪仪表盘](https://platform.openai.com/traces) 以在开始调整提示词之前检查模型调用、工具调用、交接和护栏。
+常规的 服务端 SDK 路径包含 追踪。首次运行成功后，打开 [追踪仪表板](https://platform.openai.com/traces) 以便在开始调优提示词之前检查模型调用、工具调用、交接和护栏。
 
-## 后续步骤
+## 下一步
 
-首个运行成功后，继续阅读与你想要添加的下一项能力相匹配的指南。
+首次运行成功后，继续阅读与下一个你想要添加的能力匹配的指南。
 
 
 
@@ -237,19 +237,19 @@ if __name__ == "__main__":
 
 
 
-        在扩展工作流之前，先将一个专家智能体清晰地塑造好。](https://developers.openai.com/api/docs/guides/agents/define-agents)
+        在扩展工作流之前，先清晰地构建一个专家智能体。](https://developers.openai.com/api/docs/guides/agents/define-agents)
   [使用工具
 
 
 
-        添加托管工具、函数工具以及将智能体用作工具。](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)
+        添加工具、函数工具以及将智能体用作工具。](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)
   [运行智能体
 
 
 
-        了解智能体循环、流式传输和延续策略。](https://developers.openai.com/api/docs/guides/agents/running-agents)
+        了解智能体循环、流式输出以及延续策略。](https://developers.openai.com/api/docs/guides/agents/running-agents)
   [编排与交接
 
 
 
-        决定专家智能体应何时接管对话。](https://developers.openai.com/api/docs/guides/agents/orchestration)
+        决定何时应由专家智能体接管对话。](https://developers.openai.com/api/docs/guides/agents/orchestration)
