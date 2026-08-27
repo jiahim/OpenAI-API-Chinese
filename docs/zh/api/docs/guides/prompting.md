@@ -1,48 +1,48 @@
 # 提示工程
 
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 后追加 `.md` 即可获取文档页面的 Markdown 版本。
 
-**提示** 是向模型提供输入的过程。你的输出质量往往取决于你提示模型的能力。
+**提示** 是为模型提供输入的过程。输出质量通常取决于你对模型的提示效果。
 
 ## 概述
 
-提示工程既是一门艺术，也是一门科学。OpenAI提供了一些策略和API设计决策，帮助你构建有效的提示词，并从模型中获得一致的良好结果。我们鼓励你进行实验。
+提示工程既是一门艺术，也是一门科学。OpenAI 提供了一些策略和 API 设计决策，帮助你构建有效的提示，并从模型中获得稳定的高质量结果。我们鼓励你多加尝试。
 
-## 提示工具与技巧
+## 提示工具与技术
 
-- **[提示词缓存](https://developers.openai.com/api/docs/guides/prompt-caching)**：复用稳定的提示词前缀，在缓存命中时降低延迟和输入 token 成本
-- **[提示词工程](https://developers.openai.com/api/docs/guides/prompt-engineering)**：学习构建提示词的策略、技术和工具
+- **[Prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching)**: 复用稳定的提示前缀，以在缓存命中时降低延迟和输入 token 成本
+- **[Prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering)**: 学习构造提示的策略、技巧和工具
 
 ## 优化你的提示词
 
-- 将整体语气或角色指导放在系统消息中；将任务相关的细节和示例保留在用户消息中。
-- 将少样本示例合并为简洁的 YAML 风格或项目符号块，以便团队能够快速浏览和更新。
-- 用清晰的文件夹名称映射你的项目结构，以便团队成员快速定位提示。
-- 每次发布时运行你的提示测试和评估案例；早期发现问题比在生产环境中修复更为经济。
+- 将整体语气或角色指引放在系统消息中；将任务相关的细节和示例放在用户消息中。
+- 将 few-shot 示例合并为简洁的 YAML 风格或项目符号块，便于团队浏览和更新。
+- 使用清晰的文件夹名称映射项目结构，方便团队成员快速定位提示词。
+- 每次发布时都运行提示词测试和评估用例；尽早发现问题比在生产环境中修复成本更低。
 
-## 应用程序中的提示词
+## Prompts 中的应用
 
-将提示词视为应用程序代码。将提示词内容存储在命名模块中，使用类型化函数参数构建动态部分，并在与产品行为相同的拉取请求中审查提示词更改。
+把提示当作应用代码来对待。将提示内容存放在命名的模块中，使用带类型的函数参数构建动态段，并在同一个拉取请求中与所支持的产品行为一起评审提示变更。
 
-OpenAI 正在废弃 API 中的可重用提示词对象。提示词创建将
-  从 2026 年 6 月 3 日起不再强调，并且 `v1/prompts` 计划于
-  2026 年 11 月 30 日关闭。参见 [弃用
+OpenAI 正在废弃 API 中可复用的提示对象。提示创建将
+  自 2026-06-03 起被弱化， `v1/prompts` 并计划于
+  2026-11-30 关停。参见 [弃用
   页面](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 了解当前
-  时间线。
+  时间表。
 
-对于新工作，不要创建可重用提示词对象。而是：
+对于新的工作，请不要创建可复用的提示对象，而是：
 
-- 将每个生产提示词保存在代码管理、版本化的辅助工具中，例如 `prompts/supportReply.ts`.
-- 用类型化函数参数或经过验证的输入对象替换提示词变量。
-- 直接将生成的 messages 传递给 [Responses API](https://developers.openai.com/api/docs/guides/text?api-mode=responses) 通过 `input` 和 `instructions`.
-- 使用测试、代表性夹具和随部署流程运行的评估检查，覆盖提示词变更。
-- 使用 git 历史、PR 审查、发布标签和功能标志来审查、发布、比较和回滚提示词变更。
+- 将每个生产提示保存在代码管理的、版本化的辅助函数中，例如 `prompts/supportReply.ts`.
+- 将提示变量替换为带类型的函数参数或经过校验的输入对象。
+- 将生成的消息直接传递给 [Responses API](https://developers.openai.com/api/docs/guides/text?api-mode=responses) 通过 `input` 和 `instructions`.
+- 用测试、具有代表性的固定数据以及与部署流程同步运行的评估检查来覆盖提示变更。
+- 使用 git 历史、PR 评审、发布标签和功能开关来审阅、发布、对比和回滚提示变更。
 
-如果你已在 API 请求中使用提示语 ID 或提示语版本，请遵循 [迁移指南](https://developers.openai.com/api/docs/guides/prompting/migrate-from-prompt-object) 将这些提示语移至代码中。
+如果你已经在 API 请求中使用了提示词 ID 或提示词版本，请参阅 [迁移指南](https://developers.openai.com/api/docs/guides/prompting/migrate-from-prompt-object) 将这些提示词迁移到代码中。
 
 ## 后续步骤
 
-当你在提示词方面感到有信心时，不妨查看以下指南和资源。
+当你对提示词有信心时，可以查阅以下指南和资源。
 
 [文本生成
 
@@ -50,7 +50,7 @@ OpenAI 正在废弃 API 中的可重用提示词对象。提示词创建将
 
       Learn how to prompt a model to generate text.](https://developers.openai.com/api/docs/guides/text)
 
-[优化更好的提示词
+[编写更好的提示词
 
 
 
