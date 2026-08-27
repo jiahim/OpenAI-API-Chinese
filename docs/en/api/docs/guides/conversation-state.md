@@ -122,6 +122,25 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+ResponseResult response = await client.CreateResponseAsync(
+    "gpt-5.6",
+    [
+        ResponseItem.CreateUserMessageItem("Knock knock."),
+        ResponseItem.CreateAssistantMessageItem("Who's there?"),
+        ResponseItem.CreateUserMessageItem("Orange."),
+    ]
+);
+
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -329,6 +348,44 @@ client
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+List<ResponseItem> history =
+[
+    ResponseItem.CreateUserMessageItem("Tell me a joke."),
+];
+
+CreateResponseOptions options = new("gpt-5.6", history)
+{
+    StoredOutputEnabled = false,
+    IncludedProperties =
+    {
+        IncludedResponseProperty.ReasoningEncryptedContent,
+    },
+};
+ResponseResult first = await client.CreateResponseAsync(options);
+Console.WriteLine(first.GetOutputText());
+
+history.AddRange(first.OutputItems);
+history.Add(ResponseItem.CreateUserMessageItem("Tell me another."));
+
+options = new("gpt-5.6", history)
+{
+    StoredOutputEnabled = false,
+    IncludedProperties =
+    {
+        IncludedResponseProperty.ReasoningEncryptedContent,
+    },
+};
+ResponseResult second = await client.CreateResponseAsync(options);
+Console.WriteLine(second.GetOutputText());
 ```
 
 ```ruby
@@ -581,6 +638,27 @@ second.output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+ResponseResult first = await client.CreateResponseAsync(
+    "gpt-5.6",
+    "Tell me a joke."
+);
+Console.WriteLine(first.GetOutputText());
+
+ResponseResult second = await client.CreateResponseAsync(
+    "gpt-5.6",
+    "Explain why this is funny.",
+    previousResponseId: first.Id
+);
+Console.WriteLine(second.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -720,6 +798,27 @@ second.output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+ResponseResult first = await client.CreateResponseAsync(
+    "gpt-5.6",
+    "Tell me a joke."
+);
+Console.WriteLine(first.GetOutputText());
+
+ResponseResult second = await client.CreateResponseAsync(
+    "gpt-5.6",
+    "Explain why this is funny.",
+    previousResponseId: first.Id
+);
+Console.WriteLine(second.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -748,9 +847,12 @@ The connection-local cache keeps recent previous responses in memory for low-lat
 
 
 
-  Data retention for model responses
+  
 
-Response objects are saved for 30 days by default. They can be viewed in the dashboard 
+##### Data retention for model responses
+
+
+      Response objects are saved for 30 days by default. They can be viewed in the dashboard 
       [logs](https://platform.openai.com/logs?api=responses) page or 
       [retrieved](https://developers.openai.com/api/reference/resources/responses/methods/retrieve) via the API. 
       You can disable this behavior by setting `store` to `false`
@@ -759,6 +861,9 @@ Response objects are saved for 30 days by default. They can be viewed in the das
       Conversation objects and items in them are not subject to the 30 day TTL. Any response attached to a conversation will have its items persisted with no 30 day TTL.
 
       OpenAI does not use data sent via API to train our models without your explicit consent—[learn more](https://developers.openai.com/api/docs/guides/your-data).
+  
+
+
 
 
 

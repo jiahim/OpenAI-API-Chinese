@@ -1892,7 +1892,11 @@ You can adjust this by setting [`chunking_strategy`](https://developers.openai.c
 - `max_chunk_size_tokens` must be between 100 and 4096 inclusive.
 - `chunk_overlap_tokens` must be non-negative and should not exceed `max_chunk_size_tokens / 2`.
 
-Supported file types
+
+
+#### Supported file types
+
+
 
 _For `text/` MIME types, the encoding must be one of `utf-8`, `utf-16`, or `ascii`._
 
@@ -1922,6 +1926,10 @@ _For `text/` MIME types, the encoding must be one of `utf-8`, `utf-16`, or `asci
 | `.tex`      | `text/x-tex`                                                                |
 | `.ts`       | `application/typescript`                                                    |
 | `.txt`      | `text/plain`                                                                |
+
+
+
+
 
 ## Synthesizing responses
 

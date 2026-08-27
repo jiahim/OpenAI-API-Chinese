@@ -998,6 +998,9 @@ Schema name: `BetaResponseCreatedEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "id"
+                  },
+                  {
                     "ident": "agent"
                   }
                 ]
@@ -3671,6 +3674,9 @@ Schema name: `BetaResponseCreatedEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               },
               {
                 "ident": "agent"
@@ -9582,6 +9588,9 @@ Schema name: `BetaResponseCreatedEvent`
           "ident": "type"
         },
         {
+          "ident": "id"
+        },
+        {
           "ident": "agent"
         }
       ]
@@ -9589,6 +9598,7 @@ Schema name: `BetaResponseCreatedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) agent"
     ]
   },
@@ -24526,6 +24536,23 @@ Schema name: `BetaResponseCreatedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) type > (member) 0"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaCompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) agent": {
     "kind": "HttpDeclProperty",
@@ -65175,6 +65202,9 @@ Schema name: `BetaResponseInProgressEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "id"
+                  },
+                  {
                     "ident": "agent"
                   }
                 ]
@@ -67848,6 +67878,9 @@ Schema name: `BetaResponseInProgressEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               },
               {
                 "ident": "agent"
@@ -73759,6 +73792,9 @@ Schema name: `BetaResponseInProgressEvent`
           "ident": "type"
         },
         {
+          "ident": "id"
+        },
+        {
           "ident": "agent"
         }
       ]
@@ -73766,6 +73802,7 @@ Schema name: `BetaResponseInProgressEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) agent"
     ]
   },
@@ -88703,6 +88740,23 @@ Schema name: `BetaResponseInProgressEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) type > (member) 0"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaCompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) agent": {
     "kind": "HttpDeclProperty",
@@ -129352,6 +129406,9 @@ Schema name: `BetaResponseCompletedEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "id"
+                  },
+                  {
                     "ident": "agent"
                   }
                 ]
@@ -132025,6 +132082,9 @@ Schema name: `BetaResponseCompletedEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               },
               {
                 "ident": "agent"
@@ -137936,6 +137996,9 @@ Schema name: `BetaResponseCompletedEvent`
           "ident": "type"
         },
         {
+          "ident": "id"
+        },
+        {
           "ident": "agent"
         }
       ]
@@ -137943,6 +138006,7 @@ Schema name: `BetaResponseCompletedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) agent"
     ]
   },
@@ -152880,6 +152944,23 @@ Schema name: `BetaResponseCompletedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) type > (member) 0"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaCompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) agent": {
     "kind": "HttpDeclProperty",
@@ -193546,6 +193627,9 @@ Schema name: `BetaResponseFailedEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "id"
+                  },
+                  {
                     "ident": "agent"
                   }
                 ]
@@ -196219,6 +196303,9 @@ Schema name: `BetaResponseFailedEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               },
               {
                 "ident": "agent"
@@ -202130,6 +202217,9 @@ Schema name: `BetaResponseFailedEvent`
           "ident": "type"
         },
         {
+          "ident": "id"
+        },
+        {
           "ident": "agent"
         }
       ]
@@ -202137,6 +202227,7 @@ Schema name: `BetaResponseFailedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) agent"
     ]
   },
@@ -217074,6 +217165,23 @@ Schema name: `BetaResponseFailedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) type > (member) 0"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaCompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) agent": {
     "kind": "HttpDeclProperty",
@@ -257721,6 +257829,9 @@ Schema name: `BetaResponseIncompleteEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "id"
+                  },
+                  {
                     "ident": "agent"
                   }
                 ]
@@ -260394,6 +260505,9 @@ Schema name: `BetaResponseIncompleteEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               },
               {
                 "ident": "agent"
@@ -266305,6 +266419,9 @@ Schema name: `BetaResponseIncompleteEvent`
           "ident": "type"
         },
         {
+          "ident": "id"
+        },
+        {
           "ident": "agent"
         }
       ]
@@ -266312,6 +266429,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) agent"
     ]
   },
@@ -281249,6 +281367,23 @@ Schema name: `BetaResponseIncompleteEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) type > (member) 0"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaCompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) agent": {
     "kind": "HttpDeclProperty",
@@ -386982,6 +387117,9 @@ Schema name: `BetaResponseQueuedEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "id"
+                  },
+                  {
                     "ident": "agent"
                   }
                 ]
@@ -389655,6 +389793,9 @@ Schema name: `BetaResponseQueuedEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               },
               {
                 "ident": "agent"
@@ -395566,6 +395707,9 @@ Schema name: `BetaResponseQueuedEvent`
           "ident": "type"
         },
         {
+          "ident": "id"
+        },
+        {
           "ident": "agent"
         }
       ]
@@ -395573,6 +395717,7 @@ Schema name: `BetaResponseQueuedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) agent"
     ]
   },
@@ -410510,6 +410655,23 @@ Schema name: `BetaResponseQueuedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) type > (member) 0"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaCompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 31 > (property) agent": {
     "kind": "HttpDeclProperty",

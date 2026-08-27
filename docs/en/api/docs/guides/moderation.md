@@ -287,6 +287,23 @@ var moderation =
 System.out.println(moderation.results().get(0).flagged());
 ```
 
+```csharp
+using OpenAI.Moderations;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "omni-moderation-latest";
+ModerationClient client = new(model, key);
+
+ModerationResult result = await client.ClassifyTextAsync(
+    "Text to classify goes here."
+);
+
+Console.WriteLine($"Flagged: {result.Flagged}");
+Console.WriteLine(
+    $"Violence: {result.Violence.Flagged}; score: {result.Violence.Score:F3}"
+);
+```
+
 ```ruby
 require "openai"
 
@@ -432,6 +449,31 @@ var moderation =
                 .build());
 
 System.out.println(moderation.results().get(0).flagged());
+```
+
+```csharp
+using OpenAI.Moderations;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "omni-moderation-latest";
+ModerationClient client = new(model, key);
+
+ModerationResult result = await client.ClassifyInputsAsync(
+    [
+        ModerationInputPart.CreateTextPart("Text to classify goes here."),
+        ModerationInputPart.CreateImagePart(
+            new Uri(
+                "https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg"
+            )
+        ),
+    ]
+);
+
+Console.WriteLine($"Flagged: {result.Flagged}");
+Console.WriteLine(
+    $"Violence: {result.Violence.Flagged}; score: {result.Violence.Score:F3}; inputs: {result.Violence.ApplicableInputKinds}"
+);
 ```
 
 ```ruby

@@ -219,7 +219,11 @@ A recommended workflow is as follows:
 
 Before launching in production, review and follow the following safety information.
 
-How we assess for safety
+
+
+### How we assess for safety
+
+
 
 Once a fine-tuning job is completed, we assess the resulting model’s behavior across 13 distinct safety categories. Each category represents a critical area where AI outputs could potentially cause harm if not properly controlled.
 
@@ -241,11 +245,23 @@ Once a fine-tuning job is completed, we assess the resulting model’s behavior 
 
 Each category has a predefined pass threshold; if too many evaluated examples in a given category fail, OpenAI blocks the fine-tuned model from deployment. If your fine-tuned model does not pass the safety checks, OpenAI sends a message in the fine-tuning job explaining which categories don't meet the required thresholds. You can view the results in the moderation checks section of the fine-tuning job.
 
-How to pass safety checks
+
+
+
+
+
+
+### How to pass safety checks
+
+
 
 In addition to reviewing any failed safety checks in the fine-tuning job object, you can retrieve details about which categories failed by querying the [fine-tuning API events endpoint](https://platform.openai.com/docs/api-reference/fine-tuning/list-events). Look for events of type `moderation_checks` for details about category results and enforcement. This information can help you narrow down which categories to target for retraining and improvement. The [model spec](https://cdn.openai.com/spec/model-spec-2024-05-08.html#overview) has rules and examples that can help identify areas for additional training data.
 
 While these evaluations cover a broad range of safety categories, conduct your own evaluations of the fine-tuned model to ensure it's appropriate for your use case.
+
+
+
+
 
 ## Next steps
 

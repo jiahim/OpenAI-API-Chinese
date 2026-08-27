@@ -42,7 +42,11 @@ The model cannot cite material that has not been presented clearly. Whether mate
 - Readable Text: Clearly formatted source material.
 - Metadata (optional): URLs, timestamps, titles, and similar context.
 
-Example citable material
+
+
+### Example citable material
+
+
 
 ```text
 Citation Marker: {CITATION_START}cite{CITATION_DELIMITER}file0{CITATION_STOP}
@@ -54,6 +58,10 @@ Updated: 2026-03-01
 [L2] Additional remote days require manager approval.
 [L3] Exceptions may apply for approved accommodations.
 ```
+
+
+
+
 
 **Source IDs vs. locators:** A source ID is a stable,
   model-generated identifier such as `block1`. A locator is the
@@ -125,7 +133,11 @@ If you want to define your own prompt, define:
 - what formats are forbidden.
 - what to do when support is missing.
 
-Recommended prompt instructions
+
+
+### Recommended prompt instructions
+
+
 
 Clearly instruct the model using the following format:
 
@@ -160,7 +172,15 @@ You *must* cite any results you use from this tool using the:
 - Do not attempt to cite items without a corresponding citation marker, as they are not meant to be cited.
 - You MUST include line ranges in your citations.
 
-Optional instructions for higher-quality grounding
+
+
+
+
+
+
+### Optional instructions for higher-quality grounding
+
+
 
 The following rules are often worth including when you need higher-quality grounding behavior. Adapt this section based on your use case requirements.
 
@@ -180,6 +200,10 @@ Remember, the quality of a domain/source depends on the context.
 </extra_considerations_for_citations>
 ```
 
+
+
+
+
 ## Parse citations
 
 Once the model emits citations, you need to extract them from the response text
@@ -193,7 +217,10 @@ locators while preserving character offsets in the original text.
 This example supports line locators only and should be adapted if your system
 uses a different locator format.
 
-Post-processor examples
+
+
+### Post-processor examples
+
 
 Citation parsing helpers
 
@@ -387,6 +414,10 @@ def strip_citations(text: str, citations: Iterable[Citation]) -> str:
 ```
 
 
+
+
+
+
 If your source IDs use a different shape, update `SOURCE_ID_RE` to match your
 system.
 
@@ -407,7 +438,11 @@ You should choose the citable units based on the precision required for your use
 
 The examples below show a few recommended tool output formats. The underlying tool may vary by application, but what matters most is that the output is presented in a clear, stable structure like these examples.
 
-Line-level example
+
+
+##### Line-level example
+
+
 
 The following is an example of the tool call output:
 
@@ -423,7 +458,15 @@ Citation Marker: {CITATION_START}cite{CITATION_DELIMITER}turn0file1{CITATION_STO
 
 Here, `turn0file0` is the stable source ID. The line numbers are the locators.
 
-Block-level example
+
+
+
+
+
+
+##### Block-level example
+
+
 
 The following is an example of the tool call output:
 
@@ -440,6 +483,10 @@ Citation Marker: {CITATION_START}cite{CITATION_DELIMITER}turn0file1{CITATION_STO
 ```
 
 If you want block-level citations instead of line-level citations, the recommended option is to make each retrieved block its own stable source ID and still cite it with the same two-field cite shape, for example `{CITATION_START}cite{CITATION_DELIMITER}turn0file0{CITATION_STOP}`, rather than inventing a completely different citation family.
+
+
+
+
 
 #### Write prompt instructions
 

@@ -2,7 +2,7 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-Use this reference to exchange an externally issued identity token for a short-lived OpenAI access token after you configure a trusted provider and service account mapping. It also describes the beta X.509 certificate exchange. For concepts, dashboard configuration, and setup guides, see the [workload identity federation guide](https://developers.openai.com/api/docs/guides/workload-identity-federation).
+Use this reference to exchange an externally issued identity token for a short-lived OpenAI access token after you configure a trusted provider and service account mapping. It also describes the X.509 certificate exchange. For concepts, dashboard configuration, and setup guides, see the [workload identity federation guide](https://developers.openai.com/api/docs/guides/workload-identity-federation).
 
 ## Exchange a JWT subject token
 
@@ -34,11 +34,9 @@ The token exchange uses the permissions configured on the matching service accou
 
 ## Exchange an X.509 certificate
 
-X.509 certificate exchange is available in beta. If X.509 doesn't appear as a provider type, contact your system administrator. Your administrator can work with OpenAI to enable the beta for your organization.
-
 Present the client certificate during TLS negotiation with the dedicated X.509 token endpoint. Don't include a `subject_token` in the request body.
 
-For provider and service account mapping configuration, follow the [X.509 certificate setup guide](https://developers.openai.com/api/docs/guides/workload-identity-federation/x509). For certificate requirements, activation, supported endpoints, and client configuration, see the [OpenAI Mutual TLS Beta Program](https://help.openai.com/en/articles/10876024-openai-mutual-tls-beta-program).
+For provider and service account mapping configuration, follow the [X.509 certificate setup guide](https://developers.openai.com/api/docs/guides/workload-identity-federation/x509). For certificate requirements, activation, mTLS hosts, CEL filters, and rotation, see the [Mutual TLS guide](https://developers.openai.com/api/docs/guides/mutual-tls).
 
 ```bash
 curl --cert "$OPENAI_MTLS_CERT_CHAIN" \
@@ -88,7 +86,7 @@ OpenAI verifies the client certificate against active Mutual TLS roots in the re
 
 During certificate validation, OpenAI applies the certificate-admission rules configured with the active Mutual TLS root. After validation succeeds, OpenAI evaluates the provider's **Attribute conditions**, derives its `openai.*` attributes, and resolves exactly one enabled mapping for the requested service account. X.509 providers must derive one non-empty `openai.subject` value.
 
-Malformed or missing certificate material, an invalid chain, a root mismatch, a certificate outside its validity period, or rejection by a Mutual TLS certificate-admission rule returns `invalid_subject_token`. Rejection by the provider's **Attribute conditions** expression returns `invalid_grant`. Other provider, mapping, rollout, or active-root configuration failures also return `invalid_grant`. X.509 requests never fall back to OIDC or another OAuth flow.
+Malformed or missing certificate material, an invalid chain, a root mismatch, a certificate outside its validity period, or rejection by a Mutual TLS certificate-admission rule returns `invalid_subject_token`. Rejection by the provider's **Attribute conditions** expression returns `invalid_grant`. Other provider, mapping, or active-root configuration failures also return `invalid_grant`. X.509 requests never fall back to OIDC or another OAuth flow.
 
 ## Response
 

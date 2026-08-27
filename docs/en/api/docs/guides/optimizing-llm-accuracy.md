@@ -69,7 +69,11 @@ To optimize your prompts, I’ll mostly lean on strategies from the [Prompt Engi
 
 These can be a little difficult to visualize, so we’ll run through an example where we test these out with a practical example. Let’s use gpt-4-turbo to correct Icelandic sentences to see how this can work.
 
-Prompt engineering for language corrections 
+
+
+##### Prompt engineering for language corrections 
+
+
 
 The [Icelandic Errors Corpus](https://repository.clarin.is/repository/xmlui/handle/20.500.12537/105) contains combinations of an Icelandic sentence with errors, and the corrected version of that sentence. We’ll use the baseline GPT-4 model to try to solve this task, and then apply different optimization techniques to see how we can improve the model’s performance.
 
@@ -110,6 +114,10 @@ The overall translation quality is better, showing an improvement to a Bleu scor
 This tells us that it is the **behavior** of the model that we need to optimize - it already has the knowledge that it needs to solve the problem, so providing many more examples may be the optimization we need.
 
 We’ll revisit this later in the paper to test how our more advanced optimization methods play with this use case.
+
+
+
+
 
 We’ve seen that prompt engineering is a great place to start, and that with the right tuning methods we can push the performance pretty far.
 
@@ -223,7 +231,11 @@ These techniques stack on top of each other - if your early evals show issues wi
 - **Teaching complex behavior** using extensive fine-tuning
 - Using RAG to **inject context**, more recent content or any other specialized context required for your use cases
 
-Using these tools to improve language translation
+
+
+#### Using these tools to improve language translation
+
+
 
 We’ll continue building on the Icelandic correction example we used above. We’ll test out the following approaches:
 
@@ -264,6 +276,10 @@ RAG actually **decreased** accuracy, dropping four points from our GPT-4 fine-tu
 This illustrates the point that you use the right optimization tool for the right job - each offers benefits and risks that we manage with evaluations and iterative changes. The behavior we witnessed in our evals and from what we know about this question told us that this is a behavior optimization problem where additional context will not necessarily help the model. This was borne out in practice - RAG actually confounded the model by giving it extra noise when it had already learned the task effectively through fine-tuning.
 
 We now have a model that should be close to production-ready, and if we want to optimize further we can consider a wider diversity and quantity of training examples.
+
+
+
+
 
 Now you should have an appreciation for RAG and fine-tuning, and when each is appropriate. The last thing you should appreciate with these tools is that once you introduce them there is a trade-off here in our speed to iterate:
 

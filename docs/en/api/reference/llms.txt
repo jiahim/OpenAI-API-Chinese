@@ -257,4 +257,4 @@ Each entry has a Markdown twin at `/api/reference/<slug>.md`.
 - [Responses Overview](https://developers.openai.com/api/reference/responses/overview.md)
 
 ## Workload Identity Federation
-- [Workload identity token exchange](https://developers.openai.com/api/reference/workload-identity-federation.md): Exchange a trusted workload identity token or a beta X.509 certificate identity for a short-lived OpenAI API credential.
+- [Workload identity token exchange](https://developers.openai.com/api/reference/workload-identity-federation.md): Exchange a trusted workload identity token or an X.509 certificate identity for a short-lived OpenAI API credential.

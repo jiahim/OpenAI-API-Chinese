@@ -165,7 +165,11 @@ You can try this example MCP server in a [browser-based development environment]
 
 A full implementation of both the `search` and `fetch` tools in FastMCP is below also for convenience.
 
-Full implementation - FastMCP server
+
+
+#### Full implementation - FastMCP server
+
+
 
 ```python
 """
@@ -381,7 +385,15 @@ if __name__ == "__main__":
 ```
 
 
-Replit setup
+
+
+
+
+
+
+#### Replit setup
+
+
 
 On Replit, you will need to configure two environment variables in the "Secrets" UI:
 
@@ -397,6 +409,10 @@ In the long dev URL, ensure it ends with `/sse/`, which is the server-sent event
 ```
 https://777xxx.janeway.replit.dev/sse/
 ```
+
+
+
+
 
 ## Test and connect your MCP server
 

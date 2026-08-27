@@ -4066,7 +4066,7 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
         The namespace of the custom tool being called.
 
-    - `CompactionTrigger object { type }`
+    - `CompactionTrigger object { type, id }`
 
       Compacts the current context. Must be the final input item.
 
@@ -4075,6 +4075,10 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
         The type of the item. Always `compaction_trigger`.
 
         - `"compaction_trigger"`
+
+      - `id: optional string or null`
+
+        The unique ID of this compaction trigger.
 
     - `ItemReference object { id, type }`
 

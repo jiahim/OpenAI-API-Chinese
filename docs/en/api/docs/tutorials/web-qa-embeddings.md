@@ -24,7 +24,11 @@ pip install -r requirements.txt
 
 The primary focus of this tutorial is the OpenAI API so if you prefer, you can skip the context on how to create a web crawler and just [download the source code](https://github.com/openai/web-crawl-q-and-a-example). Otherwise, expand the section below to work through the scraping mechanism implementation.
 
-Learn how to build a web crawler
+
+
+### Learn how to build a web crawler
+
+
 
 
 
@@ -213,6 +217,10 @@ crawl(full_url)
 
 
 The last line of the above example runs the crawler which goes through all the accessible links and turns those pages into text files. This will take a few minutes to run depending on the size and complexity of your site.
+
+
+
+
 
 ## Building an embeddings index
 

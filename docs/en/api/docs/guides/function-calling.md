@@ -10,7 +10,11 @@ If your application has many functions or large schemas, you can pair function c
 
 Let's begin by understanding a few key terms about tool calling. After we have a shared vocabulary for tool calling, we'll show you how it's done with some practical examples.
 
-Tools - functionality we give the model
+
+
+### Tools - functionality we give the model
+
+
 
 A **function** or **tool** refers in the abstract to a piece of functionality that we tell the model it has access to. As a model generates a response to a prompt, it may decide that it needs data or functionality provided by a tool to follow the prompt's instructions.
 
@@ -24,13 +28,29 @@ Or anything else you'd like the model to be able to know or do as it responds to
 
 When we make an API request to the model with a prompt, we can include a list of tools the model could consider using. For example, if we wanted the model to be able to answer questions about the current weather somewhere in the world, we might give it access to a `get_weather` tool that takes `location` as an argument.
 
-Tool calls - requests from the model to use tools
+
+
+
+
+
+
+### Tool calls - requests from the model to use tools
+
+
 
 A **function call** or **tool call** refers to a special kind of response we can get from the model if it examines a prompt, and then determines that in order to follow the instructions in the prompt, it needs to call one of the tools we made available to it.
 
 If the model receives a prompt like "what is the weather in Paris?" in an API request, it could respond to that prompt with a tool call for the `get_weather` tool, with `Paris` as the `location` argument.
 
-Tool call outputs - output we generate for the model
+
+
+
+
+
+
+### Tool call outputs - output we generate for the model
+
+
 
 A **function call output** or **tool call output** refers to the response a tool generates using the input from a model's tool call. The tool call output can either be structured JSON or plain text, and it should contain a reference to a specific model tool call (referenced by `call_id` in the examples to come).
 To complete our weather example:
@@ -45,11 +65,23 @@ We then send all of the tool definition, the original prompt, the model's tool c
 The weather in Paris today is 25C.
 ```
 
-Functions versus tools
+
+
+
+
+
+
+### Functions versus tools
+
+
 
 - A function is a specific kind of tool, defined by a JSON schema. A function definition allows the model to pass data to your application, where your code can access data or take actions suggested by the model.
 - In addition to function tools, there are custom tools (described in this guide) that work with free text inputs and outputs.
 - There are also [built-in tools](https://developers.openai.com/api/docs/guides/tools) that are part of the OpenAI platform. These tools enable the model to [search the web](https://developers.openai.com/api/docs/guides/tools-web-search), [execute code](https://developers.openai.com/api/docs/guides/tools-code-interpreter), access the functionality of an [MCP server](https://developers.openai.com/api/docs/guides/tools-connectors-mcp), and more.
+
+
+
+
 
 ### The tool calling flow
 

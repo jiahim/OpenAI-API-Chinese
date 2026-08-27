@@ -164,6 +164,21 @@ Files.write(
     Base64.getDecoder().decode(images.data().orElseThrow().get(0).b64Json().orElseThrow()));
 ```
 
+```csharp
+using OpenAI.Images;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-image-2";
+ImageClient client = new(model, key);
+
+GeneratedImage image = await client.GenerateImageAsync(
+    "A children's book drawing of a veterinarian using a stethoscope to "
+        + "listen to the heartbeat of a baby otter."
+);
+
+await File.WriteAllBytesAsync("otter.png", image.ImageBytes.ToArray());
+```
+
 ```ruby
 require "base64"
 require "openai"

@@ -95,6 +95,22 @@ var result =
 System.out.println(result.asTranscription().text());
 ```
 
+```csharp
+using OpenAI.Audio;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-transcribe";
+AudioClient client = new(model, key);
+
+await using FileStream audio = File.OpenRead("audio.wav");
+AudioTranscription transcription = await client.TranscribeAudioAsync(
+    audio,
+    "audio.wav"
+);
+
+Console.WriteLine(transcription.Text);
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -588,6 +604,21 @@ var result =
 System.out.println(result.asTranslation().text());
 ```
 
+```csharp
+using OpenAI.Audio;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+AudioClient client = new("whisper-1", key);
+
+await using FileStream audio = File.OpenRead("german.wav");
+AudioTranslation translation = await client.TranslateAudioAsync(
+    audio,
+    "german.wav"
+);
+
+Console.WriteLine(translation.Text);
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -928,7 +959,11 @@ For live audio from a microphone, call, or media stream, use the [Realtime trans
 
 If you use `whisper-1` for timestamps, subtitles, or translation, these techniques can improve recognition of uncommon words and acronyms. For new general-purpose transcription, start with `gpt-transcribe` and use [transcription context](#add-transcription-context) instead.
 
-Using the prompt parameter
+
+
+### Using the prompt parameter
+
+
 
 The first method involves using the optional prompt parameter to pass a dictionary of the correct spellings.
 
@@ -1058,7 +1093,15 @@ curl --request POST \
 
 While it increases reliability, this technique is limited to 224 tokens, so your list of SKUs needs to be relatively small for this to be a scalable solution.
 
-Post-processing with a text model
+
+
+
+
+
+
+### Post-processing with a text model
+
+
 
 The second method uses a text model to post-process the transcript.
 
