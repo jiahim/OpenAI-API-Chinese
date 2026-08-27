@@ -2,6 +2,7 @@ import {
   documentCatalog,
   generatedDocuments,
   navigationSections,
+  syncReleases as generatedSyncReleases,
 } from "@/generated/documents";
 
 export type Locale = "en" | "zh";
@@ -15,6 +16,8 @@ export interface DocumentMetadata {
   contentPath: string;
   section: "guides" | "reference";
   sourceUrl: string;
+  sourceUpdatedAt: string;
+  translatedAt?: string;
   reviewStatus: "machine" | "reviewed" | "source";
 }
 
@@ -31,6 +34,7 @@ export interface CatalogDocument {
   contentPath: string;
   section: "guides" | "reference";
   sourceUrl: string;
+  sourceUpdatedAt: string;
 }
 
 export type NavigationEntry = CatalogDocument;
@@ -51,6 +55,21 @@ export interface NavigationSection {
   title: string;
   description: string;
   groups: readonly NavigationGroup[];
+}
+
+export interface SyncReleaseEntry {
+  path: string;
+  route: string;
+  sourceUrl: string;
+  title: string;
+}
+
+export interface SyncRelease {
+  added: readonly SyncReleaseEntry[];
+  generatedAt: string;
+  id: string;
+  modified: readonly SyncReleaseEntry[];
+  removed: readonly SyncReleaseEntry[];
 }
 
 export function isLocale(value: string): value is Locale {
@@ -90,6 +109,22 @@ export function availableDocuments(locale: Locale): DocumentMetadata[] {
 
 export function navigation(): readonly NavigationSection[] {
   return navigationSections as readonly NavigationSection[];
+}
+
+export function sidebarNavigationGroups(
+  section: NavigationSection,
+): readonly NavigationGroup[] {
+  return section.groups
+    .filter((group) => group.entries.length > 0)
+    .map((group) => ({ ...group, externalEntries: [] }));
+}
+
+export function syncReleases(): readonly SyncRelease[] {
+  return generatedSyncReleases as readonly SyncRelease[];
+}
+
+export function syncReleaseById(id: string): SyncRelease | undefined {
+  return syncReleases().find((release) => release.id === id);
 }
 
 export function navigationSectionForRoute(

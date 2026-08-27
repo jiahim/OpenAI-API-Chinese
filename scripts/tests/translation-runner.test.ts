@@ -20,7 +20,10 @@ import {
   type TranslationProvider,
 } from "@easy-translate/core";
 
-import { loadTranslationWorkspace } from "../translation/planner.ts";
+import {
+  loadTranslationWorkspace,
+  translationPolicySha256ForPage,
+} from "../translation/planner.ts";
 import {
   atomicWriteRepositoryFile,
   createTranslationQualityPolicy,
@@ -69,6 +72,7 @@ async function createFixture(source = DEFAULT_SOURCE): Promise<string> {
       glossaryPath: "scripts/translation/glossary.zh-CN.json",
       priorityPath: "scripts/translation/priority.zh-CN.json",
       promptPath: "scripts/translation/prompt.zh-CN.md",
+      reviewNotesPath: "scripts/translation/review-notes.zh-CN.json",
       provider: {
         apiKeyEnv: "DEEPSEEK_API_KEY",
         id: "deepseek",
@@ -93,6 +97,10 @@ async function createFixture(source = DEFAULT_SOURCE): Promise<string> {
   await writeFile(
     join(root, "scripts/translation/prompt.zh-CN.md"),
     "Translate accurately.",
+  );
+  await writeFile(
+    join(root, "scripts/translation/review-notes.zh-CN.json"),
+    JSON.stringify({ pages: {}, schemaVersion: 1 }),
   );
   return root;
 }
@@ -123,6 +131,55 @@ test("runner simulates one page without writing a target or manifest", async () 
     await assert.rejects(
       readFile(join(root, "docs/zh/.translation-manifest.json")),
       /ENOENT/u,
+    );
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("runner injects matching page review notes and records their page policy", async () => {
+  const root = await createFixture();
+  try {
+    const note = "保留此页缩写，并按括号中的释义理解上下文。";
+    await writeFile(
+      join(root, "scripts/translation/review-notes.zh-CN.json"),
+      JSON.stringify({
+        pages: { [SOURCE_URL]: [note] },
+        schemaVersion: 1,
+      }),
+    );
+    const workspace = await loadTranslationWorkspace(root);
+    const seenInstructions: string[] = [];
+    const provider = defineProvider<MarkdownTranslationContext>({
+      async translateBatch(request) {
+        assert.ok(request.instructions);
+        seenInstructions.push(request.instructions);
+        return request.items.map((item) => ({
+          id: item.id,
+          text:
+            item.text === "Hello OpenAI"
+              ? "你好 OpenAI"
+              : item.text === "Request API data."
+                ? "请求 API 数据。"
+                : item.text,
+        }));
+      },
+    });
+    const run = await runTranslationPage(workspace, SOURCE_URL, {
+      commit: false,
+      provider,
+      useCheckpoint: false,
+    });
+
+    assert.ok(seenInstructions.length > 0);
+    assert.ok(
+      seenInstructions.every((instructions) => instructions.includes(note)),
+    );
+    assert.notEqual(run.record.policySha256, workspace.policySha256);
+    assert.equal(
+      translationPolicySha256ForPage(workspace, SECOND_SOURCE_URL),
+      workspace.policySha256,
+      "a page without notes must retain the shared base policy",
     );
   } finally {
     await rm(root, { force: true, recursive: true });
@@ -227,6 +284,45 @@ test("review adopts an intentional target edit and records reviewed status", asy
       refreshed.translationManifest.generatedAt,
       "2026-08-24T13:00:00.000Z",
     );
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("review adopts a manual edit together with its new page note policy", async () => {
+  const root = await createFixture();
+  try {
+    const workspace = await loadTranslationWorkspace(root);
+    await runTranslationPage(workspace, SOURCE_URL, {
+      commit: true,
+      provider: translatedProvider(),
+      useCheckpoint: false,
+    });
+    await writeFile(
+      join(root, TARGET_PATH),
+      "# 你好 OpenAI\n\n按页面上下文人工审核后的请求 API 数据。\n",
+    );
+    const note = "此页按特定上下文翻译缩写。";
+    await writeFile(
+      join(root, "scripts/translation/review-notes.zh-CN.json"),
+      JSON.stringify({
+        pages: { [SOURCE_URL]: [note] },
+        schemaVersion: 1,
+      }),
+    );
+
+    const modified = await loadTranslationWorkspace(root);
+    assert.equal(modified.entries[0]?.state, "modified-target");
+    const expectedPolicy = translationPolicySha256ForPage(
+      modified,
+      SOURCE_URL,
+    );
+    await reviewTranslationPage(modified, SOURCE_URL);
+
+    const refreshed = await loadTranslationWorkspace(root);
+    assert.equal(refreshed.entries[0]?.state, "current");
+    assert.equal(refreshed.entries[0]?.record?.policySha256, expectedPolicy);
+    assert.equal(refreshed.entries[0]?.record?.reviewStatus, "reviewed");
   } finally {
     await rm(root, { force: true, recursive: true });
   }

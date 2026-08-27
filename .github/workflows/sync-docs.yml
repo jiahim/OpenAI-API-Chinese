@@ -71,6 +71,13 @@ jobs:
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
           fi
 
+          node scripts/sync-pr-summary.ts \
+            --base-ref "origin/$BASE_BRANCH" \
+            --output "$RUNNER_TEMP/sync-pr-body.md" \
+            --release-dir "docs/updates"
+          git add docs/updates
+          git commit --amend --no-edit
+
           if git show-ref --verify --quiet "refs/remotes/origin/$SYNC_BRANCH"; then
             if git diff --quiet "refs/remotes/origin/$SYNC_BRANCH" HEAD --; then
               echo "Automation branch is already current."

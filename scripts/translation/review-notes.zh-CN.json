@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "pages": {
+    "https://developers.openai.com/api/docs/actions/getting-started.md": [
+      "原文中的“NSW (National Weather Service)”缩写与括号释义不一致；不要将 NSW 扩写为“新南威尔士州”，保留缩写 NSW，并按括号中的 National Weather Service 理解上下文。"
+    ]
+  }
+}

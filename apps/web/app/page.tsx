@@ -1,16 +1,19 @@
 import Link from "next/link";
 
+import { ContactPopover } from "@/components/contact-popover";
+import { UpdateBatchList } from "@/components/update-batch-list";
+
 import {
   sourceCheckSchedule,
   sourceGeneratedAt,
   translationGeneratedAt,
 } from "@/generated/documents";
 import {
-  availableDocuments,
   bilingualPageCount,
   localizedRoute,
   navigation,
   sourcePageCount,
+  syncReleases,
 } from "@/lib/documents";
 
 function formatBeijingTime(value: string): string {
@@ -26,8 +29,8 @@ function formatBeijingTime(value: string): string {
 }
 
 export default function Home() {
-  const translatedDocuments = availableDocuments("zh");
   const sections = navigation();
+  const releases = syncReleases();
 
   return (
     <main className="home-shell">
@@ -40,6 +43,7 @@ export default function Home() {
           </span>
         </Link>
         <nav>
+          <ContactPopover />
           <a
             className="official-nav-link"
             href="https://developers.openai.com/api/"
@@ -139,23 +143,16 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="translated-section" aria-labelledby="translated-title">
+      <section className="updates-section" aria-labelledby="updates-title">
         <div className="collection-heading">
           <div>
-            <p className="eyebrow">中文翻译</p>
-            <h2 id="translated-title">当前可读的中文译文</h2>
+            <p className="eyebrow">更新记录</p>
+            <h2 id="updates-title">文档更新批次</h2>
           </div>
-          <span>译文会留在对应官网目录位置，并持续随同步流程增加</span>
+          <Link href="/updates">查看全部更新 →</Link>
         </div>
-        <div className="translation-list">
-          {translatedDocuments.map((document) => (
-            <Link href={localizedRoute("zh", document.route)} key={document.route}>
-              <span>{document.section === "reference" ? "API 参考" : "文档指南"}</span>
-              <strong>{document.title}</strong>
-              <small>{document.reviewStatus === "reviewed" ? "人工校对" : "机器翻译"} →</small>
-            </Link>
-          ))}
-        </div>
+        <p className="updates-intro">每次自动同步都会留下批次记录，包含更新时间和具体的新增、修改、删除文章。</p>
+        <UpdateBatchList releases={releases.slice(0, 8)} />
       </section>
 
       <footer className="home-footer">

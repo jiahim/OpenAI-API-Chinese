@@ -37,7 +37,7 @@ docs/en/api/docs/guides/images-vision.md
 
 manifest 不保存 API key、完整模型响应或供应商凭据。
 
-翻译配置因加入必填的 `priorityPath` 使用 `schemaVersion: 2`；术语表、优先级配置和 translation manifest 使用各自的 `schemaVersion: 1`。持久化记录拒绝未知字段、非规范路径、重复 source/target 路径和无效 UTC 时间；所有读取都必须解析真实路径并拒绝逃逸仓库的符号链接。术语表以排序后的语义内容参与策略哈希，JSON 排版和对象键顺序不影响增量状态。
+翻译配置使用 `schemaVersion: 2`，并可通过 `reviewNotesPath` 指向页面级审核备注；术语表、优先级配置、页面级审核备注和 translation manifest 使用各自的 `schemaVersion: 1`。持久化记录拒绝未知字段、非规范路径、重复 source/target 路径和无效 UTC 时间；所有读取都必须解析真实路径并拒绝逃逸仓库的符号链接。术语表以排序后的语义内容参与基础策略哈希，JSON 排版和对象键顺序不影响增量状态；页面级备注只参与对应 source URL 的页面策略哈希，因此不会使无关译文过期。
 
 ## 状态机与覆盖安全
 
@@ -77,7 +77,8 @@ render 会安全移除模型偶发添加在译文单元首尾的空白，同时�
 - 批量任务默认低并发，先支持 `--section`、`--match` 和 `--limit`，再开放全量运行。
 - 质量检查至少覆盖：Markdown 可重新解析、保护内容一致、无空译文、链接目标一致、代码块一致、manifest/文件 SHA 一致。
 - 机器译文以 PR 形式进入 `main`；人工校对只提升 `reviewStatus`，英文或策略变化后仍会重新标记 stale。
-- 人工润色会先自然进入 `modified-target`；显式 `translate:review` 只在源与策略仍有效、且中英文 Markdown 受保护结构一致时收录新的目标 SHA，并把记录提升为 `reviewed`。
+- 人工润色会先自然进入 `modified-target`；显式 `translate:review` 只在英文来源仍有效、且中英文 Markdown 受保护结构一致时收录新的目标 SHA，并把记录提升为 `reviewed`。如果同一 PR 新增了页面级备注，显式审核会同时采用该页当前策略 SHA；只新增备注但没有人工润色时仍保持 `stale-policy`，必须重新翻译。
+- 人工审核反馈按作用域沉淀：固定译法进入术语表，通用要求进入提示词，可自动判断的问题进入质量门和回归测试，单页上下文与官方原文勘误进入页面级审核备注。Runner 只向匹配 source URL 的翻译请求追加对应备注。
 
 Runner 只接受 Planner 判定为 `pending`、`stale-source`、`stale-policy` 或 `missing-target` 的单篇页面。checkpoint 位于 Git 忽略的 `.cache/translation-checkpoints/`；提交前重新加载工作区并再次验证状态、源 SHA、策略 SHA 和目标路径。写入顺序固定为译文后 manifest，因此异常中断会转化为可检测的阻塞状态，而不会产生虚假的 current 记录。
 

@@ -72,6 +72,8 @@ GitHub Actions 每天北京时间 00:00 读取官方 `llms.txt` 索引、运行�
 
 `translate:status` 离线汇总全部页面的增量状态，`translate:check` 额外拒绝目标文件缺失、未登记或与 manifest 不一致；`translate:plan` 按自动队列优先级只读列出下一轮可翻译或阻塞的页面。`translate:simulate` 使用 Echo/Fake Provider 执行无 key、无写入闭环。`translate:run` 用于本地精确单篇翻译，`translate:auto` 为远端按优先级选择最多十篇受预算约束的页面；人工润色后用 `translate:review` 收录目标 SHA 并标记 `reviewed`。完整翻译设计见 [`docs/translation-design.md`](docs/translation-design.md)。
 
+人工校对中可复用的固定译法应进入术语表，通用表达要求应进入翻译提示词；只适用于单篇文档的上下文、歧义或官方原文勘误记录在 `scripts/translation/review-notes.zh-CN.json`。页面级备注会自动加入该页翻译请求和策略 SHA，仅让对应页面进入 `stale-policy`，不会触发全站重翻。
+
 ## 静态双语文档站
 
 当前仓库同时维护首个可用站点 [`apps/web`](apps/web)。它在构建期读取 source/translation manifest 和磁盘 Markdown，按官方 `llms.txt` 的分组与顺序生成完整导航：421 篇英文源页面都有稳定静态路由，其中 414 篇直接渲染正文；7 篇超过 1 MB 的事件/资源总表暂时生成轻量说明页，避免单页 HTML 和 Vercel 产物异常膨胀。已有中文译文显示在同路径的 `/zh/` 页面，其余中文路径保留原目录位置并引导到本站英文原文。Markdown 中指向 `developers.openai.com/api/docs` 与 `/api/reference` 的链接会转换为当前语言的本站路由，外部链接保持明确标识。

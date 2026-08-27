@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   parseNameStatus,
+  renderSyncRelease,
   renderSyncPullRequestBody,
 } from "../sync-pr-summary.ts";
 
@@ -52,4 +53,43 @@ test("renderSyncPullRequestBody uses Chinese sections and lists every path", () 
   assert.match(body, /`docs\/en\/api\/docs\/changed\.md`/);
   assert.match(body, /## 删除文件（0）\n\n无。/);
   assert.match(body, /仅在 `Quality gate` 通过后合入/);
+});
+
+test("renderSyncRelease keeps article changes and resolves page metadata", () => {
+  const release = renderSyncRelease(
+    {
+      added: ["docs/en/api/docs/new.md", "docs/en/api/docs/llms.txt"],
+      modified: ["docs/en/.source-manifest.json", "docs/en/api/docs/changed.md"],
+      removed: ["docs/en/api/docs/removed.md"],
+    },
+    {
+      generatedAt: "2026-08-27T00:49:10Z",
+      pages: {
+        new: {
+          localPath: "docs/en/api/docs/new.md",
+          sourceUrl: "https://developers.openai.com/api/docs/new.md",
+          title: "New page",
+        },
+        changed: {
+          localPath: "docs/en/api/docs/changed.md",
+          sourceUrl: "https://developers.openai.com/api/docs/changed.md",
+          title: "Changed page",
+        },
+        removed: {
+          localPath: "docs/en/api/docs/removed.md",
+          sourceUrl: "https://developers.openai.com/api/docs/removed.md",
+          title: "Removed page",
+        },
+      },
+    },
+  );
+
+  assert.equal(release.id, "2026-08-27T00-49-10-000Z");
+  assert.deepEqual(release.added.map((entry) => entry.title), ["New page"]);
+  assert.deepEqual(release.modified.map((entry) => entry.route), [
+    "/api/docs/changed",
+  ]);
+  assert.deepEqual(release.removed.map((entry) => entry.title), [
+    "Removed page",
+  ]);
 });

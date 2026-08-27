@@ -1,0 +1,351 @@
+{
+  "id": "2026-08-26T16-49-10-000Z",
+  "generatedAt": "2026-08-26T16:49:10Z",
+  "added": [
+    {
+      "path": "docs/en/api/docs/guides/mutual-tls.md",
+      "route": "/api/docs/guides/mutual-tls",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/mutual-tls.md",
+      "title": "Mutual TLS"
+    }
+  ],
+  "modified": [
+    {
+      "path": "docs/en/api/docs/guides/audio.md",
+      "route": "/api/docs/guides/audio",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/audio.md",
+      "title": "Audio and speech"
+    },
+    {
+      "path": "docs/en/api/docs/guides/citation-formatting.md",
+      "route": "/api/docs/guides/citation-formatting",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/citation-formatting.md",
+      "title": "Citation Formatting"
+    },
+    {
+      "path": "docs/en/api/docs/guides/conversation-state.md",
+      "route": "/api/docs/guides/conversation-state",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/conversation-state.md",
+      "title": "Conversation state"
+    },
+    {
+      "path": "docs/en/api/docs/guides/direct-preference-optimization.md",
+      "route": "/api/docs/guides/direct-preference-optimization",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/direct-preference-optimization.md",
+      "title": "Direct preference optimization"
+    },
+    {
+      "path": "docs/en/api/docs/guides/embeddings.md",
+      "route": "/api/docs/guides/embeddings",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/embeddings.md",
+      "title": "Vector embeddings"
+    },
+    {
+      "path": "docs/en/api/docs/guides/error-codes.md",
+      "route": "/api/docs/guides/error-codes",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/error-codes.md",
+      "title": "Error codes"
+    },
+    {
+      "path": "docs/en/api/docs/guides/evals.md",
+      "route": "/api/docs/guides/evals",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/evals.md",
+      "title": "Working with evals"
+    },
+    {
+      "path": "docs/en/api/docs/guides/function-calling.md",
+      "route": "/api/docs/guides/function-calling",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/function-calling.md",
+      "title": "Function calling"
+    },
+    {
+      "path": "docs/en/api/docs/guides/graders.md",
+      "route": "/api/docs/guides/graders",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/graders.md",
+      "title": "Graders"
+    },
+    {
+      "path": "docs/en/api/docs/guides/image-generation.md",
+      "route": "/api/docs/guides/image-generation",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/image-generation.md",
+      "title": "Image generation"
+    },
+    {
+      "path": "docs/en/api/docs/guides/images-vision.md",
+      "route": "/api/docs/guides/images-vision",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/images-vision.md",
+      "title": "Images and vision"
+    },
+    {
+      "path": "docs/en/api/docs/guides/latency-optimization.md",
+      "route": "/api/docs/guides/latency-optimization",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/latency-optimization.md",
+      "title": "Latency optimization"
+    },
+    {
+      "path": "docs/en/api/docs/guides/migrate-to-responses.md",
+      "route": "/api/docs/guides/migrate-to-responses",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/migrate-to-responses.md",
+      "title": "Migrate to the Responses API"
+    },
+    {
+      "path": "docs/en/api/docs/guides/moderation.md",
+      "route": "/api/docs/guides/moderation",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/moderation.md",
+      "title": "Moderation"
+    },
+    {
+      "path": "docs/en/api/docs/guides/optimizing-llm-accuracy.md",
+      "route": "/api/docs/guides/optimizing-llm-accuracy",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/optimizing-llm-accuracy.md",
+      "title": "Optimizing LLM Accuracy"
+    },
+    {
+      "path": "docs/en/api/docs/guides/prompt-caching.md",
+      "route": "/api/docs/guides/prompt-caching",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/prompt-caching.md",
+      "title": "Prompt caching"
+    },
+    {
+      "path": "docs/en/api/docs/guides/prompt-engineering.md",
+      "route": "/api/docs/guides/prompt-engineering",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/prompt-engineering.md",
+      "title": "Prompt engineering"
+    },
+    {
+      "path": "docs/en/api/docs/guides/rate-limits.md",
+      "route": "/api/docs/guides/rate-limits",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/rate-limits.md",
+      "title": "Rate limits"
+    },
+    {
+      "path": "docs/en/api/docs/guides/realtime-models-prompting.md",
+      "route": "/api/docs/guides/realtime-models-prompting",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/realtime-models-prompting.md",
+      "title": "Using realtime models"
+    },
+    {
+      "path": "docs/en/api/docs/guides/reasoning.md",
+      "route": "/api/docs/guides/reasoning",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/reasoning.md",
+      "title": "Reasoning models"
+    },
+    {
+      "path": "docs/en/api/docs/guides/reinforcement-fine-tuning.md",
+      "route": "/api/docs/guides/reinforcement-fine-tuning",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning.md",
+      "title": "Reinforcement fine-tuning"
+    },
+    {
+      "path": "docs/en/api/docs/guides/retrieval.md",
+      "route": "/api/docs/guides/retrieval",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/retrieval.md",
+      "title": "Retrieval"
+    },
+    {
+      "path": "docs/en/api/docs/guides/speech-to-text.md",
+      "route": "/api/docs/guides/speech-to-text",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/speech-to-text.md",
+      "title": "File transcription"
+    },
+    {
+      "path": "docs/en/api/docs/guides/structured-outputs.md",
+      "route": "/api/docs/guides/structured-outputs",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/structured-outputs.md",
+      "title": "Structured model outputs"
+    },
+    {
+      "path": "docs/en/api/docs/guides/supervised-fine-tuning.md",
+      "route": "/api/docs/guides/supervised-fine-tuning",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/supervised-fine-tuning.md",
+      "title": "Supervised fine-tuning"
+    },
+    {
+      "path": "docs/en/api/docs/guides/text-to-speech.md",
+      "route": "/api/docs/guides/text-to-speech",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/text-to-speech.md",
+      "title": "Text to speech"
+    },
+    {
+      "path": "docs/en/api/docs/guides/text.md",
+      "route": "/api/docs/guides/text",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/text.md",
+      "title": "Text generation"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-computer-use.md",
+      "route": "/api/docs/guides/tools-computer-use",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-computer-use.md",
+      "title": "Computer use"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-connectors-mcp.md",
+      "route": "/api/docs/guides/tools-connectors-mcp",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-connectors-mcp.md",
+      "title": "MCP and Connectors"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-file-search.md",
+      "route": "/api/docs/guides/tools-file-search",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-file-search.md",
+      "title": "File search"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools.md",
+      "route": "/api/docs/guides/tools",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools.md",
+      "title": "Using tools"
+    },
+    {
+      "path": "docs/en/api/docs/guides/vision-fine-tuning.md",
+      "route": "/api/docs/guides/vision-fine-tuning",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/vision-fine-tuning.md",
+      "title": "Vision fine-tuning"
+    },
+    {
+      "path": "docs/en/api/docs/guides/workload-identity-federation.md",
+      "route": "/api/docs/guides/workload-identity-federation",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/workload-identity-federation.md",
+      "title": "Workload identity federation"
+    },
+    {
+      "path": "docs/en/api/docs/guides/workload-identity-federation/x509.md",
+      "route": "/api/docs/guides/workload-identity-federation/x509",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/workload-identity-federation/x509.md",
+      "title": "Configure workload identity federation with X.509 certificates"
+    },
+    {
+      "path": "docs/en/api/docs/mcp.md",
+      "route": "/api/docs/mcp",
+      "sourceUrl": "https://developers.openai.com/api/docs/mcp.md",
+      "title": "Building MCP servers for plugins and API integrations"
+    },
+    {
+      "path": "docs/en/api/docs/models.md",
+      "route": "/api/docs/models",
+      "sourceUrl": "https://developers.openai.com/api/docs/models.md",
+      "title": "Models"
+    },
+    {
+      "path": "docs/en/api/docs/models/all.md",
+      "route": "/api/docs/models/all",
+      "sourceUrl": "https://developers.openai.com/api/docs/models/all.md",
+      "title": "All models"
+    },
+    {
+      "path": "docs/en/api/docs/quickstart.md",
+      "route": "/api/docs/quickstart",
+      "sourceUrl": "https://developers.openai.com/api/docs/quickstart.md",
+      "title": "Developer quickstart"
+    },
+    {
+      "path": "docs/en/api/docs/supported-countries.md",
+      "route": "/api/docs/supported-countries",
+      "sourceUrl": "https://developers.openai.com/api/docs/supported-countries.md",
+      "title": "Supported countries and territories"
+    },
+    {
+      "path": "docs/en/api/docs/tutorials/web-qa-embeddings.md",
+      "route": "/api/docs/tutorials/web-qa-embeddings",
+      "sourceUrl": "https://developers.openai.com/api/docs/tutorials/web-qa-embeddings.md",
+      "title": "Web QA with embeddings"
+    },
+    {
+      "path": "docs/en/api/reference/resources/beta/subresources/responses/streaming-events.md",
+      "route": "/api/reference/resources/beta/subresources/responses/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/responses/streaming-events.md",
+      "title": "Beta Responses streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/beta/subresources/responses/websocket-events.md",
+      "route": "/api/reference/resources/beta/subresources/responses/websocket-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/responses/websocket-events.md",
+      "title": "Beta Responses WebSocket events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/conversations.md",
+      "route": "/api/reference/resources/conversations",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/conversations.md",
+      "title": "Conversations"
+    },
+    {
+      "path": "docs/en/api/reference/resources/conversations/methods/create.md",
+      "route": "/api/reference/resources/conversations/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/conversations/methods/create.md",
+      "title": "Conversations — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/realtime.md",
+      "route": "/api/reference/resources/realtime",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/realtime.md",
+      "title": "Realtime"
+    },
+    {
+      "path": "docs/en/api/reference/resources/realtime/subresources/calls.md",
+      "route": "/api/reference/resources/realtime/subresources/calls",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/realtime/subresources/calls.md",
+      "title": "Realtime Calls"
+    },
+    {
+      "path": "docs/en/api/reference/resources/realtime/subresources/calls/methods/create.md",
+      "route": "/api/reference/resources/realtime/subresources/calls/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/realtime/subresources/calls/methods/create.md",
+      "title": "Realtime Calls — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses.md",
+      "route": "/api/reference/resources/responses",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses.md",
+      "title": "Responses"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/cancel.md",
+      "route": "/api/reference/resources/responses/methods/cancel",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/cancel.md",
+      "title": "Responses — Cancel"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/compact.md",
+      "route": "/api/reference/resources/responses/methods/compact",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/compact.md",
+      "title": "Responses — Compact"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/create.md",
+      "route": "/api/reference/resources/responses/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/create.md",
+      "title": "Responses — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/retrieve.md",
+      "route": "/api/reference/resources/responses/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/retrieve.md",
+      "title": "Responses — Retrieve"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/streaming-events.md",
+      "route": "/api/reference/resources/responses/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/streaming-events.md",
+      "title": "Responses streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/subresources/input_tokens.md",
+      "route": "/api/reference/resources/responses/subresources/input_tokens",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/subresources/input_tokens.md",
+      "title": "Responses Input Tokens"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/websocket-events.md",
+      "route": "/api/reference/resources/responses/websocket-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/websocket-events.md",
+      "title": "Responses WebSocket events"
+    },
+    {
+      "path": "docs/en/api/reference/workload-identity-federation.md",
+      "route": "/api/reference/workload-identity-federation",
+      "sourceUrl": "https://developers.openai.com/api/reference/workload-identity-federation.md",
+      "title": "Workload identity token exchange"
+    }
+  ],
+  "removed": []
+}

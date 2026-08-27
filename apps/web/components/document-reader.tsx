@@ -21,6 +21,7 @@ import {
   navigationNeighbors,
   navigationSectionForRoute,
   oppositeLocale,
+  sidebarNavigationGroups,
 } from "@/lib/documents";
 import { resolveDocumentAsset, rewriteDocumentLink } from "@/lib/links";
 
@@ -66,6 +67,14 @@ function nodeText(node: ReactNode): string {
     return nodeText((node as { props: { children?: ReactNode } }).props.children);
   }
   return "";
+}
+
+function formatDocumentTime(value: string, locale: Locale): string {
+  return new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en-GB", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "Asia/Shanghai",
+  }).format(new Date(value));
 }
 
 function markdownComponents(document: GeneratedDocument): Components {
@@ -160,11 +169,11 @@ function DocsSidebar({ locale, route }: { locale: Locale; route: string }) {
         <strong>{section.groups.reduce((total, group) => total + group.entries.length, 0)}</strong>
       </div>
       <div className="sidebar-groups">
-        {section.groups.map((group) => activeGroup?.title === group.title ? (
-          <details key={group.title} open>
+        {sidebarNavigationGroups(section).map((group) => (
+          <details key={group.title} open={activeGroup?.title === group.title}>
             <summary>
               <span>{groupLabel(locale, group.title)}</span>
-              <small>{group.entries.length + group.externalEntries.length}</small>
+              <small>{group.entries.length}</small>
             </summary>
             <div className="sidebar-links">
               {group.entries.map((entry) => {
@@ -182,15 +191,6 @@ function DocsSidebar({ locale, route }: { locale: Locale; route: string }) {
               })}
             </div>
           </details>
-        ) : (
-          <Link
-            className="sidebar-group-link"
-            href={`${localizedRoute(locale, section.route)}#${headingSlug(group.title)}`}
-            key={group.title}
-          >
-            <span>{groupLabel(locale, group.title)}</span>
-            <small>{group.entries.length + group.externalEntries.length}</small>
-          </Link>
         ))}
       </div>
       <div className="sidebar-note">
@@ -261,7 +261,6 @@ export function DocumentReader({ document }: { document: GeneratedDocument }) {
           <div>
             <p className="eyebrow">{group ? groupLabel(locale, group.title) : sectionLabel(locale, section)}</p>
             <h1>{document.title}</h1>
-            {document.description && <p className="lead">{document.description}</p>}
           </div>
           <span className={`reviewed-badge ${document.reviewStatus}`}>
             {isSource
@@ -271,6 +270,28 @@ export function DocumentReader({ document }: { document: GeneratedDocument }) {
                 : locale === "zh" ? "机器翻译" : "Machine translated"}
           </span>
         </div>
+
+        <dl className="document-timestamps">
+          <div>
+            <dt>{locale === "zh" ? "英文原文拉取" : "English source pulled"}</dt>
+            <dd>
+              <time dateTime={document.sourceUpdatedAt}>
+                {formatDocumentTime(document.sourceUpdatedAt, locale)}
+              </time>
+            </dd>
+          </div>
+          {locale === "zh" && document.translatedAt && (
+            <div>
+              <dt>中文翻译完成</dt>
+              <dd>
+                <time dateTime={document.translatedAt}>
+                  {formatDocumentTime(document.translatedAt, locale)}
+                </time>
+              </dd>
+            </div>
+          )}
+          <span>{locale === "zh" ? "北京时间" : "China Standard Time"}</span>
+        </dl>
 
         <div className="source-notice">
           <span>

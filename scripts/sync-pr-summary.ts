@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { execFileSync } from "node:child_process";
-import { writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { basename, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
 export interface SyncDiffSummary {
@@ -13,7 +13,35 @@ export interface SyncDiffSummary {
 
 interface CliOptions {
   baseRef: string;
+  headRef: string;
   outputPath: string;
+  releaseDirectory?: string;
+}
+
+interface SourcePageRecord {
+  localPath: string;
+  sourceUrl: string;
+  title: string;
+}
+
+interface SourceManifest {
+  generatedAt: string;
+  pages: Record<string, SourcePageRecord>;
+}
+
+export interface SyncReleaseEntry {
+  path: string;
+  route: string;
+  sourceUrl: string;
+  title: string;
+}
+
+export interface SyncRelease {
+  added: SyncReleaseEntry[];
+  generatedAt: string;
+  id: string;
+  modified: SyncReleaseEntry[];
+  removed: SyncReleaseEntry[];
 }
 
 function sorted(paths: string[]): string[] {
@@ -91,20 +119,65 @@ export function renderSyncPullRequestBody(summary: SyncDiffSummary): string {
   ].join("\n");
 }
 
+function routeFromSourceUrl(sourceUrl: string): string {
+  return new URL(sourceUrl).pathname.replace(/\.md$/u, "").replace(/\/$/u, "");
+}
+
+function releaseId(generatedAt: string): string {
+  const timestamp = new Date(generatedAt);
+  if (!Number.isFinite(timestamp.valueOf())) {
+    throw new Error(`同步批次时间无效：${generatedAt}`);
+  }
+  return timestamp.toISOString().replace(/[.:]/gu, "-");
+}
+
+export function renderSyncRelease(
+  summary: SyncDiffSummary,
+  manifest: SourceManifest,
+): SyncRelease {
+  const pagesByPath = new Map(
+    Object.values(manifest.pages).map((page) => [page.localPath, page] as const),
+  );
+  const entries = (paths: string[]) => paths
+    .filter((path) => path.startsWith("docs/en/") && path.endsWith(".md"))
+    .map((path) => {
+      const page = pagesByPath.get(path);
+      if (!page) throw new Error(`同步清单缺少文章记录：${path}`);
+      return {
+        path,
+        route: routeFromSourceUrl(page.sourceUrl),
+        sourceUrl: page.sourceUrl,
+        title: page.title,
+      };
+    });
+
+  return {
+    id: releaseId(manifest.generatedAt),
+    generatedAt: manifest.generatedAt,
+    added: entries(summary.added),
+    modified: entries(summary.modified),
+    removed: entries(summary.removed),
+  };
+}
+
 function parseCliOptions(argv: string[]): CliOptions {
   let baseRef: string | undefined;
+  let headRef = "HEAD";
   let outputPath: string | undefined;
+  let releaseDirectory: string | undefined;
 
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index];
     if (argument === "--base-ref") baseRef = argv[++index];
+    else if (argument === "--head-ref") headRef = argv[++index] ?? "HEAD";
     else if (argument === "--output") outputPath = argv[++index];
+    else if (argument === "--release-dir") releaseDirectory = argv[++index];
     else throw new Error(`未知参数：${argument}`);
   }
 
   if (!baseRef) throw new Error("缺少 --base-ref。");
   if (!outputPath) throw new Error("缺少 --output。");
-  return { baseRef, outputPath };
+  return { baseRef, headRef, outputPath, releaseDirectory };
 }
 
 export async function main(argv = process.argv.slice(2)): Promise<void> {
@@ -116,7 +189,7 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
       "--name-status",
       "-z",
       "--no-renames",
-      `${options.baseRef}...HEAD`,
+      `${options.baseRef}...${options.headRef}`,
       "--",
       "docs/en",
     ],
@@ -124,6 +197,20 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
   );
   const summary = parseNameStatus(diff);
   await writeFile(options.outputPath, renderSyncPullRequestBody(summary), "utf8");
+  if (options.releaseDirectory) {
+    const manifest = JSON.parse(
+      await readFile(resolve("docs/en/.source-manifest.json"), "utf8"),
+    ) as SourceManifest;
+    const release = renderSyncRelease(summary, manifest);
+    const releaseDirectory = resolve(options.releaseDirectory);
+    await mkdir(releaseDirectory, { recursive: true });
+    const releasePath = resolve(releaseDirectory, `${release.id}.json`);
+    if (basename(releasePath) !== `${release.id}.json`) {
+      throw new Error(`同步批次文件名无效：${release.id}`);
+    }
+    await writeFile(releasePath, `${JSON.stringify(release, null, 2)}\n`, "utf8");
+    console.log(`同步批次记录：${releasePath}`);
+  }
   console.log(
     `同步 PR 摘要：新增=${summary.added.length} 修改=${summary.modified.length} 删除=${summary.removed.length}`,
   );
