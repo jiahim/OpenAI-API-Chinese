@@ -8,6 +8,7 @@
 - `docs/zh/.translation-manifest.json` 提供当前中文译文；未翻译中文路径仍处于官网对应目录，并链接到本站英文原文。
 - `docs/en/api/docs/llms.txt` 与 `docs/en/api/reference/llms.txt` 是导航分组和顺序的权威来源。
 - `scripts/generate-content.ts` 只生成轻量元数据和内容路径；Markdown 在构建对应页面时按需读取，不会进入浏览器公共数据包。
+- `lib/llms.ts` 从当前文档清单生成精简双语索引，并由静态路由发布为根路径 `/llms.txt`。
 - 首页明确展示 `developers.openai.com` 为官方权威内容源，站点本身标注为社区镜像。
 
 ## 本地命令
@@ -64,6 +65,7 @@ NEXT_PUBLIC_SITE_ORIGIN=https://你的正式域名
 - `/zh/api/docs/...`：中文译文；尚未翻译时显示同结构状态页并提供本站英文入口。
 - `/en/api/docs/...`：仓库内英文 Markdown 的静态页面；超大事件/资源总表保留结构化路由并明确链接官网，后续按章节拆页。
 - `/zh|en/api/reference/...`：同样规则的 API 参考页面。
+- `/llms.txt`：供代理和大语言模型发现主要双语入口、常用文档与权威来源的精简索引。
 - 官方文档内部链接转换为当前语言的本站路由；即使目标尚未翻译，也不会自动跳回官网。
 - 第三方链接与非文档 OpenAI 链接保留为外部链接，并在新窗口打开。
 - `docs/en` 与 `docs/zh` 原文不会为展示目的被修改。
