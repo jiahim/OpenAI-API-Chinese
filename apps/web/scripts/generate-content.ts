@@ -38,6 +38,7 @@ interface NavigationEntry {
   route: string;
   sourceUrl: string;
   title: string;
+  translationState: TranslationContentState;
 }
 
 interface NavigationGroup {
@@ -62,7 +63,14 @@ interface ContentRecord {
   sourceUpdatedAt: string;
   title: string;
   translatedAt?: string;
+  translationState?: TranslationContentState;
 }
+
+type TranslationContentState =
+  | "current"
+  | "pending"
+  | "stale-policy"
+  | "stale-source";
 
 interface SyncReleaseEntry {
   path: string;
@@ -234,6 +242,20 @@ async function main(): Promise<void> {
     throw new Error("首页翻译状态未覆盖全部有效英文页面。");
   }
 
+  const translationStateBySourceUrl = new Map<string, TranslationContentState>();
+  for (const entry of translationWorkspace.entries) {
+    if (!entry.source || entry.source.status !== "active") continue;
+    if (
+      entry.state !== "current" &&
+      entry.state !== "pending" &&
+      entry.state !== "stale-policy" &&
+      entry.state !== "stale-source"
+    ) {
+      throw new Error(`英文页面存在无法展示的翻译状态：${entry.source.sourceUrl}`);
+    }
+    translationStateBySourceUrl.set(entry.source.sourceUrl, entry.state);
+  }
+
   const syncReleases = await Promise.all(
     updateFiles
       .filter((fileName) => fileName.endsWith(".json"))
@@ -254,6 +276,7 @@ async function main(): Promise<void> {
       sourceUpdatedAt: page.sourceUpdatedAt,
       contentPath: page.localPath,
       bytes: page.bytes,
+      translationState: translationStateBySourceUrl.get(page.sourceUrl) ?? "pending",
     }))
     .sort((left, right) => left.route.localeCompare(right.route));
 
@@ -328,6 +351,7 @@ async function main(): Promise<void> {
       sourceUrl: page.sourceUrl,
       sourceUpdatedAt: catalogPage.sourceUpdatedAt,
       translatedAt: page.translatedAt,
+      translationState: translationStateBySourceUrl.get(page.sourceUrl) ?? "pending",
       reviewStatus: page.reviewStatus,
     });
   }

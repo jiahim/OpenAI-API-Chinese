@@ -16,6 +16,7 @@ import {
   documentMetadataForRoute,
   navigation,
   sourcePageCount,
+  translationStateForRoute,
 } from "../lib/documents.js";
 import { loadDocumentForRoute } from "../lib/document-content.js";
 import { rewriteDocumentLink } from "../lib/links.js";
@@ -134,6 +135,20 @@ describe("document link rewriting", () => {
       translationStatus.staleSource + translationStatus.stalePolicy,
     );
     assert.equal(translationStatus.totalActive, sourcePageCount);
+  });
+
+  it("exposes the same translation state for navigation and document badges", () => {
+    const states = navigation().flatMap((section) =>
+      section.groups.flatMap((group) =>
+        group.entries.map((entry) => translationStateForRoute(entry.route)),
+      ),
+    );
+    assert.equal(states.filter((state) => state === "current").length, translationStatus.current);
+    assert.equal(states.filter((state) => state === "pending").length, translationStatus.pending);
+    assert.equal(
+      states.filter((state) => state === "stale-source" || state === "stale-policy").length,
+      translationStatus.stale,
+    );
   });
 
   it("leaves Vercel output detection to the Next.js preset", async () => {
