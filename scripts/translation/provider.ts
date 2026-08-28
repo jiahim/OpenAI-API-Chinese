@@ -712,7 +712,7 @@ export function createLiteralBacktickProvider<TContext>(
         );
       }
       return output.map((item) => {
-        let text = item.text;
+        let text = item.text.replace(LITERAL_BACKTICK_PATTERN, "");
         for (const replacement of replacements) {
           if (replacement.itemId !== item.id) continue;
           text = text.split(replacement.token).join(replacement.backticks);

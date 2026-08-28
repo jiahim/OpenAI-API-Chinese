@@ -388,6 +388,33 @@ test("literal-backtick provider rejects markers moved across items", async () =>
   );
 });
 
+test("literal-backtick provider removes formatting added by the model", async () => {
+  const provider = defineProvider({
+    async translateBatch(request) {
+      return request.items.map((item) => ({
+        id: item.id,
+        text: "`prompt` 参数最多可包含 20 个唯一提示词。",
+      }));
+    },
+  });
+  const protectedProvider = createLiteralBacktickProvider(provider);
+
+  const output = await protectedProvider.translateBatch({
+    items: [
+      {
+        context: {},
+        id: "unit",
+        text: "The prompt parameter can hold up to 20 unique prompts.",
+      },
+    ],
+    targetLanguage: "zh-CN",
+  });
+
+  assert.deepEqual(output, [
+    { id: "unit", text: "prompt 参数最多可包含 20 个唯一提示词。" },
+  ]);
+});
+
 test("literal Markdown provider preserves source runs and removes added formatting", async () => {
   let observedText = "";
   const provider = defineProvider({
