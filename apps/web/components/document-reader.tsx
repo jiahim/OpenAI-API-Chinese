@@ -8,10 +8,10 @@ import type {
   GeneratedDocument,
   Locale,
   NavigationSection,
+  TranslationContentState,
 } from "@/lib/documents";
 import {
   bilingualPageCount,
-  hasLocalizedDocument,
   headingIds,
   headingSlug,
   localizedDocumentTitle,
@@ -22,6 +22,7 @@ import {
   navigationSectionForRoute,
   oppositeLocale,
   sidebarNavigationGroups,
+  translationStateForRoute,
 } from "@/lib/documents";
 import { resolveDocumentAsset, rewriteDocumentLink } from "@/lib/links";
 
@@ -58,6 +59,59 @@ function sectionLabel(locale: Locale, section: NavigationSection): string {
 
 function groupLabel(locale: Locale, label: string): string {
   return locale === "zh" ? GROUP_LABELS[label] ?? label : label;
+}
+
+type TranslationVisualState = "current" | "pending" | "stale";
+
+function translationVisualState(
+  state: TranslationContentState,
+): TranslationVisualState {
+  return state === "stale-policy" || state === "stale-source"
+    ? "stale"
+    : state;
+}
+
+function translationStatusLabel(state: TranslationContentState): string {
+  if (state === "current") return "译文为最新";
+  if (state === "pending") return "尚未翻译";
+  return "译文待更新";
+}
+
+function TranslationStatusDot({ state }: { state: TranslationContentState }) {
+  const label = translationStatusLabel(state);
+  return (
+    <i
+      aria-label={label}
+      className={`translation-status-dot ${translationVisualState(state)}`}
+      title={label}
+    />
+  );
+}
+
+function TranslationStatusBadge({ state }: { state: TranslationContentState }) {
+  return (
+    <span className={`translation-status-badge ${translationVisualState(state)}`}>
+      <i aria-hidden="true" />
+      {translationStatusLabel(state)}
+    </span>
+  );
+}
+
+function TranslationStatusLegend() {
+  return (
+    <div className="translation-status-legend" aria-label="中文翻译状态图例">
+      {([
+        ["current", "最新"],
+        ["stale-source", "待更新"],
+        ["pending", "未翻译"],
+      ] as const).map(([state, label]) => (
+        <span key={state}>
+          <TranslationStatusDot state={state} />
+          {label}
+        </span>
+      ))}
+    </div>
+  );
 }
 
 function nodeText(node: ReactNode): string {
@@ -168,6 +222,7 @@ function DocsSidebar({ locale, route }: { locale: Locale; route: string }) {
         <span>{sectionLabel(locale, section)}</span>
         <strong>{section.groups.reduce((total, group) => total + group.entries.length, 0)}</strong>
       </div>
+      {locale === "zh" && <TranslationStatusLegend />}
       <div className="sidebar-groups">
         {sidebarNavigationGroups(section).map((group) => (
           <details key={group.title} open={activeGroup?.title === group.title}>
@@ -177,15 +232,17 @@ function DocsSidebar({ locale, route }: { locale: Locale; route: string }) {
             </summary>
             <div className="sidebar-links">
               {group.entries.map((entry) => {
-                const available = hasLocalizedDocument(locale, entry.route);
+                const translationState = translationStateForRoute(entry.route);
                 return (
                   <Link
                     className={entry.route === route ? "active" : ""}
                     href={localizedRoute(locale, entry.route)}
                     key={entry.route}
                   >
+                    {locale === "zh" && (
+                      <TranslationStatusDot state={translationState} />
+                    )}
                     <span>{localizedDocumentTitle(locale, entry)}</span>
-                    {locale === "zh" && available && <i aria-label="已有中文译文" />}
                   </Link>
                 );
               })}
@@ -235,6 +292,7 @@ export function DocumentReader({ document }: { document: GeneratedDocument }) {
   const neighbors = navigationNeighbors(document.route);
   const toc = headingIds(document.headings);
   const isSource = document.reviewStatus === "source";
+  const translationState = document.translationState ?? "pending";
 
   return (
     <DocsShell
@@ -261,14 +319,30 @@ export function DocumentReader({ document }: { document: GeneratedDocument }) {
           <div>
             <p className="eyebrow">{group ? groupLabel(locale, group.title) : sectionLabel(locale, section)}</p>
             <h1>{document.title}</h1>
+            <div className="document-badges">
+              {locale === "zh" && (
+                <TranslationStatusBadge state={translationState} />
+              )}
+              <span className={`reviewed-badge ${document.reviewStatus}`}>
+                {isSource
+                  ? "English source"
+                  : document.reviewStatus === "reviewed"
+                    ? locale === "zh" ? "人工校对" : "Human reviewed"
+                    : locale === "zh" ? "机器翻译" : "Machine translated"}
+              </span>
+            </div>
+            {locale === "zh" && translationState === "stale-source" && (
+              <p className="translation-status-note">
+                英文原文已更新，中文版本尚未同步。
+                <Link href={localizedRoute("en", document.route)}>查看英文最新版 →</Link>
+              </p>
+            )}
+            {locale === "zh" && translationState === "stale-policy" && (
+              <p className="translation-status-note">
+                翻译规则已更新，当前译文尚未按新规则重译。
+              </p>
+            )}
           </div>
-          <span className={`reviewed-badge ${document.reviewStatus}`}>
-            {isSource
-              ? "English source"
-              : document.reviewStatus === "reviewed"
-                ? locale === "zh" ? "人工校对" : "Human reviewed"
-                : locale === "zh" ? "机器翻译" : "Machine translated"}
-          </span>
         </div>
 
         <dl className="document-timestamps">
@@ -358,6 +432,11 @@ export function SectionIndex({
           <strong>{pageCount}</strong><span>{locale === "zh" ? "篇页面" : "pages"}</span>
           <strong>{bilingualPageCount}</strong><span>{locale === "zh" ? "篇中文译文" : "Chinese translations"}</span>
         </div>
+        {locale === "zh" && (
+          <div className="section-translation-legend">
+            <TranslationStatusLegend />
+          </div>
+        )}
         <div className="section-groups">
           {section.groups.map((group) => (
             <section id={headingSlug(group.title)} key={group.title}>
@@ -367,16 +446,24 @@ export function SectionIndex({
                 <span>{group.entries.length + group.externalEntries.length}</span>
               </header>
               <div className="section-entry-list">
-                {group.entries.map((entry) => (
-                  <Link href={localizedRoute(locale, entry.route)} key={entry.route}>
-                    <span>{localizedDocumentTitle(locale, entry)}</span>
-                    <small>
-                      {locale === "zh" && hasLocalizedDocument("zh", entry.route)
-                        ? "中文可读"
-                        : locale === "zh" ? "英文原文" : "Open page"}
-                    </small>
-                  </Link>
-                ))}
+                {group.entries.map((entry) => {
+                  const translationState = translationStateForRoute(entry.route);
+                  return (
+                    <Link href={localizedRoute(locale, entry.route)} key={entry.route}>
+                      <span className="section-entry-title">
+                        {locale === "zh" && (
+                          <TranslationStatusDot state={translationState} />
+                        )}
+                        <span>{localizedDocumentTitle(locale, entry)}</span>
+                      </span>
+                      <small>
+                        {locale === "zh"
+                          ? translationStatusLabel(translationState)
+                          : "Open page"}
+                      </small>
+                    </Link>
+                  );
+                })}
                 {group.externalEntries.map((entry) => (
                   <a href={entry.sourceUrl} key={entry.sourceUrl} rel="noopener noreferrer" target="_blank">
                     <span>{entry.title}</span>
@@ -414,6 +501,11 @@ export function MissingDocument({
         </div>
         <p className="eyebrow">{locale === "zh" ? "中文翻译进行中" : "Not bundled yet"}</p>
         <h1>{title}</h1>
+        {locale === "zh" && (
+          <div className="document-badges">
+            <TranslationStatusBadge state="pending" />
+          </div>
+        )}
         <p>
           {locale === "zh"
             ? "这篇页面已处于和官网一致的目录位置，但中文译文尚未生成。你可以先阅读本站静态渲染的英文原文，不会被自动带离本站。"

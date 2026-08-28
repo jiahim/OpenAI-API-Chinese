@@ -89,6 +89,11 @@ test("renders every document header in title, timestamps, source notice, body or
     1,
     "article body must not be duplicated into the document header",
   );
+  assert.match(html, /translation-status-badge/u);
+  assert.match(
+    html,
+    document.translationState === "current" ? /译文为最新/u : /译文待更新/u,
+  );
 });
 
 test("keeps external document bundles out of the ordinary article sidebar", () => {

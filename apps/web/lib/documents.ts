@@ -6,6 +6,11 @@ import {
 } from "@/generated/documents";
 
 export type Locale = "en" | "zh";
+export type TranslationContentState =
+  | "current"
+  | "pending"
+  | "stale-policy"
+  | "stale-source";
 
 export interface DocumentMetadata {
   bytes: number;
@@ -18,6 +23,7 @@ export interface DocumentMetadata {
   sourceUrl: string;
   sourceUpdatedAt: string;
   translatedAt?: string;
+  translationState?: TranslationContentState;
   reviewStatus: "machine" | "reviewed" | "source";
 }
 
@@ -35,6 +41,7 @@ export interface CatalogDocument {
   section: "guides" | "reference";
   sourceUrl: string;
   sourceUpdatedAt: string;
+  translationState: TranslationContentState;
 }
 
 export type NavigationEntry = CatalogDocument;
@@ -164,6 +171,10 @@ export function localizedDocumentTitle(locale: Locale, entry: NavigationEntry): 
 
 export function hasLocalizedDocument(locale: Locale, route: string): boolean {
   return Boolean(documentMetadataForRoute(locale, route));
+}
+
+export function translationStateForRoute(route: string): TranslationContentState {
+  return catalogDocumentForRoute(route)?.translationState ?? "pending";
 }
 
 export function allGeneratedDocuments(): DocumentMetadata[] {
