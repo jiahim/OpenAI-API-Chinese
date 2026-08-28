@@ -37,6 +37,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="zh-CN">
+      <head>
+        <link href="/llms.txt" rel="describedby" />
+      </head>
       <body>
         {children}
         <script
