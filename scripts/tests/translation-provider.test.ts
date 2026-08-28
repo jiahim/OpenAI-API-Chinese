@@ -643,6 +643,100 @@ test("preserve-term provider normalizes duplicated protected marker pairs", asyn
   assert.deepEqual(output, [{ id: "unit", text: "API / 接口" }]);
 });
 
+test("preserve-term provider retranslates only items missing protected terms", async () => {
+  const protectedSpanPattern =
+    /\{\{ET_KEEP_\d+_\d+_\d+_START\}\}API\{\{ET_KEEP_\d+_\d+_\d+_END\}\}/u;
+  const observedItemIds: string[][] = [];
+  const provider = defineProvider({
+    async translateBatch(request) {
+      observedItemIds.push(request.items.map((item) => item.id));
+      return request.items.map((item) => {
+        const protectedSpan = item.text.match(protectedSpanPattern)?.[0];
+        assert.ok(protectedSpan);
+        if (observedItemIds.length === 1 && item.id === "ephemeral") {
+          return { id: item.id, text: "浏览器向服务器请求临时密钥。" };
+        }
+        return {
+          id: item.id,
+          text:
+            item.id === "ephemeral"
+              ? `浏览器向服务器请求临时 ${protectedSpan} 密钥。`
+              : `服务器使用标准 ${protectedSpan} 密钥。`,
+        };
+      });
+    },
+  });
+  const protectedProvider = createPreserveTermsProvider(provider, ["API"]);
+  const output = await protectedProvider.translateBatch({
+    items: [
+      {
+        context: {},
+        id: "ephemeral",
+        text: "The browser requests an ephemeral API key.",
+      },
+      {
+        context: {},
+        id: "standard",
+        text: "The server uses a standard API key.",
+      },
+    ],
+    targetLanguage: "zh-CN",
+  });
+
+  assert.deepEqual(observedItemIds, [
+    ["ephemeral", "standard"],
+    ["ephemeral"],
+  ]);
+  assert.deepEqual(output, [
+    { id: "ephemeral", text: "浏览器向服务器请求临时 API 密钥。" },
+    { id: "standard", text: "服务器使用标准 API 密钥。" },
+  ]);
+});
+
+test("preserve-term recovery does not reclaim spans moved between items", async () => {
+  const protectedSpanPattern =
+    /\{\{ET_KEEP_\d+_\d+_\d+_START\}\}API\{\{ET_KEEP_\d+_\d+_\d+_END\}\}/u;
+  const observedItemIds: string[][] = [];
+  const provider = defineProvider({
+    async translateBatch(request) {
+      observedItemIds.push(request.items.map((item) => item.id));
+      if (observedItemIds.length === 1) {
+        const movedSpan = request.items[1]?.text.match(protectedSpanPattern)?.[0];
+        assert.ok(movedSpan);
+        return [
+          { id: "missing", text: "浏览器请求临时密钥。" },
+          { id: "moved-from", text: "服务器使用" },
+          { id: "moved-to", text: `${movedSpan} 密钥。` },
+        ];
+      }
+      const recoveredSpan = request.items[0]?.text.match(protectedSpanPattern)?.[0];
+      assert.ok(recoveredSpan);
+      return [
+        { id: "missing", text: `浏览器请求临时 ${recoveredSpan} 密钥。` },
+      ];
+    },
+  });
+  const protectedProvider = createPreserveTermsProvider(provider, ["API"]);
+  const output = await protectedProvider.translateBatch({
+    items: [
+      { context: {}, id: "missing", text: "Request an ephemeral API key." },
+      { context: {}, id: "moved-from", text: "Use an API" },
+      { context: {}, id: "moved-to", text: "key." },
+    ],
+    targetLanguage: "zh-CN",
+  });
+
+  assert.deepEqual(observedItemIds, [
+    ["missing", "moved-from", "moved-to"],
+    ["missing"],
+  ]);
+  assert.deepEqual(output, [
+    { id: "missing", text: "浏览器请求临时 API 密钥。" },
+    { id: "moved-from", text: "服务器使用" },
+    { id: "moved-to", text: "API 密钥。" },
+  ]);
+});
+
 test("preserve-term provider rejects a missing protected span", async () => {
   const protectedSpanPattern =
     /\{\{ET_KEEP_\d+_\d+_\d+_START\}\}API\{\{ET_KEEP_\d+_\d+_\d+_END\}\}/u;

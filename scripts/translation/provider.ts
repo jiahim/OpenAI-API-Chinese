@@ -44,6 +44,9 @@ const PRESERVE_MARKER_INSTRUCTION =
   "fragmented items, move the entire pair instead of copying it. Never translate, omit, duplicate, or split a protected span." +
   " Do not introduce additional unmarked occurrences of protected terms, including by expanding generic or " +
   "possessive references into product or company names.";
+const PRESERVE_MISSING_RECOVERY_INSTRUCTION =
+  "MISSING PROTECTED SPAN RECOVERY: This request contains only response items that omitted one or more protected terms. " +
+  "Translate every item again and copy every complete {{ET_KEEP_*_START}}...{{ET_KEEP_*_END}} span exactly once.";
 const PRESERVE_MARKER_RESIDUE_PATTERN = /ET_KEEP_\d+_\d+_\d+/u;
 const TERMINOLOGY_MARKER_INSTRUCTION =
   "Paired {{ET_TERM_*_START}} and {{ET_TERM_*_END}} markers wrap glossary source terms. " +
@@ -356,9 +359,12 @@ export function createPreserveTermsProvider<TContext>(
   if (terms.length === 0) return provider;
 
   let requestIndex = 0;
-  return {
-    name: provider.name,
-    async translateBatch(request, signal, onActivity) {
+  async function translateBatch(
+    request: TranslationBatchRequest<TContext>,
+    signal?: AbortSignal,
+    onActivity?: Parameters<TranslationProvider<TContext>["translateBatch"]>[2],
+    allowMissingRecovery = true,
+  ): Promise<TranslationOutputItem[]> {
       const currentRequest = requestIndex;
       requestIndex += 1;
       const replacementsById = new Map<string, PreserveReplacement[]>();
@@ -444,9 +450,101 @@ export function createPreserveTermsProvider<TContext>(
         restoredOutput.map((item) => item.text),
         terms,
       );
-      for (const [term, expected] of expectedCounts) {
+      let countMismatch = [...expectedCounts].find(
+        ([term, expected]) => (actualCounts.get(term) ?? 0) !== expected,
+      );
+      if (
+        allowMissingRecovery &&
+        countMismatch !== undefined &&
+        (actualCounts.get(countMismatch[0]) ?? 0) < countMismatch[1]
+      ) {
+        const deficitTerms = new Set(
+          [...expectedCounts].flatMap(([term, expected]) =>
+            (actualCounts.get(term) ?? 0) < expected ? [term] : [],
+          ),
+        );
+        const presentReplacementTokens = new Set(
+          allReplacements.flatMap((replacement) =>
+            normalizedOutput.some(
+              (item) =>
+                item.text.includes(replacement.openToken) &&
+                item.text.includes(replacement.closeToken),
+            )
+              ? [replacement.openToken]
+              : [],
+          ),
+        );
+        const outputById = new Map(
+          restoredOutput.map((item) => [item.id, item.text]),
+        );
+        const recoveryIds = new Set<string>();
+        for (const item of request.items) {
+          const replacements = replacementsById.get(item.id) ?? [];
+          if (replacements.length === 0) continue;
+          const itemExpectedCounts = new Map<string, number>();
+          for (const replacement of replacements) {
+            itemExpectedCounts.set(
+              replacement.term,
+              (itemExpectedCounts.get(replacement.term) ?? 0) + 1,
+            );
+          }
+          const itemActualCounts = countPreservedTerms(
+            [outputById.get(item.id) ?? ""],
+            terms,
+          );
+          if (
+            [...itemExpectedCounts].some(
+              ([term, expected]) =>
+                deficitTerms.has(term) &&
+                (itemActualCounts.get(term) ?? 0) < expected &&
+                replacements.some(
+                  (replacement) =>
+                    replacement.term === term &&
+                    !presentReplacementTokens.has(replacement.openToken),
+                ),
+            )
+          ) {
+            recoveryIds.add(item.id);
+          }
+        }
+        if (recoveryIds.size > 0) {
+          const recovered = await translateBatch(
+            {
+              ...request,
+              instructions: [
+                request.instructions,
+                PRESERVE_MISSING_RECOVERY_INSTRUCTION,
+              ]
+                .filter(Boolean)
+                .join("\n"),
+              items: request.items.filter((item) => recoveryIds.has(item.id)),
+            },
+            signal,
+            onActivity,
+            false,
+          );
+          const recoveredById = new Map(
+            recovered.map((item) => [item.id, item]),
+          );
+          const combinedOutput = restoredOutput.map(
+            (item) => recoveredById.get(item.id) ?? item,
+          );
+          const combinedCounts = countPreservedTerms(
+            combinedOutput.map((item) => item.text),
+            terms,
+          );
+          countMismatch = [...expectedCounts].find(
+            ([term, expected]) => (combinedCounts.get(term) ?? 0) !== expected,
+          );
+          if (countMismatch === undefined) return combinedOutput;
+          for (const [term, count] of combinedCounts) {
+            actualCounts.set(term, count);
+          }
+        }
+      }
+      if (countMismatch !== undefined) {
+        const [term, expected] = countMismatch;
         const actual = actualCounts.get(term) ?? 0;
-        if (actual === expected) continue;
         const unitId = [...replacementsById].find(([, replacements]) =>
           replacements.some((replacement) => replacement.term === term),
         )?.[0];
@@ -465,6 +563,11 @@ export function createPreserveTermsProvider<TContext>(
         );
       }
       return restoredOutput;
+  }
+  return {
+    name: provider.name,
+    translateBatch(request, signal, onActivity) {
+      return translateBatch(request, signal, onActivity);
     },
   };
 }
