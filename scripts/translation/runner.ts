@@ -20,7 +20,9 @@ import {
 } from "node:path";
 
 import {
+  isTranslationCoreError,
   retryOperation,
+  TranslationResponseError,
   translatePlan,
   type RetryOperationOptions,
   type TranslationCheckpoint,
@@ -33,6 +35,7 @@ import {
 
 import {
   containsMarkdownControlCharacter,
+  MARKDOWN_STRUCTURE_ISSUE_CODE,
   markdownDocumentAdapter,
   type MarkdownTranslationContext,
 } from "./markdown-adapter.ts";
@@ -59,6 +62,7 @@ const PLACEHOLDER_PATTERN =
 const LITERAL_BACKTICK_PATTERN = /`+/gu;
 
 export interface TranslationPageRunOptions {
+  additionalInstructions?: string | undefined;
   batchSize?: number | undefined;
   commit?: boolean | undefined;
   concurrency?: number | undefined;
@@ -75,6 +79,7 @@ export type RetriableTranslationPageRunOptions = Omit<
   "useCheckpoint"
 > & {
   pageRetry?: number | RetryOperationOptions | undefined;
+  retryFactory?: (() => number | TranslationRetryPolicy) | undefined;
 };
 
 export interface TranslationPageRunResult {
@@ -310,6 +315,20 @@ async function readOptionalCheckpoint(
       throw new Error(`Checkpoint 不是有效 JSON：${path}`, { cause: error });
     }
     throw error;
+  }
+}
+
+async function removeOptionalCheckpoint(
+  workspace: TranslationWorkspaceSnapshot,
+  path: string,
+): Promise<void> {
+  const root = await realpath(resolve(workspace.repositoryRoot));
+  const absolute = repositoryPath(root, path, "Checkpoint");
+  await assertSafeExistingTarget(root, absolute, "Checkpoint");
+  try {
+    await unlink(absolute);
+  } catch (error) {
+    if (!isErrno(error, "ENOENT")) throw error;
   }
 }
 
@@ -610,10 +629,12 @@ export async function runTranslationPage(
   );
   const path = checkpointPath(entry.source.sourceUrl, pagePolicySha256);
   const useCheckpoint = options.useCheckpoint ?? true;
-  const instructions = instructionsForWorkspace(
-    workspace,
-    entry.source.sourceUrl,
-  );
+  const instructions = [
+    instructionsForWorkspace(workspace, entry.source.sourceUrl),
+    options.additionalInstructions?.trim(),
+  ]
+    .filter(Boolean)
+    .join("\n\n");
   let lastReportedRetry: TranslationRetryEvent | undefined;
   const result = await translatePlan(prepared.plan, {
     batchSize: options.batchSize ?? 20,
@@ -684,7 +705,7 @@ export async function runTranslationPageWithRetry(
   sourceUrl: string,
   options: RetriableTranslationPageRunOptions,
 ): Promise<TranslationPageRunResult> {
-  const { pageRetry, ...runOptions } = options;
+  const { pageRetry, retryFactory, ...runOptions } = options;
   const retryOptions: RetryOperationOptions =
     typeof pageRetry === "number"
       ? { maxRetries: pageRetry }
@@ -694,12 +715,45 @@ export async function runTranslationPageWithRetry(
           maxDelayMs: 10_000,
           maxRetries: 1,
         });
+  const path = checkpointPath(
+    sourceUrl,
+    translationPolicySha256ForPage(workspace, sourceUrl),
+  );
+  let structureRetryInstruction = runOptions.additionalInstructions;
   return retryOperation(
-    () =>
-      runTranslationPage(workspace, sourceUrl, {
-        ...runOptions,
-        useCheckpoint: true,
-      }),
+    async () => {
+      try {
+        return await runTranslationPage(workspace, sourceUrl, {
+          ...runOptions,
+          additionalInstructions: structureRetryInstruction,
+          retry: retryFactory?.() ?? runOptions.retry,
+          useCheckpoint: true,
+        });
+      } catch (error) {
+        if (
+          isTranslationCoreError(error) &&
+          error.details.issueCode === MARKDOWN_STRUCTURE_ISSUE_CODE
+        ) {
+          // A structure error is detected only after the complete page has
+          // rendered, so its checkpoint contains the same invalid output.
+          // Remove it even when no retry remains, preventing a later run from
+          // replaying a poisoned checkpoint.
+          await removeOptionalCheckpoint(workspace, path);
+          if (
+            error instanceof TranslationResponseError &&
+            error.retryInstruction
+          ) {
+            structureRetryInstruction = [
+              runOptions.additionalInstructions?.trim(),
+              error.retryInstruction,
+            ]
+              .filter(Boolean)
+              .join("\n\n");
+          }
+        }
+        throw error;
+      }
+    },
     retryOptions,
   );
 }
