@@ -1,53 +1,53 @@
-# 音频与语音
+# 音频和语音
 
-> 有关完整文档索引，请参阅 [llms.txt](/llms.txt)。通过在页面 URL 后追加 `.md` ，可以获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾添加 `.md` 来获取。
 
-音频模型可以理解语音输入、生成语音输出，或在同一交互中同时实现两者。本指南解释了 OpenAI 音频文档中使用的词汇。当你准备好选择实现路径时，请从 [Realtime 与音频概览](https://developers.openai.com/api/docs/guides/realtime).
+音频模型可以理解语音输入、生成语音输出，或在同一交互中同时实现两者。本指南介绍 OpenAI 音频文档中使用的术语。当你准备好选择实现方案时，可以从以下内容开始： [Realtime and audio overview](https://developers.openai.com/api/docs/guides/realtime).
 
 ## 音频模态
 
-音频应用结合以下一种或多种模态：
+一个音频应用会组合使用以下一种或多种模态：
 
 | 模态        | 含义                                      | 常见用例                                  |
 | --------------- | -------------------------------------------- | ------------------------------------------------- |
 | 音频输入     | 模型接收来自用户或应用的声音。 | 语音智能体、转录、翻译。         |
-| 音频输出    | 模型或API返回口语化音频。       | 语音智能体、文本转语音、口语化响应。   |
-| 文本转录 | 语音变为文本。                         | 字幕、通话分析、搜索、记录。         |
-| 文本提示     | 文本控制模型的输出或行为。   | 语音生成、脚本化语音流程、提示。 |
+| 音频输出    | 模型或API 返回口语音频。       | 语音智能体、文本转语音、口语回复。   |
+| 文本转录 | 语音转换为文本。                         | 字幕、通话分析、搜索、记录。         |
+| 文本提示     | 文本控制模型要说或要做的事情。   | 语音生成、脚本化语音流程、提示。 |
 
 ## 常见语音任务
 
-**语音转文本** 将语音转换为文本。可用于字幕、笔记、转录、分析、搜索和无障碍功能。转录可以是基于请求的文件处理，或用于实时音频的流式处理。首先查看 [转录概览](https://developers.openai.com/api/docs/guides/transcription) 以选择 工作流 和模型。
+**Speech to text** 将语音转换为文字。可用于字幕、笔记、转写、分析、搜索和无障碍场景。转写可以基于请求处理文件，也可以通过流式处理实时音频。从 [转写概述](https://developers.openai.com/api/docs/guides/transcription) 入手，选择工作流和模型。
 
-**文本转语音** 将文本转换为口语音频。可用于旁白、助手、无障碍功能和生成的语音回复。语音生成可以在模型生成音频的同时流式返回音频。
+**Text to speech** 将文字转换为口语音频。可用于旁白、助手、无障碍场景以及生成的语音回复。语音生成可以在模型产生音频时将其以流式方式返回。
 
-**语音转语音** 让模型在一个低延迟会话中完成收听、推理和说话。当助手需要回复、调用工具或维护会话状态时，可用于对话式语音 智能体。
+**Speech to speech** 让模型在同一个低延迟会话中完成倾听、推理和发声。当助手需要回复、调用工具或维护会话状态时，可用于构建对话式语音智能体。
 
-**语音翻译** 听取一种语言的语音，并返回另一种语言的翻译语音或转录输出。当翻译应在音频到达时持续开始时，应使用专门的实时翻译会话。
+**Speech translation** 收听一种语言的语音，并以另一种语言返回翻译后的语音或转写文本。当音频到达时需要持续开始翻译时，可使用专用的实时翻译会话。
 
 ## 流式传输与延迟
 
-流式传输意味着客户端和服务在交互仍处于活动状态时交换部分输入或输出。当用户期望即时反馈时，流式传输非常有用，例如实时字幕、通话、语音智能体和翻译。
+流式传输意味着客户端和服务在交互仍在进行时交换部分输入或输出。当用户期望即时反馈时，例如实时字幕、通话、语音智能体和翻译，流式传输非常有用。
 
-更低的延迟需要实时连接、更细致的音频处理，以及能够发出部分事件的会话模型。基于请求的API对于文件上传和非交互式工作更为简单，但它们不支持相同的实时交互模式。
+较低的延迟需要实时连接、更细致的音频处理，以及能够发出部分事件的会话模型。基于请求的API对于文件上传和非交互式工作来说更简单，但它们不支持相同的实时交互模式。
 
-## 基于请求的API与实时会话
+## 基于请求的 API 与实时会话
 
-OpenAI 支持两种广泛的音频架构：
+OpenAI 支持两大类音频架构：
 
 | 架构                | 使用场景                                             | 示例                                                                                                                                                       |
 | --------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 基于请求的 API    | 你有一个文件、文本输入或有界的请求。 | [文件转录](https://developers.openai.com/api/docs/guides/speech-to-text), [文本转语音](https://developers.openai.com/api/docs/guides/text-to-speech).                                                      |
-| 实时会话           | 音频是实时的，应用需要低延迟事件。  | [语音智能体](https://developers.openai.com/api/docs/guides/voice-agents), [翻译](https://developers.openai.com/api/docs/guides/realtime-translation), [转录](https://developers.openai.com/api/docs/guides/realtime-transcription). |
+| 基于请求的音频 API    | 你拥有文件、文本输入或有界的请求。 | [文件转录](https://developers.openai.com/api/docs/guides/speech-to-text), [文字转语音](https://developers.openai.com/api/docs/guides/text-to-speech).                                                      |
+| 实时会话           | 音频是实时的，且应用需要低延迟事件。  | [语音 智能体](https://developers.openai.com/api/docs/guides/voice-agents), [翻译](https://developers.openai.com/api/docs/guides/realtime-translation), [转录](https://developers.openai.com/api/docs/guides/realtime-transcription). |
 | 多模态 Chat Completions | 你正在使用音频扩展现有的聊天流程。  | [音频输入或输出](#add-audio-to-your-existing-application).                                                                                              |
 
-有关构建路径的指导，请参阅 [Realtime 与音频概览](https://developers.openai.com/api/docs/guides/realtime).
+有关构建路径指引，请参阅 [Realtime and audio overview](https://developers.openai.com/api/docs/guides/realtime).
 
-## 向现有应用程序添加音频
+## 为现有应用添加音频
 
-诸如此类的模型 [`gpt-realtime-2.1`](https://developers.openai.com/api/docs/models/gpt-realtime-2.1) 和 [`gpt-audio-1.5`](https://developers.openai.com/api/docs/models/gpt-audio-1.5) 原生支持多模态，意味着它们能够理解并生成音频和文本作为输入和输出。
+诸如 [`gpt-realtime-2.1`](https://developers.openai.com/api/docs/models/gpt-realtime-2.1) 和 [`gpt-audio-1.5`](https://developers.openai.com/api/docs/models/gpt-audio-1.5) 这类模型本身是多模态的，意味着它们能够理解并生成音频和文本形式的输入与输出。
 
-对于实时浏览器语音到语音交互，可以从 JavaScript 的 Agents SDK 中的实时会话开始：
+对于浏览器中实时的语音对语音交互，请先在 JavaScript 中使用 Agents SDK 启动一个实时会话：
 
 启动实时语音会话
 
@@ -69,13 +69,13 @@ await session.connect({
 ```
 
 
-此 JavaScript 示例使用 Agents SDK 从客户端通过 WebRTC 连接浏览器语音 智能体。对于 Python 语音工作流，请使用 [语音 智能体 指南](https://developers.openai.com/api/docs/guides/voice-agents)，该指南涵盖了链式语音流水线。
+这个 JavaScript 示例使用 Agents SDK 将浏览器中的语音 智能体 通过 WebRTC 从客户端进行连接。如果是 Python 语音工作流，请使用 [Voice 智能体 指南](https://developers.openai.com/api/docs/guides/voice-agents)，其中涵盖了链式语音流水线。
 
-如果你已有基于文本的 LLM 应用，使用 [Chat Completions 端点](https://developers.openai.com/api/reference/resources/chat)，你可能想要添加音频功能。例如，如果你的聊天应用支持文本输入，你可以添加音频输入和输出：在 `audio` 数组中包含 `modalities` ，并使用音频模型，如 [`gpt-audio-1.5`](https://developers.openai.com/api/docs/models/gpt-audio-1.5).
+如果你已经基于 [Chat Completions 端点](https://developers.openai.com/api/reference/resources/chat)，构建了一个基于文本的 LLM 应用，你可能希望为其增加音频能力。例如，如果你的聊天应用支持文本输入，你可以同时加入音频输入与输出：在 `audio` 数组中加入 `modalities` ，并使用一个支持音频的模型，例如 [`gpt-audio-1.5`](https://developers.openai.com/api/docs/models/gpt-audio-1.5).
 
-该 [Responses API](https://developers.openai.com/api/reference/resources/responses) 文档当前描述
-  文本和图像输入与文本输出。对于这种音频聊天模式，请使用 Chat
-  Completions 配合支持音频的模型。
+该 [Responses API](https://developers.openai.com/api/reference/resources/responses) 文档目前介绍的是
+  文本和图像输入配合文本输出。对于这种音频聊天模式，请使用支持音频的模型调用 Chat
+  Completions。
 
 
 

@@ -1,30 +1,30 @@
-# 本地 Shell
+# Local shell
 
-> 有关完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-本地 shell 工具已过时。对于新的使用场景，请使用
-  [`shell`](https://developers.openai.com/api/docs/guides/tools-shell) 与 GPT-5.1 配合使用。 [了解
+本地 shell 工具已过时。对于新的使用场景，请改用
+  [`shell`](https://developers.openai.com/api/docs/guides/tools-shell) 工具配合 GPT-5.1 使用。 [了解
   更多](https://developers.openai.com/api/docs/guides/tools-shell).
 
-本地 shell 是一种工具，允许智能体在你或用户提供的机器上本地运行 shell 命令。它旨在与 [Codex CLI](https://github.com/openai/codex) 和 [`codex-mini-latest`](https://developers.openai.com/api/docs/models/codex-mini-latest)。配合使用。命令在你的运行时环境中执行， **你完全控制实际运行的命令，** ——API仅返回指令，但不会在OpenAI基础设施上执行它们。
+本地 shell 是一项允许 智能体 在你或用户提供的一台机器上本地运行 shell 命令的工具。它设计为与 [Codex CLI](https://github.com/openai/codex) 和 [`codex-mini-latest`](https://developers.openai.com/api/docs/models/codex-mini-latest)。配合使用。命令会在你自己的运行时中执行， **你可以完全控制实际运行的命令** ——API 仅返回指令，但不会在 OpenAI 基础设施上执行它们。
 
-本地 shell 可通过 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) 用于与 [`codex-mini-latest`](https://developers.openai.com/api/docs/models/codex-mini-latest)。配合使用。它不适用于其他模型，也不可通过Chat Completions API使用。
+本地 shell 可通过 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) 用于 [`codex-mini-latest`](https://developers.openai.com/api/docs/models/codex-mini-latest)。它在其他模型上不可用，也无法通过 Chat Completions API 使用。
 
-运行任意 shell 命令可能很危险。在将命令转发到系统前，请务必对执行进行沙箱隔离
-，或添加严格的允许/拒绝列表，
+运行任意 shell 命令可能存在危险。在将命令转发到系统
+shell 之前，务必进行沙箱化执行或添加严格的允许/拒绝列表。
 shell。
 
 
 
-参见 [Codex CLI](https://github.com/openai/codex) 以获取参考实现。
+请参阅 [Codex CLI](https://github.com/openai/codex) 以获取参考实现。
 
 ## 工作原理
 
-本地 shell 工具使智能体能够在访问终端的连续循环中运行。
+本地 shell 工具使 智能体 能够在持续循环中运行，并可访问终端。
 
-它发送 shell 命令，你的代码在本地机器上执行这些命令，然后将输出返回给模型。这个循环使模型能够完成构建-测试-运行循环，无需用户额外干预。
+它会发送 shell 命令，由你的代码在本地机器上执行，然后将输出返回给模型。这个循环使模型能够在无需用户额外介入的情况下完成构建-测试-运行循环。
 
-作为代码的一部分，你需要实现一个循环来监听 `local_shell_call` 输出项并执行其中包含的命令。我们强烈建议对这些命令的执行进行沙箱隔离，以防止任何意外命令被执行。
+作为你代码的一部分，你需要实现一个循环来监听 `local_shell_call` 输出项并执行它们所包含的命令。我们强烈建议对这些命令的执行进行沙箱化处理，以防止任何意外命令被执行。
 
 
 
@@ -32,29 +32,29 @@ shell。
 
 
 
-以下是在应用程序中集成计算机使用工具所需遵循的高级步骤：
+以下是在你的应用中集成 computer use 工具所需遵循的高级步骤：
 
 1. **向模型发送请求**:
-   将 `local_shell` 工具作为可用工具的一部分。
+   将 `local_shell` 工具作为可用工具的一部分提供。
 
-2. **接收模型的响应**:
-   检查响应是否有任何 `local_shell_call` 项。
-   该工具调用包含一个操作，如 `exec` 以及要执行的命令。
+2. **接收模型返回的响应**:
+   检查响应中是否包含 `local_shell_call` 项。
+   该工具调用包含一项动作，例如 `exec` ，并带有要执行的命令。
 
-3. **执行请求的操作**:
-   通过代码在计算机或容器环境中执行相应的操作。
+3. **执行所请求的动作**:
+   通过代码在计算机或容器环境中执行相应的动作。
 
-4. **返回操作输出**:
-   执行操作后，将命令输出和状态码等元数据返回给模型。
+4. **返回动作的输出**:
+   执行完动作后，将命令输出以及诸如状态码等元数据一并返回给模型。
 
 5. **重复**:
-   使用更新后的状态发送新请求作为 `local_shell_call_output`，并重复此循环，直到模型停止请求操作或你决定停止。
+   以 `local_shell_call_output`，的形式发送一个新请求，并不断重复该循环，直到模型不再请求新的动作，或你决定停止为止。
 
-## 示例 工作流
+## 工作流 示例
 
-下面是一个演示请求/响应循环的最小（Python）示例。
-为简洁起见，省略了错误处理和安全检查——**切勿在生产环境中执行
-未经额外防护措施的不受信任命令。**.
+下面是一个最小化的（Python）示例，展示请求/响应循环。为了
+简洁起见，省略了错误处理和安全检查——**不要在生产中执行
+未采取额外防护措施的不可信命令**.
 
 ```python
 import os
@@ -140,16 +140,16 @@ print(response.output_text)
 
 ## 最佳实践
 
-- **沙盒或容器化** 执行。考虑使用 Docker、firejail 或
-  受限用户账户。
-- **施加资源限制** （时间、内存、网络）。模型提供的 `timeout_ms`
-  仅是一个提示——你应该强制执行自己的限制。
-- **筛选或审查** 高风险命令（例如。 `rm`, `curl`、网络
+- **使用沙箱或容器化** 执行。可考虑使用 Docker、firejail 或
+  受限的用户账户。
+- **施加资源限制** （时间、内存、网络）。模型 `timeout_ms`
+  提供的内容仅供参考——你应自行强制实施限制。
+- **过滤或审查** 高风险命令（例如。 `rm`, `curl`、网络工具）。
   工具）。
-- **记录每个命令及其输出** 以便审计和调试。
+- **记录每条命令及其输出** 以便审计和调试。
 
 ### 错误处理
 
-如果命令在你这侧失败（非零退出码、超时等），你仍然可以发送 `local_shell_call_output`；在 `output` 字段中包含错误消息。
+如果该命令在你这边执行失败（非零退出码、超时等），你仍然可以发送一条 `local_shell_call_output`；请将错误信息包含在 `output` 字段中。
 
-模型可以选择恢复或尝试执行不同的命令。如果你发送格式错误的数据（例如缺少 `call_id`）API 会返回标准的 `400` 验证错误。
+模型可以选择恢复或尝试执行其他命令。如果你发送了格式错误的数据（例如缺少 `call_id`），API 会返回标准的 `400` 校验错误。

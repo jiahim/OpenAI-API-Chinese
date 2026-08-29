@@ -1,20 +1,20 @@
-# WebSocket 模式
+# WebSocket Mode
 
-> 完整的文档索引见 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
 
-Responses API 支持 WebSocket 模式，适用于长时间运行、工具调用密集的工作流。除了降低延迟， `stream_id` 还支持 WebSocket 多路复用：一个持久连接可 `/v1/responses` 并行运行多个对话，并可将现有对话分叉到新流上。每轮继续时只需发送新的输入项及 `previous_response_id`.
+Responses API支持用于长时间运行、工具调用密集型工作流的 WebSocket 模式。除了降低延迟之外， `stream_id` 还支持 WebSocket 多路复用：通过一条到 `/v1/responses` 的持久连接，可以并行运行多个对话，并将已有对话分叉到新的流上。每个回合只需发送新增的输入项以及 `previous_response_id`.
 
-WebSocket 模式兼容零数据保留（ZDR）和 `store=false`.
+WebSocket 模式兼容零数据保留 (ZDR) 和 `store=false`.
 
-## 为何使用 WebSocket 模式
+## 为什么要使用 WebSocket 模式
 
-当 工作流 涉及大量模型-工具往返（例如，代理编码或具有重复工具调用的编排循环）时，WebSocket 模式最为有用。
+当 工作流 涉及大量模型与工具之间的往返调用时（例如智能体编码或需要反复调用工具的编排循环），WebSocket 模式最为适用。
 
-由于连接保持打开状态，且每轮仅发送增量输入，WebSocket 模式降低了每轮 延续 的开销，并改善了长链路的端到端延迟。对于包含 20 次以上工具调用的部署，我们观察到端到端执行速度最高可提升约 40%。
+由于连接保持打开状态，且每一轮只发送增量输入，WebSocket 模式能够降低每轮 延续 的开销，并改善长链路下的端到端延迟。在包含 20 次以上工具调用的运行场景中，我们观察到端到端执行速度最高可提升约 40%。
 
-## 连接并创建回复
+## 连接并创建响应
 
-在 WebSocket 模式下，通过向客户端发送 `response.create` 事件来开启每一轮交互。其负载与常规的 [Responses 创建请求体](https://developers.openai.com/api/reference/resources/responses/methods/create)，相同，但传输特定字段如 `stream` 和 `background` 不会使用。
+在 WebSocket 模式下，每一轮开始时由客户端发送一个 `response.create` 事件。该负载与普通的 [Responses create 请求体](https://developers.openai.com/api/reference/resources/responses/methods/create)，一致，只是像 `stream` 和 `background` 这类传输相关的字段不会被使用。
 
 ```python
 from websocket import create_connection
@@ -49,14 +49,14 @@ ws.send(
 ```
 
 
-客户端可以选择通过发送 `response.create` 配合 `generate: false`。来提前预热请求状态。当你已经知道接下来一轮要发送的工具、指令和/或自定义消息时，这非常有用。 `generate: false` 不会返回模型输出，但会准备请求状态，使下一轮生成的交互可以更快开始。预热请求返回一个响应 ID，你可以通过它进行链接 `previous_response_id`，包括在响应链的后续轮次中。下一节将说明如何使用 `previous_response_id` 和增量输入继续会话。
+客户端可以通过发送 `response.create` 来可选地预热请求状态， `generate: false`。并在请求中附带相关字段。当你已经知道即将发送的轮次中要使用的工具、指令和/或自定义消息时，这非常有用。 `generate: false` 不会返回模型输出，但会准备好请求状态，以便下一轮生成可以更快开始。预热请求会返回一个响应 ID，你可以使用 `previous_response_id`，链接该 ID，包括在响应链后续的轮次中。下一节将介绍如何使用 `previous_response_id` 和增量输入来继续一个会话。
 
 ## 使用增量输入继续
 
-要延续一次运行，请发送另一个 `response.create` 使用：
+若要延续一次运行，请发送另一个 `response.create` ，参数如下：
 
-- `previous_response_id` 设置为先前响应 ID。
-- `input` 仅包含新项目（例如，工具输出和下一条用户消息）。
+- `previous_response_id` 设置为上一条响应 ID。
+- `input` 仅包含新项（例如，工具输出和下一条用户消息）。
 
 ```python
 ws.send(
@@ -86,32 +86,32 @@ ws.send(
 ```
 
 
-## 延续的工作方式
+## 延续的工作原理
 
-WebSocket 模式使用与 HTTP 模式相同的 `previous_response_id` 链式语义，但在活动套接字上增加了低延迟的 延续 路径。
+WebSocket 模式使用与 HTTP 模式相同的 `previous_response_id` 链接语义,但它在活动 socket 上增加了一条更低延迟的延续路径。
 
-在活动的 WebSocket 连接上，服务会在连接本地的内存缓存中保留最近的先前响应状态。当你在 `stream_id`，时，每个通道会保留其最新的缓存响应，因此从该通道的最新响应继续处理会很快，因为服务可以重用连接本地的状态。由于服务仅在内存中保留先前响应状态且不写入磁盘，你可以使用与 `store=false` 和零数据保留（ZDR）兼容的方式使用 WebSocket 模式。
+在活动的 WebSocket 连接上,服务会将最近的 previous-response 状态保存在一个连接本地的内存缓存中。当你使用 `stream_id`，时,每个 lane 会保留其最新的缓存响应,因此在该 lane 中从最新响应继续会非常快,因为服务可以复用连接本地的状态。由于服务仅在内存中保留 previous-response 状态而不会将其写入磁盘,因此你可以以兼容 `store=false` 和 Zero Data Retention (ZDR) 的方式使用 WebSocket 模式。
 
-如果 `previous_response_id` 不在内存缓存中，行为取决于你是否存储响应：
+如果一个 `previous_response_id` 不在内存缓存中,行为取决于你是否存储响应:
 
-- 使用 `store=true`，时，服务可能在可用时从持久化状态中补全较旧的响应 ID。延续仍可工作，但会失去内存中的延迟优势。
-- 使用 `store=false` （包括 ZDR）时，没有持久化的回退。如果 ID 未被缓存，请求将返回 `previous_response_not_found`.
+- 使用 `store=true`,服务可在可用时从持久化状态中水合较旧的响应 ID。延续仍然有效,但会失去内存中的延迟优势。
+- 使用 `store=false` (包括 ZDR),不存在持久化回退。如果该 ID 未被缓存,请求将返回 `previous_response_not_found`.
 
-如果同车道延续返回一个 `4xx` 或 `5xx`，服务端会驱逐引用的 `previous_response_id` ，从连接本地缓存中。跨车道分叉如果返回错误，则保留共享父级，以便源车道可以继续。
+如果同一通道的延续返回 a `4xx` 或 `5xx`，服务会从连接本地缓存中淘汰所引用的 `previous_response_id` 。返回错误的跨通道分叉会保留共享父项，以便源通道可以继续执行。
 
-## 压缩与创建新的响应
+## 压缩与创建新响应
 
-如果你正在使用压缩，那么有两种不同的延续模式：
+如果你正在使用压缩，则有两种不同的延续模式：
 
-### 服务端压缩（`context_management`)
+### 服务端压缩 (`context_management`)
 
-当你启用服务端压缩（`context_management` 通过 `compact_threshold`），压缩会在正常 `/responses` 生成过程中进行。在 WebSocket 模式下，你按照通常的方式继续：发送下一条 `response.create` 并附带最新的 `previous_response_id` 以及仅新的输入项目。
+当你启用服务端压缩（`context_management` 来可选地预热请求状态， `compact_threshold`）时，压缩会在正常的 `/responses` 生成过程中进行。在 WebSocket 模式下，你仍然按照平时的方式继续操作：发送下一个 `response.create` ，附带最新的 `previous_response_id` 以及仅包含新的输入项。
 
-### 独立 `/responses/compact`
+### Standalone `/responses/compact`
 
-独立 [`/responses/compact` 端点](https://developers.openai.com/api/reference/resources/responses/methods/compact) 返回一个新的压缩输入窗口，而非响应 ID。压缩后，在你的 WebSocket 连接上使用压缩后的窗口创建新的响应，作为 `input` （加上后续的用户/工具项）。
+独立 [`/responses/compact` endpoint](https://developers.openai.com/api/reference/resources/responses/methods/compact) 返回一个已压缩的新输入窗口，而不是响应 ID。压缩后，在你的 WebSocket 连接上使用压缩后的窗口创建一个新响应 `input` （以及后续的用户/工具项）。
 
-通过省略 `previous_response_id` 或将其设置为 `null`。来开启新链。直接传递压缩后的输出；不要修剪返回的窗口。
+通过省略 `previous_response_id` 或将其设置为 `null`。来开启新链路。直接传入压缩后的输出，不要裁剪返回的窗口。
 
 ```python
 # Compact your current window (HTTP call)
@@ -145,14 +145,14 @@ ws.send(
 
 ## 并行运行对话
 
-你可以通过 `stream_id` 参数在同一连接上维持并行对话。发送独立的 `response.create` 事件需要连续发送，并带有不同的 `stream_id` 值。服务器可以在同一连接上并发运行它们。它们的事件可能会交错，因此保持一个读取循环，并根据 `stream_id`.
+你可以使用以下参数在同一连接上维持并行的对话 `stream_id` 参数。发送独立的 `response.create` 事件，使其以不同的 `stream_id` 值连续返回。服务器可以在同一连接上并发运行它们。它们的事件可能会交错，因此请保持单个读取循环，并按以下方式路由每个事件： `stream_id`.
 
-A `stream_id` 为单个 WebSocket 连接上的有序通道命名。保持 `stream_id` 和 `previous_response_id` 分开：
+一个 `stream_id` 为单个 WebSocket 连接上的有序通道命名。请将以下两项保持 `stream_id` 和 `previous_response_id` 分开：
 
-- `stream_id` 控制事件的去向以及哪些请求以先进先出的顺序运行。
-- `previous_response_id` 控制对话的血统。
+- `stream_id` 控制事件去向以及哪些请求按先进先出顺序执行。
+- `previous_response_id` 控制会话的归属关系。
 
-这种分离开启了两种有用的模式。
+这种分离解锁了两种有用的模式。
 
 ```text
 one WebSocket connection
@@ -160,18 +160,18 @@ one WebSocket connection
 └─ stream_id="research"  list deployment risks
 ```
 
-具有相同 `stream_id` 的请求保持先进先出且不重叠。具有不同 `stream_id` 值的请求可以并发运行。
+具有相同 `stream_id` 的请求保持先进先出且不会重叠。具有不同 `stream_id` 值的请求可以并发运行。
 
-### 每个连接的限制
+### Limits per connection
 
-- 一个连接在命名通道和默认通道上最多可以有 16 个进行中的响应。该连接会接受更多 `response.create` 事件并将其排队，直到有活动的响应完成。
-- 一个连接最多接受 32 个不同的命名 `stream_id` 值。隐式的默认通道不计入此命名流限制。达到限制后，请复用现有的 `stream_id` 或打开新连接。
+- 一个连接可以在命名和默认通道上同时拥有最多 16 个处于活动状态、进行中的响应。连接接受更多 `response.create` 事件并将其放入队列，直到活动的响应完成。
+- 一个连接最多接受 32 个不同的命名 `stream_id` 值。隐式默认通道不计入此命名流限制。达到限制后，复用现有 `stream_id` 或打开一个新连接。
 
-### 将对话分支到新流中
+### 将对话分叉到新流
 
-要从已完成的响应分支，请将其 ID 发送为 `previous_response_id` 并搭配新的 `stream_id`。虽然该响应仍然可用，但新流会继承其上下文，原始流可以继续运行。分叉开始后，两个分支可以并发运行，因为它们使用不同的流 ID。
+要从已完成的响应分支时，将其 ID 作为 `previous_response_id` 与新的 `stream_id`。一起发送。只要该响应仍然可用，新流就会继承其上下文，而原始流可以继续进行。分支开始后，两条分支可以并发运行，因为它们使用不同的流 ID。
 
-使用 `store=false` （包括 ZDR）时，跨通道分叉取决于父响应保留在连接本地缓存中。如果分叉排队而源通道推进或失败，父响应可能在分叉开始前被逐出，分叉将返回 `previous_response_not_found`。等待分叉通道发出 `response.in_progress` 后再推进源通道，或使用 `previous_response_id` 设置为 `null` 进行重试并重放完整输入上下文。
+使用 `store=false` （包括 ZDR）时，跨通道分支依赖于父节点保持在连接本地缓存中。如果在源通道推进或失败时分支进入排队，父节点可能在分支开始前被逐出，分支将返回 `previous_response_not_found`。在推进源通道之前，等待分支通道发出 `response.in_progress` ，或使用 `previous_response_id` 设置为 `null` 进行重试，并重放完整的输入上下文。
 
 ```text
 main:   resp_1 ──▶ resp_2 ──▶ resp_3
@@ -179,9 +179,9 @@ main:   resp_1 ──▶ resp_2 ──▶ resp_3
 critic:                 resp_4 ──▶ resp_5
 ```
 
-重用 `stream_id` 而不带 `previous_response_id` 会开始一个新响应；它不会继续对话。
+重用 `stream_id` 而不使用 `previous_response_id` 会启动一个新响应，不会延续对话。
 
-关键调用如下：
+关键调用如下所示：
 
 ```text
 # One socket, two independent conversations.
@@ -203,7 +203,7 @@ send_create(
 
 ### 完整示例
 
-并行运行多个对话，然后分叉其中一个
+并行运行对话，然后分叉其中一条
 
 ```python
 import json
@@ -282,29 +282,29 @@ ws.close()
 ```
 
 
-A `stream_id` 必须为 1–256 个字符，且只能包含字母、数字、下划线 (`_`)、连字符 (`-`) 和句点 (`.`)。仅在 WebSocket `response.create` 事件中使用；请勿将其包含在 HTTP `POST /v1/responses`.
+一个 `stream_id` 长度必须为 1–256 个字符，且只能包含字母、数字、下划线（`_`）、连字符（`-`）和句点（`.`）。仅在 WebSocket `response.create` 事件中使用它；不要在 HTTP `POST /v1/responses`.
 
-对于命名流，服务器事件包括匹配的 `stream_id`，包括终止事件和请求范围内的错误。
+对于命名流，服务端事件包含匹配的 `stream_id`，包括终止事件和请求范围内的错误。
 
-如果省略 `stream_id`，则请求使用隐式默认通道，且其事件不包含 `stream_id`。默认通道在其他方面遵循与命名流相同的排序和并发规则。空字符串不是有效的 `stream_id`；省略该字段以选择默认通道。
+如果省略 `stream_id`，则请求使用一个隐式的默认通道，其事件不包含 `stream_id`。默认通道在其他方面遵循与命名流相同的排序和并发规则。空字符串不是有效的 `stream_id`；请省略该字段以选择默认通道。
 
 ## 连接行为与限制
 
-- 每个响应中的事件遵循现有的 Responses 流式事件模型。来自不同通道的事件可以交错。
-- 具有相同 `stream_id` 的请求按先入先出顺序执行，且不会重叠。不同通道上的请求可以并发执行。
-- 连接最长持续 60 分钟。达到限制时重新连接。
+- 每个响应内的事件遵循现有的 Responses 流式事件模型。不同通道上的事件可以交错出现。
+- 具有相同 `stream_id` 的请求按先进先出顺序运行，并且不会重叠。不同通道上的请求可以并发运行。
+- 连接最长持续 60 分钟。在达到上限时请重新连接。
 
-## 重新连接并恢复
+## 重连与恢复
 
-当连接关闭（或达到 60 分钟限制）时，其连接本地缓存会对每条通道消失。打开新的 WebSocket 连接，并使用以下模式之一恢复每条通道：
+当连接关闭（或达到 60 分钟限制）时，该连接的本地缓存会针对每个通道一并消失。可使用以下任一模式新建 WebSocket 连接并恢复每个通道：
 
-1. 如果你存储了先前的响应（`store=true`）且拥有有效的响应 ID，则使用 `previous_response_id` 和新的输入项继续该对话线。
-2. 如果你无法继续对话线（例如， `store=false`/ZDR 或 `previous_response_not_found`），则通过设置 `previous_response_id` 为 `null` （或省略它）并发送该对话线下一轮的完整输入上下文来开始新响应。
-3. 如果你使用 `/responses/compact`，压缩了上下文，则将返回的压缩窗口作为新响应的基础 `input` ，然后附加最新的用户/工具项。
+1. 如果你存储了之前的响应（`store=true`）并拥有有效的响应 ID，请使用 `previous_response_id` 以及新的输入项来延续该分支。
+2. 如果你无法延续某个分支（例如， `store=false`/ZDR 或 `previous_response_not_found`: `previous_response_id` 设置为 `null` （或省略该字段），并将该分支下一轮所需的完整输入上下文一并发送。
+3. 如果你使用 `/responses/compact`，对上下文进行了压缩，请将返回的压缩窗口作为 `input` 新响应的基础，然后追加最新的用户/工具项。
 
 ## 需要处理的错误
 
-当服务器可以将错误与具名通道关联时，错误事件会包含 `stream_id`。请求范围的错误发生后，其他通道可以继续执行。
+当服务端能将错误关联到某个具名通道时，错误事件包含 `stream_id`。其他通道在请求范围内的错误后仍可继续。
 
 `previous_response_not_found`
 
@@ -369,7 +369,7 @@ A `stream_id` 必须为 1–256 个字符，且只能包含字母、数字、下
 
 ## 相关指南
 
-- [会话状态](https://developers.openai.com/api/docs/guides/conversation-state)
+- [对话状态](https://developers.openai.com/api/docs/guides/conversation-state)
 - [流式 API 响应](https://developers.openai.com/api/docs/guides/streaming-responses)
 - [Responses 流式事件参考](https://developers.openai.com/api/reference/resources/responses)
 - [Responses WebSocket 事件参考](https://developers.openai.com/api/reference/resources/responses/websocket-events)

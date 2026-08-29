@@ -1,18 +1,18 @@
-# 从提示对象迁移
+# 从 prompt 对象迁移
 
-> 关于完整的文档索引，请参阅 [llms.txt](/llms.txt). 文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 来获得。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 后追加 `.md` 即可获取对应文档页面的 Markdown 版本。
 
-OpenAI 正在弃用 API 中的可复用提示对象。提示创建将
-  自 2026 年 6 月 3 日起不再重点支持，且 `v1/prompts` 计划于
-  2026 年 11 月 30 日关闭。请参阅 [弃用
-  页面](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 了解当前
+OpenAI 将弃用 API 中的可复用提示对象。提示创建功能将于
+  2026 年 6 月 3 日起弱化，并于 `v1/prompts` 计划于
+  2026 年 11 月 30 日关闭。参见 [弃用
+  页面](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 针对当前
   时间线。
 
-要从 **Prompts** 迁移到 OpenAI API 平台，请将提示内容从托管 `prompt` 对象移至你的应用程序代码中。这样你就能更好地控制审查、测试、部署和版本管理。
+若要从 **Prompts** 迁移到 OpenAI API 平台中的托管对象，请把提示内容移出托管对象，并写入到你的应用代码里。 `prompt` 这样你可以更自由地控制审核、测试、部署和版本管理。
 
-## 之前：使用提示对象
+## Before: using a Prompt Object
 
-使用提示对象
+使用 prompt 对象
 
 ```javascript
 import OpenAI from "openai";
@@ -147,9 +147,9 @@ curl https://api.openai.com/v1/responses \
 ```
 
 
-## 之后：在代码中内联提示词
+## 之后：将提示内联到代码中
 
-在代码中内联提示
+将提示内联到代码中
 
 ```javascript
 import OpenAI from "openai";
@@ -302,21 +302,21 @@ curl https://api.openai.com/v1/responses \
 
 ## 使用 Codex 进行迁移
 
-使用 [OpenAI 开发者插件](https://developers.openai.com/learn/developers-codex-plugin) 和 [OpenAI 文档技能](https://github.com/openai/skills/tree/main/skills/.curated/openai-docs) 来自动化你的迁移，并使用 OpenAI API 加速构建。
+使用 [OpenAI Developers 插件](https://developers.openai.com/learn/developers-codex-plugin) 和 [OpenAI Docs 技能](https://github.com/openai/skills/tree/main/skills/.curated/openai-docs) 来自动化你的迁移，并加速基于 OpenAI API 的构建。
 
 ```text
 $openai-docs update this project to store prompts in code instead of using a prompts object
 ```
 
-## 有何变更
+## 变更内容
 
-与其从 API 请求中引用已保存的提示词对象，不如将提示词文本存储在代码库中，并将生成的 messages 直接作为 `input` 传入 Responses API 调用。
+无需在 API 请求中引用已保存的提示对象，而是将提示文本存放在你的代码库中，并把生成的消息直接作为 `input` 传入 Responses API 调用。
 
-- **将提示词内容移入源代码中** ，使提示词更改与产品逻辑遵循相同的审查和发布流程。
-- **用函数参数替换提示词变量** ，使动态值在应用中显式且类型化。
-- **直接在 `input`** Responses API 调用中传入消息，而非使用 `prompt` 对象。
-- **将版本管理迁至你的仓库** ，使用 git 提交、PR 审查以及测试或评估。
-- **将静态内容前置，动态内容后置** ，以保留提示词缓存优势，因为缓存命中依赖于精确的前缀匹配。
+- **将提示内容移入源代码** 以便提示的修改与产品逻辑走同一套评审与发布流程。
+- **用函数参数替换提示变量** 从而让动态值在你的应用中显式且具有类型。
+- **通过 Responses API 调用传递 messages `input`** ，而不是使用 `prompt` 对象。
+- **将版本管理迁移到你的代码仓库** ，借助 git 提交、PR 评审以及测试或评测。
+- **将静态内容放在前面，动态内容放在后面** ，以保留提示缓存带来的好处，因为缓存命中依赖于精确的前缀匹配。
 
 ## 示例
 
@@ -478,8 +478,8 @@ puts(response.output_text)
 ```
 
 
-## 你将获得
+## 你能获得什么
 
-你能获得更严格的工程控制：提示词与产品代码放在一起，变更经由 PR 审查，测试与评估可在 CI 中运行，发布或实验可通过你自己的配置或功能开关来管理。
+你可以获得更精细的工程控制：提示与产品代码放在同一处，更改通过 PR 流程进行，测试和评估可在 CI 中运行，上线或实验可通过你自己的配置或功能开关来管理。
 
-不要将提示词内联散落在代码库各处。创建一个小的 `prompts/` 模块，将每个提示词保留为具名构建函数，并添加轻量级评估夹具，使提示词变更像产品逻辑一样接受审查。
+不要把提示零散地散布在代码库各处。创建一个小的 `prompts/` 模块，将每个提示作为命名良好的 builder 函数，并为评估添加轻量级的 fixture，使提示变更像产品逻辑一样接受评审。

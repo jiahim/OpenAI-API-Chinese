@@ -1,23 +1,23 @@
 # Terraform provider
 
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 来获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)，可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
 
-官方 [OpenAI Terraform provider](https://github.com/openai/terraform-provider-openai) 让你能使用基础设施即代码来管理 OpenAI 组织资源。该 provider 使用 [Administration API](https://developers.openai.com/api/reference/administration/overview) 来管理项目、用户、组、角色、服务账户、证书、速率限制、支出警报以及相关的项目设置。
+官方 [OpenAI Terraform provider](https://github.com/openai/terraform-provider-openai) 让你通过基础设施即代码管理 OpenAI 组织资源。该 provider 使用 [Administration API](https://developers.openai.com/api/reference/administration/overview) 来管理项目、用户、群组、角色、服务账户、证书、速率限制、支出提醒以及相关的项目设置。
 
-本指南创建一个 OpenAI 项目。继续查看有关项目访问、服务账户、操作限制、项目控制和导入的使用案例指南。
+本指南创建一个 OpenAI 项目。请继续阅读用例指南，了解项目访问、服务账户、运营限制、项目控制和导入。
 
-## 开始之前
+## 准备工作
 
 你需要：
 
-- [Terraform](https://developer.hashicorp.com/terraform/install) 1.0 或更高版本。导入示例需要 Terraform 1.5 或更高版本。
-- 拥有创建 OpenAI 的权限的组织 [管理员 API 密钥](https://platform.openai.com/settings/organization/admin-keys).
+- [Terraform](https://developer.hashicorp.com/terraform/install) 1.0 或更高版本。导入示例要求 Terraform 1.5 或更高版本。
+- 拥有创建权限的 OpenAI 组织 [Admin API key](https://platform.openai.com/settings/organization/admin-keys).
 
-管理 API 端点需要使用管理员 API 密钥，这些密钥不适用于非管理性 OpenAI API 端点。将密钥存储在环境变量或密钥管理器中。不要将其提交到你的 Terraform 配置或源代码控制中。
+管理类 API 端点需要使用 Admin API 密钥，该密钥无法用于非管理类的 OpenAI API 端点。请将该密钥保存在环境变量或密钥管理工具中，不要将其提交到你的 Terraform 配置或源代码仓库中。
 
-## 配置提供商
+## 配置服务商
 
-创建一个新目录并添加一个 `main.tf` 包含以下配置的文件：
+创建一个新目录并添加一个 `main.tf` 文件，包含以下配置：
 
 ```terraform
 terraform {
@@ -42,15 +42,15 @@ output "project_id" {
 }
 ```
 
-版本约束允许 provider 版本 1.0.0 及更高版本。请查阅 [provider 版本发布](https://github.com/openai/terraform-provider-openai/releases) 在升级之前。
+版本约束允许 provider 1.0.0 及更高版本。升级前请查阅 [provider 发布版本](https://github.com/openai/terraform-provider-openai/releases) 。
 
-在环境中设置你的管理员 API 密钥：
+在环境中设置你的 Admin API 密钥：
 
 ```bash
 export OPENAI_ADMIN_KEY="<your-admin-api-key>"
 ```
 
-provider 默认读取 `OPENAI_ADMIN_KEY` 。你也可以设置 `OPENAI_ORG_ID` 和 `OPENAI_PROJECT_ID` 以发送 `OpenAI-Organization` 和 `OpenAI-Project` 请求头带随 API 请求。当这些可选变量未设置时，OpenAI 会从 API 密钥中解析组织和项目。当你想要明确标识你的 Terraform 配置所管理的组织或项目时，请设置它们。请参阅 [provider 配置参考](https://registry.terraform.io/providers/openai/openai/latest/docs) 以获取所有可用参数。
+Provider 默认会读取 `OPENAI_ADMIN_KEY` 。你也可以设置 `OPENAI_ORG_ID` 和 `OPENAI_PROJECT_ID` ，以便在发送 `OpenAI-Organization` 和 `OpenAI-Project` 请求时附带 API 请求头。当这些可选变量未设置时，OpenAI 会从 API 密钥中解析 organization 和 project。如果你希望明确标识 Terraform 配置所管理的 organization 或 project，请设置这些变量。详见 [provider 配置参考](https://registry.terraform.io/providers/openai/openai/latest/docs) ，了解所有可用参数。
 
 ## 初始化并应用
 
@@ -62,15 +62,15 @@ terraform fmt
 terraform validate
 ```
 
-Terraform 会下载提供程序并创建 `.terraform.lock.hcl`。将锁文件提交到版本控制，以便后续运行选择相同的提供程序版本。运行 `terraform init -upgrade` 以选择约束允许的最新提供程序版本。
+Terraform 下载该 provider 并创建 `.terraform.lock.hcl`。请将锁文件提交到源代码管理，以便后续运行选择相同的 provider 版本。运行 `terraform init -upgrade` 以选择该约束所允许的最新 provider 版本。
 
-查看 Terraform 将要进行的更改：
+查看 Terraform 将进行的更改：
 
 ```bash
 terraform plan
 ```
 
-计划应显示一个 `openai_project` 要添加的资源。仅在审查计划后应用配置：
+计划应显示一个要添加的 `openai_project` 资源。仅在查看计划后再应用配置：
 
 ```bash
 terraform apply
@@ -80,12 +80,12 @@ terraform apply
 
 ## 选择用例指南
 
-| 指南                                                                         | 使用它来                                                                |
+| 指南                                                                         | 用途                                                                |
 | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| [项目与访问](https://developers.openai.com/api/docs/guides/terraform/projects-and-access)         | 创建项目并配置基于角色和基于组的访问。         |
-| [服务账户](https://developers.openai.com/api/docs/guides/terraform/service-accounts)               | 为工作负载身份或 API 密钥认证创建服务账户。 |
-| [速率限制与支出](https://developers.openai.com/api/docs/guides/terraform/rate-limits-and-spend)     | 调整现有速率限制并配置支出警报。               |
-| [模型、工具和数据控制](https://developers.openai.com/api/docs/guides/terraform/project-controls) | 配置模型访问、托管工具和数据保留。                |
-| [导入与对账](https://developers.openai.com/api/docs/guides/terraform/import-and-reconcile)  | 采用现有资源并检测偏差。                               |
+| [项目与访问](https://developers.openai.com/api/docs/guides/terraform/projects-and-access)         | 创建项目，并配置基于角色和基于组的访问权限。         |
+| [服务账户](https://developers.openai.com/api/docs/guides/terraform/service-accounts)               | 为工作负载身份或 API 密钥身份验证创建服务账户。 |
+| [速率限制与支出](https://developers.openai.com/api/docs/guides/terraform/rate-limits-and-spend)     | 核对现有速率限制，并配置支出提醒。               |
+| [模型、工具和数据控制](https://developers.openai.com/api/docs/guides/terraform/project-controls) | 配置模型访问权限、托管工具以及数据保留策略。                |
+| [导入与核对](https://developers.openai.com/api/docs/guides/terraform/import-and-reconcile)  | 采用现有资源并检测配置漂移。                               |
 
-对于个别参数和导入格式，请参阅 [provider 资源和数据源参考](https://registry.terraform.io/providers/openai/openai/latest/docs).
+对于各个参数和导入格式，请使用 [provider 资源和数据源参考](https://registry.terraform.io/providers/openai/openai/latest/docs).

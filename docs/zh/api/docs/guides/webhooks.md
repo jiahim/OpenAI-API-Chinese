@@ -1,18 +1,18 @@
 # Webhooks
 
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 获取。
+> 完整的文档索引请参见 [llms.txt](/llms.txt)。可以通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
-OpenAI [webhooks](http://chatgpt.com/?q=eli5+what+is+a+webhook?) 允许你接收关于 API 中事件（例如批处理完成、后台响应生成或微调作业完成）的实时通知。Webhooks 按照 [标准 Webhooks 规范](https://github.com/standard-webhooks/standard-webhooks/blob/main/spec/standard-webhooks.md)。传递到你控制的 HTTP 端点。完整的 webhook 事件列表可以在 [API 参考](https://developers.openai.com/api/reference/resources/webhooks).
+OpenAI [webhooks](http://chatgpt.com/?q=eli5+what+is+a+webhook?) 允许你实时接收 API 中事件的通知，例如批量任务完成、后台响应生成或微调任务结束。webhook 会按照 [Standard Webhooks 规范](https://github.com/standard-webhooks/standard-webhooks/blob/main/spec/standard-webhooks.md)。投递到由你控制的 HTTP 端点。完整的 webhook 事件列表可在 [API 参考](https://developers.openai.com/api/reference/resources/webhooks).
 
-[API webhook 事件参考
+[API 参考中查看 webhook 事件
 
 
 
       View the full list of webhook events.](https://developers.openai.com/api/reference/resources/webhooks)
 
-以下是能够从 OpenAI 接收 webhooks 的简单服务器示例，特别是用于 [`response.completed`](https://developers.openai.com/api/reference/resources/webhooks) 事件。
+以下是一些能够接收来自 OpenAI 的 webhook 的简单服务器示例，具体针对 [`response.completed`](https://developers.openai.com/api/reference/resources/webhooks) 事件。
 
-Webhooks 服务器
+webhook 服务器
 
 ```javascript
 import OpenAI from "openai";
@@ -87,11 +87,11 @@ if __name__ == "__main__":
 ```
 
 
-要实际查看此类 webhook，你可以在 OpenAI 仪表板中设置一个订阅了 `response.completed`，的 webhook 端点，然后向 [生成后台响应](https://developers.openai.com/api/docs/guides/background).
+如需查看此类 webhook 的实际效果，你可以在 OpenAI 控制台中设置一个订阅了 `response.completed`，的 webhook 端点，然后向 API 发起请求， [以后台模式生成响应](https://developers.openai.com/api/docs/guides/background).
 
-发出 API 请求。你还可以从 [webhook 设置页面](https://platform.openai.com/settings/project/webhooks).
+你也可以从 [webhook 设置页面](https://platform.openai.com/settings/project/webhooks).
 
-使用示例数据触发测试事件。
+使用示例数据触发测试事件
 
 ```bash
 curl https://api.openai.com/v1/responses \
@@ -190,17 +190,17 @@ puts(response.status)
 ```
 
 
-在本指南中，你将学习如何在仪表板中创建 webhook 端点、设置服务端代码来处理它们，并验证入站请求确实来自 OpenAI。
+在本指南中，你将学习如何在控制台中创建 webhook 端点、编写 服务端 代码来处理它们，并验证传入请求确实来自 OpenAI。
 
 ## 创建 Webhook 端点
 
-要开始在服务器上接收 webhook 请求，请登录仪表板并 [打开 webhook 设置页面](https://platform.openai.com/settings/project/webhooks)。Webhooks 按项目配置。
+若要开始在服务器上接收 webhook 请求，请登录控制台并 [打开 webhook 设置页面](https://platform.openai.com/settings/project/webhooks)。Webhook 按项目进行配置。
 
-点击“创建”按钮以创建新的 webhook 端点。你需要配置三件事：
+点击“Create”（创建）按钮以新建一个 webhook 端点。你需要配置以下三项：
 
 - 端点的名称（仅供你参考）。
-- 指向你控制的服务器的公开 URL。
-- 要订阅的一种或多种事件类型。当这些事件发生时，OpenAI 将向指定的 URL 发送 HTTP POST 请求。
+- 指向你所控制服务器的公共 URL。
+- 要订阅的一个或多个事件类型。当这些事件发生时，OpenAI 会向你指定的 URL 发送 HTTP POST 请求。
 
 <img src="https://cdn.openai.com/API/images/webhook_config.png"
   alt="webhook endpoint edit dialog"
@@ -208,13 +208,13 @@ puts(response.status)
   style={{ margin: "16px 0" }}
 />
 
-创建新的 webhook 后，你将收到一个签名密钥，用于服务端验证传入的 webhook 请求。请保存此值以备后续使用，因为你将无法再次查看它。
+创建新的 webhook 后，你将获得一个签名密钥，用于对传入的 webhook 请求进行服务端验证。请妥善保存该值，后续将无法再次查看。
 
-创建 webhook 端点后，你接下来需要设置一个服务端端点来处理传入的事件负载。
+创建好 webhook 端点后，接下来需要设置一个服务端端点来处理这些传入的事件负载。
 
 ## 在服务器上处理 webhook 请求
 
-当你订阅的事件发生时，你的 webhook URL 将收到一个类似这样的 HTTP POST 请求：
+当你订阅的事件发生时，你的 webhook URL 会收到类似下面的 HTTP POST 请求：
 
 ```
 POST https://yourserver.com/webhook
@@ -232,31 +232,31 @@ webhook-signature: v1,K5oZfzN95Z9UVu1EsfQmfVNQhnkZ2pj9o9NDN/H/pI4=
 }
 ```
 
-你的端点应尽快对这些传入的 HTTP 请求做出成功（`2xx`）状态码响应，以表示成功接收。为避免超时，我们建议将任何非平凡的處理过程卸载到后台工作线程，以便端点能立即响应。
-如果端点未返回成功（`2xx`）状态码，或无响应超过几秒钟，webhook 请求将被重试。OpenAI 将在最多 72 小时内以指数退避方式持续尝试投递。请注意， `3xx` 不会跟随重定向；重定向会被视为失败，你的端点应更新为使用最终的目標 URL。
+你的端点应当使用一个成功的（`2xx`）状态码快速响应这些传入的 HTTP 请求，以表示已成功接收。为避免超时，我们建议将所有非简单处理卸载到后台工作进程，使端点能够立即响应。
+如果端点没有返回成功的（`2xx`）状态码，或在几秒内没有响应，webhook 请求将被重试。OpenAI 将在最长 72 小时内以指数退避持续尝试发送。请注意， `3xx` 重定向不会被跟随；它们会被视为失败，你应当更新端点以使用最终的目标 URL。
 
-在极少数情况下，由于内部系统问题，OpenAI 可能会投递同一 webhook 事件的多份副本。你可以使用 `webhook-id` 标头作为幂等键进行去重。
+在极少数情况下，由于内部系统问题，OpenAI 可能会投递同一 webhook 事件的重复副本。你可以使用 `webhook-id` 头作为幂等键来进行去重。
 
-### 在本地测试 webhook
+### 本地测试 webhook
 
-测试 webhooks 需要一个在公共互联网上可访问的 URL。这可能会让开发变得棘手，因为你的本地开发环境通常不对外公开。以下几种选项可能会有所帮助：
+测试 webhook 需要一个可在公共互联网上访问的 URL。这可能会让开发变得棘手,因为你的本地开发环境很可能未对公共开放。以下几种方式可能会对你有帮助:
 
-- [ngrok](https://ngrok.com/) 可以在公共 URL 上暴露你的 localhost 服务器
-- 云开发环境，如 [Replit](https://replit.com/), [GitHub Codespaces](https://github.com/features/codespaces), [Cloudflare Workers](https://workers.cloudflare.com/)，或 [来自 Vercel 的 v0](https://v0.dev/).
+- [ngrok](https://ngrok.com/) 可以将你的 localhost 服务器暴露在公网 URL 上
+- 云端开发环境，例如 [Replit](https://replit.com/), [GitHub Codespaces](https://github.com/features/codespaces), [Cloudflare Workers](https://workers.cloudflare.com/)，或 [v0 from Vercel](https://v0.dev/).
 
-## 验证 Webhook 签名
+## 验证 webhook 签名
 
-虽然你可以在不进行任何验证的情况下接收来自OpenAI的webhook事件并处理结果，但你应该验证传入的请求确实来自OpenAI，特别是当你的webhook会在后端执行任何操作时。webhook请求附带的头部信息包含可用于结合webhook签名密钥来验证webhook确实来自OpenAI的数据。
+虽然你可以在不进行任何验证的情况下接收来自 OpenAI 的 webhook 事件并处理结果，但你应当验证传入请求确实来自 OpenAI，尤其是当你的 webhook 会在后端执行任何类型的操作时。与 webhook 请求一同发送的标头中包含可与 webhook 密钥配合使用的信息，用于验证该 webhook 是否源自 OpenAI。
 
-当你在OpenAI控制台中创建webhook端点时，你会获得一个签名密钥，应将其作为环境变量在你的服务器上提供：
+当你在 OpenAI 仪表板中创建 webhook 端点时，你将获得一个签名密钥，应当将其作为环境变量配置在你的服务器中：
 
 ```
 export OPENAI_WEBHOOK_SECRET="<your secret here>"
 ```
 
-验证webhook签名最简单的方式是使用官方OpenAI SDK辅助工具的 `unwrap()` 方法：
+验证 webhook 签名最简单的方式是使用 `unwrap()` 官方 OpenAI SDK 帮助器中的：
 
-使用OpenAI SDK进行签名验证
+使用 OpenAI SDK 进行签名验证
 
 ```javascript
 const client = new OpenAI();
@@ -289,7 +289,7 @@ event = client.webhooks.unwrap(
 ```
 
 
-签名也可以使用 [Standard Webhooks 库](https://github.com/standard-webhooks/standard-webhooks/tree/main?tab=readme-ov-file#reference-implementations):
+也可以使用 [Standard Webhooks 库](https://github.com/standard-webhooks/standard-webhooks/tree/main?tab=readme-ov-file#reference-implementations):
 
 使用 Standard Webhooks 库进行签名验证
 
@@ -308,6 +308,6 @@ $wh->verify($webhook_payload, $webhook_headers);
 ```
 
 
-另外，如有需要，你也可以自行实现签名验证， [如 Standard Webhooks 规范所述](https://github.com/standard-webhooks/standard-webhooks/blob/main/spec/standard-webhooks.md#verifying-webhook-authenticity)
+或者，如有需要，你可以按照 [Standard Webhooks 规范中的描述](https://github.com/standard-webhooks/standard-webhooks/blob/main/spec/standard-webhooks.md#verifying-webhook-authenticity)
 
-如果你丢失或意外泄露了签名密钥，你可以通过 [轮换签名密钥](https://platform.openai.com/settings/project/webhooks).
+如果你丢失了签名密钥或不小心将其泄露，可以通过 [轮换签名密钥](https://platform.openai.com/settings/project/webhooks).

@@ -1,20 +1,20 @@
-# 技能
+# Skills
 
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获得。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。通过在页面 URL 末尾追加 `.md` 即可获取文档页面的 Markdown 版本。
 
-智能体技能（Agent Skills）让你能够在托管和本地 shell 环境中上传并复用带版本的文件包。
+智能体技能让你能在托管和本地的 shell 环境中上传并复用版本化的文件包。
 
-我们支持两种形态的技能：本地执行和托管，
-  式容器执行。要在你自己的机器上运行代码，请使用
-  shell 工具的本地 [执行模式](https://developers.openai.com/api/docs/guides/tools-shell).
+我们以两种形态提供技能支持：本地执行和基于容器的托管执行。
+  要在你自己的机器上运行代码，请使用 shell 工具的本地
+  执行模式。 [shell 工具](https://developers.openai.com/api/docs/guides/tools-shell).
 
 ## 什么是技能
 
-技能是文件的版本化捆绑包，外加 `SKILL.md` 清单（前置元数据 + 指令）。技能是模块化指令，可用于将流程和约定编码化，从公司风格指南到多步骤工作流皆可。
+技能（Skill）是一个带版本号的文件包，并附带一份 `SKILL.md` 清单（前置元数据 + 说明）。技能是可复用的指令，可用来将流程和规范沉淀下来，涵盖公司风格指南到多步骤工作流等各种场景。
 
-技能兼容开放的 [Agent Skills 标准](https://agentskills.io/home).
+技能兼容开放式的 [智能体 Skills 标准](https://agentskills.io/home).
 
-示例 SKILL.md
+SKILL.md 示例
 
 ```markdown
 ---
@@ -28,11 +28,11 @@ Use this skill when you need a quick sum or product of numbers.
 
 ## 创建技能
 
-你可以将目录作为多部分表单数据上传，或上传一个 `.zip` ，其中包含一个单一顶层文件夹。
+你可以将一个目录以 multipart 形式上传，或者上传一个 `.zip` 其中包含单个顶层文件夹的压缩包。
 
 ### 选项 1：目录上传（multipart）
 
-上传多个 `files[]` 部分。每个部分包含单个顶层文件夹内的路径。
+上传多个 `files[]` 部分。每个部分包含单个顶级文件夹内的路径。
 
 创建技能（multipart）
 
@@ -46,7 +46,7 @@ curl -X POST 'https://api.openai.com/v1/skills' \
 
 ### 选项 2：Zip 上传
 
-压缩顶层文件夹并上传 zip 文件。
+将顶层文件夹压缩为 zip 文件并上传。
 
 创建技能（zip）
 
@@ -57,11 +57,11 @@ curl -X POST 'https://api.openai.com/v1/skills' \
 ```
 
 
-## 使用托管 Shell 技能
+## 将技能与托管 shell 配合使用
 
-要在托管的 shell 环境中挂载技能，请在 `tools[].environment.skills` 调用 shell 工具时附加它们。
+如需在托管 shell 环境中挂载技能，可通过以下方式附加： `tools[].environment.skills` 在调用 shell 工具时传入。
 
-在托管的 shell 中使用技能
+在托管 shell 中使用技能
 
 ```bash
 curl -L 'https://api.openai.com/v1/responses' \
@@ -236,16 +236,16 @@ puts(response.output_text)
 
 ### 提示行为
 
-技能挂载后，模型可以自行决定何时使用它。如果你希望行为更具确定性，请明确指示模型在适当时“使用该 `<skill name>` 技能”。
+一旦挂载了一个技能，模型就可以自行决定何时使用它。如果你希望行为更加确定，可以明确指示模型在合适的时候“使用该 `<skill name>` 技能”。
 
-## 在本地 Shell 模式下使用技能
+## 在本地 shell 模式下使用技能
 
-技能也适用于本地 shell 模式，但本地 shell 和托管 shell 不接受相同的技能附件格式。
+Skills 也支持本地 shell 模式，但本地 shell 和托管 shell 接受的技能附加格式不同。
 
-- 托管 Shell 支持上传 `skill_reference` 附件，包括精选的技能和明确的版本。
-- 本地 Shell 不支持 `skill_reference` 附件。相反，请在你控制的运行时中从本地文件路径提供技能文件。
+- 托管 shell 支持上传的 `skill_reference` 附件，包括精心策划的技能和明确的版本。
+- 本地 shell 不支持 `skill_reference` 附件。请改为在你控制的运行时中通过本地文件路径提供技能文件。
 
-请参阅 [Shell 指南](https://developers.openai.com/api/docs/guides/tools-shell) 了解本地 shell 执行的详细信息。
+使用 [Shell 指南](https://developers.openai.com/api/docs/guides/tools-shell) 了解本地 shell 执行的详细信息。
 
 在本地 shell 模式下使用技能
 
@@ -428,35 +428,35 @@ puts(response.output_text)
 
 ## 用户提示中的技能
 
-当工具启用了技能时，平台会添加每个技能的 `name`, `description`，以及 `path` 到用户提示上下文中，使模型知道技能的存在。
+当技能对该工具可用时，平台会将每个技能的 `name`, `description`，以及 `path` 添加到用户提示的上下文中，以便模型知道该技能的存在。
 
-模型根据这些元数据决定是否调用技能。若模型调用技能，它会使用 `path` 从中读取完整的 Markdown 指令 `SKILL.md`.
+模型会根据这些元数据决定是否调用某个技能。如果模型调用了某个技能，它会使用 `path` 从 `SKILL.md`.
 
-技能指令属于用户提示输入（而非系统提示输入），因此与用户提供的其他指令具有相同的优先级。如需明确控制，你仍可指示模型“使用 `<skill name>` 技能。”
+技能说明属于用户提示输入（而非系统提示输入），因此它们的处理优先级与其他用户提供的说明相同。若需显式控制，你仍然可以指示模型“使用 `<skill name>` 技能”。
 
-## 限制与验证
+## 限制与校验
 
 - `SKILL.md` 文件匹配不区分大小写。
-- 每个技能包中 `skill.md`/`SKILL.md` 仅允许一个文件。
-- 技能前置元数据验证遵循 [智能体技能规范](https://agentskills.io/specification#name-field).
-- 最大 zip 上传大小为 `50 MB`.
+- 仅限一个 `skill.md`/`SKILL.md` 文件可以包含在技能包中。
+- 技能 front matter 校验遵循 [智能体 技能规范](https://agentskills.io/specification#name-field).
+- zip 上传的最大大小为 `50 MB`.
 - 每个技能版本的最大文件数为 `500`.
-- 最大未压缩文件大小为 `25 MB`.
+- 单个文件的最大未压缩大小为 `25 MB`.
 
-## 网络访问安全
+## 网络访问的安全性
 
-务必仔细检查任何与 Responses API 搭配使用的技能。技能
-  会引入安全风险，例如提示注入驱动的数据外泄。
-  在使用此工具前，请仔细阅读 [风险与安全](#risks-and-safety) 章节
-  。
+请务必仔细检查任何与 Responses API 一起使用的技能 (Skill)。技能
+  会引入安全风险，例如由提示注入导致的数据外泄。
+  请在使用此工具之前仔细阅读 [风险与安全](#risks-and-safety) 部分。
+  请在使用此工具之前仔细阅读上述内容。
 
 ## 版本控制与管理
 
 ### 版本指针
 
 - `default_version` 在未提供版本时使用。
-- `latest_version` 跟踪最新的上传。
-- `skill_reference.version` 接受整数或 `"latest"`.
+- `latest_version` 追踪最新的上传。
+- `skill_reference.version` 接受一个整数或 `"latest"`.
 
 ### 创建新版本
 
@@ -471,7 +471,7 @@ curl -X POST 'https://api.openai.com/v1/skills/<skill_id>/versions' \
 
 ### 设置默认版本
 
-设置技能默认版本
+设置技能的默认版本
 
 ```bash
 curl -X POST 'https://api.openai.com/v1/skills/<skill_id>' \
@@ -483,26 +483,26 @@ curl -X POST 'https://api.openai.com/v1/skills/<skill_id>' \
 
 ### 删除规则
 
-- 你无法删除默认版本；请先设置另一个默认版本。
-- 删除最后一个保留版本将删除该技能。
-- 删除一个技能会级联删除所有版本。
+- 你无法删除默认版本；请先将其他版本设为默认。
+- 删除最后一个剩余版本会一并删除该技能。
+- 删除某个技能会级联移除其所有版本。
 
 ## 精选技能
 
-OpenAI 维护了一组可通过 id 引用的第一方技能（例如， `openai-spreadsheets`).
+OpenAI 维护了一组可按 id 引用的第一方技能，例如： `openai-spreadsheets`).
 
-引用精选技能
+引用一个精选技能
 
 ```json
 { "type": "skill_reference", "skill_id": "openai-spreadsheets", "version": "latest" }
 ```
 
 
-## 内联技能
+## Inline skills
 
-如果你不想创建托管技能，可以在环境的 `skills` 数组中直接内嵌 zip 包（base64）。
+如果你不想创建托管技能，可以在该环境的 `skills` 数组中内联一个 zip 包（base64）。
 
-内嵌技能包
+内联技能包
 
 ```bash
 INLINE_ZIP=$(base64 -i ./basic_math.zip)
@@ -530,33 +530,33 @@ curl -L 'https://api.openai.com/v1/containers' \
 
 ## 风险与安全
 
-检查与 Responses API 配合使用的任何技能非常重要。技能会引入安全风险，例如由提示注入驱动的数据外泄。
+请务必检查与 Responses API 配合使用的任何 Skill。Skills 会引入安全风险，例如由提示注入导致的数据外泄。
 
-对于与网络访问结合使用的技能，请仔细查看 [网络相关的风险与安全部分](https://developers.openai.com/api/docs/guides/tools-shell#risks-and-safety).
+对于结合网络访问使用的 Skills，请仔细查阅 [网络相关的风险与安全章节](https://developers.openai.com/api/docs/guides/tools-shell#risks-and-safety).
 
-#### 将技能视为特权代码和指令
+#### 将技能视为特权代码与指令
 
-技能内容可能影响规划、工具使用和命令执行。在开发者验证之前，任何技能都应被视为潜在不可信输入。
+Skill 内容可能会影响规划、工具使用和命令执行。在被开发者验证之前，任何 Skill 都应被视为可能不受信任的输入进行审查。
 
-### 不要向最终用户暴露开放的技能（Skills）仓库
+### 不要向最终用户开放可写入的 Skills 仓库
 
-避免设计让消费端最终用户可以从开放目录中自由浏览、选择或附加任意技能的产品。这会显著增加以下风险：
+避免产品设计让最终消费者用户能够自由浏览、选择或挂载来自开放目录的任意 Skills。这会显著增加以下风险：
 
-- 通过恶意 SKILL.md 指令进行的提示注入和策略绕过。
-- 未经审查的自动化触发数据泄露或破坏性操作。
+- 通过恶意 SKILL.md 指令进行提示注入与策略绕过。
+- 未经审核的自动化所触发的数据外泄或破坏性操作。
 
-#### 在开发者层面集成技能
+#### 在开发者层面集成 Skills
 
-技能应由开发者检查和集成，然后仅通过受限制的产品体验向最终用户开放。实际操作中：
+Skills 应由开发者审查并集成，然后仅通过有边界的 product 体验向最终用户开放。实际上：
 
-- 将技能映射到特定产品工作流/用例。
-- 防止终端用户对任意技能选择进行控制。
-- 在明确审批和策略检查之后，再允许写入或高影响操作。
+- 将 Skills 映射到特定的产品工作流/用例。
+- 防止终端用户控制任意 Skill 的选择。
+- 将写入或高影响操作置于明确的审批和策略检查之后。
 
-#### 要求敏感操作需获得批准
+#### Require approval for sensitive actions
 
-对于可执行写入或高影响操作的工作流，在执行前需要明确批准。
+对于可能执行写入或高影响操作的工作流，需在执行前获得明确批准。
 
-#### 验证数据驻留和保留要求
+#### 验证数据驻留与保留要求
 
-我们支持两种形态的 Skills：本地执行和基于托管容器的执行。托管技能遵循与托管 shell 相同的容器生命周期：挂载的技能和容器文件在容器活跃期间保持可用，并在容器过期或被删除时被丢弃。如果你希望执行完全在你管理的基础设施上进行，请使用本地 shell 模式。了解更多关于我们的 [数据控制](https://developers.openai.com/api/docs/guides/your-data).
+我们以两种形式支持 Skills：本地执行和基于托管容器的执行。托管 Skills 遵循与托管 shell 相同的容器生命周期：已挂载的 Skills 和容器文件在容器处于活动状态时保持可用，并在容器过期或被删除时被丢弃。如果你希望执行完全运行在你管理的基础设施上，请使用本地 shell 模式。详细了解我们的 [数据控制](https://developers.openai.com/api/docs/guides/your-data).
