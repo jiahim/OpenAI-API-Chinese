@@ -1,9 +1,11 @@
 import { createHash } from "node:crypto";
 
-import type {
-  DocumentAdapter,
-  TranslationPlan,
-  TranslationResult,
+import {
+  TranslationErrorCode,
+  TranslationResponseError,
+  type DocumentAdapter,
+  type TranslationPlan,
+  type TranslationResult,
 } from "@easy-translate/core";
 import { fromMarkdown } from "mdast-util-from-markdown";
 import { frontmatterFromMarkdown } from "mdast-util-frontmatter";
@@ -95,6 +97,24 @@ const GENERATED_CARD_PATTERN =
   /^[ \t]{1,3}\[([^\]\r\n]+)\r?\n(?:[ \t]*\r?\n)+[ \t]{4,}([^\]\r\n]+)\]\((https:\/\/developers\.openai\.com\/[^)\r\n]+)\)[ \t]*$/gmu;
 const GENERATED_CARD_CODE_PATTERN =
   /^([ \t]{4,})[^\]\r\n]+(\]\(https:\/\/developers\.openai\.com\/[^)\r\n]+\))[ \t]*$/u;
+
+export const MARKDOWN_STRUCTURE_ISSUE_CODE =
+  "translation.markdown_structure_changed";
+
+function markdownStructureError(documentId: string): TranslationResponseError {
+  return new TranslationResponseError(
+    TranslationErrorCode.ResponseInvalidItem,
+    "翻译结果改变了 Markdown 受保护结构，已拒绝回填。",
+    {
+      details: {
+        documentId,
+        issueCode: MARKDOWN_STRUCTURE_ISSUE_CODE,
+      },
+      retryInstruction:
+        "只返回对应输入单元的纯文本译文；不要新增 Markdown、HTML、链接、列表、表格或标题语法。",
+    },
+  );
+}
 
 function sha256(value: string): string {
   return createHash("sha256").update(value, "utf8").digest("hex");
@@ -733,7 +753,7 @@ export const markdownDocumentAdapter: DocumentAdapter<
     }
     const renderedTree = parseMarkdown(rendered);
     if (structureSignature(renderedTree, rendered) !== state.structureSignature) {
-      throw new Error("翻译结果改变了 Markdown 受保护结构，已拒绝回填。");
+      throw markdownStructureError(state.documentId);
     }
     return rendered;
   },
