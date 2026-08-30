@@ -84,7 +84,7 @@ test("renders every document header in title, timestamps, source notice, body or
   assert.ok(titleIndex < timestampsIndex);
   assert.ok(timestampsIndex < sourceNoticeIndex);
   assert.ok(sourceNoticeIndex < bodyIndex);
-  const firstBodyParagraph = /<p>([\\s\\S]*?)<\\/p>/u
+  const firstBodyParagraph = /<p>([\s\S]*?)<\/p>/u
     .exec(html.slice(bodyIndex))?.[1]
     ?.replace(/<[^>]+>/gu, "")
     .trim();
