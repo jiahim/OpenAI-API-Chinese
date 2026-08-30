@@ -59,6 +59,13 @@ const LITERAL_BACKTICK_INSTRUCTION =
 const INVALID_ID_RECOVERY_INSTRUCTION =
   "INVALID ID RECOVERY: This request is a smaller recovery sub-batch. " +
   "Return every requested id exactly once, even when adjacent text fragments form one sentence.";
+const INVALID_JSON_RECOVERY_INSTRUCTION =
+  "INVALID JSON RECOVERY: This request is a smaller recovery sub-batch. " +
+  "Return exactly one JSON object with no prose, reasoning, or Markdown code fences. " +
+  'Use exactly this shape: {"translations":[{"id":"...","text":"..."}]}. ' +
+  "Return every requested id exactly once.";
+const CHAT_COMPLETIONS_INVALID_JSON_MESSAGE =
+  "Chat-completions provider did not return valid JSON.";
 const LITERAL_BACKTICK_PATTERN = /`+/gu;
 const LITERAL_MARKDOWN_DELIMITER_INSTRUCTION =
   "{{ET_MD_*}} tokens represent protected literal Markdown emphasis or strikethrough delimiter runs. " +
@@ -615,6 +622,60 @@ export function createInvalidIdRecoveryProvider<TContext>(
   return { name: provider.name, translateBatch };
 }
 
+export function createInvalidJsonRecoveryProvider<TContext>(
+  provider: TranslationProvider<TContext>,
+): TranslationProvider<TContext> {
+  async function translateBatch(
+    request: TranslationBatchRequest<TContext>,
+    signal?: AbortSignal,
+    onActivity?: Parameters<TranslationProvider<TContext>["translateBatch"]>[2],
+  ): Promise<TranslationOutputItem[]> {
+    try {
+      return await provider.translateBatch(request, signal, onActivity);
+    } catch (error) {
+      const invalidJson =
+        error instanceof TranslationResponseError &&
+        error.code === TranslationErrorCode.ResponseInvalidContainer &&
+        error.message === CHAT_COMPLETIONS_INVALID_JSON_MESSAGE;
+      if (!invalidJson) throw error;
+
+      const instructions = [
+        request.instructions,
+        INVALID_JSON_RECOVERY_INSTRUCTION,
+      ]
+        .filter(Boolean)
+        .join("\n");
+      if (request.items.length < 2) {
+        throw new TranslationResponseError(error.code, error.message, {
+          cause: error,
+          details: error.details,
+          retryInstruction: [
+            error.retryInstruction,
+            INVALID_JSON_RECOVERY_INSTRUCTION,
+          ]
+            .filter(Boolean)
+            .join("\n"),
+        });
+      }
+
+      const midpoint = Math.ceil(request.items.length / 2);
+      const left = await translateBatch(
+        { ...request, instructions, items: request.items.slice(0, midpoint) },
+        signal,
+        onActivity,
+      );
+      const right = await translateBatch(
+        { ...request, instructions, items: request.items.slice(midpoint) },
+        signal,
+        onActivity,
+      );
+      return [...left, ...right];
+    }
+  }
+
+  return { name: provider.name, translateBatch };
+}
+
 export function createTerminologyProvider<TContext>(
   provider: TranslationProvider<TContext>,
   preserveTerms: readonly string[],
@@ -951,8 +1012,8 @@ export function createConfiguredProvider(
         createLiteralBacktickProvider(
           createPreserveTermsProvider(
             createTerminologyProvider(
-              createInvalidIdRecoveryProvider(
-                provider,
+              createInvalidJsonRecoveryProvider(
+                createInvalidIdRecoveryProvider(provider),
               ),
               preserveTerms,
               terminology,
