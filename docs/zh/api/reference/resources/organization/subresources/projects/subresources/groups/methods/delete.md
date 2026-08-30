@@ -1,6 +1,6 @@
-# 组织 项目 群组 — 删除
+# 组织 项目 分组 — 删除
 
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。通过在页面 URL 后附加 `.md` ，即可获取文档页的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾附加 `.md` 来获取文档页面的 Markdown 版本。
 
 OpenAI API 端点方法参考。
 

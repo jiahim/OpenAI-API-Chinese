@@ -1,10 +1,10 @@
-> 完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可在页面 URL 末尾追加 `.md` 以获取该页面的 Markdown 版本。
 
 ## 删除微调模型
 
-**删除** `/models/{model}`
+**delete** `/models/{model}`
 
-删除一个微调模型。你在组织内必须拥有所有者角色才能删除模型。
+删除微调模型。要删除模型，你必须在组织中拥有 Owner 角色。
 
 ### 路径参数
 

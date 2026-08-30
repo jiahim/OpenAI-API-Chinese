@@ -1,4 +1,4 @@
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
 
 ## 列出文件
 
@@ -10,15 +10,15 @@
 
 - `after: optional string`
 
-  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发出列表请求并收到 100 个对象（以 obj_foo 结尾），则后续调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的下一次调用可以包含 after=obj_foo，以便获取列表的下一页。
 
 - `limit: optional number`
 
-  对要返回的对象数量的限制。限制范围在 1 到 10,000 之间，默认值为 10,000。
+  返回对象的数量上限。Limit 的取值范围为 1 到 10,000，默认值为 10,000。
 
 - `order: optional "asc" or "desc"`
 
-  按对象的 `created_at` 时间戳排序。 `asc` 为升序， `desc` 为降序。
+  按对象的 `created_at` 时间戳排序。 `asc` 表示升序， `desc` 表示降序。
 
   - `"asc"`
 
@@ -28,7 +28,7 @@
 
   仅返回具有指定用途的文件。
 
-### 返回
+### Returns
 
 - `data: array of FileObject`
 
@@ -38,7 +38,7 @@
 
   - `bytes: number`
 
-    文件的大小，以字节为单位。
+    文件大小，以字节为单位。
 
   - `created_at: number`
 
@@ -46,7 +46,7 @@
 
   - `filename: string`
 
-    文件的名称。
+    文件名称。
 
   - `object: "file"`
 
@@ -56,7 +56,7 @@
 
   - `purpose: "assistants" or "assistants_output" or "batch" or 5 more`
 
-    文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
+    文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，和 `user_data`.
 
     - `"assistants"`
 
@@ -76,7 +76,7 @@
 
   - `status: "uploaded" or "processed" or "error"`
 
-    已弃用。文件的当前状态，可以是 `uploaded`, `processed`，或 `error`.
+    已弃用。文件的当前状态，可为 `uploaded`, `processed`，或 `error`.
 
     - `"uploaded"`
 
@@ -90,7 +90,7 @@
 
   - `status_details: optional string`
 
-    已弃用。有关微调训练文件验证失败原因的详细信息，请参阅 `error` 字段，位于 `fine_tuning.job`.
+    已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段，位于 `fine_tuning.job`.
 
 - `first_id: string`
 

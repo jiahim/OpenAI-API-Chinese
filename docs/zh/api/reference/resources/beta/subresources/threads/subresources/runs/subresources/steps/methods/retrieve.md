@@ -1,10 +1,10 @@
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
-## 检索运行步骤
+## 获取运行步骤
 
-**获取** `/threads/{thread_id}/runs/{run_id}/steps/{step_id}`
+**get** `/threads/{thread_id}/runs/{run_id}/steps/{step_id}`
 
-检索一个运行步骤。
+获取某个运行步骤。
 
 ### 路径参数
 
@@ -18,53 +18,53 @@
 
 - `include: optional array of RunStepInclude`
 
-  要包含在响应中的附加字段列表。目前唯一支持的值是 `step_details.tool_calls[*].file_search.results[*].content` 以获取文件搜索结果内容。
+  响应中要包含的额外字段列表。目前唯一支持的值是 `step_details.tool_calls[*].file_search.results[*].content` 以获取文件搜索结果内容。
 
-  参见 [文件搜索工具文档](/docs/assistants/tools/file-search#customizing-file-search-settings) 了解更多信息。
+  请参阅 [文件搜索工具文档](/docs/assistants/tools/file-search#customizing-file-search-settings) 了解更多信息。
 
   - `"step_details.tool_calls[*].file_search.results[*].content"`
 
-### 返回
+### Returns
 
 - `RunStep object { id, assistant_id, cancelled_at, 13 more }`
 
-  表示运行执行中的一个步骤。
+  表示一次运行执行过程中的一个步骤。
 
   - `id: string`
 
-    运行步骤的标识符，可在 API 端点中引用。
+    该运行步骤的标识符，可以在 API 端点中引用。
 
   - `assistant_id: string`
 
-    与运行步骤关联的 [助手](/docs/api-reference/assistants) 的 ID。
+    与之关联的 [assistant](/docs/api-reference/assistants) 的 ID。
 
   - `cancelled_at: number or null`
 
-    运行步骤被取消时的 Unix 时间戳（秒）。
+    运行步骤被取消时的 Unix 时间戳（以秒为单位）。
 
   - `completed_at: number or null`
 
-    运行步骤完成时的 Unix 时间戳（秒）。
+    运行步骤完成时的 Unix 时间戳（以秒为单位）。
 
   - `created_at: number`
 
-    运行步骤创建时的 Unix 时间戳（秒）。
+    运行步骤创建时的 Unix 时间戳（以秒为单位）。
 
   - `expired_at: number or null`
 
-    运行步骤过期时的 Unix 时间戳（秒）。如果父运行已过期，则该步骤视为已过期。
+    运行步骤过期时的 Unix 时间戳（以秒为单位）。如果父级运行已过期，则该步骤被视为已过期。
 
   - `failed_at: number or null`
 
-    运行步骤失败时的 Unix 时间戳（秒）。
+    运行步骤失败时的 Unix 时间戳（以秒为单位）。
 
   - `last_error: object { code, message }  or null`
 
-    与此运行步骤关联的最后一个错误。如果 `null` 没有错误，则为 null。
+    与该运行步骤关联的最后一个错误。如果没有错误，则为 `null` 。
 
     - `code: "server_error" or "rate_limit_exceeded"`
 
-      以下之一： `server_error` 或 `rate_limit_exceeded`.
+      其值为 `server_error` 或 `rate_limit_exceeded`.
 
       - `"server_error"`
 
@@ -72,16 +72,16 @@
 
     - `message: string`
 
-      错误的人类可读描述。
+      人类可读的错误描述。
 
   - `metadata: Metadata or null`
 
-    可附加到对象的一组 16 个键值对。这可用于
-    以结构化
-    格式存储关于对象的附加信息，并通过 API 或仪表板查询对象。
+    可附加到对象的 16 个键值对集合。这可以
+    用于以结构化格式存储对象的附加信息，并通过 API 或仪表板查询对象。
+    用于以结构化格式存储对象的附加信息，并通过 接口 或仪表板查询对象。
 
-    键为字符串，最大长度为 64 个字符。值为字符串，
-    最大长度为 512 个字符。
+    键为字符串，最长 64 个字符。值为字符串，
+    最长 512 个字符。
 
   - `object: "thread.run.step"`
 
@@ -91,7 +91,7 @@
 
   - `run_id: string`
 
-    该运行步骤所属的 [run](/docs/api-reference/runs) 的 ID。
+    与之关联的 [run](/docs/api-reference/runs) ，表示此运行步骤所属的运行。
 
   - `status: "in_progress" or "cancelled" or "failed" or 2 more`
 
@@ -119,7 +119,7 @@
 
         - `message_id: string`
 
-          该运行步骤创建的消息的 ID。
+          此运行步骤所创建消息的 ID。
 
       - `type: "message_creation"`
 
@@ -133,11 +133,11 @@
 
       - `tool_calls: array of CodeInterpreterToolCall or FileSearchToolCall or FunctionToolCall`
 
-        运行步骤涉及的工具调用数组。这些可以与三种类型的工具之一关联： `code_interpreter`, `file_search`，或 `function`.
+        此运行步骤所涉及的工具调用数组。这些工具调用可与以下三种工具之一关联： `code_interpreter`, `file_search`，或 `function`.
 
         - `CodeInterpreterToolCall object { id, code_interpreter, type }`
 
-          运行步骤涉及的 Code Interpreter 工具调用的详细信息。
+          此运行步骤所涉及的代码解释器工具调用的详细信息。
 
           - `id: string`
 
@@ -145,27 +145,27 @@
 
           - `code_interpreter: object { input, outputs }`
 
-            Code Interpreter 工具调用定义。
+            代码解释器工具调用的定义。
 
             - `input: string`
 
-              Code Interpreter 工具调用的输入。
+              代码解释器工具调用的输入。
 
             - `outputs: array of object { logs, type }  or object { image, type }`
 
-              Code Interpreter 工具调用的输出。Code Interpreter 可以输出一个或多个项目，包括文本（`logs`）或图像（`image`）。每一个都由不同的对象类型表示。
+              代码解释器工具调用的输出。代码解释器可以输出一个或多个项，包括文本（`logs`）或图像（`image`）。每一项都由不同的对象类型表示。
 
               - `CodeInterpreterLogOutput object { logs, type }`
 
-                作为运行步骤的一部分，代码解释器工具调用产生的文本输出。
+                作为运行步骤一部分的代码解释器工具调用的文本输出。
 
                 - `logs: string`
 
-                  代码解释器工具调用产生的文本输出。
+                  代码解释器工具调用的文本输出。
 
                 - `type: "logs"`
 
-                  始终 `logs`.
+                  始终为 `logs`.
 
                   - `"logs"`
 
@@ -175,17 +175,17 @@
 
                   - `file_id: string`
 
-                    该 [文件](/docs/api-reference/files) 图像的 ID。
+                    该 [file](/docs/api-reference/files) 图片的 ID。
 
                 - `type: "image"`
 
-                  始终 `image`.
+                  始终为 `image`.
 
                   - `"image"`
 
           - `type: "code_interpreter"`
 
-            工具调用的类型。对于此类型的工具调用，它始终是 `code_interpreter` 。
+            工具调用的类型。该类型始终为 `code_interpreter` （针对此类型的工具调用）。
 
             - `"code_interpreter"`
 
@@ -205,7 +205,7 @@
 
               - `ranker: "auto" or "default_2024_08_21"`
 
-                用于文件搜索的排序器。如果未指定，将使用 `auto` 排序器。
+                用于文件搜索的排序器。若未指定，将使用 `auto` 排序器。
 
                 - `"auto"`
 
@@ -221,19 +221,19 @@
 
               - `file_id: string`
 
-                找到结果所在的文件的 ID。
+                找到该结果的文件 ID。
 
               - `file_name: string`
 
-                找到结果所在的文件的名称。
+                找到该结果的文件名。
 
               - `score: number`
 
-                结果的分数。所有值必须是介于 0 和 1 之间的浮点数。
+                该结果的分数。所有值必须是介于 0 和 1 之间的浮点数。
 
               - `content: optional array of object { text, type }`
 
-                找到的结果的内容。仅在通过 include 查询参数请求时才包含该内容。
+                已找到结果的内容。内容仅在通过 include 查询参数请求时才会包含。
 
                 - `text: optional string`
 
@@ -247,7 +247,7 @@
 
           - `type: "file_search"`
 
-            工具调用的类型。对于这种工具调用，该值始终为 `file_search` 。
+            工具调用的类型。该类型始终为 `file_search` （针对此类型的工具调用）。
 
             - `"file_search"`
 
@@ -259,7 +259,7 @@
 
           - `function: object { arguments, name, output }`
 
-            所调用函数的定义。
+            被调用函数的定义。
 
             - `arguments: string`
 
@@ -271,23 +271,23 @@
 
             - `output: string or null`
 
-              函数的输出。如果输出尚未 `null` 提交，该值将为 [已提交](/docs/api-reference/runs/submitToolOutputs) 。
+              函数的输出。如果输出尚未被 `null` 提交，该字段为 [submitted](/docs/api-reference/runs/submitToolOutputs) 。
 
           - `type: "function"`
 
-            工具调用的类型。对于这种工具调用，该值始终为 `function` 。
+            工具调用的类型。该类型始终为 `function` （针对此类型的工具调用）。
 
             - `"function"`
 
       - `type: "tool_calls"`
 
-        始终 `tool_calls`.
+        始终为 `tool_calls`.
 
         - `"tool_calls"`
 
   - `thread_id: string`
 
-    所运行 [线程](/docs/api-reference/threads) 的 ID。
+    与之关联的 [thread](/docs/api-reference/threads) 运行的对话。
 
   - `type: "message_creation" or "tool_calls"`
 
@@ -299,19 +299,19 @@
 
   - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
-    与运行步骤相关的使用统计信息。此值将 `null` 在运行步骤状态为 `in_progress`.
+    与运行步骤相关的使用统计信息。当运行步骤的状态为 `null` 时，该值为 `in_progress`.
 
     - `completion_tokens: number`
 
-      运行步骤期间使用的完成令牌数量。
+      运行步骤过程中使用的 completion token 数。
 
     - `prompt_tokens: number`
 
-      运行步骤期间使用的提示令牌数量。
+      运行步骤过程中使用的 prompt token 数。
 
     - `total_tokens: number`
 
-      使用的令牌总数（提示 + 完成）。
+      使用的 token 总数（prompt + completion）。
 
 ### 示例
 

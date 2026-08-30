@@ -1,12 +1,12 @@
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可在页面 URL 后附加 `.md` 获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
 
 ## 创建图像变体
 
 **post** `/images/variations`
 
-创建给定图像的变体。此端点仅支持 `dall-e-2`.
+创建指定图片的变体。该接口仅支持 `dall-e-2`.
 
-### 返回
+### Returns
 
 - `ImagesResponse object { created, background, data, 4 more }`
 
@@ -18,7 +18,7 @@
 
   - `background: optional "transparent" or "opaque"`
 
-    图像生成所用的 background 参数。可选值为 `transparent` 或 `opaque`.
+    用于图像生成的 background 参数。可以是 `transparent` 或 `opaque`.
 
     - `"transparent"`
 
@@ -30,19 +30,19 @@
 
     - `b64_json: optional string`
 
-      生成图像的 base64 编码 JSON。对于 GPT 图像模型，默认返回；仅在 `response_format` 设为 `b64_json` 用于 `dall-e-2` 和 `dall-e-3`.
+      生成图像的 base64 编码 JSON。GPT 图像模型默认返回，并且仅当 `response_format` 设置为 `b64_json` 时才 `dall-e-2` 出现 `dall-e-3`.
 
     - `revised_prompt: optional string`
 
-      对于 `dall-e-3` ，仅返回用于生成图像的修订提示词。
+      仅 `dall-e-3` 时，用于生成图像的修订后提示词。
 
     - `url: optional string`
 
-      使用 `dall-e-2` 或 `dall-e-3`，时，生成图像的 URL（如果 `response_format` 设为 `url` （默认值））。GPT 图像模型不支持此参数。
+      当使用 `dall-e-2` 或 `dall-e-3`，时，如果 `response_format` 设置为 `url` （默认值），则为生成图像的 URL。GPT 图像模型不支持。
 
   - `output_format: optional "png" or "webp" or "jpeg"`
 
-    图像生成的输出格式。可选值为 `png`, `webp`、或 `jpeg`.
+    图像生成的输出格式。可以是 `png`, `webp`，或 `jpeg`.
 
     - `"png"`
 
@@ -52,7 +52,7 @@
 
   - `quality: optional "low" or "medium" or "high"`
 
-    生成图像的质量。可选值为 `low`, `medium`、或 `high`.
+    生成图像的质量。可以是 `low`, `medium`，或 `high`.
 
     - `"low"`
 
@@ -62,7 +62,7 @@
 
   - `size: optional "1024x1024" or "1024x1536" or "1536x1024"`
 
-    生成的图像大小。可以是 `1024x1024`, `1024x1536`，或 `1536x1024`.
+    生成图像的尺寸。可以是 `1024x1024`, `1024x1536`，或 `1536x1024`.
 
     - `"1024x1024"`
 
@@ -72,43 +72,43 @@
 
   - `usage: optional object { input_tokens, input_tokens_details, output_tokens, 2 more }`
 
-    对于 `gpt-image-1` ，图像生成的令牌用量信息。
+    仅 `gpt-image-1` 时，图像生成的 token 用量信息。
 
     - `input_tokens: number`
 
-      输入提示中的令牌数量（图像和文本）。
+      输入提示词中的 token（图像和文本）数量。
 
     - `input_tokens_details: object { image_tokens, text_tokens }`
 
-      图像生成的输入令牌详细信息。
+      图像生成的输入 token 详细信息。
 
       - `image_tokens: number`
 
-        输入提示中的图像令牌数量。
+        输入提示中的图像 token 数量。
 
       - `text_tokens: number`
 
-        输入提示中的文本令牌数量。
+        输入提示中的文本 token 数量。
 
     - `output_tokens: number`
 
-      模型生成的输出令牌数量。
+      模型生成的输出 token 数量。
 
     - `total_tokens: number`
 
-      图像生成使用的令牌总数（图像和文本）。
+      用于图像生成的 token（图像和文本）总数量。
 
     - `output_tokens_details: optional object { image_tokens, text_tokens }`
 
-      图像生成的输出令牌详细信息。
+      图像生成的输出 token 详细信息。
 
       - `image_tokens: number`
 
-        模型生成的图像输出令牌数量。
+        模型生成的图像输出 token 数量。
 
       - `text_tokens: number`
 
-        模型生成的文本输出令牌数量。
+        模型生成的文本输出 token 数量。
 
 ### 示例
 
