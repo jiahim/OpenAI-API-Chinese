@@ -13,6 +13,7 @@ import {
   createLiteralBacktickProvider,
   createLiteralMarkdownDelimiterProvider,
   createInvalidIdRecoveryProvider,
+  createInvalidJsonRecoveryProvider,
   createPreserveTermsProvider,
   createSourceLineBreakNormalizationProvider,
   createTerminologyProvider,
@@ -304,6 +305,112 @@ test("invalid-id provider preserves a terminal single-item failure", async () =>
     }),
     (error: unknown) => error === expected,
   );
+});
+
+test("invalid-JSON provider recursively splits a failed multi-item batch", async () => {
+  const calls: Array<{ instructions: string; size: number }> = [];
+  const provider = defineProvider({
+    async translateBatch(request) {
+      calls.push({
+        instructions: request.instructions ?? "",
+        size: request.items.length,
+      });
+      if (request.items.length > 1) {
+        throw new TranslationResponseError(
+          TranslationErrorCode.ResponseInvalidContainer,
+          "Chat-completions provider did not return valid JSON.",
+        );
+      }
+      return request.items.map((item) => ({
+        id: item.id,
+        text: `译文:${item.text}`,
+      }));
+    },
+  });
+  const recoveryProvider = createInvalidJsonRecoveryProvider(provider);
+  const output = await recoveryProvider.translateBatch({
+    items: [
+      { context: {}, id: "one", text: "one" },
+      { context: {}, id: "two", text: "two" },
+      { context: {}, id: "three", text: "three" },
+    ],
+    targetLanguage: "zh-CN",
+  });
+
+  assert.deepEqual(output, [
+    { id: "one", text: "译文:one" },
+    { id: "two", text: "译文:two" },
+    { id: "three", text: "译文:three" },
+  ]);
+  assert.deepEqual(
+    calls.map((call) => call.size),
+    [3, 2, 1, 1, 1],
+  );
+  for (const call of calls.slice(1)) {
+    assert.match(call.instructions, /Return exactly one JSON object/u);
+  }
+});
+
+test("invalid-JSON provider adds recovery guidance to a terminal failure", async () => {
+  const expected = new TranslationResponseError(
+    TranslationErrorCode.ResponseInvalidContainer,
+    "Chat-completions provider did not return valid JSON.",
+    { retryInstruction: "Keep the original instruction." },
+  );
+  const provider = defineProvider({
+    async translateBatch() {
+      throw expected;
+    },
+  });
+  const recoveryProvider = createInvalidJsonRecoveryProvider(provider);
+
+  await assert.rejects(
+    recoveryProvider.translateBatch({
+      items: [{ context: {}, id: "one", text: "one" }],
+      targetLanguage: "zh-CN",
+    }),
+    (error: unknown) => {
+      assert.ok(error instanceof TranslationResponseError);
+      assert.equal(error.code, TranslationErrorCode.ResponseInvalidContainer);
+      assert.equal(error.cause, expected);
+      assert.match(
+        error.retryInstruction ?? "",
+        /Keep the original instruction/u,
+      );
+      assert.match(
+        error.retryInstruction ?? "",
+        /Return exactly one JSON object/u,
+      );
+      return true;
+    },
+  );
+});
+
+test("invalid-JSON provider does not split unrelated container failures", async () => {
+  const expected = new TranslationResponseError(
+    TranslationErrorCode.ResponseInvalidContainer,
+    "Chat-completions provider response has no choices.",
+  );
+  let calls = 0;
+  const provider = defineProvider({
+    async translateBatch() {
+      calls += 1;
+      throw expected;
+    },
+  });
+  const recoveryProvider = createInvalidJsonRecoveryProvider(provider);
+
+  await assert.rejects(
+    recoveryProvider.translateBatch({
+      items: [
+        { context: {}, id: "one", text: "one" },
+        { context: {}, id: "two", text: "two" },
+      ],
+      targetLanguage: "zh-CN",
+    }),
+    (error: unknown) => error === expected,
+  );
+  assert.equal(calls, 1);
 });
 
 test("source line-break provider flattens matching translated layout breaks", async () => {
