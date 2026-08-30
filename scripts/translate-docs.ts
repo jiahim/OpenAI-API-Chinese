@@ -163,7 +163,6 @@ async function runProductionTranslationPage(
   provider: TranslationProvider<MarkdownTranslationContext>,
   commit: boolean,
 ) {
-  const batchRetry = createProductionBatchRetryPolicy();
   const pageRetry: RetryOperationOptions = {
     ...TRANSLATION_PAGE_RETRY_POLICY,
     onRetry: (event) => logRetry("page", page, event),
@@ -174,7 +173,7 @@ async function runProductionTranslationPage(
       onRetry: (event) => logRetry("batch", page, event),
       pageRetry,
       provider,
-      retry: batchRetry,
+      retryFactory: createProductionBatchRetryPolicy,
     });
   } catch (error) {
     throw translationFailure(page, error);

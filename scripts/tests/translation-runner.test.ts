@@ -4,6 +4,7 @@ import {
   mkdir,
   mkdtemp,
   readFile,
+  readdir,
   rm,
   symlink,
   writeFile,
@@ -437,6 +438,142 @@ test("page retry resumes its checkpoint after batch retries are exhausted", asyn
     assert.deepEqual(pageRetries, [1]);
     assert.equal(run.result.stats.fromCheckpointUnits, 1);
     assert.equal(calls, run.result.stats.uniqueUnits + 1);
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("page retry discards a checkpoint that changes protected Markdown structure", async () => {
+  const root = await createFixture("# One\n\nTwo.\n");
+  try {
+    const workspace = await loadTranslationWorkspace(root);
+    let calls = 0;
+    const itemCalls = new Map<string, number>();
+    const provider = defineProvider<MarkdownTranslationContext>({
+      async translateBatch(request) {
+        calls += 1;
+        const item = request.items[0];
+        assert.ok(item);
+        const itemCall = (itemCalls.get(item.text) ?? 0) + 1;
+        itemCalls.set(item.text, itemCall);
+        if (item.text === "One" && itemCall % 2 === 1) {
+          throw new TranslationResponseError(
+            TranslationErrorCode.ResponseQualityRejected,
+            "simulated repeatable quality failure",
+            {
+              details: { issueCode: "translation.test_quality" },
+              retryInstruction: "Return the requested item again.",
+            },
+          );
+        }
+        const hasStructureRecovery = request.instructions?.includes(
+          "不要新增 Markdown",
+        );
+        return [
+          {
+            id: item.id,
+            text:
+              item.text === "Two." && !hasStructureRecovery
+                ? `*${item.text}*`
+                : item.text,
+          },
+        ];
+      },
+    });
+    const retryErrors: unknown[] = [];
+    let retryPolicies = 0;
+    const run = await runTranslationPageWithRetry(workspace, SOURCE_URL, {
+      batchSize: 1,
+      concurrency: 1,
+      pageRetry: {
+        baseDelayMs: 0,
+        jitterMs: 0,
+        maxDelayMs: 0,
+        maxRetries: 1,
+        onRetry: (event) => {
+          retryErrors.push(event.error);
+        },
+        runtime: {
+          random: () => 0,
+          sleep: async () => undefined,
+        },
+      },
+      provider,
+      retryFactory: () => {
+        retryPolicies += 1;
+        const seen = new Set<string>();
+        return {
+          baseDelayMs: 0,
+          jitterMs: 0,
+          maxDelayMs: 0,
+          maxRetries: 1,
+          shouldRetry(error) {
+            if (!(error instanceof TranslationResponseError)) return false;
+            const fingerprint = `${error.code}:${error.message}`;
+            if (seen.has(fingerprint)) return false;
+            seen.add(fingerprint);
+            return true;
+          },
+        };
+      },
+    });
+
+    assert.equal(calls, 6);
+    assert.equal(retryPolicies, 2);
+    assert.equal(run.result.stats.fromCheckpointUnits, 0);
+    assert.equal(run.rendered, "# One\n\nTwo.\n");
+    const checkpoint = JSON.parse(
+      await readFile(join(root, run.checkpointPath), "utf8"),
+    ) as { translations: Array<{ translatedText: string }> };
+    assert.deepEqual(
+      checkpoint.translations.map((item) => item.translatedText),
+      ["One", "Two."],
+    );
+    assert.equal(retryErrors.length, 1);
+    assert.ok(retryErrors[0] instanceof TranslationResponseError);
+    assert.equal(retryErrors[0].code, TranslationErrorCode.ResponseInvalidItem);
+    assert.equal(
+      retryErrors[0].details.issueCode,
+      "translation.markdown_structure_changed",
+    );
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("runner removes a poisoned structure checkpoint when retries are exhausted", async () => {
+  const root = await createFixture("# One\n");
+  try {
+    const workspace = await loadTranslationWorkspace(root);
+    const provider = defineProvider<MarkdownTranslationContext>({
+      async translateBatch(request) {
+        return request.items.map((item) => ({
+          id: item.id,
+          text: `*${item.text}*`,
+        }));
+      },
+    });
+
+    await assert.rejects(
+      runTranslationPageWithRetry(workspace, SOURCE_URL, {
+        pageRetry: 0,
+        provider,
+        retry: 0,
+      }),
+      (error: unknown) => {
+        assert.ok(error instanceof TranslationResponseError);
+        assert.equal(error.code, TranslationErrorCode.ResponseInvalidItem);
+        assert.equal(
+          error.details.issueCode,
+          "translation.markdown_structure_changed",
+        );
+        return true;
+      },
+    );
+    assert.deepEqual(
+      await readdir(join(root, ".cache/translation-checkpoints")),
+      [],
+    );
   } finally {
     await rm(root, { force: true, recursive: true });
   }
