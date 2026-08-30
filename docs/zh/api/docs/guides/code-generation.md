@@ -1,31 +1,31 @@
 # 代码生成
 
-> 要查看完整的文档索引，请参见 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获得。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 后追加 `.md` 即可获取文档页面的 Markdown 版本。
 
-编写、审查、编辑以及回答关于代码的问题，是当今 OpenAI 模型的主要用例之一。本指南将带你了解使用以下工具进行代码生成的选项 [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol) 和 Codex。
+编写、审查、编辑代码以及回答代码相关问题，是 OpenAI 模型当前最主要的用途之一。本指南将介绍你使用 [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol) 和 Codex 进行代码生成的多种方案。
 
-## 开始使用
+## 入门
 
 
 
-  - **[使用 Codex 获取开箱即用的编码智能体](#use-codex)**：将你的代码库连接到 Codex，并使用软件工程智能体加速你的项目。
-- **[与编码模型集成](#integrate-with-coding-models)**：在应用程序中使用 OpenAI 模型。例如，将它们添加到模型选择器中。
+  - **[使用 Codex 开箱即用的编码智能体](#use-codex)**:将你的代码库连接到 Codex，并使用软件工程智能体加速你的项目。
+- **[集成编码模型](#integrate-with-coding-models)**:在你的应用中使用 OpenAI 模型。例如，可以将它们添加到模型选择器中。
 
 
 
 ## 使用 Codex
 
-[**Codex**](https://developers.openai.com/codex) 是 OpenAI 用于软件开发的编码智能体。它帮助你编写、审查和调试代码。你可以通过各种界面与 Codex 交互：在 IDE 中、通过 CLI、在网页和移动网站上，或在你的 CI/CD 管道中使用 SDK。Codex 是在你的项目中实现智能体软件工程的最佳方式。
+[**Codex**](https://developers.openai.com/codex) 是 OpenAI 用于软件开发的编码 智能体。它可以帮助你编写、审查和调试代码。你可以通过多种界面与 Codex 交互：在你的 IDE 中、通过 CLI、在网页和移动端站点上，或在 CI/CD 流水线中配合 SDK 使用。Codex 是在你的项目中获得智能体化软件工程能力的最佳方式。
 
-Codex 与 GPT-5 系列的最新模型配合最佳，例如 [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol)。我们提供一系列专为与 Codex 等编码智能体配合而设计的模型，例如 [`gpt-5.3-codex`](https://developers.openai.com/api/docs/models/gpt-5.3-codex)，但我们建议在大多数代码生成任务中使用最新的通用模型。
+Codex 与来自 GPT-5 系列的最新模型配合效果最佳，例如 [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol)。我们提供了一系列专为 Codex 这类编码 智能体 设计的模型，例如 [`gpt-5.3-codex`](https://developers.openai.com/api/docs/models/gpt-5.3-codex)，但对于大多数代码生成任务，我们推荐使用最新的通用模型。
 
-参见 [ChatGPT 文档](https://developers.openai.com/codex) 以获取设置指南、参考材料、定价和更多信息。
+请参阅 [ChatGPT 文档](https://developers.openai.com/codex) 获取设置指南、参考资料、价格及更多信息。
 
-## 与编码模型集成
+## 与编程模型集成
 
-对于大多数基于 API 的代码生成，从 **`gpt-5.6`**。开始。它同时处理通用任务和编码，使其成为你的应用程序需要在同一处编写代码、推理需求、查阅文档和处理更广泛工作流时的强默认选择。
+对于大多数基于API的代码生成，请从 **`gpt-5.6`**。开始。它既可以处理通用任务，也可以处理编码任务，因此当你的应用需要在同一处完成代码编写、需求推理、文档查阅以及更广泛的工作流处理时，它是一个很好的默认选择。
 
-此示例展示了如何使用 [Responses API](https://developers.openai.com/api/reference/resources/responses) 来处理代码生成用例：
+下面的示例展示了如何将 [Responses API](https://developers.openai.com/api/reference/resources/responses) 用于代码生成场景：
 
 大多数编码任务的默认模型
 
@@ -162,12 +162,12 @@ curl https://api.openai.com/v1/responses \
 
 ## 前端开发
 
-我们来自 GPT-5 系列的模型在前端开发方面尤为出色，尤其是在与诸如 Codex 等编码智能体框架结合使用时。
+GPT-5 系列模型在前端开发方面尤为出色，尤其是与 Codex 等编码智能体框架结合使用时。
 
-下面的演示应用是单次生成的，即仅通过单个提示词生成，没有手写代码。使用它们来评估前端生成质量和界面密集型代码生成工作流的提示词模式。
+以下演示应用是一次性生成的，即由单条提示生成，没有手写代码。可使用它们评估前端生成质量以及面向 UI 的代码生成工作流的提示模式。
 
 ## 后续步骤
 
-- 请访问 [ChatGPT 文档](https://developers.openai.com/codex) 了解你可以用 Codex 做什么，在你选择的界面中设置 Codex，或查找更多详细信息。
-- 阅读 [模型指南](https://developers.openai.com/api/docs/guides/latest-model) 了解适用于编码和智能体任务中的模型选择、功能、迁移指南和提示模式。
-- 在模型页面上比较 [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol) 和 [`gpt-5.3-codex`](https://developers.openai.com/api/docs/models/gpt-5.3-codex) 。
+- 访问 [ChatGPT 文档](https://developers.openai.com/codex) ，了解 Codex 的功能、在你选择的界面中配置 Codex，或查找更多详细信息。
+- 阅读 [模型指南](https://developers.openai.com/api/docs/guides/latest-model) ，获取模型选择、功能、迁移指南以及在编码和智能体任务中效果良好的提示模式。
+- 在模型页面中比较 [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol) 和 [`gpt-5.3-codex`](https://developers.openai.com/api/docs/models/gpt-5.3-codex) 。

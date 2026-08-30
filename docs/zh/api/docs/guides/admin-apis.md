@@ -1,26 +1,26 @@
-# 管理员 APIs
+# Admin APIs
 
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获得。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取该页面的 Markdown 版本。
 
-管理员API可让你自动化组织管理工作流，例如用户邀请、审计日志审查、项目管理、API密钥管理、支出限额和警报、数据保留以及速率限制操作。可将它们用于后台自动化、安全工作流以及在仪表盘之外运行的操作工具。
+Admin API 可帮助你自动化组织管理工作流，例如用户邀请、审计日志审查、项目管理、API 密钥管理、支出限额与告警、数据保留以及速率限制操作。可用于在控制台之外运行的后台自动化、安全工作流和运维工具。
 
-有关端点详细信息，请参阅 [管理员API参考](https://developers.openai.com/api/reference/administration/overview)，包括 [管理员API密钥](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/admin_api_keys), [邀请](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/invites), [用户](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/users), [项目](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/projects), [支出限额](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/spend_limit)，以及 [审计日志](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/audit_logs).
+有关接口详情，请参阅 [管理 API 参考](https://developers.openai.com/api/reference/administration/overview)，包括 [Admin API 密钥](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/admin_api_keys), [邀请](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/invites), [用户](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/users), [项目](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/projects), [支出限额](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/spend_limit)，和 [审计日志](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/audit_logs).
 
-## 使用具有 API 密钥的管理员权限，配合 SDK
+## 使用具有管理员权限的 API 密钥配合 SDK
 
-要访问这些端点， [创建一个管理员 API 密钥](https://platform.openai.com/settings/organization/admin-keys)。管理员 API 密钥不能用于非管理端点。
+要访问这些接口， [请创建一个 Admin API 密钥](https://platform.openai.com/settings/organization/admin-keys)。Admin API 密钥无法用于非管理类接口。
 
-这些 API 版本中添加了对管理员 SDK 的支持，这可能需要更新你的 SDK 版本：
+以下 SDK 版本中新增了对 Admin API 的支持，你可能需要更新 SDK 版本：
 
-- Node： `6.36.0`
-- Python： `2.34.0`
-- Go： `3.34.0`
-- Ruby： `0.61.0`
-- Java： `4.34.0`
+- Node: `6.36.0`
+- Python: `2.34.0`
+- Go: `3.34.0`
+- Ruby: `0.61.0`
+- Java: `4.34.0`
 
-设置 `OPENAI_ADMIN_KEY`，然后为你的语言初始化 SDK。
+设置 `OPENAI_ADMIN_KEY`,然后为你的语言初始化 SDK。
 
-使用管理 API 密钥配置 SDK
+使用管理员 API 密钥设置 SDK
 
 ```javascript
 import OpenAI from "openai";
@@ -77,7 +77,7 @@ openai = OpenAI::Client.new(
 
 ## 限制项目的模型访问权限
 
-使用项目模型权限为项目设置允许列表或拒绝列表。设置 `mode` 为 `allow_list` 以仅允许列出的模型，或设置 `mode` 为 `deny_list` 以阻止列出的模型，同时允许其他可用模型。模型 ID 必须对组织可见，包括可见的微调模型快照。
+使用项目模型权限为项目设置允许列表或拒绝列表。设置 `mode` 为 `allow_list` 以仅允许列表中的模型，或设置 `mode` 为 `deny_list` 以阻止列表中的模型，同时允许其他可用模型。模型 ID 必须对组织可见，包括可见的微调模型快照。
 
 设置项目模型允许列表/拒绝列表
 
@@ -151,9 +151,9 @@ puts(model_permissions.mode)
 ```
 
 
-## 设置组织支出限额
+## 设置组织的消费上限
 
-使用 [Spend Limits endpoint](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/spend_limit) 来创建或替换你组织的月度硬性支出限制。设置 `threshold_amount` 以分为单位。以下示例设置了每月 $100 的限制：
+使用 [Spend Limits 端点](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/spend_limit) 来创建或替换你组织的每月硬性支出限额。以美分为单位设置 `threshold_amount` 。以下示例设置了每月 100 美元的限额：
 
 ```bash
 curl -X POST https://api.openai.com/v1/organization/spend_limit \
@@ -166,13 +166,13 @@ curl -X POST https://api.openai.com/v1/organization/spend_limit \
   }'
 ```
 
-当追踪的支出达到硬性限制时，受影响的 API 请求将返回 `429` 错误。有关详细信息，请参阅 [spend limits guide](https://developers.openai.com/api/docs/guides/spend-limits).
+当已追踪的支出达到硬性限额时，受影响的 API 请求会返回 `429` 错误。有关详细信息，请参阅 [支出限额指南](https://developers.openai.com/api/docs/guides/spend-limits).
 
-## 管理支出限制提醒
+## 管理支出限额提醒
 
-使用项目支出提醒，当项目支出达到阈值时通知你的团队。阈值金额以美分指定。
+使用项目支出告警，在项目支出达到阈值时通知你的团队。阈值金额以分为单位指定。
 
-创建项目支出限额提醒
+创建项目支出上限告警
 
 ```javascript
 const spendAlert = await client.admin.organization.projects.spendAlerts.create(
@@ -277,7 +277,7 @@ puts(spend_alert.id)
 
 ## 管理数据保留
 
-使用项目数据保留控制来覆盖或继承组织的项目保留策略。设置 `retention_type` 为 `organization_default` 以继承组织设置。
+使用项目数据保留设置来覆盖或继承组织的项目保留策略。设置 `retention_type` 为 `organization_default` 以继承组织设置。
 
 设置项目数据保留
 
@@ -347,9 +347,9 @@ puts(data_retention.type)
 
 ## 通过电子邮件邀请用户
 
-使用 Invites 端点向电子邮件地址发送组织邀请。
+使用 Invites 端点向指定邮箱发送组织邀请。
 
-通过电子邮件邀请用户
+通过邮箱邀请用户
 
 ```javascript
 const invite = await client.admin.organization.invites.create({
@@ -413,7 +413,7 @@ puts(invite.id)
 
 ## 检索审计日志
 
-使用 Audit Logs 端点列出组织的近期用户操作和配置更改。
+使用 Audit Logs 接口列出组织最近的用户操作和配置变更。
 
 检索审计日志
 

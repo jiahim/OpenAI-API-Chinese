@@ -1,39 +1,39 @@
 # Private Link
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取 Markdown 版本的文档页面。
 
-OpenAI Private Link 让 Azure 工作负载通过 Azure Private Link 连接区域性的 OpenAI API 端点，而不是直接连接到公共 API 端点。为每个由 OpenAI 提供的区域性 Private Link Service 创建私有端点，在私有 DNS 中映射其区域主机名，并向该主机名发送正常的经过身份验证的 API 请求。
+OpenAI Private Link 允许 Azure 工作负载通过 Azure Private Link 访问区域 OpenAI API 端点，而不是直接连接到公共 API 端点。为每个 OpenAI 提供的区域 Private Link 服务创建一个专用终结点，在专用 DNS 中映射其区域主机名，并向该主机名发送正常的已身份验证 API 请求。
 
-当你的组织有严格要求将流量保留在 Azure 专用网络中时，请使用 Private Link。如果没有专用网络要求，OpenAI 的公共端点更易于设置和操作。Private Link 与 IP 允许列表控制或双向 TLS（mTLS）不兼容；如果你需要帮助选择合适的企业网络控制，请联系 OpenAI。
+当你的组织有严格要求需要将流量保留在 Azure 专用网络时，请使用 Private Link。如果你没有专用网络要求，OpenAI 的公共端点更易于设置和运维。Private Link 与 IP 白名单控制或双向 TLS（mTLS）不兼容；如果你需要帮助选择合适的企业网络控制措施，请联系 OpenAI。
 
-Private Link 目前不是自助服务。请与你的 OpenAI 联系人合作，或
-  [联系销售](https://openai.com/contact-sales/) 以请求访问权限，并
-  获取你需要的区域性 Private Link Service 别名或资源标识符
-  。
+Private Link 目前不支持自助开通。请与你的 OpenAI 联系人合作，或
+  [联系销售](https://openai.com/contact-sales/) 以申请访问权限并
+  获取你所在区域的 Private Link Service 别名或资源标识符
+  所需信息。
 
 ## 了解 Private Link 的工作原理
 
-一些客户一直在使用传统的 Private Link 解决方案（v1），该方案将每个专用终结点连接到特定的OpenAI API集群。当前的区域解决方案在以下方面有所不同：
+部分客户一直在使用旧版 Private Link 解决方案（v1），该方案会将每个专用终结点连接到特定的 OpenAI API 集群。当前的区域方案存在以下差异：
 
-|                       | 传统专用链接 (v1)                                                    | 区域专用链接                                                                    |
+|                       | Legacy Private Link (v1)                                                    | Regional Private Link                                                                    |
 | --------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| 主机名             | 集群专属，例如 `privatelink.enterprise.unified-1.api.openai.com` | 区域专属，例如 `southcentralus.privatelink.api.openai.com`                            |
-| OpenAI 路由        | 固定到单个 OpenAI API 集群                                            | 区域专用边缘网关，可路由到多个底层 OpenAI API 集群 |
-| 客户健康检查 | 旧的 v1 健康检查路径                                                 | `GET /v2/privatelink_healthcheck`                                                        |
+| 主机名             | 集群专用，例如 `privatelink.enterprise.unified-1.api.openai.com` | 区域专用，例如 `southcentralus.privatelink.api.openai.com`                            |
+| OpenAI 路由        | 固定到单个 OpenAI API 集群                                            | 区域私有边缘网关，可路由到多个后端 OpenAI API 集群 |
+| 客户健康检查 | 旧版 v1 健康检查路径                                                 | `GET /v2/privatelink_healthcheck`                                                        |
 
-请求遵循以下路径：
+一个请求会沿以下路径处理：
 
-1. 你的应用程序通过你的私有 DNS 解析一个区域性的 Private Link 主机名。
-2. 该主机名解析为你虚拟网络中的一个 Azure 私有端点。
-3. 该私有端点连接到区域性的 OpenAI 专用链接服务。
-4. 该专用链接服务将请求发送到 OpenAI 的区域性私有边缘网关。
-5. 该网关将请求路由到该区域轨道上一个支持企业级功能的底层 OpenAI API 集群。
+1. 你的应用通过你的专用 DNS 解析区域 Private Link 主机名。
+2. 该主机名解析为你虚拟网络中的 Azure 专用终结点。
+3. 该专用终结点连接到区域 OpenAI Private Link 服务。
+4. Private Link 服务将请求发送到 OpenAI 的区域专用边缘网关。
+5. 网关将该请求路由到该区域线路支持企业的 OpenAI API 后端集群。
 
-在区域铁路内，Private Link 可以绕过不可用的后端集群进行路由，而OpenAI可以添加后端集群，无需你重新配置 Private Endpoints。它不会自动将流量从你选择的区域主机名转移到不同的区域 Private Endpoint。不要假设 Private Link 继承OpenAI的公共端点路由行为；请配置你的应用程序在区域之间进行故障转移。
+在区域轨道交通中，Private Link 可以在某个后端集群不可用时绕开它进行路由，OpenAI 可以添加后端集群而无需你重新配置 Private Endpoint。它不会自动将你选定区域主机名的流量迁移到另一个区域 Private Endpoint。请勿假设 Private Link 会沿用 OpenAI 的公共端点路由行为；请自行配置应用程序在区域之间的故障转移方式。
 
-## 选择区域端点
+## 选择区域性端点
 
-OpenAI 在上线过程中会提供确切的 Private Link Service 别名或资源标识符。当前生产区域主机名为：
+OpenAI 在接入流程中提供确切的 Private Link Service 别名或资源标识符。当前生产环境区域主机名为：
 
 | 区域标签       | 客户主机名                          |
 | ------------------ | ------------------------------------------- |
@@ -42,11 +42,11 @@ OpenAI 在上线过程中会提供确切的 Private Link Service 别名或资源
 | 美国东部 2          | `eastus2.privatelink.api.openai.com`        |
 | 西班牙中部 / 欧盟 | `spaincentral.privatelink.api.openai.com`   |
 
-西班牙中部 / 欧盟主机名可以路由到其他欧盟区域的后端集群，例如北欧。
+Spain Central / EU 主机名可以路由到其他 EU 区域（例如 North Europe）的后端集群。
 
 ## 设置 Private Link
 
-### 1. 提供接入信息
+### 1. 提供入驻信息
 
 发送 OpenAI：
 
@@ -55,13 +55,13 @@ OpenAI 在上线过程中会提供确切的 Private Link Service 别名或资源
 - 你需要的区域。
 - 用于维护和区域流量切换通知的运维联系人。
 
-OpenAI 授予订阅对相应区域专用链接服务的可见性和审批权限，然后提供专用链接服务别名或资源标识符。
+OpenAI 授予相应区域 Private Link 服务的订阅可见性与审批权限，然后提供 Private Link 服务别名或资源标识符。
 
 ### 2. 创建私有端点
 
-为每个选定区域创建一个专用终结点。Azure 要求专用终结点与客户虚拟网络的区域共享。设置 `--location` 为该区域，其可能与 OpenAI 专用链接服务区域不同。
+为每个所选区域创建一个专用终结点。Azure 要求专用终结点与客户虚拟网络位于同一区域。设置为该区域，它可能与 该公司 Private Link Service 区域不同。 `--location` OpenAI Private Link Service 区域。
 
-以下命令使用了 OpenAI 提供的专用链接服务资源标识符：
+以下命令使用 OpenAI 提供的 Private Link Service 资源标识符：
 
 ```bash
 az network private-endpoint create \
@@ -88,13 +88,13 @@ az network private-endpoint create \
   --manual-request true
 ```
 
-Azure 要求 `--manual-request true` 用于 [别名连接](https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview#connect-by-using-an-alias)；访问列表中的订阅仍可自动批准。
+Azure 要求 `--manual-request true` 用于 [别名连接](https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview#connect-by-using-an-alias)；访问列表中的订阅仍然可以接收自动批准。
 
-如果你的组织通过基础设施即代码管理专用终结点，请使用类似的 Azure 门户或 Terraform 工作流。
+如果你的组织通过基础设施即代码来管理专用终结点，请使用类似的 Azure 门户或 Terraform 工作流。
 
-### 3. 在更改 DNS 之前测试连接
+### 3. 在更改 DNS 之前测试连通性
 
-在 OpenAI 批准私有终结点且 Azure 完成配置后，捕获其私有 IP 地址。使用 `curl --resolve` 测试区域主机名，而无需全局更改 DNS：
+在 OpenAI 批准专用终结点并由 Azure 完成预配后，记录其专用 IP 地址。可使用 `curl --resolve` 在无需全局更改 DNS 的情况下测试区域主机名：
 
 ```bash
 curl -v \
@@ -102,51 +102,51 @@ curl -v \
   https://southcentralus.privatelink.api.openai.com/v2/privatelink_healthcheck
 ```
 
-健康响应返回 HTTP `200` 并带有类似消息：
+正常响应会返回 HTTP `200` ，响应消息类似：
 
 ```json
 { "message": "Service is up" }
 ```
 
-使用精确的健康检查路径： `/v2/privatelink_healthcheck`。保持自动化健康检查流量较低：每个区域终结点最多使用 1 QPS，除非 OpenAI 批准不同的速率。
+请使用完全一致的健康检查路径： `/v2/privatelink_healthcheck`。请保持较低的健康检查流量：除非 OpenAI 批准了其他速率，否则每个区域终结点最多使用 1 QPS。
 
 ### 4. 配置私有 DNS
 
-创建私有 DNS 记录，使每个区域的 OpenAI Private Link 主机名在你的网络内解析为其对应的 Private Endpoint IP 地址：
+创建私有 DNS 记录，使每个区域的 OpenAI Private Link 主机名能在你的网络内解析到其对应的 Private Endpoint IP 地址：
 
-| 主机名                                   | 私有端点 IP 地址            |
+| 主机名                                   | Private Endpoint IP 地址            |
 | ------------------------------------------- | -------------------------------------- |
 | `southcentralus.privatelink.api.openai.com` | `<southcentralus-private-endpoint-ip>` |
 | `westus.privatelink.api.openai.com`         | `<westus-private-endpoint-ip>`         |
 | `eastus2.privatelink.api.openai.com`        | `<eastus2-private-endpoint-ip>`        |
 | `spaincentral.privatelink.api.openai.com`   | `<spaincentral-private-endpoint-ip>`   |
 
-从你的应用程序所使用的同一网络路径检查 DNS 和连接性：
+使用与你的应用程序相同的网络路径检查 DNS 和连接性：
 
 ```bash
 nslookup southcentralus.privatelink.api.openai.com
 curl -v https://southcentralus.privatelink.api.openai.com/v2/privatelink_healthcheck
 ```
 
-### 5. 在区域之间进行故障转移
+### 5. 在不同区域之间进行故障转移
 
-Private Link 提供区域前门，但你的流量仍指向所选的区域主机名。请配置你的客户端、服务网格、DNS 层或负载均衡层，以便在区域之间进行故障转移。
+Private Link 提供区域级前端入口，但你的流量仍然指向你所选的区域主机名。请将客户端、服务网格、DNS 层或负载均衡层配置为在区域之间进行故障转移。
 
 推荐行为：
 
-- 对每个已配置的区域进行探测，使用 `GET /v2/privatelink_healthcheck`.
+- 使用以下命令探测每个已配置的区域 `GET /v2/privatelink_healthcheck`.
 - 将 HTTP `200` 视为可用。
-- 将 `5xx` 响应、连接错误、TLS 错误或重复超时视为不可用。
-- 仅在连续出现少量错误后才进行故障转移，以避免抖动。
-- 在后台持续探测不可用的区域，并根据你的运维策略进行故障恢复。
+- 将 `5xx` 响应、连接错误、TLS 错误或反复出现的超时视为不可用。
+- 仅在少量连续错误后才进行故障转移，以避免抖动。
+- 在后台持续探测不可用的区域，并根据你的运维策略进行回切。
 
-区域健康检查反映了私有边缘线路背后OpenAI API集群的健康状况。如果没有已知的后端集群、缺少健康配置或健康的后端集群不足，区域将返回错误。
+区域健康检查反映了私有边缘轨道背后的 OpenAI API 集群的健康状况。没有任何已知后端集群、缺少健康配置或健康后端集群不足的区域将返回错误。
 
-如果你的路由决策依赖于特定的API或模型，请将此健康检查与从相同网络路径向该API和模型发送的低速率合成请求配合使用。
+如果你的路由决策依赖于特定的 API 或模型，请将此健康检查与对同一网络路径下的该 API 和模型的低速率合成请求搭配使用。
 
-### 6. 更新应用程序基础 URL
+### 6. 更新应用基址 URL
 
-使用区域的 Private Link 主机名作为 OpenAI API 的基本 URL：
+使用区域 Private Link 主机名作为 OpenAI API 基础 URL：
 
 ```python
 from openai import OpenAI
@@ -157,7 +157,7 @@ client = OpenAI(
 ```
 
 
-SDK 会读取 `OPENAI_API_KEY` 来自你的环境变量。
+SDK 从 `OPENAI_API_KEY` 你的环境中读取。
 
 你也可以直接调用区域端点：
 
@@ -172,27 +172,27 @@ curl https://southcentralus.privatelink.api.openai.com/v1/responses \
 ```
 
 
-先在开发或预发布环境中开始，然后逐步提升流量。
+先在开发或预发布环境中启动，然后逐步提升流量。
 
 ## 检查你的配置
 
-在接入或迁移到 Private Link 时，请使用此清单：
+在接入或迁移到 Private Link 时使用以下清单：
 
-- OpenAI 已确认你的 Azure 订阅 ID 可以访问所选的区域 Private Link 服务。
-- 你创建了 Private Endpoints，并且 OpenAI 已为每个所选区域批准它们。
-- 你记录了 Private Endpoint IP 地址。
-- `curl --resolve` 成功针对 `/v2/privatelink_healthcheck`.
-- Private DNS 将区域主机名解析为来自应用程序网络的 Private Endpoint IP 地址。
-- 应用程序可以调用一个代表性的 `/v1` API 端点，通过区域主机名。
-- 健康检查自动化受到速率限制，并记录区域、状态码和错误类型。
-- 你通过在受控环境中强制一个区域不健康，测试了应用程序的故障转移。
-- 你的运维文档明确了谁可以更改 DNS、Private Endpoint 配置以及应用程序的区域路由。
+- OpenAI 已确认你的 Azure 订阅 ID 可以访问所选的各区域 Private Link 服务。
+- 你已创建专用终结点，且 OpenAI 已为每个所选区域批准了这些终结点。
+- 你已记录这些专用终结点的 IP 地址。
+- `curl --resolve` 针对成功完成 `/v2/privatelink_healthcheck`.
+- 专用 DNS 在应用网络中将各区域的主机名解析为专用终结点的 IP 地址。
+- 应用可通过区域主机名调用一个具有代表性的 API 终结点。 `/v1` 通过区域主机名调用。
+- 健康检查自动化受到速率限制，并会在出错时记录区域、状态码和错误类型。
+- 你已在受控环境中通过强制将某个区域标记为不健康来测试应用的故障转移方式。
+- 你的运维文档已明确说明谁可以更改 DNS、专用终结点配置以及应用的区域路由。
 
 ## 检查端点兼容性
 
-以下矩阵反映了所列公开 API 路由背后服务的当前部署配置。它不能替代客户的实际验证：请在每个目标区域测试模型可用性、产品门控、下游依赖、请求大小限制、流式行为和 WebSocket 行为。 `Yes` 表示区域线路中的每个后端集群都有该路由； `No` 表示该后端的服务在该线路中不存在。
+下表反映了所列公共 API 路由背后服务的当前部署配置。它不能替代实际的客户验证：请在每个目标区域测试模型可用性、产品门禁、下游依赖、请求大小限制、流式行为和 WebSocket 行为。 `Yes` 表示该区域轨道中的每个后备集群均已部署该路由； `No` 表示该轨道中不存在该后备服务。
 
-| 端点系列                         | 美国中南部 | 美国西部 | 美国东部 2 | 西班牙中部 / 欧盟 |
+| 端点族                         | 美国中南部 | 美国西部 | 美国东部 2 | 西班牙中部 / 欧盟 |
 | --------------------------------------- | ---------------- | ------- | --------- | ------------------ |
 | `/v1/responses`                         | 是              | 是     | 是       | 是                |
 | `/v1/chat/completions`                  | 是              | 是     | 是       | 是                |
@@ -214,24 +214,24 @@ curl https://southcentralus.privatelink.api.openai.com/v1/responses \
 
 ### Private Link 是否会在区域之间自动故障转移？
 
-不会。区域私有边缘轨道可以在其配置的后端集群之间路由流量，但它不会自动将你的流量移至不同的区域私有端点。请将你的应用程序配置为在你使用的区域端点之间进行故障转移。
+不会。区域私有边缘轨道可以在其配置的后备集群之间路由流量，但不会自动将你的流量迁移到另一个区域的私有终结点。请配置你的应用程序，以便在你使用的各区域终结点之间进行故障转移。
 
 ### 我应该使用哪种健康检查？
 
-使用 `GET /v2/privatelink_healthcheck` 位于区域主机名上。较旧的 v1 健康检查路径探测的是后端集群的健康状况，因此不要将它们用作面向客户的探测。
+使用 `GET /v2/privatelink_healthcheck` 区域主机名。旧的 v1 健康检查路径探测的是后端集群的健康轨道，因此不要将它们用作面向客户的探测。
 
-### 应用程序应使用哪个 API 主机名？
+### 应用应使用哪个 API 主机名？
 
-使用区域主机名和正常的 `/v1` API路径，例如 `https://southcentralus.privatelink.api.openai.com/v1`.
+使用区域主机名以及常规 `/v1` API 路径，例如 `https://southcentralus.privatelink.api.openai.com/v1`.
 
-### AWS 或 Google Cloud 工作负载能否通过 Private Link 连接？
+### AWS 或 Google Cloud 的工作负载能否通过 Private Link 连接？
 
-不可以直接使用。Private Link 连接是 Azure 特有的。AWS 或 Google Cloud 中的工作负载只能通过客户管理的网络连接到 Azure，例如 Azure 代理或跨云私有连接模式，然后从 Azure 通过 Azure Private Link 连接到 OpenAI。
+不能直接连接。Private Link 连接是 Azure 特有的。AWS 或 Google Cloud 中的工作负载只能通过客户自管理的网络接入 Azure，例如 Azure 代理或跨云私有连接模式，然后从 Azure 通过 Azure Private Link 连接到 OpenAI。
 
-### Private Link 会改变身份验证方式吗？
+### Private Link 是否会影响身份验证？
 
-不会。Private Link 仅改变网络路径。请求仍需正常的 OpenAI API 认证和授权。
+不会。Private Link 仅改变网络路径。请求仍需正常的 OpenAI API 身份验证与授权。
 
-### 私有链接是否支持所有 OpenAI API？
+### Private Link 是否支持所有 OpenAI API？
 
-不能。支持与否取决于所选择的区域轨道上的每个支撑集群是否都提供 API。以兼容性矩阵为起点，然后在每个目标区域中测试你需要的每个 API 表面和模型。
+否。是否支持取决于所选区域轨道的每个后端集群是否都提供该 API。可先以兼容性矩阵为起点，然后在每个目标区域中测试你所需的每个 API 表面和模型。

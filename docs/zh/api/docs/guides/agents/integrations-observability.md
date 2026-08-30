@@ -1,22 +1,22 @@
 # 集成与可观测性
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
-工作流形态明确后，接下来的问题是哪些外部表面应位于智能体循环内部，以及你如何在运行时检查实际发生了什么。
+在 工作流 形态明确之后，接下来要思考的问题是：哪些外部接口应该放进 智能体 循环中，以及如何在运行时观察实际发生的情况。
 
-## 选择什么在 SDK 中
+## 选择SDK 中的内容
 
-| 需要                                                      | 从以下开始                                            | 原因                                                                 |
+| 需求                                                      | 起始方式                                            | 原因                                                                 |
 | --------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------- |
-| 让智能体访问公共的、远程托管的 MCP 工具 | SDK 中的托管 MCP 工具                           | 模型可以通过托管界面调用远程 MCP 服务器 |
-| 从你的运行时连接本地或私有 MCP 服务器    | SDK 管理的 MCP 服务器，通过 stdio 或流式 HTTP | 你的运行时拥有连接、审批和网络边界的控制权 |
-| 调试提示词、工具、交接或审批              | 内置追踪                                      | 追踪显示端到端的记录，之后你再正式化评估        |
+| 允许智能体访问公共的、远程托管的 MCP 工具 | SDK中的托管 MCP 工具                           | 模型可以通过托管接口调用远程 MCP 服务器 |
+| 从你的运行时连接本地或私有 MCP 服务器    | 通过 stdio 或可流式 HTTP 使用SDK托管的 MCP 服务器 | 由你的运行时管理连接、审批和网络边界 |
+| 调试提示词、工具、交接或审批              | 内置追踪                                      | 在正式构建评测之前，追踪可显示端到端记录        |
 
-工具能力语义仍然存在于 [使用工具](https://developers.openai.com/api/docs/guides/tools)。中。本页重点介绍 SDK 特定的 MCP 连接与可观测性循环。
+工具能力的语义仍位于 [使用工具](https://developers.openai.com/api/docs/guides/tools)。本页重点介绍SDK专属的 MCP 连接与可观测性回路。
 
 ## MCP
 
-当远程服务器应通过模型界面运行时，请使用托管 MCP 工具。
+当远程服务器应通过模型表面运行时，请使用托管 MCP 工具。
 
 附加托管 MCP 服务器
 
@@ -55,7 +55,7 @@ agent = Agent(
 ```
 
 
-当你的应用应直接连接到 MCP 服务器时，请使用本地传输方式。
+当你的应用程序应直接连接到 MCP 服务器时，请使用本地传输。
 
 连接本地 MCP 服务器
 
@@ -117,28 +117,28 @@ if __name__ == "__main__":
 ```
 
 
-实际的分工如下：
+实际划分如下：
 
-- 使用 **托管 MCP** 用于适合平台信任模型的公共远程服务器。
-- 使用 **本地或私有 MCP** 当你的运行时应该拥有连接性、过滤或审批权限时。
+- 使用 **托管 MCP** 处理符合平台信任模型的公共远程服务器。
+- 使用 **本地或私有 MCP** 当你的运行时需要掌控连接、过滤或审批时。
 
-关于平台级概念、信任模型和产品支持说明，请以 [MCP 与 Connectors](https://developers.openai.com/api/docs/guides/tools-connectors-mcp) 作为权威参考。
+对于平台级概念、信任模型和产品支持说明，请参阅 [MCP 和 Connectors](https://developers.openai.com/api/docs/guides/tools-connectors-mcp) 作为权威参考。
 
 ## 追踪
 
-追踪功能内置于 Agents SDK，并在正常的服务端 SDK 路径中默认启用。每次运行都可以发出模型调用、工具调用、交接、护栏和自定义追踪片段的结构化记录，你可以查看这些记录于 [追踪仪表板](https://platform.openai.com/traces).
+追踪内置于 Agents SDK 中，并在默认的 服务端 SDK 路径中默认开启。每次运行都可以发出模型调用、工具调用、交接、护栏以及自定义 span 的结构化记录，你可以在 [追踪仪表板](https://platform.openai.com/traces).
 
-默认追踪通常提供以下内容：
+默认的 追踪 通常会为你提供：
 
-- 整个运行或工作流
+- 整体运行或工作流
 - 每次模型调用
 - 工具调用及其输出
 - 交接和护栏
-- 你在工作流周围包裹的任何自定义跨度
+- 你在工作流周围包裹的任何自定义 span
 
-如果你需要更少的追踪，请使用SDK级别或每次运行的追踪控制，而不是从工作流中移除所有可观测性。
+如果需要更少的追踪，请使用 SDK 级别或每次运行的追踪控制，而不是完全移除该工作流的可观测性。
 
-在一个追踪中封装多次运行
+将多个运行包装在一个追踪中
 
 ```javascript
 import { Agent, run, withTrace } from "@openai/agents";
@@ -183,14 +183,14 @@ if __name__ == "__main__":
 ```
 
 
-使用追踪有两个用途：
+将追踪用于两个用途：
 
-- 调试一次工作流运行，并理解发生了什么。
-- 将更高信号的示例输入到 [智能体工作流评估](https://developers.openai.com/api/docs/guides/agent-evals) ，一旦你准备好系统地评分行为时。
+- 调试一次工作流运行并了解发生了什么。
+- 将更高信号的示例输入到 [智能体 工作流评估](https://developers.openai.com/api/docs/guides/agent-evals) 中，以便在你准备好系统性地评估行为时使用。
 
-## 后续步骤
+## 下一步
 
-外部接口接入后，继续阅读涵盖能力设计、审查边界或评估的指南。
+外部接口接入完成后，可继续阅读涵盖能力设计、审查边界或评估的指南。
 
 
 
@@ -198,14 +198,14 @@ if __name__ == "__main__":
 
 
 
-        了解托管工具、函数工具和智能体即工具如何与 MCP 结合使用。](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)
-  [护栏和人工审查
+        了解托管工具、函数工具，以及作为工具使用的 智能体 如何与 MCP 配合使用。](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)
+  [护栏与人工审查
 
 
 
-        在敏感能力周围添加批准或验证边界。](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals)
-  [智能体工作流评估
+        为敏感能力添加审批或校验边界。](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals)
+  [智能体 工作流 评估
 
 
 
-        行为稳定后，从一次性追踪转向可重复的评估。](https://developers.openai.com/api/docs/guides/agent-evals)
+        行为稳定后，从单次追踪转向可复用的评分流程。](https://developers.openai.com/api/docs/guides/agent-evals)

@@ -1,17 +1,17 @@
 # Assistants 迁移指南
 
-> 完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
 
-在 Responses API 实现功能对齐后，我们已弃用 Assistants API。它将于 2026 年 8 月 26 日关闭。请遵循 [迁移指南](https://developers.openai.com/platform/assistants/migration) 更新你的集成。 [了解更多](https://platform.openai.com/docs/guides/migrate-to-responses).
-
-
+在 Responses API 实现功能对等之后，我们已弃用 Assistants API。它将于 2026 年 8 月 26 日停用。请参阅 [迁移指南](https://developers.openai.com/platform/assistants/migration) 以更新你的集成。 [了解更多](https://platform.openai.com/docs/guides/migrate-to-responses).
 
 
-我们正在从 Assistants API 迁移到新的 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) ，以获得更简单、更灵活的思维模型。
 
-响应更简单——发送输入项并取回输出项。使用 Responses API，你还能获得更好的性能和新功能，例如 [深度研究](https://developers.openai.com/api/docs/guides/deep-research), [MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)，以及 [计算机使用](https://developers.openai.com/api/docs/guides/tools-computer-use)。这一变更还让你可以管理对话，而无需来回传递 `previous_response_id`.
 
-### 有什么变化？
+我们正在从 Assistants API 迁移到全新的 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) ，以获得更简洁、更灵活的心智模型。
+
+Responses 更简单——发送输入项即可获得输出项。使用 Responses API，你还可以获得更好的性能以及全新功能，例如 [深度研究](https://developers.openai.com/api/docs/guides/deep-research), [MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)，以及 [计算机使用](https://developers.openai.com/api/docs/guides/tools-computer-use)。此次变更还让你能够管理对话，而无需回传 `previous_response_id`.
+
+### 发生了什么变化？
 
 <table>
   <thead>
@@ -53,31 +53,31 @@
   </tbody>
 </table>
 
-## 从助手到提示词
+## 从 assistants 到 prompts
 
-助手曾是持久的 API 对象，捆绑了模型选择、指令和工具声明——完全通过 API 创建和管理。其替代品提示词只能在仪表板中创建，你可以在开发产品时对它们进行版本管理。
+Assistants 是持久的 API 对象，将模型选择、指令和工具声明捆绑在一起——完全通过 API 创建和管理。作为其替代品的 prompts 只能在仪表板中创建，你可以在仪表板中随着产品开发对它们进行版本管理。
 
-### 为什么这很有帮助
+### 为什么这很有用
 
-- **可移植性与版本管理**：你可以对提示词规格进行快照、审查、差异比较和回滚。你也可以对提示词进行版本管理，这样你的代码只需指向最新版本。
-- **关注点分离**：你的应用代码现在负责编排（历史记录修剪、工具循环、重试），而你的提示词则专注于高级行为和约束（系统指导、工具可用性、结构化输出模式、温度默认值）。
-- **实时兼容性**：当你通过 Realtime API 连接时，可以重用相同的提示词配置，这样在聊天、流式传输和低延迟交互会话中就有了统一的行为定义。
-- **工具与输出一致性**：使用提示词，你启动的每个 Responses 或 Realtime 会话都会继承一致的契约，因为提示词封装了工具模式和结构化输出期望。
+- **可移植性与版本管理**：你可以对提示词规范进行快照、审查、差异比较和回滚。你还可以对提示词进行版本管理，这样你的代码只需指向最新版本即可。
+- **关注点分离**：你的应用代码现在负责编排（历史裁剪、工具循环、重试），而你的提示词则专注于高层行为与约束（系统指引、工具可用性、结构化输出 schema、温度默认值）。
+- **Realtime 兼容性**：当你通过 Realtime API 连接时，可以复用同一份提示词配置，从而在聊天、流式传输和低延迟交互会话中获得统一的行为定义。
+- **工具与输出一致性**：使用提示词后，你启动的每一个 Responses 或 Realtime 会话都会继承一致的契约，因为提示词封装了工具 schema 和结构化输出预期。
 
-### 实际的迁移步骤
+### 实用的迁移步骤
 
-1. 识别每个现有助手的 _指令 + 工具_ 捆绑包。
-2. 在仪表盘中，将该捆绑包重新创建为命名提示词。
-3. 将提示词 ID（或其导出的规范）存储在源代码管理中，以便应用程序代码可以引用稳定标识符。
-4. 在发布期间，通过交换提示词 ID 进行 A/B 测试——无需以编程方式创建或删除助手对象。
+1. 识别每个现有 Assistant 的 _instruction + tool_ bundle。
+2. 在仪表板中，将该 bundle 重新创建为一个命名的 prompt。
+3. 将 prompt ID（或其导出的规范）存放在源代码管理中，以便应用程序代码可以引用稳定的标识符。
+4. 在 rollout 期间，通过交换 prompt ID 来运行 A/B 测试——无需以编程方式创建或删除 assistant 对象。
 
-将提示词视为一个可插拔的 **版本化行为配置** ，用于接入 Responses 或 Realtime API。
+把提示词当作一个 **可版本化的行为配置** ，插入到 Responses 或 Realtime API 中。
 
 ---
 
-## 从线程到对话
+## 从对话线到会话
 
-线程是服务端存储的消息集合。线程只能 _存储_ 消息。会话存储条目，条目可包含消息、工具调用、工具输出及其他数据。
+线程是存储在服务端的消息集合。线程只能 _存储消息。_ 对话存储的是条目（item），其中可以包含消息、工具调用、工具输出以及其他数据。
 
 ### 请求示例
 
@@ -103,7 +103,7 @@
 }
 ```
 
-#### Conversation 对象
+#### 对话对象
 
 ```json
 {
@@ -120,11 +120,11 @@
 
 ---
 
-## 从运行到响应
+## 从 runs 到 responses
 
-Runs 是针对线程执行的异步过程。请参见下面的示例。Responses 更简单：提供一组要执行的输入项，并返回输出项列表。
+Runs 是针对线程执行的异步进程。参见下面的示例。Responses 更简单：提供一组输入项来执行，然后返回一组输出项。
 
-Responses 设计为可单独使用，但你也可以将其与提示（prompt）和对话（conversation）对象一起使用，以存储上下文和配置。
+Responses 被设计为可以单独使用，但你也可以将其与 prompt 和 conversation 对象一起使用，以存储上下文和配置。
 
 ### 请求示例
 
@@ -136,7 +136,7 @@ Responses 设计为可单独使用，但你也可以将其与提示（prompt）�
 
 
 
-#### 运行对象
+#### Run 对象
 
 ```json
 {
@@ -185,7 +185,7 @@ Responses 设计为可单独使用，但你也可以将其与提示（prompt）�
 }
 ```
 
-#### 响应对象
+#### Response 对象
 
 ```json
 {
@@ -261,25 +261,25 @@ Responses 设计为可单独使用，但你也可以将其与提示（prompt）�
 
 ## 迁移你的集成
 
-按照下面的迁移步骤，从 Assistants API 迁移到 Responses API，同时不丢失任何功能支持。
+按照下面的迁移步骤从 Assistants API 迁移到 Responses API，同时不会丢失任何功能支持。
 
-### 1. 根据你的智能体创建提示词
+### 1. 基于你的助手创建提示词
 
-1. 识别你的应用程序中最重要的助手对象。
-1. 在仪表板中找到这些对象，然后点击 `Create prompt`.
+1. 识别你的应用中最主要的智能体对象。
+1. 在仪表板中找到它们并点击 `Create prompt`.
 
-这将根据每个现有的助手对象创建一个提示词对象。
+这会基于每个现有的助手对象创建一个提示对象。
 
-可复用的提示词对象也正在被弃用。如果你使用此迁移
-  路径，请查看 [提示词弃用
-  时间线](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 在采用
-  长期集成中的提示词对象之前。
+可复用的提示对象也正在被弃用。如果你使用此迁移
+  路径，请查看 [提示弃用
+  时间表](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 后再将
+  提示对象用于长期集成中。
 
-### 2. 将新用户聊天迁移到对话和响应
+### 2. 将新的用户聊天迁移到 conversations 和 responses
 
-我们不会提供将线程迁移到对话的自动化工具。相反，我们建议将新的用户线程迁移到对话中，并在必要时迁移较旧的线程。
+我们不会提供将 Threads 迁移到 Conversations 的自动化工具。相反，我们建议将新的用户线程迁移到 conversations 上，并根据需要迁移较旧的线程。
 
-以下是一个你可能如何回填线程的示例：
+以下是一个示例，演示你可能如何回填一个线程：
 
 ```python
 import os
@@ -357,15 +357,15 @@ puts(conversation.id)
 ```
 
 
-## 比较完整示例
+## 对比完整示例
 
-以下是一些同时使用 Assistants API 和 Responses API 的集成示例，以便你了解它们的对比情况。
+下面是一些同时使用 Assistants API 和 Responses API 的集成示例，便于你对比两者的差异。
 
 ### 用户聊天应用
 
 
 
-助手 API
+Assistants API
 
 ```python
 threads_by_session: dict[str, str] = {}

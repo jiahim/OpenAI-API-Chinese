@@ -1,14 +1,14 @@
-# 导入并核对OpenAI资源
+# 导入并协调 OpenAI 资源
 
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。通过在页面 URL 后追加 `.md` 即可获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。你可以通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-导入已有的 OpenAI 资源，而不是重新创建它们。安全的采用方式从与远程资源匹配的配置开始，预览并应用导入，并在任何预期更新之前生成一个无操作计划。
+导入现有的 OpenAI 资源，而不是重新创建它们。安全采用的做法从与远程资源匹配的配置开始，预览并应用导入，并在任何预期更新之前生成一个空操作（no-op）计划。
 
 导入块需要 Terraform 1.5 或更高版本。
 
 ## 声明并导入资源
 
-使用当前设置声明每个现有资源，然后添加一个 `import` 块，其 ID 格式来自提供程序参考文档：
+使用每个现有资源的当前设置声明它们，然后添加一个 `import` 其 ID 格式来自 provider 参考文档的代码块：
 
 ```terraform
 resource "openai_project" "existing" {
@@ -40,21 +40,21 @@ import {
 }
 ```
 
-在已保存的计划中预览导入：
+在已保存的 plan 中预览导入：
 
 ```bash
 terraform plan -out=tfplan
 terraform show tfplan
 ```
 
-该计划应显示导入内容，而不会建议对远程资源进行更新。如果它建议更新，请在继续之前使配置与当前设置匹配。应用已保存的计划执行导入，然后运行另一个计划：
+该 plan 应仅显示导入项，且不会提议对远程资源进行任何更新。如果它提议了更新，请在继续之前使配置与当前设置保持一致。应用已保存的 plan 以执行导入，然后再次运行 plan：
 
 ```bash
 terraform apply tfplan
 terraform plan
 ```
 
-第二个计划应报告无更改。你可以将导入块保留在配置中，作为 Terraform 如何采用这些资源的记录。
+第二次 plan 应报告没有更改。你可以将导入块保留在配置中，作为 Terraform 接管这些资源的记录。
 
 常见的导入 ID 格式包括：
 
@@ -68,13 +68,13 @@ terraform plan
 | 项目用户角色       | `<project_id>/<user_id>/<role_id>`  |
 | 项目速率限制      | `<project_id>/<rate_limit_id>`      |
 
-查看 [提供者参考](https://registry.terraform.io/providers/openai/openai/latest/docs) 以了解每个资源的准确格式。
+查看 [provider 参考](https://registry.terraform.io/providers/openai/openai/latest/docs) ，了解每种资源的精确格式。
 
-## 读取资源但不采用
+## 读取资源而不采纳它们
 
-当 Terraform 需要最新信息但资源由其他系统拥有时，请使用数据源。该提供程序包含用于项目、组、角色、用户、角色分配、速率限制、模型权限、托管工具权限、支出提醒、数据保留和证书的数据源。
+当 Terraform 需要当前信息但资源由另一个系统管理时，使用数据源。该 provider 包含项目、组、角色、用户、角色分配、速率限制、模型权限、托管工具权限、支出提醒、数据保留和证书的数据源。
 
-例如，读取现有项目及其当前组：
+例如，读取一个现有项目及其当前的组：
 
 ```terraform
 data "openai_project" "existing" {
@@ -90,38 +90,38 @@ output "project_groups" {
 }
 ```
 
-该提供程序可以通过 ID 导入现有的项目服务账号，但它
-  目前不提供服务账号数据源。当你需要采用
-  现有服务账号时，请在已批准的清单中保留项目和服务账号 ID。
-  参见 [Service
-  accounts](https://developers.openai.com/api/docs/guides/terraform/service-accounts) 以了解 API 密钥
-  的引导和导入顺序。
+该 provider 可以按 ID 导入现有的项目服务账号，但它
+  目前未提供 service-account 数据源。在需要采用现
+  有服务账号时，请将项目和服务账号 ID 保留在已批准的清单中。参见
+  服务 [账号
+  账户](https://developers.openai.com/api/docs/guides/terraform/service-accounts) 的API key
+  引导和导入顺序。
 
-## 检测并协调漂移
+## 检测并调和漂移
 
-运行常规计划以读取当前 OpenAI 设置，并将其与 Terraform 配置中的期望值进行比较：
+运行常规计划以读取当前的 OpenAI 设置，并与 Terraform 配置中期望的值进行比较：
 
 ```bash
 terraform plan -detailed-exitcode
 ```
 
-退出码 `0` 表示没有更改， `2` 表示计划包含更改，且 `1` 表示 Terraform 遇到错误。
+退出代码 `0` 表示没有变更， `2` 表示计划中包含变更，以及 `1` 表示 Terraform 遇到错误。
 
-如果计划显示有在 Terraform 之外更改的设置：
+如果计划显示了 Terraform 之外发生更改的设置：
 
-1. 确定该变更是否为有意为之。
-2. 若要保留远程变更，请更新 Terraform 配置以使其匹配。
-3. 若要撤销远程变更，请审查并应用计划以恢复配置值。
-4. 再次运行计划并要求结果为 no-op。
+1. 判断此次变更是否为有意的。
+2. 若要保留远端变更，请更新 Terraform 配置以匹配该变更。
+3. 若要撤销远端变更，请查看并应用该计划以恢复所配置的值。
+4. 重新运行一次计划，并要求得到 no-op（无操作）的结果。
 
 ## 了解移除行为
 
-移除资源块会将该资源从 Terraform 状态中移除，但并不总是会删除或重置相同类型的远程对象：
+移除一个资源块会把该资源从 Terraform 状态中移除，但并不总是会删除或重置同类型的远程对象：
 
 | 资源类型                                                             | 移除行为                                                                |
 | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `openai_project`                                                          | 归档项目。你无法恢复已归档的项目。                    |
-| `openai_project_service_account`                                          | 删除服务账户。                                                    |
-| 角色、组、成员关系和分配资源                         | 删除相应的托管对象或分配。                         |
-| `openai_project_model_permissions`                                        | 删除项目模型权限配置。                             |
-| 项目速率限制、托管工具权限和数据保留资源 | 从 Terraform 状态中移除资源，而不重置远程设置。 |
+| `openai_project`                                                          | 归档该项目。已归档的项目无法恢复。                    |
+| `openai_project_service_account`                                          | 删除该服务账号。                                                    |
+| 角色、组、成员资格和分配资源                         | 删除相应的托管对象或分配。                         |
+| `openai_project_model_permissions`                                        | 删除该项目的模型权限配置。                             |
+| 项目速率限制、托管工具权限和数据保留资源 | 从 Terraform 状态中移除该资源，但不重置远端设置。 |

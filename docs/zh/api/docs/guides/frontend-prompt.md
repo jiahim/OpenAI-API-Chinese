@@ -1,8 +1,8 @@
-# 前端提示指令
+# 前端提示词说明
 
-> 有关完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取文档页面的 Markdown 版本。
 
-这些说明针对 GPT-5.5，但许多模式也适用于其他模型版本。
+这些说明针对 GPT-5.5，但其中许多模式同样适用于其他模型版本。
 
 ```prompt
 ## Frontend guidance

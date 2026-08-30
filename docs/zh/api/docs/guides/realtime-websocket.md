@@ -1,22 +1,22 @@
-# 使用 WebSocket 的 Realtime API
+# Realtime API with WebSocket
 
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
 
-[WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API) 是一种被广泛支持的 API，用于实时数据传输，也是服务器到服务器应用中连接 OpenAI Realtime API 的绝佳选择。对于浏览器和移动客户端，我们建议通过 [WebRTC](https://developers.openai.com/api/docs/guides/realtime-webrtc).
+[WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API) 是一类广泛支持的 API，适用于实时数据传输，是在服务端到服务端应用中连接 OpenAI Realtime API 的理想选择。对于浏览器和移动客户端，我们推荐通过以下方式连接 [WebRTC](https://developers.openai.com/api/docs/guides/realtime-webrtc).
 
-在服务器到服务器与 Realtime 的集成中，你的后端系统将通过 WebSocket 直接连接到 Realtime API。你可以使用 [标准 API 密钥](https://platform.openai.com/settings/organization/api-keys) 来认证此连接，因为令牌只会在你的安全后端服务器上可用。
+在与 Realtime 的服务端到服务端集成中，你的后端系统将通过 WebSocket 直接连接到 Realtime API。你可以使用 [标准的 API key](https://platform.openai.com/settings/organization/api-keys) 对该连接进行身份验证，因为该令牌仅在你的安全后端服务器上可用。
 
-![直接连接到实时 API](https://openaidevs.retool.com/api/file/464d4334-c467-4862-901b-d0c6847f003a)
+![直接连接到 realtime API](https://openaidevs.retool.com/api/file/464d4334-c467-4862-901b-d0c6847f003a)
 
 ## 通过 WebSocket 连接
 
-以下是通过 WebSocket 连接到 Realtime API 的几个示例。除了使用下方的 WebSocket URL 外，你还需要使用你的 OpenAI API 密钥传递一个认证头。如果你的应用程序分配了 [安全标识符](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers)，请在 header 中传递最终用户的稳定、隐私保护标识符， `OpenAI-Safety-Identifier` 。
+以下是几个通过 WebSocket 连接到 Realtime API 的示例。除了使用下面的 WebSocket URL 之外，你还需要使用你的 OpenAI API 密钥传递认证头。如果你的应用分配 [安全标识符](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers)，请在 `OpenAI-Safety-Identifier` 请求头中传递该终端用户的稳定且保护隐私的标识符。
 
-在浏览器中可以使用临时 API 令牌通过 WebSocket，如 [WebRTC 连接指南](https://developers.openai.com/api/docs/guides/realtime-webrtc)所示，但如果你从浏览器或移动应用等客户端连接，在大多数情况下 WebRTC 将是更稳健的解决方案。
+在浏览器中可以使用带有临时 API 令牌的 WebSocket，如 [WebRTC 连接指南](https://developers.openai.com/api/docs/guides/realtime-webrtc)，所示，但如果你是从浏览器或移动应用等客户端进行连接，在大多数情况下 WebRTC 会是更稳健的方案。
 
 
 
-ws 模块 (Node.js)
+ws 模块（Node.js）
 
     Connect using the ws module (Node.js)
 
@@ -45,7 +45,7 @@ ws.on("message", function incoming(message) {
   
 
     
-websocket-client (Python)
+websocket-client（Python）
 
     Connect with websocket-client (Python)
 
@@ -127,9 +127,9 @@ ws.addEventListener("message", function incoming(event) {
 
 ## 发送和接收事件
 
-Realtime API 会话通过结合 [客户端发送的事件](https://developers.openai.com/api/reference/resources/realtime/client-events#session.update) （由你作为开发者发出）以及 [服务端发送的事件](https://developers.openai.com/api/reference/resources/realtime/server-events#error) （由 Realtime API 创建以指示会话生命周期事件）来管理。
+Realtime API 会话通过组合以下方式来管理： [客户端发送的事件](https://developers.openai.com/api/reference/resources/realtime/client-events#session.update) （由你作为开发者发送），以及 [服务端发送的事件](https://developers.openai.com/api/reference/resources/realtime/server-events#error) 由 Realtime API 创建，用于指示会话生命周期事件。
 
-通过 WebSocket，你将发送和接收以文本字符串形式存在的 JSON 序列化事件，如以下 Node.js 示例所示（对于其他 WebSocket 库同样适用）：
+通过 WebSocket，你会同时发送和接收 JSON 序列化的事件（以文本字符串形式），如下面的 Node.js 示例所示（其他 WebSocket 库同样适用）：
 
 ```javascript
 import WebSocket from "ws";
@@ -164,6 +164,6 @@ ws.on("message", function incoming(message) {
 ```
 
 
-WebSocket 接口可能是与 Realtime 模型交互时可以使用的最低级别接口，你将负责通过套接字连接发送和处理 Base64 编码的音频块。
+WebSocket 接口或许是与 Realtime 模型交互的最低层级接口，你需要负责通过套接字连接发送和处理 Base64 编码的音频块。
 
-要了解如何通过 Websockets 发送和接收音频，请参阅 [Realtime 对话指南](https://developers.openai.com/api/docs/guides/realtime-conversations#handling-audio-with-websockets).
+要了解如何通过 WebSocket 发送和接收音频，请参阅 [Realtime 对话指南](https://developers.openai.com/api/docs/guides/realtime-conversations#handling-audio-with-websockets).

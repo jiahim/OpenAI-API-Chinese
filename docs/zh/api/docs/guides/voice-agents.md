@@ -1,24 +1,24 @@
-# 语音智能体
+# Voice 智能体
 
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
-语音智能体将相同的智能体概念转化为口语化的低延迟交互。关键的设计选择在于决定模型是直接处理实时音频，还是由你的应用显式地串联语音转文本、文本推理和文本转语音。
+语音智能体将相同的智能体概念转化为口语化的低延迟交互。关键的设计选择是决定让模型直接处理实时音频，还是让你的应用显式地串联语音转文本、文本推理和文本转语音。
 
 ## 选择合适的架构
 
-| 架构                              | 最适合                                                  | 原因                                                                                   |
+| 架构                              | 适用场景                                                  | 原因                                                                                   |
 | ----------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| 通过实时音频会话实现语音到语音 | 自然、低延迟的对话                        | 模型直接处理实时音频输入和输出                                |
+| 使用实时音频会话进行语音对话 | 自然、低延迟的对话                        | 模型直接处理实时音频的输入和输出                                |
 | 链式语音流水线                    | 可预测的工作流或扩展现有文本智能体 | 你的应用显式控制转录、文本推理和语音输出 |
 
-语音工作流是 SDK 优先的接口。如果你正在迁移相关的 智能体 Builder 项目，请参阅 [从 智能体 Builder 迁移](https://developers.openai.com/api/docs/guides/agent-builder/migrate-from-agent-builder) 了解当前的迁移路径。
+语音工作流是一个 SDK 优先的界面。如果你正在迁移相关的 智能体 Builder 项目，请参阅 [从 智能体 Builder 迁移](https://developers.openai.com/api/docs/guides/agent-builder/migrate-from-agent-builder) 了解当前的过渡路径。
 
 ## 推荐起点
 
-以下示例故意采用不同的架构，并不匹配语言标签。JavaScript 和 Python 库目前提供了不同的语音辅助工具：
+下面的示例刻意采用不同架构，并不与语言选项卡一一对应。JavaScript 和 Python 库当前各自提供了不同的语音助手接口：
 
-- 在 JavaScript 中，实现基于浏览器的语音助手的最快路径是 `RealtimeAgent` 和 `RealtimeSession`.
-- 在 Python 中，将现有文本智能体扩展为语音的最简单路径是链式 `VoicePipeline`.
+- 在 JavaScript 中，构建基于浏览器的语音助手的最快路径是一个 `RealtimeAgent` ， `RealtimeSession`.
+- 在 Python 中，将现有的纯文本智能体扩展为语音的最简路径是一个链式调用 `VoicePipeline`.
 
 
 
@@ -26,14 +26,14 @@
 
 ## 构建一个语音到语音的智能体
 
-当交互应具有对话感和即时性时，请使用实时音频API路径。对于需要插话、低首音频延迟、自然轮流说话和实时工具使用的语音智能体，这是最佳起点。
+在需要让交互感觉对话式且即时的情况下，使用实时音频 API 路径。对于需要支持插话、首段音频低延迟、自然的轮流发言以及实时工具调用的语音智能体，这是最佳起点。
 
-通常的浏览器流程是：
+常见的浏览器流程是：
 
 1. 你的应用服务器为实时音频会话创建一个临时客户端密钥。
 2. 你的前端创建一个 `RealtimeSession`.
-3. 会话在浏览器中通过 WebRTC 或在服务器上通过 WebSocket 进行连接。
-4. 智能体在该会话内处理音频轮次、工具、中断和交接。
+3. 会话在浏览器中通过 WebRTC 连接，或在服务器上通过 WebSocket 连接。
+4. 该 智能体 在该会话内处理音频轮次、工具、中断和交接。
 
 启动实时语音会话
 
@@ -55,23 +55,23 @@ await session.connect({
 ```
 
 
-然后，将工具、交接和护栏附加到 `RealtimeAgent` 与将工具、交接和护栏附加到文本智能体的方式相同。将音频传输问题保留在会话层，并将业务逻辑保留在智能体定义中。
+然后，像为文本 `RealtimeAgent` 智能体附加工具、交接和护栏一样，将它们附加到文本智能体上。将音频传输相关的内容放在会话层，将业务逻辑放在智能体定义中。
 
-当你需要更底层的控制时，请从传输文档开始：
+当你需要更底层的控制时，请先从传输层文档入手：
 
 - [实时与音频概述](https://developers.openai.com/api/docs/guides/realtime)
-- [使用 WebRTC 的实时音频 API](https://developers.openai.com/api/docs/guides/realtime-webrtc)
-- [使用 WebSocket 的实时音频 API](https://developers.openai.com/api/docs/guides/realtime-websocket)
+- [基于 WebRTC 的实时音频 API](https://developers.openai.com/api/docs/guides/realtime-webrtc)
+- [基于 WebSocket 的实时音频 API](https://developers.openai.com/api/docs/guides/realtime-websocket)
 
 ## 构建链式语音工作流
 
-当你需要对中间文本、现有文本-智能体复用或从非语音工作流进行更简单的扩展路径时，请使用链式路径。在这种设计中，你的应用程序显式管理：
+当你希望对中间文本、现有文本-智能体复用，或从非语音 工作流 获得更简单的扩展路径时，可使用链式路径。在该设计中，由你的应用显式管理以下内容：
 
 1. 语音转文本
 2. 智能体 工作流本身
 3. 文本转语音
 
-这通常是支持流程、审批密集型流程或希望在各阶段之间获得持久记录和确定性逻辑的情况下的更好选择。
+这种方案通常更适合支持流程、审批密集型流程，或者你希望在每个阶段之间保留持久的对话记录并使用确定性逻辑的场景。
 
 运行链式语音流水线
 
@@ -111,23 +111,23 @@ if __name__ == "__main__":
 ```
 
 
-当每个阶段需要可见或可替换时，请使用此路径。例如，你可能存储记录，在文本 智能体 响应之前运行策略检查，调用内部系统，然后仅在 工作流 达到批准答案后才生成语音。
+当每个阶段都需要可见或可替换时，可以使用此路径。例如，你可能需要存储对话记录，在文本智能体回复前运行策略检查、调用内部系统，然后仅在工作流得出已批准的答案后再生成语音。
 
-## 语音智能体仍使用相同的核心智能体构建模块
+## Voice 智能体 still use the same core 智能体 building blocks
 
-语音界面改变了传输和音频循环，但核心的工作流决策是相同的：
+语音表面会改变传输和音频循环，但核心的工作流决策是相同的：
 
 - 使用 [使用工具](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk) 当语音智能体需要外部能力时。
-- 使用 [运行智能体](https://developers.openai.com/api/docs/guides/agents/running-agents) 当口语工作流需要流式传输、延续或持久状态时。
-- 使用 [编排与交接](https://developers.openai.com/api/docs/guides/agents/orchestration) 当口语工作流在专家之间分支时。
-- 使用 [护栏与人工审核](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals) 当口语工作流需要安全检查或审批时。
-- 使用 [集成与可观测性](https://developers.openai.com/api/docs/guides/agents/integrations-observability) 当你需要MCP支持的功能或想检查语音工作流的行为时。
+- 使用 [运行智能体](https://developers.openai.com/api/docs/guides/agents/running-agents) 当口语化工作流需要流式输出、延续或持久化状态时。
+- 使用 [编排与交接](https://developers.openai.com/api/docs/guides/agents/orchestration) 当口语化工作流在多个专长之间分支时。
+- 使用 [护栏与人工审核](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals) 当口语化工作流需要安全检查或审批时。
+- 使用 [集成与可观测性](https://developers.openai.com/api/docs/guides/agents/integrations-observability) 当你需要 MCP 支持的能力，或想查看语音工作流的运行情况时。
 
-实际的规则是：先选择音频架构，然后以与文本相同的方式设计智能体的其余工作流。
+实用原则是：先选定音频架构，然后像为文本设计那样设计其余的智能体工作流。
 
 ## 后续步骤
 
-[实时与音频概览
+[Realtime 与音频概述
 
 
 
@@ -145,7 +145,7 @@ if __name__ == "__main__":
 
       Connect browser and mobile audio directly to a Realtime session.](https://developers.openai.com/api/docs/guides/realtime-webrtc)
 
-[实时提示指南
+[Realtime 提示指南
 
 
 
