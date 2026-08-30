@@ -1,10 +1,10 @@
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获得。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 更新语音同意
 
 **post** `/audio/voice_consents/{consent_id}`
 
-更新语音同意录音（仅限元数据）。
+更新语音同意录制（仅元数据）。
 
 ### 路径参数
 
@@ -14,17 +14,17 @@
 
 - `name: string`
 
-  此同意记录更新后的标签。
+  此同意记录的更新后的标签。
 
 ### 返回
 
 - `id: string`
 
-  同意记录的标识符。
+  同意录制标识符。
 
 - `created_at: number`
 
-  创建同意记录时的 Unix 时间戳（秒）。
+  同意录制创建时的 Unix 时间戳（以秒为单位）。
 
 - `language: string`
 
@@ -32,7 +32,7 @@
 
 - `name: string`
 
-  上传同意记录时提供的标签。
+  上传同意录制时提供的标签。
 
 - `object: "audio.voice_consent"`
 

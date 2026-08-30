@@ -1,10 +1,10 @@
-> 关于完整的文档索引，请参阅 [llms.txt](/llms.txt)。通过追加 `.md` 到页面 URL，可获得文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获得该页面的 Markdown 版本。
 
-## 删除助手
+## 删除 assistant
 
-**删除** `/assistants/{assistant_id}`
+**delete** `/assistants/{assistant_id}`
 
-删除一个助手。
+删除一个智能体。
 
 ### 路径参数
 

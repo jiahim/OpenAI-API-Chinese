@@ -1,14 +1,14 @@
 # 会议纪要
 
-> 关于完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来访问。
+> 完整文档索引请参阅 [llms.txt](/llms.txt). 文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
-在本教程中，我们将利用 OpenAI 的 Whisper 和 GPT 模型开发一个自动会议纪要生成器。该应用会转录会议音频，提供讨论摘要，提取关键点和行动项，并进行情感分析。
+在本教程中，我们将利用 OpenAI 的 Whisper 和 GPT 模型开发一个自动化的会议纪要生成器。该应用会转写会议音频，提供讨论摘要，提取关键要点和行动项，并进行情感分析。
 
-## 开始使用
+## 入门指南
 
-本教程假定你对 Python 有基本了解，并且已经拥有 [OpenAI API 密钥](https://platform.openai.com/settings/organization/api-keys)。你可以使用本教程提供的音频文件，也可以使用自己的。
+本教程假定你具备 Python 的基础知识，并且拥有 [OpenAI API 密钥](https://platform.openai.com/settings/organization/api-keys)。你可以使用本教程提供的音频文件，也可以使用自己的音频文件。
 
-此外，你还需要安装 [python-docx](https://python-docx.readthedocs.io/en/latest/) 和 [OpenAI](https://developers.openai.com/api/docs/libraries) 库。你可以使用以下命令创建新的 Python 环境并安装所需的包：
+此外，你还需要安装 [python-docx](https://python-docx.readthedocs.io/en/latest/) 和 [OpenAI](https://developers.openai.com/api/docs/libraries) 库。你可以使用以下命令创建一个新的 Python 环境并安装所需的包：
 
 ```bash
 python -m venv env
@@ -54,8 +54,8 @@ pip install python-docx
 
 
 
-接下来，我们导入所需的包并定义一个函数，该函数使用 Whisper 模型接收音频文件并
-进行转录：
+接下来，我们导入所需的包，并定义一个使用 Whisper 模型接收音频文件并
+对其进行转录的函数：
 
 ```python
 from docx import Document
@@ -74,15 +74,15 @@ def transcribe_audio(audio_file_path):
 ```
 
 
-在这个函数中， `audio_file_path` 是你要转录的音频文件的路径。该函数打开此文件并将其传递给 Whisper ASR 模型（`whisper-1`）进行转录。结果以原始文本形式返回。需要注意的是， `openai.Audio.transcribe` 该函数要求传入实际的音频文件，而不仅仅是本地或远程服务器上的文件路径。这意味着，如果你在服务器上运行此代码，而音频文件可能不存储在该服务器上，你需要有一个预处理步骤，首先将音频文件下载到该设备上。
+在这个函数中， `audio_file_path` 是你要转录的音频文件的路径。该函数会打开此文件并将其传递给 Whisper ASR 模型（`whisper-1`）进行转录。结果以原始文本形式返回。需要注意的是， `openai.Audio.transcribe` 函数需要传入实际的音频文件，而不仅仅是本地或远程服务器上的文件路径。这意味着，如果你在某个服务器上运行此代码，而该服务器上并未存储音频文件，则需要一个预处理步骤，先将音频文件下载到该设备上。
 
-## 使用 GPT 模型总结和分析转录文本
+## 使用 GPT 模型对转录文本进行摘要和分析
 
-获得转录文本后，我们现在通过 [Chat Completions API](https://developers.openai.com/api/reference/resources/chat)。将其传递给 GPT 模型。下面的代码片段使用一个经过测试的模型来生成摘要、提取关键点、行动项并进行情感分析。对于新项目，从 [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol).
+获得转录文本后，我们现在通过以下方式将其传递给 GPT 模型： [Chat Completions API](https://developers.openai.com/api/reference/resources/chat)。下面的代码片段使用一个经过测试的模型来生成摘要、提取要点、行动项，并执行情感分析。对于新项目，请从 [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol).
 
-本教程为希望模型执行的每项任务使用不同的函数。这不是完成此任务的最有效方式——你可以将这些指令放入一个函数中，然而，将它们拆分可以带来更高质量的摘要。
+本教程为每个希望模型执行的任务使用了不同的函数。这并不是执行此任务最高效的方式——你可以将这些指令放在一个函数中，不过，将它们拆分开通常能获得更高质量的摘要。
 
-为了拆分任务，我们定义了 `meeting_minutes` 函数，该函数将作为此应用程序的主函数：
+为了拆分这些任务，我们定义 `meeting_minutes` 函数，它将作为本应用的主函数：
 
 ```python
 def meeting_minutes(transcription):
@@ -99,13 +99,13 @@ def meeting_minutes(transcription):
 ```
 
 
-在此函数中， `transcription` 是我们从 Whisper 获得的文本。转录文本可以传递给另外四个函数，每个函数旨在执行特定任务： `abstract_summary_extraction` 生成会议摘要， `key_points_extraction` 提取关键点， `action_item_extraction` 识别行动项，以及 `sentiment_analysis performs` 进行情感分析。如果你有其他想要的功能，也可以使用上面所示的相同框架添加。
+在这个函数中， `transcription` 是从 Whisper 获得的文本。该转录内容可以传递给其他四个函数，每个函数都被设计用于执行特定任务： `abstract_summary_extraction` 生成会议摘要， `key_points_extraction` 提取主要要点， `action_item_extraction` 识别行动项，以及 `sentiment_analysis performs` 进行情感分析。如果还需要其他能力，你也可以使用上面展示的同一框架将它们添加进来。
 
-以下是这些函数各自的工作方式：
+下面是这些函数各自的工作方式：
 
 ### 摘要提取
 
-该 `abstract_summary_extraction` 函数获取转录内容并将其总结为一段简洁的摘要，旨在保留最重要的要点，同时避免不必要的细节或无关的话题。实现此过程的主要机制是系统消息，如下所示。通过通常称为提示工程的流程，有许多不同的方法可以达到类似的结果。你可以阅读我们的 [提示工程指南](https://developers.openai.com/api/docs/guides/prompt-engineering) ，其中提供了关于如何最有效地进行此操作的深入建议。
+该 `abstract_summary_extraction` 函数接收转录内容并将其总结为一段简洁的摘要，目标是保留最重要的要点，同时避免不必要的细节或离题内容。启用此过程的主要机制是如下所示的系统消息。通过通常称为提示工程的过程，可以有许多不同的方式来实现类似的结果。你可以阅读我们的 [提示工程指南](https://developers.openai.com/api/docs/guides/prompt-engineering) ，其中就如何最有效地进行此操作提供了深入的指导建议。
 
 ```python
 def abstract_summary_extraction(transcription):
@@ -125,7 +125,7 @@ def abstract_summary_extraction(transcription):
 
 ### 要点提取
 
-该 `key_points_extraction` 函数识别并列出会议中讨论的主要观点。这些观点应代表对讨论本质至关重要的最重要想法、发现或主题。同样，控制这些观点识别方式的主要机制是系统消息。你可能需要在此处添加一些关于你的项目或公司运作方式的额外背景，例如“我们是一家向消费者销售赛车的公司。我们以 XYZ 为目标开展 XYZ 业务”。这些额外背景可以显著提高模型提取相关信息的能力。
+该 `key_points_extraction` 函数用于识别并列出会议中讨论的要点。这些要点应代表讨论中最核心的重要观点、发现或话题。同样，控制这些要点识别方式的主要机制是系统消息。你可能希望在此处补充一些关于你的项目或公司运作方式的额外上下文，例如“我们是一家向消费者销售赛车的公司。我们做 XYZ，目标是 XYZ”。这些额外的上下文可以显著提升模型提取相关信息的能力。
 
 ```python
 def key_points_extraction(transcription):
@@ -143,9 +143,9 @@ def key_points_extraction(transcription):
 ```
 
 
-### 操作项提取
+### 行动项提取
 
-该 `action_item_extraction` 函数识别会议期间商定或提及的任务、分配事项或行动。这些可以是分配给特定个人的任务，也可以是团队决定采取的总体行动。虽然本教程不涉及，但Chat Completions API提供了 [函数调用能力](https://developers.openai.com/api/docs/guides/function-calling) ，使您能够构建功能，自动在任务管理软件中创建任务并分配给相关人员。
+该 `action_item_extraction` function 用于识别会议中达成一致或被提及的任务、待办事项或行动。这些任务可以是指派给特定人员的，也可以是小组决定采取的通用行动。虽然本教程不涉及这部分内容，但 Chat Completions API 提供了一个 [函数调用功能](https://developers.openai.com/api/docs/guides/function-calling) ，借助它你可以自动在你的任务管理软件中创建任务并分派给相关人员。
 
 ```python
 def action_item_extraction(transcription):
@@ -165,7 +165,7 @@ def action_item_extraction(transcription):
 
 ### 情感分析
 
-该 `sentiment_analysis` 函数分析整个讨论的总体情感。它会考虑语气、所用语言传达的情绪以及词语和短语使用的语境。对于较简单的任务，也值得尝试 [`gpt-5.6-terra`](https://developers.openai.com/api/docs/models/gpt-5.6-terra) ，看看是否能以更低的成本和延迟获得相似的性能水平。尝试将 `sentiment_analysis` 函数的结果传递给其他函数，以观察对话情感如何影响其他属性，这可能会很有用。
+该 `sentiment_analysis` 函数分析讨论的整体情感。它会考虑语气、语言所传达的情绪，以及词语和短语使用的上下文。对于不太复杂的任务，还可以尝试 [`gpt-5.6-terra`](https://developers.openai.com/api/docs/models/gpt-5.6-terra) 看看能否在更低的成本和延迟下获得相近的性能。同样值得尝试的是，将 `sentiment_analysis` 函数的结果传递给其他函数，看看对话的情感如何影响其他属性。
 
 ```python
 def sentiment_analysis(transcription):
@@ -221,9 +221,9 @@ def save_as_docx(minutes, filename):
 ```
 
 
-在这个函数中，minutes 是一个包含会议摘要、关键点、行动项和情感分析的字典。Filename 是要创建的 Word 文档文件的名称。该函数创建一个新的 Word 文档，为会议记录的每个部分添加标题和内容，然后将文档保存到当前工作目录。
+在这个函数中，minutes 是一个字典，包含会议的摘要总结、关键要点、行动项和情感分析。Filename 是要创建的 Word 文档文件名。该函数会创建一个新的 Word 文档，为 minutes 的每个部分添加标题和内容，然后将文档保存到当前工作目录。
 
-最后，你可以将所有内容组合起来，从音频文件生成会议记录：
+最后，你可以将所有内容整合起来，从一个音频文件生成会议纪要：
 
 ```python
 audio_file_path = "Earningscall.wav"
@@ -235,6 +235,6 @@ save_as_docx(minutes, "meeting_minutes.docx")
 ```
 
 
-这段代码将转录音频文件 `Earningscall.wav`，生成会议记录，打印它们，然后将其保存到名为 `meeting_minutes.docx`.
+这段代码会转录音频文件 `Earningscall.wav`，生成会议纪要，将其打印出来，然后保存到一个名为 `meeting_minutes.docx`.
 
-现在你已经有了基本的会议记录处理设置，可以考虑尝试通过 [提示工程](https://developers.openai.com/api/docs/guides/prompt-engineering) 来优化性能，或使用原生 [函数调用](https://developers.openai.com/api/docs/guides/function-calling).
+现在你已经有了基本的会议纪要处理流程，可以尝试通过 [提示工程](https://developers.openai.com/api/docs/guides/prompt-engineering) 来优化性能，或者使用原生 [函数调用](https://developers.openai.com/api/docs/guides/function-calling).

@@ -1,4 +1,4 @@
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt). 各文档页面的 Markdown 版本可通过在网址末尾追加 `.md` 获得。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 后追加 `.md` 即可获取文档页面的 Markdown 版本。
 
 ## 检索助手
 
@@ -18,36 +18,36 @@
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    标识符，可以在 API 端点中引用。
 
   - `created_at: number`
 
-    创建助手时的 Unix 时间戳（秒）。
+    助理创建时的 Unix 时间戳（以秒为单位）。
 
   - `description: string or null`
 
-    助手的描述。最大长度为 512 个字符。
+    助理的描述。最大长度为 512 个字符。
 
   - `instructions: string or null`
 
-    助手使用的系统指令。最大长度为 256,000 个字符。
+    助理使用的系统指令。最大长度为 256,000 个字符。
 
   - `metadata: Metadata or null`
 
-    可附加到对象上的 16 个键值对集合。这可用于
-    以结构化格式存储有关对象的附加信息，
-    并通过 API 或仪表盘查询对象。
+    可以附加到对象的 16 组键值对。可用于
+    以结构化格式存储有关对象的附加信息，并通过
+    API 或控制台查询对象。
 
     键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
   - `model: string`
 
-    要使用的模型 ID。你可以使用 [List models](/docs/api-reference/models/list) API 查看所有可用模型，或查看我们的 [Model overview](/docs/models) 了解模型的描述。
+    要使用的模型 ID。你可以使用 [列出模型](/docs/api-reference/models/list) API 查看所有可用模型，或参阅我们的 [模型概述](/docs/models) 了解相关描述。
 
   - `name: string or null`
 
-    助手的名称。最大长度为 256 个字符。
+    助理的名称。最大长度为 256 个字符。
 
   - `object: "assistant"`
 
@@ -57,7 +57,7 @@
 
   - `tools: array of CodeInterpreterTool or FileSearchTool or FunctionTool`
 
-    助手启用的工具列表。每个助手最多可有 128 个工具。工具类型可为 `code_interpreter`, `file_search`，或 `function`.
+    助理上启用的工具列表。每个助理最多可以启用 128 个工具。工具可以是以下类型 `code_interpreter`, `file_search`，或 `function`.
 
     - `CodeInterpreterTool object { type }`
 
@@ -77,27 +77,27 @@
 
       - `file_search: optional object { max_num_results, ranking_options }`
 
-        文件搜索工具的覆盖设置。
+        文件搜索 工具的覆盖项。
 
         - `max_num_results: optional number`
 
-          文件搜索工具应输出的最大结果数。默认值为20，适用于 `gpt-4*` 模型和5，适用于 `gpt-3.5-turbo`。此数字应介于1和50之间（含边界值）。
+          文件搜索 工具应输出的最大结果数。 `gpt-4*` 模型默认为 20， `gpt-3.5-turbo`。默认为 5。该数值应介于 1 到 50 之间（含端点）。
 
-          请注意，文件搜索工具可能输出少于 `max_num_results` 结果。请参阅 [文件搜索工具文档](/docs/assistants/tools/file-search#customizing-file-search-settings) 了解更多信息。
+          请注意，文件搜索 工具可能输出的结果数少于 `max_num_results` 个结果。参见 [文件搜索 工具文档](/docs/assistants/tools/file-search#customizing-file-search-settings) 了解更多信息。
 
         - `ranking_options: optional object { score_threshold, ranker }`
 
-          文件搜索的排序选项。如果未指定，文件搜索工具将使用 `auto` 排序器，并将score_threshold设置为0。
+          文件搜索 的排序选项。如果未指定，文件搜索 工具将使用 `auto` 排序器，并将 score_threshold 设为 0。
 
-          请参阅 [文件搜索工具文档](/docs/assistants/tools/file-search#customizing-file-search-settings) 了解更多信息。
+          参见 [文件搜索 工具文档](/docs/assistants/tools/file-search#customizing-file-search-settings) 了解更多信息。
 
           - `score_threshold: number`
 
-            文件搜索的分数阈值。所有值必须是介于0和1之间的浮点数。
+            文件搜索 的分数阈值。所有取值必须是介于 0 到 1 之间的浮点数。
 
           - `ranker: optional "auto" or "default_2024_08_21"`
 
-            用于文件搜索的排序器。如果未指定，将使用 `auto` 排序器。
+            文件搜索 使用的排序器。如果未指定，将使用 `auto` 排序器。
 
             - `"auto"`
 
@@ -109,37 +109,37 @@
 
         - `name: string`
 
-          要调用的函数名称。必须为a-z、A-Z、0-9，或包含下划线和短划线，最大长度为64。
+          要调用的函数名称。必须为 a-z、A-Z、0-9，或包含下划线和连字符，最大长度为 64。
 
         - `description: optional string`
 
-          函数功能的描述，模型将根据此描述决定何时以及如何调用该函数。
+          函数功能的描述，供模型用于选择何时以及如何调用该函数。
 
         - `parameters: optional FunctionParameters`
 
-          函数接受的参数，以 JSON Schema 对象描述。参见 [指南](/docs/guides/function-calling) 中的示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) 获取关于该格式的文档。
+          函数接受的参数，以 JSON Schema 对象描述。参见 [指南](/docs/guides/function-calling) 中的示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) 文档中关于格式的说明。
 
-          省略 `parameters` 定义了一个参数列表为空的函数。
+          省略 `parameters` 用于定义一个参数列表为空的函数。
 
         - `strict: optional boolean or null`
 
-          是否在生成函数调用时启用严格的模式遵守。如果设置为 true，模型将遵循 `parameters` 字段中定义的精确模式。当 `strict` 为 `true`。时，仅支持 JSON Schema 的一个子集。在 [函数调用指南](/docs/guides/function-calling).
+          是否在生成函数调用时启用严格模式以遵循模式定义。如果设为 true，模型将遵循 `parameters` 字段中定义的精确模式。当 strict 为 true 时，仅支持 JSON Schema 的一个子集。 `strict` 为 `true`。时，可支持的 JSON Schema 子集详情请参阅 [函数调用指南](/docs/guides/function-calling).
 
       - `type: "function"`
 
-        要定义的工具类型： `function`
+        正在定义的工具类型： `function`
 
         - `"function"`
 
   - `response_format: optional AssistantResponseFormatOption or null`
 
-    指定模型必须输出的格式。兼容 [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4)，以及所有自 `gpt-3.5-turbo-1106`.
+    指定模型必须输出的格式。兼容 [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4)，以及自 `gpt-3.5-turbo-1106`.
 
-    以来 `{ "type": "json_schema", "json_schema": {...} }` 的 GPT-3.5 Turbo 模型。设置为 [结构化输出指南](/docs/guides/structured-outputs).
+    设置参数为 `{ "type": "json_schema", "json_schema": {...} }` 启用结构化输出，确保模型输出与你提供的 JSON schema 完全匹配。更多信息请参阅 [结构化输出指南](/docs/guides/structured-outputs).
 
-    设置为 `{ "type": "json_object" }` 可启用 JSON 模式，该模式确保模型生成的消息是有效的 JSON。
+    设置参数为 `{ "type": "json_object" }` 启用 JSON 模式，确保模型生成的消息是合法 JSON。
 
-    **重要提示：** 使用 JSON 模式时，你 **必须** 通过系统或用户消息自行指示模型生成 JSON。否则，模型可能会生成无休止的空白字符，直到达到令牌限制，导致请求长时间运行且看似“卡住”。另请注意，如果 `finish_reason="length"`，表示生成结果超出 `max_tokens` 或对话超出最大上下文长度，消息内容可能会被部分截断。
+    **重要提示：** 使用 JSON 模式时，你 **必须** 也可以通过系统或用户消息自行指示模型输出 JSON。否则，模型可能会生成无止境的空白字符，直到生成达到 token 限制，从而导致请求长时间运行并看似“卡住”。另请注意，如果 `finish_reason="length"`，则表示生成超出 `max_tokens` 或对话超出最大上下文长度。
 
     - `"auto"`
 
@@ -153,86 +153,86 @@
 
       - `type: "text"`
 
-        所定义响应格式的类型。始终为 `text`.
+        正在定义的响应格式类型。始终为 `text`.
 
         - `"text"`
 
     - `ResponseFormatJSONObject object { type }`
 
       JSON 对象响应格式。一种较旧的生成 JSON 响应的方法。
-      对于支持该格式的模型，建议使用 `json_schema` 。请注意，没有指示其生成 JSON 的系统或用户消息时，
-      模型将不会生成 JSON
-      。
+      使用 `json_schema` 推荐用于支持它的模型。请注意，
+      模型在没有系统或用户消息指示的情况下不会生成 JSON
+      来这样做。
 
       - `type: "json_object"`
 
-        所定义响应格式的类型。始终为 `json_object`.
+        正在定义的响应格式类型。始终为 `json_object`.
 
         - `"json_object"`
 
     - `ResponseFormatJSONSchema object { json_schema, type }`
 
-      JSON Schema 响应格式。用于生成结构化 JSON 响应。
-      了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+      JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+      详细了解 [结构化输出](/docs/guides/structured-outputs).
 
       - `json_schema: object { name, description, schema, strict }`
 
-        结构化输出配置选项，包括 JSON Schema。
+        结构化输出配置选项，包括一个 JSON Schema。
 
         - `name: string`
 
           响应格式的名称。必须为 a-z、A-Z、0-9，或包含
-          下划线和短划线，最大长度为 64。
+          下划线和短横线，最大长度为 64。
 
         - `description: optional string`
 
-          关于响应格式用途的描述，模型会据此
+          对响应格式用途的描述，模型据此
           决定如何以该格式进行响应。
 
         - `schema: optional map[unknown]`
 
           响应格式的架构，以 JSON Schema 对象形式描述。
-          了解如何构建 JSON 架构 [此处](https://json-schema.org/).
+          了解如何构建 JSON schema [请参阅此处](https://json-schema.org/).
 
         - `strict: optional boolean or null`
 
-          是否在生成输出时启用严格架构遵循。
-          若设为 true，模型将始终遵循定义的精确架构，
-          见 `schema` 字段。当
-          `strict` 为 `true`。时，仅支持 JSON Schema 的一个子集。要了解更多信息，请阅读 [Structured Outputs
+          是否在生成输出时启用严格的 schema 遵循。
+          如果设置为 true，模型将始终遵循所定义的确切 schema
+          ，如需进一步了解，请阅读 `schema` 字段中定义的精确模式。当 strict 为 true 时，仅支持 JSON Schema 的一个子集。
+          `strict` 为 `true`。要了解更多信息，请参阅 [结构化输出
           指南](/docs/guides/structured-outputs).
 
       - `type: "json_schema"`
 
-        所定义响应格式的类型。始终 `json_schema`.
+        正在定义的响应格式类型。始终为 `json_schema`.
 
         - `"json_schema"`
 
   - `temperature: optional number or null`
 
-    使用什么采样温度，范围在 0 和 2 之间。较高的值如 0.8 会使输出更随机，而较低的值如 0.2 会使输出更集中和确定。
+    使用的采样温度，取值范围为 0 到 2。较高的值（例如 0.8）会使输出更加随机，而较低的值（例如 0.2）会使输出更加集中和确定。
 
   - `tool_resources: optional object { code_interpreter, file_search }  or null`
 
-    一组由助手工具使用的资源。这些资源特定于工具类型。例如， `code_interpreter` 工具需要文件 ID 列表，而 `file_search` 工具需要一个向量存储 ID 列表。
+    助手工具所使用的一组资源。这些资源因工具类型而异。例如， `code_interpreter` 工具需要一个 file ID 列表，而 `file_search` 工具需要一个 vector store ID 列表。
 
     - `code_interpreter: optional object { file_ids }`
 
       - `file_ids: optional array of string`
 
-        一个 [文件](/docs/api-reference/files) ID 列表，可供 `code_interpreter`` 工具使用。最多可有 20 个文件与该工具关联。
+        一个 [file](/docs/api-reference/files) ID 列表，这些 ID 可供 `code_interpreter`` 工具使用。每个工具最多可以关联 20 个文件。
 
     - `file_search: optional object { vector_store_ids }`
 
       - `vector_store_ids: optional array of string`
 
-        该 [向量存储](/docs/api-reference/vector-stores/object) 的 ID，附加到此助手。最多可有 1 个向量存储附加到该助手。
+        与此助手关联的 [vector store](/docs/api-reference/vector-stores/object) 的 ID。每个助手最多可以关联 1 个 vector store。
 
   - `top_p: optional number or null`
 
-    一种替代温度采样的方法，称为核采样，模型考虑具有 top_p 概率质量的令牌结果。因此，0.1 表示仅考虑组成前 10% 概率质量的令牌。
+    一种替代温度采样的方法，称为核采样（nucleus sampling），模型只考虑概率质量排名前 top_p 的 token。例如 0.1 表示仅考虑概率质量排名前 10% 的 token。
 
-    我们通常建议修改此参数或温度，但不要同时修改两者。
+    我们通常建议调整此参数或 temperature，但不要同时调整两者。
 
 ### 示例
 

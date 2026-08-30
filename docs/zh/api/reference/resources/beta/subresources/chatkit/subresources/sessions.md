@@ -1,14 +1,14 @@
-# 会话
+# Sessions
 
-> 关于完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可以通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 取消聊天会话
 
 **post** `/chatkit/sessions/{session_id}/cancel`
 
-取消一个活动的 ChatKit 会话并返回其最新的元数据。
+取消一个进行中的 ChatKit 会话，并返回其最近的元数据。
 
-取消操作会阻止新请求使用已发放的客户端密钥。
+取消后，已签发的客户端密钥将无法用于新的请求。
 
 ### 路径参数
 
@@ -26,23 +26,23 @@
 
   - `chatkit_configuration: ChatSessionChatKitConfiguration`
 
-    会话的已解析 ChatKit 功能配置。
+    该会话已解析的 ChatKit 功能配置。
 
     - `automatic_thread_titling: ChatSessionAutomaticThreadTitling`
 
-      自动线程标题设置。
+      自动会话标题偏好设置。
 
       - `enabled: boolean`
 
-        是否启用自动线程标题。
+        是否启用自动会话标题。
 
     - `file_upload: ChatSessionFileUpload`
 
-      会话的上传设置。
+      该会话的上传设置。
 
       - `enabled: boolean`
 
-        指示会话是否启用上传功能。
+        指示该会话是否允许上传。
 
       - `max_file_size: number or null`
 
@@ -50,7 +50,7 @@
 
       - `max_files: number or null`
 
-        会话期间允许的最大上传次数。
+        会话期间允许的最大上传数量。
 
     - `history: ChatSessionHistory`
 
@@ -58,11 +58,11 @@
 
       - `enabled: boolean`
 
-        指示会话的聊天历史记录是否持久化。
+        指示是否为该会话持久化聊天历史记录。
 
       - `recent_threads: number or null`
 
-        历史记录视图中显示的先前线程数量。当保留所有历史记录时，默认为 null。
+        在历史记录视图中显示的先前会话数量。当保留所有历史记录时，默认为 null。
 
   - `client_secret: string`
 
@@ -70,7 +70,7 @@
 
   - `expires_at: number`
 
-    会话过期时的 Unix 时间戳（以秒为单位）。
+    会话过期的 Unix 时间戳（以秒为单位）。
 
   - `max_requests_per_1_minute: number`
 
@@ -78,7 +78,7 @@
 
   - `object: "chatkit.session"`
 
-    类型判别器，始终为 `chatkit.session`.
+    始终为以下值的类型判别字段 `chatkit.session`.
 
     - `"chatkit.session"`
 
@@ -88,7 +88,7 @@
 
     - `max_requests_per_1_minute: number`
 
-      一分钟窗口内允许的最大请求数。
+      一分钟时间窗口内允许的最大请求数。
 
   - `status: ChatSessionStatus`
 
@@ -102,7 +102,7 @@
 
   - `user: string`
 
-    与会话关联的用户标识符。
+    与会话关联的会话用户标识符。
 
   - `workflow: ChatKitWorkflow`
 
@@ -110,11 +110,11 @@
 
     - `id: string`
 
-      支撑该会话的工作流的标识符。
+      支撑该会话的 工作流 的标识符。
 
     - `state_variables: map[string or boolean or number] or null`
 
-      调用工作流时应用的状态变量键值对。未提供覆盖时默认为 null。
+      调用 工作流 时应用的状态变量键值对。未提供覆盖值时默认为 null。
 
       - `string`
 
@@ -124,15 +124,15 @@
 
     - `tracing: object { enabled }`
 
-      应用于工作流的追踪设置。
+      应用于 工作流 的追踪设置。
 
       - `enabled: boolean`
 
-        指示是否启用追踪。
+        指示是否启用了 追踪。
 
     - `version: string or null`
 
-      会话使用的特定工作流版本。使用最新部署时默认为 null。
+      该会话使用的特定 工作流 版本。使用最新部署时默认为 null。
 
 ### 示例
 
@@ -223,19 +223,19 @@ curl -X POST \
 
 - `user: string`
 
-  一个自由格式字符串，用于标识你的最终用户；确保此会话可以访问其他具有相同 `user` scope 的对象。
+  用于标识最终用户的自由格式字符串；确保此会话能够访问具有相同 `user` 作用域的其他对象。
 
 - `workflow: ChatSessionWorkflowParam`
 
-  驱动会话的工作流。
+  驱动该会话的工作流。
 
   - `id: string`
 
-    会话调用的 工作流 的标识符。
+    会话所调用的工作流的标识符。
 
   - `state_variables: optional map[string or boolean or number]`
 
-    转发给 工作流 的状态变量。键最长可为 64 个字符，值必须是原始类型，映射默认为空对象。
+    转发到工作流的状态变量。键名长度最多 64 个字符，值必须为基本数据类型，且该映射默认为空对象。
 
     - `string`
 
@@ -245,7 +245,7 @@ curl -X POST \
 
   - `tracing: optional object { enabled }`
 
-    追踪调用的可选 工作流覆盖项。省略时，追踪默认启用。
+    工作流调用的可选工作流覆盖项。省略时，默认启用追踪。
 
     - `enabled: optional boolean`
 
@@ -261,15 +261,15 @@ curl -X POST \
 
   - `automatic_thread_titling: optional object { enabled }`
 
-    自动线程标题的配置。省略时，自动线程标题默认启用。
+    自动会话标题命名的配置。省略时，默认启用自动会话标题命名。
 
     - `enabled: optional boolean`
 
-      启用自动线程标题生成。默认为 true。
+      启用自动会话标题生成。默认为 true。
 
   - `file_upload: optional object { enabled, max_file_size, max_files }`
 
-    上传启用和限制的配置。省略时，上传默认禁用（max_files 10，max_file_size 512 MB）。
+    上传启用与限制的配置。省略时，默认禁用上传（max_files 10，max_file_size 512 MB）。
 
     - `enabled: optional boolean`
 
@@ -277,7 +277,7 @@ curl -X POST \
 
     - `max_file_size: optional number`
 
-      每个上传文件的最大大小（以兆字节为单位）。默认为 512 MB，这也是允许的最大大小。
+      每个上传文件的最大大小（以 MB 为单位）。默认为 512 MB，这也是允许的最大值。
 
     - `max_files: optional number`
 
@@ -285,43 +285,43 @@ curl -X POST \
 
   - `history: optional object { enabled, recent_threads }`
 
-    聊天历史保留的配置。省略时，历史默认启用，且不限制 recent_threads（null）。
+    聊天历史保留配置。省略时，默认启用历史记录，且对 recent_threads 数量没有限制（null）。
 
     - `enabled: optional boolean`
 
-      允许聊天用户访问之前的 ChatKit 线程。默认为 true。
+      允许聊天用户访问之前的 ChatKit 会话。默认为 true。
 
     - `recent_threads: optional number`
 
-      用户可访问的最近 ChatKit 线程数。未设置时默认为无限制。
+      用户可访问的最近 ChatKit 会话数量。未设置时默认为无限制。
 
 - `expires_after: optional ChatSessionExpiresAfterParam`
 
-  可选覆盖项，用于设置自创建以来的会话过期时间（秒）。默认为 10 分钟。
+  会话到期时间的可选覆盖项，以创建时起经过的秒数表示。默认为 10 分钟。
 
   - `anchor: "created_at"`
 
-    用于计算过期时间的基础时间戳。目前固定为 `created_at`.
+    用于计算到期时间的基础时间戳。当前固定为 `created_at`.
 
     - `"created_at"`
 
   - `seconds: number`
 
-    锚点之后会话过期的秒数。
+    从锚点起经过指定秒数后会话过期。
 
 - `rate_limits: optional ChatSessionRateLimitsParam`
 
-  每分钟请求限制的可选覆盖。省略时默认为10。
+  可选的每分钟请求数上限覆盖值。未指定时默认为 10。
 
   - `max_requests_per_1_minute: optional number`
 
-    会话每分钟允许的最大请求数。默认值为10。
+    会话允许的每分钟最大请求数。默认为 10。
 
 ### 返回
 
 - `ChatSession object { id, chatkit_configuration, client_secret, 7 more }`
 
-  表示一个 ChatKit 会话及其解析后的配置。
+  表示一个 ChatKit 会话及其已解析的配置。
 
   - `id: string`
 
@@ -329,23 +329,23 @@ curl -X POST \
 
   - `chatkit_configuration: ChatSessionChatKitConfiguration`
 
-    会话的已解析 ChatKit 功能配置。
+    该会话已解析的 ChatKit 功能配置。
 
     - `automatic_thread_titling: ChatSessionAutomaticThreadTitling`
 
-      自动线程标题偏好设置。
+      自动会话标题偏好设置。
 
       - `enabled: boolean`
 
-        是否启用自动线程标题。
+        是否启用自动会话标题。
 
     - `file_upload: ChatSessionFileUpload`
 
-      会话的上传设置。
+      该会话的上传设置。
 
       - `enabled: boolean`
 
-        指示会话是否允许上传。
+        指示该会话是否允许上传。
 
       - `max_file_size: number or null`
 
@@ -353,7 +353,7 @@ curl -X POST \
 
       - `max_files: number or null`
 
-        会话期间允许的最大上传次数。
+        会话期间允许的最大上传数量。
 
     - `history: ChatSessionHistory`
 
@@ -361,15 +361,15 @@ curl -X POST \
 
       - `enabled: boolean`
 
-        指示会话的聊天历史记录是否持久化。
+        指示是否为该会话持久化聊天历史记录。
 
       - `recent_threads: number or null`
 
-        历史记录视图中显示的先前线程数。当保留所有历史记录时，默认为 null。
+        在历史记录视图中显示的先前会话数量。当保留所有历史记录时，默认为 null。
 
   - `client_secret: string`
 
-    用于验证会话请求的临时客户端密钥。
+    用于认证会话请求的临时客户端密钥。
 
   - `expires_at: number`
 
@@ -377,11 +377,11 @@ curl -X POST \
 
   - `max_requests_per_1_minute: number`
 
-    方便使用的每分钟请求限制副本。
+    每分钟请求限制的便捷副本。
 
   - `object: "chatkit.session"`
 
-    始终为 `chatkit.session`.
+    始终为以下值的类型判别字段 `chatkit.session`.
 
     - `"chatkit.session"`
 
@@ -391,7 +391,7 @@ curl -X POST \
 
     - `max_requests_per_1_minute: number`
 
-      一分钟窗口内允许的最大请求数。
+      一分钟时间窗口内允许的最大请求数。
 
   - `status: ChatSessionStatus`
 
@@ -405,7 +405,7 @@ curl -X POST \
 
   - `user: string`
 
-    会话关联的用户标识符。
+    与会话关联的会话用户标识符。
 
   - `workflow: ChatKitWorkflow`
 
@@ -413,11 +413,11 @@ curl -X POST \
 
     - `id: string`
 
-      支持该会话的工作流的标识符。
+      支撑该会话的 工作流 的标识符。
 
     - `state_variables: map[string or boolean or number] or null`
 
-      调用工作流时应用的状态变量键值对。当未提供覆盖项时默认为 null。
+      调用 工作流 时应用的状态变量键值对。未提供覆盖值时默认为 null。
 
       - `string`
 
@@ -427,15 +427,15 @@ curl -X POST \
 
     - `tracing: object { enabled }`
 
-      应用于工作流的追踪设置。
+      应用于 工作流 的追踪设置。
 
       - `enabled: boolean`
 
-        指示是否启用追踪。
+        指示是否启用了 追踪。
 
     - `version: string or null`
 
-      会话使用的特定工作流版本。当使用最新部署时默认为 null。
+      该会话使用的特定 工作流 版本。使用最新部署时默认为 null。
 
 ### 示例
 

@@ -1,16 +1,16 @@
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-## 创建语音
+## Create voice
 
 **post** `/audio/voices`
 
 创建自定义语音。
 
-### 返回
+### 返回值
 
 - `id: string`
 
-  语音标识符，可在 API 端点中引用。
+  可在 API 端点中引用的语音标识符。
 
 - `created_at: number`
 

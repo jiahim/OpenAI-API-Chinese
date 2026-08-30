@@ -1,10 +1,10 @@
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。Markdown 版本的文档页面可通过在页面 URL 末尾附加 `.md` 获取。
 
 ## 创建消息
 
 **post** `/threads/{thread_id}/messages`
 
-创建一条消息。
+创建消息。
 
 ### 路径参数
 
@@ -22,21 +22,21 @@
 
   - `ArrayOfContentParts = array of ImageFileContentBlock or ImageURLContentBlock or TextContentBlockParam`
 
-    由具有定义类型的内容部分组成，其中每个部分可以为 `text` 类型，或者图片可以通过 `image_url` 或 `image_file`。传递。图片类型仅在 [视觉兼容模型](/docs/models).
+    由已定义类型组成的内容部分数组，每个部分的类型可以是 `text` ，或者可以通过 `image_url` 传入图像 `image_file`。图像类型仅在 [支持视觉的模型](/docs/models).
 
     - `ImageFileContentBlock object { image_file, type }`
 
-      上支持。引用消息内容中的一张 [文件](/docs/api-reference/files) 。内容是消息中的文本内容。
+      引用消息内容中的一张图像 [文件](/docs/api-reference/files) 。
 
       - `image_file: ImageFile`
 
         - `file_id: string`
 
-          表示 [文件](/docs/api-reference/files) 在消息内容中的 ID。当上传文件时，设置 `purpose="vision"` 以便之后需要显示文件内容时可以检索。
+          该 [文件](/docs/api-reference/files) 消息内容中图像的 ID。如果需要在后续显示文件内容，请在上传 `purpose="vision"` 时进行设置。
 
         - `detail: optional "auto" or "low" or "high"`
 
-          指定用户图像细节的级别。默认情况下使用较少的令牌，你可以通过选择使用。 `low` 来使用高分辨率， `high`.
+          指定由用户指定的图像的细节级别。 `low` 消耗的 token 更少，你可以通过 `high`.
 
           - `"auto"`
 
@@ -46,23 +46,23 @@
 
       - `type: "image_file"`
 
-        始终 `image_file`.
+        选择使用高分辨率 `image_file`.
 
         - `"image_file"`
 
     - `ImageURLContentBlock object { image_url, type }`
 
-      使用高分辨率。引用消息内容中的图像 URL。
+      引用消息内容中的一个图像 URL。
 
       - `image_url: ImageURL`
 
         - `url: string`
 
-          图像的外部 URL，必须是支持的图像类型之一：jpeg、jpg、png、gif、webp。
+          图像的外部 URL，必须是受支持的图像类型：jpeg、jpg、png、gif、webp。
 
         - `detail: optional "auto" or "low" or "high"`
 
-          指定图像的细节级别。 `low` 使用更少的令牌，你可以选择使用高分辨率，通过 `high`。默认值为 `auto`
+          指定图像的细节级别。 `low` 消耗的 token 更少，你可以通过 `high`。默认值为 `auto`
 
           - `"auto"`
 
@@ -82,11 +82,11 @@
 
       - `text: string`
 
-        要发送给模型的文本内容
+        发送给模型的文本内容
 
       - `type: "text"`
 
-        始终 `text`.
+        选择使用高分辨率 `text`.
 
         - `"text"`
 
@@ -94,8 +94,8 @@
 
   创建消息的实体的角色。允许的值包括：
 
-  - `user`：表示消息由实际用户发送，在大多数情况下应使用此值来表示用户生成的消息。
-  - `assistant`：表示消息由助手生成。使用此值将助手的消息插入对话中。
+  - `user`：表示消息由实际用户发送，在大多数情况下应用于表示用户生成的消息。
+  - `assistant`：表示消息由助手生成。使用此值可将助手消息插入到对话中。
 
   - `"user"`
 
@@ -103,7 +103,7 @@
 
 - `attachments: optional array of object { file_id, tools }  or null`
 
-  附加到消息的文件列表，以及它们应添加到的工具。
+  附加到消息的文件列表，以及应将这些文件添加到的工具。
 
   - `file_id: optional string`
 
@@ -111,13 +111,13 @@
 
   - `tools: optional array of CodeInterpreterTool or object { type }`
 
-    要添加此文件的工具。
+    要将此文件添加到的工具。
 
     - `CodeInterpreterTool object { type }`
 
       - `type: "code_interpreter"`
 
-        正在定义的工具的类型： `code_interpreter`
+        正在定义的工具类型： `code_interpreter`
 
         - `"code_interpreter"`
 
@@ -125,36 +125,36 @@
 
       - `type: "file_search"`
 
-        正在定义的工具的类型： `file_search`
+        正在定义的工具类型： `file_search`
 
         - `"file_search"`
 
 - `metadata: optional Metadata or null`
 
-  可附加到对象的 16 个键值对集合。这可以
-  用于以结构化格式存储有关对象的额外信息，
-  并通过 API 或仪表板查询对象。
+  可附加到对象的 16 组键值对。这可以
+  用于以结构化形式存储有关对象的
+  附加信息，并通过 API 或仪表板查询对象。
 
-  键是最大长度为 64 个字符的字符串。值是最大长度为 512 个字符的字符串。
-  值是最长为 512 个字符的字符串。
+  键为字符串，最大长度为 64 个字符。值为字符串，
+  最大长度为 512 个字符。
 
-### 返回
+### 返回值
 
 - `Message object { id, assistant_id, attachments, 11 more }`
 
-  表示一个线程内的消息， [线程](/docs/api-reference/threads).
+  表示 [thread](/docs/api-reference/threads).
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `assistant_id: string or null`
 
-    如果适用，创建此消息的 [助理](/docs/api-reference/assistants) 的 ID。
+    如果适用，编写此消息的 [assistant](/docs/api-reference/assistants) 的 ID。
 
   - `attachments: array of object { file_id, tools }  or null`
 
-    附加到消息的文件列表，以及它们被添加到的工具。
+    附加到消息的文件列表，以及这些文件被添加到的工具。
 
     - `file_id: optional string`
 
@@ -182,25 +182,25 @@
 
   - `completed_at: number or null`
 
-    消息完成时的 Unix 时间戳（秒）。
+    消息完成时的 Unix 时间戳（以秒为单位）。
 
   - `content: array of ImageFileContentBlock or ImageURLContentBlock or TextContentBlock or RefusalContentBlock`
 
-    消息内容，为文本和/或图片的数组。
+    消息内容，由文本和/或图像组成的数组。
 
     - `ImageFileContentBlock object { image_file, type }`
 
-      引用消息内容中的 [文件](/docs/api-reference/files) 图片。
+      引用消息内容中的一张图像 [文件](/docs/api-reference/files) 。
 
       - `image_file: ImageFile`
 
         - `file_id: string`
 
-          消息内容中图片的 [文件](/docs/api-reference/files) ID。上传文件时设置该值，以便之后需要显示文件内容时使用。 `purpose="vision"` 上传文件时设置该值，以便之后需要显示文件内容时使用。
+          该 [文件](/docs/api-reference/files) 消息内容中图像的 ID。如果需要在后续显示文件内容，请在上传 `purpose="vision"` 时进行设置。
 
         - `detail: optional "auto" or "low" or "high"`
 
-          如果用户指定了图像，则指定图像的细节级别。 `low` 使用的令牌更少，你可以选择使用以下选项启用高分辨率 `high`.
+          指定由用户指定的图像的细节级别。 `low` 消耗的 token 更少，你可以通过 `high`.
 
           - `"auto"`
 
@@ -210,23 +210,23 @@
 
       - `type: "image_file"`
 
-        始终 `image_file`.
+        选择使用高分辨率 `image_file`.
 
         - `"image_file"`
 
     - `ImageURLContentBlock object { image_url, type }`
 
-      引用消息内容中的图像 URL。
+      引用消息内容中的一个图像 URL。
 
       - `image_url: ImageURL`
 
         - `url: string`
 
-          图像的外部 URL，必须是支持的图像类型：jpeg、jpg、png、gif、webp。
+          图像的外部 URL，必须是受支持的图像类型：jpeg、jpg、png、gif、webp。
 
         - `detail: optional "auto" or "low" or "high"`
 
-          指定图像的细节级别。 `low` 使用的令牌更少，你可以选择使用以下选项启用高分辨率 `high`。默认值为 `auto`
+          指定图像的细节级别。 `low` 消耗的 token 更少，你可以通过 `high`。默认值为 `auto`
 
           - `"auto"`
 
@@ -250,7 +250,7 @@
 
           - `FileCitationAnnotation object { end_index, file_citation, start_index, 2 more }`
 
-            消息中的引用，指向与助手或消息关联的特定文件中的特定引文。当助手使用“file_search”工具搜索文件时生成。
+            消息中的一条引用，指向与该智能体或该消息关联的特定文件中的具体引文。当智能体使用 "file_search" 工具搜索文件时生成。
 
             - `end_index: number`
 
@@ -258,23 +258,23 @@
 
               - `file_id: string`
 
-                引用来源的特定文件的 ID。
+                该引用所来自的特定文件的 ID。
 
             - `start_index: number`
 
             - `text: string`
 
-              消息内容中需要替换的文本。
+              消息内容中需要被替换的文本。
 
             - `type: "file_citation"`
 
-              始终 `file_citation`.
+              选择使用高分辨率 `file_citation`.
 
               - `"file_citation"`
 
           - `FilePathAnnotation object { end_index, file_path, start_index, 2 more }`
 
-            当助手使用以下工具生成文件时，生成的文件的 URL `code_interpreter` 工具来生成文件。
+            智能体使用 `code_interpreter` 工具生成文件时生成的文件的 URL。
 
             - `end_index: number`
 
@@ -282,39 +282,39 @@
 
               - `file_id: string`
 
-                生成文件的 ID。
+                所生成文件的 ID。
 
             - `start_index: number`
 
             - `text: string`
 
-              消息内容中需要替换的文本。
+              消息内容中需要被替换的文本。
 
             - `type: "file_path"`
 
-              始终 `file_path`.
+              选择使用高分辨率 `file_path`.
 
               - `"file_path"`
 
         - `value: string`
 
-          构成文本的数据。
+          组成该文本的数据。
 
       - `type: "text"`
 
-        始终 `text`.
+        选择使用高分辨率 `text`.
 
         - `"text"`
 
     - `RefusalContentBlock object { refusal, type }`
 
-      助手生成的拒绝内容。
+      智能体生成的拒绝内容。
 
       - `refusal: string`
 
       - `type: "refusal"`
 
-        始终 `refusal`.
+        选择使用高分辨率 `refusal`.
 
         - `"refusal"`
 
@@ -328,11 +328,11 @@
 
   - `incomplete_details: object { reason }  or null`
 
-    对于不完整的消息，说明消息不完整的原因的详细信息。
+    对于不完整的消息，说明该消息不完整的详细原因。
 
     - `reason: "content_filter" or "max_tokens" or "run_cancelled" or 2 more`
 
-      消息不完整的原因。
+      该消息不完整的原因。
 
       - `"content_filter"`
 
@@ -346,22 +346,22 @@
 
   - `metadata: Metadata or null`
 
-    可附加到对象的 16 个键值对集合。这可用于
-    以结构化格式存储有关该对象的附加信息，
-    并通过 API 或仪表盘查询对象。
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化形式存储有关对象的
+    附加信息，并通过 API 或仪表板查询对象。
 
-    键是最大长度为 64 个字符的字符串。值是最大长度为 512 个字符的字符串。
-    值的最大长度为 512 个字符。
+    键为字符串，最大长度为 64 个字符。值为字符串，
+    最大长度为 512 个字符。
 
   - `object: "thread.message"`
 
-    对象类型，始终为 `thread.message`.
+    对象类型，恒为 `thread.message`.
 
     - `"thread.message"`
 
   - `role: "user" or "assistant"`
 
-    生成消息的实体。可以是 `user` 或 `assistant`.
+    生成该消息的实体。取值为以下之一 `user` 传入图像 `assistant`.
 
     - `"user"`
 
@@ -369,11 +369,11 @@
 
   - `run_id: string or null`
 
-    与此消息创建相关联的 [运行](/docs/api-reference/runs) 的 ID。当使用创建消息或创建线程端点手动创建消息时，值为 `null` null。
+    与此消息关联的 [run](/docs/api-reference/runs) 的 ID。如果消息是通过 create message 或 create thread 端点手动创建的，则其取值为 `null` （对应通过 create message 或 create thread 端点手动创建消息的情况）。
 
   - `status: "in_progress" or "incomplete" or "completed"`
 
-    消息的状态，可以是 `in_progress`, `incomplete`，或 `completed`.
+    该消息的状态，可为 `in_progress`, `incomplete`，或 `completed`.
 
     - `"in_progress"`
 
@@ -383,7 +383,7 @@
 
   - `thread_id: string`
 
-    该 [thread](/docs/api-reference/threads) ID 即此消息所属的线程 ID。
+    该 [thread](/docs/api-reference/threads) 所属线程的 ID。
 
 ### 示例
 
