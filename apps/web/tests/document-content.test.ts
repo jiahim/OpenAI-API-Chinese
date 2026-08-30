@@ -84,9 +84,15 @@ test("renders every document header in title, timestamps, source notice, body or
   assert.ok(titleIndex < timestampsIndex);
   assert.ok(timestampsIndex < sourceNoticeIndex);
   assert.ok(sourceNoticeIndex < bodyIndex);
+  const firstBodyParagraph = /<p>([\\s\\S]*?)<\\/p>/u
+    .exec(html.slice(bodyIndex))?.[1]
+    ?.replace(/<[^>]+>/gu, "")
+    .trim();
+  assert.ok(firstBodyParagraph);
+  assert.ok(firstBodyParagraph.length >= 20);
   assert.equal(
-    html.match(/新南威尔士州国家气象局/gu)?.length,
-    1,
+    html.slice(0, bodyIndex).includes(firstBodyParagraph),
+    false,
     "article body must not be duplicated into the document header",
   );
   assert.match(html, /translation-status-badge/u);
