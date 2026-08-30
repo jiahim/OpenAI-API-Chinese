@@ -1,10 +1,10 @@
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获得。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
 
 ## 创建翻译
 
 **post** `/audio/translations`
 
-将音频翻译为英文。
+将音频翻译为英语。
 
 ### 返回
 
@@ -16,11 +16,11 @@
 
   - `duration: number`
 
-    输入音频的时长。
+    输入音频的持续时长。
 
   - `language: string`
 
-    输出翻译的语言（始终 `english`).
+    输出翻译所使用的语言（始终为 `english`).
 
   - `text: string`
 
@@ -32,43 +32,43 @@
 
     - `id: number`
 
-      片段的唯一标识符。
+      该片段的唯一标识符。
 
     - `avg_logprob: number`
 
-      片段的平均对数概率。如果值低于 -1，则认为对数概率失败。
+      该片段的平均 logprob。若该值低于 -1，则视为 logprobs 失败。
 
     - `compression_ratio: number`
 
-      片段的压缩比。如果值大于 2.4，则认为压缩失败。
+      该片段的压缩率。若该值大于 2.4，则视为压缩失败。
 
     - `end: number`
 
-      片段的结束时间（秒）。
+      该片段的结束时间（单位为秒）。
 
     - `no_speech_prob: number`
 
-      片段中无语音的概率。如果值高于 1.0 且 `avg_logprob` 低于 -1，则认为该片段为静音。
+      该片段中无语音的概率。若该值高于 1.0，且 `avg_logprob` 低于 -1，则视为该片段为静音。
 
     - `seek: number`
 
-      片段的起始偏移量。
+      该片段的 seek 偏移量。
 
     - `start: number`
 
-      片段的开始时间（秒）。
+      该片段的开始时间（单位为秒）。
 
     - `temperature: number`
 
-      用于生成片段的温度参数。
+      用于生成该片段的 temperature 参数。
 
     - `text: string`
 
-      片段的文本内容。
+      该片段的文本内容。
 
     - `tokens: array of number`
 
-      文本内容的 token ID 数组。
+      该文本内容对应的 token ID 数组。
 
 ### 示例
 
@@ -80,7 +80,7 @@ curl https://api.openai.com/v1/audio/translations \
     -F model=whisper-1
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -98,7 +98,7 @@ curl https://api.openai.com/v1/audio/translations \
   -F model="whisper-1"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {

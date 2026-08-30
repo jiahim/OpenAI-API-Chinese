@@ -1,16 +1,16 @@
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
 
-## 删除线程
+## 删除会话
 
-**删除** `/threads/{thread_id}`
+**delete** `/threads/{thread_id}`
 
-删除一个线程。
+删除会话线程。
 
 ### 路径参数
 
 - `thread_id: string`
 
-### 返回值
+### 返回
 
 - `ThreadDeleted object { id, deleted, object }`
 

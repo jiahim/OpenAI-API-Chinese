@@ -1,6 +1,6 @@
-> 关于完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
 
-## 列出语音同意记录
+## 列出语音同意书
 
 **get** `/audio/voice_consents`
 
@@ -10,23 +10,23 @@
 
 - `after: optional string`
 
-  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的后续调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页查询的游标。 `after` 是一个对象 ID，用于标识你在列表中的位置。例如，如果你发起一次列表请求并收到 100 个对象，最后一个对象是 obj_foo，那么你可以在下一次调用时传入 after=obj_foo 以获取列表的下一页内容。
 
 - `limit: optional number`
 
-  对返回对象数量的限制。限制范围可以为 1 到 100，默认值为 20。
+  返回对象数量的上限。范围在 1 到 100 之间，默认值为 20。
 
-### 返回
+### 返回值
 
 - `data: array of object { id, created_at, language, 2 more }`
 
   - `id: string`
 
-    同意录音标识符。
+    同意录制记录的标识符。
 
   - `created_at: number`
 
-    同意录音创建时的 Unix 时间戳（秒）。
+    创建同意录制记录的 Unix 时间戳（单位为秒）。
 
   - `language: string`
 
@@ -34,7 +34,7 @@
 
   - `name: string`
 
-    上传同意录音时提供的标签。
+    上传同意录制记录时提供的标签。
 
   - `object: "audio.voice_consent"`
 

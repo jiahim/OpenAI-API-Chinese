@@ -1,12 +1,12 @@
-> 关于完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 获取文档页面的 Markdown 版本。
 
 ## 取消聊天会话
 
 **post** `/chatkit/sessions/{session_id}/cancel`
 
-取消一个正在进行的 ChatKit 会话，并返回其最新的元数据。
+取消活动的 ChatKit 会话并返回其最新元数据。
 
-取消操作将阻止新请求使用已发布的客户端密钥。
+取消后可阻止新请求使用已颁发的客户端密钥。
 
 ### 路径参数
 
@@ -24,15 +24,15 @@
 
   - `chatkit_configuration: ChatSessionChatKitConfiguration`
 
-    会话的已解析 ChatKit 功能配置。
+    为该会话解析的 ChatKit 功能配置。
 
     - `automatic_thread_titling: ChatSessionAutomaticThreadTitling`
 
-      自动线程标题设置。
+      自动会话标题偏好设置。
 
       - `enabled: boolean`
 
-        是否启用自动线程标题。
+        是否启用自动会话标题。
 
     - `file_upload: ChatSessionFileUpload`
 
@@ -40,15 +40,15 @@
 
       - `enabled: boolean`
 
-        指示会话是否启用了上传。
+        指示该会话是否启用了上传。
 
       - `max_file_size: number or null`
 
-        最大上传大小（以兆字节为单位）。
+        最大上传大小（以 MB 为单位）。
 
       - `max_files: number or null`
 
-        会话期间允许的最大上传次数。
+        会话期间允许的最大上传数量。
 
     - `history: ChatSessionHistory`
 
@@ -56,15 +56,15 @@
 
       - `enabled: boolean`
 
-        指示会话的聊天历史记录是否被持久化。
+        指示是否为该会话保留聊天历史记录。
 
       - `recent_threads: number or null`
 
-        历史记录视图中显示的先前线程数量。当保留所有历史记录时，默认为 null。
+        在历史记录视图中展示的过往会话数量。当保留所有历史记录时，默认为 null。
 
   - `client_secret: string`
 
-    用于认证会话请求的临时客户端密钥。
+    用于验证会话请求的临时客户端密钥。
 
   - `expires_at: number`
 
@@ -76,7 +76,7 @@
 
   - `object: "chatkit.session"`
 
-    始终为 `chatkit.session`.
+    类型鉴别符，始终为 `chatkit.session`.
 
     - `"chatkit.session"`
 
@@ -86,7 +86,7 @@
 
     - `max_requests_per_1_minute: number`
 
-      一分钟窗口内允许的最大请求数。
+      一分钟时间窗口内允许的最大请求数。
 
   - `status: ChatSessionStatus`
 
@@ -100,7 +100,7 @@
 
   - `user: string`
 
-    与会话关联的用户标识符。
+    与该会话关联的用户标识符。
 
   - `workflow: ChatKitWorkflow`
 
@@ -108,11 +108,11 @@
 
     - `id: string`
 
-      支持该会话的工作流的标识符。
+      支撑该会话的 工作流 的标识符。
 
     - `state_variables: map[string or boolean or number] or null`
 
-      调用工作流时应用的状态变量键值对。未提供覆盖项时默认为 null。
+      调用 工作流 时应用的状态变量键值对。如果未提供任何覆盖值，则默认为 null。
 
       - `string`
 
@@ -122,15 +122,15 @@
 
     - `tracing: object { enabled }`
 
-      应用于该工作流的追踪设置。
+      应用于 工作流 的追踪设置。
 
       - `enabled: boolean`
 
-        指示是否启用追踪。
+        指示是否启用了 追踪。
 
     - `version: string or null`
 
-      用于该会话的特定工作流版本。使用最新部署时默认为 null。
+      该会话使用的特定 工作流 版本。使用最新部署时默认为 null。
 
 ### 示例
 

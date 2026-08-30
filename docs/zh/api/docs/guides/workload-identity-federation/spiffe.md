@@ -1,34 +1,34 @@
 # 为 SPIFFE 配置工作负载身份联合
 
-> 查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后添加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取对应文档页面的 Markdown 版本。
 
-通过将 SPIFFE JWT-SVID 交换为短期 OpenAI 访问令牌，将 SPIFFE 用作工作负载身份提供程序。这允许由 SPIRE 或其他兼容 SPIFFE 的身份提供程序认证的工作负载调用 OpenAI API，而无需存储长期 API 密钥。
+使用 SPIFFE 作为工作负载身份提供方，通过交换 SPIFFE JWT-SVID 来获取短时OpenAI 访问令牌。这使得经 SPIRE 或其他兼容 SPIFFE 的身份提供方认证的工作负载能够调用 OpenAI API，而无需存储长期有效的 API 密钥。
 
-对于 Codex，使用此页面获取和检查 JWT-SVID。然后 [配置 Codex 工作负载身份](https://developers.openai.com/codex/enterprise/workload-identity) 将该令牌写入文件并将 Codex 指向它。此页面上的服务账户映射和 SDK 示例适用于 OpenAI API。
+对于 Codex，使用本页获取并检查 JWT-SVID。然后 [配置 Codex 工作负载身份](https://developers.openai.com/codex/enterprise/workload-identity) 以将该令牌写入文件并指向 Codex。本页中的服务账号映射和 SDK 示例同样适用于 OpenAI API。
 
-OpenAI 支持可验证为 JWT 主题令牌的 SPIFFE JWT-SVID，这些令牌包含签发者、受众、过期时间、签发时间和 JWKS 支持的签名。OpenAI 不支持将 SPIFFE X.509-SVID 作为工作负载身份联合主题令牌。
+OpenAI 支持可作为 JWT 主体令牌进行验证的 SPIFFE JWT-SVID，其包含 issuer、audience、expiration、issued-at 时间戳以及由 JWKS 支持的签名。OpenAI 不支持将 SPIFFE X.509-SVID 作为工作负载身份联合的主体令牌。
 
-JWT-SVID 规范要求 `sub`, `aud`，和 `exp` 声明。要将 JWT-SVID 与 OpenAI 一起使用，令牌还必须包含 `iss` 和 `iat` 声明以及 `kid` 头，以便 OpenAI 可以针对工作负载身份提供程序配置验证令牌。
+JWT-SVID 规范要求提供 `sub`, `aud`，以及 `exp` 声明。要将 JWT-SVID 用于 OpenAI，该令牌还必须包含 `iss` 和 `iat` 声明以及一个 `kid` 请求头，以便 OpenAI 能够根据工作负载身份提供方配置验证该令牌。
 
-JWT-SVID 不是 OpenID Connect ID 令牌。SPIRE OIDC 发现提供程序提供发现元数据和 JWKS 密钥，以便 OpenAI 可以验证 JWT-SVID；它不会改变令牌的 SPIFFE 语义，也不需要 OIDC 登录流程。
+JWT-SVID 不是 OpenID Connect ID token。SPIRE OIDC 发现服务提供发现元数据和 JWKS 密钥，使 OpenAI 能够验证 JWT-SVID；它不会改变令牌的 SPIFFE 语义，也不需要 OIDC 登录流程。
 
-有关 SPIFFE 术语和令牌要求，请参阅 SPIFFE [JWT-SVID 规范](https://spiffe.io/docs/latest/spiffe-specs/jwt-svid/) 和 [工作负载 API 规范](https://spiffe.io/docs/latest/spiffe-specs/spiffe_workload_api/).
+有关 SPIFFE 术语和令牌要求，请参阅 SPIFFE [JWT-SVID 规范](https://spiffe.io/docs/latest/spiffe-specs/jwt-svid/) 和 [Workload API 规范](https://spiffe.io/docs/latest/spiffe-specs/spiffe_workload_api/).
 
-## 设置 SPIFFE
+## Setting up SPIFFE
 
-配置你的 SPIFFE 提供程序，为需要调用 OpenAI API 的工作负载签发 JWT-SVID。这些说明使用 SPIRE 术语，但相同的 OpenAI 配置适用于任何与 SPIFFE 兼容的提供程序，只要其签发的 JWT-SVID 具有 OpenAI 能够验证的发行者和 JWKS 签名材料。
+将你的 SPIFFE 提供方配置为向需要调用 OpenAI API 的工作负载签发 JWT-SVID。这些说明使用了 SPIRE 术语，但相同的 OpenAI 配置同样适用于任何与 SPIFFE 兼容、且所签发的 JWT-SVID 带有 OpenAI 可验证的 issuer 和 JWKS 签名材料的提供方。
 
-你的 SPIFFE 设置必须提供：
+你的 SPIFFE 配置必须提供：
 
 - 工作负载的稳定 SPIFFE ID，例如 `spiffe://example.org/ns/production/sa/openai-wif`.
-- 专用于 OpenAI 访问的单个 JWT-SVID 受众，例如 `https://api.openai.com/v1` 或你选择的其他不透明值。
-- 出现在 JWT-SVID 中的 JWT 签发者 URL `iss` 声明，供 OpenAI 验证。
-- JWT-SVID 签名密钥的公共 JWKS，可通过 OIDC 发现或上传的 JWKS 获取。
-- 从 SPIFFE Workload API 获取新 JWT-SVID 的工作负载端方式。
+- 专用于 OpenAI 访问的单一 JWT-SVID 受众，例如 `https://api.openai.com/v1` 或你选择的其他不透明值。
+- JWT-SVID 中用于 OpenAI 验证的 JWT 颁发者 URL 声明 `iss` 。
+- JWT-SVID 签名密钥对应的公共 JWKS，可通过 OIDC 发现机制获取或上传 JWKS。
+- 在工作负载侧从 SPIFFE Workload API 获取最新 JWT-SVID 的方式。
 
-受众是一个精确匹配的标识符，不一定是要接收 JWT-SVID 的端点。你可以使用 `https://api.openai.com/v1` 或其他特定于服务的值，只要 SPIFFE Workload API 请求和 OpenAI 提供者配置匹配即可。
+audience 是一个精确匹配的标识符，不一定是接收 JWT-SVID 的端点。你可以使用 `https://api.openai.com/v1` 或其他特定于服务的值，只要 SPIFFE Workload API 请求和 OpenAI 提供方配置相匹配。
 
-如果可能，请通过你的 SPIRE OIDC Discovery Provider 暴露 SPIFFE 签发者。配置 SPIRE Server `jwt_issuer` 和 OIDC Discovery Provider `jwt_issuer` 使用同一个 HTTPS 签发者 URL，你将在此 URL 中配置 OpenAI。
+如果可能，请通过你的 SPIRE OIDC Discovery Provider 公开 SPIFFE 颁发者。配置 SPIRE Server `jwt_issuer` 和 OIDC Discovery Provider `jwt_issuer` 为同一个 HTTPS 颁发者 URL，你将在 OpenAI 中配置该 URL。
 
 在 SPIRE Server 配置中：
 
@@ -39,7 +39,7 @@ server {
 }
 ```
 
-在单独的 SPIRE OIDC Discovery Provider 配置中：
+在独立的 SPIRE OIDC Discovery Provider 配置中：
 
 ```hcl
 # Relevant issuer fields only
@@ -47,9 +47,9 @@ domains    = ["spire-oidc.example.org"]
 jwt_issuer = "https://spire-oidc.example.org"
 ```
 
-OIDC Discovery Provider 配置还需要一个密钥材料源，例如 `server_api`, `workload_api`，或 `file`，以及一个提供机制，例如 ACME、TLS 证书或 Unix 套接字。请参阅 [SPIRE OIDC Discovery Provider 文档](https://github.com/spiffe/spire/tree/main/support/oidc-discovery-provider) 以获取完整的配置选项。
+OIDC Discovery Provider 配置还需要一个密钥材料来源，例如 `server_api`, `workload_api`，或 `file`，以及一个服务机制，例如 ACME、TLS 证书或 Unix 套接字。请参阅 [SPIRE OIDC Discovery Provider 文档](https://github.com/spiffe/spire/tree/main/support/oidc-discovery-provider) 了解完整的配置选项。
 
-SPIFFE 信任域和 JWT 签发者是不同的概念。在此示例中，JWT-SVID 主题是 `example.org` 信任域中的 SPIFFE ID，而签发者是 HTTPS 签发者 URL：
+SPIFFE 信任域和 JWT 颁发者是不同的概念。在本示例中，JWT-SVID subject 是位于 `example.org` 信任域中的 SPIFFE ID，而颁发者是 HTTPS 颁发者 URL：
 
 ```json
 {
@@ -58,13 +58,13 @@ SPIFFE 信任域和 JWT 签发者是不同的概念。在此示例中，JWT-SVID
 }
 ```
 
-SPIRE OIDC Discovery Provider 提供服务 OIDC 发现文档和 JWKS 端点，OpenAI 可以在以下情况下使用 **使用上传的 JWKS 进行令牌验证** 被禁用时。
+SPIRE OIDC Discovery Provider 提供 OIDC 发现文档和 JWKS 端点，OpenAI 可以在 **使用上传的 JWKS 进行令牌验证** 被禁用时使用它们。
 
-如果 OpenAI 无法访问你的签发者发现端点，请改用上传的 JWKS 模式。在该模式下，OpenAI 仍会将 Workload Identity Provider 签发者与 JWT-SVID `iss` 声明进行比较，但会根据你保存在 Workload Identity Provider 上的 JWKS JSON 验证签名。
+如果 OpenAI 无法访问你的颁发者发现端点，请改用上传的 JWKS 模式。在该模式下，OpenAI 仍会将 Workload Identity Provider 颁发者与 JWT-SVID `iss` claim 进行比较，但会根据你在 Workload Identity Provider 上保存的 JWKS JSON 来验证签名。
 
-> **注意：** SPIFFE JWT-SVID 规范使 JWT 头部 `kid` 成为可选，但 OpenAI 要求 JWT 主体令牌包含 `kid` 头部，以便从配置的 JWKS 中选择签名密钥。如果你的 SPIFFE 提供程序可以省略 `kid`，请配置它包含一个用于 OpenAI 工作负载身份联合。
+> **注意：** SPIFFE JWT-SVID 规范将 JWT 头部设为可选，但 `kid` OpenAI 要求 JWT subject 令牌必须包含 `kid` header，以便从已配置的 JWKS 中选择签名密钥。如果你的 SPIFFE 提供方可以省略 `kid`，将其配置为包含一个用于 OpenAI 工作负载身份联合的凭据。
 
-要检查能够调用 SPIFFE Workload API 的工作负载的 JWT-SVID，请为你在 OpenAI 中配置的同一受众请求一个。在与应用程序相同的工作负载上下文中运行此命令，因为 Workload API 授权取决于调用进程的身份。
+要从可以调用 SPIFFE Workload API 的工作负载中检查 JWT-SVID，请为将在 OpenAI 中配置的同一个 audience 请求一个 SVID。请在与应用程序相同的工作负载上下文中运行此命令，因为 Workload API 授权依赖于调用进程的身份。
 
 ```bash
 TOKEN=$(spire-agent api fetch jwt \
@@ -73,7 +73,7 @@ TOKEN=$(spire-agent api fetch jwt \
 export TOKEN
 ```
 
-如果你的工作负载有多个 SPIFFE ID，请请求特定身份：
+如果你的工作负载具有多个 SPIFFE ID，请请求特定的身份：
 
 ```bash
 TOKEN=$(spire-agent api fetch jwt \
@@ -85,7 +85,7 @@ export TOKEN
 
 ## 验证令牌
 
-在配置工作负载身份联合之前，请将 JWT-SVID 导出为 `TOKEN`，然后在本地运行此脚本以检查其头部和声明：
+在配置 workload identity federation 之前，将 JWT-SVID 导出为 `TOKEN`，然后在本地运行此脚本以检查其 header 和 claims：
 
 ```python
 import base64
@@ -109,9 +109,9 @@ print(json.dumps(decode(parts[1]), indent=2))
 ```
 
 
-此命令解码 JWT 时不验证令牌签名。请对生产令牌使用本地解码器，并避免将生产令牌粘贴到第三方工具中。
+该命令在不验证令牌签名的情况下解码 JWT。在生产环境中请使用本地解码器，并避免将生产令牌粘贴到第三方工具中。
 
-解码后的 SPIFFE JWT-SVID 看起来类似于：
+解码后的 SPIFFE JWT-SVID 看起来类似：
 
 ```json
 {
@@ -130,45 +130,45 @@ print(json.dumps(decode(parts[1]), indent=2))
 }
 ```
 
-在交换令牌之前，请使用解码后的令牌将收到的令牌与 OpenAI 配置进行比较。检查 `alg` 和 `kid` 在头部中，以及 `iss`, `aud`, `sub`, `iat`，并且 `exp` 在负载中。确切的 `alg` 值取决于你的 SPIRE Server JWT 签名密钥配置。
+在交换令牌之前，使用解码后的令牌将你收到的令牌与 OpenAI 配置进行比较。请检查 `alg` 和 `kid` header 中的相应字段，以及 `iss`, `aud`, `sub`, `iat`，以及 `exp` payload 中的相应字段。具体的 `alg` 值取决于你的 SPIRE Server JWT signing-key 配置。
 
 ## 设置工作负载身份联合
 
-在 OpenAI 中为 SPIFFE JWT-SVID 颁发者创建一个工作负载身份提供者，然后添加一个与你信任的 SPIFFE ID 匹配的服务账户映射。
+在 OpenAI 中为 SPIFFE JWT-SVID 颁发者创建一个工作负载身份提供方（Workload Identity Provider），然后添加一个与你所信任的 SPIFFE ID 相匹配的服务账号映射。
 
-### 设置工作负载身份提供程序
+### 配置 Workload Identity Provider
 
-1. **创建工作负载身份提供方。** 将 **名称** 设置为唯一值，例如 `spiffe-prod`。使用 **描述**，例如 `Production SPIFFE workloads`，以帮助管理员识别该提供方。
+1. **创建 Workload Identity Provider。** 将 **Name** 设置为唯一值，例如 `spiffe-prod`。使用 **Description**，例如 `Production SPIFFE workloads`，以帮助管理员识别该 Provider。
 
-2. **设置签发方和受众。** 将 **OIDC 签发方 URL** 设置为 JWT-SVID 的 `iss` 声明的确切值，例如 `https://spire-oidc.example.org`。将 **受众** 设置为从 SPIFFE Workload API 请求的受众值。在本示例中，该值为 `https://api.openai.com/v1`.
+2. **设置 issuer 和 audience。** 将 **OIDC Issuer URL** 为 JWT-SVID 的 `iss` 声明的确切值，例如 `https://spire-oidc.example.org`。将 **Audience** 设置为 SPIFFE Workload API 所请求的 audience 值。在本示例中，该值为 `https://api.openai.com/v1`.
 
-3. **选择 JWKS 来源。** 当 OpenAI 能够访问你的 SPIRE OIDC 发现提供方时，保持 **使用上传的 JWKS 进行令牌验证** 为禁用状态。OpenAI 使用 OIDC 发现及发现的 JWKS 来验证 JWT-SVID 签名。
+3. **选择 JWKS 来源。** 保留 **Use uploaded JWKS for token verification** 处于禁用状态当 OpenAI 可以访问你的 SPIRE OIDC Discovery Provider 时。OpenAI 使用 OIDC discovery 以及发现的 JWKS 来验证 JWT-SVID 签名。
 
-   如果令牌颁发者无法从 OpenAI 访问，请启用 **使用上传的 JWKS 进行令牌验证**，然后设置 **JWKS JSON** 为 JWT-SVID 签名密钥的公共密钥集。上传完整的公共 JWKS 对象，包括周围的 `keys` 数组。不要包含私钥材料。
+   如果 OpenAI 无法访问该 issuer，请启用 **Use uploaded JWKS for token verification**，然后将 **JWKS JSON** 设置为用于 JWT-SVID 签名的公钥集。上传完整的公钥 JWKS 对象，包括外层的 `keys` 数组。请勿包含私钥材料。
 
-4. **仅当你需要派生的映射属性时，才添加属性转换。** 直接从 `sub`。映射时，属性转换不是必需的。仅当你需要从一个或多个令牌声明中派生映射值时，才使用它们。有关转换行为，请参见 [主要工作负载身份联合指南](https://developers.openai.com/api/docs/guides/workload-identity-federation#transform-token-claims-with-cel) 。
+4. **仅在需要派生映射属性时添加属性转换。** 直接从 `sub`。进行映射时无需使用属性转换。仅当需要从一个或多个令牌声明派生映射值时才使用它们。参阅 [工作负载身份联合主指南](https://developers.openai.com/api/docs/guides/workload-identity-federation#transform-token-claims-with-cel) 了解转换行为。
 
-### 设置服务账号映射
+### 设置服务账户映射
 
-1. **创建服务账号映射。** 将 **名称** 设置为工作负载身份提供方内的唯一值，例如 `production-openai-wif`。使用 **描述**，例如 `Production SPIFFE workload for OpenAI API access`，以说明哪个工作负载可以使用该映射。
+1. **创建一个服务账号映射。** 将 **Name** 映射到 Workload Identity Provider 内的唯一值，例如 `production-openai-wif`。使用 **Description**，例如 `Production SPIFFE workload for OpenAI API access`，以说明哪些工作负载可以使用该映射。
 
-2. **匹配 SPIFFE ID。** 将 **键** 设置为 `sub` 并将 **值** 设置为工作负载的 SPIFFE ID，例如 `spiffe://example.org/ns/production/sa/openai-wif`.
+2. **匹配 SPIFFE ID。** 将 **Key** 为 `sub` ，Value **为** 工作负载的 SPIFFE ID，例如 `spiffe://example.org/ns/production/sa/openai-wif`.
 
-   对于特权工作负载，建议使用精确的 SPIFFE ID 匹配。仅当该前缀下的每个 SPIFFE ID 都应能够铸造 OpenAI 访问令牌时，才使用尾部通配符。例如， `spiffe://example.org/ns/production/sa/*` 允许任何匹配的生产服务账号路径。
+   对于特权工作负载，应优先使用精确 SPIFFE ID 匹配。仅在该前缀下的每个 SPIFFE ID 都应能够生成 OpenAI 访问令牌时，才使用尾部通配符。例如， `spiffe://example.org/ns/production/sa/*` 允许任何匹配的生产环境服务账号路径。
 
-3. **选择 OpenAI 目标。** 将 **项目** 到拥有目标服务账号的OpenAI项目。设置 **Service account** 为SPIFFE工作负载可以使用的OpenAI服务账号，例如 `spiffe-prod-openai-wif`. 检查 `Create a new service account in this project` 如果你希望为此映射创建新的服务账号，而不是复用现有账号。
+3. **选择 OpenAI 目标。** 将 **Project** 设置为拥有目标服务账号的 OpenAI 项目；将 **Service account** 设置为 SPIFFE 工作负载可以使用的 OpenAI 服务账号，例如 `spiffe-prod-openai-wif`。勾选 `Create a new service account in this project` 可为此映射新建一个服务账号，而不是复用现有服务账号。
 
-4. **如需，则收紧API权限。** 选择合适的 **Permissions** ，例如 `api.model.request` 和 `api.vector_store.read` ，以进一步缩小由此映射铸造的访问令牌范围。将权限留空以避免添加WIF特定的范围限制；令牌仍然以映射服务账号的身份授权。
+4. **根据需要收窄 API 权限。** 选择适当的 **Permissions** such as `api.model.request` ，Value `api.vector_store.read` 以进一步收窄从此映射生成的访问令牌。保持权限留空可避免添加 WIF 专属的范围限制；该令牌仍会以所映射服务账号的身份授权。
 
-## 在代码中使用令牌
+## 在代码中使用 token
 
-配置你的 OpenAI SDK 客户端，将新的 SPIFFE JWT-SVID 交换为 OpenAI 签发的访问令牌。
+配置你的 OpenAI SDK 客户端，使用新的 SPIFFE JWT-SVID 换取 OpenAI 颁发的访问令牌。
 
-下面的 SDK 示例假设你的 SPIFFE 集成会刷新 JWT-SVID 并将其写入 `/var/run/spiffe/openai.jwt`。保持该文件仅对工作负载可读。由于 JWT-SVID 是短期的，请在令牌过期前刷新文件。或者，尽可能在主题令牌提供程序中使用特定语言的 SPIFFE 库直接从 SPIFFE Workload API 获取 JWT-SVID，以避免令牌文件过期。
+下面的 SDK 示例假设你的 SPIFFE 集成会刷新 JWT-SVID 并将其写入 `/var/run/spiffe/openai.jwt`。请将该文件设为仅对工作负载可读。由于 JWT-SVID 生命周期较短，请在令牌过期前刷新该文件。或者，尽可能在 subject token provider 中使用特定语言的 SPIFFE 库直接从 SPIFFE Workload API 获取 JWT-SVID，以避免令牌文件过期。
 
-设置 `OPENAI_IDENTITY_PROVIDER_ID` 和 `OPENAI_SERVICE_ACCOUNT_ID` 在工作负载环境中。令牌文件包含外部主体令牌。 `OPENAI_IDENTITY_PROVIDER_ID` 标识 OpenAI Workload Identity Provider，且 `OPENAI_SERVICE_ACCOUNT_ID` 标识目标 OpenAI 服务账号。OpenAI 然后根据令牌声明为该提供程序和服务账号查找匹配的映射。
+在 `OPENAI_IDENTITY_PROVIDER_ID` 和 `OPENAI_SERVICE_ACCOUNT_ID` 中设置。工作负载环境中的令牌文件包含外部 subject token。 `OPENAI_IDENTITY_PROVIDER_ID` 标识 OpenAI 工作负载身份提供方，而 `OPENAI_SERVICE_ACCOUNT_ID` 标识目标 OpenAI 服务账号。OpenAI 然后会根据令牌声明为该提供方和服务账号查找匹配的映射。
 
-从 SPIFFE JWT-SVID 进行身份验证
+使用 SPIFFE JWT-SVID 进行身份验证
 
 ```javascript
 import { readFile } from "node:fs/promises";
@@ -455,12 +455,12 @@ puts(response.output_text)
 
 ## SPIFFE 最佳实践
 
-- 使用 JWT-SVID 进行 OpenAI 工作负载身份联合。X.509-SVID 适用于双向 TLS，但 OpenAI 令牌交换端点不接受它们。
-- 为 OpenAI 访问使用单一专用受众。避免使用过宽的受众，如整个信任域或环境名称。
-- 尽可能匹配精确的 SPIFFE ID。仅对有意共享的信任边界使用通配符映射。
-- 保持 JWT-SVID 生命周期短以减少承载令牌重放风险。OpenAI 访问令牌永远不会超过用于交换的外部主体令牌。
-- 谨慎轮换签名密钥。在轮换窗口期间通过 OIDC 发现发布新旧公钥，或在使用新密钥签发 JWT-SVID 之前更新上传的公钥 JWKS `kid`.
-- 保持 SPIRE Server 和工作负载时钟同步。显著的时钟偏差可能导致原本有效的 JWT-SVID 被拒绝，因为尚未生效、过期或已失效。
-- 保护 SPIFFE 工作负载 API 套接字。能够获取工作负载 JWT-SVID 的进程可能会尝试将其交换为 OpenAI 访问权限。
-- 使 OpenAI 服务账户边界与你的应用程序和环境权限边界对齐。不要在无关的 SPIFFE 工作负载之间共享高权限服务账户。
-- 监控令牌交换失败，以及颁发者、受众、签名密钥和映射不匹配。
+- 使用 JWT-SVID 进行 OpenAI 工作负载身份联邦。X.509-SVID 适用于双向 TLS，但不被 OpenAI 令牌交换端点接受。
+- 为 OpenAI 访问使用单一专用受众。避免使用诸如整个信任域或环境名称之类的宽泛受众。
+- 尽可能匹配精确的 SPIFFE ID。仅在有意共享的信任边界中使用通配符映射。
+- 保持较短的 JWT-SVID 生命周期，以降低持有者令牌重放风险。OpenAI 访问令牌的生命周期永远不会超过用于交换的外部主体令牌。
+- 谨慎轮换签名密钥。在轮换窗口期内通过 OIDC 发现同时发布新旧公钥，或在用新密钥签发 JWT-SVID 之前更新已上传的公钥 JWKS `kid`.
+- 保持 SPIRE Server 与工作负载时钟同步。显著的时钟偏差可能导致原本有效的 JWT-SVID 被视为尚未生效、过旧或已过期而被拒绝。
+- 保护 SPIFFE Workload API 套接字。能够获取某个工作负载 JWT-SVID 的进程可以尝试将其交换为 OpenAI 访问权限。
+- 将 OpenAI 服务账号边界与你的应用和环境权限边界对齐。不要在无关的 SPIFFE 工作负载之间共享高权限服务账号。
+- 监控发行方、受众、签名密钥以及映射不匹配导致的令牌交换失败。

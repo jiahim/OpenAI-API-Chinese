@@ -1,16 +1,16 @@
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 获得。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。通过在页面 URL 后追加以下内容可获取文档页面的 Markdown 版本： `.md` 即可。
 
-## 创建线程
+## Create thread
 
 **post** `/threads`
 
-创建一个线程。
+创建会话线程。
 
-### 请求体参数
+### 正文参数
 
 - `messages: optional array of object { content, role, attachments, metadata }`
 
-  一个 [消息](/docs/api-reference/messages) 列表，用于启动线程。
+  一个 [messages](/docs/api-reference/messages) 用于开启该会话。
 
   - `content: string or array of ImageFileContentBlock or ImageURLContentBlock or TextContentBlockParam`
 
@@ -22,21 +22,21 @@
 
     - `ArrayOfContentParts = array of ImageFileContentBlock or ImageURLContentBlock or TextContentBlockParam`
 
-      一个包含定义类型的内容部分数组，每个部分可以是 `text` 类型，或者可以通过 `image_url` 或 `image_file`。传递图像。图像类型仅在 [视觉兼容模型](/docs/models).
+      由已定义类型组成的内容分块数组，每个分块的类型可以是 `text` ，或可通过 `image_url` 或 `image_file`。传入图像。图像类型仅 [Vision-compatible models](/docs/models).
 
       - `ImageFileContentBlock object { image_file, type }`
 
-        引用一张图像 [文件](/docs/api-reference/files) 在消息内容中。
+        引用消息内容中的一张图像。 [File](/docs/api-reference/files) 。
 
         - `image_file: ImageFile`
 
           - `file_id: string`
 
-            消息内容中图像的 [文件](/docs/api-reference/files) ID。如果需要在之后显示文件内容，请在 `purpose="vision"` 上传文件时设置。
+            该 [File](/docs/api-reference/files) 消息内容中图像的 ID。在上传 File 时设置 `purpose="vision"` ，以便稍后显示该文件内容。
 
           - `detail: optional "auto" or "low" or "high"`
 
-            如果用户指定，指定图像的细节级别。 `low` 使用更少的令牌，你可以选择通过 `high`.
+            指定由用户设置的图像细节级别。 `low` 消耗的 tokens 更少，你也可以选择使用 `high`.
 
             - `"auto"`
 
@@ -46,23 +46,23 @@
 
         - `type: "image_file"`
 
-          始终 `image_file`.
+          Always `image_file`.
 
           - `"image_file"`
 
       - `ImageURLContentBlock object { image_url, type }`
 
-        在消息内容中引用图片 URL。
+        引用消息内容中的一个图像 URL。
 
         - `image_url: ImageURL`
 
           - `url: string`
 
-            图片的外部 URL，必须为受支持的图片类型：jpeg、jpg、png、gif、webp。
+            图像的外部 URL，必须是支持的图像类型：jpeg、jpg、png、gif、webp。
 
           - `detail: optional "auto" or "low" or "high"`
 
-            指定图片的细节级别。 `low` 使用更少的令牌，你可以选择通过 `high`。开启高分辨率。默认值为 `auto`
+            指定图像的详细程度。 `low` 消耗的 tokens 更少，你也可以选择使用 `high`。默认值为 `auto`
 
             - `"auto"`
 
@@ -78,7 +78,7 @@
 
       - `TextContentBlockParam object { text, type }`
 
-        作为消息一部分的文本内容。
+        属于消息的文本内容。
 
         - `text: string`
 
@@ -86,16 +86,16 @@
 
         - `type: "text"`
 
-          始终 `text`.
+          Always `text`.
 
           - `"text"`
 
   - `role: "user" or "assistant"`
 
-    创建消息的实体的角色。允许的值包括：
+    正在创建消息的实体的角色。允许的值包括：
 
     - `user`：表示消息由实际用户发送，在大多数情况下应使用此值来表示用户生成的消息。
-    - `assistant`：表示消息由助手生成。使用此值可将助手消息插入对话中。
+    - `assistant`：表示消息由助手生成。使用此值可将助手的消息插入到对话中。
 
     - `"user"`
 
@@ -103,7 +103,7 @@
 
   - `attachments: optional array of object { file_id, tools }  or null`
 
-    附加到消息的文件列表，以及应将它们添加到的工具。
+    附加到消息的文件列表，以及应将这些文件添加到的工具。
 
     - `file_id: optional string`
 
@@ -117,7 +117,7 @@
 
         - `type: "code_interpreter"`
 
-          所定义工具的类型： `code_interpreter`
+          正在定义的工具类型： `code_interpreter`
 
           - `"code_interpreter"`
 
@@ -125,59 +125,59 @@
 
         - `type: "file_search"`
 
-          所定义工具的类型： `file_search`
+          正在定义的工具类型： `file_search`
 
           - `"file_search"`
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象的 16 个键值对集合。这可以
-    用于以结构化格式存储有关对象的额外信息，
-    并通过 API 或控制台查询对象。
+    可以附加到对象的 16 组键值对。这可用于
+    以结构化格式存储有关对象的附加信息，
+    并通过 API 或仪表板查询对象。
 
-    键是最大长度为 64 个字符的字符串。值是最大长度
-    为 512 个字符的字符串。
+    键为字符串，最长 64 个字符。值为字符串，
+    最长 512 个字符。
 
 - `metadata: optional Metadata or null`
 
-  一组可附加到对象上的 16 个键值对。这可用于
-  以结构化格式存储关于该对象的额外信息，并通过
-  API 或仪表板查询对象。
+  可以附加到对象的 16 组键值对。这可用于
+  以结构化格式存储有关对象的附加信息，
+  并通过 API 或仪表板查询对象。
 
-  键是最大长度为 64 个字符的字符串。值是最大长度
-  为 512 个字符的字符串。
+  键为字符串，最长 64 个字符。值为字符串，
+  最长 512 个字符。
 
 - `tool_resources: optional object { code_interpreter, file_search }  or null`
 
-  一组在此线程中可供助手工具使用的资源。这些资源特定于工具类型。例如， `code_interpreter` 工具需要一个文件 ID 列表，而 `file_search` 工具需要一个向量存储 ID 列表。
+  在此线程中可供助手工具使用的一组资源。这些资源特定于工具类型。例如， `code_interpreter` 工具需要一个文件 ID 列表，而 `file_search` 工具需要一个向量存储 ID 列表。
 
   - `code_interpreter: optional object { file_ids }`
 
     - `file_ids: optional array of string`
 
-      提供给 [文件](/docs/api-reference/files) 工具的 `code_interpreter` ID 列表。最多可有 20 个文件与该工具关联。
+      一个 [file](/docs/api-reference/files) 提供给 `code_interpreter` 工具的 ID。该工具最多可关联 20 个文件。
 
   - `file_search: optional object { vector_store_ids, vector_stores }`
 
     - `vector_store_ids: optional array of string`
 
-      附加到此线程的 [向量存储](/docs/api-reference/vector-stores/object) 。最多可有 1 个向量存储附加到该线程。
+      该 [vector store](/docs/api-reference/vector-stores/object) 附加到该会话的 vector store。每个会话最多可附加 1 个 vector store。
 
     - `vector_stores: optional array of object { chunking_strategy, file_ids, metadata }`
 
-      一个辅助工具，用于创建 [向量存储](/docs/api-reference/vector-stores/object) 并提供 file_ids，同时将其附加到此线程。最多可有 1 个向量存储附加到该线程。
+      用于创建的辅助方法 [vector store](/docs/api-reference/vector-stores/object) 并附带 file_ids，然后将其附加到该会话。每个会话最多可附加 1 个 vector store。
 
       - `chunking_strategy: optional object { type }  or object { static, type }`
 
-        用于对文件进行分块的分块策略。若未设置，将使用 `auto` 策略。
+        用于对文件进行分块的分块策略。如果未设置，将使用 `auto` 策略。
 
         - `Auto object { type }`
 
-          默认策略。此策略当前使用 `max_chunk_size_tokens` 的 `800` 和 `chunk_overlap_tokens` 的 `400`.
+          默认策略。该策略当前使用 `max_chunk_size_tokens` 为 `800` 和 `chunk_overlap_tokens` 为 `400`.
 
           - `type: "auto"`
 
-            始终 `auto`.
+            Always `auto`.
 
             - `"auto"`
 
@@ -187,42 +187,42 @@
 
             - `chunk_overlap_tokens: number`
 
-              块之间重叠的令牌数。默认值为 `400`.
+              各分块之间重叠的 token 数。默认值为 `400`.
 
-              请注意，重叠不得超过 `max_chunk_size_tokens`.
+              请注意，重叠部分不得超过 `max_chunk_size_tokens`.
 
             - `max_chunk_size_tokens: number`
 
-              每个块中的最大令牌数。默认值为 `800`。最小值为 `100` 最大值为 `4096`.
+              每个分块中的最大 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
           - `type: "static"`
 
-            始终 `static`.
+            Always `static`.
 
             - `"static"`
 
       - `file_ids: optional array of string`
 
-        要添加到向量存储的 [文件](/docs/api-reference/files) ID 列表。对于 2025 年 11 月之前创建的向量存储，一个向量存储中最多可有 10,000 个文件。对于 2025 年 11 月起创建的向量存储，限制为 100,000,000 个文件。
+        一个 [file](/docs/api-reference/files) 要添加到 vector store 的 ID。对于 2025 年 11 月之前创建的 vector store，单个 vector store 中最多可包含 10,000 个文件。对于自 2025 年 11 月起创建的 vector store，上限为 100,000,000 个文件。
 
       - `metadata: optional Metadata or null`
 
-        可附加到对象的 16 个键值对集合。这可用于
-        以结构化格式存储有关对象的额外信息，并通过
-        API 或仪表板查询对象。
+        可以附加到对象的 16 组键值对。这可用于
+        以结构化格式存储有关对象的附加信息，
+        并通过 API 或仪表板查询对象。
 
-        键为字符串，最大长度为 64 个字符。值为字符串
-        最大长度为 512 个字符。
+        键为字符串，最长 64 个字符。值为字符串，
+        最长 512 个字符。
 
-### 返回
+### Returns
 
 - `Thread object { id, created_at, metadata, 2 more }`
 
-  表示包含 [消息](/docs/api-reference/messages).
+  表示包含的线程 [messages](/docs/api-reference/messages).
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    可在 API 端点中引用的标识符。
 
   - `created_at: number`
 
@@ -230,12 +230,12 @@
 
   - `metadata: Metadata or null`
 
-    可附加到对象的 16 个键值对集合。
-    这可用于以结构化格式存储有关对象的附加信息，
+    可以附加到对象的 16 组键值对。这可用于
+    以结构化格式存储有关对象的附加信息，
     并通过 API 或仪表板查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串，
-    最大长度为 512 个字符。
+    键为字符串，最长 64 个字符。值为字符串，
+    最长 512 个字符。
 
   - `object: "thread"`
 
@@ -245,19 +245,19 @@
 
   - `tool_resources: object { code_interpreter, file_search }  or null`
 
-    在此线程中提供给助手工具的一组资源。这些资源特定于工具类型。例如， `code_interpreter` 工具需要文件 ID 列表，而 `file_search` 工具需要向量存储 ID 列表。
+    在此线程中可供助手工具使用的一组资源。这些资源特定于工具类型。例如， `code_interpreter` 工具需要一个文件 ID 列表，而 `file_search` 工具需要一个向量存储 ID 列表。
 
     - `code_interpreter: optional object { file_ids }`
 
       - `file_ids: optional array of string`
 
-        提供给 [文件](/docs/api-reference/files) 工具的 ID 列表。 `code_interpreter` 最多可有 20 个文件与该工具关联。
+        一个 [file](/docs/api-reference/files) 提供给 `code_interpreter` 工具的 ID。该工具最多可关联 20 个文件。
 
     - `file_search: optional object { vector_store_ids }`
 
       - `vector_store_ids: optional array of string`
 
-        附加到此线程的 [向量存储](/docs/api-reference/vector-stores/object) 。线程最多可附加 1 个向量存储。
+        该 [vector store](/docs/api-reference/vector-stores/object) 附加到该会话的 vector store。每个会话最多可附加 1 个 vector store。
 
 ### 示例
 
@@ -268,7 +268,7 @@ curl https://api.openai.com/v1/threads \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -293,7 +293,7 @@ curl https://api.openai.com/v1/threads \
 }
 ```
 
-### 空
+### Empty
 
 ```http
 curl https://api.openai.com/v1/threads \
@@ -303,7 +303,7 @@ curl https://api.openai.com/v1/threads \
   -d ''
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -333,7 +333,7 @@ curl https://api.openai.com/v1/threads \
   }'
 ```
 
-#### 响应
+#### Response
 
 ```json
 {

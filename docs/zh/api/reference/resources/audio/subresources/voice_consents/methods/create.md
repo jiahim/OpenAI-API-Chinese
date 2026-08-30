@@ -1,20 +1,20 @@
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获得。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 获取文档页面的 Markdown 版本。
 
-## 创建语音同意
+## Create voice consent
 
 **post** `/audio/voice_consents`
 
-上传一段语音同意录音。
+上传语音同意录制文件。
 
-### 返回
+### 返回值
 
 - `id: string`
 
-  同意录音标识符。
+  同意录制标识符。
 
 - `created_at: number`
 
-  同意录音创建时的 Unix 时间戳（以秒为单位）。
+  同意录制创建时的 Unix 时间戳（以秒为单位）。
 
 - `language: string`
 
@@ -22,7 +22,7 @@
 
 - `name: string`
 
-  上传同意录音时提供的标签。
+  上传同意录制时提供的标签。
 
 - `object: "audio.voice_consent"`
 

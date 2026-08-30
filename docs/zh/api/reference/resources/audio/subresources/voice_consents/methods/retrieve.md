@@ -1,10 +1,10 @@
-> 关于完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 获取语音同意
 
-**获取** `/audio/voice_consents/{consent_id}`
+**get** `/audio/voice_consents/{consent_id}`
 
-检索一段语音同意录音。
+获取一条语音同意录音。
 
 ### 路径参数
 

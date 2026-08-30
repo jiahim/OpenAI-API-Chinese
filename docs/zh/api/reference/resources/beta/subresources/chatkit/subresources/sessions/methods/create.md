@@ -1,28 +1,28 @@
-> 完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获得。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 获取文档页面的 Markdown 版本。
 
 ## 创建 ChatKit 会话
 
 **post** `/chatkit/sessions`
 
-创建一个 ChatKit 会话。
+创建 ChatKit 会话。
 
 ### 请求体参数
 
 - `user: string`
 
-  一个自由格式字符串，用于标识你的最终用户；确保此会话可以访问具有相同 `user` 作用域的其他对象。
+  用于标识最终用户的自由格式字符串；确保此会话能够访问具有相同 `user` 作用域的其他对象。
 
 - `workflow: ChatSessionWorkflowParam`
 
-  驱动会话的工作流。
+  驱动该会话的工作流。
 
   - `id: string`
 
-    会话调用的工作流的标识符。
+    会话所调用的工作流标识符。
 
   - `state_variables: optional map[string or boolean or number]`
 
-    转发给工作流的状态变量。键最多可包含 64 个字符，值必须是原始类型，映射默认为空对象。
+    转发给工作流的状态变量。键最多 64 个字符，值必须是原始类型，且该映射默认为空对象。
 
     - `string`
 
@@ -32,7 +32,7 @@
 
   - `tracing: optional object { enabled }`
 
-    可选的追踪覆盖，用于工作流调用。省略时，追踪默认启用。
+    用于工作流调用的可选追踪覆盖项。未指定时，追踪默认启用。
 
     - `enabled: optional boolean`
 
@@ -48,15 +48,15 @@
 
   - `automatic_thread_titling: optional object { enabled }`
 
-    自动线程标题的配置。省略时，自动线程标题默认启用。
+    自动会话标题配置。未指定时，自动会话标题默认启用。
 
     - `enabled: optional boolean`
 
-      启用自动线程标题生成。默认为 true。
+      启用自动会话标题生成。默认为 true。
 
   - `file_upload: optional object { enabled, max_file_size, max_files }`
 
-    上传启用和限制的配置。省略时，上传默认禁用（max_files 10，max_file_size 512 MB）。
+    上传启用与限制的配置。未指定时，上传默认禁用（max_files 为 10，max_file_size 为 512 MB）。
 
     - `enabled: optional boolean`
 
@@ -64,51 +64,51 @@
 
     - `max_file_size: optional number`
 
-      每个上传文件的最大大小（以兆字节为单位）。默认为 512 MB，这是允许的最大大小。
+      每个上传文件的最大大小（以 MB 为单位）。默认为 512 MB，这也是允许的最大大小。
 
     - `max_files: optional number`
 
-      可上传到会话的最大文件数。默认为 10。
+      可上传到该会话的最大文件数。默认为 10。
 
   - `history: optional object { enabled, recent_threads }`
 
-    聊天历史保留的配置。省略时，历史默认启用，recent_threads 无限制（null）。
+    聊天历史保留配置。未指定时，历史记录默认启用，recent_threads 无限制（null）。
 
     - `enabled: optional boolean`
 
-      允许聊天用户访问之前的 ChatKit 线程。默认为 true。
+      允许聊天用户访问之前的 ChatKit 会话。默认为 true。
 
     - `recent_threads: optional number`
 
-      用户可访问的最近 ChatKit 线程数。未设置时默认为无限制。
+      用户可访问的最近 ChatKit 会话数量。未设置时默认为无限制。
 
 - `expires_after: optional ChatSessionExpiresAfterParam`
 
-  会话过期时间的可选覆盖项，以从创建起的秒数计算。默认为 10 分钟。
+  会话过期时间的可选覆盖项（自创建起的秒数）。默认为 10 分钟。
 
   - `anchor: "created_at"`
 
-    用于计算过期时间的基础时间戳。目前固定为 `created_at`.
+    用于计算过期时间的基础时间戳。当前固定为 `created_at`.
 
     - `"created_at"`
 
   - `seconds: number`
 
-    锚点之后会话过期的秒数。
+    在锚点之后会话过期的秒数。
 
 - `rate_limits: optional ChatSessionRateLimitsParam`
 
-  每分钟请求限制的可选覆盖值。省略时默认为 10。
+  可选的每分钟请求限制覆盖值。省略时默认为 10。
 
   - `max_requests_per_1_minute: optional number`
 
     会话每分钟允许的最大请求数。默认为 10。
 
-### 返回
+### Returns
 
 - `ChatSession object { id, chatkit_configuration, client_secret, 7 more }`
 
-  表示一个 ChatKit 会话及其解析后的配置。
+  表示一个 ChatKit 会话及其已解析的配置。
 
   - `id: string`
 
@@ -116,15 +116,15 @@
 
   - `chatkit_configuration: ChatSessionChatKitConfiguration`
 
-    会话的已解析 ChatKit 功能配置。
+    该会话已解析的 ChatKit 功能配置。
 
     - `automatic_thread_titling: ChatSessionAutomaticThreadTitling`
 
-      自动线程标题设置。
+      自动会话主题命名偏好。
 
       - `enabled: boolean`
 
-        是否启用自动线程标题。
+        是否启用自动会话主题命名。
 
     - `file_upload: ChatSessionFileUpload`
 
@@ -132,7 +132,7 @@
 
       - `enabled: boolean`
 
-        指示会话是否启用上传。
+        指示该会话是否允许上传。
 
       - `max_file_size: number or null`
 
@@ -140,7 +140,7 @@
 
       - `max_files: number or null`
 
-        会话期间允许的最大上传次数。
+        会话期间允许的最大上传数量。
 
     - `history: ChatSessionHistory`
 
@@ -148,11 +148,11 @@
 
       - `enabled: boolean`
 
-        指示会话是否会持久化聊天历史记录。
+        指示该会话是否持久化聊天历史。
 
       - `recent_threads: number or null`
 
-        历史记录视图中显示的先前线程数量。当保留全部历史记录时，默认为 null。
+        在历史记录视图中展示的先前会话数量。当保留所有历史记录时，默认为 null。
 
   - `client_secret: string`
 
@@ -168,7 +168,7 @@
 
   - `object: "chatkit.session"`
 
-    类型判别器，始终为 `chatkit.session`.
+    始终为的类型判别字段 `chatkit.session`.
 
     - `"chatkit.session"`
 
@@ -182,7 +182,7 @@
 
   - `status: ChatSessionStatus`
 
-    会话的当前生命周期状态。
+    会话当前的生命周期状态。
 
     - `"active"`
 
@@ -200,11 +200,11 @@
 
     - `id: string`
 
-      支持该会话的工作流标识符。
+      支撑该会话的工作流标识符。
 
     - `state_variables: map[string or boolean or number] or null`
 
-      调用工作流时应用的状态变量键值对。未提供覆盖时默认为 null。
+      调用工作流时应用的状态变量键值对。如果未提供覆盖，则默认为 null。
 
       - `string`
 
@@ -214,15 +214,15 @@
 
     - `tracing: object { enabled }`
 
-      应用于工作流的追踪设置。
+      应用于该工作流的追踪设置。
 
       - `enabled: boolean`
 
-        指示追踪是否已启用。
+        指示是否启用了追踪。
 
     - `version: string or null`
 
-      会话使用的特定工作流版本。使用最新部署时默认为 null。
+      用于该会话的特定工作流版本。使用最新部署时默认为 null。
 
 ### 示例
 

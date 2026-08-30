@@ -1,4 +1,4 @@
-> 完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾添加 `.md` 来访问。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
 ## 列出消息
 
@@ -14,19 +14,19 @@
 
 - `after: optional string`
 
-  用于分页的游标。 `after` 是一个定义你在列表中位置的对象 ID。例如，如果你发出列表请求并收到 100 个对象，以 obj_foo 结尾，你的后续调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页游标。 `after` 是一个对象 ID，用于定义你在列表中所处的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，则后续调用可以包含 after=obj_foo 以获取列表的下一页。
 
 - `before: optional string`
 
-  用于分页的游标。 `before` 是一个定义你在列表中位置的对象 ID。例如，如果你发出列表请求并收到 100 个对象，以 obj_foo 开头，你的后续调用可以包含 before=obj_foo 以获取列表的上一页。
+  用于分页游标。 `before` 是一个对象 ID，用于定义你在列表中所处的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 开头，则后续调用可以包含 before=obj_foo 以获取列表的上一页。
 
 - `limit: optional number`
 
-  返回对象数量的限制。限制范围在 1 到 100 之间，默认为 20。
+  要返回的对象数量的限制。限制范围为 1 到 100，默认值为 20。
 
 - `order: optional "asc" or "desc"`
 
-  排序依据为对象的 `created_at` 时间戳。 `asc` 表示升序， `desc` 表示降序。
+  按以下字段对对象进行排序 `created_at` 的时间戳排序： `asc` 表示升序， `desc` 表示降序。
 
   - `"asc"`
 
@@ -36,25 +36,25 @@
 
   按生成消息的运行 ID 筛选消息。
 
-### 返回
+### 返回值
 
 - `data: array of Message`
 
   - `id: string`
 
-    该标识符可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `assistant_id: string or null`
 
-    如适用，编写此 [助手](/docs/api-reference/assistants) 消息的 ID。
+    如适用，则为撰写该消息的 [助手](/docs/api-reference/assistants) 的 ID。
 
   - `attachments: array of object { file_id, tools }  or null`
 
-    附加到消息的文件列表，以及它们被添加到的工具。
+    附加到该消息的文件列表以及添加这些文件的工具。
 
     - `file_id: optional string`
 
-      要附加到消息的文件的 ID。
+      要附加到该消息的文件 ID。
 
     - `tools: optional array of CodeInterpreterTool or object { type }`
 
@@ -64,7 +64,7 @@
 
         - `type: "code_interpreter"`
 
-          所定义工具的类型： `code_interpreter`
+          正在定义的工具类型： `code_interpreter`
 
           - `"code_interpreter"`
 
@@ -72,7 +72,7 @@
 
         - `type: "file_search"`
 
-          所定义工具的类型： `file_search`
+          正在定义的工具类型： `file_search`
 
           - `"file_search"`
 
@@ -82,21 +82,21 @@
 
   - `content: array of ImageFileContentBlock or ImageURLContentBlock or TextContentBlock or RefusalContentBlock`
 
-    消息内容，以文本和/或图像的数组形式呈现。
+    消息内容，以文本和/或图像数组的形式表示。
 
     - `ImageFileContentBlock object { image_file, type }`
 
-      引用消息内容中的 [文件](/docs/api-reference/files) 图像。
+      引用消息内容中的图像 [文件](/docs/api-reference/files) 。
 
       - `image_file: ImageFile`
 
         - `file_id: string`
 
-          消息内容中图像的 [文件](/docs/api-reference/files) ID。如果在上传文件时需要稍后显示文件内容，请设置 `purpose="vision"` 该 ID。
+          该 [文件](/docs/api-reference/files) 消息内容中图像的 ID。如果需要稍后显示文件内容，请在上传 `purpose="vision"` 时设置此参数。
 
         - `detail: optional "auto" or "low" or "high"`
 
-          如果用户指定，则指定图像的细节级别。 `low` 使用更少的令牌，你可以选择使用高分辨率 `high`.
+          指定由用户指定的图像细节级别。如果。 `low` 使用的 token 较少，你可以选择使用以下选项启用高分辨率 `high`.
 
           - `"auto"`
 
@@ -112,17 +112,17 @@
 
     - `ImageURLContentBlock object { image_url, type }`
 
-      引用消息内容中的图片 URL。
+      引用消息内容中的图像 URL。
 
       - `image_url: ImageURL`
 
         - `url: string`
 
-          图片的外部 URL，必须为支持的图片类型：jpeg、jpg、png、gif、webp。
+          图像的外部 URL，必须是受支持的图像类型：jpeg、jpg、png、gif、webp。
 
         - `detail: optional "auto" or "low" or "high"`
 
-          指定图片的细节级别。 `low` 使用的令牌较少，你可以选择使用高分辨率 `high`。默认值为 `auto`
+          指定图像的细节级别。 `low` 使用的 token 较少，你可以选择使用以下选项启用高分辨率 `high`。默认值为 `auto`
 
           - `"auto"`
 
@@ -138,7 +138,7 @@
 
     - `TextContentBlock object { text, type }`
 
-      消息中的文本内容。
+      属于某条消息的文本内容。
 
       - `text: Text`
 
@@ -146,7 +146,7 @@
 
           - `FileCitationAnnotation object { end_index, file_citation, start_index, 2 more }`
 
-            消息中的引用，指向与助手或消息关联的特定文件中的特定引文。当助手使用 "file_search" 工具搜索文件时生成。
+            消息中的一条引用，指向与该智能体或消息关联的某个文件的特定引用内容。当智能体使用 "file_search" 工具搜索文件时生成。
 
             - `end_index: number`
 
@@ -154,13 +154,13 @@
 
               - `file_id: string`
 
-                引用来源的特定文件的 ID。
+                该引用所源自的特定文件的 ID。
 
             - `start_index: number`
 
             - `text: string`
 
-              消息内容中需要替换的文本。
+              消息内容中需要被替换的文本。
 
             - `type: "file_citation"`
 
@@ -170,7 +170,7 @@
 
           - `FilePathAnnotation object { end_index, file_path, start_index, 2 more }`
 
-            当助手使用 `code_interpreter` 工具生成文件时，生成文件的 URL。
+            当智能体使用了 API 工具生成文件时返回的该文件 URL `code_interpreter` 工具生成的文件。
 
             - `end_index: number`
 
@@ -178,13 +178,13 @@
 
               - `file_id: string`
 
-                生成的文件的 ID。
+                已生成文件的 ID。
 
             - `start_index: number`
 
             - `text: string`
 
-              消息内容中需要替换的文本。
+              消息内容中需要被替换的文本。
 
             - `type: "file_path"`
 
@@ -204,7 +204,7 @@
 
     - `RefusalContentBlock object { refusal, type }`
 
-      助手生成的拒绝内容。
+      由智能体生成的拒绝内容。
 
       - `refusal: string`
 
@@ -216,15 +216,15 @@
 
   - `created_at: number`
 
-    消息创建时的 Unix 时间戳（以秒为单位）。
+    消息创建时的 Unix 时间戳（秒）。
 
   - `incomplete_at: number or null`
 
-    消息被标记为不完整时的 Unix 时间戳（以秒为单位）。
+    消息被标记为不完整时的 Unix 时间戳（秒）。
 
   - `incomplete_details: object { reason }  or null`
 
-    对于不完整的消息，提供消息不完整的原因详情。
+    在不完整的消息上，关于消息不完整原因的详细信息。
 
     - `reason: "content_filter" or "max_tokens" or "run_cancelled" or 2 more`
 
@@ -242,22 +242,22 @@
 
   - `metadata: Metadata or null`
 
-    可附加到对象上的 16 个键值对集合。这可以
-    用于以结构化格式存储有关对象的额外信息，
-    并通过 API 或仪表板查询对象。
+    可以附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
+    并通过 接口 或控制台查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串，
-    最大长度为 512 个字符。
+    键为字符串，最大长度为 64 个字符。值为字符串
+    ，最大长度为 512 个字符。
 
   - `object: "thread.message"`
 
-    对象类型，始终为 `thread.message`.
+    对象类型，恒为 `thread.message`.
 
     - `"thread.message"`
 
   - `role: "user" or "assistant"`
 
-    生成消息的实体。可以是 `user` 或 `assistant`.
+    生成此消息的实体。为以下之一： `user` 或 `assistant`.
 
     - `"user"`
 
@@ -265,11 +265,11 @@
 
   - `run_id: string or null`
 
-    与创建此消息关联的 [运行](/docs/api-reference/runs) 的 ID。当使用创建消息或创建线程端点手动创建消息时，值为 `null` 。
+    与此消息关联的 [运行](/docs/api-reference/runs) 的 ID。如果消息是通过 create message 或 create thread 端点手动创建的，则值为 `null` 。
 
   - `status: "in_progress" or "incomplete" or "completed"`
 
-    消息的状态，可以是 `in_progress`, `incomplete`，或 `completed`.
+    消息的状态，可为 `in_progress`, `incomplete`，或 `completed`.
 
     - `"in_progress"`
 
@@ -279,7 +279,7 @@
 
   - `thread_id: string`
 
-    该 [thread](/docs/api-reference/threads) 此消息所属的 ID。
+    该 [线程](/docs/api-reference/threads) ID，表示此消息所属的线程。
 
 - `first_id: string`
 

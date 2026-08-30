@@ -1,10 +1,10 @@
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取 Markdown 版本的文档页面。
 
-## 修改线程
+## 修改会话线程
 
 **post** `/threads/{thread_id}`
 
-修改一个线程。
+修改会话。
 
 ### 路径参数
 
@@ -14,51 +14,51 @@
 
 - `metadata: optional Metadata or null`
 
-  一组最多 16 个键值对，可附加到对象上。这可以
-  用于以结构化
-  格式存储关于对象的附加信息，并通过 API 或仪表盘查询对象。
+  可附加到对象的 16 组键值对。可用于
+  以结构化格式存储对象的附加信息，并通过
+  API 或控制面板查询对象。
 
-  键是字符串，最大长度为 64 个字符。值是字符串
-  ，最大长度为 512 个字符。
+  键为字符串，最长 64 个字符。值为字符串，
+  最长 512 个字符。
 
 - `tool_resources: optional object { code_interpreter, file_search }  or null`
 
-  一组资源，供此线程中助手的工具使用。这些资源特定于工具类型。例如， `code_interpreter` 工具需要文件 ID 列表，而 `file_search` 工具需要向量存储 ID 列表。
+  在此线程中提供给助手工具使用的一组资源。资源取决于工具的类型。例如， `code_interpreter` 工具需要一个文件 ID 列表，而 `file_search` 工具需要一个向量存储 ID 列表。
 
   - `code_interpreter: optional object { file_ids }`
 
     - `file_ids: optional array of string`
 
-      一组 [文件](/docs/api-reference/files) ID，提供给 `code_interpreter` 工具。与该工具关联的文件最多可有 20 个。
+      一个 [file](/docs/api-reference/files) ID 列表，可供该 `code_interpreter` 工具使用。与该工具关联的文件最多 20 个。
 
   - `file_search: optional object { vector_store_ids }`
 
     - `vector_store_ids: optional array of string`
 
-      附加到此线程的 [向量存储](/docs/api-reference/vector-stores/object) 。附加到线程的向量存储最多可有 1 个。
+      该 [vector store](/docs/api-reference/vector-stores/object) 附加到此线程。每个线程最多只能附加 1 个向量存储。
 
-### 返回
+### 返回值
 
 - `Thread object { id, created_at, metadata, 2 more }`
 
-  表示包含 [消息](/docs/api-reference/messages).
+  表示一个包含 [消息](/docs/api-reference/messages).
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
-    线程创建时的 Unix 时间戳（秒）。
+    线程创建时的 Unix 时间戳（以秒为单位）。
 
   - `metadata: Metadata or null`
 
-    可附加到对象的一组 16 个键值对。这可用于
-    以结构化格式存储有关对象的额外信息，
-    并通过 API 或仪表盘查询对象。
+    可附加到对象的 16 组键值对。可用于
+    以结构化格式存储对象的附加信息，并通过
+    API 或控制面板查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串，
-    最大长度为 512 个字符。
+    键为字符串，最长 64 个字符。值为字符串，
+    最长 512 个字符。
 
   - `object: "thread"`
 
@@ -68,19 +68,19 @@
 
   - `tool_resources: object { code_interpreter, file_search }  or null`
 
-    一组资源，在此线程中可供助手工具使用。资源特定于工具类型。例如， `code_interpreter` 工具需要文件 ID 列表，而 `file_search` 工具需要向量存储 ID 列表。
+    在此线程中提供给助手工具使用的一组资源。资源取决于工具的类型。例如， `code_interpreter` 工具需要一个文件 ID 列表，而 `file_search` 工具需要一个向量存储 ID 列表。
 
     - `code_interpreter: optional object { file_ids }`
 
       - `file_ids: optional array of string`
 
-        可供 [文件](/docs/api-reference/files) 工具使用的 ID 列表。 `code_interpreter` 与该工具关联的文件最多可有 20 个。
+        一个 [file](/docs/api-reference/files) ID 列表，可供该 `code_interpreter` 工具使用。与该工具关联的文件最多 20 个。
 
     - `file_search: optional object { vector_store_ids }`
 
       - `vector_store_ids: optional array of string`
 
-        附加到此线程的 [向量存储](/docs/api-reference/vector-stores/object) 。附加到线程的向量存储最多可有 1 个。
+        该 [vector store](/docs/api-reference/vector-stores/object) 附加到此线程。每个线程最多只能附加 1 个向量存储。
 
 ### 示例
 

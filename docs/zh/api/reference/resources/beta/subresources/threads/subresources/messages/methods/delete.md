@@ -1,8 +1,8 @@
-> 完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可在页面 URL 末尾添加以下内容来获取文档页面的 Markdown 版本： `.md` 。
 
 ## 删除消息
 
-**删除** `/threads/{thread_id}/messages/{message_id}`
+**delete** `/threads/{thread_id}/messages/{message_id}`
 
 删除一条消息。
 

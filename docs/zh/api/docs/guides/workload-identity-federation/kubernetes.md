@@ -1,36 +1,36 @@
 # 为 Kubernetes 配置工作负载身份联合
 
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获得该页面的 Markdown 版本。
 
-通过将投射的 Kubernetes 服务账户令牌交换为短期 OpenAI 访问令牌，将 Kubernetes 用作工作负载身份提供程序。
+通过将 Kubernetes 投影的服务账户令牌交换为短期 OpenAI 访问令牌，将 Kubernetes 用作工作负载身份提供方。
 
-对于 Codex，请使用此页面获取并检查投射令牌。然后 [配置 Codex 工作负载身份](https://developers.openai.com/codex/enterprise/workload-identity) 以将 Codex 指向挂载的令牌文件。此页面上的服务账户映射和 SDK 示例适用于 OpenAI API。
+对于 Codex，使用此页面获取并检查投影令牌。然后 [配置 Codex 工作负载身份](https://developers.openai.com/codex/enterprise/workload-identity) 以使 Codex 指向已挂载的令牌文件。本页面上的服务账户映射和 SDK 示例适用于 OpenAI API。
 
-## 设置 Kubernetes
+## Setting up Kubernetes
 
-本指南假定已启用 Kubernetes 服务账户令牌投影功能，该功能在现代 Kubernetes 版本中默认可用。OpenAI 工作负载身份联合要求使用兼容 OIDC 的投影服务账户令牌。不支持存储在 Secrets 中的旧版 Kubernetes 服务账户令牌。
+本指南假定 Kubernetes 服务账号令牌投射（service account token projection）已启用，这在现代 Kubernetes 版本中是默认提供的。OpenAI 工作负载身份联合（workload identity federation）需要兼容 OIDC 的投射式服务账号令牌。不支持存储在 Secrets 中的旧版 Kubernetes 服务账号令牌。
 
-为需要调用 OpenAI API 的工作负载使用一个 Kubernetes `ServiceAccount` 。如果你还没有，可以先创建它：
+为需要调用 OpenAI API 的工作负载使用一个 Kubernetes `ServiceAccount` 。如果你还没有，请创建一个：
 
 ```bash
 kubectl create serviceaccount openai-wif --namespace default
 ```
 
-获取你的 Kubernetes 集群的 OIDC 签发者：
+获取你的 Kubernetes 集群的 OIDC 颁发者（issuer）：
 
 ```bash
 kubectl get --raw /.well-known/openid-configuration | jq -r .issuer
 ```
 
-即使你上传了 JWKS 且 OpenAI 不对 OIDC 签发者执行 JWKS 发现，该签发者也必须与工作负载身份提供者中配置的签发者匹配。
+即使你上传了 JWKS 并且 OpenAI 不会针对 OIDC 颁发者执行 JWKS 发现，此颁发者也必须与 Workload Identity Provider 中配置的颁发者一致。
 
-获取集群的 JWKS 并保存返回的密钥集。在你配置工作负载身份提供者时会用到它：
+获取集群 JWKS 并保存返回的密钥集。在配置 Workload Identity Provider 时你需要用到它：
 
 ```bash
 kubectl get --raw /openid/v1/jwks
 ```
 
-使用 OpenAI 期望的受众和适合你工作负载的过期时间配置投影的服务账户令牌。OpenAI 会验证令牌的签发者、签名、受众和过期时间。在此示例中，令牌文件被挂载到 `/var/run/secrets/tokens/token`，使用受众 `https://api.openai.com/v1`，并在 3600 秒后过期。如果投影令牌受众与 OpenAI 工作负载身份提供者受众匹配，你可以使用不同的受众：
+使用 OpenAI 期望的受众（audience）和适合你工作负载的过期时间来配置投射式服务账号令牌。OpenAI 会校验令牌的颁发者、签名、受众和过期时间。在本示例中，令牌文件挂载在 `/var/run/secrets/tokens/token`，使用的受众为 `https://api.openai.com/v1`，并在 3600 秒后过期。如果投射令牌的受众与 OpenAI Workload Identity Provider 的受众一致，你也可以使用其他受众：
 
 ```yaml
 apiVersion: v1
@@ -59,14 +59,14 @@ spec:
 
 ## 验证令牌
 
-在配置工作负载身份联合之前，先在本地解码一个示例投影服务账户令牌并检查其声明。从已挂载投影令牌的运行中的 Pod 中检索令牌，并将其导出为 `TOKEN`:
+在配置工作负载身份联合之前，请在本地解码一个示例的投射服务账户令牌并检查其声明。在已挂载投射令牌的运行中 Pod 中，检索该令牌并将其导出为 `TOKEN`:
 
 ```bash
 TOKEN=$(kubectl exec -n default openai-wif-app -- cat /var/run/secrets/tokens/token)
 export TOKEN
 ```
 
-然后运行此脚本：
+然后运行以下脚本：
 
 ```python
 import base64
@@ -79,9 +79,9 @@ print(json.dumps(json.loads(base64.urlsafe_b64decode(payload)), indent=2))
 ```
 
 
-此命令在不验证令牌签名的情况下解码 JWT 负载。对于生产令牌，请使用本地解码器，并避免将生产令牌粘贴到第三方工具中。
+此命令会在不验证令牌签名的情况下解码 JWT 负载。生产环境令牌请使用本地解码器，避免将生产环境令牌粘贴到第三方工具中。
 
-解码后的 Kubernetes 投影服务账户令牌将类似于：
+解码后的 Kubernetes 投射服务账户令牌类似如下：
 
 ```json
 {
@@ -100,47 +100,47 @@ print(json.dumps(json.loads(base64.urlsafe_b64decode(payload)), indent=2))
 }
 ```
 
-使用解码后的负载来将你收到的令牌与OpenAI中配置的签发者、受众和映射值进行比较。大多数配置问题在 `iss`, `aud`，和 `sub` 声明中可见，然后再进行令牌交换。
+使用解码后的负载，比对你收到的令牌与在 OpenAI 中配置的 issuer、audience 和 mapping 值。在交换令牌之前，大多数配置问题都会体现在 `iss`, `aud`，以及 `sub` 声明中。
 
 ## 设置工作负载身份联合
 
-在 OpenAI 中为 Kubernetes 颁发者创建工作负载身份提供程序，然后添加一个服务账户映射，使其与投影令牌中的属性匹配。
+在 OpenAI 中为 Kubernetes 颁发者创建一个 Workload Identity Provider，然后添加一个服务账号映射，以匹配来自投影令牌（projected token）的属性。
 
-先配置工作负载身份提供程序，再创建服务账户映射。
+先配置 Workload Identity Provider，再创建服务账号映射。
 
 ### 设置 Workload Identity Provider
 
-1. **创建工作负载身份提供程序。** 将 **名称** 设置为唯一值，例如 `kubernetes-prod`。使用 **描述**，例如 `Production Kubernetes cluster`，以帮助管理员识别集群。
+1. **创建 Workload Identity Provider。** 设置 **Name** 为唯一值，例如 `kubernetes-prod`。使用 **Description**，例如 `Production Kubernetes cluster`，以帮助管理员识别该集群。
 
-2. **设置发行方和受众。** 将 **OIDC 发行方 URL** 设置为 `kubectl get --raw /.well-known/openid-configuration | jq -r .issuer`。返回的发行方。此值必须与投影令牌中的 `iss` 声明匹配。将 **受众** 设置为投影服务账户令牌卷上配置的相同不透明受众字符串。在此示例中，该值为 `https://api.openai.com/v1`.
+2. **设置 issuer 和 audience。** 设置 **OIDC Issuer URL** 为以下命令返回的 issuer： `kubectl get --raw /.well-known/openid-configuration | jq -r .issuer`。此值必须与 `iss` 声明匹配，位于 projected token 中。设置 **Audience** 为 projected service account token volume 上配置的同一个不透明 audience 字符串。在本示例中，该值为 `https://api.openai.com/v1`.
 
-3. **上传 Kubernetes JWKS。** 启用 **使用上传的 JWKS 进行令牌验证**，然后设置 **JWKS JSON** 添加到输出中 `kubectl get --raw /openid/v1/jwks`。OpenAI 使用此公钥集合来验证投射的 Kubernetes 服务账户令牌。上传完整的密钥集合，包括周围的 `keys`.
+3. **上传 Kubernetes JWKS。** 启用 **Use uploaded JWKS for token verification**，然后设置 **JWKS JSON** 到输出中的 `kubectl get --raw /openid/v1/jwks`。OpenAI 使用该公钥集来验证投射的 Kubernetes 服务账户令牌。上传完整的密钥集,包括其周围的 `keys`.
 
-   > **注意：** 对于自托管的 Kubernetes 集群，OpenAI 仅支持本地 JWKS 模式。上传集群返回的 JWKS；OpenAI 不会对配置的颁发者执行 OIDC 发现。OpenAI 仍会将配置的颁发者与 `iss` 令牌中的字段进行比较。
+   > **注意:** 对于自托管 Kubernetes 集群,OpenAI 仅支持本地 JWKS 模式。上传你的集群返回的 JWKS;OpenAI 不会针对已配置的 issuer 执行 OIDC 发现。OpenAI 仍会将已配置的 issuer 与令牌中的 `iss` 字段进行比较。
 
-   如果集群轮换服务账户签名密钥，请更新 Workload Identity Provider 配置中上传的 JWKS。由配置的 JWKS 中不存在的密钥签名的令牌将被拒绝。如果 JWKS 包含多个活动公钥，请包含完整的 `keys` 数组。
+   如果你的集群轮换服务账户签名密钥,请在 Workload Identity Provider 配置中更新已上传的 JWKS。使用未在已配置 JWKS 中出现的密钥签名的令牌将被拒绝。如果 JWKS 包含多个活跃的公钥,请包含完整的 `keys` 数组。
 
-4. **仅当需要派生映射属性时，才添加属性转换。** 原始令牌声明，如 `sub`, `aud`，以及 `iss` 可以直接用于映射断言。如果你计划匹配转换后的属性而不是原始令牌声明，仪表板会自动应用 `openai.` 前缀；例如，输入 `workload_subject` 并使用表达式 `assertion.sub` 来创建 `openai.workload_subject`。已经以 `openai.` 开头的原始令牌声明将被忽略，用于 `openai.` 映射键，除非配置了匹配的转换。
+4. **仅在需要派生映射属性时才添加属性转换。** 原始令牌声明,例如 `sub`, `aud`、和 `iss` 可以直接在映射断言中使用。如果你计划基于转换后的属性(而非原始令牌声明)进行匹配,控制面板会自动应用 `openai.` 前缀;例如,输入 `workload_subject` 并附带表达式 `assertion.sub` 以创建 `openai.workload_subject`。已经以 `openai.` 开头的原始令牌声明会在 `openai.` 映射键时被忽略,除非配置了匹配的转换。
 
-### 设置服务账号映射
+### 设置服务账户映射
 
-1. **创建服务账号映射。** 将 **名称** 设置为工作负载身份提供程序中的唯一值，例如 `openai-mapping-kubernetes`。使用 **描述**，例如 `Workload Identity Provider Mapping for Kubernetes Workloads`，来说明哪些工作负载可以使用该映射。
+1. **创建服务账号映射。** 设置 **Name** 为 Workload Identity Provider 内的唯一值，例如 `openai-mapping-kubernetes`。使用 **Description**，例如 `Workload Identity Provider Mapping for Kubernetes Workloads`，以说明哪些工作负载可以使用该映射。
 
-2. **匹配 Kubernetes 服务账号主题。** 将 **键** 设置为 `sub` ，并将 **值** 设置为 `system:serviceaccount:default:openai-wif`。对于 Kubernetes 服务账号，主题格式为 `system:serviceaccount:<namespace>:<service-account-name>`.
+2. **匹配 Kubernetes 服务账号主体。** 设置 **Key** 为 `sub` ， **Value** 为 `system:serviceaccount:default:openai-wif`。对于 Kubernetes 服务账号，主体格式为 `system:serviceaccount:<namespace>:<service-account-name>`.
 
-3. **选择 OpenAI 目标。** 将 **项目** 设置为拥有目标服务账号的 OpenAI 项目。将 **服务账号** 到 OpenAI 服务账号，Kubernetes 工作负载可以使用该账号，例如 `kubernetes-prod-openai-wif`。请查看 `Create a new service account in this project` 如果你希望为此映射创建新的服务账号，而非复用现有账号。
+3. **选择 OpenAI 目标。** 设置 **Project** 为拥有目标服务账号的 OpenAI 项目。将 **Service account** 设置为 Kubernetes 工作负载可以使用的 OpenAI 服务账号，例如 `kubernetes-prod-openai-wif`。勾选 `Create a new service account in this project` ，如果你希望为此映射新建一个服务账号，而不是复用现有账号。
 
-4. **如有需要，收窄 API 权限。** 选择合适的 **权限** ，例如 `api.model.request` 和 `api.vector_store.read` ，以进一步收窄从此映射铸造的访问令牌。将权限留空可避免添加 WIF 特定的作用域限制；该令牌仍会以映射的服务账号进行授权。
+4. **根据需要收窄 API 权限。** 选择合适的 **Permissions** ，例如 `api.model.request` ， `api.vector_store.read` 以进一步收窄基于此映射签发的访问令牌。留空权限可避免添加特定于 WIF 的范围限制；该令牌仍会以映射的服务帐号身份授权。
 
-## 在代码中使用令牌
+## Using the token in code
 
-配置你的 OpenAI SDK 客户端，读取投射的 Kubernetes 令牌，并将其换取为 OpenAI 签发的访问令牌。
+配置你的 OpenAI SDK 客户端，以读取已投射的 Kubernetes 令牌并将其交换为 OpenAI 颁发的访问令牌。
 
-使用已挂载的令牌路径，例如 `/var/run/secrets/tokens/token`，作为 SDK 工作负载身份联合提供者的主题令牌来源。SDK 将该 Kubernetes 令牌换为 OpenAI 签发的访问令牌，并使用该 OpenAI 令牌来认证 API 请求。
+将已挂载的令牌路径（例如 `/var/run/secrets/tokens/token`）用作 SDK 工作负载身份联合提供方的主体令牌来源。SDK 会将该 Kubernetes 令牌交换为 OpenAI 颁发的访问令牌，并使用该 OpenAI 令牌对 API 请求进行身份验证。
 
-以下示例使用自定义的主题令牌提供者初始化一个 OpenAI 客户端。该提供者从已挂载的文件路径读取投射的 Kubernetes 服务账户令牌，并将其用作工作负载身份联合的主题令牌。
+以下示例演示如何使用自定义主体令牌提供方初始化 OpenAI 客户端。该提供方从已挂载的文件路径读取已投射的 Kubernetes 服务账户令牌，并将其用作工作负载身份联合的主体令牌。
 
-从 Kubernetes 投射的服务账户令牌进行认证
+使用 Kubernetes 投射的服务账户令牌进行身份验证
 
 ```javascript
 import { readFile } from "node:fs/promises";
@@ -429,10 +429,10 @@ puts(response.output_text)
 
 ## Kubernetes 最佳实践
 
-- 使用稳定的 OIDC 签发者。签发者 URL 必须与投射的服务账户令牌中的声明匹配 `iss` ，并且应在集群升级和维护操作期间保持稳定。
-- 谨慎保护签名密钥。任何能访问集群服务账户签名密钥的人都可以铸造可能被 OpenAI 接受的令牌。
-- 为 OpenAI 集成使用专用服务账户。避免复用也用于无关基础设施或应用访问的服务账户。
-- 保持上传的 JWKS 为最新。在本地 JWKS 模式下，OpenAI 使用配置的 JWKS 来验证工作负载身份令牌，因此在轮换到新的签名密钥之前，请更新 Workload Identity Provider。
-- 尽量降低自定义声明复杂度。优先匹配标准声明，如 `sub` 和 `aud`，或直接由这些声明推导出的转换属性。
-- 将命名空间所有权视为安全模型的一部分。如果命名空间管理员可以创建服务账户，请确保映射范围设置适当，以防止意外的权限提升。
-- 监控签发者和签名密钥变更。在未更新 Workload Identity Provider JWKS 的情况下轮换签名密钥会导致令牌交换失败。
+- 使用稳定的 OIDC 颁发者。颁发者 URL 必须与预期的服务账号令牌 `iss` 声明匹配，并在集群升级和维护操作期间保持稳定。
+- 妥善保护签名密钥。任何能够访问集群服务账号签名密钥的人员都可以生成可能被 OpenAI 接受的令牌。
+- 为 OpenAI 集成使用专用的服务账号。避免重复使用同时用于无关基础设施或应用程序访问的服务账号。
+- 保持上传的 JWKS 为最新。OpenAI 使用配置的 JWKS 在本地 JWKS 模式下验证工作负载身份令牌，因此请在轮换到新签名密钥之前更新 Workload Identity Provider。
+- 尽量降低自定义声明的复杂性。建议匹配标准声明，例如 `sub` ， `aud`，或直接由这些声明派生的转换后的属性。
+- 将命名空间所有权视为安全模型的一部分。如果命名空间管理员可以创建服务账号，请确保映射的作用范围设置恰当，以防止意外的权限提升。
+- 监控颁发者和签名密钥的更改。在不更新 Workload Identity Provider JWKS 的情况下轮换签名密钥可能导致令牌交换失败。
