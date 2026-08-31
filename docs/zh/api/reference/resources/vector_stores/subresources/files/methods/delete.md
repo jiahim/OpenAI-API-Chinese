@@ -1,10 +1,10 @@
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获得。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 删除向量存储文件
 
-**删除** `/vector_stores/{vector_store_id}/files/{file_id}`
+**delete** `/vector_stores/{vector_store_id}/files/{file_id}`
 
-删除向量存储文件。这将从向量存储中移除该文件，但文件本身不会被删除。要删除文件，请使用 [删除文件](/docs/api-reference/files/delete) 端点。
+删除一个向量存储文件。这会从向量存储中移除该文件，但文件本身不会被删除。若要删除文件，请使用 [delete file](/docs/api-reference/files/delete) 接口。
 
 ### 路径参数
 

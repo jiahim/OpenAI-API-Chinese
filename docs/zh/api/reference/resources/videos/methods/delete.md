@@ -1,10 +1,10 @@
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 末尾追加 `.md` 来获取。
 
 ## 删除视频
 
-**删除** `/videos/{video_id}`
+**delete** `/videos/{video_id}`
 
-永久删除已完成的或失败的视频及其存储的资源。
+永久删除已完成或失败的视频及其存储资源。
 
 ### 路径参数
 
@@ -18,15 +18,15 @@
 
 - `deleted: boolean`
 
-  表示该视频资源已被删除。
+  表示视频资源已被删除。
 
 - `object: "video.deleted"`
 
-  指示删除响应的对象类型。
+  表示删除响应的对象类型。
 
   - `"video.deleted"`
 
-### 示例
+### Example
 
 ```http
 curl https://api.openai.com/v1/videos/$VIDEO_ID \
@@ -34,7 +34,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {

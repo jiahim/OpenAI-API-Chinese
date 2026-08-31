@@ -1,12 +1,12 @@
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 来获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt). 文档页面的 Markdown 版本可通过在页面 URL 末尾添加 `.md` 来获取。
 
-## 创建视频
+## Create video
 
 **post** `/videos`
 
-根据提示词及可选参考素材创建新的视频生成任务。
+根据提示词和可选的参考素材创建一个新的视频生成任务。
 
-### 请求体参数
+### 正文参数
 
 - `prompt: string`
 
@@ -14,17 +14,17 @@
 
 - `input_reference: optional ImageInputReferenceParam`
 
-  可选的参考对象，用于引导生成。请精确提供 `image_url` 或 `file_id`.
+  用于引导生成的可选参考对象。只能提供以下之一： `image_url` 或 `file_id`.
 
   - `file_id: optional string`
 
   - `image_url: optional string`
 
-    完全限定的 URL 或 base64 编码的数据 URL。
+    完整的 URL 或 base64 编码的 data URL。
 
 - `model: optional VideoModel`
 
-  用于视频生成的模型（允许值：sora-2、sora-2-pro）。默认为 `sora-2`.
+  要使用的视频生成模型（允许的值：sora-2、sora-2-pro）。默认值为 `sora-2`.
 
   - `string`
 
@@ -42,7 +42,7 @@
 
 - `seconds: optional VideoSeconds`
 
-  片段时长（秒）（允许值：4、8、12）。默认为 4 秒。
+  片段时长（单位：秒，允许的值：4、8、12）。默认值为 4 秒。
 
   - `"4"`
 
@@ -52,7 +52,7 @@
 
 - `size: optional VideoSize`
 
-  输出分辨率，格式为宽 x 高（允许值：720x1280、1280x720、1024x1792、1792x1024）。默认为 720x1280。
+  输出分辨率，格式为 宽 x 高（允许的值：720x1280、1280x720、1024x1792、1792x1024）。默认值为 720x1280。
 
   - `"720x1280"`
 
@@ -62,7 +62,7 @@
 
   - `"1792x1024"`
 
-### 返回
+### Returns
 
 - `Video object { id, completed_at, created_at, 10 more }`
 
@@ -74,7 +74,7 @@
 
   - `completed_at: number or null`
 
-    任务完成时的 Unix 时间戳（秒），如已完成。
+    任务完成时的 Unix 时间戳（秒），如果已完成。
 
   - `created_at: number`
 
@@ -82,7 +82,7 @@
 
   - `error: VideoCreateError or null`
 
-    错误负载，解释生成失败的原因（如适用）。
+    用于解释生成失败原因的错误负载，如果适用。
 
     - `code: string`
 
@@ -90,15 +90,15 @@
 
     - `message: string`
 
-      返回的可读错误描述。
+      返回错误的人类可读描述。
 
   - `expires_at: number or null`
 
-    可下载资产过期时的 Unix 时间戳（秒），如设置。
+    可下载资源到期时的 Unix 时间戳（秒），如果设置了的话。
 
   - `model: VideoModel`
 
-    生成该任务的视频生成模型。
+    用于生成该任务的视频生成模型。
 
     - `string`
 
@@ -130,15 +130,15 @@
 
   - `remixed_from_video_id: string or null`
 
-    如果此视频为混合版本，则为源视频的标识符。
+    如果该视频是二次创作，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成剪辑的时长（秒）。对于扩展版本，这是拼接后的总时长。
+    生成片段的时长（以秒为单位）。对于扩展片段，这是拼接后的总时长。
 
   - `size: VideoSize`
 
-    生成视频的分辨率。
+    所生成视频的分辨率。
 
     - `"720x1280"`
 

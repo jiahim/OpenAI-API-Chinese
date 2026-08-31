@@ -1,17 +1,19 @@
 # Assistants 迁移指南
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
-在 Responses API 实现功能对等之后，我们已弃用 Assistants API。它将于 2026 年 8 月 26 日停用。请参阅 [迁移指南](https://developers.openai.com/platform/assistants/migration) 以更新你的集成。 [了解更多](https://platform.openai.com/docs/guides/migrate-to-responses).
-
-
+Assistants API 已于 2026 年 8 月 26 日正式下线，不再可用。请使用 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) 进行新的集成。
 
 
-我们正在从 Assistants API 迁移到全新的 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) ，以获得更简洁、更灵活的心智模型。
 
-Responses 更简单——发送输入项即可获得输出项。使用 Responses API，你还可以获得更好的性能以及全新功能，例如 [深度研究](https://developers.openai.com/api/docs/guides/deep-research), [MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)，以及 [计算机使用](https://developers.openai.com/api/docs/guides/tools-computer-use)。此次变更还让你能够管理对话，而无需回传 `previous_response_id`.
 
-### 发生了什么变化？
+感谢每一位使用 Assistants API 的用户。我们感谢你所构建的一切，以及一路上分享的反馈。
+
+请参考本指南将你的集成迁移到 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses).
+
+Responses 更加简洁——发送输入项并接收输出项即可。使用 Responses API，你还将获得更好的性能以及全新功能，例如 [深度研究](https://developers.openai.com/api/docs/guides/deep-research), [MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)，以及 [计算机使用](https://developers.openai.com/api/docs/guides/tools-computer-use)。此次变更还让你能够管理对话，而无需再回传 `previous_response_id`.
+
+### 有哪些变化？
 
 <table>
   <thead>
@@ -53,31 +55,31 @@ Responses 更简单——发送输入项即可获得输出项。使用 Responses
   </tbody>
 </table>
 
-## 从 assistants 到 prompts
+## 从 Assistants 到 prompts
 
-Assistants 是持久的 API 对象，将模型选择、指令和工具声明捆绑在一起——完全通过 API 创建和管理。作为其替代品的 prompts 只能在仪表板中创建，你可以在仪表板中随着产品开发对它们进行版本管理。
+Assistants 是一类持久化的 API 对象，将模型选择、指令和工具声明整合在一起——完全通过 API 创建和管理。作为其替代品的 prompts 只能在仪表板中创建，你可以在那里随着产品开发对其进行版本管理。
 
-### 为什么这很有用
+### 这样做的好处
 
-- **可移植性与版本管理**：你可以对提示词规范进行快照、审查、差异比较和回滚。你还可以对提示词进行版本管理，这样你的代码只需指向最新版本即可。
-- **关注点分离**：你的应用代码现在负责编排（历史裁剪、工具循环、重试），而你的提示词则专注于高层行为与约束（系统指引、工具可用性、结构化输出 schema、温度默认值）。
-- **Realtime 兼容性**：当你通过 Realtime API 连接时，可以复用同一份提示词配置，从而在聊天、流式传输和低延迟交互会话中获得统一的行为定义。
-- **工具与输出一致性**：使用提示词后，你启动的每一个 Responses 或 Realtime 会话都会继承一致的契约，因为提示词封装了工具 schema 和结构化输出预期。
+- **可移植性与版本管理**：你可以对提示词规格进行快照、审查、差异比对和回滚。你还可以对提示词进行版本管理，让你的代码只需指向最新版本即可。
+- **关注点分离**：你的应用代码现在负责编排（历史裁剪、工具循环、重试），而你的提示词专注于高层行为与约束（系统指引、工具可用性、结构化输出 schema、温度默认值）。
+- **Realtime 兼容性**：当你通过 Realtime API 连接时，可以复用同一套提示词配置，从而在聊天、流式传输和低延迟交互会话之间获得统一的行为定义。
+- **工具与输出一致性**：使用提示词后，你启动的每一次 Responses 或 Realtime 会话都会继承一致的契约，因为提示词封装了工具 schema 和结构化输出期望。
 
 ### 实用的迁移步骤
 
-1. 识别每个现有 Assistant 的 _instruction + tool_ bundle。
-2. 在仪表板中，将该 bundle 重新创建为一个命名的 prompt。
-3. 将 prompt ID（或其导出的规范）存放在源代码管理中，以便应用程序代码可以引用稳定的标识符。
-4. 在 rollout 期间，通过交换 prompt ID 来运行 A/B 测试——无需以编程方式创建或删除 assistant 对象。
+1. 识别每个现有 Assistant 的 _指令 + 工具_ 组合。
+2. 在控制台中，将该组合重新创建为一个命名的 prompt。
+3. 将该 prompt ID（或其导出规范）存入源代码管理，以便应用代码能够引用一个稳定的标识符。
+4. 在灰度发布期间，通过交换 prompt ID 来运行 A/B 测试——无需以编程方式创建或删除助手对象。
 
-把提示词当作一个 **可版本化的行为配置** ，插入到 Responses 或 Realtime API 中。
+将提示词视为一个 **版本化的行为配置** ，可以接入 Responses 或 Realtime API。
 
 ---
 
-## 从对话线到会话
+## 从会话线程到对话
 
-线程是存储在服务端的消息集合。线程只能 _存储消息。_ 对话存储的是条目（item），其中可以包含消息、工具调用、工具输出以及其他数据。
+会话线程是存储在服务端的消息集合。线程只能 _存储消息_ 。对话可存储多个条目，其中可以包含消息、工具调用、工具输出以及其他数据。
 
 ### 请求示例
 
@@ -89,7 +91,7 @@ Assistants 是持久的 API 对象，将模型选择、指令和工具声明捆�
 
 
 
-#### Thread 对象
+#### 线程对象
 
 ```json
 {
@@ -122,9 +124,9 @@ Assistants 是持久的 API 对象，将模型选择、指令和工具声明捆�
 
 ## 从 runs 到 responses
 
-Runs 是针对线程执行的异步进程。参见下面的示例。Responses 更简单：提供一组输入项来执行，然后返回一组输出项。
+Runs 是针对线程执行的异步进程。参见下方示例。Responses 更简单：提供一组要执行的输入项，然后返回输出项列表。
 
-Responses 被设计为可以单独使用，但你也可以将其与 prompt 和 conversation 对象一起使用，以存储上下文和配置。
+Responses 设计为可独立使用，但你也可以将其与 prompt 和 conversation 对象一起使用，以便存储上下文和配置。
 
 ### 请求示例
 
@@ -261,25 +263,25 @@ Responses 被设计为可以单独使用，但你也可以将其与 prompt 和 c
 
 ## 迁移你的集成
 
-按照下面的迁移步骤从 Assistants API 迁移到 Responses API，同时不会丢失任何功能支持。
+按照下面的迁移步骤，从 Assistants API 迁移到 Responses API，而不会丢失任何功能支持。
 
-### 1. 基于你的助手创建提示词
+### 1. 从你的助手创建提示词
 
-1. 识别你的应用中最主要的智能体对象。
-1. 在仪表板中找到它们并点击 `Create prompt`.
+1. 确定你应用中最重要的助手对象。
+1. 在仪表板中找到这些对象并点击 `Create prompt`.
 
-这会基于每个现有的助手对象创建一个提示对象。
+这会从每个现有的 assistant 对象创建一个 prompt 对象。
 
-可复用的提示对象也正在被弃用。如果你使用此迁移
-  路径，请查看 [提示弃用
-  时间表](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 后再将
-  提示对象用于长期集成中。
+可复用的 prompt 对象也正在被弃用。如果你使用此迁移
+  路径，请查看 [prompts 弃用
+  时间表](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 之后再在长期集成中采用
+  prompt 对象。
 
 ### 2. 将新的用户聊天迁移到 conversations 和 responses
 
-我们不会提供将 Threads 迁移到 Conversations 的自动化工具。相反，我们建议将新的用户线程迁移到 conversations 上，并根据需要迁移较旧的线程。
+使用 Conversations API 和 Responses API 开启新对话。若要保留先前的对话历史，请使用应用程序中已存储的消息。
 
-以下是一个示例，演示你可能如何回填一个线程：
+下面的示例展示了在停止服务之前如何迁移会话历史。用于检索线程消息的 Assistants API 调用已不再可用，请改用你已存储的消息。
 
 ```python
 import os
@@ -357,11 +359,11 @@ puts(conversation.id)
 ```
 
 
-## 对比完整示例
+## 比较完整示例
 
-下面是一些同时使用 Assistants API 和 Responses API 的集成示例，便于你对比两者的差异。
+以下是同时使用 Assistants API 和 Responses API 的一些集成示例，方便你了解二者之间的差异。
 
-### 用户聊天应用
+### User chat app
 
 
 
@@ -453,6 +455,62 @@ puts(handle_message.call(
 
     
 Responses API
+
+```javascript
+import express from "express";
+import OpenAI from "openai";
+
+const app = express();
+const client = new OpenAI();
+const conversationsBySession = new Map();
+
+app.use(express.json());
+
+app.post("/messages", async (request, response) => {
+  const { content, session_id: sessionId } = request.body ?? {};
+  if (
+    typeof content !== "string" ||
+    !content.trim() ||
+    typeof sessionId !== "string" ||
+    !sessionId.trim()
+  ) {
+    response.status(400).json({
+      error: "content and session_id must be non-empty strings.",
+    });
+    return;
+  }
+
+  let conversationIdPromise = conversationsBySession.get(sessionId);
+
+  if (!conversationIdPromise) {
+    conversationIdPromise = client.conversations
+      .create()
+      .then((conversation) => conversation.id)
+      .catch((error) => {
+        conversationsBySession.delete(sessionId);
+        throw error;
+      });
+    conversationsBySession.set(sessionId, conversationIdPromise);
+  }
+  const conversationId = await conversationIdPromise;
+
+  const promptId = process.env.OPENAI_PROMPT_ID;
+  if (!promptId) {
+    response.status(500).json({ error: "OPENAI_PROMPT_ID is required." });
+    return;
+  }
+
+  const result = await client.responses.create({
+    prompt: { id: promptId },
+    input: [{ role: "user", content }],
+    conversation: conversationId,
+  });
+
+  response.json({ content: result.output_text });
+});
+
+app.listen(Number(process.env.OPENAI_EXAMPLE_PORT ?? 8000), "127.0.0.1");
+```
 
 ```python
 conversations_by_session: dict[str, str] = {}

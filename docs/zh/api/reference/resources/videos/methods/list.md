@@ -1,4 +1,4 @@
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
 ## 列出视频
 
@@ -10,7 +10,7 @@
 
 - `after: optional string`
 
-  上一分页请求中最后一项的标识符
+  上一次分页请求中最后一项的标识符
 
 - `limit: optional number`
 
@@ -18,33 +18,33 @@
 
 - `order: optional "asc" or "desc"`
 
-  按时间戳对结果进行排序。使用 `asc` 表示升序，或使用 `desc` 表示降序。
+  按时间戳排序的结果顺序。使用 `asc` 升序，或使用 `desc` 降序。
 
   - `"asc"`
 
   - `"desc"`
 
-### 返回值
+### Returns
 
 - `data: array of Video`
 
-  项目列表
+  条目列表
 
   - `id: string`
 
-    视频作业的唯一标识符。
+    视频任务任务的唯一标识符。
 
   - `completed_at: number or null`
 
-    作业完成时的 Unix 时间戳（秒），若已完成。
+    任务完成时的 Unix 时间戳（秒），如果已完成。
 
   - `created_at: number`
 
-    作业创建时的 Unix 时间戳（秒）。
+    任务创建时的 Unix 时间戳（秒）。
 
   - `error: VideoCreateError or null`
 
-    错误负载，解释生成失败的原因（如适用）。
+    用于说明生成失败原因的错误负载（如适用）。
 
     - `code: string`
 
@@ -52,15 +52,15 @@
 
     - `message: string`
 
-      返回的人类可读错误描述。
+      返回的错误的人类可读描述。
 
   - `expires_at: number or null`
 
-    可下载资产过期时的 Unix 时间戳（秒），若已设置。
+    可下载资源过期的 Unix 时间戳（秒），如果已设置。
 
   - `model: VideoModel`
 
-    生成该作业的视频生成模型。
+    生成该任务的视频生成模型。
 
     - `string`
 
@@ -84,7 +84,7 @@
 
   - `progress: number`
 
-    生成任务的大致完成百分比。
+    生成任务的近似完成百分比。
 
   - `prompt: string or null`
 
@@ -92,11 +92,11 @@
 
   - `remixed_from_video_id: string or null`
 
-    如果此视频是混剪，则为源视频的标识符。
+    如果该视频为二次创作，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成片段的时长（秒）。对于扩展，这是拼接后的总时长。
+    生成片段的时长（秒）。对于扩展片段，这是拼接后的总时长。
 
   - `size: VideoSize`
 
@@ -112,7 +112,7 @@
 
   - `status: "queued" or "in_progress" or "completed" or "failed"`
 
-    视频作业的当前生命周期状态。
+    视频任务的当前生命周期状态。
 
     - `"queued"`
 
@@ -124,19 +124,19 @@
 
 - `first_id: string or null`
 
-  列表中第一项的 ID。
+  列表中第一个条目的 ID。
 
 - `has_more: boolean`
 
-  是否还有更多可用项目。
+  是否还有更多可用条目。
 
 - `last_id: string or null`
 
-  列表中最后一项的 ID。
+  列表中最后一个条目的 ID。
 
 - `object: "list"`
 
-  返回对象的类型，必须为 `list`.
+  返回的对象类型，必须为 `list`.
 
   - `"list"`
 

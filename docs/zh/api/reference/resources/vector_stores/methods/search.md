@@ -1,10 +1,10 @@
-> 完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，请在页面 URL 末尾追加 `.md` 。
 
-## 搜索向量存储
+## Search vector store
 
 **post** `/vector_stores/{vector_store_id}/search`
 
-根据查询和文件属性过滤器，在向量存储中搜索相关块。
+基于查询和文件属性过滤器检索向量存储中的相关分块。
 
 ### 路径参数
 
@@ -22,11 +22,11 @@
 
 - `filters: optional ComparisonFilter or CompoundFilter`
 
-  基于文件属性应用的过滤器。
+  基于文件属性应用的筛选器。
 
   - `ComparisonFilter object { key, type, value }`
 
-    使用定义的比较操作，将指定的属性键与给定值进行比较的过滤器。
+    用于将指定的属性键与给定值使用定义的比较运算进行比较的筛选器。
 
     - `key: string`
 
@@ -42,8 +42,8 @@
       - `gte`: 大于或等于
       - `lt`: 小于
       - `lte`: 小于或等于
-      - `in`: 在
-      - `nin`: 不在
+      - `in`: 包含于
+      - `nin`: 不包含于
 
       - `"eq"`
 
@@ -79,15 +79,15 @@
 
   - `CompoundFilter object { filters, type }`
 
-    使用 `and` 或 `or`.
+    使用以下方式组合多个筛选器 `and` 或 `or`.
 
     - `filters: array of ComparisonFilter or unknown`
 
-      要组合的过滤器数组。项可以是 `ComparisonFilter` 或 `CompoundFilter`.
+      要组合的筛选器数组。元素可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
       - `ComparisonFilter object { key, type, value }`
 
-        使用定义的比较操作，将指定的属性键与给定值进行比较的过滤器。
+        用于将指定的属性键与给定值使用定义的比较运算进行比较的筛选器。
 
       - `unknown`
 
@@ -101,7 +101,7 @@
 
 - `max_num_results: optional number`
 
-  要返回的最大结果数。该数字应在 1 到 50 之间（含 1 和 50）。
+  要返回的最大结果数。该数值应介于 1 到 50 之间（含两端）。
 
 - `ranking_options: optional object { ranker, score_threshold }`
 
@@ -109,7 +109,7 @@
 
   - `ranker: optional "none" or "auto" or "default-2024-11-15"`
 
-    启用重新排序；设置为 `none` 以禁用，这有助于减少延迟。
+    启用重排序；设置为 `none` 以禁用，这有助于降低延迟。
 
     - `"none"`
 
@@ -123,7 +123,7 @@
 
   是否重写用于向量搜索的自然语言查询。
 
-### 返回
+### Returns
 
 - `data: array of object { attributes, content, file_id, 2 more }`
 
@@ -131,11 +131,11 @@
 
   - `attributes: map[string or number or boolean] or null`
 
-    可附加到对象上的16组键值对。这可以
-    用于以结构化格式存储关于对象的额外信息，
-    并通过API或仪表板查询对象。键是字符串，
-    最大长度为64个字符。值是字符串，最大
-    长度为512个字符、布尔值或数字。
+    可附加到对象的 16 个键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，并通过
+    API 或仪表板查询对象。键是字符串，
+    最大长度为 64 个字符。值是最大长度为 512 个字符的字符串、
+    布尔值或数字。
 
     - `string`
 
@@ -159,7 +159,7 @@
 
   - `file_id: string`
 
-    向量存储文件的ID。
+    向量存储文件的 ID。
 
   - `filename: string`
 
@@ -171,11 +171,11 @@
 
 - `has_more: boolean`
 
-  指示是否还有更多结果可获取。
+  指示是否还有更多结果可供获取。
 
 - `next_page: string or null`
 
-  下一页的令牌（如有）。
+  下一页的令牌（如果有）。
 
 - `object: "vector_store.search_results.page"`
 

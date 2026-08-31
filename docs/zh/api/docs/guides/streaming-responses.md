@@ -1,15 +1,15 @@
 # 流式 API 响应
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取对应文档页面的 Markdown 版本。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt). 你可以在页面 URL 末尾附加 `.md` 来获取文档页面的 Markdown 版本。
 
-默认情况下，当你向 OpenAI API 发起请求时，我们会在单个 HTTP 响应中先生成模型的完整输出，再将其一次性返回。在生成长输出时，等待响应可能需要较长时间。流式响应允许你在模型持续生成完整响应的同时，开始打印或处理模型输出的开头部分。
+默认情况下，当你向 OpenAI API 发起请求时，我们会先生成模型的完整输出，再通过单个 HTTP 响应一次性返回。在生成长输出时，等待响应可能需要较长时间。流式响应允许你在模型继续生成完整响应的同时，开始打印或处理模型输出开头的内容。
 
-本指南重点介绍基于服务端发送事件（SSE）的 HTTP 流式响应（`stream=true`）。如需通过持久 WebSocket 传输并支持增量输入，请参阅 `previous_response_id`，请参阅 [Responses API WebSocket 模式](https://developers.openai.com/api/docs/guides/websocket-mode).
+本指南重点介绍基于服务端发送事件（SSE）的 HTTP 流式传输。`stream=true`）。如需使用支持通过增量输入的持久 WebSocket 传输，请参阅 `previous_response_id`，请参阅 [Responses API 的 WebSocket 模式](https://developers.openai.com/api/docs/guides/websocket-mode).
 
 ## 启用流式传输
 
 
-要开始流式响应，请在向 Responses 端点发送的请求中设置 `stream=True` ：
+要开始流式响应，请在向 Responses 端点发出的请求中设置 `stream=True` ：
 
 ```javascript
 import { OpenAI } from "openai";
@@ -137,9 +137,21 @@ end
 ```
 
 
-Responses API 使用语义事件进行流式传输。每个事件都有一个预定义的类型，因此你可以只监听自己关心的事件。
+Responses API 使用语义事件进行流式传输。每个事件都带有预定义的类型架构，因此你可以监听你关心的事件。
 
-有关完整的事件类型列表，请参阅 [API 流式参考](https://developers.openai.com/api/reference/resources/responses)。以下是一些示例：
+有关完整的事件类型列表，请参阅 [流式传输的 API 参考](https://developers.openai.com/api/reference/resources/responses)。以下是一些示例：
+
+```javascript
+for await (const event of stream) {
+  if (event.type === "response.output_text.delta") {
+    process.stdout.write(event.delta);
+  } else if (event.type === "response.completed") {
+    console.log("\nResponse completed.");
+  } else if (event.type === "error") {
+    console.error(event.message);
+  }
+}
+```
 
 ```python
 StreamingEvent = (
@@ -202,13 +214,13 @@ stream.each { |event| puts(event) }
 
 
 
-## 阅读响应
+## Read the responses
 
 
 
-如果你正在使用我们的SDK，每个事件都是一个类型化实例。你还可以使用事件的 `type` 属性来识别各个事件。
+如果你使用的是我们的 SDK，每个事件都是一个类型化实例。你也可以使用事件的 `type` 属性来识别各个事件。
 
-一些关键生命周期事件只会发出一次，而另一些事件在响应生成过程中会发出多次。流式传输文本时需要监听的常见事件包括：
+一些关键的生命周期事件只会触发一次，而其他事件会在响应生成过程中触发多次。流式输出文本时常见的事件包括：
 
 ```
 - `response.created`
@@ -217,21 +229,21 @@ stream.each { |event| puts(event) }
 - `error`
 ```
 
-如需可监听事件的完整列表，请参阅 [API 流式参考](https://developers.openai.com/api/reference/resources/responses).
+如需完整可监听的事件列表，请参阅 [流式传输的 API 参考](https://developers.openai.com/api/reference/resources/responses).
 
 
 
 
 
-## 高级用例
+## 进阶用例
 
 如需更高级的用例，例如流式工具调用，请参阅以下专题指南：
 
 - [流式函数调用](https://developers.openai.com/api/docs/guides/function-calling#streaming)
 - [流式结构化输出](https://developers.openai.com/api/docs/guides/structured-outputs#streaming)
 
-## 内容审核风险
+## 审核风险
 
-请注意，在生产环境中以流式方式输出模型内容会使得审核补全内容变得更加困难，因为部分补全可能更难以评估。这可能会对已批准的使用方式产生影响。
+请注意，在生产应用中流式输出模型的补全会使审核补全内容变得更加困难，因为部分补全可能更难评估。这可能会对已批准的使用产生影响。
 
-如果你在生成请求中 [请求审核分数](https://developers.openai.com/api/docs/guides/moderation#moderate-generated-content)，这些分数会在完整生成输出可用后才到达。它们不会包含在部分输出的增量中。
+如果你请求 [在生成请求中同时获取审核分数](https://developers.openai.com/api/docs/guides/moderation#moderate-generated-content),这些分数会在完整生成输出可用后才返回，不会随部分输出增量一起提供。

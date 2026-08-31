@@ -1,10 +1,10 @@
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 检索向量存储文件
 
-**获取** `/vector_stores/{vector_store_id}/files/{file_id}`
+**get** `/vector_stores/{vector_store_id}/files/{file_id}`
 
-检索向量存储文件。
+检索一个向量存储文件。
 
 ### 路径参数
 
@@ -20,19 +20,19 @@
 
   - `id: string`
 
-    标识符，可在API端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
-    向量存储文件创建时的 Unix 时间戳（秒）。
+    向量存储文件创建时的 Unix 时间戳（以秒为单位）。
 
   - `last_error: object { code, message }  or null`
 
-    与此向量存储文件关联的最后一个错误。如果无错误，将为 `null` 。
+    与此向量存储文件关联的最后一个错误。如果不存在错误则为 `null` 。
 
     - `code: "server_error" or "unsupported_file" or "invalid_file"`
 
-      其中一个为 `server_error`, `unsupported_file`，或 `invalid_file`.
+      以下之一： `server_error`, `unsupported_file`，或 `invalid_file`.
 
       - `"server_error"`
 
@@ -52,7 +52,7 @@
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
-    向量存储文件的状态，可以是 `in_progress`, `completed`, `cancelled`，或 `failed`。状态 `completed` 表示向量存储文件已准备好使用。
+    向量存储文件的状态，可为 `in_progress`, `completed`, `cancelled`，或 `failed`。状态 `completed` 表示该向量存储文件已可以使用。
 
     - `"in_progress"`
 
@@ -64,19 +64,19 @@
 
   - `usage_bytes: number`
 
-    向量存储的总使用量（字节）。请注意，这可能与原始文件大小不同。
+    向量存储的总使用量（以字节为单位）。请注意，这可能与原始文件大小不同。
 
   - `vector_store_id: string`
 
-    的 ID [向量存储](/docs/api-reference/vector-stores/object) ， [文件](/docs/api-reference/files) 附加到该存储。
+    所附加到的 [向量存储](/docs/api-reference/vector-stores/object) 的 [File](/docs/api-reference/files) 的 ID。
 
   - `attributes: optional map[string or number or boolean] or null`
 
-    可附加到对象的 16 个键值对集合。这可以
-    可用于以结构化格式存储对象的附加信息，并
-    通过 API 或仪表板查询对象。键为字符串，
-    最大长度为64个字符。值为字符串，最大
-    长度为512个字符、布尔值或数字。
+    可附加到对象的 16 组键值对。可用于
+    以结构化格式存储有关对象的额外信息
+    format，以及通过 API 或控制面板查询对象。键为字符串，
+    最大长度为 64 个字符。值为字符串，最大
+    长度为 512 个字符、布尔值或数字。
 
     - `string`
 
@@ -94,27 +94,27 @@
 
         - `chunk_overlap_tokens: number`
 
-          各分块之间重叠的令牌数量。默认值为 `400`.
+          块之间重叠的 token 数。默认值为 `400`.
 
-          请注意，重叠部分不得超过 `max_chunk_size_tokens`.
+          请注意，重叠部分不得超过每个块大小 `max_chunk_size_tokens`.
 
         - `max_chunk_size_tokens: number`
 
-          每个分块中的最大令牌数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+          每个块中包含的最大 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
       - `type: "static"`
 
-        始终 `static`.
+        始终为 `static`.
 
         - `"static"`
 
     - `OtherFileChunkingStrategyObject object { type }`
 
-      当分块策略未知时返回此值。通常，这是因为文件在 `chunking_strategy` 概念被引入 API 之前已被索引。
+      当分块策略未知时返回。通常是因为该文件在引入此概念之前已被索引到 `chunking_strategy` API 中。
 
       - `type: "other"`
 
-        始终 `other`.
+        始终为 `other`.
 
         - `"other"`
 

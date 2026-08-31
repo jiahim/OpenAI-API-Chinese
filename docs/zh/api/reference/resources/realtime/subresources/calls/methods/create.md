@@ -1,10 +1,10 @@
-> 完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
 
 ## 创建调用
 
 **post** `/realtime/calls`
 
-通过 WebRTC 新建一个 Realtime API 调用，并接收完成对等连接所需的 SDP 应答
+通过 WebRTC 创建新的 Realtime API 调用，并接收完成对等连接所需的 SDP 应答
 。
 
 ### 示例

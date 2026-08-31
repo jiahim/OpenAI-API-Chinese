@@ -1,12 +1,12 @@
-> 完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取 Markdown 版本的文档页面。
 
 ## 取消上传
 
 **post** `/uploads/{upload_id}/cancel`
 
-取消上传。上传被取消后，不得再添加任何部分。
+取消该 Upload。Upload 被取消后，不可再添加任何 Part。
 
-返回带有状态的上传对象 `cancelled`.
+返回带有状态的 Upload 对象 `cancelled`.
 
 ### 路径参数
 
@@ -16,15 +16,15 @@
 
 - `Upload object { id, bytes, created_at, 6 more }`
 
-  Upload 对象可以接受 Parts 形式的字节块。
+  Upload 对象可以以 Parts 的形式接收字节数据块。
 
   - `id: string`
 
-    Upload 的唯一标识符，可在 API 端点中引用。
+    Upload 的唯一标识符，可以在 API 端点中引用。
 
   - `bytes: number`
 
-    要上传的预期字节数。
+    预期上传的字节数。
 
   - `created_at: number`
 
@@ -40,7 +40,7 @@
 
   - `purpose: string`
 
-    文件的预期用途。 [请参考此处](/docs/api-reference/files/object#files/object-purpose) 获取可接受的值。
+    文件的预期用途。 [请参考此处](/docs/api-reference/files/object#files/object-purpose) 了解可接受的值。
 
   - `status: "pending" or "completed" or "cancelled" or "expired"`
 
@@ -56,15 +56,15 @@
 
   - `file: optional FileObject or null`
 
-    该 `File` 对象表示已上传至 OpenAI 的文档。
+    该 `File` 对象表示已上传到 OpenAI 的文档。
 
     - `id: string`
 
-      文件标识符，可在 API 端点中引用。
+      文件标识符，可以在 API 端点中引用。
 
     - `bytes: number`
 
-      文件的大小，以字节为单位。
+      文件的大小（以字节为单位）。
 
     - `created_at: number`
 
@@ -82,7 +82,7 @@
 
     - `purpose: "assistants" or "assistants_output" or "batch" or 5 more`
 
-      文件的预期用途。支持的值有 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
+      文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
 
       - `"assistants"`
 
@@ -102,7 +102,7 @@
 
     - `status: "uploaded" or "processed" or "error"`
 
-      已弃用。文件的当前状态，可以是 `uploaded`, `processed`，或 `error`.
+      已弃用。文件的当前状态，可能为 `uploaded`, `processed`，或 `error`.
 
       - `"uploaded"`
 
@@ -112,11 +112,11 @@
 
     - `expires_at: optional number`
 
-      文件过期时的 Unix 时间戳（秒）。
+      文件过期时的 Unix 时间戳（以秒为单位）。
 
     - `status_details: optional string`
 
-      已弃用。有关微调训练文件验证失败原因的详细信息，请参阅 `error` 上的 `fine_tuning.job`.
+      已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段位于 `fine_tuning.job`.
 
   - `object: optional "upload"`
 
