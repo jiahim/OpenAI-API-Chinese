@@ -911,6 +911,26 @@ client
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+List<ResponseItem> history =
+[
+    ResponseItem.CreateUserMessageItem("What is the capital of France?"),
+];
+
+ResponseResult first = await client.CreateResponseAsync("gpt-5.6", history);
+history.AddRange(first.OutputItems);
+history.Add(ResponseItem.CreateUserMessageItem("And its population?"));
+
+ResponseResult second = await client.CreateResponseAsync("gpt-5.6", history);
+Console.WriteLine(second.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -921,7 +941,7 @@ first = client.responses.create(
   model: "gpt-5.6",
   input: context
 )
-context.concat(first.output.map(&:to_h))
+context.concat(first.output)
 context << {role: :user, content: "And its population?"}
 
 second = client.responses.create(
@@ -1955,6 +1975,23 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(ResponseTool.CreateWebSearchTool());
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Who is the current president of France?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -2014,4 +2051,4 @@ We recommend migrating all flows to the Responses API over time to take advantag
 
 Based on developer feedback from the [Assistants API](https://developers.openai.com/api/reference/resources/beta/subresources/assistants) beta, we've incorporated key improvements into the Responses API to make it more flexible, faster, and easier to use. The Responses API represents the future direction for building agents on OpenAI.
 
-We now have Assistant-like and Thread-like objects in the Responses API. Learn more in the [migration guide](https://developers.openai.com/api/docs/assistants/migration). As of August 26, 2025, we're deprecating the Assistants API, with a sunset date of August 26, 2026.
+The Assistants API was officially sunset on August 26, 2026, and is no longer available. Follow the [migration guide](https://developers.openai.com/api/docs/assistants/migration) to update your integration to the Responses API.

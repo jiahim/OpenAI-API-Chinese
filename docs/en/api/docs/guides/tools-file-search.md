@@ -617,6 +617,26 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string vectorStoreId = "<vector_store_id>";
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(
+    ResponseTool.CreateFileSearchTool([vectorStoreId], maxResultCount: 2)
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -728,6 +748,31 @@ client.responses().create(params).output().stream()
     .flatMap(call -> call.results().stream())
     .flatMap(List::stream)
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string vectorStoreId = "<vector_store_id>";
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(ResponseTool.CreateFileSearchTool([vectorStoreId]));
+options.IncludedProperties.Add(IncludedResponseProperty.FileSearchCallResults);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+foreach (FileSearchCallResponseItem search in response.OutputItems.OfType<FileSearchCallResponseItem>())
+{
+    foreach (FileSearchCallResult result in search.Results)
+    {
+        Console.WriteLine($"{result.Filename}: {result.Text}");
+    }
+}
 ```
 
 ```ruby
@@ -872,6 +917,31 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string vectorStoreId = "<vector_store_id>";
+ResponsesClient client = new(key);
+
+BinaryData filters = BinaryData.FromString(
+    """
+    { "type": "in", "key": "category", "value": ["blog", "announcement"] }
+    """
+);
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(
+    ResponseTool.CreateFileSearchTool([vectorStoreId], filters: filters)
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby

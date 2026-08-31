@@ -48,6 +48,21 @@ environment variable:
 
 Verify an image
 
+```javascript
+import { createReadStream } from "node:fs";
+import OpenAI, { toStreamingFile } from "openai";
+
+const client = new OpenAI();
+
+const result = await client.contentProvenanceChecks.create({
+  file: toStreamingFile(createReadStream("myimage.png"), "myimage.png", {
+    type: "image/png",
+  }),
+});
+
+console.log(result);
+```
+
 ```python
 from openai import OpenAI
 

@@ -1001,7 +1001,7 @@ For tasks that require fine visual detail or precise coordinates, such as optica
 
 ### Model sizing behavior
 
-The following table covers the general-purpose vision models available in the [image input cost calculator](#image-input-cost-calculator). Other models and specialized variants can use different limits. All resizing preserves aspect ratio without enlarging smaller images.
+The following table covers the general-purpose vision models available in the [image input cost calculator](https://developers.openai.com/api/docs/guides/image-cost-calculator). Other models and specialized variants can use different limits. All resizing preserves aspect ratio without enlarging smaller images.
 
 <table>
   <tr>
@@ -1089,13 +1089,13 @@ The following table covers the general-purpose vision models available in the [i
 
 ## Calculating costs
 
-Vision models convert image inputs into billable input tokens. The calculator and patch/tile rules in this section cover vision-model inputs, not GPT Image generation or editing. See [GPT Image model inputs](#gpt-image-model-inputs) for that separate pricing.
+Vision models convert image inputs into billable input tokens. The [image input cost calculator](https://developers.openai.com/api/docs/guides/image-cost-calculator) and patch/tile rules in this section cover vision-model inputs, not GPT Image generation or editing. See [GPT Image model inputs](#gpt-image-model-inputs) for that separate pricing.
 
 Image tokens also count toward your [tokens per minute (TPM) limits](https://developers.openai.com/api/docs/guides/rate-limits). The calculator estimates one image at standard input rates; it does not include the rest of your prompt or model output.
 
 ### Image input cost calculator
 
-Estimate input tokens and cost for one image.
+Use the [image input cost calculator](https://developers.openai.com/api/docs/guides/image-cost-calculator) to estimate input tokens and cost for one image by model, image size, and detail level.
 
 ### Patch-based image tokenization
 

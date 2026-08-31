@@ -128,6 +128,38 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        """
+        Find the null pointer exception in this code:
+
+        def display_name(user):
+            return user.profile.name
+
+        print(display_name(None))
+        """
+    )
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 

@@ -141,6 +141,18 @@ The Responses API uses semantic events for streaming. Each event is typed with a
 
 For a full list of event types, see the [API reference for streaming](https://developers.openai.com/api/reference/resources/responses). Here are a few examples:
 
+```javascript
+for await (const event of stream) {
+  if (event.type === "response.output_text.delta") {
+    process.stdout.write(event.delta);
+  } else if (event.type === "response.completed") {
+    console.log("\nResponse completed.");
+  } else if (event.type === "error") {
+    console.error(event.message);
+  }
+}
+```
+
 ```python
 StreamingEvent = (
     ResponseCreatedEvent

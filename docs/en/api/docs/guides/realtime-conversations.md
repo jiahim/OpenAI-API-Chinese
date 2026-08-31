@@ -119,6 +119,30 @@ event = {
 ws.send(json.dumps(event))
 ```
 
+```ruby
+connection.session.update(
+  type: :realtime,
+  model: "gpt-realtime-2.1",
+  output_modalities: [:audio],
+  audio: {
+    input: {
+      format: {type: :"audio/pcm", rate: 24_000},
+      turn_detection: {type: :semantic_vad}
+    },
+    output: {
+      format: {type: :"audio/pcm", rate: 24_000},
+      voice: :marin
+    }
+  },
+  prompt: {
+    id: ENV.fetch("OPENAI_REALTIME_PROMPT_ID"),
+    version: "89",
+    variables: {city: "Paris"}
+  },
+  instructions: "Speak clearly and briefly. Confirm before taking action."
+)
+```
+
 
 When the session has been updated, the server will emit a [`session.updated`](https://developers.openai.com/api/reference/resources/realtime) event with the new state of the session.
 
@@ -184,6 +208,14 @@ event = {
 ws.send(json.dumps(event))
 ```
 
+```ruby
+connection.conversation.items.create(
+  type: :message,
+  role: :user,
+  content: [{type: :input_text, text: "What is the weather like today?"}]
+)
+```
+
 
 After adding the user message to the conversation, send the [`response.create`](https://developers.openai.com/api/reference/resources/realtime) event to initiate a response from the model. If both audio and text are enabled for the current session, the model will respond with both audio and text content. If you'd like to generate text only, you can specify that when sending the `response.create` client event, as shown below.
 
@@ -204,6 +236,13 @@ dataChannel.send(JSON.stringify(event));
 ```python
 event = {"type": "response.create", "response": {"output_modalities": ["text"]}}
 ws.send(json.dumps(event))
+```
+
+```ruby
+connection.response.create(
+  output_modalities: [:text],
+  instructions: "Respond with a concise text message."
+)
 ```
 
 
@@ -232,6 +271,22 @@ def on_message(ws, message):
     server_event = json.loads(message)
     if server_event["type"] == "response.done":
         print(server_event["response"]["output"][0])
+```
+
+```ruby
+connection.each do |event|
+  next unless event.is_a?(OpenAI::Realtime::ResponseDoneEvent)
+
+  puts("Response status: #{event.response.status}")
+  Array(event.response.output).each do |item|
+    next unless item.is_a?(OpenAI::Realtime::RealtimeConversationItemAssistantMessage)
+
+    item.content.each do |content|
+      puts(content.text) if content.type == :output_text
+    end
+  end
+  break
+end
 ```
 
 
@@ -548,6 +603,14 @@ for filename in files:
     ws.send(json.dumps(event))
 ```
 
+```ruby
+File.open("speech.pcm", "rb") do |audio|
+  while (chunk = audio.read(9_600))
+    connection.input_audio_buffer.append_bytes(chunk)
+  end
+end
+```
+
 
 ### Send full audio messages
 
@@ -596,6 +659,16 @@ event = {
 ws.send(json.dumps(event))
 ```
 
+```ruby
+audio = Base64.strict_encode64(File.binread("speech.pcm"))
+
+connection.conversation.items.create(
+  type: :message,
+  role: :user,
+  content: [{type: :input_audio, audio: audio}]
+)
+```
+
 
 ### Working with audio output from a WebSocket
 
@@ -633,6 +706,18 @@ def on_message(ws, message):
         print(server_event["delta"])
 ```
 
+```ruby
+connection.each do |event|
+  case event
+  when OpenAI::Realtime::ResponseAudioDeltaEvent
+    audio_bytes = Base64.strict_decode64(event.delta)
+    puts("Received #{audio_bytes.bytesize} audio bytes")
+  when OpenAI::Realtime::ResponseDoneEvent
+    break
+  end
+end
+```
+
 
 ## Image inputs
 
@@ -659,6 +744,20 @@ const event = {
 
 // WebRTC data channel and WebSocket both have .send()
 dataChannel.send(JSON.stringify(event));
+```
+
+```ruby
+encoded_image = Base64.strict_encode64(File.binread("image.png"))
+
+connection.conversation.items.create(
+  type: :message,
+  role: :user,
+  content: [
+    {type: :input_image, image_url: "data:image/png;base64,#{encoded_image}"},
+    {type: :input_text, text: "Describe this image."}
+  ]
+)
+connection.response.create(output_modalities: [:text])
 ```
 
 
@@ -743,6 +842,15 @@ event = {
 ws.send(json.dumps(event))
 ```
 
+```ruby
+connection.response.create(
+  conversation: :none,
+  metadata: {topic: "classification"},
+  output_modalities: [:text],
+  instructions: "Classify the conversation as support or sales."
+)
+```
+
 
 Now, when you listen for the [`response.done`](https://developers.openai.com/api/reference/resources/realtime) server event, you can identify the result of your out-of-band response.
 
@@ -782,6 +890,23 @@ def on_message(ws, message):
     if server_event["type"] == "response.done" and topic == "classification":
         # this server event pertained to our OOB model response
         print(server_event["response"]["output"][0])
+```
+
+```ruby
+connection.each do |event|
+  next unless event.is_a?(OpenAI::Realtime::ResponseDoneEvent)
+  next unless event.response.metadata&.fetch(:topic, nil) == "classification"
+
+  puts("Classification response completed: #{event.response.status}")
+  Array(event.response.output).each do |item|
+    next unless item.is_a?(OpenAI::Realtime::RealtimeConversationItemAssistantMessage)
+
+    item.content.each do |content|
+      puts("Classification: #{content.text}") if content.type == :output_text
+    end
+  end
+  break
+end
 ```
 
 
@@ -855,6 +980,22 @@ event = {
 ws.send(json.dumps(event))
 ```
 
+```ruby
+connection.response.create(
+  conversation: :none,
+  metadata: {topic: "classification"},
+  output_modalities: [:text],
+  input: [
+    {type: :item_reference, id: ENV.fetch("OPENAI_REALTIME_CONTEXT_ITEM_ID")},
+    {
+      type: :message,
+      role: :user,
+      content: [{type: :input_text, text: "Classify this issue: my order is late."}]
+    }
+  ]
+)
+```
+
 
 ### Create responses with no context
 
@@ -899,6 +1040,14 @@ event = {
 }
 
 ws.send(json.dumps(event))
+```
+
+```ruby
+connection.response.create(
+  input: [],
+  output_modalities: [:text],
+  instructions: "Generate a concise greeting without conversation context."
+)
 ```
 
 

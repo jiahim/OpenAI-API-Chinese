@@ -183,6 +183,41 @@ client.chat().completions().create(params).choices().stream()
     .forEach(System.out::println);
 ```
 
+```csharp
+using OpenAI.Chat;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-4.1";
+ChatClient client = new(model, key);
+
+string code =
+    """
+    class User {
+      firstName = "";
+      lastName = "";
+      username = "";
+    }
+
+    export default User;
+    """;
+ChatCompletionOptions options = new()
+{
+    OutputPrediction = ChatOutputPrediction.CreateStaticContentPrediction(code),
+};
+ChatCompletion completion = await client.CompleteChatAsync(
+    [
+        new UserChatMessage(
+            "Replace the username property with an email property. Respond only with code, and with no markdown formatting."
+        ),
+        new UserChatMessage(code),
+    ],
+    options
+);
+
+Console.WriteLine(completion.Content[0].Text);
+```
+
 ```ruby
 require "openai"
 
@@ -440,6 +475,48 @@ try (StreamResponse<ChatCompletionChunk> stream =
       .flatMap(chunk -> chunk.choices().stream())
       .flatMap(choice -> choice.delta().content().stream())
       .forEach(System.out::print);
+}
+```
+
+```csharp
+using OpenAI.Chat;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-4.1";
+ChatClient client = new(model, key);
+
+string code =
+    """
+    class User {
+      firstName = "";
+      lastName = "";
+      username = "";
+    }
+
+    export default User;
+    """;
+ChatCompletionOptions options = new()
+{
+    OutputPrediction = ChatOutputPrediction.CreateStaticContentPrediction(code),
+};
+
+await foreach (
+    StreamingChatCompletionUpdate update in client.CompleteChatStreamingAsync(
+        [
+            new UserChatMessage(
+                "Replace the username property with an email property. Respond only with code, and with no markdown formatting."
+            ),
+            new UserChatMessage(code),
+        ],
+        options
+    )
+)
+{
+    foreach (ChatMessageContentPart part in update.ContentUpdate)
+    {
+        Console.Write(part.Text);
+    }
 }
 ```
 

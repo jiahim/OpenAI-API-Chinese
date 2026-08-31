@@ -105,6 +105,28 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using System.ClientModel;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClientOptions clientOptions = new() { NetworkTimeout = TimeSpan.FromMinutes(15) };
+ResponsesClient client = new(new ApiKeyCredential(key), clientOptions);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    Instructions = "List and describe all the metaphors used in this book.",
+    ServiceTier = ResponseServiceTier.Flex,
+};
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("<very long text of book here>"));
+
+using CancellationTokenSource timeout = new(TimeSpan.FromMinutes(15));
+ResponseResult response = await client.CreateResponseAsync(options, timeout.Token);
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 

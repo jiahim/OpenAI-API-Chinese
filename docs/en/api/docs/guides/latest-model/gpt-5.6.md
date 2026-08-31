@@ -25,7 +25,7 @@ When migrating from GPT-5.5 or GPT-5.4, start with your current GPT-5.5 or GPT-5
 - **Persisted reasoning:** GPT-5.6 can reuse available reasoning items across turns to improve multi-turn quality and cache efficiency. Use `reasoning.context` to select the behavior. Learn how to [preserve reasoning across calls](https://developers.openai.com/api/docs/guides/reasoning#preserve-reasoning-across-calls).
 - **Max reasoning effort:** GPT-5.6 supports `max` reasoning effort for demanding tasks that need more exploration and verification. If you currently use `xhigh`, compare both settings on representative workloads.
 - **Pro mode:** GPT-5.6 can perform more model work to improve reliability on difficult tasks and return a single final answer. Enable it with `reasoning.mode: "pro"` when quality matters more than latency and token usage. Learn how to [use pro mode](https://developers.openai.com/api/docs/guides/reasoning#reasoning-mode).
-- **Token efficiency:** GPT-5.6 reaches frontier performance with fewer output tokens.
+- **Token efficiency:** GPT-5.6 reaches flagship-level performance with fewer output tokens.
 - **Frontend design:** GPT-5.6 creates more polished and usable websites and applications, with stronger layout, visual hierarchy, and design judgment.
 - **Intent understanding:** GPT-5.6 can better infer the user's underlying goal and intended level of work from context, so you often do not need to prescribe every step. Continue to provide domain context, hard constraints, approval boundaries, and success criteria. Tell the model when an important ambiguity should trigger a question.
 - **Original image detail:** GPT-5.6 preserves the original dimensions of images sent with `original` or `auto` detail instead of resizing them to a patch budget or pixel-dimension limit. Large images can use more input tokens and increase latency. Learn how to [choose an image detail level](https://developers.openai.com/api/docs/guides/images-vision#choose-an-image-detail-level).
@@ -56,7 +56,7 @@ To use this skill in other coding agents, download it from the [OpenAI skills re
 
 ### Update API and model parameters
 
-- Choose the target model for the workload. Use `gpt-5.6-sol` for frontier capability, `gpt-5.6-terra` for a balance of intelligence and cost, or `gpt-5.6-luna` for efficient, high-volume workloads. The `gpt-5.6` alias routes requests to `gpt-5.6-sol`.
+- Choose the target model for the workload. Use `gpt-5.6-sol` for flagship capability, `gpt-5.6-terra` for a balance of intelligence and cost, or `gpt-5.6-luna` for efficient, high-volume workloads. The `gpt-5.6` alias routes requests to `gpt-5.6-sol`.
 - Use the [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) for reasoning, tool-calling, and multi-turn workflows.
 - Set `reasoning.effort` intentionally. GPT-5.6 supports `none`, `low`, `medium`, `high`, `xhigh`, and `max`.
   - If you are migrating from GPT-5.5 or GPT-5.4, preserve your current reasoning effort as the baseline, then compare one level lower.

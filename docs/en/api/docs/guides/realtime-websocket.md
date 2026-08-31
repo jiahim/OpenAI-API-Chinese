@@ -90,6 +90,34 @@ ws.run_forever()
   
 
     
+OpenAI SDK (Ruby)
+
+    
+
+      Install the required gems with 
+      `gem install openai async-websocket`.
+    
+
+    Connect with the OpenAI SDK (Ruby)
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new(
+  default_headers: {"OpenAI-Safety-Identifier" => "hashed-user-id"}
+)
+
+client.realtime.connect(model: "gpt-realtime-2.1") do |connection|
+  puts("Connected to the Realtime API: #{connection.url.host}")
+  connection.each { |event| puts("Received event: #{event.type}") }
+end
+```
+
+  
+
+  
+
+    
 WebSocket (browsers)
 
     Connect with standard WebSocket (browsers)

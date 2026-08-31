@@ -305,6 +305,7 @@ Schema name: `CreateChatCompletionStreamResponse`
       "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens",
       "(resource) completions > (model) completion_usage > (schema) > (property) total_tokens",
       "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details",
+      "(resource) completions > (model) completion_usage > (schema) > (property) compute_units",
       "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details"
     ]
   },
@@ -660,6 +661,23 @@ Schema name: `CreateChatCompletionStreamResponse`
       "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details > (property) text_tokens"
     ]
   },
+  "(resource) completions > (model) completion_usage > (schema) > (property) compute_units": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompletionUsage/properties/compute_units",
+    "deprecated": false,
+    "key": "compute_units",
+    "docstring": "Compute units for the request. Currently null when available.\n",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "constraints": {
+      "minimum": 0
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "integer",
+    "children": []
+  },
   "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/CompletionUsage/properties/prompt_tokens_details",
@@ -719,6 +737,9 @@ Schema name: `CreateChatCompletionStreamResponse`
           "ident": "completion_tokens_details"
         },
         {
+          "ident": "compute_units"
+        },
+        {
           "ident": "prompt_tokens_details"
         }
       ]
@@ -729,6 +750,7 @@ Schema name: `CreateChatCompletionStreamResponse`
       "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens",
       "(resource) completions > (model) completion_usage > (schema) > (property) total_tokens",
       "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details",
+      "(resource) completions > (model) completion_usage > (schema) > (property) compute_units",
       "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details"
     ]
   },

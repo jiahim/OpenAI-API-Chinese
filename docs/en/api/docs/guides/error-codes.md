@@ -375,6 +375,30 @@ Our support team will investigate the issue and get back to you as soon as possi
 
 We advise you to programmatically handle errors returned by the API. To do so, you may want to use a code snippet like below:
 
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+
+try {
+  const response = await client.responses.create({
+    model: "gpt-5.6",
+    input: "Hello world",
+  });
+  console.log(response.output_text);
+} catch (error) {
+  if (error instanceof OpenAI.APIConnectionError) {
+    console.error("Failed to connect to the OpenAI API:", error.message);
+  } else if (error instanceof OpenAI.RateLimitError) {
+    console.error("OpenAI API request exceeded its rate limit:", error.message);
+  } else if (error instanceof OpenAI.APIError) {
+    console.error("OpenAI API returned an error:", error.status, error.message);
+  } else {
+    throw error;
+  }
+}
+```
+
 ```python
 import openai
 from openai import OpenAI

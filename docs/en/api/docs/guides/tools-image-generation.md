@@ -134,6 +134,29 @@ String encoded =
 Files.write(Path.of("otter.png"), Base64.getDecoder().decode(encoded));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
+    )
+);
+options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+ImageGenerationCallResponseItem image = response
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .FirstOrDefault()
+    ?? throw new InvalidOperationException("No generated image was returned.");
+await File.WriteAllBytesAsync("otter.png", image.ImageResultBytes.ToArray());
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -415,6 +438,45 @@ Files.write(
             secondImage
                 .result()
                 .orElseThrow(() -> new IllegalStateException("No follow-up image returned"))));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
+    )
+);
+
+ResponseResult first = await client.CreateResponseAsync(options);
+ImageGenerationCallResponseItem initialImage = first
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .First();
+await File.WriteAllBytesAsync("cat_and_otter.png", initialImage.ImageResultBytes.ToArray());
+
+CreateResponseOptions followUp = new()
+{
+    Model = "gpt-5.6",
+    PreviousResponseId = first.Id,
+};
+followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+followUp.InputItems.Add(ResponseItem.CreateUserMessageItem("Now make it look realistic."));
+
+ResponseResult second = await client.CreateResponseAsync(followUp);
+ImageGenerationCallResponseItem updatedImage = second
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .First();
+await File.WriteAllBytesAsync(
+    "cat_and_otter_realistic.png",
+    updatedImage.ImageResultBytes.ToArray()
+);
 ```
 
 ```ruby
@@ -714,6 +776,42 @@ Files.write(
             secondImage
                 .result()
                 .orElseThrow(() -> new IllegalStateException("No follow-up image returned"))));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
+    )
+);
+
+ResponseResult first = await client.CreateResponseAsync(options);
+ImageGenerationCallResponseItem initialImage = first
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .First();
+await File.WriteAllBytesAsync("cat_and_otter.png", initialImage.ImageResultBytes.ToArray());
+
+CreateResponseOptions followUp = new() { Model = "gpt-5.6" };
+followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+followUp.InputItems.Add(ResponseItem.CreateUserMessageItem("Now make it look realistic."));
+followUp.InputItems.Add(ResponseItem.CreateReferenceItem(initialImage.Id));
+
+ResponseResult second = await client.CreateResponseAsync(followUp);
+ImageGenerationCallResponseItem updatedImage = second
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .First();
+await File.WriteAllBytesAsync(
+    "cat_and_otter_realistic.png",
+    updatedImage.ImageResultBytes.ToArray()
+);
 ```
 
 ```ruby

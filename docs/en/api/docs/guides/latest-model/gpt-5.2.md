@@ -133,6 +133,31 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.2",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.None,
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Think carefully and outline your steps before answering. How much gold would it take to coat the Statue of Liberty in a 1mm layer?"
+    )
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -792,7 +817,7 @@ compaction = client.responses.compact(
   model: "gpt-5.2",
   input: [
     {role: :user, content: "Write a very long poem about a dog."},
-    *response.output.map(&:to_h)
+    *response.output
   ]
 )
 

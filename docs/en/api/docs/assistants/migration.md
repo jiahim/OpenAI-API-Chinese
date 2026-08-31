@@ -2,12 +2,14 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-After achieving feature parity in the Responses API, we've deprecated the Assistants API. It will shut down on August 26, 2026. Follow the [migration guide](https://developers.openai.com/platform/assistants/migration) to update your integration. [Learn more](https://platform.openai.com/docs/guides/migrate-to-responses).
+The Assistants API was officially sunset on August 26, 2026, and is no longer available. Use the [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) for new integrations.
 
 
 
 
-We're moving from the Assistants API to the new [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) for a simpler and more flexible mental model.
+Thank you to everyone who used the Assistants API. We appreciate everything you built and the feedback you shared along the way.
+
+Use this guide to migrate your integration to the [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses).
 
 Responses are simpler—send input items and get output items back. With the Responses API, you also get better performance and new features like [deep research](https://developers.openai.com/api/docs/guides/deep-research), [MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp), and [computer use](https://developers.openai.com/api/docs/guides/tools-computer-use). This change also lets you manage conversations instead of passing back `previous_response_id`.
 
@@ -277,9 +279,9 @@ Reusable prompt objects are also being deprecated. If you use this migration
 
 ### 2. Move new user chats over to conversations and responses
 
-We will not provide an automated tool for migrating Threads to Conversations. Instead, we recommend migrating new user threads onto conversations and migrating older ones as necessary.
+Start new chats with the Conversations API and Responses API. To preserve earlier conversation history, use messages already stored by your application.
 
-Here's an example for how you might backfill a thread:
+The example below shows how thread history could be migrated before the sunset. The Assistants API call that retrieves thread messages no longer works; use your stored messages instead.
 
 ```python
 import os
@@ -453,6 +455,62 @@ puts(handle_message.call(
 
     
 Responses API
+
+```javascript
+import express from "express";
+import OpenAI from "openai";
+
+const app = express();
+const client = new OpenAI();
+const conversationsBySession = new Map();
+
+app.use(express.json());
+
+app.post("/messages", async (request, response) => {
+  const { content, session_id: sessionId } = request.body ?? {};
+  if (
+    typeof content !== "string" ||
+    !content.trim() ||
+    typeof sessionId !== "string" ||
+    !sessionId.trim()
+  ) {
+    response.status(400).json({
+      error: "content and session_id must be non-empty strings.",
+    });
+    return;
+  }
+
+  let conversationIdPromise = conversationsBySession.get(sessionId);
+
+  if (!conversationIdPromise) {
+    conversationIdPromise = client.conversations
+      .create()
+      .then((conversation) => conversation.id)
+      .catch((error) => {
+        conversationsBySession.delete(sessionId);
+        throw error;
+      });
+    conversationsBySession.set(sessionId, conversationIdPromise);
+  }
+  const conversationId = await conversationIdPromise;
+
+  const promptId = process.env.OPENAI_PROMPT_ID;
+  if (!promptId) {
+    response.status(500).json({ error: "OPENAI_PROMPT_ID is required." });
+    return;
+  }
+
+  const result = await client.responses.create({
+    prompt: { id: promptId },
+    input: [{ role: "user", content }],
+    conversation: conversationId,
+  });
+
+  response.json({ content: result.output_text });
+});
+
+app.listen(Number(process.env.OPENAI_EXAMPLE_PORT ?? 8000), "127.0.0.1");
+```
 
 ```python
 conversations_by_session: dict[str, str] = {}

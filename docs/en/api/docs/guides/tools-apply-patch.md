@@ -44,6 +44,18 @@ At a high level, using `apply_patch` with the Responses API looks like this:
 
 Ask the model to plan and emit patches
 
+```javascript
+const response = await client.responses.create({
+  model: "gpt-5.6",
+  input: fileContext,
+  tools: [{ type: "apply_patch" }],
+});
+
+const patchCalls = response.output.filter(
+  (item) => item.type === "apply_patch_call"
+);
+```
+
 ```python
 from openai import OpenAI
 
@@ -169,6 +181,29 @@ Example apply_patch_call object
 **Step 2: Apply the patch and send results back**
 
 Apply the patch and return results
+
+```javascript
+/** @type {import("openai/resources/responses/responses").ResponseInput} */
+const results = patchCalls.map((call) => {
+  const { success, output } = applyOperation(call.operation);
+
+  return {
+    type: "apply_patch_call_output",
+    call_id: call.call_id,
+    status: success ? "completed" : "failed",
+    output,
+  };
+});
+
+const followup = await client.responses.create({
+  model: "gpt-5.6",
+  previous_response_id: response.id,
+  input: results,
+  tools: [{ type: "apply_patch" }],
+});
+
+console.log(followup.output_text);
+```
 
 ```python
 from apply_patch_harness import apply_operation  # your implementation

@@ -203,16 +203,16 @@ allow bidirectional SRTP traffic over UDP to and from the following CIDRs:
 - `40.67.149.176/28`
 - `40.83.204.240/28`
 
-## Python example
+## Server examples
 
 The following is an example of a `realtime.call.incoming` handler. It accepts the call and then logs all the events from
 the Realtime API.
 
+For the Ruby example, set the `OPENAI_API_KEY` and `OPENAI_WEBHOOK_SECRET`
+environment variables, then install the required dependencies with
+`gem install openai webrick async-websocket`.
 
-
-Python
-
-    Python
+Handle an incoming SIP call
 
 ```python
 from flask import Flask, request, Response, jsonify, make_response
@@ -286,6 +286,69 @@ if __name__ == "__main__":
     app.run(port=8000)
 ```
 
+```ruby
+require "openai"
+require "webrick"
+
+client = OpenAI::Client.new(webhook_secret: ENV.fetch("OPENAI_WEBHOOK_SECRET"))
+server = WEBrick::HTTPServer.new(
+  BindAddress: "127.0.0.1",
+  Port: Integer(ENV.fetch("OPENAI_WEBHOOK_PORT", "8000")),
+  Logger: WEBrick::Log.new($stderr, WEBrick::BasicLog::WARN),
+  AccessLog: []
+)
+sideband_workers = []
+
+server.mount_proc("/webhook") do |request, response|
+  if request.request_method != "POST"
+    response.status = 405
+    next
+  end
+
+  headers = request.header.transform_values(&:first)
+  event = client.webhooks.unwrap(request.body, headers)
+
+  if event.is_a?(OpenAI::Models::Webhooks::RealtimeCallIncomingWebhookEvent)
+    call_id = event.data.call_id
+    sideband_workers.select!(&:alive?)
+    sideband_workers << Thread.new(call_id) do |active_call_id|
+      client.realtime.calls.accept(
+        active_call_id,
+        type: :realtime,
+        model: "gpt-realtime-2.1",
+        instructions: "You are a helpful support agent."
+      )
+
+      client.realtime.connect_to_call(call_id: active_call_id) do |connection|
+        connection.response.create(
+          instructions: "Thank the caller and ask how you can help."
+        )
+        connection.each do |server_event|
+          puts "Realtime event: #{server_event.type}"
+        end
+      end
+    end
+  end
+
+  response.status = 200
+  response.body = "ok"
+rescue OpenAI::Errors::InvalidWebhookSignatureError, ArgumentError
+  response.status = 400
+  response.body = "Invalid signature"
+ensure
+  server.shutdown if ENV["OPENAI_WEBHOOK_EXIT_AFTER_REQUEST"] == "1"
+end
+
+Signal.trap("INT") do
+  sideband_workers.each(&:kill)
+  server.shutdown
+end
+port = server.listeners.first.addr[1]
+puts "Webhook server listening on http://127.0.0.1:#{port}/webhook"
+$stdout.flush
+server.start
+sideband_workers.each(&:join)
+```
 
 
 ## Next steps

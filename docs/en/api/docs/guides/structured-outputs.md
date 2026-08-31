@@ -556,6 +556,58 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using System.Text.Json;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "explanation": { "type": "string" },
+              "output": { "type": "string" }
+            },
+            "required": ["explanation", "output"],
+            "additionalProperties": false
+          }
+        },
+        "final_answer": { "type": "string" }
+      },
+      "required": ["steps", "final_answer"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "math_response",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a helpful math tutor. Guide the user through the solution step by step."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("How can I solve 8x + 7 = -23?"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+using JsonDocument parsed = JsonDocument.Parse(response.GetOutputText());
+Console.WriteLine(parsed.RootElement);
+```
+
 ```ruby
 require "openai"
 
@@ -893,6 +945,60 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using System.Text.Json;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "authors": { "type": "array", "items": { "type": "string" } },
+        "abstract": { "type": "string" },
+        "keywords": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["title", "authors", "abstract", "keywords"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "research_paper",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("Extract the title, authors, abstract, and keywords from the research paper."));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        """
+        Attention Is All You Need by Ashish Vaswani, Noam Shazeer,
+        Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez,
+        Łukasz Kaiser, and Illia Polosukhin. We propose the
+        Transformer, a sequence transduction architecture based
+        entirely on attention. Keywords: transformers, attention,
+        sequence transduction.
+        """
+    )
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+using JsonDocument parsed = JsonDocument.Parse(response.GetOutputText());
+Console.WriteLine(parsed.RootElement);
 ```
 
 ```ruby
@@ -1253,6 +1359,67 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using System.Text.Json;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "ui": { "$ref": "#/$defs/component" }
+      },
+      "required": ["ui"],
+      "additionalProperties": false,
+      "$defs": {
+        "component": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string", "enum": ["div", "button", "header", "section", "field", "form"] },
+            "label": { "type": "string" },
+            "children": { "type": "array", "items": { "$ref": "#/$defs/component" } },
+            "attributes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": { "name": { "type": "string" }, "value": { "type": "string" } },
+                "required": ["name", "value"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["type", "label", "children", "attributes"],
+          "additionalProperties": false
+        }
+      }
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "ui",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a UI generator. Convert the user request into a component tree."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("Make a User Profile Form"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+using JsonDocument parsed = JsonDocument.Parse(response.GetOutputText());
+Console.WriteLine(parsed.RootElement);
 ```
 
 ```ruby
@@ -1663,6 +1830,51 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using System.Text.Json;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "is_violating": { "type": "boolean" },
+        "category": {
+          "type": ["string", "null"],
+          "enum": ["violence", "sexual", "self_harm", null]
+        },
+        "explanation_if_violating": { "type": ["string", "null"] }
+      },
+      "required": ["is_violating", "category", "explanation_if_violating"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "content_compliance",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("Determine whether the user input violates content guidelines."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("How do I prepare for a job interview?"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+using JsonDocument parsed = JsonDocument.Parse(response.GetOutputText());
+Console.WriteLine(parsed.RootElement);
+```
+
 ```ruby
 require "openai"
 
@@ -2033,6 +2245,58 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using System.Text.Json;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "explanation": { "type": "string" },
+              "output": { "type": "string" }
+            },
+            "required": ["explanation", "output"],
+            "additionalProperties": false
+          }
+        },
+        "final_answer": { "type": "string" }
+      },
+      "required": ["steps", "final_answer"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "math_response",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a helpful math tutor. Guide the user through the solution step by step."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("How can I solve 8x + 7 = -23?"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+using JsonDocument parsed = JsonDocument.Parse(response.GetOutputText());
+Console.WriteLine(parsed.RootElement);
 ```
 
 ```ruby
@@ -2460,6 +2724,77 @@ if (content.refusal().isPresent()) {
 }
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "explanation": { "type": "string" },
+              "output": { "type": "string" }
+            },
+            "required": ["explanation", "output"],
+            "additionalProperties": false
+          }
+        },
+        "final_answer": { "type": "string" }
+      },
+      "required": ["steps", "final_answer"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    MaxOutputTokenCount = 300,
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "math_response",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a helpful math tutor. Guide the user through the solution step by step."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("How can I solve 8x + 7 = -23?"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+if (
+    response.Status == ResponseStatus.Incomplete
+    && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.MaxOutputTokens
+)
+{
+    throw new InvalidOperationException("The structured response was incomplete.");
+}
+if (
+    response.Status == ResponseStatus.Incomplete
+    && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.ContentFilter
+)
+{
+    throw new InvalidOperationException("The structured response was interrupted by the content filter.");
+}
+MessageResponseItem message = response.OutputItems.OfType<MessageResponseItem>().FirstOrDefault()
+    ?? throw new InvalidOperationException("The response did not include an output message.");
+ResponseContentPart content = message.Content.FirstOrDefault()
+    ?? throw new InvalidOperationException("The response did not include output content.");
+Console.WriteLine(
+    content.Kind == ResponseContentPartKind.Refusal ? content.Refusal : content.Text
+);
+```
+
 ```ruby
 require "openai"
 
@@ -2764,6 +3099,64 @@ for (var output : response.output()) {
       content.outputText().ifPresent(text -> System.out.println(text.text()));
     }
   }
+}
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "explanation": { "type": "string" },
+              "output": { "type": "string" }
+            },
+            "required": ["explanation", "output"],
+            "additionalProperties": false
+          }
+        },
+        "final_answer": { "type": "string" }
+      },
+      "required": ["steps", "final_answer"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "math_response",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a helpful math tutor. Guide the user through the solution step by step."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("How can I solve 8x + 7 = -23?"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+foreach (MessageResponseItem message in response.OutputItems.OfType<MessageResponseItem>())
+{
+    foreach (ResponseContentPart content in message.Content)
+    {
+        Console.WriteLine(
+            content.Kind == ResponseContentPartKind.Refusal ? content.Refusal : content.Text
+        );
+    }
 }
 ```
 
@@ -3842,6 +4235,55 @@ try {
   }
 } catch (OpenAIServiceException error) {
   System.out.println("Request failed: " + error.getMessage());
+}
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonObjectFormat(),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a helpful assistant designed to output JSON."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("Who won the World Series in 2020? Respond with the winner in JSON."));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+if (
+    response.Status == ResponseStatus.Incomplete
+    && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.MaxOutputTokens
+)
+{
+    Console.WriteLine("The response was truncated before the JSON completed.");
+}
+else if (
+    response.Status == ResponseStatus.Incomplete
+    && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.ContentFilter
+)
+{
+    Console.WriteLine("The response was interrupted by the content filter.");
+}
+else if (response.Status == ResponseStatus.Completed)
+{
+    MessageResponseItem message = response.OutputItems.OfType<MessageResponseItem>().FirstOrDefault()
+        ?? throw new InvalidOperationException("The response did not include an output message.");
+    ResponseContentPart content = message.Content.FirstOrDefault()
+        ?? throw new InvalidOperationException("The response did not include output content.");
+    Console.WriteLine(
+        content.Kind == ResponseContentPartKind.Refusal ? content.Refusal : content.Text
+    );
+}
+else
+{
+    throw new InvalidOperationException($"The response ended with status: {response.Status}");
 }
 ```
 

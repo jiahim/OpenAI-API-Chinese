@@ -756,6 +756,33 @@ result
         word -> System.out.println(word.word() + ": " + word.start() + " - " + word.end()));
 ```
 
+```csharp
+using OpenAI.Audio;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "whisper-1";
+AudioClient client = new(model, key);
+
+await using FileStream audio = File.OpenRead("speech.wav");
+AudioTranscriptionOptions options = new()
+{
+    ResponseFormat = AudioTranscriptionFormat.Verbose,
+    TimestampGranularities = AudioTimestampGranularities.Word,
+};
+AudioTranscription transcription = await client.TranscribeAudioAsync(
+    audio,
+    "speech.wav",
+    options
+);
+
+foreach (TranscribedWord word in transcription.Words)
+{
+    Console.WriteLine(
+        $"{word.Word}: {word.StartTime.TotalSeconds:0.00}s - {word.EndTime.TotalSeconds:0.00}s"
+    );
+}
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -1066,6 +1093,28 @@ try (HttpResponse result =
 }
 ```
 
+```csharp
+using OpenAI.Audio;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "whisper-1";
+AudioClient client = new(model, key);
+
+await using FileStream audio = File.OpenRead("speech.wav");
+AudioTranscriptionOptions options = new()
+{
+    ResponseFormat = AudioTranscriptionFormat.Text,
+    Prompt = "ZyntriQix, Digique Plus, CynapseFive, VortiQore V8, EchoNix Array, OrbitalLink Seven, DigiFractal Matrix, PULSE, RAPT, B.R.I.C.K., Q.U.A.R.T.Z., F.L.I.N.T.",
+};
+AudioTranscription transcription = await client.TranscribeAudioAsync(
+    audio,
+    "speech.wav",
+    options
+);
+
+Console.WriteLine(transcription.Text);
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -1262,6 +1311,41 @@ var completion =
 completion.choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Audio;
+using OpenAI.Chat;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-4.1";
+ChatClient client = new(model, key);
+
+string transcriptionModel = "gpt-4o-transcribe";
+AudioClient audio = new(transcriptionModel, key);
+
+await using FileStream source = File.OpenRead("speech.wav");
+AudioTranscription transcription = await audio.TranscribeAudioAsync(source, "speech.wav");
+
+string systemPrompt =
+    """
+    You are a helpful assistant for the company ZyntriQix. Correct any
+    spelling discrepancies in the transcribed text. Make sure the names
+    of these products are spelled correctly: ZyntriQix, Digique Plus,
+    CynapseFive, VortiQore V8, EchoNix Array, OrbitalLink Seven,
+    DigiFractal Matrix, PULSE, RAPT, B.R.I.C.K., Q.U.A.R.T.Z., F.L.I.N.T.
+    Only add necessary punctuation such as periods, commas, and
+    capitalization, and use only the context provided.
+    """;
+ChatCompletionOptions correctionOptions = new() { Temperature = 0 };
+ChatCompletion completion = await client.CompleteChatAsync(
+    [
+        new SystemChatMessage(systemPrompt),
+        new UserChatMessage(transcription.Text),
+    ],
+    correctionOptions
+);
+Console.WriteLine(completion.Content[0].Text);
 ```
 
 ```ruby

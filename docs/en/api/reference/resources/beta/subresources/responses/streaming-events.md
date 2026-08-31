@@ -2538,7 +2538,8 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -8186,6 +8187,23 @@ Schema name: `BetaResponseCreatedEvent`
     "schemaType": "integer",
     "children": []
   },
+  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
+    "deprecated": false,
+    "key": "compute_units",
+    "docstring": "Compute units for the request. Currently null when available.\n",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "constraints": {
+      "minimum": 0
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "integer",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -8208,6 +8226,9 @@ Schema name: `BetaResponseCreatedEvent`
         },
         {
           "ident": "total_tokens"
+        },
+        {
+          "ident": "compute_units"
         }
       ]
     },
@@ -8217,7 +8238,8 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -66742,7 +66764,8 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -72390,6 +72413,23 @@ Schema name: `BetaResponseInProgressEvent`
     "schemaType": "integer",
     "children": []
   },
+  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
+    "deprecated": false,
+    "key": "compute_units",
+    "docstring": "Compute units for the request. Currently null when available.\n",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "constraints": {
+      "minimum": 0
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "integer",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -72412,6 +72452,9 @@ Schema name: `BetaResponseInProgressEvent`
         },
         {
           "ident": "total_tokens"
+        },
+        {
+          "ident": "compute_units"
         }
       ]
     },
@@ -72421,7 +72464,8 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -130946,7 +130990,8 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -136594,6 +136639,23 @@ Schema name: `BetaResponseCompletedEvent`
     "schemaType": "integer",
     "children": []
   },
+  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
+    "deprecated": false,
+    "key": "compute_units",
+    "docstring": "Compute units for the request. Currently null when available.\n",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "constraints": {
+      "minimum": 0
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "integer",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -136616,6 +136678,9 @@ Schema name: `BetaResponseCompletedEvent`
         },
         {
           "ident": "total_tokens"
+        },
+        {
+          "ident": "compute_units"
         }
       ]
     },
@@ -136625,7 +136690,8 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -195167,7 +195233,8 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -200815,6 +200882,23 @@ Schema name: `BetaResponseFailedEvent`
     "schemaType": "integer",
     "children": []
   },
+  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
+    "deprecated": false,
+    "key": "compute_units",
+    "docstring": "Compute units for the request. Currently null when available.\n",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "constraints": {
+      "minimum": 0
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "integer",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -200837,6 +200921,9 @@ Schema name: `BetaResponseFailedEvent`
         },
         {
           "ident": "total_tokens"
+        },
+        {
+          "ident": "compute_units"
         }
       ]
     },
@@ -200846,7 +200933,8 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -259369,7 +259457,8 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -265017,6 +265106,23 @@ Schema name: `BetaResponseIncompleteEvent`
     "schemaType": "integer",
     "children": []
   },
+  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
+    "deprecated": false,
+    "key": "compute_units",
+    "docstring": "Compute units for the request. Currently null when available.\n",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "constraints": {
+      "minimum": 0
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "integer",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -265039,6 +265145,9 @@ Schema name: `BetaResponseIncompleteEvent`
         },
         {
           "ident": "total_tokens"
+        },
+        {
+          "ident": "compute_units"
         }
       ]
     },
@@ -265048,7 +265157,8 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -388657,7 +388767,8 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -394305,6 +394416,23 @@ Schema name: `BetaResponseQueuedEvent`
     "schemaType": "integer",
     "children": []
   },
+  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
+    "deprecated": false,
+    "key": "compute_units",
+    "docstring": "Compute units for the request. Currently null when available.\n",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "constraints": {
+      "minimum": 0
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "integer",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -394327,6 +394455,9 @@ Schema name: `BetaResponseQueuedEvent`
         },
         {
           "ident": "total_tokens"
+        },
+        {
+          "ident": "compute_units"
         }
       ]
     },
@@ -394336,7 +394467,8 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -451597,7 +451729,16 @@ Schema name: `BetaResponseShellCallCommandAddedStreamingEvent`
 ### Example
 
 ```json
-{}
+{
+  "type": "response.shell_call_command.added",
+  "sequence_number": 0,
+  "agent": {
+    "agent_name": "agent_name"
+  },
+  "output_index": 0,
+  "command_index": 0,
+  "command": "command"
+}
 ```
 
 ## response.shell_call_command.delta
@@ -451796,7 +451937,17 @@ Schema name: `BetaResponseShellCallCommandDeltaStreamingEvent`
 ### Example
 
 ```json
-{}
+{
+  "type": "response.shell_call_command.delta",
+  "sequence_number": 0,
+  "agent": {
+    "agent_name": "agent_name"
+  },
+  "output_index": 0,
+  "command_index": 0,
+  "delta": "delta",
+  "obfuscation": "obfuscation"
+}
 ```
 
 ## response.shell_call_command.done
@@ -451977,7 +452128,16 @@ Schema name: `BetaResponseShellCallCommandDoneStreamingEvent`
 ### Example
 
 ```json
-{}
+{
+  "type": "response.shell_call_command.done",
+  "sequence_number": 0,
+  "agent": {
+    "agent_name": "agent_name"
+  },
+  "output_index": 0,
+  "command_index": 0,
+  "command": "command"
+}
 ```
 
 ## response.shell_call_output_content.delta
@@ -452217,7 +452377,20 @@ Schema name: `BetaResponseShellCallOutputContentDeltaStreamingEvent`
 ### Example
 
 ```json
-{}
+{
+  "type": "response.shell_call_output_content.delta",
+  "sequence_number": 0,
+  "agent": {
+    "agent_name": "agent_name"
+  },
+  "item_id": "item_id",
+  "output_index": 0,
+  "command_index": 0,
+  "delta": {
+    "stdout": "stdout",
+    "stderr": "stderr"
+  }
+}
 ```
 
 ## response.shell_call_output_content.done
@@ -452641,5 +452814,24 @@ Schema name: `BetaResponseShellCallOutputContentDoneStreamingEvent`
 ### Example
 
 ```json
-{}
+{
+  "type": "response.shell_call_output_content.done",
+  "sequence_number": 0,
+  "agent": {
+    "agent_name": "agent_name"
+  },
+  "item_id": "item_id",
+  "output_index": 0,
+  "command_index": 0,
+  "output": [
+    {
+      "stdout": "stdout",
+      "stderr": "stderr",
+      "outcome": {
+        "type": "timeout"
+      },
+      "created_by": "created_by"
+    }
+  ]
+}
 ```
