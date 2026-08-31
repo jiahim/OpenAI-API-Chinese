@@ -113,7 +113,7 @@ export function renderSyncPullRequestBody(summary: SyncDiffSummary): string {
     "## 合入要求",
     "",
     "- 同步器已在写入前校验官方索引和页面响应。",
-    "- 自动任务不会绕过异常大规模删除保护。",
+    "- 自动任务会显式允许超过命令行安全阈值的大规模删除；合入前必须审核“删除文件”清单。",
     "- 仅在 `Quality gate` 通过后合入。",
     "",
   ].join("\n");

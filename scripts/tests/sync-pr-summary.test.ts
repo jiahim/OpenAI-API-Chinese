@@ -55,6 +55,17 @@ test("renderSyncPullRequestBody uses Chinese sections and lists every path", () 
   assert.match(body, /仅在 `Quality gate` 通过后合入/);
 });
 
+test("renderSyncPullRequestBody warns reviewers when automation permits large prunes", () => {
+  const body = renderSyncPullRequestBody({
+    added: [],
+    modified: [],
+    removed: ["docs/en/api/reference/legacy.md"],
+  });
+
+  assert.match(body, /自动任务会显式允许超过命令行安全阈值的大规模删除/);
+  assert.match(body, /合入前必须审核“删除文件”清单/);
+});
+
 test("renderSyncRelease keeps article changes and resolves page metadata", () => {
   const release = renderSyncRelease(
     {

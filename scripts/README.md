@@ -51,7 +51,7 @@ node scripts/sync-docs.ts sync --prune --allow-large-prune
 
 使用 `--match` 或 `--limit` 的部分扫描不会判断页面是否已被官方移除，避免把未扫描页面误判为删除。
 
-完整扫描会先验证索引：某个栏目没有解析出 Markdown 页面时立即中止；相较 manifest 的有效记录，单个栏目拟移除超过 20 页或 10% 时也会中止。确认这是官方的真实大规模调整后，维护者才能通过 `--allow-large-prune` 明确放行。删除路径始终从经过验证的官方 URL 重新计算，并严格限制在 `sourceRoot` 内，manifest 中保存的历史 `localPath` 不具有删除权限。
+完整扫描会先验证索引：某个栏目没有解析出 Markdown 页面时立即中止；相较 manifest 的有效记录，单个栏目拟移除超过 20 页或 10% 时也会中止。确认这是官方的真实大规模调整后，本地同步可由维护者通过 `--allow-large-prune` 明确放行；定时任务使用该参数时只会生成待审核 PR。删除路径始终从经过验证的官方 URL 重新计算，并严格限制在 `sourceRoot` 内，manifest 中保存的历史 `localPath` 不具有删除权限。
 
 ## 网络策略
 
@@ -96,7 +96,7 @@ node scripts/sync-docs.ts sync --prune --allow-large-prune
 
 ## 定时任务
 
-`.github/workflows/sync-docs.yml` 每天北京时间 00:00（UTC 16:00）从受信任的 `main` 重建固定分支 `automation/sync-openai-docs`，运行完整同步和 `--prune`，并只提交 `docs/en/` 的真实变化。专用分支使用 `--force-with-lease` 安全更新，工作流不会执行分支自身修改过的脚本。随后创建或更新面向 `main` 的中文 PR；`scripts/sync-pr-summary.ts` 根据实际 Git 差异区分新增、修改和删除，并在 PR 中列出对应文件路径。维护者批准自动 PR 的工作流运行后，PR 必须通过标准 `pull_request` 触发的 `Quality gate`；工作流不会直接 push `main`。官方内容重新与 `main` 一致时，失效的同步 PR 会被关闭。Job 最长运行 45 分钟，避免上游持续故障或异常 `Retry-After` 无限占用执行器。
+`.github/workflows/sync-docs.yml` 每天北京时间 00:00（UTC 16:00）从受信任的 `main` 重建固定分支 `automation/sync-openai-docs`，运行完整同步和 `--prune --allow-large-prune`，并只提交 `docs/en/` 的真实变化。定时任务允许把超过命令行安全阈值的大规模删除写入待审核 PR，但不会直接写入 `main`。专用分支使用 `--force-with-lease` 安全更新，工作流不会执行分支自身修改过的脚本。随后创建或更新面向 `main` 的中文 PR；`scripts/sync-pr-summary.ts` 根据实际 Git 差异区分新增、修改和删除，在 PR 中列出对应文件路径，并提醒维护者审核删除清单。维护者批准自动 PR 的工作流运行后，PR 必须通过标准 `pull_request` 触发的 `Quality gate`；工作流不会直接 push `main`。官方内容重新与 `main` 一致时，失效的同步 PR 会被关闭。Job 最长运行 45 分钟，避免上游持续故障或异常 `Retry-After` 无限占用执行器。
 
 首次启用前，需要在仓库 **Settings → Actions → General → Workflow permissions** 勾选 **Allow GitHub Actions to create and approve pull requests**。随后可对 `main` 设置必须通过 PR 和 `Quality gate` 的 Ruleset，无需给同步机器人配置 bypass。
 
