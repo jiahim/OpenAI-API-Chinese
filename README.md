@@ -58,7 +58,7 @@ pnpm translate:simulate -- --match guides/agents/quickstart.md --limit 1
 - `docs:check`：联网检查官方内容或本地镜像是否变化，不写文件；有变化时退出码为 `1`。
 - `docs:sync`：以低并发和全局限速联网同步 Markdown；本轮全部下载成功后才更新文件和 `docs/en/.source-manifest.json`。
 
-完整同步会拒绝空索引和异常大幅删除。超过自动安全阈值的 prune 必须由维护者使用 `--allow-large-prune` 明确确认；定时任务不会自动绕过这道保护。
+完整同步会拒绝空索引和异常大幅删除。命令行同步超过自动安全阈值时，必须由维护者使用 `--allow-large-prune` 明确确认。定时同步只会把变更写入待审核的自动 PR，不会直接写入 `main`，因此会显式启用该参数；大规模删除仍须由维护者在 PR 中审核后合并。
 
 维护细节和筛选参数见 [`scripts/README.md`](scripts/README.md)，文档目录说明见 [`docs/README.md`](docs/README.md)。
 

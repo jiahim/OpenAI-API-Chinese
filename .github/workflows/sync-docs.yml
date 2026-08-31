@@ -54,7 +54,7 @@ jobs:
           pnpm test
 
       - name: Synchronize official Markdown
-        run: pnpm docs:sync --prune
+        run: pnpm docs:sync --prune --allow-large-prune
 
       - name: Publish the automation branch
         id: publish
