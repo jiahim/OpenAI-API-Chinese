@@ -1,9 +1,9 @@
-# 组织用户角色 — 删除
+# Organization Users Roles — Delete
 
-> 如需查看完整的文档索引，请参见 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后添加 `.md` 来获取。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾附加 `.md` 即可获取该页面的 Markdown 版本。
 
-OpenAI API 端点方法参考。
+OpenAI API endpoint 方法参考。
 
-规范参考 URL： https://developers.openai.com/api/reference/resources/organization/subresources/users/subresources/roles/methods/delete
+规范参考 URL: https://developers.openai.com/api/reference/resources/organization/subresources/users/subresources/roles/methods/delete
 
-本 API 参考页面由 Stainless 生成。
+此 API 参考页面由 Stainless 生成。

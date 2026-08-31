@@ -1,48 +1,60 @@
 # Apply Patch
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾附加 `.md` 获取。
 
-该 `apply_patch` tool 让 GPT-5.1 能够使用结构化差异（diff）在你的代码库中创建、更新和删除文件。模型不再仅仅建议编辑，而是发出补丁操作，由你的应用执行后再回报结果，从而支持迭代式、多步骤的代码编辑工作流。
+该 `apply_patch` tool 让 GPT-5.1 能够使用结构化差异在你的代码库中创建、更新和删除文件。模型不只是建议编辑，而是发出补丁操作，由你的应用执行后再回报结果，从而实现迭代式的多步代码编辑工作流。
 
-## 使用场景
+## 何时使用
 
-一些适合使用 apply_patch 的常见场景：
+一些常见的使用 apply_patch 的场景：
 
-- **多文件重构** – 一次性跨多个文件重命名符号、抽取辅助函数或重新组织模块。
-- **Bug 修复** – 让模型既诊断问题，又输出精确的补丁。
-- **测试与文档生成** – 在代码改动的同时新建测试文件、测试夹具和文档。
-- **迁移与机械性编辑** – 应用重复且结构化的更新（API 迁移、类型注解、格式修正等）。
+- **多文件重构** – 一次性跨多个文件重命名符号、提取辅助函数或重新组织模块。
+- **Bug 修复** – 让模型既诊断问题又生成精确的补丁。
+- **测试与文档生成** – 在代码改动的同时新建测试文件、测试数据和文档。
+- **迁移与机械性修改** – 应用重复且结构化的更新（API 迁移、类型注解、格式修正等）。
 
-如果你能用文字描述你的代码仓库和想要进行的修改，apply_patch 通常能生成相应的 diff。
+如果你能用自己的语言描述代码仓库和所需的更改，apply_patch 通常就能生成相应的 diff。
 
 ## 使用 apply patch 工具与 Responses API
 
-在高层次上，使用 `apply_patch` 与 Responses API 的交互过程如下：
+从较高的层面来看，使用 `apply_patch` 与 Responses API 配合时，整体流程如下：
 
-1. **使用 Responses API 并配合以下参数进行调用： `apply_patch` 工具**
-   - 向模型提供关于可用文件的上下文信息（或提供摘要），可放在你的 `input`，中，也可以为模型提供用于探索文件系统的工具。
-   - 使用方法 启用该工具 `tools=[{"type": "apply_patch"}]`.
+1. **调用 Responses API 并传入 `apply_patch` tool**
+   - 为模型提供有关可用文件（或摘要）的上下文，放在你的 `input`，中，或为模型提供用于浏览文件系统的工具。
+   - 使用以下方式启用该工具 `tools=[{"type": "apply_patch"}]`.
 2. **让模型返回一个或多个 patch 操作**
-   - Response 输出中包含一个或多个 `apply_patch_call` 对象。
-   - 每次调用描述一项单一的文件操作：创建、更新或删除。
-3. **在你的环境中应用补丁**
-   - 运行一个补丁执行框架（patch harness）或脚本，该脚本负责：
-     - 解析每个 `operation` 的 diff `apply_patch_call`.
-     - 将补丁应用到你的工作目录或代码仓库。
-     - 记录每个补丁是否成功以及任何日志或错误信息。
-4. **将补丁结果回传给模型**
-   - 再次调用 Responses API，使用 `previous_response_id` ，或者将会话条目传回 `input`.
-   - 中，并包含一个 `apply_patch_call_output` 事件，用于记录每个 `call_id`，并附带 `status` 以及可选的 `output` 字符串。
+   - Response 输出包含一个或多个 `apply_patch_call` 对象。
+   - 每次调用描述一次文件操作：创建、更新或删除。
+3. **在你的环境中应用 patch**
+   - 运行一个 patch 执行框架或脚本，用于：
+     - 解析每个 `operation` 对应的 diff `apply_patch_call`.
+     - 将 patch 应用到你的工作目录或代码仓库。
+     - 记录每次 patch 是否成功以及任何日志或错误信息。
+4. **将 patch 结果回传给模型**
+   - 再次调用 Responses API，可以传入 `previous_response_id` ，或将你的对话项传回给 `input`.
+   - 为每个 `apply_patch_call_output` 事件 `call_id`，并附带一个 `status` 以及可选的 `output` 字符串。
    - 保留 `tools=[{"type": "apply_patch"}]` ，以便模型在需要时可以继续编辑。
-5. **让模型继续操作或解释变更**
-   - 模型可能会发出更多 `apply_patch_call` 操作，或
-   - 提供面向用户的人性化解释，说明它修改了什么以及为什么修改。
+5. **让模型继续或解释所做的更改**
+   - 模型可能会发出更多 `apply_patch_call` 操作，或者
+   - 提供面向用户的解释，说明它修改了什么以及为什么修改。
 
 ## 示例：使用 Apply Patch Tool 重命名函数
 
-**步骤 1：让模型进行规划并输出补丁**
+**步骤 1：让模型规划并输出补丁**
 
-让模型进行规划并输出补丁
+让模型规划并输出补丁
+
+```javascript
+const response = await client.responses.create({
+  model: "gpt-5.6",
+  input: fileContext,
+  tools: [{ type: "apply_patch" }],
+});
+
+const patchCalls = response.output.filter(
+  (item) => item.type === "apply_patch_call"
+);
+```
 
 ```python
 from openai import OpenAI
@@ -166,9 +178,32 @@ apply_patch_call object 示例
 ```
 
 
-**步骤 2：应用补丁并将结果返回**
+**步骤 2：应用补丁并将结果发回**
 
 应用补丁并返回结果
+
+```javascript
+/** @type {import("openai/resources/responses/responses").ResponseInput} */
+const results = patchCalls.map((call) => {
+  const { success, output } = applyOperation(call.operation);
+
+  return {
+    type: "apply_patch_call_output",
+    call_id: call.call_id,
+    status: success ? "completed" : "failed",
+    output,
+  };
+});
+
+const followup = await client.responses.create({
+  model: "gpt-5.6",
+  previous_response_id: response.id,
+  input: results,
+  tools: [{ type: "apply_patch" }],
+});
+
+console.log(followup.output_text);
+```
 
 ```python
 from apply_patch_harness import apply_operation  # your implementation
@@ -270,7 +305,7 @@ puts(response.output_text)
 ```
 
 
-如果补丁应用失败（例如，找不到文件），请设置 `status: "failed"` 并附上具有参考价值的 `output` 字符串，以便模型进行恢复：
+如果补丁应用失败（例如，找不到文件），设置 `status: "failed"` 并附上一条有帮助的 `output` 字符串，以便模型能够恢复：
 
 报告失败的 apply_patch 调用
 
@@ -286,42 +321,42 @@ puts(response.output_text)
 
 ## 应用补丁操作
 
-| 操作类型 | 用途                            | 有效负载                                                          |
+| 操作类型 | 用途                            | 载荷                                                          |
 | -------------- | ---------------------------------- | ---------------------------------------------------------------- |
-| `create_file`  | 在指定路径创建新文件，路径为 `path`.       | `diff` 是一个 V4A 差异，表示完整文件内容。        |
-| `update_file`  | 修改指定路径的现有文件，路径为 `path`. | `diff` 是一个 V4A 差异，包含新增、删除或替换。 |
-| `delete_file`  | 删除指定路径的文件，路径为 `path`.           | 否 `diff`；完全删除该文件。                             |
+| `create_file`  | 在以下路径创建新文件 `path`.       | `diff` 是一个 V4A diff，表示文件的完整内容。        |
+| `update_file`  | 修改现有文件，路径 `path`. | `diff` 是一个 V4A diff，包含新增、删除或替换操作。 |
+| `delete_file`  | 删除文件，路径 `path`.           | 无 `diff`；完全删除该文件。                             |
 
-你的补丁工具负责解释 V4A diff 格式并应用更改。参考实现请参阅 [Python Agents SDK](https://github.com/openai/openai-agents-python/blob/main/src/agents/apply_diff.py) 或 [TypeScript Agents SDK](https://github.com/openai/openai-agents-js/blob/main/packages/agents-core/src/utils/applyDiff.ts) 代码。
+你的补丁工具负责解析 V4A diff 格式并应用更改。参考实现可参见 [Python Agents SDK](https://github.com/openai/openai-agents-python/blob/main/src/agents/apply_diff.py) 或 [TypeScript Agents SDK](https://github.com/openai/openai-agents-js/blob/main/packages/agents-core/src/utils/applyDiff.ts) 代码。
 
 ## 实现补丁测试框架
 
-使用 `apply_patch` 工具时，你无需提供输入 schema，模型知道如何构造 `operation` 对象。你需要做的是：
+当使用 `apply_patch` 工具时，你不需要提供输入架构；模型知道如何构造 `operation` 对象。你的工作是：
 
 1. **从 Response 中解析操作**
-   - 扫描 Response 中的项 `type: "apply_patch_call"`.
-   - 对每个调用，检查 `operation.type`, `operation.path`，以及任何潜在的 `diff`.
+   - 扫描 Response 中具有以下特征的条目 `type: "apply_patch_call"`.
+   - 对于每个调用，检查 `operation.type`, `operation.path`，以及任何潜在的 `diff`.
 2. **应用文件操作**
-   - 对于 `create_file` 和 `update_file`，将 V4A diff 应用到文件系统或内存工作区。
-   - 对于 `delete_file`，删除位于 `path`.
-   - 记录每个操作是否成功以及任何日志或错误消息。
+   - 对于 `create_file` 和 `update_file`，将 V4A 差异应用到文件系统或内存工作区。
+   - 对于 `delete_file`，删除位于以下位置的文件 `path`.
+   - 记录每个操作是否成功，以及任何日志或错误消息。
 3. **返回 `apply_patch_call_output` 事件**
-   - 对每个 `call_id`，发出恰好一个 `apply_patch_call_output` 事件，包含：
-     - `status: "completed"` 如果该操作已成功应用。
-     - `status: "failed"` 如果你遇到错误（包含简短的、可读的 `output` 字符串）。
+   - 对于每个 `call_id`，发出恰好一个 `apply_patch_call_output` 事件，其中包含：
+     - `status: "completed"` 如果操作已成功应用。
+     - `status: "failed"` 如果你遇到错误（包含一个简短的人类可读的 `output` 字符串）。
 
 ### 安全性与稳健性
 
-- **路径验证**：防止目录遍历，并将编辑限制在允许的目录内。
-- **备份**：在应用补丁前，考虑备份文件（或在临时副本中操作）。
-- **错误处理**：当补丁无法应用时，始终返回带说明性 `failed` 字符串的 `output` 状态。
-- **原子性**：确定你需要“全有或全无”的语义（任意补丁失败即回滚），还是允许逐文件成功/失败。
+- **Path validation**: 防止目录遍历，并将编辑限制在允许的目录内。
+- **Backups**: 在应用补丁前，考虑备份文件（或在临时副本中操作）。
+- **Error handling**: 始终返回一个 `failed` 状态，并附带信息性的 `output` 字符串，说明补丁无法应用的原因。
+- **Atomicity**: 决定你是需要“全有或全无”的语义（任何补丁失败即回滚），还是按文件判断成功或失败。
 
 ## 使用 apply patch 工具配合 Agents SDK
 
-或者，你也可以使用 [Agents SDK](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk) 来使用 apply patch 工具。你仍然需要实现处理实际文件操作的执行框架，但你可以使用 `applyDiff` 函数来处理 diff 处理逻辑。
+或者，你也可以使用 [Agents SDK](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk) 来使用 apply patch 工具。你仍然需要实现处理实际文件操作的脚手架，但你可以使用 `applyDiff` 函数来处理 diff 处理。
 
-将 apply patch 工具与 Agents SDK 结合使用
+通过 Agents SDK 使用 apply patch 工具
 
 ```javascript
 import { applyDiff, Agent, run, applyPatchTool } from "@openai/agents";
@@ -454,7 +489,7 @@ if __name__ == "__main__":
 
 ## 处理常见错误
 
-使用 `status: "failed"` 加一条清晰的 `output` 消息来帮助模型恢复。
+使用 `status: "failed"` 加一条清晰的 `output` 消息以帮助模型恢复。
 
 
 
@@ -491,18 +526,18 @@ if __name__ == "__main__":
 
 
 
-模型随后可以根据这些错误消息调整后续的差异（例如在你的提示中重新读取文件，或简化一处变更）。
+然后，模型可以根据这些错误消息调整未来的差异（例如，通过在你的提示中重新读取文件或简化更改）。
 
 ## 最佳实践
 
 - **提供清晰的文件上下文**
-  - 当你调用 Responses API 时，可以传入文件的内联快照（如示例所示），也可以为模型提供用于浏览文件系统的工具（例如 `shell` 工具）。
-- **考虑结合使用 `shell` 工具**
-  - 当与 `shell` 工具结合使用时，模型可以浏览文件系统目录、读取文件，并使用 grep 搜索关键字，从而实现智能体式的文件发现与编辑。
+  - 当你调用 Responses API 时，可以包含文件的内联快照（如示例中所示），也可以为模型提供用于浏览文件系统的工具（例如 `shell` 工具）。
+- **考虑将其与 `shell` tool**
+  - 结合使用时， `shell` 工具，模型可以浏览文件系统目录、读取文件并对关键词进行 grep，从而实现智能体的文件发现与编辑。
 - **鼓励小而聚焦的差异**
-  - 在系统指令中，引导模型进行最小化、有针对性的编辑，而不是大幅重写。
-- **确保改动能够干净地应用**
-  - 在一系列补丁之后，运行你的测试或 linter，并将失败信息在下次 `input` 中反馈给模型，以便其修复。
+  - 在系统指令中，引导模型进行最小化、有针对性的编辑，而不是大规模重写。
+- **确保变更能够干净地应用**
+  - 在一系列补丁之后，运行你的测试或 linter，并将失败结果反馈到下一次 `input` 中，以便模型修复它们。
 
 ## 使用说明
 

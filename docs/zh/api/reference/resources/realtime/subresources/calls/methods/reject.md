@@ -1,10 +1,10 @@
-> 关于完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取该页面的 Markdown 版本。
 
-## 拒绝调用
+## 拒绝呼叫
 
 **post** `/realtime/calls/{call_id}/reject`
 
-通过向调用方返回一个 SIP 状态码来拒绝传入的 SIP 呼叫。
+通过向来电方返回 SIP 状态码来拒绝接入的 SIP 通话。
 
 ### 路径参数
 
@@ -14,8 +14,8 @@
 
 - `status_code: optional number`
 
-  要发送回调用方的 SIP 响应代码。默认为 `603` （拒绝）
-  （省略时）。
+  回传给呼叫方的 SIP 响应码。默认值为 `603` （Decline）
+  ，若省略则使用默认值。
 
 ### 示例
 

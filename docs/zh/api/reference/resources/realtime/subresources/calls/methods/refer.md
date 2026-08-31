@@ -1,10 +1,10 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。通过追加 `.md` 到页面 URL，可获取各文档页的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
-## 参考资料调用
+## Refer call
 
 **post** `/realtime/calls/{call_id}/refer`
 
-使用 SIP REFER 动词将活动中的 SIP 通话转接到新目的地。
+使用 SIP REFER 动词将当前通话转接到新目标。
 
 ### 路径参数
 
@@ -14,7 +14,7 @@
 
 - `target_uri: string`
 
-  应出现在 SIP Refer-To 头部中的 URI。支持如下值
+  应出现在 SIP Refer-To 头中的 URI。支持类似
   `tel:+14155550123` 或 `sip:agent@example.com`.
 
 ### 示例

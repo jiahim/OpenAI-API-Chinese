@@ -1,8 +1,8 @@
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整文档索引请参见 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本文档。
 
 ## 删除模型响应
 
-**删除** `/responses/{response_id}`
+**delete** `/responses/{response_id}`
 
 删除具有给定 ID 的模型响应。
 

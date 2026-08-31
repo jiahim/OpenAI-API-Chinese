@@ -1,10 +1,10 @@
-> 关于完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 获取文档页面的 Markdown 版本。
 
 ## 检索向量存储文件内容
 
 **get** `/vector_stores/{vector_store_id}/files/{file_id}/content`
 
-检索向量存储文件的解析内容。
+检索已解析的向量存储文件内容。
 
 ### 路径参数
 
@@ -16,7 +16,7 @@
 
 - `data: array of object { text, type }`
 
-  文件的解析内容。
+  文件的已解析内容。
 
   - `text: optional string`
 
@@ -28,11 +28,11 @@
 
 - `has_more: boolean`
 
-  指示是否还有更多内容页需要获取。
+  指示是否还有更多内容页可获取。
 
 - `next_page: string or null`
 
-  下一页的令牌（如有）。
+  下一页的分页令牌（如果有）。
 
 - `object: "vector_store.file_content.page"`
 

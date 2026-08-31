@@ -1,4 +1,4 @@
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 来获取。
 
 ## 列出向量存储
 
@@ -10,19 +10,19 @@
 
 - `after: optional string`
 
-  用于分页的游标。 `after` 是一个对象 ID，定义你在列表中的位置。例如，如果你发出列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的后续调用可以包含 after=obj_foo，以便获取列表的下一页。
+  分页时使用的游标。 `after` 是一个对象 ID，用于定义你在列表中所处的位置。例如，如果你发起列表请求并收到 100 个对象，最后一个对象是 obj_foo，那么后续调用可以包含 after=obj_foo 以获取列表的下一页。
 
 - `before: optional string`
 
-  用于分页的游标。 `before` 是一个对象 ID，定义你在列表中的位置。例如，如果你发出列表请求并收到 100 个对象，以 obj_foo 开头，那么你的后续调用可以包含 before=obj_foo，以便获取列表的上一页。
+  分页时使用的游标。 `before` 是一个对象 ID，用于定义你在列表中所处的位置。例如，如果你发起列表请求并收到 100 个对象，第一个对象是 obj_foo，那么后续调用可以包含 before=obj_foo 以获取列表的上一页。
 
 - `limit: optional number`
 
-  返回对象数量的限制。限制范围在 1 到 100 之间，默认为 20。
+  要返回的对象数量上限。范围在 1 到 100 之间，默认值为 20。
 
 - `order: optional "asc" or "desc"`
 
-  按对象的 `created_at` 时间戳排序。 `asc` 为升序， `desc` 为降序。
+  按对象的时间戳排序。 `created_at` 排序。 `asc` 表示升序， `desc` 表示降序。
 
   - `"asc"`
 
@@ -38,7 +38,7 @@
 
   - `created_at: number`
 
-    创建向量存储时的 Unix 时间戳（以秒为单位）。
+    向量存储创建时的 Unix 时间戳（以秒为单位）。
 
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
@@ -64,16 +64,16 @@
 
   - `last_active_at: number or null`
 
-    向量存储最后一次活跃时的 Unix 时间戳（以秒为单位）。
+    向量存储最后一次处于活跃状态时的 Unix 时间戳（以秒为单位）。
 
   - `metadata: Metadata or null`
 
-    可附加到对象上的 16 个键值对集合。这可以
-    用于以结构化
-    格式存储关于对象的额外信息，并通过 API 或仪表板查询对象。
+    可附加到对象的 16 个键值对集合。可用于
+    以结构化格式存储有关对象的附加信息，并通过
+    API 或仪表板查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串
-    ，最大长度为 512 个字符。
+    键为字符串，最长 64 个字符。值为字符串，
+    最长 512 个字符。
 
   - `name: string`
 
@@ -87,7 +87,7 @@
 
   - `status: "expired" or "in_progress" or "completed"`
 
-    向量存储的状态，可以是 `expired`, `in_progress`，或 `completed`。状态为 `completed` 表示向量存储即可使用。
+    向量存储的状态，可为 `expired`, `in_progress`，或 `completed`。状态为 `completed` 表示向量存储已可供使用。
 
     - `"expired"`
 
@@ -97,7 +97,7 @@
 
   - `usage_bytes: number`
 
-    向量存储中文件使用的总字节数。
+    向量存储中文件占用的总字节数。
 
   - `expires_after: optional object { anchor, days }`
 
@@ -105,17 +105,17 @@
 
     - `anchor: "last_active_at"`
 
-      过期策略生效的锚定时间戳。支持的锚定： `last_active_at`.
+      应用过期策略的锚点时间戳。支持以下锚点： `last_active_at`.
 
       - `"last_active_at"`
 
     - `days: number`
 
-      锚定时间后，向量存储过期的天数。
+      向量存储将在锚点时间之后指定天数后过期。
 
   - `expires_at: optional number or null`
 
-    向量存储过期时的 Unix 时间戳（以秒为单位）。
+    向量存储过期的 Unix 时间戳（以秒为单位）。
 
 - `first_id: string`
 

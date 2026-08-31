@@ -1,22 +1,22 @@
 # 后台模式
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取对应文档页面的 Markdown 版本。
+> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt). 文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获得。
 
-智能体，例如 [Codex](https://openai.com/index/introducing-codex/) 和 [Deep Research](https://openai.com/index/introducing-deep-research/) 表明推理模型可能需要数分钟才能解决复杂问题。后台模式使你能够在 GPT-5.2 和 GPT-5.2 Pro 等模型上可靠地执行长时间运行的任务，而不必担心超时或其他连接问题。
+像 智能体 [Codex](https://openai.com/index/introducing-codex/) 和 [Deep Research](https://openai.com/index/introducing-deep-research/) 都表明推理模型可能要花费数分钟来解决复杂问题。后台模式可让你在 GPT-5.2 和 GPT-5.2 Pro 等模型上可靠地执行长时间运行的任务，无需担心超时或其他连接问题。
 
-后台模式会异步启动这些任务，开发者可以轮询响应对象来随时检查状态。要在后台启动响应生成，请发送一个将API请求的 `background` 设置为 `true`:
+后台模式会异步启动这些任务，开发者可以轮询响应对象来随时查看状态。若要在后台启动响应生成，请发起一个 API 请求，并附带 `background` 设置为 `true`:
 
-来自零数据保留（ZDR）项目的后台请求使用
-  `store=false`。运行。响应数据会临时存储到磁盘上约 10
-  分钟，以支持异步执行和轮询。
+零数据留存 (ZDR) 项目发起的后台请求会使用
+  `store=false`。运行。响应数据会临时存储到磁盘约 10
+  分钟，以便异步执行和轮询。
 
 对于使用 [Modified Abuse
 Monitoring](https://developers.openai.com/api/docs/guides/your-data#modified-abuse-monitoring)，的项目，包括
-增强型 Modified Abuse Monitoring，当前台请求省略该字段或将其设为
-时，将遵循标准保留 `store` 策略。后台响应仅在 `true`。被显式提供的情况下
-会在轮询期之后继续保留 `store=true` 。
-如果 `store` 策略。后台响应仅在 `false` 对于后台请求，响应
-会在大约 10 分钟后被删除。
+增强版 Modified Abuse Monitoring，前台请求遵循标准
+留存策略，当 `store` 省略或设置为 `true`。时。后台响应仅在
+被显式提供时，才会在轮询期 `store=true` 之后继续保留。
+如果 `store` 省略或设置为 `false` 对于后台请求，响应
+会在约 10 分钟后被删除。
 
 在后台生成响应
 
@@ -103,6 +103,26 @@ var response = client.responses().create(params);
 System.out.println(response.status().orElseThrow());
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    BackgroundModeEnabled = true,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Write a very long novel about otters in space.")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.Status);
+```
+
 ```ruby
 require "openai"
 
@@ -119,9 +139,9 @@ puts(response.status)
 
 ## 轮询后台响应
 
-若要检查后台请求的状态，请使用 Responses 的 GET 端点。当请求处于 queued 或 in_progress 状态时持续轮询。一旦离开这些状态，请求即已进入最终（终态）状态。
+要检查后台请求的状态，请使用针对 Responses 的 GET 端点。当请求处于 queued 或 in_progress 状态时持续轮询。一旦离开这些状态，就表示它已到达最终（终态）状态。
 
-检索在后台执行的 response
+获取在后台执行的 response
 
 ```bash
 curl https://api.openai.com/v1/responses/resp_123 \
@@ -235,6 +255,37 @@ response.output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    BackgroundModeEnabled = true,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Write a very long novel about otters in space.")
+);
+
+ResponseResult created = await client.CreateResponseAsync(options);
+ResponseResult response = await client.GetResponseAsync(created.Id);
+while (response.Status is ResponseStatus.Queued or ResponseStatus.InProgress)
+{
+    await Task.Delay(TimeSpan.FromSeconds(1));
+    response = await client.GetResponseAsync(response.Id);
+}
+if (response.Status != ResponseStatus.Completed)
+{
+    throw new InvalidOperationException($"Background response ended with status: {response.Status}");
+}
+Console.WriteLine($"Status: {response.Status}");
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -323,6 +374,19 @@ var response = client.responses().cancel(responseId);
 System.out.println(response.status());
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+string responseId = "resp_123";
+
+ResponseResult response = await client.CancelResponseAsync(responseId);
+Console.WriteLine(response.Status);
+```
+
 ```ruby
 require "openai"
 
@@ -332,15 +396,15 @@ puts(response.status)
 ```
 
 
-重复取消是幂等的——后续调用只会直接返回最终的 `Response` 对象。
+重复取消是幂等的，后续调用只会返回最终的 `Response` 对象。
 
 ## 流式传输后台响应
 
-你可以创建一个后台 Response，并立即开始从其中流式传输事件。如果你预期客户端会断开流，并希望保留之后重新接回的选项，这可能会很有帮助。要做到这一点，请在创建 Response 时同时设置 `background` 和 `stream` 设置为 `true`。你需要追踪一个与每个流式事件中收到的 `sequence_number` 相对应的“游标”（cursor）。
+你可以创建一个后台 Response，并立即开始从中流式传输事件。如果你预计客户端会中断流，并希望保留稍后恢复的选项，这会很有用。要实现这一点，需要在创建 Response 时同时指定 `background` 和 `stream` 设置为 `true`。你需要跟踪一个 “cursor”（游标），它对应于每个流式事件中收到的 `sequence_number` 。
 
 目前，从后台响应中收到首个 token 的时间
-  高于同步响应。我们正在努力在未来几周内缩短这一延迟差距。
-  这一延迟差距将在未来几周内得到缩小。
+  高于从同步响应中收到的时间。我们将在未来几周内着力缩短
+  这一延迟差距。
 
 生成并流式传输后台响应
 
@@ -524,6 +588,91 @@ if (!streamCompleted.get()) {
 }
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    BackgroundModeEnabled = true,
+    StreamingEnabled = true,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Write a very long novel about otters in space.")
+);
+
+string? responseId = null;
+int lastSequenceNumber = -1;
+bool completed = false;
+
+void HandleUpdate(StreamingResponseUpdate update)
+{
+    lastSequenceNumber = update.SequenceNumber;
+    switch (update)
+    {
+        case StreamingResponseCreatedUpdate created:
+            responseId = created.Response.Id;
+            break;
+        case StreamingResponseOutputTextDeltaUpdate text:
+            Console.Write(text.Delta);
+            break;
+        case StreamingResponseCompletedUpdate:
+            completed = true;
+            break;
+        case StreamingResponseFailedUpdate:
+            throw new InvalidOperationException("The background response failed.");
+        case StreamingResponseIncompleteUpdate:
+            throw new InvalidOperationException("The background response was incomplete.");
+        case StreamingResponseErrorUpdate error:
+            throw new InvalidOperationException($"The response stream failed: {error.Message}");
+    }
+}
+
+try
+{
+    await foreach (
+        StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options)
+    )
+    {
+        HandleUpdate(update);
+    }
+}
+catch (Exception error)
+    when (error is HttpRequestException or IOException && responseId is not null)
+{
+    // The background response continues after its streaming connection is interrupted.
+}
+
+if (!completed)
+{
+    if (responseId is null)
+    {
+        throw new InvalidOperationException("The response stream ended before providing its ID.");
+    }
+
+    GetResponseOptions resumeOptions = new(responseId)
+    {
+        StartingAfter = lastSequenceNumber,
+        StreamingEnabled = true,
+    };
+    await foreach (StreamingResponseUpdate update in client.GetResponseStreamingAsync(resumeOptions))
+    {
+        HandleUpdate(update);
+    }
+
+    if (!completed)
+    {
+        throw new InvalidOperationException(
+            "The resumed response stream ended before the background response completed."
+        );
+    }
+}
+```
+
 ```ruby
 require "openai"
 
@@ -558,4 +707,4 @@ puts("Response #{response_id}; last sequence number #{last_sequence_number}")
 1. 后台请求可以使用 `store=false`，但响应数据会被临时
    存储以支持异步执行和轮询。
 2. 若要取消同步响应，请终止连接
-3. 只有在使用以下方式创建后台响应后，才能从该响应开始新的流式输出 `stream=true`.
+3. 仅当使用以下方式创建后台响应时，才能从该响应开启新的流 `stream=true`.

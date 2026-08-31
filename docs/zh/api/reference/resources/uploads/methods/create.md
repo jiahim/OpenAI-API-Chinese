@@ -1,34 +1,34 @@
-> 完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获得。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 来获取。
 
-## 创建上传
+## Create upload
 
 **post** `/uploads`
 
-创建中间 [Upload](/docs/api-reference/uploads/object) 对象
-，你可以向其中添加 [Parts](/docs/api-reference/uploads/part-object) 。当前，一个 Upload 总共最多可接受 8 GB 内容，并在。
-你创建后的一
-小时后过期。
+创建一个中间 [Upload](/docs/api-reference/uploads/object) 对象
+，你可以向其中添加 [Parts](/docs/api-reference/uploads/part-object) 。
+目前，一个 Upload 最多接受总计 8 GB 的内容，并在创建
+一小时后过期。
 
-一旦你完成 Upload，我们将创建一个
-[File](/docs/api-reference/files/object) 对象，其中包含你上传的所有
-部分。该 File 可像普通
-File 对象一样在我们平台的其余部分使用。
+完成 Upload 后，我们会创建一个包含你上传的所有 part 的
+[File](/docs/api-reference/files/object) 对象。该 File 可在我们平台的其他地方作为常规的
+File 对象在平台其余部分中使用。
+File 对象。
 
-对于某些 `purpose` 值，必须指定正确的 `mime_type` 。请参阅文档了解。
-你的用例所支持的
-[MIME 类型](/docs/assistants/tools/file-search#supported-files).
+对于某些 `purpose` 值，必须指定正确的 `mime_type` 。
+请参阅针对你使用场景的
+[支持的 MIME 类型文档](/docs/assistants/tools/file-search#supported-files).
 
-有关每种用途的正确文件扩展名的指导，请
-按照文档操作 [创建
-文件](/docs/api-reference/files/create).
+有关每个用途的正确文件扩展名指南，请
+按照相关文档进行 [创建一个
+File](/docs/api-reference/files/create).
 
-返回包含状态的 Upload 对象 `pending`.
+返回带有状态信息的 Upload 对象 `pending`.
 
 ### 请求体参数
 
 - `bytes: number`
 
-  你正在上传的文件中的字节数。
+  你要上传的文件的字节数。
 
 - `filename: string`
 
@@ -38,15 +38,15 @@ File 对象一样在我们平台的其余部分使用。
 
   文件的 MIME 类型。
 
-  这必须属于你的文件用途所支持的 MIME 类型。请参阅
-  适用于助手和视觉的受支持 MIME 类型。
+  此值必须属于你的文件用途所支持的 MIME 类型范围。参见
+  助手中支持的 MIME 类型和视觉功能。
 
 - `purpose: "assistants" or "batch" or "fine-tune" or "vision"`
 
   上传文件的预期用途。
 
-  请参阅 [关于 File 的文档
-  用途](/docs/api-reference/files/create#files-create-purpose).
+  请参阅 File（文件）的 [documentation on File
+  purposes](/docs/api-reference/files/create#files-create-purpose).
 
   - `"assistants"`
 
@@ -58,23 +58,23 @@ File 对象一样在我们平台的其余部分使用。
 
 - `expires_after: optional object { anchor, seconds }`
 
-  文件的过期策略。默认情况下， `purpose=batch` 在 30 天后过期，所有其他文件则会一直保留，直到手动删除。
+  文件的过期策略。默认情况下，带有 `purpose=batch` 的过期时间为 30 天，其他所有文件会一直保留直到被手动删除。
 
   - `anchor: "created_at"`
 
-    过期策略适用的锚点时间戳。支持的锚点： `created_at`.
+    过期策略生效的锚定时间戳。支持的锚点： `created_at`.
 
     - `"created_at"`
 
   - `seconds: number`
 
-    锚点时间之后文件过期的秒数。必须在 3600（1 小时）到 2592000（30 天）之间。
+    文件将在锚定时间之后过期的秒数。必须介于 3600（1 小时）和 2592000（30 天）之间。
 
-### 返回
+### 返回值
 
 - `Upload object { id, bytes, created_at, 6 more }`
 
-  Upload 对象可以接受以 Parts 形式提供的字节块。
+  Upload 对象可以以 Parts 的形式接收字节分块。
 
   - `id: string`
 
@@ -82,7 +82,7 @@ File 对象一样在我们平台的其余部分使用。
 
   - `bytes: number`
 
-    要上传的预期字节数。
+    预期上传的字节数。
 
   - `created_at: number`
 
@@ -94,11 +94,11 @@ File 对象一样在我们平台的其余部分使用。
 
   - `filename: string`
 
-    要上传的文件的名称。
+    要上传的文件名。
 
   - `purpose: string`
 
-    文件的预期用途。 [请参阅此处](/docs/api-reference/files/object#files/object-purpose) 了解可接受的值。
+    文件的预期用途。 [请参考此处](/docs/api-reference/files/object#files/object-purpose) 了解可接受的值。
 
   - `status: "pending" or "completed" or "cancelled" or "expired"`
 
@@ -140,7 +140,7 @@ File 对象一样在我们平台的其余部分使用。
 
     - `purpose: "assistants" or "assistants_output" or "batch" or 5 more`
 
-      文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，和 `user_data`.
+      文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
 
       - `"assistants"`
 
@@ -160,7 +160,7 @@ File 对象一样在我们平台的其余部分使用。
 
     - `status: "uploaded" or "processed" or "error"`
 
-      已弃用。文件的当前状态，可以是 `uploaded`, `processed`，或 `error`.
+      已弃用。文件的当前状态，可能为 `uploaded`, `processed`，或 `error`.
 
       - `"uploaded"`
 
@@ -170,11 +170,11 @@ File 对象一样在我们平台的其余部分使用。
 
     - `expires_at: optional number`
 
-      文件过期时的 Unix 时间戳（以秒为单位）。
+      文件到期时的 Unix 时间戳（单位：秒）。
 
     - `status_details: optional string`
 
-      已弃用。有关微调训练文件验证失败原因的详细信息，请参阅 `error` 字段 `fine_tuning.job`.
+      已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段，位于 `fine_tuning.job`.
 
   - `object: optional "upload"`
 

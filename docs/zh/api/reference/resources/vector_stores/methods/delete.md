@@ -1,8 +1,8 @@
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整文档索引请参见 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
 
-## 删除向量存储
+## Delete vector store
 
-**删除** `/vector_stores/{vector_store_id}`
+**delete** `/vector_stores/{vector_store_id}`
 
 删除向量存储。
 
