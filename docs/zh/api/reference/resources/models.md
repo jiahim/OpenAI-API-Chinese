@@ -1,12 +1,12 @@
 # 模型
 
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾附加 `.md` 获取文档页面的 Markdown 版本。
 
 ## 删除微调模型
 
-**删除** `/models/{model}`
+**delete** `/models/{model}`
 
-删除一个已微调模型。你必须拥有所在组织的所有者角色才能删除模型。
+删除一个微调模型。你必须在组织中拥有 Owner 角色才能删除模型。
 
 ### 路径参数
 
@@ -62,7 +62,7 @@ curl https://api.openai.com/v1/models/ft:gpt-4o-mini:acemeco:suffix:abc123 \
 
 **get** `/models`
 
-列出当前可用的模型，并提供关于每个模型的基本信息，例如所有者及其可用性。
+列出当前可用的模型，并提供每个模型的基本信息，例如所有者和可用性。
 
 ### 返回
 
@@ -88,7 +88,7 @@ curl https://api.openai.com/v1/models/ft:gpt-4o-mini:acemeco:suffix:abc123 \
 
   - `shutdown_date: optional string or null`
 
-    模型将下架的日期，若未公布则为 null。
+    模型将下线的日期，若未公布则为 null。
 
 - `object: "list"`
 
@@ -156,11 +156,11 @@ curl https://api.openai.com/v1/models \
 }
 ```
 
-## 检索模型
+## Retrieve model
 
-**获取** `/models/{model}`
+**get** `/models/{model}`
 
-检索模型实例，提供有关模型的基本信息，例如所有者和权限。
+检索模型实例，提供有关该模型的基本信息，例如所有者和权限设置。
 
 ### 路径参数
 
@@ -170,7 +170,7 @@ curl https://api.openai.com/v1/models \
 
 - `Model object { id, created, object, 2 more }`
 
-  描述一种可与 API 一起使用的 OpenAI 模型产品。
+  描述可与 API 配合使用的 OpenAI 模型服务。
 
   - `id: string`
 
@@ -192,7 +192,7 @@ curl https://api.openai.com/v1/models \
 
   - `shutdown_date: optional string or null`
 
-    模型停用的日期；若未公布则为 null。
+    模型将下线的日期，若未公布则为 null。
 
 ### 示例
 
@@ -234,11 +234,11 @@ curl https://api.openai.com/v1/models/VAR_chat_model_id \
 
 ## 域类型
 
-### 模型
+### Model
 
 - `Model object { id, created, object, 2 more }`
 
-  描述了一种可与 OpenAI API 一起使用的模型产品。
+  描述可与 API 配合使用的 OpenAI 模型服务。
 
   - `id: string`
 
@@ -260,7 +260,7 @@ curl https://api.openai.com/v1/models/VAR_chat_model_id \
 
   - `shutdown_date: optional string or null`
 
-    模型将关闭的日期，如果尚未公布则为 null。
+    模型将下线的日期，若未公布则为 null。
 
 ### 模型已删除
 

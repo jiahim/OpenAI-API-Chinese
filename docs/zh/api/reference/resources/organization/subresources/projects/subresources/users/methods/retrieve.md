@@ -1,9 +1,9 @@
 # 组织 项目 用户 — 检索
 
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取 Markdown 版本的文档页面。
 
 OpenAI API 端点方法参考。
 
-标准参考 URL： https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/users/methods/retrieve
+规范参考 URL: https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/users/methods/retrieve
 
-本 API 参考页面由 Stainless 生成。
+此 API 参考页面由 Stainless 生成。

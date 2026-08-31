@@ -1,4 +1,4 @@
-> 如需查看完整的文档索引，请参见 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 后追加 `.md` 即可获取对应文档页面的 Markdown 版本。
 
 ## 创建容器文件
 
@@ -6,7 +6,7 @@
 
 创建容器文件
 
-你可以发送一个包含原始文件内容的 multipart/form-data 请求，或一个包含文件 ID 的 JSON 请求。
+你可以发送包含原始文件内容的 multipart/form-data 请求，也可以发送带有文件 ID 的 JSON 请求。
 
 ### 路径参数
 
@@ -16,13 +16,13 @@
 
 - `file: optional string`
 
-  要上传的 File 对象（而非文件名）。
+  要上传的文件对象（而非文件名）。
 
 - `file_id: optional string`
 
   要创建的文件的名称。
 
-### 返回
+### Returns
 
 - `id: string`
 
@@ -30,7 +30,7 @@
 
 - `bytes: number`
 
-  文件的字节大小。
+  文件的大小（以字节为单位）。
 
 - `container_id: string`
 
@@ -38,7 +38,7 @@
 
 - `created_at: number`
 
-  文件创建时的 Unix 时间戳（秒）。
+  文件创建时的 Unix 时间戳（以秒为单位）。
 
 - `object: string`
 
@@ -61,7 +61,7 @@ curl https://api.openai.com/v1/containers/$CONTAINER_ID/files \
     -d '{}'
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -83,7 +83,7 @@ curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e0
   -F file="@example.txt"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {

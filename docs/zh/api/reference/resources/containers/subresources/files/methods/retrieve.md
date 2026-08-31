@@ -1,10 +1,10 @@
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
 
 ## 检索容器文件
 
 **get** `/containers/{container_id}/files/{file_id}`
 
-检索容器文件
+Retrieve Container File
 
 ### 路径参数
 
@@ -20,11 +20,11 @@
 
 - `bytes: number`
 
-  文件的大小（以字节为单位）。
+  文件大小（以字节为单位）。
 
 - `container_id: string`
 
-  该文件所属的容器。
+  此文件所属的容器。
 
 - `created_at: number`
 
@@ -36,7 +36,7 @@
 
 - `path: string`
 
-  文件在容器中的路径。
+  容器中文件的路径。
 
 - `source: string`
 

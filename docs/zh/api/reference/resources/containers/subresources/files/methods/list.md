@@ -1,4 +1,4 @@
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取该页面的 Markdown 版本。
 
 ## 列出容器文件
 
@@ -14,11 +14,11 @@
 
 - `after: optional string`
 
-  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求收到 100 个对象，并以 obj_foo 结尾，那么后续调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的下一次调用可以包含 after=obj_foo 以获取列表的下一页。
 
 - `limit: optional number`
 
-  对要返回的对象数量的限制。限制范围在 1 到 100 之间，默认值为 20。
+  返回对象数量的上限。Limit 范围在 1 到 100 之间，默认值为 20。
 
 - `order: optional "asc" or "desc"`
 
@@ -28,7 +28,7 @@
 
   - `"desc"`
 
-### 返回
+### Returns
 
 - `data: array of object { id, bytes, container_id, 4 more }`
 
@@ -44,7 +44,7 @@
 
   - `container_id: string`
 
-    此文件所属的容器。
+    该文件所属的容器。
 
   - `created_at: number`
 
@@ -68,7 +68,7 @@
 
 - `has_more: boolean`
 
-  是否还有更多可用文件。
+  是否有更多文件可用。
 
 - `last_id: string`
 

@@ -1,8 +1,8 @@
-> 完整文档索引见 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获得。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 检索容器
 
-**获取** `/containers/{container_id}`
+**get** `/containers/{container_id}`
 
 检索容器
 
@@ -10,7 +10,7 @@
 
 - `container_id: string`
 
-### 返回
+### 返回值
 
 - `id: string`
 
@@ -18,7 +18,7 @@
 
 - `created_at: number`
 
-  容器创建时的 Unix 时间戳（秒）。
+  容器创建时的 Unix 时间戳（单位：秒）。
 
 - `name: string`
 
@@ -34,27 +34,27 @@
 
 - `expires_after: optional object { anchor, minutes }`
 
-  容器将在此时间段后过期。
-  锚点是过期的参考点。
-  分钟数是指从锚点开始到容器过期前的分钟数。
+  容器将在此时段之后过期。
+  锚点是过期时间的参考点。
+  minutes 表示容器在锚点之后过期的分钟数。
 
   - `anchor: optional "last_active_at"`
 
-    过期的参考点。
+    过期时间的参考点。
 
     - `"last_active_at"`
 
   - `minutes: optional number`
 
-    从锚点开始到容器过期前的分钟数。
+    容器在锚点之后过期的分钟数。
 
 - `last_active_at: optional number`
 
-  容器最后一次活跃时的 Unix 时间戳（秒）。
+  容器最近一次活跃时的 Unix 时间戳（单位：秒）。
 
 - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
-  为容器配置的内存限制。
+  为容器配置的内存上限。
 
   - `"1g"`
 
@@ -78,7 +78,7 @@
 
   - `allowed_domains: optional array of string`
 
-    当 `type` 为 `allowlist`.
+    当处于 `type` 状态时允许的外出访问域名 `allowlist`.
 
 ### 示例
 

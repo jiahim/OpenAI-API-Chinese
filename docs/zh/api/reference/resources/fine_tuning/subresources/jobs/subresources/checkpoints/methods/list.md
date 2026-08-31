@@ -1,4 +1,4 @@
-> 关于完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 获取。
 
 ## 列出微调检查点
 
@@ -20,7 +20,7 @@
 
   要检索的检查点数量。
 
-### 返回
+### Returns
 
 - `data: array of FineTuningJobCheckpoint`
 
@@ -38,11 +38,11 @@
 
   - `fine_tuning_job_id: string`
 
-    创建此检查点所依据的微调作业的名称。
+    创建此检查点的微调作业的名称。
 
   - `metrics: object { full_valid_loss, full_valid_mean_token_accuracy, step, 4 more }`
 
-    微调作业期间在步骤编号处的指标。
+    微调作业中该步骤编号对应的指标。
 
     - `full_valid_loss: optional number`
 
@@ -66,7 +66,7 @@
 
   - `step_number: number`
 
-    创建检查点时的步骤编号。
+    创建该检查点时所对应的步骤编号。
 
 - `has_more: boolean`
 

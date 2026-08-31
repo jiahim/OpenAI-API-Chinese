@@ -1,14 +1,14 @@
-# 文件
+# Files
 
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获得。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取文档页面的 Markdown 版本。
 
-## 创建容器文件
+## Create container file
 
-**post** `/containers/{container_id}/files`
+**发布** `/containers/{container_id}/files`
 
 创建容器文件
 
-你可以发送包含原始文件内容的多部分/表单数据请求，或包含文件 ID 的 JSON 请求。
+你可以发送包含原始文件内容的 multipart/form-data 请求，也可以发送包含文件 ID 的 JSON 请求。
 
 ### 路径参数
 
@@ -18,13 +18,13 @@
 
 - `file: optional string`
 
-  要上传的 File 对象（而非文件名）。
+  要上传的 File 对象（非文件名）。
 
 - `file_id: optional string`
 
-  要创建的文件名。
+  要创建的文件的名称。
 
-### 返回
+### Returns
 
 - `id: string`
 
@@ -48,7 +48,7 @@
 
 - `path: string`
 
-  文件在容器中的路径。
+  容器中文件的路径。
 
 - `source: string`
 
@@ -150,25 +150,25 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 - `after: optional string`
 
-  用于分页的光标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起一个列表请求并收到 100 个对象（以 obj_foo 结尾），你随后的调用可以包含 after=obj_foo 来获取列表的下一页。
+  用于分页查询的游标。 `after` 是一个对象 ID，用于标识你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，最后一个为 obj_foo，那么后续调用可以包含 after=obj_foo 以获取列表的下一页。
 
 - `limit: optional number`
 
-  返回对象数量的限制。限制范围可在 1 到 100 之间，默认值为 20。
+  要返回的对象数量的上限。Limit 范围介于 1 到 100 之间，默认为 20。
 
 - `order: optional "asc" or "desc"`
 
-  按对象的 `created_at` 时间戳排序。 `asc` 用于升序， `desc` 用于降序。
+  按对象的 `created_at` 时间戳排序。 `asc` 表示升序排列， `desc` 表示降序排列。
 
   - `"asc"`
 
   - `"desc"`
 
-### 返回
+### Returns
 
 - `data: array of object { id, bytes, container_id, 4 more }`
 
-  容器文件的列表。
+  容器文件列表。
 
   - `id: string`
 
@@ -192,7 +192,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
   - `path: string`
 
-    文件在容器中的路径。
+    容器中文件的路径。
 
   - `source: string`
 
@@ -204,7 +204,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 - `has_more: boolean`
 
-  是否还有更多可用的文件。
+  是否还有更多文件可用。
 
 - `last_id: string`
 
@@ -212,7 +212,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 - `object: "list"`
 
-  返回的对象类型，必须为 'list'。
+  返回对象的类型，必须为 'list'。
 
   - `"list"`
 
@@ -274,11 +274,11 @@ curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e0
 }
 ```
 
-## 检索容器文件
+## Retrieve container file
 
 **get** `/containers/{container_id}/files/{file_id}`
 
-检索容器文件
+Retrieve Container File
 
 ### 路径参数
 
@@ -286,7 +286,7 @@ curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e0
 
 - `file_id: string`
 
-### 返回
+### Returns
 
 - `id: string`
 
@@ -298,11 +298,11 @@ curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e0
 
 - `container_id: string`
 
-  此文件所属的容器。
+  该文件所属的容器。
 
 - `created_at: number`
 
-  文件创建时的 Unix 时间戳（秒）。
+  文件创建时的 Unix 时间戳（以秒为单位）。
 
 - `object: string`
 
@@ -310,7 +310,7 @@ curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e0
 
 - `path: string`
 
-  文件在容器中的路径。
+  容器中文件的路径。
 
 - `source: string`
 
@@ -358,7 +358,7 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 }
 ```
 
-## 域类型
+## 域名类型
 
 ### 文件创建响应
 
@@ -370,7 +370,7 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
   - `bytes: number`
 
-    文件的字节大小。
+    文件的大小（以字节为单位）。
 
   - `container_id: string`
 
@@ -378,7 +378,7 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
   - `created_at: number`
 
-    创建文件时的 Unix 时间戳（秒）。
+    文件创建时的 Unix 时间戳（以秒为单位）。
 
   - `object: string`
 
@@ -386,7 +386,7 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
   - `path: string`
 
-    文件在容器中的路径。
+    容器中文件的路径。
 
   - `source: string`
 
@@ -410,7 +410,7 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
   - `created_at: number`
 
-    文件创建时的 Unix 时间戳（秒）。
+    文件创建时的 Unix 时间戳（以秒为单位）。
 
   - `object: string`
 
@@ -418,7 +418,7 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
   - `path: string`
 
-    文件在容器中的路径。
+    容器中文件的路径。
 
   - `source: string`
 
@@ -434,15 +434,15 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
   - `bytes: number`
 
-    文件大小（字节）。
+    文件的大小（以字节为单位）。
 
   - `container_id: string`
 
-    此文件所属的容器。
+    该文件所属的容器。
 
   - `created_at: number`
 
-    文件创建时的 Unix 时间戳（秒）。
+    文件创建时的 Unix 时间戳（以秒为单位）。
 
   - `object: string`
 
@@ -450,7 +450,7 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
   - `path: string`
 
-    文件在容器中的路径。
+    容器中文件的路径。
 
   - `source: string`
 
@@ -462,7 +462,7 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
 **get** `/containers/{container_id}/files/{file_id}/content`
 
-检索容器文件内容
+Retrieve Container File Content
 
 ### 路径参数
 

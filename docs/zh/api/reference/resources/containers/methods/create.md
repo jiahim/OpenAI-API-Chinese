@@ -1,12 +1,12 @@
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。通过在页面 URL 末尾添加 `.md` 可获取该页面的 Markdown 版本。
 
 ## 创建容器
 
 **post** `/containers`
 
-创建容器
+Create Container
 
-### 请求体参数
+### 正文参数
 
 - `name: string`
 
@@ -14,11 +14,11 @@
 
 - `expires_after: optional object { anchor, minutes }`
 
-  容器过期时间（秒），相对于“锚点”时间。
+  容器过期时间（秒），相对于“anchor”时间计算。
 
   - `anchor: "last_active_at"`
 
-    过期时间的时间锚点。目前仅支持“last_active_at”。
+    过期时间的时间锚点。目前仅支持 “last_active_at”。
 
     - `"last_active_at"`
 
@@ -26,11 +26,11 @@
 
 - `file_ids: optional array of string`
 
-  要复制到容器的文件ID。
+  要复制到容器中的文件 ID。
 
 - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
-  容器的可选内存限制。默认为“1g”。
+  容器的可选内存限制。默认为 “1g”。
 
   - `"1g"`
 
@@ -56,39 +56,39 @@
 
     - `allowed_domains: array of string`
 
-      当类型为时，允许的域名列表 `allowlist`.
+      当 type 为 `allowlist`.
 
     - `type: "allowlist"`
 
-      仅允许对指定域名的出站网络访问。始终 `allowlist`.
+      仅允许向指定域发出站网络访问。始终 `allowlist`.
 
       - `"allowlist"`
 
     - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-      可选，用于允许列表域名的域范围密钥。
+      允许列表中域的可选域作用域密钥。
 
       - `domain: string`
 
-        与密钥关联的域名。
+        与该密钥关联的域。
 
       - `name: string`
 
-        要为该域名注入的密钥名称。
+        为该域注入的密钥名称。
 
       - `value: string`
 
-        要为该域名注入的密钥值。
+        为该域注入的密钥值。
 
 - `skills: optional array of SkillReference or InlineSkill`
 
-  可选的技能列表，通过ID或内联数据引用。
+  通过 id 或内联数据引用的可选技能列表。
 
   - `SkillReference object { skill_id, type, version }`
 
     - `skill_id: string`
 
-      所引用技能的ID。
+      所引用技能的 ID。
 
     - `type: "skill_reference"`
 
@@ -98,7 +98,7 @@
 
     - `version: optional string`
 
-      可选的技能版本。使用正整数或“latest”。省略则使用默认值。
+      可选的技能版本。使用正整数或 “latest”。省略以使用默认值。
 
   - `InlineSkill object { description, name, source, type }`
 
@@ -116,23 +116,23 @@
 
       - `data: string`
 
-        Base64 编码的技能 zip 包。
+        Base64 编码的 skill zip 包。
 
       - `media_type: "application/zip"`
 
-        内联技能负载的媒体类型。必须为 `application/zip`.
+        内联 skill 负载的媒体类型。必须是 `application/zip`.
 
         - `"application/zip"`
 
       - `type: "base64"`
 
-        内联技能来源的类型。必须为 `base64`.
+        内联 skill 源的类型。必须是 `base64`.
 
         - `"base64"`
 
     - `type: "inline"`
 
-      为此请求定义一个内联技能。
+      为本次请求定义一个内联 skill。
 
       - `"inline"`
 
@@ -144,7 +144,7 @@
 
 - `created_at: number`
 
-  创建容器时的 Unix 时间戳（以秒为单位）。
+  容器创建时的 Unix 时间戳（以秒为单位）。
 
 - `name: string`
 
@@ -160,27 +160,27 @@
 
 - `expires_after: optional object { anchor, minutes }`
 
-  容器将在该时间段后过期。
-  锚点是过期的参考点。
-  分钟数是指容器在锚点之后过期前的分钟数。
+  容器将在此时段后过期。
+  锚点是过期时间的参考点。
+  minutes 是容器过期前相对于锚点的分钟数。
 
   - `anchor: optional "last_active_at"`
 
-    过期的参考点。
+    过期时间的参考点。
 
     - `"last_active_at"`
 
   - `minutes: optional number`
 
-    容器在锚点之后过期前的分钟数。
+    容器过期前相对于锚点的分钟数。
 
 - `last_active_at: optional number`
 
-  容器最近活跃时的 Unix 时间戳（以秒为单位）。
+  容器最近一次活跃时的 Unix 时间戳（以秒为单位）。
 
 - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
-  为容器配置的内存限制。
+  为容器配置的内存上限。
 
   - `"1g"`
 
@@ -204,7 +204,7 @@
 
   - `allowed_domains: optional array of string`
 
-    允许的出站域名，当 `type` 为 `allowlist`.
+    当网络策略模式为 `type` 为 `allowlist`.
 
 ### 示例
 

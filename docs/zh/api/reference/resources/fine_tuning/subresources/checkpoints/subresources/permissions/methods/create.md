@@ -1,12 +1,12 @@
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
 
 ## 创建检查点权限
 
-**发布** `/fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions`
+**post** `/fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions`
 
 **注意：** 调用此端点需要使用 [管理员 API 密钥](../admin-api-keys).
 
-这使得组织所有者可以将微调模型与组织中的其他项目共享。
+这使组织所有者能够将微调模型共享给组织内的其他项目。
 
 ### 路径参数
 
@@ -16,9 +16,9 @@
 
 - `project_ids: array of string`
 
-  授予访问权限的项目标识符。
+  要授予访问权限的项目标识符。
 
-### 返回
+### Returns
 
 - `data: array of object { id, created_at, object, project_id }`
 
@@ -38,7 +38,7 @@
 
   - `project_id: string`
 
-    该权限对应的项目标识符。
+    该权限所属的项目标识符。
 
 - `has_more: boolean`
 

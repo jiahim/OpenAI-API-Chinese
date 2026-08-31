@@ -1,18 +1,18 @@
-> 关于完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 列出模型
 
-**获取** `/models`
+**get** `/models`
 
-列出当前可用的模型，并提供关于每个模型的基本信息，如所有者和可用性。
+列出当前可用的模型，并提供每个模型的基本信息，例如所有者和可用性。
 
-### 返回
+### 返回值
 
 - `data: array of Model`
 
   - `id: string`
 
-    模型标识符，可在 API 端点中引用。
+    模型标识符，可以在 API 端点中引用。
 
   - `created: number`
 
@@ -30,7 +30,7 @@
 
   - `shutdown_date: optional string or null`
 
-    模型将关闭的日期，如果未公布则为 null。
+    模型将停用的日期，如果未公布则为 null。
 
 - `object: "list"`
 

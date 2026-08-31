@@ -1,38 +1,38 @@
-# 嵌入
+# Embeddings
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 获取。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。可在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
 
-## 创建嵌入
+## Create embeddings
 
 **post** `/embeddings`
 
-创建表示输入文本的嵌入向量。
+创建一个表示输入文本的嵌入向量。
 
 ### 请求体参数
 
 - `input: string or array of string or array of number or array of array of number`
 
-  要嵌入的输入文本，编码为字符串或 token 数组。要在单个请求中嵌入多个输入，请传递字符串数组或 token 数组的数组。输入不得超过模型的最大输入 token 数（所有嵌入模型为 8192 个 token），不能是空字符串，且任何数组的维度不得超过 2048。 [Python 代码示例](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) 用于计算 token 数。除了每次输入的限制外，所有嵌入模型还强制要求单个请求中所有输入的总 token 数不超过 300,000。
+  用于嵌入的输入文本，可以编码为字符串或 token 数组。如果要在单个请求中嵌入多个输入，请传入字符串数组或 token 数组的数组。输入不得超过该模型的最大输入 token 数（所有嵌入模型均为 8192 个 token），不能为空字符串，任何数组的维度必须不超过 2048。 [Python 代码示例](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) 用于统计 token。除了每个输入的 token 上限外，所有嵌入模型还限制单个请求中所有输入的 token 总数不得超过 300,000。
 
   - `String = string`
 
-    将被转换为嵌入的字符串。
+    将被转换为嵌入向量的字符串。
 
   - `Array = array of string`
 
-    将被转换为嵌入的字符串数组。
+    将被转换为嵌入向量的字符串数组。
 
   - `Array = array of number`
 
-    将被转换为嵌入的整数数组。
+    将被转换为嵌入向量的整数数组。
 
   - `Array = array of array of number`
 
-    包含将被转换为嵌入的整数的数组的数组。
+    包含整数的数组的数组，将被转换为嵌入向量。
 
 - `model: string or EmbeddingModel`
 
-  要使用的模型 ID。你可以使用 [列出模型](/docs/api-reference/models/list) API 查看所有可用模型，或查看我们的 [模型概览](/docs/models) 了解它们的描述。
+  要使用的模型 ID。你可以使用 [列出模型](/docs/api-reference/models/list) API 查看所有可用模型，或参阅我们的 [模型概述](/docs/models) 了解相关说明。
 
   - `string`
 
@@ -46,11 +46,11 @@
 
 - `dimensions: optional number`
 
-  生成的输出嵌入应具有的维度数。仅在以下模型中支持 `text-embedding-3` 及更高版本模型。
+  生成的输出嵌入向量应具有的维度数。仅在 `text-embedding-3` 及更高版本的模型中受支持。
 
 - `encoding_format: optional "float" or "base64"`
 
-  返回嵌入的格式。可以是 `float` 或 [`base64`](https://pypi.org/project/pybase64/).
+  返回嵌入向量的格式。可以是 `float` 或 [`base64`](https://pypi.org/project/pybase64/).
 
   - `"float"`
 
@@ -58,19 +58,19 @@
 
 - `user: optional string`
 
-  代表最终用户的唯一标识符，可帮助 OpenAI 监控和检测滥用。 [了解更多](/docs/guides/safety-best-practices#end-user-ids).
+  用于标识你终端用户的唯一标识符，可以帮助 OpenAI 监控和检测滥用行为。 [了解更多](/docs/guides/safety-best-practices#end-user-ids).
 
-### 返回
+### 返回值
 
 - `CreateEmbeddingResponse object { data, model, object, usage }`
 
   - `data: array of Embedding`
 
-    模型生成的嵌入向量列表。
+    模型生成的嵌入列表。
 
     - `embedding: array of number`
 
-      嵌入向量，为一个浮点数列表。向量的长度取决于模型，详见 [嵌入指南](/docs/guides/embeddings).
+      嵌入向量，是一个浮点数列表。向量的长度取决于所使用的模型，详见 [嵌入指南](/docs/guides/embeddings).
 
     - `index: number`
 
@@ -94,15 +94,15 @@
 
   - `usage: object { prompt_tokens, total_tokens }`
 
-    请求的使用情况信息。
+    本次请求的使用信息。
 
     - `prompt_tokens: number`
 
-      提示词所用的令牌数量。
+      提示词使用的 token 数量。
 
     - `total_tokens: number`
 
-      请求所用的令牌总数。
+      本次请求使用的 token 总数。
 
 ### 示例
 
@@ -180,7 +180,7 @@ curl https://api.openai.com/v1/embeddings \
 
 ## 域类型
 
-### 创建嵌入响应
+### Create Embedding 响应
 
 - `CreateEmbeddingResponse object { data, model, object, usage }`
 
@@ -190,7 +190,7 @@ curl https://api.openai.com/v1/embeddings \
 
     - `embedding: array of number`
 
-      嵌入向量，即浮点数列表。向量的长度取决于模型，具体参见 [嵌入指南](/docs/guides/embeddings).
+      嵌入向量，是一个浮点数列表。向量的长度取决于所使用的模型，详见 [嵌入指南](/docs/guides/embeddings).
 
     - `index: number`
 
@@ -214,25 +214,25 @@ curl https://api.openai.com/v1/embeddings \
 
   - `usage: object { prompt_tokens, total_tokens }`
 
-    请求的使用情况信息。
+    本次请求的使用信息。
 
     - `prompt_tokens: number`
 
-      提示词使用的令牌数。
+      提示词使用的 token 数量。
 
     - `total_tokens: number`
 
-      请求使用的令牌总数。
+      本次请求使用的 token 总数。
 
-### 嵌入
+### Embedding
 
 - `Embedding object { embedding, index, object }`
 
-  表示由嵌入端点返回的嵌入向量。
+  表示由 embedding 接口返回的嵌入向量。
 
   - `embedding: array of number`
 
-    嵌入向量，即浮点数列表。向量的长度取决于模型，详见 [嵌入指南](/docs/guides/embeddings).
+    嵌入向量，是一个浮点数列表。向量的长度取决于所使用的模型，详见 [嵌入指南](/docs/guides/embeddings).
 
   - `index: number`
 
@@ -244,7 +244,7 @@ curl https://api.openai.com/v1/embeddings \
 
     - `"embedding"`
 
-### 嵌入模型
+### Embedding Model
 
 - `EmbeddingModel = "text-embedding-ada-002" or "text-embedding-3-small" or "text-embedding-3-large"`
 

@@ -1,12 +1,12 @@
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 后追加 `.md` 即可获取文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 删除检查点权限
 
-**删除** `/fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions/{permission_id}`
+**delete** `/fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions/{permission_id}`
 
 **注意：** 此端点需要 [管理员 API 密钥](../admin-api-keys).
 
-组织所有者可以使用此端点删除对微调模型检查点的权限。
+组织所有者可使用此端点来删除某个微调模型检查点的权限。
 
 ### 路径参数
 
@@ -26,7 +26,7 @@
 
 - `object: "checkpoint.permission"`
 
-  对象类型，始终为“checkpoint.permission”。
+  对象类型，始终为 "checkpoint.permission"。
 
   - `"checkpoint.permission"`
 

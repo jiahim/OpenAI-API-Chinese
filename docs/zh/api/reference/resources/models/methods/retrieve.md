@@ -1,10 +1,10 @@
-> 有关完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过追加 `.md` 到页面 URL 获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。通过在页面 URL 末尾追加 `.md` 可获取文档页面的 Markdown 版本。
 
-## 检索模型
+## Retrieve model
 
 **get** `/models/{model}`
 
-检索一个模型实例，提供有关该模型的基本信息，如所有者与权限。
+获取模型实例，并提供该模型的基本信息，例如所有者和权限配置。
 
 ### 路径参数
 
@@ -14,7 +14,7 @@
 
 - `Model object { id, created, object, 2 more }`
 
-  描述一个可与 OpenAIAPI 一起使用的模型产品。
+  描述可与 API 配合使用的 OpenAI 模型产品。
 
   - `id: string`
 
@@ -36,7 +36,7 @@
 
   - `shutdown_date: optional string or null`
 
-    模型停用的日期，若未公布则为 null。
+    模型将下线的日期，若未公布则为 null。
 
 ### 示例
 

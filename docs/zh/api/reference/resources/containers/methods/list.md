@@ -1,34 +1,34 @@
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 后追加 `.md` 即可获取 Markdown 版本的文档页面。
 
 ## 列出容器
 
-**获取** `/containers`
+**get** `/containers`
 
-列出容器
+List Containers
 
-### 查询参数
+### Query Parameters
 
 - `after: optional string`
 
-  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发出一个列表请求并收到 100 个对象（以 obj_foo 结尾），你的后续调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页的光标。 `after` 是一个对象 ID，用于标识你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，则后续调用可以包含 after=obj_foo 以获取列表的下一页。
 
 - `limit: optional number`
 
-  对返回对象数量的限制。限制范围可在 1 到 100 之间，默认为 20。
+  要返回的对象数量限制。限制范围为 1 到 100，默认为 20。
 
 - `name: optional string`
 
-  按容器名称筛选结果。
+  按容器名称过滤结果。
 
 - `order: optional "asc" or "desc"`
 
-  按对象的 `created_at` 时间戳排序。 `asc` 用于升序排列， `desc` 用于降序排列。
+  按对象的 `created_at` 时间戳排序。 `asc` 表示升序， `desc` 表示降序。
 
   - `"asc"`
 
   - `"desc"`
 
-### 返回
+### Returns
 
 - `data: array of object { id, created_at, name, 6 more }`
 
@@ -56,27 +56,27 @@
 
   - `expires_after: optional object { anchor, minutes }`
 
-    容器将在此时段后过期。
-    锚点是过期的参考点。
-    分钟数是锚点之后、容器过期之前的分钟数。
+    容器将在此时间周期之后过期。
+    锚点是过期时间的参考点。
+    minutes 表示容器在锚点之后多少分钟过期。
 
     - `anchor: optional "last_active_at"`
 
-      过期的参考点。
+      过期时间的参考点。
 
       - `"last_active_at"`
 
     - `minutes: optional number`
 
-      锚点之后、容器过期之前的分钟数。
+      容器在锚点之后多少分钟过期。
 
   - `last_active_at: optional number`
 
-    容器最后一次活动时的 Unix 时间戳（以秒为单位）。
+    容器最近活跃时的 Unix 时间戳（以秒为单位）。
 
   - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
-    为容器配置的内存限制。
+    为容器配置的内存上限。
 
     - `"1g"`
 
@@ -100,7 +100,7 @@
 
     - `allowed_domains: optional array of string`
 
-      允许的出站域名，当 `type` 为 `allowlist`.
+      在以下模式下的允许的出站域名 `type` 为 `allowlist`.
 
 - `first_id: string`
 
@@ -108,7 +108,7 @@
 
 - `has_more: boolean`
 
-  是否有更多可用容器。
+  是否还有更多容器可用。
 
 - `last_id: string`
 

@@ -1,10 +1,10 @@
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
-## 删除容器
+## Delete a container
 
-**删除** `/containers/{container_id}`
+**delete** `/containers/{container_id}`
 
-删除容器
+Delete Container
 
 ### 路径参数
 

@@ -1,8 +1,8 @@
-> 完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 获取文档页面的 Markdown 版本。
 
-## 检索容器文件内容
+## Retrieve container file content
 
-**获取** `/containers/{container_id}/files/{file_id}/content`
+**get** `/containers/{container_id}/files/{file_id}/content`
 
 检索容器文件内容
 

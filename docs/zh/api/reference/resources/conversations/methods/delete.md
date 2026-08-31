@@ -1,10 +1,10 @@
-> 有关完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾附加 `.md` 即可获取该页面的 Markdown 版本。
 
-## 删除会话
+## 删除对话
 
-**删除** `/conversations/{conversation_id}`
+**delete** `/conversations/{conversation_id}`
 
-删除对话。对话中的项目不会被删除。
+删除对话。不会删除对话中的条目。
 
 ### 路径参数
 

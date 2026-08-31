@@ -1,40 +1,40 @@
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt). 可通过在页面 URL 末尾附加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 上传文件
 
 **post** `/files`
 
-上传一个可在各种端点使用的文件。单个文件
-最大可达 512 MB，每个项目最多可存储 2.5 TB 的文件，
-总计。没有组织范围内的存储限制。对此
-端点的上传受限于每个经过身份验证的用户每分钟 1,000 次请求。
-用户。
+上传一个可在多个端点之间使用的文件。单个文件
+最大可达 512 MB，每个项目最多可存储 2.5 TB 的文件
+总计。没有组织范围的总存储限制。向此
+端点的请求速率限制为每个已认证用户每分钟 1,000 次
+请求。
 
-- Assistants API 支持最多 200 万 token 的特定文件，
-  有关文件类型，请参阅 [Assistants 工具指南](/docs/assistants/tools) 以获取
-  详细信息。
-- Fine-tuning API 仅支持 `.jsonl` 文件。输入还必须有
-  用于微调的特定格式，适用于
-  [聊天](/docs/api-reference/fine-tuning/chat-input) 或
-  [补全](/docs/api-reference/fine-tuning/completions-input) 模型。
-- Batch API 仅支持 `.jsonl` 大小不超过 200 MB 的文件。输入
-  还必须符合特定的
+- Assistants API 支持最大 200 万 token 的文件，且仅支持特定的文件类型。
+  详见 [Assistants 工具指南](/docs/assistants/tools) 。
+  详情请参阅。
+- 微调 API 仅支持 `.jsonl` 文件。输入还需采用
+  微调所要求的特定格式
+  [chat](/docs/api-reference/fine-tuning/chat-input) 或
+  [completions](/docs/api-reference/fine-tuning/completions-input) 模型。
+- Batch API 仅支持 `.jsonl` 最大 200 MB 的文件。输入还
+  需要采用特定的
   [格式](/docs/api-reference/batch/request-input).
-- 对于检索或 `file_search` 摄取，请先在此上传文件。如果
-  需要将多个上传文件附加到同一向量存储，请使用
+- 用于检索或 `file_search` 摄入，请先将文件上传到此处。如
+  需将多个已上传的文件附加到同一向量存储，请使用
   [`/vector_stores/{vector_store_id}/file_batches`](/docs/api-reference/vector-stores-file-batches/createBatch)
-  而不是逐个附加。向量存储附件有单独的
-  文件上传的限制，包括每个
-  组织每分钟最多附加 2,000 个文件。
+  批量附加，而不是逐个附加。向量存储附加具有独立的
+  文件上传的限制，包括每个组织每分钟 2,000 个附加文件，每
+  组织。
 
-如需 [联系我们](https://help.openai.com/) 以提高这些
+请 [联系我们](https://help.openai.com/) 如果你需要提高这些
 存储限制。
 
-### 返回
+### 返回值
 
 - `FileObject object { id, bytes, created_at, 6 more }`
 
-  该 `File` 对象表示一个已上传至 OpenAI 的文档。
+  该 `File` object 表示已上传到 OpenAI 的文档。
 
   - `id: string`
 
@@ -60,7 +60,7 @@
 
   - `purpose: "assistants" or "assistants_output" or "batch" or 5 more`
 
-    文件的预期用途。支持的值有 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，和 `user_data`.
+    文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
 
     - `"assistants"`
 
@@ -80,7 +80,7 @@
 
   - `status: "uploaded" or "processed" or "error"`
 
-    已弃用。文件的当前状态，可以是 `uploaded`, `processed`，或 `error`.
+    已弃用。文件的当前状态，可为 `uploaded`, `processed`，或 `error`.
 
     - `"uploaded"`
 
@@ -94,7 +94,7 @@
 
   - `status_details: optional string`
 
-    已弃用。有关微调训练文件为何未通过验证的详细信息，请参见 `error` 字段于 `fine_tuning.job`.
+    已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段，位于 `fine_tuning.job`.
 
 ### 示例
 
