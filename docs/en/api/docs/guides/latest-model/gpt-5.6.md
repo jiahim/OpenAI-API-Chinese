@@ -28,7 +28,7 @@ When migrating from GPT-5.5 or GPT-5.4, start with your current GPT-5.5 or GPT-5
 - **Token efficiency:** GPT-5.6 reaches flagship-level performance with fewer output tokens.
 - **Frontend design:** GPT-5.6 creates more polished and usable websites and applications, with stronger layout, visual hierarchy, and design judgment.
 - **Intent understanding:** GPT-5.6 can better infer the user's underlying goal and intended level of work from context, so you often do not need to prescribe every step. Continue to provide domain context, hard constraints, approval boundaries, and success criteria. Tell the model when an important ambiguity should trigger a question.
-- **Original image detail:** GPT-5.6 preserves the original dimensions of images sent with `original` or `auto` detail instead of resizing them to a patch budget or pixel-dimension limit. Large images can use more input tokens and increase latency. Learn how to [choose an image detail level](https://developers.openai.com/api/docs/guides/images-vision#choose-an-image-detail-level).
+- **Original image detail:** GPT-5.6 preserves image dimensions with `original` or `auto` detail, except that images larger than 65,535 pixels on either side are scaled down to fit that limit. The API rejects images that still exceed the [30,000-patch limit](https://developers.openai.com/api/docs/guides/images-vision#image-input-requirements), rather than resizing them to fit it. Large images can use more input tokens and increase latency. Learn how to [choose an image detail level](https://developers.openai.com/api/docs/guides/images-vision#choose-an-image-detail-level).
 
 ## Safeguards
 

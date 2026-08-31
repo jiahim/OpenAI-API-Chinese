@@ -8,6 +8,20 @@ Upcoming deprecations are listed on the [deprecations page](/api/docs/deprecatio
 
 ## August, 2026
 
+### Aug 29
+
+Feature
+
+[Mutual TLS (mTLS)](https://developers.openai.com/api/docs/guides/mutual-tls) and [X.509 workload identity federation](https://developers.openai.com/api/docs/guides/workload-identity-federation/x509) are now generally available for the OpenAI API. Configure certificates and X.509 identity providers directly in the [Platform console](https://platform.openai.com/settings/organization/security), with access controlled by your organization's roles and permissions.
+
+### Aug 26
+
+Update · Model: whisper-1 · Model: gpt-4o-transcribe · Model: gpt-4o-mini-transcribe · Model: gpt-4o-transcribe-diarize · API: v1/audio/transcriptions · API: v1/realtime
+
+Announced the deprecation of `whisper-1`, `gpt-4o-transcribe`, `gpt-4o-mini-transcribe`, and `gpt-4o-transcribe-diarize`. These models will shut down on February 26, 2027. Migrate to [`gpt-live-transcribe`](https://developers.openai.com/api/docs/models/gpt-live-transcribe) or [`gpt-transcribe`](https://developers.openai.com/api/docs/models/gpt-transcribe). See the [transcription guide](https://developers.openai.com/api/docs/guides/transcription) and [deprecations page](https://developers.openai.com/api/docs/deprecations).
+
+The Assistants API shut down on August 26, 2026. Migrate to the Responses API and Conversations API using the [migration guide](https://developers.openai.com/api/docs/assistants/migration).
+
 ### Aug 21
 
 Feature

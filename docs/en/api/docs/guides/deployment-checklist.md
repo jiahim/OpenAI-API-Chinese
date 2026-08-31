@@ -1463,9 +1463,12 @@ puts(second.output_text)
 ## Set image detail intentionally
 
 On GPT-5.6 models, omitted image `detail` and `detail: "auto"` use the same
-sizing behavior as `original`. The service preserves the input dimensions
-instead of resizing the image to a patch budget or pixel-dimension limit. Large
-images can use more input tokens and add latency as a result.
+sizing behavior as `original`. The service preserves the input dimensions,
+except that images larger than 65,535 pixels on either side are scaled down to
+fit that limit. The API rejects images that still exceed the
+[30,000-patch limit](https://developers.openai.com/api/docs/guides/images-vision#image-input-requirements),
+rather than resizing them to fit it. Large images can use more input tokens and
+add latency as a result.
 
 Choose [`detail`](https://developers.openai.com/api/docs/guides/images-vision#choose-an-image-detail-level)
 for the task. Resize the image, use `low` when fine visual detail is not
