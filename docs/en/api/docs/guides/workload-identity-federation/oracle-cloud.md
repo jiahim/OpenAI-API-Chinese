@@ -126,6 +126,12 @@ Install the OpenAI, OCI, and Requests Python packages:
 pip install openai oci requests
 ```
 
+For Ruby, install the OpenAI and OCI gems:
+
+```bash
+gem install openai oci
+```
+
 Set `OCI_IDENTITY_DOMAIN_URL` to the base URL of the identity domain in the same tenancy as the workload. Set `OPENAI_IDENTITY_PROVIDER_ID` and `OPENAI_SERVICE_ACCOUNT_ID` to the IDs from your OpenAI provider and service account mapping.
 
 The following example signs an Oracle token exchange request with the OCI instance principal, returns the IDCS access token to the OpenAI SDK, and lets the SDK exchange it for a short-lived OpenAI access token when needed:
@@ -186,6 +192,114 @@ response = client.responses.create(
 )
 
 print(response.output_text)
+```
+
+```ruby
+require "json"
+require "net/http"
+require "oci"
+require "openai"
+require "uri"
+
+class OracleInstancePrincipalTokenProvider
+  include OpenAI::Auth::SubjectTokenProvider
+
+  def initialize(identity_domain_url:)
+    @identity_domain_url = identity_domain_url.sub(%r{/+\z}, "")
+  end
+
+  def token_type
+    OpenAI::Auth::TokenType::JWT
+  end
+
+  def get_token
+    uri = URI("#{@identity_domain_url}/oauth2/v1/token")
+    unless uri.is_a?(URI::HTTPS)
+      raise OpenAI::Errors::SubjectTokenProviderError.new(
+        message: "Oracle identity domain URL must use HTTPS",
+        provider: "oracle-instance-principal"
+      )
+    end
+
+    body = URI.encode_www_form(
+      grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
+      scope: "urn:opc:idm:__myscopes__",
+      requested_token_type: "urn:ietf:params:oauth:token-type:access_token"
+    )
+    headers = {
+      "content-type": "application/x-www-form-urlencoded;charset=utf-8"
+    }
+
+    signer = OCI::Auth::Signers::InstancePrincipalsSecurityTokenSigner.new
+    signer.sign(:post, uri.to_s, headers, body)
+
+    request = Net::HTTP::Post.new(uri)
+    headers.each { |name, value| request[name.to_s] = value }
+    request.body = body
+
+    response = Net::HTTP.start(
+      uri.hostname,
+      uri.port,
+      use_ssl: true,
+      open_timeout: 10,
+      read_timeout: 30
+    ) do |http|
+      http.request(request)
+    end
+
+    unless response.is_a?(Net::HTTPSuccess)
+      raise OpenAI::Errors::SubjectTokenProviderError.new(
+        message: "Oracle identity token request failed with status #{response.code}",
+        provider: "oracle-instance-principal"
+      )
+    end
+
+    token = JSON.parse(response.body).fetch("access_token")
+    unless token.is_a?(String) && !token.empty?
+      raise OpenAI::Errors::SubjectTokenProviderError.new(
+        message: "Oracle identity domain did not return an access token",
+        provider: "oracle-instance-principal"
+      )
+    end
+
+    token
+  rescue JSON::ParserError
+    raise OpenAI::Errors::SubjectTokenProviderError.new(
+      message: "Oracle identity token response was not valid JSON",
+      provider: "oracle-instance-principal"
+    ), cause: nil
+  rescue KeyError
+    raise OpenAI::Errors::SubjectTokenProviderError.new(
+      message: "Oracle identity domain did not return an access token",
+      provider: "oracle-instance-principal"
+    ), cause: nil
+  rescue SystemCallError, Timeout::Error => error
+    raise OpenAI::Errors::SubjectTokenProviderError.new(
+      message: "Failed to request Oracle identity token: #{error.message}",
+      provider: "oracle-instance-principal",
+      cause: error
+    )
+  end
+end
+
+provider = OracleInstancePrincipalTokenProvider.new(
+  identity_domain_url: ENV.fetch("OCI_IDENTITY_DOMAIN_URL")
+)
+
+workload_identity = OpenAI::Auth::WorkloadIdentity.new(
+  identity_provider_id: ENV.fetch("OPENAI_IDENTITY_PROVIDER_ID"),
+  service_account_id: ENV.fetch("OPENAI_SERVICE_ACCOUNT_ID"),
+  provider: provider
+)
+
+client = OpenAI::Client.new(workload_identity: workload_identity)
+
+response = client.responses.create(
+  model: "gpt-5.6-terra",
+  input: "Say hello from Oracle Cloud Infrastructure workload identity federation."
+)
+
+puts(response.output_text)
 ```
 
 

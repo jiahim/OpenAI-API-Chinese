@@ -142,6 +142,26 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+ResponseResult response = await client.CreateResponseAsync(
+    "gpt-5.6",
+    [
+        ResponseItem.CreateDeveloperMessageItem(
+            "Categorize the IT support ticket as Hardware, Software, or Other. Respond with only one of those words."
+        ),
+        ResponseItem.CreateUserMessageItem("My monitor will not turn on. Help!"),
+    ]
+);
+
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 

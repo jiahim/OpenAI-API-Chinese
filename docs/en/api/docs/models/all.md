@@ -27,8 +27,8 @@ See [how OpenAI uses your data](/api/docs/guides/your-data.md) and review [depre
 - [codex-mini-latest](/api/docs/models/codex-mini-latest.md): Fast reasoning model optimized for the Codex CLI
 - [computer-use-preview](/api/docs/models/computer-use-preview.md): Specialized model for computer use tool
 - [davinci-002](/api/docs/models/davinci-002.md): Replacement for the GPT-3 curie and davinci base models
-- [Daybreak Blue](/api/docs/models/daybreak-blue-latest.md): An alias for frontier general-purpose models with safeguards for defensive cybersecurity work.
-- [Daybreak Red](/api/docs/models/daybreak-red-latest.md): An alias for advanced cybersecurity models for authorized vulnerability research and security testing.
+- [Daybreak Blue](/api/docs/models/gpt-daybreak-blue-latest.md): An alias for flagship general-purpose models with safeguards for defensive cybersecurity work.
+- [Daybreak Red](/api/docs/models/gpt-daybreak-red-latest.md): An alias for advanced cybersecurity models for authorized vulnerability research and security testing.
 - [GPT-3.5 Turbo](/api/docs/models/gpt-3.5-turbo.md): Legacy GPT model for cheaper chat and non-chat tasks
 - [GPT-4](/api/docs/models/gpt-4.md): An older high-intelligence GPT model
 - [GPT-4 Turbo](/api/docs/models/gpt-4-turbo.md): An older high-intelligence GPT model
@@ -51,7 +51,7 @@ See [how OpenAI uses your data](/api/docs/guides/your-data.md) and review [depre
 - [GPT-4o Transcribe Diarize](/api/docs/models/gpt-4o-transcribe-diarize.md): Transcription model that identifies who's speaking when
 - [GPT-5](/api/docs/models/gpt-5.md): Previous intelligent reasoning model for coding and agentic tasks with configurable reasoning effort
 - [GPT-5 Chat](/api/docs/models/gpt-5-chat-latest.md): GPT-5 model used in ChatGPT
-- [GPT-5 Mini](/api/docs/models/gpt-5-mini.md): Near-frontier intelligence for cost sensitive, low latency, high volume workloads
+- [GPT-5 Mini](/api/docs/models/gpt-5-mini.md): Strong intelligence for cost sensitive, low latency, high volume workloads
 - [GPT-5 nano](/api/docs/models/gpt-5-nano.md): Fastest, most cost-efficient version of GPT-5
 - [GPT-5 Pro](/api/docs/models/gpt-5-pro.md): Version of GPT-5 that produces smarter and more precise responses
 - [GPT-5-Codex](/api/docs/models/gpt-5-codex.md): A version of GPT-5 optimized for agentic coding in Codex
@@ -60,7 +60,7 @@ See [how OpenAI uses your data](/api/docs/guides/your-data.md) and review [depre
 - [GPT-5.1-Codex](/api/docs/models/gpt-5.1-codex.md): A version of GPT-5.1 optimized for agentic coding in Codex.
 - [GPT-5.1-Codex Mini](/api/docs/models/gpt-5.1-codex-mini.md): Smaller, more cost-effective, less-capable version of GPT-5.1-Codex
 - [GPT-5.1-Codex-Max](/api/docs/models/gpt-5.1-codex-max.md): A version of GPT-5.1-codex optimized for long running tasks.
-- [GPT-5.2](/api/docs/models/gpt-5.2.md): Previous frontier model for professional work with configurable reasoning effort
+- [GPT-5.2](/api/docs/models/gpt-5.2.md): Previous flagship model for professional work with configurable reasoning effort
 - [GPT-5.2 Chat](/api/docs/models/gpt-5.2-chat-latest.md): GPT-5.2 model used in ChatGPT
 - [GPT-5.2 Pro](/api/docs/models/gpt-5.2-pro.md): Previous pro model for professional work that produces smarter and more precise responses.
 - [GPT-5.2-Codex](/api/docs/models/gpt-5.2-codex.md): Our most intelligent coding model optimized for long-horizon, agentic coding tasks.
@@ -74,7 +74,7 @@ See [how OpenAI uses your data](/api/docs/guides/your-data.md) and review [depre
 - [GPT-5.5 Pro](/api/docs/models/gpt-5.5-pro.md): Version of GPT-5.5 that produces smarter and more precise responses.
 - [GPT-5.6 Cyber](/api/docs/models/gpt-5.6-cyber.md): Our most advanced cybersecurity model for authorized vulnerability research and security testing.
 - [GPT-5.6 Luna](/api/docs/models/gpt-5.6-luna.md): GPT-5.6 model optimized for cost-sensitive workloads
-- [GPT-5.6 Sol](/api/docs/models/gpt-5.6-sol.md): Frontier model for complex professional work
+- [GPT-5.6 Sol](/api/docs/models/gpt-5.6-sol.md): Flagship model for complex professional work
 - [GPT-5.6 Terra](/api/docs/models/gpt-5.6-terra.md): GPT-5.6 model that balances intelligence and cost
 - [GPT-Audio](/api/docs/models/gpt-audio.md): For audio inputs and outputs with Chat Completions API
 - [GPT-Audio Mini](/api/docs/models/gpt-audio-mini.md): A cost-efficient version of GPT Audio

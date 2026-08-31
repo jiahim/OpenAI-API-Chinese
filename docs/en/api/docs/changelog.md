@@ -40,11 +40,11 @@ Announced Ultrafast mode, a new API service tier for GPT-5.6 Sol that runs up to
 
 ### Aug 7
 
-Feature · Model: gpt-5.6-cyber · Model: daybreak-red-latest · Model: daybreak-blue-latest · API: v1/responses
+Feature · Model: gpt-5.6-cyber · Model: gpt-daybreak-red-latest · Model: gpt-daybreak-blue-latest · API: v1/responses
 
 Daybreak now offers two access tiers for approved defenders: Daybreak Blue and Daybreak Red. Use them to move from security findings to validated fixes in explicitly authorized engagements.
 
-Start with Daybreak Blue for most defensive security work. It provides access to general-purpose models such as GPT-5.6 Sol for vulnerability discovery, secure code review, detection engineering, incident response, malware analysis, and patch validation. Read more [here](https://developers.openai.com/api/docs/models/daybreak-blue-latest).
+Start with Daybreak Blue for most defensive security work. It provides access to general-purpose models such as GPT-5.6 Sol for vulnerability discovery, secure code review, detection engineering, incident response, malware analysis, and patch validation. Read more [here](https://developers.openai.com/api/docs/models/gpt-daybreak-blue-latest).
 
 Daybreak Red provides separately approved access to purpose-trained models such as [GPT-5.6 Cyber](https://developers.openai.com/api/docs/models/gpt-5.6-cyber) for authorized vulnerability reproduction, exploit validation, penetration testing, red teaming, and complex system analysis.
 
@@ -761,7 +761,7 @@ Released several new models and tools and a new API for agentic workflows:
   - Released a set of built-in tools for the Responses API: [web search](https://developers.openai.com/api/docs/guides/tools-web-search), [file search](https://developers.openai.com/api/docs/guides/tools-file-search), and [computer use](https://developers.openai.com/api/docs/guides/tools-computer-use).
   - Released the [Agents SDK](https://developers.openai.com/api/docs/guides/agents), an orchestration framework for designing, building, and deploying agents.
   - Announced new models: `gpt-4o-search-preview`, `gpt-4o-mini-search-preview`, `computer-use-preview`.
-  - Announced plans to bring all [Assistants API](https://developers.openai.com/api/docs/assistants) features to the easier to use [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses), with an anticipated sunset date for Assistants in 2026 (after achieving full feature parity).
+  - Announced plans to bring all [Assistants API](https://developers.openai.com/api/docs/assistants/migration) features to the easier to use [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses), with an anticipated sunset date for Assistants in 2026 (after achieving full feature parity).
 
 ### Mar 3
 
@@ -903,7 +903,7 @@ Released [o1-preview and o1-mini](https://developers.openai.com/api/docs/guides/
 
 Feature · API: v1/assistants
 
-Assistants API now supports [including file search results used by the file search tool, and customizing ranking behavior](https://developers.openai.com/api/docs/assistants/tools/file-search#improve-file-search-result-relevance-with-chunk-ranking).
+Assistants API now supports [including file search results used by the file search tool, and customizing ranking behavior](https://developers.openai.com/api/docs/assistants/migration#improve-file-search-result-relevance-with-chunk-ranking).
 
 ### Aug 20
 
@@ -971,7 +971,7 @@ Update
 
 Update
 
-Added support for [file search customizations](https://developers.openai.com/api/docs/assistants/tools/file-search#customizing-file-search-settings).
+Added support for [file search customizations](https://developers.openai.com/api/docs/assistants/migration#customizing-file-search-settings).
 
 ## May, 2024
 

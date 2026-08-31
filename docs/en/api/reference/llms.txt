@@ -20,7 +20,6 @@ Each entry has a Markdown twin at `/api/reference/<slug>.md`.
 - [Realtime Beta Overview](https://developers.openai.com/api/reference/realtime-beta/overview.md)
 
 ## Resources
-- [Assistants streaming events](https://developers.openai.com/api/reference/resources/beta/subresources/assistants/streaming-events.md): OpenAI API streaming event reference.
 - [Audio](https://developers.openai.com/api/reference/resources/audio.md): OpenAI API endpoint reference.
 - [Audio Speech — Create](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create.md): OpenAI API endpoint method reference.
 - [Audio Transcriptions — Create](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create.md): OpenAI API endpoint method reference.
@@ -36,12 +35,6 @@ Each entry has a Markdown twin at `/api/reference/<slug>.md`.
 - [Batches — Create](https://developers.openai.com/api/reference/resources/batches/methods/create.md): OpenAI API endpoint method reference.
 - [Batches — List](https://developers.openai.com/api/reference/resources/batches/methods/list.md): OpenAI API endpoint method reference.
 - [Batches — Retrieve](https://developers.openai.com/api/reference/resources/batches/methods/retrieve.md): OpenAI API endpoint method reference.
-- [Beta Assistants](https://developers.openai.com/api/reference/resources/beta/subresources/assistants.md): OpenAI API endpoint reference.
-- [Beta Assistants — Create](https://developers.openai.com/api/reference/resources/beta/subresources/assistants/methods/create.md): OpenAI API endpoint method reference.
-- [Beta Assistants — Delete](https://developers.openai.com/api/reference/resources/beta/subresources/assistants/methods/delete.md): OpenAI API endpoint method reference.
-- [Beta Assistants — List](https://developers.openai.com/api/reference/resources/beta/subresources/assistants/methods/list.md): OpenAI API endpoint method reference.
-- [Beta Assistants — Retrieve](https://developers.openai.com/api/reference/resources/beta/subresources/assistants/methods/retrieve.md): OpenAI API endpoint method reference.
-- [Beta Assistants — Update](https://developers.openai.com/api/reference/resources/beta/subresources/assistants/methods/update.md): OpenAI API endpoint method reference.
 - [Beta Chatkit](https://developers.openai.com/api/reference/resources/beta/subresources/chatkit.md): OpenAI API endpoint reference.
 - [Beta Chatkit Sessions](https://developers.openai.com/api/reference/resources/beta/subresources/chatkit/subresources/sessions.md): OpenAI API endpoint reference.
 - [Beta Chatkit Sessions — Cancel](https://developers.openai.com/api/reference/resources/beta/subresources/chatkit/subresources/sessions/methods/cancel.md): OpenAI API endpoint method reference.
@@ -53,27 +46,6 @@ Each entry has a Markdown twin at `/api/reference/<slug>.md`.
 - [Beta Chatkit Threads — Retrieve](https://developers.openai.com/api/reference/resources/beta/subresources/chatkit/subresources/threads/methods/retrieve.md): OpenAI API endpoint method reference.
 - [Beta Responses streaming events](https://developers.openai.com/api/reference/resources/beta/subresources/responses/streaming-events.md): OpenAI API streaming event reference.
 - [Beta Responses WebSocket events](https://developers.openai.com/api/reference/resources/beta/subresources/responses/websocket-events.md): OpenAI API streaming event reference.
-- [Beta Threads](https://developers.openai.com/api/reference/resources/beta/subresources/threads.md): OpenAI API endpoint reference.
-- [Beta Threads — Create](https://developers.openai.com/api/reference/resources/beta/subresources/threads/methods/create.md): OpenAI API endpoint method reference.
-- [Beta Threads — Delete](https://developers.openai.com/api/reference/resources/beta/subresources/threads/methods/delete.md): OpenAI API endpoint method reference.
-- [Beta Threads — Retrieve](https://developers.openai.com/api/reference/resources/beta/subresources/threads/methods/retrieve.md): OpenAI API endpoint method reference.
-- [Beta Threads — Update](https://developers.openai.com/api/reference/resources/beta/subresources/threads/methods/update.md): OpenAI API endpoint method reference.
-- [Beta Threads Messages](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/messages.md): OpenAI API endpoint reference.
-- [Beta Threads Messages — Create](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/messages/methods/create.md): OpenAI API endpoint method reference.
-- [Beta Threads Messages — Delete](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/messages/methods/delete.md): OpenAI API endpoint method reference.
-- [Beta Threads Messages — List](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/messages/methods/list.md): OpenAI API endpoint method reference.
-- [Beta Threads Messages — Retrieve](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/messages/methods/retrieve.md): OpenAI API endpoint method reference.
-- [Beta Threads Messages — Update](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/messages/methods/update.md): OpenAI API endpoint method reference.
-- [Beta Threads Runs](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/runs.md): OpenAI API endpoint reference.
-- [Beta Threads Runs — Cancel](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/runs/methods/cancel.md): OpenAI API endpoint method reference.
-- [Beta Threads Runs — Create](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/runs/methods/create.md): OpenAI API endpoint method reference.
-- [Beta Threads Runs — List](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/runs/methods/list.md): OpenAI API endpoint method reference.
-- [Beta Threads Runs — Retrieve](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/runs/methods/retrieve.md): OpenAI API endpoint method reference.
-- [Beta Threads Runs — Submit Tool Outputs](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/runs/methods/submit_tool_outputs.md): OpenAI API endpoint method reference.
-- [Beta Threads Runs — Update](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/runs/methods/update.md): OpenAI API endpoint method reference.
-- [Beta Threads Runs Steps](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/runs/subresources/steps.md): OpenAI API endpoint reference.
-- [Beta Threads Runs Steps — List](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/runs/subresources/steps/methods/list.md): OpenAI API endpoint method reference.
-- [Beta Threads Runs Steps — Retrieve](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/runs/subresources/steps/methods/retrieve.md): OpenAI API endpoint method reference.
 - [Chat](https://developers.openai.com/api/reference/resources/chat.md): OpenAI API endpoint reference.
 - [Chat Completions — Retrieve](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/retrieve.md): OpenAI API endpoint method reference.
 - [Chat Completions streaming events](https://developers.openai.com/api/reference/resources/chat/subresources/completions/streaming-events.md): OpenAI API streaming event reference.

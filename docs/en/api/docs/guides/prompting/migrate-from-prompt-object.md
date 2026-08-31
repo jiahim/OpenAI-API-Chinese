@@ -258,6 +258,28 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+ResponseResult response = await client.CreateResponseAsync(
+    "gpt-5.6",
+    [
+        ResponseItem.CreateSystemMessageItem(
+            "You are a helpful support assistant. Be concise, accurate, and friendly."
+        ),
+        ResponseItem.CreateUserMessageItem(
+            "Customer name: Acme. Issue: billing question. Write a response to the customer."
+        ),
+    ]
+);
+
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -449,6 +471,30 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+static ResponseItem[] BuildSupportPrompt(string customerName, string issue) =>
+[
+    ResponseItem.CreateSystemMessageItem(
+        "You are a helpful support assistant. Be concise, accurate, and friendly. Do not invent policy details."
+    ),
+    ResponseItem.CreateUserMessageItem(
+        $"Customer name: {customerName}. Issue: {issue}. Write a response to the customer."
+    ),
+];
+
+ResponseResult response = await client.CreateResponseAsync(
+    "gpt-5.6",
+    BuildSupportPrompt("Acme", "billing question")
+);
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby

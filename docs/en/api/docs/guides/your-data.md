@@ -205,6 +205,30 @@ response = client.with_options(
 print(response.output_text)
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6-terra",
+  input: "Reply with OK."
+)
+puts(response.output_text)
+
+response = client.with_options(data_residency: :us).responses.create(
+  model: "gpt-5.6-terra",
+  input: "Reply with OK."
+)
+puts(response.output_text)
+
+response = client.with_options(data_residency: :eu).responses.create(
+  model: "gpt-5.6-terra",
+  input: "Reply with OK."
+)
+puts(response.output_text)
+```
+
 
 ### Which models and features are eligible for data residency?
 

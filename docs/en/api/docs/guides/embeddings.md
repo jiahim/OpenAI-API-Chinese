@@ -191,6 +191,30 @@ Below, we combine the review summary and review text into a single combined text
 
 
 Get_embeddings_from_dataset.ipynb
+```javascript
+import { mkdir, writeFile } from "node:fs/promises";
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const reviews = ["A rich cup of coffee.", "A bright herbal tea."];
+
+const response = await client.embeddings.create({
+  model: "text-embedding-3-small",
+  input: reviews.map((review) => review.replaceAll("\n", " ")),
+});
+
+const csvField = (value) => `"${value.replaceAll('"', '""')}"`;
+const rows = response.data.map(({ embedding }, index) =>
+  [csvField(reviews[index]), csvField(JSON.stringify(embedding))].join(",")
+);
+
+await mkdir("output", { recursive: true });
+await writeFile(
+  "output/embedded_1k_reviews.csv",
+  ["combined,ada_embedding", ...rows].join("\n") + "\n"
+);
+```
+
 ```python
 from openai import OpenAI
 
@@ -266,6 +290,26 @@ Using larger embeddings, for example storing them in a vector store for retrieva
 Both of our new embedding models were trained [with a technique](https://arxiv.org/abs/2205.13147) that allows developers to trade-off performance and cost of using embeddings. Specifically, developers can shorten embeddings (i.e. remove some numbers from the end of the sequence) without the embedding losing its concept-representing properties by passing in the [`dimensions` API parameter](https://developers.openai.com/api/reference/resources/embeddings/methods/create#embeddings-create-dimensions). For example, on the MTEB benchmark, a `text-embedding-3-large` embedding can be shortened to a size of 256 while still outperforming an unshortened `text-embedding-ada-002` embedding with a size of 1536. You can read more about how changing the dimensions impacts performance in our [embeddings v3 launch blog post](https://openai.com/blog/new-embedding-models-and-api-updates#:~:text=Native%20support%20for%20shortening%20embeddings).
 
 In general, using the `dimensions` parameter when creating the embedding is the suggested approach. In certain cases, you may need to change the embedding dimension after you generate it. When you change the dimension manually, you need to be sure to normalize the dimensions of the embedding as is shown below.
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+
+const response = await client.embeddings.create({
+  model: "text-embedding-3-small",
+  input: "Testing 123",
+  encoding_format: "float",
+});
+
+const shortened = response.data[0].embedding.slice(0, 256);
+const magnitude = Math.hypot(...shortened);
+const normalized = shortened.map((value) =>
+  magnitude === 0 ? 0 : value / magnitude
+);
+
+console.log(normalized);
+```
 
 ```python
 from openai import OpenAI
@@ -364,6 +408,34 @@ Dynamically changing the dimensions enables very flexible usage. For example, wh
 Question_answering_using_embeddings.ipynb
  There are many common cases where the model is not trained on data which contains key facts and information you want to make accessible when generating responses to a user query. One way of solving this, as shown below, is to put additional information into the context window of the model. This is effective in many use cases but leads to higher token costs. In this notebook, we explore the tradeoff between this approach and embeddings bases search.
 
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const article =
+  "At the 2022 Winter Olympics, Great Britain won women's curling and Sweden won men's curling.";
+const question = `Use the article below to answer the question. If the answer cannot be found, say "I don't know."
+
+Article:
+${article}
+
+Question: Which athletes won the gold medal in curling at the 2022 Winter Olympics?`;
+
+const response = await client.chat.completions.create({
+  model: "gpt-4.1-mini",
+  messages: [
+    {
+      role: "system",
+      content: "You answer questions about the 2022 Winter Olympics.",
+    },
+    { role: "user", content: question },
+  ],
+  temperature: 0,
+});
+
+console.log(response.choices[0].message.content);
+```
+
 ```python
 query = f"""Use the below article on the 2022 Winter Olympics to answer the subsequent question. If the answer cannot be found, write "I don't know."
 
@@ -433,6 +505,41 @@ client.chat().completions().create(params).choices().stream()
 
 Semantic_text_search_using_embeddings.ipynb
  To retrieve the most relevant documents we use the cosine similarity between the embedding vectors of the query and each document, and return the highest scored documents.
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const reviews = [
+  "A rich cup of coffee.",
+  "Smooth beans in tomato sauce.",
+  "Dark chocolate with orange.",
+];
+
+const { data } = await client.embeddings.create({
+  model: "text-embedding-3-small",
+  input: [...reviews, "delicious beans"],
+});
+
+const query = data.at(-1).embedding;
+const similarity = (embedding) => {
+  const dotProduct = embedding.reduce(
+    (total, value, index) => total + value * query[index],
+    0
+  );
+  return dotProduct / (Math.hypot(...embedding) * Math.hypot(...query));
+};
+
+const results = reviews
+  .map((review, index) => ({
+    review,
+    score: similarity(data[index].embedding),
+  }))
+  .sort((left, right) => right.score - left.score)
+  .slice(0, 3);
+
+console.log(results);
+```
 
 ```python
 def search_reviews(df, product_description, n=3, pprint=True):
@@ -513,6 +620,39 @@ Code_search.ipynb
 
 To perform a code search, we embed the query in natural language using the same model. Then we calculate cosine similarity between the resulting query embedding and each of the function embeddings. The highest cosine similarity results are most relevant.
 
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const functions = [
+  "function add(a, b) { return a + b; }",
+  "function complete(prompt) { return prompt; }",
+];
+
+const { data } = await client.embeddings.create({
+  model: "text-embedding-3-small",
+  input: [...functions, "Completions API tests"],
+});
+
+const query = data.at(-1).embedding;
+const similarity = (embedding) => {
+  const dotProduct = embedding.reduce(
+    (total, value, index) => total + value * query[index],
+    0
+  );
+  return dotProduct / (Math.hypot(...embedding) * Math.hypot(...query));
+};
+
+const results = functions
+  .map((source, index) => ({
+    source,
+    score: similarity(data[index].embedding),
+  }))
+  .sort((left, right) => right.score - left.score);
+
+console.log(results);
+```
+
 ```python
 df["code_embedding"] = df["code"].apply(
     lambda x: get_embedding(x, model="text-embedding-3-small")
@@ -592,6 +732,37 @@ Recommendation_using_embeddings.ipynb
  Because shorter distances between embedding vectors represent greater similarity, embeddings can be useful for recommendation.
 
 Below, we illustrate a basic recommender. It takes in a list of strings and one 'source' string, computes their embeddings, and then returns a ranking of the strings, ranked from most similar to least similar. As a concrete example, the linked notebook below applies a version of this function to the [AG news dataset](http://groups.di.unipi.it/~gulli/AG_corpus_of_news_articles.html) (sampled down to 2,000 news article descriptions) to return the top 5 most similar articles to any given source article.
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const strings = [
+  "A cheetah is a fast land animal.",
+  "A peregrine falcon is a fast bird.",
+  "A tortoise moves slowly.",
+];
+
+const { data } = await client.embeddings.create({
+  model: "text-embedding-3-small",
+  input: strings,
+});
+
+const query = data[0].embedding;
+const recommendations = data
+  .map(({ embedding }, index) => {
+    const dotProduct = embedding.reduce(
+      (total, value, dimension) => total + value * query[dimension],
+      0
+    );
+    const similarity =
+      dotProduct / (Math.hypot(...embedding) * Math.hypot(...query));
+    return { index, text: strings[index], similarity };
+  })
+  .sort((left, right) => right.similarity - left.similarity);
+
+console.log(recommendations);
+```
 
 ```python
 def recommendations_from_strings(
@@ -811,6 +982,30 @@ preds = clf.predict(X_test)
 
 Zero-shot_classification_with_embeddings.ipynb
  We can use embeddings for zero shot classification without any labeled training data. For each class, we embed the class name or a short description of the class. To classify some new text in a zero-shot manner, we compare its embedding to all class embeddings and predict the class with the highest similarity.
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const labels = ["negative", "positive"];
+
+const { data } = await client.embeddings.create({
+  model: "text-embedding-3-small",
+  input: [...labels, "The coffee arrived quickly and tastes great."],
+});
+
+const review = data.at(-1).embedding;
+const similarity = (embedding) => {
+  const dotProduct = embedding.reduce(
+    (total, value, index) => total + value * review[index],
+    0
+  );
+  return dotProduct / (Math.hypot(...embedding) * Math.hypot(...review));
+};
+
+const [negative, positive] = data.map(({ embedding }) => similarity(embedding));
+console.log(positive > negative ? "positive" : "negative");
+```
 
 ```python
 df = df[df.Score != 3]

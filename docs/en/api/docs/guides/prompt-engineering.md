@@ -703,6 +703,27 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+string instructions = await File.ReadAllTextAsync("prompt.txt");
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    Instructions = instructions,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("How would I declare a variable for a last name?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 

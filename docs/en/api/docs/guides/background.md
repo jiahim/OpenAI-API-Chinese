@@ -103,6 +103,26 @@ var response = client.responses().create(params);
 System.out.println(response.status().orElseThrow());
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    BackgroundModeEnabled = true,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Write a very long novel about otters in space.")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.Status);
+```
+
 ```ruby
 require "openai"
 
@@ -235,6 +255,37 @@ response.output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    BackgroundModeEnabled = true,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Write a very long novel about otters in space.")
+);
+
+ResponseResult created = await client.CreateResponseAsync(options);
+ResponseResult response = await client.GetResponseAsync(created.Id);
+while (response.Status is ResponseStatus.Queued or ResponseStatus.InProgress)
+{
+    await Task.Delay(TimeSpan.FromSeconds(1));
+    response = await client.GetResponseAsync(response.Id);
+}
+if (response.Status != ResponseStatus.Completed)
+{
+    throw new InvalidOperationException($"Background response ended with status: {response.Status}");
+}
+Console.WriteLine($"Status: {response.Status}");
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -321,6 +372,19 @@ String responseId = "resp_123";
 var response = client.responses().cancel(responseId);
 
 System.out.println(response.status());
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+string responseId = "resp_123";
+
+ResponseResult response = await client.CancelResponseAsync(responseId);
+Console.WriteLine(response.Status);
 ```
 
 ```ruby
@@ -521,6 +585,91 @@ if (!streamCompleted.get()) {
             event ->
                 event.outputTextDelta().ifPresent(delta -> System.out.println(delta.delta())));
   }
+}
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    BackgroundModeEnabled = true,
+    StreamingEnabled = true,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Write a very long novel about otters in space.")
+);
+
+string? responseId = null;
+int lastSequenceNumber = -1;
+bool completed = false;
+
+void HandleUpdate(StreamingResponseUpdate update)
+{
+    lastSequenceNumber = update.SequenceNumber;
+    switch (update)
+    {
+        case StreamingResponseCreatedUpdate created:
+            responseId = created.Response.Id;
+            break;
+        case StreamingResponseOutputTextDeltaUpdate text:
+            Console.Write(text.Delta);
+            break;
+        case StreamingResponseCompletedUpdate:
+            completed = true;
+            break;
+        case StreamingResponseFailedUpdate:
+            throw new InvalidOperationException("The background response failed.");
+        case StreamingResponseIncompleteUpdate:
+            throw new InvalidOperationException("The background response was incomplete.");
+        case StreamingResponseErrorUpdate error:
+            throw new InvalidOperationException($"The response stream failed: {error.Message}");
+    }
+}
+
+try
+{
+    await foreach (
+        StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options)
+    )
+    {
+        HandleUpdate(update);
+    }
+}
+catch (Exception error)
+    when (error is HttpRequestException or IOException && responseId is not null)
+{
+    // The background response continues after its streaming connection is interrupted.
+}
+
+if (!completed)
+{
+    if (responseId is null)
+    {
+        throw new InvalidOperationException("The response stream ended before providing its ID.");
+    }
+
+    GetResponseOptions resumeOptions = new(responseId)
+    {
+        StartingAfter = lastSequenceNumber,
+        StreamingEnabled = true,
+    };
+    await foreach (StreamingResponseUpdate update in client.GetResponseStreamingAsync(resumeOptions))
+    {
+        HandleUpdate(update);
+    }
+
+    if (!completed)
+    {
+        throw new InvalidOperationException(
+            "The resumed response stream ended before the background response completed."
+        );
+    }
 }
 ```
 

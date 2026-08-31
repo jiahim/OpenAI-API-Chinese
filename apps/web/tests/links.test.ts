@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { describe, it } from "node:test";
+import { fileURLToPath } from "node:url";
 
 import {
   generatedDocuments,
@@ -23,6 +24,7 @@ import { rewriteDocumentLink } from "../lib/links.js";
 
 const SOURCE =
   "https://developers.openai.com/api/docs/guides/agents/quickstart.md";
+const repositoryRoot = fileURLToPath(new URL("../../..", import.meta.url));
 
 describe("document link rewriting", () => {
   it("rewrites absolute official Markdown links to the current local language", () => {
@@ -74,17 +76,66 @@ describe("document link rewriting", () => {
   });
 
   it("ships all English sources while retaining translated Chinese pages", async () => {
-    assert.equal(
-      generatedDocuments.filter((document) => document.locale === "en").length,
-      sourcePageCount,
+    const [sourceManifest, translationManifest] = await Promise.all([
+      readFile(resolve(repositoryRoot, "docs/en/.source-manifest.json"), "utf8").then(
+        (value) => JSON.parse(value) as {
+          pages: Record<
+            string,
+            { sourceUrl: string; status: "active" | "removed" }
+          >;
+        },
+      ),
+      readFile(
+        resolve(repositoryRoot, "docs/zh/.translation-manifest.json"),
+        "utf8",
+      ).then((value) => JSON.parse(value) as {
+        pages: Record<string, { sourceUrl: string }>;
+      }),
+    ]);
+    for (const [sourceUrl, page] of Object.entries(sourceManifest.pages)) {
+      assert.equal(page.sourceUrl, sourceUrl);
+    }
+    for (const [sourceUrl, page] of Object.entries(translationManifest.pages)) {
+      assert.equal(page.sourceUrl, sourceUrl);
+    }
+    const activeSourceUrls = new Set(
+      Object.values(sourceManifest.pages)
+        .filter((page) => page.status === "active")
+        .map((page) => page.sourceUrl),
     );
-    assert.ok(bilingualPageCount >= 3);
-    assert.ok(sourcePageCount >= 400);
-    assert.ok(documentMetadataForRoute("zh", "/api/docs/models"));
-    assert.ok(documentMetadataForRoute("en", "/api/docs/guides/tools"));
-    const loaded = await loadDocumentForRoute("en", "/api/docs/guides/tools");
+    const activeTranslationSourceUrls = Object.values(translationManifest.pages)
+      .filter((page) => activeSourceUrls.has(page.sourceUrl))
+      .map((page) => page.sourceUrl)
+      .sort();
+    const generatedEnglishSourceUrls = generatedDocuments
+      .filter((document) => document.locale === "en")
+      .map((document) => document.sourceUrl)
+      .sort();
+    const generatedChineseSourceUrls = generatedDocuments
+      .filter((document) => document.locale === "zh")
+      .map((document) => document.sourceUrl)
+      .sort();
+
+    assert.ok(activeSourceUrls.size > 0);
+    assert.ok(activeTranslationSourceUrls.length > 0);
+    assert.equal(new Set(generatedEnglishSourceUrls).size, generatedEnglishSourceUrls.length);
+    assert.equal(new Set(generatedChineseSourceUrls).size, generatedChineseSourceUrls.length);
+    assert.deepEqual(generatedEnglishSourceUrls, [...activeSourceUrls].sort());
+    assert.deepEqual(generatedChineseSourceUrls, activeTranslationSourceUrls);
+    assert.equal(sourcePageCount, activeSourceUrls.size);
+    assert.equal(bilingualPageCount, activeTranslationSourceUrls.length);
+
+    const representativeSourceUrl = activeTranslationSourceUrls[0];
+    assert.ok(representativeSourceUrl);
+    const representativeRoute = new URL(representativeSourceUrl).pathname.replace(
+      /\.md$/u,
+      "",
+    );
+    assert.ok(documentMetadataForRoute("zh", representativeRoute));
+    assert.ok(documentMetadataForRoute("en", representativeRoute));
+    const loaded = await loadDocumentForRoute("en", representativeRoute);
     assert.match(loaded?.markdown ?? "", /^#/u);
-    assert.ok(catalogDocumentForRoute("/api/docs/guides/tools"));
+    assert.ok(catalogDocumentForRoute(representativeRoute));
   });
 
   it("preserves the complete official grouping and order", () => {
@@ -103,7 +154,6 @@ describe("document link rewriting", () => {
   });
 
   it("derives homepage timestamps and schedule from repository facts", async () => {
-    const repositoryRoot = resolve(process.cwd(), "../..");
     const [sourceManifest, translationManifest, workflow] = await Promise.all([
       readFile(resolve(repositoryRoot, "docs/en/.source-manifest.json"), "utf8").then(JSON.parse),
       readFile(resolve(repositoryRoot, "docs/zh/.translation-manifest.json"), "utf8").then(JSON.parse),
@@ -153,7 +203,7 @@ describe("document link rewriting", () => {
 
   it("leaves Vercel output detection to the Next.js preset", async () => {
     const vercelConfig = JSON.parse(
-      await readFile(resolve(process.cwd(), "vercel.json"), "utf8"),
+      await readFile(resolve(repositoryRoot, "apps/web/vercel.json"), "utf8"),
     ) as Record<string, unknown>;
     assert.equal(vercelConfig.framework, "nextjs");
     assert.equal(vercelConfig.buildCommand, "pnpm build");

@@ -416,6 +416,57 @@ if (response.status().filter(ResponseStatus.INCOMPLETE::equals).isPresent()
 }
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    MaxOutputTokenCount = 300,
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.Medium,
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Write a bash script that transposes a matrix.")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+if (
+    response.Status == ResponseStatus.Incomplete
+    && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.MaxOutputTokens
+)
+{
+    Console.WriteLine("The response ended before all output tokens were generated.");
+    string partialOutput = response.GetOutputText();
+    Console.WriteLine(
+        string.IsNullOrWhiteSpace(partialOutput)
+            ? "Ran out of tokens during reasoning."
+            : $"Partial output: {partialOutput}"
+    );
+}
+else if (
+    response.Status == ResponseStatus.Incomplete
+    && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.ContentFilter
+)
+{
+    Console.WriteLine("The response was interrupted by the content filter.");
+}
+else if (response.Status == ResponseStatus.Completed)
+{
+    Console.WriteLine(response.GetOutputText());
+}
+else
+{
+    throw new InvalidOperationException($"The response ended with status: {response.Status}");
+}
+```
+
 ```ruby
 require "openai"
 
@@ -867,7 +918,7 @@ first = client.responses.create(
   input: history,
   reasoning: {context: :current_turn}
 )
-history.concat(first.output.map(&:to_h))
+history.concat(first.output)
 history << {role: :user, content: "Now patch the bug and explain the change."}
 
 second = client.responses.create(
@@ -977,6 +1028,32 @@ client.responses().create(params).output().stream()
     .flatMap(item -> item.reasoning().stream())
     .flatMap(reasoning -> reasoning.summary().stream())
     .forEach(summary -> System.out.println(summary.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
+        ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Auto,
+    },
+};
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("What is the capital of France?"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+foreach (ReasoningResponseItem reasoning in response.OutputItems.OfType<ReasoningResponseItem>())
+{
+    Console.WriteLine(reasoning.GetSummaryText());
+}
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -1404,6 +1481,47 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+string prompt =
+    """
+    Instructions:
+    - Given the React component below, make nonfiction book titles red.
+    - Return only the updated component code in your reply.
+    - Do not include any additional formatting, such as markdown code blocks.
+    - For formatting, use four space tabs, and do not allow any lines of code to
+      exceed 80 columns.
+
+    const books = [
+      { title: 'Dune', category: 'fiction', id: 1 },
+      { title: 'Frankenstein', category: 'fiction', id: 2 },
+      { title: 'Moneyball', category: 'nonfiction', id: 3 },
+    ];
+
+    export default function BookList() {
+      const listItems = books.map(book =>
+        <li>
+          {book.title}
+        </li>
+      );
+
+      return (
+        <ul>{listItems}</ul>
+      );
+    }
+    """;
+ResponseResult response = await client.CreateResponseAsync(
+    "gpt-5.6",
+    [ResponseItem.CreateUserMessageItem(prompt)]
+);
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -1707,6 +1825,25 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+string prompt =
+    """
+    What are three compounds we should investigate to advance research into
+    new antibiotics? Why should we consider them?
+    """;
+ResponseResult response = await client.CreateResponseAsync(
+    "gpt-5.6",
+    [ResponseItem.CreateUserMessageItem(prompt)]
+);
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby

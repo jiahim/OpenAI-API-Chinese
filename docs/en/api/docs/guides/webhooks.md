@@ -12,6 +12,10 @@ OpenAI [webhooks](http://chatgpt.com/?q=eli5+what+is+a+webhook?) allow you to re
 
 Below are examples of simple servers capable of ingesting webhooks from OpenAI, specifically for the [`response.completed`](https://developers.openai.com/api/reference/resources/webhooks) event.
 
+For the Ruby examples, install the required dependencies with
+`gem install openai webrick`, then set `OPENAI_API_KEY` and
+`OPENAI_WEBHOOK_SECRET`.
+
 Webhooks server
 
 ```javascript
@@ -84,6 +88,57 @@ def webhook():
 
 if __name__ == "__main__":
     app.run(port=8000)
+```
+
+```ruby
+require "openai"
+require "webrick"
+
+client = OpenAI::Client.new(
+  webhook_secret: ENV.fetch("OPENAI_WEBHOOK_SECRET")
+)
+
+server = WEBrick::HTTPServer.new(
+  BindAddress: "127.0.0.1",
+  Port: Integer(ENV.fetch("OPENAI_WEBHOOK_PORT", "8000")),
+  Logger: WEBrick::Log.new($stderr, WEBrick::BasicLog::WARN),
+  AccessLog: []
+)
+response_workers = []
+
+server.mount_proc("/webhook") do |request, response|
+  if request.request_method != "POST"
+    response.status = 405
+    next
+  end
+
+  headers = request.header.transform_values(&:first)
+  event = client.webhooks.unwrap(request.body, headers)
+
+  if event.is_a?(OpenAI::Models::Webhooks::ResponseCompletedWebhookEvent)
+    response_workers.select!(&:alive?)
+    response_workers << Thread.new(event.data.id) do |response_id|
+      completed_response = client.responses.retrieve(response_id)
+      puts "Response output: #{completed_response.output_text}"
+    end
+  end
+
+  response.status = 200
+  response.body = "ok"
+rescue OpenAI::Errors::InvalidWebhookSignatureError, ArgumentError => error
+  warn "Invalid signature: #{error.message}"
+  response.status = 400
+  response.body = "Invalid signature"
+ensure
+  server.shutdown if ENV["OPENAI_WEBHOOK_EXIT_AFTER_REQUEST"] == "1"
+end
+
+Signal.trap("INT") { server.shutdown }
+port = server.listeners.first.addr[1]
+puts "Webhook server listening on http://127.0.0.1:#{port}/webhook"
+$stdout.flush
+server.start
+response_workers.each(&:join)
 ```
 
 
@@ -174,6 +229,26 @@ ResponseCreateParams params =
 
 var response = client.responses().create(params);
 System.out.println(response.status().orElseThrow());
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    BackgroundModeEnabled = true,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Write a very long novel about otters in space.")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.Status);
 ```
 
 ```ruby
@@ -286,6 +361,47 @@ event = client.webhooks.unwrap(
     request.headers,
     secret=webhook_secret,
 )
+```
+
+```ruby
+require "openai"
+require "webrick"
+
+client = OpenAI::Client.new(
+  api_key: ENV.fetch("OPENAI_API_KEY"),
+  webhook_secret: ENV.fetch("OPENAI_WEBHOOK_SECRET")
+)
+server = WEBrick::HTTPServer.new(
+  BindAddress: "127.0.0.1",
+  Port: Integer(ENV.fetch("OPENAI_WEBHOOK_PORT", "8000")),
+  Logger: WEBrick::Log.new($stderr, WEBrick::BasicLog::WARN),
+  AccessLog: []
+)
+
+server.mount_proc("/webhook") do |request, response|
+  if request.request_method != "POST"
+    response.status = 405
+    next
+  end
+
+  headers = request.header.transform_values(&:first)
+  event = client.webhooks.unwrap(request.body, headers)
+  puts "Verified webhook event: #{event.type}"
+
+  response.status = 200
+  response.body = "ok"
+rescue OpenAI::Errors::InvalidWebhookSignatureError, ArgumentError
+  response.status = 400
+  response.body = "Invalid signature"
+ensure
+  server.shutdown if ENV["OPENAI_WEBHOOK_EXIT_AFTER_REQUEST"] == "1"
+end
+
+Signal.trap("INT") { server.shutdown }
+port = server.listeners.first.addr[1]
+puts "Webhook server listening on http://127.0.0.1:#{port}/webhook"
+$stdout.flush
+server.start
 ```
 
 

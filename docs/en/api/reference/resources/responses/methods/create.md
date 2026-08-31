@@ -15013,6 +15013,10 @@ as input for the model's response.
 
       The total number of tokens used.
 
+    - `compute_units: optional number or null`
+
+      Compute units for the request. Currently null when available.
+
   - `user: optional string`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
@@ -15201,7 +15205,8 @@ curl https://api.openai.com/v1/responses \
     "output_tokens_details": {
       "reasoning_tokens": 0
     },
-    "total_tokens": 0
+    "total_tokens": 0,
+    "compute_units": 0
   },
   "user": "user-1234"
 }

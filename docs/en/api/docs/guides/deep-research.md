@@ -169,6 +169,56 @@ response.output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CodeInterpreterToolContainer container = new(
+    CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration([])
+);
+CreateResponseOptions options = new()
+{
+    Model = "o3-deep-research",
+    BackgroundModeEnabled = true,
+};
+options.Tools.Add(ResponseTool.CreateWebSearchPreviewTool());
+string vectorStoreId = Environment.GetEnvironmentVariable("OPENAI_EXAMPLE_VECTOR_STORE_ID")
+    ?? throw new InvalidOperationException("Set OPENAI_EXAMPLE_VECTOR_STORE_ID to search your research documents.");
+options.Tools.Add(ResponseTool.CreateFileSearchTool([vectorStoreId]));
+options.Tools.Add(ResponseTool.CreateCodeInterpreterTool(container));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        """
+        Research the economic impact of semaglutide on global healthcare systems.
+        Do:
+        - Include specific figures, trends, statistics, and measurable outcomes.
+        - Prioritize reliable, up-to-date sources: peer-reviewed research, health
+          organizations (e.g., WHO, CDC), regulatory agencies, or pharmaceutical
+          earnings reports.
+        - Include inline citations and return all source metadata.
+
+        Be analytical, avoid generalities, and ensure that each section supports
+        data-backed reasoning that could inform healthcare policy or financial modeling.
+        """
+    )
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+while (response.Status is ResponseStatus.Queued or ResponseStatus.InProgress)
+{
+    await Task.Delay(TimeSpan.FromSeconds(1));
+    response = await client.GetResponseAsync(response.Id);
+}
+if (response.Status != ResponseStatus.Completed)
+{
+    throw new InvalidOperationException($"Research ended with status: {response.Status}");
+}
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -406,6 +456,38 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    Instructions =
+        """
+        You are talking to a user who is asking for a research task to be conducted.
+        Your job is to gather more information to successfully complete the task.
+
+        GUIDELINES:
+        - Gather all necessary information concisely and in a well-structured manner.
+        - Use bullet points or numbered lists when they improve clarity.
+        - Do not ask for unnecessary information or repeat details the user already provided.
+
+        IMPORTANT: Do NOT conduct any research yourself. Gather information that a
+        researcher will use to complete the task.
+        """,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Research surfboards for me.")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -775,6 +857,45 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    Instructions =
+        """
+        You will receive a research task from a user. Produce instructions for the
+        researcher who will complete it. Do NOT conduct the research yourself.
+
+        GUIDELINES:
+        1. Maximize specificity and detail. Include every stated preference and all
+           attributes or dimensions the user identifies.
+        2. Treat unstated but necessary dimensions as open-ended. Do not assume an
+           unstated preference or invent details the user did not provide.
+        3. Phrase the research request in the first person, from the user's perspective.
+        4. Request tables whenever they clarify comparisons, project tracking, budgets,
+           competitive analysis, or other structured information.
+        5. Describe the expected output format, including report headers and other
+           formatting needed to keep the research clear and well organized.
+        6. Respond in the user's language unless they explicitly request another one.
+        7. Prioritize reliable primary sources. Prefer official brand or manufacturer
+           websites for products, original papers and journals for scientific questions,
+           and sources published in the language of the user's request.
+        """,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Research surfboards for me.")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -981,6 +1102,51 @@ response.output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "o3-deep-research",
+    BackgroundModeEnabled = true,
+    Instructions = "Analyze the Salesforce opportunity notes carefully.",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Auto,
+    },
+};
+string serverUrl = Environment.GetEnvironmentVariable("OPENAI_MCP_SERVER_URL")
+    ?? throw new InvalidOperationException("Set OPENAI_MCP_SERVER_URL to connect your research data source.");
+options.Tools.Add(
+    ResponseTool.CreateMcpTool(
+        "mycompany_mcp_server",
+        new Uri(serverUrl),
+        toolCallApprovalPolicy: GlobalMcpToolCallApprovalPolicy.NeverRequireApproval
+    )
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "What similarities appear in notes for closed or lost Salesforce opportunities?"
+    )
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+while (response.Status is ResponseStatus.Queued or ResponseStatus.InProgress)
+{
+    await Task.Delay(TimeSpan.FromSeconds(1));
+    response = await client.GetResponseAsync(response.Id);
+}
+if (response.Status != ResponseStatus.Completed)
+{
+    throw new InvalidOperationException($"Research ended with status: {response.Status}");
+}
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby

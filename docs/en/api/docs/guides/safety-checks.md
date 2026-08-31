@@ -33,6 +33,20 @@ Responses API
 
     Providing a safety identifier with the Responses API
 
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+
+const response = await client.responses.create({
+  model: "gpt-5.6-terra",
+  input: "This is a test",
+  safety_identifier: "user_123456",
+});
+
+console.log(response.output_text);
+```
+
 ```python
 from openai import OpenAI
 
@@ -121,6 +135,20 @@ curl https://api.openai.com/v1/responses \
 Chat Completions API
 
     Providing a safety identifier with the Chat Completions API
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+
+const response = await client.chat.completions.create({
+  model: "gpt-5.6-terra",
+  messages: [{ role: "user", content: "This is a test" }],
+  safety_identifier: "user_123456",
+});
+
+console.log(response.choices[0].message.content);
+```
 
 ```python
 from openai import OpenAI

@@ -52,6 +52,32 @@ necessary context to continue the conversation. If you use
 
 ## Example user flow
 
+```javascript
+import OpenAI from "openai";
+import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
+
+const client = new OpenAI();
+
+/** @type {import("openai/resources/responses/responses").ResponseInput} */
+const conversation = [
+  {
+    type: "message",
+    role: "user",
+    content: "Let's begin a long coding task.",
+  },
+];
+
+const response = await client.responses.create({
+  model: "gpt-5.3-codex",
+  input: conversation,
+  store: false,
+  context_management: [{ type: "compaction", compact_threshold: 200_000 }],
+});
+
+conversation.push(...toResponseInputItems(response.output));
+console.log(response.output_text);
+```
+
 ```python
 conversation = [
     {
@@ -258,6 +284,39 @@ call as-is.
 <a id="standalone-compact-endpoint-user-flow"></a>
 
 ### Example user flow
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+
+/** @type {import("openai/resources/responses/responses").ResponseInput} */
+const conversation = [{ role: "user", content: "Plan a trip to Kyoto." }];
+
+const compacted = await client.responses.compact({
+  model: "gpt-5.6",
+  input: conversation,
+});
+
+/** @type {import("openai/resources/responses/responses").ResponseInput} */
+const nextInput = [
+  ...compacted.output.map(
+    (item) =>
+      /** @type {import("openai/resources/responses/responses").ResponseInputItem} */ (
+        item
+      )
+  ),
+  { role: "user", content: "Add two more days to the itinerary." },
+];
+
+const response = await client.responses.create({
+  model: "gpt-5.6",
+  input: nextInput,
+  store: false,
+});
+
+console.log(response.output_text);
+```
 
 ```python
 # Full window collected from prior turns

@@ -62,6 +62,21 @@ requests with the `safety_identifier` parameter:
 
 Example: Providing a safety identifier
 
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+
+const response = await client.chat.completions.create({
+  model: "gpt-5.6",
+  messages: [{ role: "user", content: "This is a test" }],
+  max_completion_tokens: 5,
+  safety_identifier: "user_123456",
+});
+
+console.log(response.choices[0].message.content);
+```
+
 ```python
 from openai import OpenAI
 
