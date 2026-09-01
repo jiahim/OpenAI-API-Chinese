@@ -761,11 +761,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
       "completion_tokens": 134,
       "cached_tokens": 0
     },
-    "sampled_model_name": "gpt-4o-2024-08-06"
+    "sampled_model_name": "gpt-5-mini"
   },
   "sub_rewards": {},
   "model_grader_token_usage_per_model": {
-    "gpt-4o-2024-08-06": {
+    "gpt-5-mini": {
       "prompt_tokens": 190,
       "total_tokens": 324,
       "completion_tokens": 134,

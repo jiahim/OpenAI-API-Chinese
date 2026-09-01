@@ -216,7 +216,7 @@ curl https://api.openai.com/v1/models/$MODEL \
 ### Example
 
 ```http
-curl https://api.openai.com/v1/models/VAR_chat_model_id \
+curl https://api.openai.com/v1/models/gpt-5.6-sol \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
@@ -224,7 +224,7 @@ curl https://api.openai.com/v1/models/VAR_chat_model_id \
 
 ```json
 {
-  "id": "VAR_chat_model_id",
+  "id": "gpt-5.6-sol",
   "object": "model",
   "created": 1686935002,
   "owned_by": "openai",

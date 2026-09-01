@@ -4266,7 +4266,7 @@ Retrieves a model response with the given ID.
 
   - `model: ResponsesModel`
 
-    Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI
+    Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](/docs/models)
     to browse and compare available models.
@@ -8913,8 +8913,6 @@ Retrieves a model response with the given ID.
 
   - `reasoning: optional Reasoning or null`
 
-    **gpt-5 and o-series models only**
-
     Configuration options for
     [reasoning models](https://platform.openai.com/docs/guides/reasoning).
 
@@ -9240,7 +9238,7 @@ curl https://api.openai.com/v1/responses/$RESPONSE_ID \
   "metadata": {
     "foo": "string"
   },
-  "model": "gpt-5.1",
+  "model": "gpt-5.6-sol",
   "object": "response",
   "output": [
     {
@@ -9417,7 +9415,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
   "incomplete_details": null,
   "instructions": null,
   "max_output_tokens": null,
-  "model": "gpt-4o-2024-08-06",
+  "model": "gpt-5.6-sol",
   "output": [
     {
       "type": "message",

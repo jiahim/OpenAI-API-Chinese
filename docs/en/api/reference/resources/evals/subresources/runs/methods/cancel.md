@@ -137,7 +137,7 @@ Cancel an ongoing evaluation run.
 
         - `model: optional string or null`
 
-          An optional model to filter by (e.g., 'gpt-4o').
+          An optional model to filter by (e.g., 'gpt-5.6-sol').
 
     - `type: "completions"`
 
@@ -2234,8 +2234,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
   "eval_id": "eval_67abd54d9b0081909a86353f6fb9317a",
   "report_url": "https://platform.openai.com/evaluations/eval_67abd54d9b0081909a86353f6fb9317a?run_id=evalrun_67abd54d60ec8190832b46859da808f7",
   "status": "canceled",
-  "model": "gpt-4o-mini",
-  "name": "gpt-4o-mini",
+  "model": "gpt-5.6-sol",
+  "name": "gpt-5.6-sol",
   "created_at": 1743092069,
   "result_counts": {
     "total": 0,
@@ -2363,11 +2363,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
         }
       ]
     },
-    "model": "gpt-4o-mini",
+    "model": "gpt-5.6-sol",
     "sampling_params": {
-      "seed": 42,
-      "temperature": 1.0,
-      "top_p": 1.0,
       "max_completions_tokens": 2048
     }
   },
