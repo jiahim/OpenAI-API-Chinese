@@ -1,38 +1,38 @@
-# 使用评估
+# 使用评测
 
-> 如需查看完整的文档索引，请参见 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾附加 `.md` 即可获取 Markdown 版本的文档页面。
 
-评估（通常称为 **evals**）用于测试模型输出，以确保它们符合你指定的风格和内容标准。编写 evals 来了解你的 LLM 应用是否符合你的期望，尤其是在升级或尝试新模型时，是构建可靠应用的重要组成部分。
+评估（通常称为 **evals**）用于测试模型输出，确保其符合你指定的风格和内容标准。编写评估以了解你的 LLM 应用相对于你的预期表现如何，尤其是在升级或尝试新模型时，这是构建可靠应用的重要组成部分。
 
-在本指南中，我们将重点介绍如何 **使用 [Evals API](https://developers.openai.com/api/reference/resources/evals)**。以编程方式配置 evals。 [如果你愿意，也可以在 OpenAI 控制台中配置 evals](https://platform.openai.com/evaluations).
+在本指南中，我们将重点介绍 **如何使用 [Evals API](https://developers.openai.com/api/reference/resources/evals)**。以编程方式配置评估。如果你愿意，也可以 [在 OpenAI 仪表板中](https://platform.openai.com/evaluations).
 
-OpenAI 正在弃用 Evals 平台。现有 evals 内容在过渡期内仍然
-  可用。对于
-  现有用户，Evals 将于 2026 年 10 月 31 日变为只读状态，该平台计划于
-  2026 年 11 月 30 日关闭。请参阅 [deprecations
-  页面](https://developers.openai.com/api/docs/deprecations#2026-06-03-evals-platform) 了解当前
-  的时间表。
+OpenAI 正在弃用 Evals 平台。现有评估内容在过渡期内仍可
+  使用。评估将于 2026 年 10 月 31 日对现有用户变为只读，该平台计划于
+  2026 年 11 月 30 日下线。有关当前
+  时间表的详细信息，请参阅 [弃用
+  页面](https://developers.openai.com/api/docs/deprecations#2026-06-03-evals-platform) 。
+  时间表。
 
-如果你刚开始接触评估，或者希望有更具迭代性的环境来
-  在构建 eval 时进行实验，可以考虑尝试
-  [Datasets](https://developers.openai.com/api/docs/guides/evaluation-getting-started) 。
+如果你是评估新手，或者希望在构建评估时获得更具迭代性的
+  实验环境，可以考虑尝试
+  [数据集](https://developers.openai.com/api/docs/guides/evaluation-getting-started) 。
 
-总的来说，为你的 LLM 应用构建和运行评估有三个步骤。
+总体而言，为你的 LLM 应用构建并运行评估（eval）需要三个步骤。
 
-1. 将待完成的任务描述为一次评估
-1. 使用测试输入（提示词和输入数据）运行你的评估
-1. 分析结果，然后迭代并改进你的提示词
+1. 描述要作为 eval 完成的任务
+1. 使用测试输入（提示和输入数据）运行你的 eval
+1. 分析结果，然后迭代改进你的提示
 
-这个过程与行为驱动开发（BDD）有些类似，在实施和测试系统之前，你先要规定系统应如何运作。下面我们看看如何使用 [Evals API](https://developers.openai.com/api/reference/resources/evals).
+这个过程与行为驱动开发（BDD）有些类似，你需要在实现和测试系统之前，先指定系统的预期行为。让我们看看如何使用 智能体开发工具包 完成上述每个步骤 [Evals API](https://developers.openai.com/api/reference/resources/evals).
 
-## 为任务创建评估
+## 为某个任务创建评估
 
-创建评估从描述模型需要执行的任务开始。假设我们想用一个模型将IT支持工单的内容分为三类： `Hardware`, `Software`，或 `Other`.
+创建评估的第一步是描述需要由模型完成的任务。假设我们希望使用一个模型，将 IT 支持工单的内容归入以下三类之一： `Hardware`, `Software`，或者 `Other`.
 
-要实现这个用例，你可以使用 [Chat Completions API](https://developers.openai.com/api/reference/resources/chat) 或 [Responses API](https://developers.openai.com/api/reference/resources/responses)。下面的两个示例都将 [开发者消息](https://developers.openai.com/api/docs/guides/text) 与包含支持工单文本的用户消息结合使用。
+要实现此用例，你可以使用 [Chat Completions API](https://developers.openai.com/api/reference/resources/chat) 或 [Responses API](https://developers.openai.com/api/reference/resources/responses)。下面的两个示例都结合了一个 [开发者消息](https://developers.openai.com/api/docs/guides/text) 其中用户消息包含支持工单的文本。
 
 
-  对IT支持工单进行分类
+  对 IT 支持工单进行分类
 
 ```javascript
 import OpenAI from "openai";
@@ -142,6 +142,26 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+ResponseResult response = await client.CreateResponseAsync(
+    "gpt-5.6",
+    [
+        ResponseItem.CreateDeveloperMessageItem(
+            "Categorize the IT support ticket as Hardware, Software, or Other. Respond with only one of those words."
+        ),
+        ResponseItem.CreateUserMessageItem("My monitor will not turn on. Help!"),
+    ]
+);
+
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -184,10 +204,10 @@ curl https://api.openai.com/v1/responses \
 
 
 
-让我们设置一个评估来测试这一行为 [通过 API](https://developers.openai.com/api/reference/resources/evals)。评估需要两个关键要素：
+我们设置一个评测来测试此行为 [通过 API](https://developers.openai.com/api/reference/resources/evals)。一个评测需要两个关键要素：
 
-- `data_source_config`：用于随评测一起使用的测试数据的架构。
-- `testing_criteria`： [评分器](https://developers.openai.com/api/docs/guides/graders) ，用于确定模型输出是否正确。
+- `data_source_config`: 配合评估使用的测试数据对应的数据格式。
+- `testing_criteria`: 评分所用的 [评分器](https://developers.openai.com/api/docs/guides/graders) ，用于判断模型输出是否正确。
 
 创建评估
 
@@ -299,14 +319,18 @@ curl https://api.openai.com/v1/evals \
 ```
 
 
-说明：data_source_config 参数
 
-运行此评估需要一组测试数据，代表你期望提示词处理的数据类型（本指南稍后将详细介绍如何创建测试数据集）。在我们的 `data_source_config` 参数中，我们指定数据集中的每个 **项目** 将符合 [JSON schema](https://json-schema.org/) ，包含两个属性：
 
-- `ticket_text`：一段包含支持工单内容的文本字符串
-- `correct_label`：由人类提供的模型应匹配的“真实答案”输出
+### 说明：data_source_config 参数
 
-由于我们将在测试标准中引用一个 **样本** （即模型根据提示生成的输出），我们还需要设置 `include_sample_schema` 为 `true`.
+
+
+运行此评估需要一个测试数据集，该数据集应代表你希望你的提示所处理的数据类型（关于如何创建测试数据集的更多内容将在本指南后面介绍）。在我们的 `data_source_config` 参数中，我们指定数据集中每个 **item** 都将符合一个 [JSON schema](https://json-schema.org/) ，该模式包含两个属性：
+
+- `ticket_text`: 包含支持工单内容的文本字符串
+- `correct_label`: 由人工提供的、模型应当匹配的“标准答案”输出
+
+由于我们将在测试标准中引用一个 **示例** （即给定我们的提示时由模型生成的输出），我们还将 `include_sample_schema` 设置为 `true`.
 
 ```json
 {
@@ -323,14 +347,22 @@ curl https://api.openai.com/v1/evals \
 }
 ```
 
-解释：testing_criteria 参数
 
-在我们的 `testing_criteria`，中，我们定义如何判断模型输出是否满足数据集中每个项目的要求。在这种情况下，我们只希望模型根据输入工单输出三个类别字符串之一。模型输出的字符串应与人标注的 `correct_label` 字段完全匹配。因此，在这种情况下，我们需要使用 `string_check` 评分器来评估输出。
 
-在测试配置中，我们将引入模板语法，用以下 `{{` 和 `}}` 括号表示。通过这种方式，我们将在该评估的测试中插入动态内容。
 
-- `{{ item.correct_label }}` 指的是我们测试数据中的真实值。
-- `{{ sample.output_text }}` 指的是我们将从模型中生成用来评估我们提示词的内容——我们会在实际启动评估运行时展示如何操作。
+
+
+
+### Explanation: testing_criteria parameter
+
+
+
+在我们的 `testing_criteria`，我们定义了如何判定模型输出是否满足数据集中每个条目的要求。在这个示例中，我们希望模型根据输入的工单输出三个类别字符串中的一个。其输出的字符串应与测试数据中人工标注的 `correct_label` 字段完全一致。因此在这种情况下，我们需要使用一个 `string_check` 评分器来评估输出。
+
+在测试配置中，我们将使用由 `{{` 和 `}}` 方括号表示的模板语法。这是我们在此评测中向测试插入动态内容的方式。
+
+- `{{ item.correct_label }}` 指我们测试数据中的真实值。
+- `{{ sample.output_text }}` 指我们将从模型生成用于评估提示的内容——我们将在实际启动评估运行时演示如何做到这一点。
 
 ```json
 {
@@ -342,7 +374,11 @@ curl https://api.openai.com/v1/evals \
 }
 ```
 
-创建评测后，系统会为其分配一个 UUID，后续启动运行时你需要使用该 UUID 来引用它。
+
+
+
+
+创建评估后，它将被分配一个 UUID，你将在稍后启动运行（run）时需要使用该 UUID 来引用它。
 
 ```json
 {
@@ -368,15 +404,15 @@ curl https://api.openai.com/v1/evals \
 }
 ```
 
-既然我们已经创建了描述应用预期行为的评测，接下来让我们用一组测试数据来测试提示词。
+既然我们已经创建了一个描述应用程序期望行为的评估，下面让我们使用一组测试数据来测试一个提示。
 
-## 使用你的评估测试提示词
+## Test a prompt with your eval
 
-现在我们已经定义了应用在评测中应如何表现，接下来让我们构建一个提示词，以便为代表性的测试数据样本可靠地生成正确输出。
+既然我们已经定义了应用在评估中的期望行为，接下来就构造一个提示词，使其能够针对具有代表性的测试数据样本稳定地生成正确的输出。
 
 ### 上传测试数据
 
-为评测运行提供测试数据的方法有几种，但上传一个 [JSONL](https://jsonlines.org/) 文件可能更方便，该文件包含我们创建评测时指定的模式中的数据。下面是一个符合我们设置模式的示例 JSONL 文件：
+有几种方法可以为评估运行提供测试数据，但上传一个 [JSONL](https://jsonlines.org/) 文件可能会很方便，该文件包含的数据符合我们创建评估时指定的架构。下面是一个符合我们设置的架构的示例 JSONL 文件：
 
 ```json
 { "item": { "ticket_text": "My monitor won't turn on!", "correct_label": "Hardware" } }
@@ -384,9 +420,9 @@ curl https://api.openai.com/v1/evals \
 { "item": { "ticket_text": "Best restaurants in Cleveland?", "correct_label": "Other" } }
 ```
 
-此数据集包含测试输入和真实标签，用于比较模型输出。
+该数据集同时包含测试输入和用于与模型输出进行比较的真实标签。
 
-接下来，我们将测试数据文件上传到 OpenAI 平台，以便稍后引用它。你可以在此 [仪表板中上传文件](https://platform.openai.com/storage/files)，但也可以 [通过 API 上传文件](https://developers.openai.com/api/reference/resources/files/methods/create) 。下面的示例假设你在保存了上述示例 JSON 数据并命名为 `tickets.jsonl`:
+接下来，让我们将测试数据文件上传到 OpenAI 平台，以便稍后引用它。你可以上传文件 [在控制台中此处](https://platform.openai.com/storage/files)，但也可以 [通过 API 上传文件](https://developers.openai.com/api/reference/resources/files/methods/create) 。下面的示例假设你在一个目录中运行该命令，并将上面的示例 JSON 数据保存到一个名为 `tickets.jsonl`:
 
 上传测试数据文件
 
@@ -480,7 +516,7 @@ curl https://api.openai.com/v1/files \
 ```
 
 
-上传文件时，请记下响应负载中的唯一 `id` 属性（如果你通过浏览器上传，也可在界面中查看）——我们稍后需要引用该值：
+上传文件时，请记下响应负载中唯一的 `id` 属性（如果通过浏览器上传，在界面中也可以看到该属性）——稍后我们将需要引用该值：
 
 ```json
 {
@@ -498,9 +534,9 @@ curl https://api.openai.com/v1/files \
 
 ### 创建评估运行
 
-有了测试数据，让我们评估一个提示词，看看它如何根据我们的测试标准表现。通过 API，我们可以通过 [创建评估运行](https://developers.openai.com/api/reference/resources/evals/methods/create).
+准备好测试数据后，让我们评估一个提示词，看看它针对测试标准的表现。通过 API，我们可以通过以下方式 [创建评估运行](https://developers.openai.com/api/reference/resources/evals/methods/create).
 
-确保替换 `YOUR_EVAL_ID` 以及 `YOUR_FILE_ID` 使用你在上述步骤中创建的评估配置和测试数据文件的唯一 ID。
+请确保将 `YOUR_EVAL_ID` 和 `YOUR_FILE_ID` 替换为你在上述步骤中创建的评估配置和测试数据文件的唯一 ID。
 
 
   创建评估运行
@@ -611,9 +647,9 @@ curl https://api.openai.com/v1/evals/YOUR_EVAL_ID/runs \
 
 
 
-当我们创建运行时，我们使用 [Chat Completions](https://developers.openai.com/api/docs/guides/text?api-mode=chat) 消息数组或 [Responses](https://developers.openai.com/api/reference/resources/responses) 输入来设置提示词。此提示词用于为数据集中的每一行测试数据生成模型响应。我们可以使用双花括号语法来模板化动态变量 `item.ticket_text`，该变量取自当前测试数据项。
+创建运行时，我们会使用以下两种方式之一来设置提示词： [Chat Completions](https://developers.openai.com/api/docs/guides/text?api-mode=chat) 的 messages 数组，或者 [Responses](https://developers.openai.com/api/reference/resources/responses) 的 input。该提示词用于为数据集中的每一行测试数据生成模型响应。我们可以使用双花括号语法来插入动态变量 `item.ticket_text`，该变量取自当前的测试数据条目。
 
-如果评估运行成功创建，你将收到一个如下所示的 API 响应：
+如果评估运行创建成功，你将收到如下所示的 API 响应：
 
 
 ```json
@@ -667,15 +703,15 @@ curl https://api.openai.com/v1/evals/YOUR_EVAL_ID/runs \
 
 
 
-你的评估运行现在已排队，它将异步执行，处理数据集中的每一行，使用我们指定的提示词和模型生成响应进行测试。
+你的评估运行现已排队，它将以异步方式执行，遍历数据集中的每一行，使用我们指定的提示词和模型生成响应用于测试。
 
 ## 分析结果
 
-要在运行成功、失败或被取消时收到更新，请创建一个 webhook 端点并订阅 `eval.run.succeeded`, `eval.run.failed`，和 `eval.run.canceled` 事件。请参阅 [webhooks 指南](https://developers.openai.com/api/docs/guides/webhooks) 了解更多详情。
+要在运行成功、失败或取消时接收更新，请创建一个 webhook 端点并订阅 `eval.run.succeeded`, `eval.run.failed`，和 `eval.run.canceled` 事件。详情请参阅 [webhook 指南](https://developers.openai.com/api/docs/guides/webhooks) 。
 
-根据数据集的大小，评估运行可能需要一些时间才能完成。你可以查看仪表板中的当前状态，但你也可以通过 [API 获取评估运行的当前状态](https://developers.openai.com/api/reference/resources/evals/methods/retrieve):
+根据数据集大小，评估运行可能需要一些时间才能完成。你可以在仪表板中查看当前状态，也可以 [通过 API 获取评估运行的当前状态](https://developers.openai.com/api/reference/resources/evals/methods/retrieve):
 
-检索评估运行状态
+获取评估运行状态
 
 ```javascript
 import OpenAI from "openai";
@@ -710,7 +746,7 @@ curl https://api.openai.com/v1/evals/YOUR_EVAL_ID/runs/YOUR_RUN_ID \
 ```
 
 
-你需要评估和评估运行的 UUID 来获取其状态。当你这样做时，你会看到类似这样的评估运行数据：
+你需要评估和评估运行二者的 UUID，才能获取其状态。获取后，你会看到如下所示的评估运行数据：
 
 
 ```json
@@ -784,27 +820,27 @@ curl https://api.openai.com/v1/evals/YOUR_EVAL_ID/runs/YOUR_RUN_ID \
 
 
 
-API 响应包含关于测试标准结果的详细信息、用于生成模型响应的 API 使用情况，以及一个 `report_url` 属性，该属性会带你进入仪表板中的一个页面，你可以在其中直观地探索结果。
+API 响应包含测试标准结果的详细信息、用于生成模型响应的 API 用量，以及一个 `report_url` 属性，该属性会带你进入仪表板中的一个页面，你可以在其中以可视化方式浏览结果。
 
-在我们的简单测试中，模型可靠地为一个小型测试用例样本生成了我们想要的内容。实际上，你通常需要使用更多标准、不同提示和不同数据集来运行评估。但上述过程为你提供了构建健壮的 LLM 应用评估所需的所有工具！
+在这个简单测试中，模型针对一小部分测试用例可靠地生成了我们想要的内容。实际上，你通常需要使用更多标准、不同提示词和不同数据集来运行评估。但上述过程为你构建稳健的 LLM 应用评估提供了所需的全部工具！
 
-## 后续步骤
+## 下一步
 
-现在你已经知道如何通过API以及使用仪表板来创建和运行评估！这里还有一些其他资源，可能在你继续改进模型结果时对你有用。
+现在你已经了解了如何通过 API 以及使用仪表板来创建和运行 evals！以下是一些其他资源，在你持续改进模型效果的过程中可能会对你有所帮助。
 
-[食谱：检测提示词回归
+[Cookbook：检测提示词回归
 
 
 
       Keep tabs on the performance of your prompts as you iterate on them.](https://developers.openai.com/cookbook/examples/evaluation/use-cases/regression)
 
-[食谱：批量模型和提示词实验
+[Cookbook：批量模型与提示词实验
 
 
 
       Compare the results of many different prompts and models at once.](https://developers.openai.com/cookbook/examples/evaluation/use-cases/bulk-experimentation)
 
-[食谱：监控存储的完成
+[Cookbook：监控已存储的补全
 
 
 
