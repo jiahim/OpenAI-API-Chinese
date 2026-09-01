@@ -1,16 +1,16 @@
 # 监督微调
 
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。通过将 `.md` 附加到页面 URL 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾附加 `.md` 来获取。
 
-监督式微调（SFT）允许你使用针对特定用例的示例来训练 OpenAI 模型。结果是定制化的模型，能够更可靠地生成你期望的风格和内容。
+监督微调（SFT）允许你使用针对特定用例的示例来训练 OpenAI 模型。得到的是一个定制化模型，能够更可靠地生成你期望的风格和内容。
 
-OpenAI 正在逐步关闭微调平台。该平台将不再
-  对新用户开放，但现有的微调平台用户在未来几个月内仍将
-  能够创建训练任务。
+OpenAI 正在逐步关停微调平台。该平台不再
+  对新增用户开放，但现有微调平台的用户在
+  未来数月内仍可创建训练任务。
   
 
-  所有微调后的模型在其基础
-  模型被 [弃用](https://developers.openai.com/api/docs/deprecations)。之前，仍可用于推理。完整的时间线见
+  所有微调模型在其基座
+  模型被 [弃用](https://developers.openai.com/api/docs/deprecations)。之前都将保持可用。完整的时间表请参阅
   [此处](https://developers.openai.com/api/docs/deprecations).
 
 
@@ -49,43 +49,43 @@ Often uses human-generated "ground truth" responses to show the model how it sho
 
 ## 概述
 
-监督式微调包含四个主要部分：
+监督微调包含四个主要部分：
 
-1. 构建你的训练数据集，以确定“良好”的标准
-1. 上传包含示例提示和期望模型输出的训练数据集
-1. 使用你的训练数据为基础模型创建微调作业
+1. 构建你的训练数据集，确定什么是“良好”的输出
+1. 上传一个包含示例提示和期望模型输出的训练数据集
+1. 使用你的训练数据为基础模型创建一个微调任务
 1. 使用微调后的模型评估你的结果
 
-**先做好评测！** 只有在设置好评测之后，才投入微调。你
-  需要一种可靠的方法来确定你的微调模型是否表现
+**先把评估做好！** 只有在搭建好评估之后，再投入微调。你
+  需要一种可靠的方式来判断你的微调模型是否表现
   优于基础模型。
   
 
-  [设置评测 →](https://developers.openai.com/api/docs/guides/evals)
+  [搭建评估 →](https://developers.openai.com/api/docs/guides/evals)
 
 ## 构建你的数据集
 
-构建一个健壮、具有代表性的数据集，以便从微调模型中获得有用的结果。请使用以下技巧和注意事项。
+构建一个稳健且具有代表性的数据集，以从微调模型中获得有用的结果。使用以下技术和注意事项。
 
-### 示例数量正确
+### 恰到好处的示例数量
 
-- 微调可提供的最少示例数量为 10
-- 50–100 个示例上进行微调可带来改进，但适合你的数量因用例而异
+- 微调至少需要提供 10 个示例
+- 在 50–100 个示例上进行微调可以看到改进，但合适的数量差异很大，取决于具体用例
 - 我们建议从 50 个精心设计的演示开始，并 [评估结果](https://developers.openai.com/api/docs/guides/evals)
 
-如果性能在 50 个优质示例下有所提升，可尝试增加示例以观察进一步效果。若 50 个示例毫无影响，则应在添加训练数据前重新考虑任务或提示词。
+如果使用 50 个优质示例后性能有所提升，可以尝试增加更多示例以获取进一步的改进。如果 50 个示例没有产生任何效果，请在添加训练数据之前重新思考你的任务或提示。
 
-### 什么构成了好的示例
+### 优秀示例的特征
 
-- 无论你的应用预期会处理哪些提示和输出，都应尽可能贴近实际情况
+- 应用预期出现的提示与输出，应尽可能贴近真实
 - 具体、清晰的问题与回答
-- 使用历史数据、专家数据、日志数据，或 [其他类型的收集数据](https://developers.openai.com/api/docs/guides/evals)
+- 使用历史数据、专家数据、日志数据，或 [其他类型的采集数据](https://developers.openai.com/api/docs/guides/evals)
 
-### 格式化你的数据
+### Formatting your data
 
 - 使用 [JSONL 格式](https://jsonlines.org/)，训练数据文件的每一行包含一个完整的 JSON 结构
-- 使用 [聊天补全格式](https://developers.openai.com/api/reference/resources/fine_tuning)
-- 你的文件必须至少有 10 行
+- 使用 [chat completions 格式](https://developers.openai.com/api/reference/resources/fine_tuning)
+- 你的文件至少需要 10 行
 
 
 
@@ -93,7 +93,7 @@ JSONL 格式示例文件
 
     
 
-一个 JSONL 训练数据示例，其中模型调用一个 `get_weather` 函数：
+JSONL 训练数据示例，其中模型调用一个 `get_weather` 函数：
 
 ```
 {"messages":[{"role":"user","content":"What is the weather in San Francisco?"},{"role":"assistant","tool_calls":[{"id":"call_id","type":"function","function":{"name":"get_current_weather","arguments":"{\"location\": \"San Francisco, USA\", \"format\": \"celsius\"}"}}]}],"parallel_tool_calls":false,"tools":[{"type":"function","function":{"name":"get_current_weather","description":"Get the current weather","parameters":{"type":"object","properties":{"location":{"type":"string","description":"The city and country, eg. San Francisco, USA"},"format":{"type":"string","enum":["celsius","fahrenheit"]}},"required":["location","format"]}}}]}
@@ -118,7 +118,7 @@ JSONL 格式示例文件
 
     
 
-训练数据文件的每一行包含如下的一个 JSON 结构，其中既包含一个示例用户提示词，也包含模型给出的正确响应（作为 `assistant` 消息）。
+训练数据文件的每一行都包含如下所示的 JSON 结构，其中同时包含一个示例用户提示词和模型返回的正确响应，形式为 `assistant` 消息。
 
 ```json
 {
@@ -164,30 +164,30 @@ JSONL 格式示例文件
 
 
 
-### 从更大的模型蒸馏
+### 从更大的模型中蒸馏
 
-为较小模型构建训练数据集的一种方法是对大模型的结果进行蒸馏，以创建用于监督微调的训练数据。该技术的一般流程为：
+为较小的模型构建训练数据集的一种方法是将大模型的输出进行蒸馏，从而生成用于监督微调的训练数据。该技术的一般流程如下：
 
-- 为较大的模型（如 `gpt-4.1`）调整提示词，直到在评估标准上表现优异。
+- 针对更大的模型调整提示词（例如 `gpt-4.1`），直到它能在你的评估标准下表现出色。
 - 使用任何方便的技术捕获模型生成的结果——请注意， [Responses API](https://developers.openai.com/api/reference/resources/responses) 默认将模型响应存储 30 天。
-- 使用符合标准的大模型捕获的响应，按照上述工具和技术生成数据集。
-- 使用从大模型创建的数据集调整较小的模型（如 `gpt-4.1-mini`）。
+- 使用上述工具和技术，根据符合你标准的大模型捕获的响应生成数据集。
+- 针对更小的模型调整提示词（例如 `gpt-4.1-mini`），使用你从大模型创建的数据集。
 
-这种技术可以让你训练一个小模型，使其在特定任务上的表现与更大、更昂贵的模型类似。
+借助此技术，你可以训练一个小模型，使其在特定任务上的表现接近更大、成本更高的模型。
 
 ## 上传训练数据
 
-将你的示例数据集上传到 OpenAI。我们使用它来更新模型的权重，并生成与你的数据中类似的输出。
+将你的示例数据集上传到 OpenAI。我们用它来更新模型的权重，并生成与你数据中所包含内容相似的输出。
 
-除了文本补全之外，你还可以训练模型以更有效地生成 [结构化 JSON 输出](https://developers.openai.com/api/docs/guides/structured-outputs) 或 [函数调用](https://developers.openai.com/api/docs/guides/function-calling).
+除了文本补全之外，你还可以训练模型更高效地生成 [结构化的 JSON 输出](https://developers.openai.com/api/docs/guides/structured-outputs) 或 [函数调用](https://developers.openai.com/api/docs/guides/function-calling).
 
 
 
-通过按钮点击上传你的数据
+通过点击按钮上传你的数据
 
     
 
-1. 导航到仪表盘 > **[微调](https://platform.openai.com/finetune)**.
+1. 进入控制面板 > **[微调](https://platform.openai.com/finetune)**.
 1. 点击 **+ 创建**.
 1. 在 **训练数据**，下，上传你的 JSONL 文件。
 
@@ -197,11 +197,11 @@ JSONL 格式示例文件
   
 
     
-调用 API 上传你的数据
+调用API上传你的数据
 
     
 
-假设上述数据已保存到名为 `mydata.jsonl`，的文件中，你可以使用以下代码将其上传到 OpenAI 平台。请注意， `purpose` 上传文件的 `fine-tune`:
+假设上述数据已保存到一个文件中 `mydata.jsonl`，你可以使用以下代码将其上传到 OpenAI 平台。注意， `purpose` 设置上传文件的 `fine-tune`:
 
 ```bash
 curl https://api.openai.com/v1/files \
@@ -211,7 +211,7 @@ curl https://api.openai.com/v1/files \
 ```
 
 
-请注意 `id` 从 API 返回的数据中上传文件的，后续的 API 请求中需要用到该文件标识符。
+请注意 `id` 在 API 返回的数据中上传文件的——后续的 API 请求中会用到该文件标识符。
 
 ```json
 {
@@ -229,23 +229,23 @@ curl https://api.openai.com/v1/files \
 
 
 
-## 创建微调作业
+## 创建微调任务
 
-上传测试数据后， [创建微调任务](https://developers.openai.com/api/reference/resources/fine_tuning) 以使用你提供的训练数据自定义基础模型。创建微调任务时，你必须指定：
+上传测试数据后， [创建微调任务](https://developers.openai.com/api/reference/resources/fine_tuning) 以使用你提供的训练数据自定义基础模型。创建微调任务时,你必须指定:
 
-- 一个基础模型（`model`）用于微调。这可以是 OpenAI 模型 ID，也可以是先前微调过的模型 ID。请参阅 [模型文档](https://developers.openai.com/api/docs/models).
-- 一个训练文件（`training_file`）ID。这是你在上一步中上传的文件。
-- 一种微调方法（`method`）。这指定了你想要用于自定义模型的微调方法。监督微调是默认方法。
+- 基础模型（`model`），用于微调。可以是 OpenAI 模型 ID，也可以是先前微调过的模型 ID。请参阅 [模型文档](https://developers.openai.com/api/docs/models).
+- 训练文件（`training_file`）ID。这是你在上一步上传的文件。
+- 微调方法（`method`）。指定你希望用于定制模型的微调方法。监督微调是默认方法。
 
 
 
-通过按钮点击上传你的数据
+通过点击按钮上传你的数据
 
     
 
-1. 在同一个 **+ 创建** 模态框中，如上所述，填写必填字段。
-1. 选择监督微调作为方法，并选择你希望训练的模型。
-1. 准备好后，点击 **创建** 以启动作业。
+1. 在同一个 **+ 创建** 对话框中，填写必填字段。
+1. 将方法选择为监督微调，并选择你想要训练的模型。
+1. 准备就绪后，点击 **创建** 以启动任务。
 
 
   
@@ -253,11 +253,11 @@ curl https://api.openai.com/v1/files \
   
 
     
-调用 API 上传你的数据
+调用API上传你的数据
 
     
 
-通过调用 [fine-tuning API](https://developers.openai.com/api/reference/resources/fine_tuning):
+通过调用 [微调 API](https://developers.openai.com/api/reference/resources/fine_tuning):
 
 ```bash
 curl https://api.openai.com/v1/fine_tuning/jobs \
@@ -270,9 +270,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 ```
 
 
-API 会返回正在进行的微调作业的信息。根据训练数据的大小，训练过程可能需要几分钟或几小时。你可以 [轮询 API](https://developers.openai.com/api/reference/resources/fine_tuning) 以获取特定作业的更新。
+API 会返回正在进行的微调任务的相关信息。根据你的训练数据规模，训练过程可能需要数分钟到数小时。你可以 [轮询 API](https://developers.openai.com/api/reference/resources/fine_tuning) 以获取特定任务的最新进度。
 
-当微调作业完成时，你的微调模型即可使用。完成的微调作业会返回如下数据：
+当微调任务完成后，你的微调模型即可使用。已完成的微调任务会返回如下数据：
 
 ```json
 {
@@ -314,9 +314,9 @@ API 会返回正在进行的微调作业的信息。根据训练数据的大小�
 }
 ```
 
-注意 `fine_tuned_model` 属性。这是用于 [Responses](https://developers.openai.com/api/reference/resources/responses) 或 [Chat Completions](https://developers.openai.com/api/reference/resources/chat) 中使用微调模型发出 API 请求的模型 ID。
+请注意 `fine_tuned_model` 属性。这是用于在 [Responses](https://developers.openai.com/api/reference/resources/responses) 或 [Chat Completions](https://developers.openai.com/api/reference/resources/chat) 中发起 API 请求时使用的模型 ID。
 
-以下是使用你的微调模型 ID 调用 Responses API 的示例：
+下面是使用你的微调模型 ID 调用 Responses API 的示例：
 
 ```bash
 curl https://api.openai.com/v1/responses \
@@ -350,17 +350,17 @@ curl https://api.openai.com/v1/responses \
 
 ## 评估结果
 
-使用下面的方法检查你的微调模型表现如何。根据需要调整你的提示词、数据和微调任务，直到得到你想要的结果。微调的最佳方式是持续迭代。
+使用以下方法来检查微调模型的效果。根据需要调整你的提示、数据和微调任务，直到获得满意的结果。微调的最佳方式是持续迭代。
 
-### 与评测对比
+### 与 evals 对比
 
-要查看你的微调模型是否优于原始基础模型， [使用 evals](https://developers.openai.com/api/docs/guides/evals)。在运行微调作业之前，请从你在步骤 1 中收集的同一训练数据集中划分出部分数据。当你将这部分留出数据用于 evals 时，它作为对照组。确保训练数据和留出数据在用户输入类型和模型响应方面具有大致相同的多样性。
+若要查看你的微调模型是否比原始基础模型表现更好， [请使用评估](https://developers.openai.com/api/docs/guides/evals)。在运行微调作业之前，从步骤 1 收集的同一训练数据集中划分出一部分数据。这部分留出数据在用于评估时充当对照组。请确保训练数据和留出数据在用户输入类型和模型回复的多样性上大致相当。
 
-[了解有关运行 evals 的更多信息](https://developers.openai.com/api/docs/guides/evals).
+[详细了解如何运行评估](https://developers.openai.com/api/docs/guides/evals).
 
 ### 监控状态
 
-在仪表板中检查微调作业的状态，或通过轮询 API 中的作业 ID 来检查。
+在仪表板中检查微调作业的状态，或通过轮询作业 ID 在API中检查。
 
 
 
@@ -368,7 +368,7 @@ curl https://api.openai.com/v1/responses \
 
     
 
-1. 导航到 [微调仪表盘](https://platform.openai.com/finetune).
+1. 前往 [微调仪表板](https://platform.openai.com/finetune).
 1. 选择你要监控的任务。
 1. 查看状态、检查点、消息和指标。
 
@@ -378,11 +378,11 @@ curl https://api.openai.com/v1/responses \
   
 
     
-使用 API 调用进行监控
+通过 API 调用进行监控
 
     
 
-使用此 curl 命令获取微调作业的相关信息：
+使用以下 curl 命令获取有关你的微调作业的信息：
 
 ```bash
 curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-uL1VKpwx7maorHNbOiDwFIn6 \
@@ -390,7 +390,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-uL1VKpwx7maorHNbOiDwFIn6 \
 ```
 
 
-该作业包含一个 `fine_tuned_model` 属性，即你的新微调模型的唯一 ID。
+该作业包含一个 `fine_tuned_model` 属性，它是你新微调模型的唯一 ID。
 
 ```json
 {
@@ -434,9 +434,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-uL1VKpwx7maorHNbOiDwFIn6 \
 
 
 
-### 尝试使用你微调后的模型
+### 试用你微调后的模型
 
-使用新优化后的模型来评估它！当微调模型完成训练后，在 [Responses](https://developers.openai.com/api/reference/resources/responses) 或 [Chat Completions](https://developers.openai.com/api/reference/resources/chat) API 中使用其 ID，就像使用 OpenAI 基础模型一样。
+立即使用你新优化的模型来评估它！当微调模型完成训练后，你可以在任一中使用其 ID，就像使用基础模型一样。 [Responses](https://developers.openai.com/api/reference/resources/responses) 或 [Chat Completions](https://developers.openai.com/api/reference/resources/chat) API 中使用它，就像使用 OpenAI 基础模型一样。
 
 
 
@@ -444,10 +444,10 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-uL1VKpwx7maorHNbOiDwFIn6 \
 
     
 
-1. 导航到你的微调作业，位置在 [仪表盘](https://platform.openai.com/finetune).
-1. 在右侧面板中，导航到 **输出模型** 并复制模型 ID。它应以 `ft:…`
+1. 在控制面板中导航到你的微调任务 [控制面板](https://platform.openai.com/finetune).
+1. 在右侧面板中，导航到 **Output model** 并复制模型 ID。它应该以 `ft:…`
 1. 打开 [Playground](https://platform.openai.com/playground).
-1. 在 **模型** 下拉菜单中，粘贴模型 ID。在这里，你还应看到创建的其他微调模型。
+1. 在 **Model** 下拉菜单中，粘贴模型 ID。在这里，你还可以看到你创建的其他微调模型。
 1. 运行一些提示，看看你的微调模型表现如何！
 
 
@@ -472,21 +472,21 @@ curl https://api.openai.com/v1/responses \
 
 
 
-### 如需，可使用检查点
+### 如需要可使用检查点
 
-检查点是你可以使用的模型。在每个训练轮次结束时，我们会为你创建完整的模型检查点。当你的微调模型早期表现良好，但后来却开始记忆数据集而非学习可泛化的知识时，检查点非常有用——这种情况称为 \_过拟合。检查点提供了过程中不同时刻的自定义模型版本。
+Checkpoints 是你以使用的模型。我们会在每个训练轮次结束时为你创建一个完整的模型 checkpoint。当你的微调模型在训练早期表现良好，但随后开始记忆数据集而非学习可泛化知识时——即所谓的 \_过拟合，Checkpoints 非常有用。它们提供了训练过程中不同时间点的自定义模型版本。
 
 
 
-在仪表盘中查找检查点
+在仪表板中查找 checkpoints
 
     
 
-1. 导航到 [微调仪表盘](https://platform.openai.com/finetune).
-1. 在左侧面板中，选择要调查的作业。等待其完成。
+1. 前往 [微调仪表板](https://platform.openai.com/finetune).
+1. 在左侧面板中，选择你要调查的任务。等待任务成功完成。
 1. 在右侧面板中，滚动到检查点列表。
-1. 悬停在任何检查点上，即可看到在 Playground 中启动的链接。
-1. 通过在 Playground 中提示来测试检查点模型的行为。
+1. 将鼠标悬停在任意检查点上，即可看到在 Playground 中启动的链接。
+1. 在 Playground 中通过提示测试检查点模型的行为。
 
 
   
@@ -494,16 +494,16 @@ curl https://api.openai.com/v1/responses \
   
 
     
-查询 API 以获取检查点
+查询 API 中的检查点
 
     
 
-1. 等待任务成功，你可以通过 [查询任务状态](https://developers.openai.com/api/reference/resources/fine_tuning).
-1. [查询检查点端点](https://developers.openai.com/api/reference/resources/fine_tuning/subresources/jobs/subresources/checkpoints/methods/list) 使用你的微调任务 ID 来访问该微调任务的模型检查点列表。
-1. 找到 `fine_tuned_model_checkpoint` 字段以获取模型检查点的名称。
-1. 像使用最终微调模型一样使用这个模型。
+1. 等待作业成功，你可以通过 [查询作业状态](https://developers.openai.com/api/reference/resources/fine_tuning).
+1. [查询检查点端点](https://developers.openai.com/api/reference/resources/fine_tuning/subresources/jobs/subresources/checkpoints/methods/list) 并使用你的微调作业 ID 来访问该微调作业的模型检查点列表。
+1. 查找 `fine_tuned_model_checkpoint` 字段以获取模型检查点的名称。
+1. 像使用最终的微调模型一样使用此模型。
 
-检查点对象包含 `metrics` 有助于你判断该模型有用性的数据。例如，响应看起来如下：
+checkpoint 对象包含 `metrics` 一些数据，可帮助你判断该模型是否有用。示例响应如下：
 
 ```json
 {
@@ -520,50 +520,66 @@ curl https://api.openai.com/v1/responses \
 }
 ```
 
-每个检查点指定：
+每个 checkpoint 指定以下内容：
 
-- `step_number`：创建检查点时所处的步骤（其中每个 epoch 为训练集中的步骤数除以批次大小）
-- `metrics`：一个对象，包含创建检查点时微调作业在该步骤的指标
+- `step_number`: 创建检查点所在的步骤（其中每个 epoch 表示训练集中的步数除以批量大小）
+- `metrics`: 一个对象，包含在创建检查点时微调作业在该步骤的指标
 
 
 
-目前，仅保存并提供该任务最后三个轮次的检查点可供使用。
+目前，仅保存该任务最后三个 epoch 的检查点并可供使用。
 
 ## 安全检查
 
-在生产环境中启动之前，请审阅并遵循以下安全信息。
+在投入生产环境之前，请审阅并遵循以下安全信息。
 
-我们如何进行安全评估
 
-一旦微调作业完成，我们会在13个不同的安全类别中评估所得模型的行为。每个类别代表一个关键领域，如果未加以适当控制，AI输出可能在这些领域造成伤害。
+
+### 我们如何评估安全性
+
+
+
+微调任务完成后，我们会从 13 个不同的安全类别评估所得到模型的行为。每个类别代表了一个关键领域，如果不对 AI 输出加以适当控制，可能会造成潜在危害。
 
 | 名称                   | 描述                                                                                                                                                                                                                                    |
 | :--------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | advice                 | 违反我们政策的建议或指导。                                                                                                                                                                                                 |
 | harassment/threatening | 包含针对任何目标的暴力或严重伤害的骚扰内容。                                                                                                                                                             |
-| hate                   | 基于种族、性别、民族、宗教、国籍、性取向、残疾状况或种姓表达、煽动或宣扬仇恨的内容。针对非受保护群体（如国际象棋玩家）的仇恨内容属于骚扰。 |
-| hate/threatening       | 基于种族、性别、民族、宗教、国籍、性取向、残疾状况或种姓，包含针对目标群体的暴力或严重伤害的仇恨内容。                                               |
+| hate                   | 基于种族、性别、民族、宗教、国籍、性取向、残疾状况或种姓表达、煽动或宣扬仇恨的内容。针对非受保护群体（例如国际象棋选手）的仇恨内容属于骚扰。 |
+| hate/threatening       | 基于种族、性别、民族、宗教、国籍、性取向、残疾状况或种姓，针对目标群体同时包含暴力或严重伤害的仇恨内容。                                               |
 | highly-sensitive       | 违反我们政策的高度敏感数据。                                                                                                                                                                                              |
-| illicit                | 提供如何实施非法行为建议或指导的内容。像“如何入店行窃”这样的短语就属于此类别。                                                                                                               |
-| propaganda             | 对违反我们政策的意识形态的赞扬或协助。                                                                                                                                                                                  |
-| self-harm/instructions | 鼓励实施自残行为（如自杀、割伤和饮食失调）或提供如何实施此类行为指导或建议的内容。                                                                         |
-| self-harm/intent       | 说话者表示自己正在或打算实施自残行为（如自杀、割伤和饮食失调）的内容。                                                                                           |
-| 敏感              | 违反我们政策的敏感数据。                                                                                                                                                                                                     |
-| 性相关/未成年人          | 包含未满 18 岁个人的性相关内容。                                                                                                                                                                          |
-| 性相关                 | 旨在引起性兴奋的内容，例如性活动描述，或宣传性服务（不包括性教育和健康内容）。                                                                                |
-| 暴力               | 描绘死亡、暴力或身体伤害的内容。                                                                                                                                                                                      |
+| illicit                | 提供如何实施违法行为的建议或指导的内容。诸如“如何在商店行窃”的表述就属于此类。                                                                                                               |
+| propaganda             | 对违反我们政策的意识形态的赞美或协助。                                                                                                                                                                                  |
+| self-harm/instructions | 鼓励实施自杀、自残、进食障碍等自残行为，或为实施此类行为提供指导或建议的内容。                                                                         |
+| self-harm/intent       | 说话者表示正在实施或打算实施自杀、自残、进食障碍等自残行为的内容。                                                                                           |
+| sensitive              | 违反我们政策的敏感数据。                                                                                                                                                                                                     |
+| sexual/minors          | 包含 18 岁以下未成年人的性内容。                                                                                                                                                                          |
+| sexual                 | 旨在引发性兴奋的内容，例如对性行为的描述，或推广性服务的内容（性教育和健康内容除外）。                                                                                |
+| violence               | 描绘死亡、暴力或人身伤害的内容。                                                                                                                                                                                      |
 
-每个类别都有预定义的通过阈值；如果某个类别中评估示例的失败数量过多，OpenAI将阻止微调模型部署。如果你的微调模型未通过安全检查，OpenAI会在微调作业中发送一条消息，说明哪些类别未达到所需阈值。你可以在微调作业的审核检查部分查看结果。
+每个类别都有一个预定义的通过阈值；如果在某个类别中有过多已评估示例未通过，OpenAI 会阻止该微调模型部署。如果你的微调模型未通过安全检查，OpenAI 会在微调任务中发送一条消息，说明哪些类别未达到所需阈值。你可以在微调任务的 moderation checks（审核检查）部分查看结果。
 
-如何通过安全检查
 
-除了查看微调作业对象中失败的安全检查结果外，你还可以通过查询 [微调 API 事件接口](https://developers.openai.com/api/reference/resources/fine_tuning/subresources/jobs/methods/list)。来获取失败类别的详细信息。查找类型为 `moderation_checks` 的事件，以了解类别结果和执行详情。这些信息可以帮助你缩小需要针对性重新训练和改进的类别范围。 [模型规范](https://cdn.openai.com/spec/model-spec-2024-05-08.html#overview) 中包含的规则和示例可以帮助你识别需要补充训练数据的领域。
 
-虽然这些评估涵盖了广泛的安全类别，但你也应对微调模型进行自己的评估，以确保它适合你的使用场景。
+
+
+
+
+### 如何通过安全检查
+
+
+
+除了查看微调任务对象中任何失败的安全检查外，你还可以通过查询来获取失败类别的详细信息： [fine-tuning API events endpoint](https://developers.openai.com/api/reference/resources/fine_tuning/subresources/jobs/methods/list)。查找类型为以下的事件： `moderation_checks` 以获取类别结果和强制执行情况的详细信息。此信息可以帮助你缩小需要针对再训练和改进的类别范围。 [model spec](https://cdn.openai.com/spec/model-spec-2024-05-08.html#overview) 其中包含有助于识别需要补充训练数据的规则和示例。
+
+虽然这些评估涵盖了广泛的安全类别，但你仍需对微调后的模型进行自行评估，以确保它适用于你的具体用例。
+
+
+
+
 
 ## 后续步骤
 
-既然你已经了解了监督式微调的基础知识，也请探索以下其他方法。
+现在你已经掌握了监督微调的基础知识，也可以探索以下其他方法。
 
 [视觉微调
 

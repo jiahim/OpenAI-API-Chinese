@@ -1,26 +1,29 @@
-# 文件搜索
+# File search
 
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后附加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。通过在页面 URL 末尾添加 `.md` 可获取文档页面的 Markdown 版本。
 
-文件搜索是一种可用于 [Responses API](https://developers.openai.com/api/reference/resources/responses).
-的工具。它使模型能够通过语义和关键词搜索，从先前上传文件的知识库中检索信息。
-通过创建向量存储并向其中上传文件，你可以让模型访问这些知识库，从而增强模型固有的知识， `vector_stores`.
+文件搜索是 [Responses API](https://developers.openai.com/api/reference/resources/responses).
+中提供的工具。它使模型能够通过语义搜索和关键字搜索在先前上传的文件知识库中检索信息。
+通过创建向量存储并将文件上传到其中，你可以让模型访问这些知识库，从而扩充其固有知识，或 `vector_stores`.
 
-了解更多关于向量存储和语义搜索的工作原理，请参阅我们的
+要详细了解向量存储和语义搜索的工作原理，请参阅我们的
   [检索指南](https://developers.openai.com/api/docs/guides/retrieval).
 
-。这是一个由 OpenAI 管理的托管工具，这意味着你无需自行实现代码来处理其执行。
-当模型决定使用它时，会自动调用该工具，从你的文件中检索信息并返回输出。
+这是由 OpenAI 管理的 托管工具，这意味着你无需自己编写代码来处理其执行。
+当模型决定使用它时，它会自动调用该工具，从你的文件中检索信息，并返回输出。
 
-## 如何使用
+## 使用方法
 
-在使用 Responses API 进行 文件搜索 之前，你需要已在向量存储中设置知识库并上传文件到其中。
+在使用 文件搜索 与 Responses API 之前，你需要在向量存储中创建一个知识库并上传文件。
 
-创建向量存储并上传文件
 
-按照以下步骤创建向量存储并上传文件。你可以使用 [此示例文件](https://cdn.openai.com/API/docs/deep_research_blog.pdf) 或上传你自己的。
 
-#### 将文件上传到文件 API
+### 创建向量存储并上传文件
+
+
+按照以下步骤创建向量存储并向其上传文件。你可以使用 [此示例文件](https://cdn.openai.com/API/docs/deep_research_blog.pdf) 或上传你自己的文件。
+
+#### 将文件上传到 File API
 
 上传文件
 
@@ -156,7 +159,7 @@ puts(uploaded.id)
 ```
 
 
-#### 创建向量存储库
+#### 创建向量存储
 
 创建向量存储
 
@@ -216,7 +219,7 @@ puts(store.id)
 ```
 
 
-#### 将文件添加到向量存储中
+#### 将文件添加到向量存储
 
 将文件添加到向量存储
 
@@ -283,9 +286,9 @@ puts(file.id)
 ```
 
 
-#### 检查状态
+#### 查看状态
 
-运行此代码，直到文件准备好可供使用（即状态为 `completed`).
+运行该代码，直到文件可以正常使用（即当状态为 `completed`).
 
 检查状态
 
@@ -337,7 +340,11 @@ puts(files.data&.map(&:status))
 ```
 
 
-知识库设置完成后，你可以在给模型提供的工具列表中加入 `file_search` 工具，并指定要搜索的向量存储列表。
+
+
+
+
+设置好知识库后，你可以将 `file_search` 工具添加到模型可用的工具列表中，并指定要搜索的向量存储列表。
 
 文件搜索工具
 
@@ -423,11 +430,12 @@ using OpenAI.Responses;
 #pragma warning disable OPENAI001
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string vectorStoreId = "<vector_store_id>";
 ResponsesClient client = new(key);
 
 CreateResponseOptions options = new() { Model = "gpt-5.6" };
 options.Tools.Add(
-    ResponseTool.CreateFileSearchTool(["<vector_store_id>"])
+    ResponseTool.CreateFileSearchTool([vectorStoreId])
 );
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")
@@ -458,9 +466,9 @@ puts(response)
 ```
 
 
-当模型调用此工具时，你将收到包含多个输出的响应：
+当模型调用此工具时，你将收到一个包含多个输出的响应：
 
-1. 一个 `file_search_call` 输出项，其中包含 文件搜索 调用的 ID。
+1. 一个 `file_search_call` 输出项，其中包含该 文件搜索 调用的 id。
 2. 一个 `message` 输出项，其中包含模型的响应以及文件引用。
 
 文件搜索响应
@@ -517,11 +525,11 @@ puts(response)
 ```
 
 
-## 检索定制化
+## 检索定制
 
 ### 限制结果数量
 
-使用 文件搜索 工具配合 Responses API，你可以自定义从向量存储中检索的结果数量。这有助于减少令牌使用量和延迟，但可能以降低回答质量为代价。
+通过 Responses API 使用 文件搜索 工具时，你可以自定义要从向量存储中检索的结果数量。这有助于减少 token 用量和延迟，但可能会以降低回答质量为代价。
 
 限制结果数量
 
@@ -609,6 +617,26 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string vectorStoreId = "<vector_store_id>";
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(
+    ResponseTool.CreateFileSearchTool([vectorStoreId], maxResultCount: 2)
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -632,9 +660,9 @@ puts(response)
 
 ### 在响应中包含搜索结果
 
-虽然你可以在输出文本中看到注解（对文件的引用），但默认情况下文件搜索调用不会返回搜索结果。
+虽然你可以在输出文本中看到注解（对文件的引用），但 文件搜索 调用默认不会返回搜索结果。
 
-要在响应中包含搜索结果，你可以在创建响应时使用 `include` 参数。
+若要在响应中包含搜索结果，可以在创建响应时使用 `include` 参数。
 
 包含搜索结果
 
@@ -722,6 +750,31 @@ client.responses().create(params).output().stream()
     .forEach(System.out::println);
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string vectorStoreId = "<vector_store_id>";
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(ResponseTool.CreateFileSearchTool([vectorStoreId]));
+options.IncludedProperties.Add(IncludedResponseProperty.FileSearchCallResults);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+foreach (FileSearchCallResponseItem search in response.OutputItems.OfType<FileSearchCallResponseItem>())
+{
+    foreach (FileSearchCallResult result in search.Results)
+    {
+        Console.WriteLine($"{result.Filename}: {result.Text}");
+    }
+}
+```
+
 ```ruby
 require "openai"
 
@@ -740,14 +793,14 @@ puts(response)
 ```
 
 
-### 元数据过滤
+### Metadata filtering
 
-你可以根据文件的元数据筛选搜索结果。更多详情，请参阅我们的 [检索指南](https://developers.openai.com/api/docs/guides/retrieval)，其中涵盖：
+你可以根据文件的元数据来筛选搜索结果。更多详情，请参阅我们的 [检索指南](https://developers.openai.com/api/docs/guides/retrieval)，其中包括：
 
-- 如何 [设置向量存储文件的属性](https://developers.openai.com/api/docs/guides/retrieval#attributes)
-- 如何 [定义过滤器](https://developers.openai.com/api/docs/guides/retrieval#attribute-filtering)
+- 如何 [在向量存储文件上设置属性](https://developers.openai.com/api/docs/guides/retrieval#attributes)
+- 如何 [定义筛选条件](https://developers.openai.com/api/docs/guides/retrieval#attribute-filtering)
 
-元数据过滤
+Metadata filtering
 
 ```javascript
 const response = await openai.responses.create({
@@ -864,6 +917,31 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string vectorStoreId = "<vector_store_id>";
+ResponsesClient client = new(key);
+
+BinaryData filters = BinaryData.FromString(
+    """
+    { "type": "in", "key": "category", "value": ["blog", "announcement"] }
+    """
+);
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(
+    ResponseTool.CreateFileSearchTool([vectorStoreId], filters: filters)
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby

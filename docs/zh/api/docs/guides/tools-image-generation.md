@@ -1,15 +1,15 @@
 # 图像生成
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾附加 `.md` 来获取。
+> 完整的文档索引请参见 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
 
-图像生成工具允许你使用文本提示生成图像，并可选择图像输入。它使用 GPT Image 模型，包括 `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`, 以及 `gpt-image-1-mini`, 并自动优化文本输入以获得更好的性能。
+图像生成工具允许你使用文本提示词生成图像，并可选择性地加入图像输入。它使用 GPT Image 模型，包括 `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`，以及 `gpt-image-1-mini`，并会自动优化文本输入以提升性能。
 
-要了解有关图像生成的更多信息，请参阅我们的专门 [图像生成
+要详细了解图像生成，请参阅我们的 [图像生成
   指南](https://developers.openai.com/api/docs/guides/image-generation?api=responses).
 
-## 使用量
+## 用法
 
-当你在请求中包含 `image_generation` 工具时，模型可以决定在对话中何时及如何生成图像，利用你的提示词和任何提供的图像输入。
+当你在请求中包含该 `image_generation` 工具时，模型可以决定在对话中何时以及如何生成图像，并使用你的提示和任何提供的图像输入。
 
 该 `image_generation_call` 工具调用结果将包含一个 base64 编码的图像。
 
@@ -134,6 +134,29 @@ String encoded =
 Files.write(Path.of("otter.png"), Base64.getDecoder().decode(encoded));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
+    )
+);
+options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+ImageGenerationCallResponseItem image = response
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .FirstOrDefault()
+    ?? throw new InvalidOperationException("No generated image was returned.");
+await File.WriteAllBytesAsync("otter.png", image.ImageResultBytes.ToArray());
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -159,32 +182,32 @@ File.binwrite("otter.png", Base64.strict_decode64(encoded_image))
 
 你可以 [提供输入图像](https://developers.openai.com/api/docs/guides/image-generation?image-generation-model=gpt-image#edit-images) 使用文件 ID 或 base64 数据。
 
-要强制图像生成工具调用，你可以设置参数 `tool_choice` 为 `{"type": "image_generation"}`.
+若要强制调用图像生成工具，可以设置参数 `tool_choice` 为 `{"type": "image_generation"}`.
 
 ### 工具选项
 
 你可以将以下输出选项配置为 [图像生成工具](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-tools):
 
-- 尺寸：图像尺寸，例如，1024 × 1024 或 1024 × 1536
-- 质量：渲染质量，例如，低、中或高
-- 格式：文件输出格式
-- 压缩：JPEG 和 WebP 格式的压缩级别（0-100%）
-- 背景：透明、不透明或自动
-- 操作：请求应自动选择、生成或编辑图像
+- Size：图像尺寸，例如 1024 × 1024 或 1024 × 1536
+- Quality：渲染质量，例如 low、medium 或 high
+- Format：文件输出格式
+- Compression：JPEG 和 WebP 格式的压缩级别（0-100%）
+- Background：transparent、opaque 或 automatic
+- Action：请求是自动选择、生成还是编辑图像
 
-`size`, `quality`，并且 `background` 支持 `auto` 选项，模型将根据提示自动选择最佳选项。
+`size`, `quality`，以及 `background` 支持 `auto` 选项，让模型根据提示自动选择最佳选项。
 
-`gpt-image-2` 支持灵活的 `size` 值，这些值满足其 [分辨率约束](https://developers.openai.com/api/docs/guides/image-generation#size-and-quality-options)。透明背景在预览中可用；设置 `background: "transparent"` 以请求一个。使用 `png` （默认）或 `webp`; `jpeg` 不支持透明背景。
+`gpt-image-2` 支持灵活的 `size` 值，以满足其 [分辨率约束](https://developers.openai.com/api/docs/guides/image-generation#size-and-quality-options)。透明背景目前为预览版；可设置 `background: "transparent"` 来请求。使用 `png` （默认值）或 `webp`; `jpeg` 不支持透明背景。
 
 有关可用选项的更多详细信息，请参阅 [图像生成指南](https://developers.openai.com/api/docs/guides/image-generation#customize-image-output).
 
-使用 Responses API 图像生成工具时，受支持的 GPT Image 模型可以选择生成新图像或编辑对话中已有的图像。可选的 `action` 参数控制此行为：保持 `action` 设置为 `auto` 以便模型选择生成还是编辑，或将其设置为 `generate` 或 `edit` 以强制该行为。如果未指定，默认值为 `auto`.
+使用 Responses API 图像生成工具时，受支持的 GPT Image 模型可以选择是生成新图像还是编辑对话中已有的图像。可选参数 `action` 用于控制该行为：保持 `action` 设置为 `auto` ，由模型自行选择是生成还是编辑；或将其设置为 `generate` 或 `edit` 以强制该行为。如果未指定，默认值为 `auto`.
 
 ### 修订后的提示词
 
-使用图像生成工具时，主线模型，例如， `gpt-5.5`，将自动修改你的提示词以提升性能。
+在使用图像生成工具时，主线模型（mainline model）例如， `gpt-5.5`，会自动改写你的提示词以提升效果。
 
-你可以在图像生成调用的 `revised_prompt` 字段中访问修改后的提示词：
+你可以在图像生成调用的 `revised_prompt` 字段中查看改写后的提示词：
 
 ```json
 {
@@ -198,17 +221,17 @@ File.binwrite("otter.png", Base64.strict_decode64(encoded_image))
 
 ### 提示技巧
 
-图像生成在使用诸如 `draw` 或 `edit` 等术语时效果最佳。
+在你的提示中使用类似下面的词语时，图像生成效果最佳 `draw` 或 `edit` 在你的提示中。
 
-例如，如果你想组合图像，与其说 `combine` 或 `merge`，不如说类似“编辑第一张图像，添加第二张图像中的这个元素”。
+例如，如果你想组合图像，不要说 `combine` 或 `merge`，而可以说类似“编辑第一张图像，将这个元素从第二张图像中添加进去”这样的话。
 
 ## 多轮编辑
 
-你可以通过引用之前的响应或图像 ID 来迭代式地编辑图像。这允许你在对话轮次中细化图像。
+你可以通过引用之前的 response 或图像 ID 来迭代编辑图像，从而在多个对话轮次中优化图像。
 
 
 
-使用之前的响应 ID
+使用之前的 response ID
 
     Multi-turn image generation
 
@@ -415,6 +438,45 @@ Files.write(
             secondImage
                 .result()
                 .orElseThrow(() -> new IllegalStateException("No follow-up image returned"))));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
+    )
+);
+
+ResponseResult first = await client.CreateResponseAsync(options);
+ImageGenerationCallResponseItem initialImage = first
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .First();
+await File.WriteAllBytesAsync("cat_and_otter.png", initialImage.ImageResultBytes.ToArray());
+
+CreateResponseOptions followUp = new()
+{
+    Model = "gpt-5.6",
+    PreviousResponseId = first.Id,
+};
+followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+followUp.InputItems.Add(ResponseItem.CreateUserMessageItem("Now make it look realistic."));
+
+ResponseResult second = await client.CreateResponseAsync(followUp);
+ImageGenerationCallResponseItem updatedImage = second
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .First();
+await File.WriteAllBytesAsync(
+    "cat_and_otter_realistic.png",
+    updatedImage.ImageResultBytes.ToArray()
+);
 ```
 
 ```ruby
@@ -716,6 +778,42 @@ Files.write(
                 .orElseThrow(() -> new IllegalStateException("No follow-up image returned"))));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
+    )
+);
+
+ResponseResult first = await client.CreateResponseAsync(options);
+ImageGenerationCallResponseItem initialImage = first
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .First();
+await File.WriteAllBytesAsync("cat_and_otter.png", initialImage.ImageResultBytes.ToArray());
+
+CreateResponseOptions followUp = new() { Model = "gpt-5.6" };
+followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+followUp.InputItems.Add(ResponseItem.CreateUserMessageItem("Now make it look realistic."));
+followUp.InputItems.Add(ResponseItem.CreateReferenceItem(initialImage.Id));
+
+ResponseResult second = await client.CreateResponseAsync(followUp);
+ImageGenerationCallResponseItem updatedImage = second
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .First();
+await File.WriteAllBytesAsync(
+    "cat_and_otter_realistic.png",
+    updatedImage.ImageResultBytes.ToArray()
+);
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -764,11 +862,11 @@ File.binwrite("cat_and_otter_realistic.png", Base64.strict_decode64(encoded_imag
 
 ## 流式传输
 
-图像生成工具会在生成最终结果的同时支持流式输出部分图像。这能为用户提供更快的视觉反馈，并改善感知延迟。
+图像生成工具支持在生成最终结果的过程中流式输出部分图像。这能为用户提供更快的视觉反馈，并改善感知延迟。
 
-你可以通过 `partial_images` 参数设置部分图像的数量（1-3）。
+你可以通过以下参数设置部分图像的数量（1-3）： `partial_images` 参数。
 
-流式传输图像
+流式输出图像
 
 ```javascript
 import OpenAI from "openai";
@@ -987,4 +1085,4 @@ end
 - `gpt-4o`
 - `gpt-4o-mini`
 
-图像生成过程使用的模型始终是 GPT Image 模型，包括 `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`，以及 `gpt-image-1-mini`，但这些模型不是 `model` 字段的有效值，该字段位于Responses API中。请使用支持文本的主线模型（例如， `gpt-5.5` 或 `gpt-5`）配合托管 `image_generation` 工具。
+用于图像生成流程的模型始终是 GPT Image 模型，包括 `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`，以及 `gpt-image-1-mini`，但这些模型不能作为 `model` 字段的有效值传入 Responses API。请使用支持文本的主流模型（例如， `gpt-5.5` 或 `gpt-5`）配合托管 `image_generation` 工具。
