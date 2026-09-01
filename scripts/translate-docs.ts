@@ -16,7 +16,6 @@ import {
 
 import {
   loadTranslationWorkspace,
-  readTranslationWorkspaceFile,
 } from "./translation/planner.ts";
 import {
   reviewTranslationPage,
@@ -57,7 +56,6 @@ type SourcedTranslationPageInspection = TranslationPageInspection & {
 
 const REPOSITORY_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DEFAULT_CONFIG_PATH = "scripts/translation.config.json";
-const AUTO_MAX_SOURCE_CHARACTERS = 20_000;
 const AUTO_PAGE_LIMIT = 100;
 const TRANSLATION_BATCH_RETRY_POLICY = {
   baseDelayMs: 1_000,
@@ -491,35 +489,18 @@ async function auto(
   options: CliOptions,
 ): Promise<void> {
   const priority = await loadTranslationPriorityConfig(workspace);
-  const selected: Array<{
-    entry: SourcedTranslationPageInspection;
-    sourceCharacters: number;
-  }> = [];
+  const selected: SourcedTranslationPageInspection[] = [];
   for (const entry of automaticTranslationCandidates(
     workspace.entries,
     options.section,
     priority.sourcePaths,
   )) {
     if (!entry.source) continue;
-    const source = await readTranslationWorkspaceFile(
-      workspace,
-      entry.source.sourcePath,
-      "自动翻译英文页面",
-    );
-    if (source.length <= AUTO_MAX_SOURCE_CHARACTERS) {
-      selected.push({
-        entry: { ...entry, source: entry.source },
-        sourceCharacters: source.length,
-      });
-      if (selected.length === options.limit) break;
-      continue;
-    }
-    console.log(
-      `跳过超出自动预算的页面：${entry.source.sourcePath} (${source.length} > ${AUTO_MAX_SOURCE_CHARACTERS})`,
-    );
+    selected.push({ ...entry, source: entry.source });
+    if (selected.length === options.limit) break;
   }
   if (selected.length === 0) {
-    console.log("自动翻译：没有符合状态与字符预算的页面。");
+    console.log("自动翻译：没有待翻译页面。");
     return;
   }
   const provider = createConfiguredProvider(
@@ -532,23 +513,22 @@ async function auto(
     const result = await runProductionTranslationPage(
       workspace,
       {
-        sourcePath: selection.entry.source.sourcePath,
-        sourceUrl: selection.entry.source.sourceUrl,
-        targetPath: selection.entry.targetPath,
+        sourcePath: selection.source.sourcePath,
+        sourceUrl: selection.source.sourceUrl,
+        targetPath: selection.targetPath,
       },
       provider,
       true,
     );
     console.log(`自动翻译页面：${result.sourceUrl}`);
     console.log(`page=${index + 1}/${selected.length}`);
-    console.log(`state=${selection.entry.state}`);
+    console.log(`state=${selection.state}`);
     const priorityIndex = priority.sourcePaths.indexOf(
-      selection.entry.source.sourcePath,
+      selection.source.sourcePath,
     );
     console.log(`priority=${priorityIndex >= 0 ? priorityIndex + 1 : "fallback"}`);
-    console.log(`source=${selection.entry.source.sourcePath}`);
+    console.log(`source=${selection.source.sourcePath}`);
     console.log(`target=${result.targetPath}`);
-    console.log(`sourceCharacters=${selection.sourceCharacters}`);
     console.log(`units=${result.result.stats.uniqueUnits}`);
     console.log(`characters=${result.result.stats.characters}`);
     console.log("写入：是（译文及 manifest，reviewStatus=machine）");

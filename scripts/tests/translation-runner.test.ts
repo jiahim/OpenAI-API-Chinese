@@ -258,6 +258,43 @@ test("runner accumulates manifest records across a batch using one workspace sna
   }
 });
 
+test("runner sends long Markdown prose through bounded semantic batches", async () => {
+  const source = Array.from(
+    { length: 60 },
+    (_, index) => `Paragraph ${index + 1}: ${"word ".repeat(80).trim()}.`,
+  ).join("\n\n");
+  assert.ok(source.length > 20_000);
+  const root = await createFixture(source);
+  try {
+    const workspace = await loadTranslationWorkspace(root);
+    const batchCharacters: number[] = [];
+    const provider = defineProvider<MarkdownTranslationContext>({
+      async translateBatch(request) {
+        batchCharacters.push(
+          request.items.reduce((sum, item) => sum + item.text.length, 0),
+        );
+        return request.items.map((item) => ({ id: item.id, text: item.text }));
+      },
+    });
+
+    const run = await runTranslationPage(workspace, SOURCE_URL, {
+      batchSize: 20,
+      commit: false,
+      concurrency: 1,
+      maxBatchCharacters: 4_000,
+      provider,
+      retry: 0,
+      useCheckpoint: false,
+    });
+
+    assert.ok(batchCharacters.length > 1);
+    assert.ok(batchCharacters.every((characters) => characters <= 4_000));
+    assert.equal(run.rendered, source);
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
 test("review adopts an intentional target edit and records reviewed status", async () => {
   const root = await createFixture();
   try {

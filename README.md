@@ -25,7 +25,7 @@
 └── .github/workflows/
     ├── ci.yml                # PR、main 与手动触发的质量门禁
     ├── sync-docs.yml         # 每天检查并创建官方更新 PR
-    └── translate-docs.yml    # 受预算约束的批量自动翻译 PR
+    └── translate-docs.yml    # 按语义分批的自动翻译 PR
 ```
 
 英文文件严格按照官网 URL 的路径保存。例如：
@@ -78,11 +78,11 @@ GitHub Actions 每天北京时间 00:00 读取官方 `llms.txt` 索引、运行�
 
 在 **Environment secrets** 中配置 `MINIMAX_API_KEY` 或 `DEEPSEEK_API_KEY`。只有一个 Key 时会自动选择对应供应商；仅有 MiniMax Key 时默认选择国内站 `minimax-cn`。同时存在两个 Key 时必须在 **Environment variables** 中设置 `TRANSLATION_PROVIDER`，值只能是上表中的键名。模型可通过同处的 `MINIMAX_MODEL` 或 `DEEPSEEK_MODEL` 切换，无需修改仓库或创建 PR。MiniMax 国内站 Plan 应使用 `minimax-cn`；国内站与国际站的 Key 和额度按各自接口生效，不应混用。
 
-运行时解析出的实际 provider/model 会进入翻译策略指纹。每轮最多翻译 100 篇页面，每篇不超过 20,000 个源字符，并通过 `automation/translate-openai-docs` 创建一个 PR。已有翻译 PR 等待审核时不会继续调用模型。自动选择先按 stale/missing 状态维护既有译文，再在同一状态内按 `scripts/translation/priority.zh-CN.json` 的核心文档顺序处理，未列入清单的页面保持稳定路径排序。术语表中的 `preserve` 项会在请求前替换为可恢复占位符；单批请求耗尽有限重试后，页面还会基于 checkpoint 额外恢复一次，认证、配置和完整性错误不会盲目重试。
+运行时解析出的实际 provider/model 会进入翻译策略指纹。每轮最多翻译 100 篇页面；长页面先由 Markdown adapter 拆成可安全回填的语义单元，再由 `easy-translate` 按每批最多 20 个单元、4,000 个源字符组织模型请求，并通过 `automation/translate-openai-docs` 创建一个 PR。已有翻译 PR 等待审核时不会继续调用模型。自动选择先按 stale/missing 状态维护既有译文，再在同一状态内按 `scripts/translation/priority.zh-CN.json` 的核心文档顺序处理，未列入清单的页面保持稳定路径排序。术语表中的 `preserve` 项会在请求前替换为可恢复占位符；每个成功批次都会写入 checkpoint，单批请求耗尽有限重试后，页面还会基于 checkpoint 额外恢复一次，认证、配置和完整性错误不会盲目重试。
 
 仓库必须在 **Settings → Actions → General → Workflow permissions** 中启用 **Allow GitHub Actions to create and approve pull requests**。`main` 的 Ruleset 可以因此保持空 bypass，并要求所有更新通过 PR 和 `Quality gate`。PR 标题必须以 `[AI] ` 或 `[Human] ` 标明来源，其中 `codex/` 与 `automation/` 分支强制使用 `[AI] `。
 
-`translate:status` 离线汇总全部页面的增量状态，`translate:check` 额外拒绝目标文件缺失、未登记或与 manifest 不一致；`translate:plan` 按自动队列优先级只读列出下一轮可翻译或阻塞的页面。`translate:simulate` 使用 Echo/Fake Provider 执行无 key、无写入闭环。`translate:run` 用于本地精确单篇翻译，`translate:auto` 为远端按优先级选择最多 100 篇受预算约束的页面；人工润色后用 `translate:review` 收录目标 SHA 并标记 `reviewed`。完整翻译设计见 [`docs/translation-design.md`](docs/translation-design.md)。
+`translate:status` 离线汇总全部页面的增量状态，`translate:check` 额外拒绝目标文件缺失、未登记或与 manifest 不一致；`translate:plan` 按自动队列优先级只读列出下一轮可翻译或阻塞的页面。`translate:simulate` 使用 Echo/Fake Provider 执行无 key、无写入闭环。`translate:run` 用于本地精确单篇翻译，`translate:auto` 为远端按优先级选择最多 100 篇页面并按语义单元分批处理；人工润色后用 `translate:review` 收录目标 SHA 并标记 `reviewed`。完整翻译设计见 [`docs/translation-design.md`](docs/translation-design.md)。
 
 人工校对中可复用的固定译法应进入术语表，通用表达要求应进入翻译提示词；只适用于单篇文档的上下文、歧义或官方原文勘误记录在 `scripts/translation/review-notes.zh-CN.json`。页面级备注会自动加入该页翻译请求和策略 SHA，仅让对应页面进入 `stale-policy`，不会触发全站重翻。
 
