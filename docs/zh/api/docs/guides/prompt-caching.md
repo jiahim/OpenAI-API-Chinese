@@ -1,216 +1,557 @@
 # 提示缓存
 
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。通过追加 `.md` 到页面 URL，可获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 来获取。
 
-## 提示词缓存基础
+## 为什么提示缓存很重要
 
-模型提示通常包含重复内容，如系统提示和常见指令。OpenAI 将API请求路由到最近处理过相同提示的服务器，从而使得复用精确的提示前缀比从头处理更快、更便宜。提示缓存对符合条件的请求自动生效，无需修改代码。所有近期 [模型](https://developers.openai.com/api/docs/models), `gpt-4o` 及更新版本均已启用。
+提示缓存会在请求共享相同的前缀时复用之前的计算结果。这带来三个主要优势：
 
-本指南详细介绍了提示缓存的工作方式，以便你优化提示以降低延迟和成本。
+- **计算高效：** 避免重新计算模型已经处理过的前缀。
+- **输入 token 更便宜：** 对复用的 token 适用模型的缓存输入折扣价，折扣最高可达 90%。
+- **速度更快：** 减少响应开始前处理输入所花费的时间。
 
-### 缓存最佳实践
+对于受支持的 OpenAI 模型，默认启用提示缓存。请使用 [提示缓存仪表板](https://platform.openai.com/usage?usage_section=prompt-caching) 来监控缓存读取命中率。
 
-缓存命中仅可能发生在提示词内的精确前缀匹配中。为了获得缓存收益，请将静态内容（如指令和示例）放在提示词的开头，并将变量内容（如用户特定信息）放在末尾。这也适用于图片和工具，它们在请求之间必须保持一致。
+## 什么是提示缓存？
 
-- 保持指令、工具、模式和共享上下文稳定。将请求特定内容放在可复用前缀之后。
-- 设置 [`prompt_cache_key`](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-prompt_cache_key) 用于共享长公共提示前缀的请求。对这些请求复用相同的键有助于提高缓存命中率。
-- 使用 `cached_tokens`。监控缓存读取。在 GPT-5.6 及更高版本上，使用 `cache_write_tokens` 将缓存写入成本与后续缓存读取进行比较。
+模型在处理输入 token 时，会计算中间的键值（KV）状态。这些状态让模型在处理新输入并生成响应时，能够回溯到先前的 token。
 
-![提示词对比，展示当前缀匹配时缓存命中，而早期内容不同时缓存未命中](https://openaidevs.retool.com/api/file/8593d9bb-4edb-4eb6-bed9-62bfb98db5ee)
+提示缓存会为可复用的前缀保留这些状态。当后续请求具有相同的前缀并命中匹配的缓存条目时，模型可以复用已保存的状态，而无需重新处理这些 token。它仍然需要处理任何新增的输入才能生成新的响应。
 
-### 提示词缓存的工作原理
-
-默认情况下，对 1,024 个 token 或更长的提示词会自动启用缓存。当你发出 API 请求时，会发生以下步骤：
-
-1. **缓存路由**
-
-   请求根据 `prompt_cache_key`，路由到某台机器，并以提示初始前缀的哈希作为次要键。
-
-2. **缓存查找**
-
-   系统会检查所选机器上的缓存中是否存在你提示的初始部分（即前缀）。
-
-3. **缓存命中**
-
-   如果找到匹配的前缀，系统会使用缓存的结果。这会降低延迟，并以缓存输入费率对这些令牌计费。
-
-4. **缓存未命中**
-
-   如果未找到匹配的前缀，系统会处理你的完整提示。当启用自动缓存时，它可能会在该机器上将符合条件的前缀写入缓存，以供未来的请求使用。
-
-对于 GPT-5.6 及更高版本，1,024 个 token 是严格的最低要求。对于更早的模型，
-  最低要求因模型而异，从 1,024 到 2,048 个 token 不等，因此仅略高于
-  1,024 个 token 的提示可能无法一致地缓存。
-
-### 不同模型的缓存差异
-
-| 行为                   | GPT-5.6 及更高版本                                       | 更早的模型                                                      |
-| -------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------- |
-| 缓存匹配             | 在符合条件的缓存断点处进行精确匹配            | 自动尽力复用匹配的前缀                    |
-| 显式缓存断点 | 支持。同时提供隐式缓存。          | 不支持。缓存是自动的。                                |
-| 最小可缓存前缀   | 1,024 个 token                                            | 1,024 到 2,048 个 token，具体取决于模型                       |
-| 缓存写入费用        | 未缓存输入 token 费率的 1.25 倍                     | 无额外缓存写入费用                                       |
-| 缓存生命周期             | 30 分钟精确 TTL，通过以下方式设置 `prompt_cache_options.ttl` | 模型相关的最大保留期，通过以下方式设置 `prompt_cache_retention` |
-
-对于 GPT-5.6 及更高版本模型，请参阅 [GPT-5.6 及更高版本模型的提示缓存](#prompt-caching-for-gpt-56-and-later-models)。对于早期模型，请参阅 [早期模型的提示缓存](#prompt-caching-for-earlier-models).
-
-## GPT-5.6 及更高版本模型的提示词缓存
-
-GPT-5.6 及后续模型系列在缓存断点处缓存精确的提示词前缀。默认情况下，服务会在最新的用户或工具消息处放置一个隐式断点。与早期模型不同，它不会自动回退到该断点之前最长的匹配未标记前缀。
-
-为提高缓存复用率，请识别跨请求保持不变的提示词内容。然后选择一个在该内容之后结束的断点，并使用一致的 `prompt_cache_key`.
-
-### 缓存断点如何工作
-
-缓存断点标记可复用提示词前缀的结束位置。该前缀包含被标记的内容块，以及在其之前渲染的所有提示词内容。断点之后的内容可以变更，而不会使此前缀失效。
-
-要使前缀符合缓存条件，它必须包含至少 1,024 个 token 直到断点。该最小值适用于完整渲染后的前缀，而不仅仅是标记的内容块。
-
-**缓存写入与缓存读取**
-
-缓存写入会为符合条件的提示词前缀创建一条记录。缓存读取会复用先前请求写入的记录。
-
-1. 第一个请求在缓存断点处写入符合条件的（eligible）前缀。
-2. 后续请求在内容穿过符合条件的断点与较早的缓存条目匹配且两个请求共享同一个 `prompt_cache_key`.
-3. 断点之前的变化会改变前缀，并会阻止缓存命中。
-4. 断点之后的变化不会使较早缓存的前缀失效。
-
-仅重复提示内容并不能保证缓存命中。如果没有在符合条件的断点处写入匹配条目，系统就无法从缓存中读取该前缀。
-
-**默认断点何时有效**
-
-当对话通过追加新消息而增长，且较早的对话历史保持不变时，隐式缓存效果良好。
-
-```text
-Request 1: Instructions → User message 1 [implicit breakpoint]
-Request 2: Instructions → User message 1 → Assistant message 1 → User message 2 [implicit breakpoint]
-```
-
-第一个请求可以写入包含用户消息 1 的前缀。在下一个请求中，该较早的断点可以提供缓存读取。随后追加的内容可以在最新的隐式断点处写入。
-
-**何时更改内容会阻止复用**
-
-某些应用会发送共享相同指令但具有不同时间戳和用户消息的独立请求。与对话中的连续轮次不同，这些请求不共享对话历史。
-
-```text
-Request 1: Stable instructions → Timestamp 1 → User message 1 [implicit breakpoint]
-Request 2: Stable instructions → Timestamp 2 → User message 2 [implicit breakpoint]
-```
-
-第一个请求写入包含时间戳 1 和用户消息 1 的前缀。在第二个请求中，时间戳 2 和用户消息 2 会改变断点处的前缀。如果不存在较早的匹配条目， `cached_tokens` 可能 `0` 服务可以再次写入变化的前缀。
-
-在稳定内容的末尾添加一个显式断点，使该内容可复用：
-
-```text
-Stable instructions [explicit breakpoint] → Timestamp → User message
-```
-
-第一个请求写入稳定前缀。后续具有相同前缀和 `prompt_cache_key` 的请求可以读取该条目，即使时间戳和用户消息发生变化。
-
-### 选择缓存模式
-
-使用 `prompt_cache_options.mode` 来设置请求级的缓存策略。
-
-**隐式缓存**
-
-- `implicit` 这是默认行为。OpenAI 会在最新的用户或工具消息上设置缓存断点，并且也会使用你提供的任何显式断点。
-- 当提示通过追加可重用内容而增长时，使用隐式缓存。较早的符合条件的断点可以提供缓存读取，而最新的消息则为未来的请求创建新的检查点。
-
-**显式断点与隐式缓存**
-
-- 你可以在不更改默认缓存模式的情况下添加显式断点。这使请求可以读取稳定前缀，同时隐式断点继续缓存最新符合条件的消息。
-- 当共享前缀和不断增长的对话历史都可能被复用时，这种方法很有用。然而，最新的隐式断点仍可能将变化的尾缀写入缓存。
-
-**仅显式缓存**
-
-- 设置 `prompt_cache_options.mode` 为 `explicit` 以禁用隐式断点。仅显式断点用于缓存读取和写入。
-- 当提示词具有稳定的前缀后跟不太可能被复用的请求特定内容时，使用仅显式模式。这会缓存可复用的前缀，而不会为变化的后缀产生新的缓存写入。
-- 添加显式断点不会自动将请求切换到仅显式模式。如果你设置 `mode` 为 `explicit` 但不提供显式断点，请求将不会使用提示词缓存或产生缓存写入费用。
-
-### 添加显式缓存断点
-
-添加 `prompt_cache_breakpoint: { "mode": "explicit" }` 到可复用前缀中最后一个受支持的内容块。断点包括该块及其之前渲染的所有提示内容。
-
-以下示例已简化以展示请求结构。在实际请求中，通过标记断点渲染的前缀必须包含至少 1,024 个 token。
+提示缓存存储的是键值（KV）张量，而不是 token 本身。
 
 
 
-Responses API
+向 ChatGPT 寻求更深入的讲解
 
 
-    This request places an explicit breakpoint after stable developer instructions. Explicit-only mode prevents the changing user message from creating an additional implicit cache write.
+
+OpenAI 会缓存模型的完整渲染上下文，包括 OpenAI 提供的指令、 [开发者消息](https://developers.openai.com/api/docs/guides/prompt-engineering#message-roles-and-instruction-following), [工具定义](https://developers.openai.com/api/docs/guides/function-calling)，以及 [对话历史](https://developers.openai.com/api/docs/guides/conversation-state) 其中包含 [文本](https://developers.openai.com/api/docs/guides/text), [图像](https://developers.openai.com/api/docs/guides/images-vision), [文档](https://developers.openai.com/api/docs/guides/file-inputs)，以及支持的 [音频](https://developers.openai.com/api/docs/guides/audio).
+
+缓存复用要求整个渲染前缀完全匹配。如果在断点之前内容或相关设置发生了更改，那么该断点之后的前缀就无法匹配现有的缓存条目。
+
+### 哪些设置会影响缓存前缀？
+
+
+
+修改请求并不一定会丢弃已有的缓存条目。关键在于后续请求是否具有相同的前缀，并且能否找到符合条件的匹配断点。主要需要检查的设置包括：
+
+| 设置                                                                                                                                                                                                                                                                             | 影响                                                                                                                     |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| [`model`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20model%20%3E%20%28schema%29)                                                                       | 不同的模型可以使用不同的权重和缓存行为。                                                          |
+| [`tools`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20tools%20%3E%20%28schema%29)                                                                       | 更改工具名称、描述、架构、顺序或特定工具的指令。                                        |
+| [`parallel_tool_calls`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20parallel_tool_calls%20%3E%20%28schema%29)                                           | 会更改有关在一轮中调用多个工具的指令。                                                          |
+| [`text.format`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20text%20%3E%20%28schema%29) ([结构化输出](https://developers.openai.com/api/docs/guides/structured-outputs))      | 添加输出格式指令以及所请求的架构。                                                                  |
+| [`reasoning.effort`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20reasoning%20%3E%20%28schema%29)                                                        | 会更改模型端的推理指令。                                                                              |
+| [`text.verbosity`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20text%20%3E%20%28schema%29)                                                               | 会更改关于响应详情的指令。                                                                             |
+| [`context_management`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20context_management%20%3E%20%28schema%29) ([压缩](https://developers.openai.com/api/docs/guides/compaction)) | 用压缩后的上下文替换先前的对话内容，这可能导致从第一个被更改的 token 之后的部分无法复用。 |
+
+
+
+
+
+## 缓存的工作原理
+
+一个 **缓存断点** 标记提示前缀的结束位置，OpenAI 可以将其保存到缓存中并在后续请求中复用。第一次请求会将符合条件的前缀写入缓存，后续请求会查找可用的最长匹配缓存前缀，从符合条件的断点开始向前回溯，直到找到匹配项为止。
+
+提示前缀必须达到模型的 **最小可缓存 token 长度** 才能被缓存。OpenAI 提供的隐藏系统内容中的 token 不计入此最小长度。GPT-5.6 及之后模型的最小可缓存提示长度为 1,024 个 token，早于 GPT-5.6 的模型则为 2,048 个 token。对于某些较早的模型，你偶尔可能会在 2,048 token 以下命中缓存。有关其他差异，请参阅 [模型对比](#summary-of-model-differences) 。
+
+在满足最小可缓存 token 长度之后，你可以显式选择缓存断点的放置位置，也可以让 OpenAI 隐式选择其位置。可用选项取决于具体的模型。
+
+
+
+### GPT-5.6 及更高版本
+
+
+
+对于 GPT-5.6 及更高版本，缓存写入费用为标准、未缓存输入 token 价格的 1.25×。当一个前缀会被复用时，支付这笔费用是值得的，因为后续读取只需该价格的 0.1×。写入一次前缀并完整复用一次的成本是其普通输入成本的 1.35×，而不使用缓存处理两次则为 2×。每增加一次缓存读取，节省的费用都会增加：在十次请求中，一次写入加九次完整读取的成本为 2.15×，而不使用缓存则为 10×。
+
+系统同时支持隐式缓存和显式缓存，其中显式缓存让你可以更精细地控制哪些上下文被写入缓存。
+
+**显式模式：** 你可以根据上下文管理需求，自行选择放置缓存断点的位置。
+
+- 将 `prompt_cache_options.mode` 设置为 `explicit` ，即可仅使用开发者选择的断点，并通过将 `prompt_cache_breakpoint: { "mode": "explicit" }` 添加到输入消息中的受支持内容块来标记每个所需的断点。
+- 当未放置任何显式断点时，该请求不会使用提示缓存，也不会创建缓存写入。
+- 仅显式模式允许你选择缓存写入的结束位置。最后一个所选断点之后的内容按未缓存的输入令牌费率处理，不产生缓存写入费用，因此你可以避免写入不太可能被重复使用的易变内容。
+- 多个显式断点可以保留以不同速率变化的前缀。每次请求最多可以创建四次缓存写入。
+- 对于缓存读取，OpenAI 会考虑对话中最多最近的 50 个断点，并复用匹配到的最长缓存前缀。
+
+顶层 `instructions` 不能包含显式断点。若需标记可复用的开发者指令，请将其放在开发者消息中的 `input_text` 代码块中。
+
+**隐式模式：** OpenAI 会自动选择开箱即用、适用于大多数用例的断点位置。
+
+- 当 `prompt_cache_options.mode` 时 `implicit`，OpenAI 会把断点放在最近一条符合条件的消息末尾。
+- 你可以在不关闭隐式断点的情况下添加显式断点；一个隐式断点会占用四个缓存写入槽中的一个，以保留三个可用的显式缓存写入槽。
+- 隐式断点会通过最近一条符合条件的消息创建缓存写入。
+
+
+
+
+
+
+
+### Earlier models
+
+
+
+仅支持隐式缓存。OpenAI 在以下位置放置隐式断点 [与模型相关的间隔处](#summary-of-model-differences)，从隐藏的 OpenAI 系统消息开头开始计数。只有达到或超过最小可缓存长度（从隐藏上下文末尾开始计数）的断点才有资格被缓存。
+
+Reported `cached_tokens` 是通过从最后一个匹配的断点减去隐藏的系统 token，然后向下取整到 128 的最接近倍数来计算的。
+
+
+
+
+
+## 缓存生命周期
+
+缓存条目不会永久存储。后续请求只能在条目仍可用的这段时间内复用其缓存前缀；复用前缀会刷新其生命周期，且不会再次产生缓存写入费用。生命周期与保留设置 [取决于所使用模型](#summary-of-model-differences).
+
+<a id="prompt-cache-retention"></a>
+
+
+
+### GPT-5.6 及更高版本
+
+
+
+使用 `prompt_cache_options.ttl` 用于控制最短缓存生命周期。唯一支持的值， `30m`，也是默认值。已缓存的前缀在最近一次写入或重用后的 30 分钟内仍可被重用，但 OpenAI 可以保留更长时间。
+
+
+
+
+
+<a id="extended-prompt-cache-retention"></a>
+
+
+
+### Earlier models
+
+
+
+使用 `prompt_cache_retention`，其支持的值取决于所使用的模型：
+
+- `in_memory`: 条目通常在约 5 到 10 分钟不活动后失效，最长可达一小时。
+- `24h`: 延长保留通常使条目可用约 30 分钟，并可保留长达 24 小时。
+
+**保留期默认值与零数据保留**
+
+提示缓存可能会将加密的键/值张量作为应用状态存储在 GPU 本地存储中。对于同时支持以下两项的模型 `in_memory` 并且 `24h`，默认值取决于你所在组织的数据保留策略：
+
+- Organizations _without_ Zero Data Retention enabled default to `24h`.
+- Organizations _with_ Zero Data Retention enabled default to `in_memory`.
+
+在选择值之前，请先确认你的模型和组织可用的保留策略。
+
+
+
+
+
+<a id="where-caching-happens-and-how-long-it-lasts"></a>
+
+<a id="cache-location-and-duration"></a>
+
+<a id="cache-location-and-lifetime"></a>
+
+## 缓存位置
+
+缓存状态保存在单台机器上，当流量超过每分钟 15 次请求时可能导致溢出路由。仅当请求抵达持有未过期匹配条目的机器时，才能复用其缓存前缀。因此，将请求路由到正确的机器对于缓存复用至关重要。
+
+缓存不会在组织之间共享，也无法跨 [区域处理边界](https://developers.openai.com/api/docs/guides/your-data#data-residency-controls).
+
+OpenAI 会自动处理路由。在同一组织和处理区域内，特定模型的路由取决于：
+
+- 当前机器负载与可用容量。
+- 在隐藏的 OpenAI 内容之后,对初始 token 计算得到的哈希值,包含工具定义(如果存在)。哈希的 token 数量因模型而异。
+- 可选提供的 [`prompt_cache_key`](#prompt-cache-keys) 用于在高流量期间控制分组与分发,从而缓解请求溢出到其他机器并由此导致的缓存未命中。
+
+<a id="prompt-cache-keys"></a>
+
+
+
+### Prompt cache keys
+
+
+
+当流量超过某台机器的可用容量时，请求可能会溢出到另一台机器。如果该机器没有匹配的缓存条目，那么这次最初的溢出请求将产生一次缓存未命中。
+
+Set [`prompt_cache_key`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20prompt_cache_key%20%3E%20%28schema%29) 以帮助具有相同前缀的请求命中同一缓存。键会影响路由，但它们不会将请求固定到某台机器，也无法保证缓存读取命中。详见 [如何调整 prompt 缓存键](#prompt-cache-key-best-practices).
+
+
+
+
+
+<a id="model-differences-at-a-glance"></a>
+
+## 模型差异概述
+
+| 行为                   | GPT-5.6 及更高版本                                       | GPT-5.5 和 GPT-5.5 Pro                                            | 其他更早的模型                                                            |
+| -------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| 隐式断点       | 位于最近一条符合条件的用户消息或工具消息的末尾。 | 按固定的 2,048 token 间隔分布。                           | 按固定的、与模型相关的间隔分布。                                   |
+| 显式断点       | 支持                                               | 不支持                                                      | 不支持                                                                   |
+| 最小可缓存前缀   | 1,024 个可见输入 token                              | 2,048 个可见输入 token；某些模型可能缓存更短的前缀 | 2,048 个可见输入 token；某些模型可能缓存更短的前缀              |
+| 缓存 token 报告     | 精确的符合条件边界，不包含隐藏 token        | 不包含隐藏 token，并向下取整到 128 的倍数        | 不包含隐藏 token，并向下取整到 128 的倍数                     |
+| 缓存读取计费          | 未缓存输入 token 费率的 0.1×                      | 与模型相关的缓存输入费率                                  | 与模型相关的缓存输入费率                                               |
+| 缓存写入费用         | 未缓存输入令牌费率的 1.25×                     | 无额外缓存写入费用                                   | 无额外缓存写入费用                                                |
+| 缓存生命周期控制     | `prompt_cache_options.ttl`                              | `prompt_cache_retention`                                           | `prompt_cache_retention`                                                        |
+| 支持的保留时长值 | `"30m"`                                                 | `"24h"` 仅                                                       | `"in_memory"` 或 `"24h"`<sup>[\*](#extended-retention-models)</sup>             |
+| 缓存生命周期             | 自最近一次写入或复用起至少 30 分钟     | 通常约为 30 分钟，最长可达 24 小时                        | 通常闲置 5 到 10 分钟（针对 `in_memory`），或最长 24 小时（针对 `24h` |
+
+<a id="extended-retention-models"></a>
+
+
+
+
+\* 扩展保留功能由 `gpt-5.5`, `gpt-5.5-pro`, `gpt-5.4`, `gpt-5.2`, `gpt-5.1-codex-max`, `gpt-5.1`, `gpt-5.1-codex`, `gpt-5.1-codex-mini`, `gpt-5.1-chat-latest`, `gpt-5`, `gpt-5-codex`，以及 `gpt-4.1`.
+
+
+
+
+<a id="best-practices"></a>
+
+## 如何优化提示词缓存
+
+重点关注 [保留对话历史](#preserve-conversation-history), [保持工具定义稳定](#tools)，并了解三种主要的缓存控制。使用 [`prompt_cache_options.mode` 和 `prompt_cache_breakpoint`](#choose-a-caching-mode) 来选择发生缓存的位置，并使用 [`prompt_cache_key`](#prompt-cache-key-best-practices) 来帮助相关请求访问同一缓存。
+
+
+
+让 ChatGPT 优化我的提示词缓存
+
+
+
+<a id="preserve-conversation-history"></a>
+
+
+
+### 保留对话历史
+
+
+
+在多轮应用中，复用不断增长的对话历史可以节省比仅缓存初始指令更多的输入 token。请保留早期的消息和工具结果，以便后续轮次可以复用完整的共享前缀。
+
+- **保持前缀稳定。** 将稳定的开发者指令和共享参考资料放在前面。如果开发者指令或共享材料包含时间戳、特定于用户的内容或其他动态内容，请将它们放在末尾而不是开头，或移到后续对话消息中。
+- **保留对话历史记录。** 追加新消息，而不是重写之前的对话轮次。摘要、压缩或上下文截断可能会改变前缀，并重置缓存复用。
+
+Keep changing content after the breakpoint
 
 ```json
 {
   "model": "gpt-5.6",
-  "prompt_cache_key": "support:knowledge-base-v1",
-  "prompt_cache_options": {
-    "mode": "explicit"
-  },
+  "reasoning": { "effort": "low", "context": "all_turns" },
+  "text": { "verbosity": "medium" },
+  "prompt_cache_options": { "mode": "explicit" },
   "input": [
     {
-      "type": "message",
       "role": "developer",
       "content": [
         {
           "type": "input_text",
-          "text": "Follow the shared support policies and reference material...",
-          "prompt_cache_breakpoint": {
-            "mode": "explicit"
-          }
+          "text": "Stable instructions and shared reference material...",
+          "prompt_cache_breakpoint": { "mode": "explicit" }
         }
       ]
     },
     {
-      "type": "message",
+      "role": "developer",
+      "content": "Dynamic developer instructions, such as user-specific content and timestamps..."
+    },
+    {
       "role": "user",
+      "content": "The user's current question..."
+    }
+  ]
+}
+```
+
+
+
+
+
+
+<a id="tools"></a>
+
+
+
+### 通过仅追加更新管理工具
+
+
+
+当应用所需的工具随请求变化时，可在保持工具定义不变的情况下更改可调用的工具，以保留可复用的前缀。
+
+- **保持工具一致。** 保留工具定义、顺序和模式。
+- **为某个请求禁用工具使用。** 将 [`tool_choice`](https://developers.openai.com/api/docs/guides/function-calling#tool-choice) 设置为 `"none"` 而不是直接删除工具定义。
+- **仅启用选定的工具。** 使用 [`allowed_tools`](https://developers.openai.com/api/docs/guides/function-calling#tool-choice) 来限制哪些工具可被调用，同时保持所提供 `tools` 列表的稳定性。
+- **按需加载工具。** 使用 [tool search](https://developers.openai.com/api/docs/guides/tools-tool-search) with `defer_loading: true` 以减少多轮对话早期请求里用于工具定义的输入 token。被发现的工具会追加在上下文末尾，从而保留先前可复用的内容。
+- **保留工具加载历史。** 使用 developer 角色的 [`additional_tools` input item](https://developers.openai.com/api/docs/guides/tools-tool-search#add-tools-at-a-specific-point-in-the-input) ，根据你应用的逻辑在对话过程中动态添加工具。
+
+
+
+
+
+<a id="choose-a-caching-mode"></a>
+
+
+
+### 选择缓存模式
+
+
+
+在 GPT-5.6 及更高版本中，有两个控件用于决定缓存断点的放置位置： `prompt_cache_options.mode` 选择隐式或仅显式缓存，以及 `prompt_cache_breakpoint` 标记你选择的边界。
+
+- **自动放置断点。** 使用隐式缓存，在最近一条符合条件消息的末尾放置断点。这对于向现有上下文追加内容的多轮会话很方便。
+- **有意识地选择断点。** 在稳定内容的末尾放置显式标记。使用仅显式模式，以避免为不断变化的后缀进行不必要的缓存写入。
+
+
+
+> 示意图：在仅显式模式下，工具与 schema 位于稳定的开发者消息前缀和断点 1 之前。一个分支添加一个可变的开发者后缀和更多对话轮次，然后到达断点 2，之后再拆分为新的用户输入。另一个分支有一个未被选中的可变后缀。每个分支的最后一个选定断点之后的内容按未缓存输入费率计费，不产生缓存写入费用。
+
+
+
+
+
+
+
+<a id="prompt-cache-key-best-practices"></a>
+
+
+
+### 调整提示缓存键
+
+
+
+- **对相关请求进行分组。** 将 prompt 版本与稳定的用户、工作区、会话或会话线 ID 组合使用，匹配你的应用复用上下文的方式。例如：
+  - `prompt_name_v1:user_123` 将共享同一 prompt 版本的同一用户的相关请求分组。
+  - `prompt_name_v1:session_456` 对单个会话内的请求进行分组。
+  - `prompt_name_v1:workspace_acme:shard_3` 对工作区中一个稳定分片内的请求进行分组。
+- **保持键的稳定性。** 只要前缀仍然有用就复用该键，不要为每个请求都生成新键。
+- **拆分繁忙的分组。** 如果某个分组流量很高且缓存读取命中率下降，请使用稳定且确定性的映射将其分散到更多键上。将相关请求保留在同一分片中，以便它们能复用该分片的缓存。
+
+创建稳定的缓存键
+
+```javascript
+import { createHash } from "node:crypto";
+
+const tenantId = "acme";
+const sessionId = "session-42";
+const promptVersion = "support-v3";
+// Tune for peak traffic per tenant and reusable prompt group; monitor cache hits.
+const shardCount = 16;
+
+const digest = createHash("sha256")
+  .update(`${tenantId}:${sessionId}`)
+  .digest("hex");
+const shard = Number.parseInt(digest.slice(0, 8), 16) % shardCount;
+const promptCacheKey = `${promptVersion}:${tenantId}:shard-${shard}`;
+```
+
+```python
+import hashlib
+
+tenant_id = "acme"
+session_id = "session-42"
+prompt_version = "support-v3"
+# Tune for peak traffic per tenant and reusable prompt group; monitor cache hits.
+shard_count = 16
+
+digest = hashlib.sha256(f"{tenant_id}:{session_id}".encode()).hexdigest()
+shard = int(digest[:8], 16) % shard_count
+prompt_cache_key = f"{prompt_version}:{tenant_id}:shard-{shard}"
+```
+
+```java
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.HexFormat;
+
+String tenantId = "acme";
+String sessionId = "session-42";
+String promptVersion = "support-v3";
+int shardCount = 16;
+
+String digest =
+    HexFormat.of()
+        .formatHex(
+            MessageDigest.getInstance("SHA-256")
+                .digest((tenantId + ":" + sessionId).getBytes(StandardCharsets.UTF_8)));
+long shard = Long.parseLong(digest.substring(0, 8), 16) % shardCount;
+String promptCacheKey = promptVersion + ":" + tenantId + ":shard-" + shard;
+```
+
+
+
+
+
+
+<a id="choose-a-cache-lifetime"></a>
+
+
+
+### 配置缓存保留
+
+
+
+对于较早的模型，建议设置 `prompt_cache_retention` 为 `"24h"` ，以便在模型和你的数据保留要求允许时获得更长的保留时间。详见 [缓存生命周期](#cache-lifetime) 了解支持的设置和默认值。
+
+
+
+
+
+<a id="a-shared-prefix-just-below-the-caching-minimum"></a>
+
+
+
+### 避开最低可缓存长度成本的陷阱
+
+
+
+如果许多请求复用了相同的开发者指令和工具定义，但该共享前缀未达到模型的 [最小可缓存长度](#summary-of-model-differences)，可以考虑缩短该前缀，或在其中补充有用的、稳定的指令、示例或参考材料。衡量缓存复用是否能抵消额外的输入 token 与任何缓存写入费用，并确保评估结果与行为保持稳定。
+
+该图表凸显了最小可缓存长度带来的成本陷阱：较短的前缀长度所产生的未缓存成本，可能高于扩展到最小可缓存 token 长度所产生的成本。
+
+#### 数学细节
+
+
+
+仅从成本角度比较，设 $$M$$ 为可缓存的最小长度，$$L < M$$ 为原始前缀长度，$$r$$ 为缓存读取倍率，$$w$$ 为缓存写入倍率，$$N$$ 为请求总数。假设扩展后的前缀恰好为 $$M$$ 个 token，仅写入一次，并且在后续每次请求中都被完全复用。以未缓存输入 token 当量计，保留原始前缀的成本为 $$N \times L$$，而扩展前缀的成本为 $$M \left[w + (N - 1)r\right]$$。盈亏平衡的原始长度为：
+
+$$
+L_{\mathrm{break\text{-}even}} = M\left(r + \frac{w-r}{N}\right)
+$$
+
+当 $$L > L_{\mathrm{break\text{-}even}}$$ 时进行扩展；当 $$L < L_{\mathrm{break\text{-}even}}$$ 时，保留较短前缀的成本更低。相等时，两者成本相同。使得扩展更便宜的最小的整 token 长度为 $$\left\lfloor L_{\mathrm{break\text{-}even}} \right\rfloor + 1$$。反之，将可缓存前缀缩短到 $$M$$ 以下会失去缓存：在相同假设下，较短的未缓存前缀必须小于 $$L_{\mathrm{break\text{-}even}}$$，其成本才低于缓存 $$M$$ 个 token。不存在普适的最大成本提示长度，交叉点取决于复用情况和定价。
+
+例如，当 $$M = 1{,}024$$、$$r = 0.1$$、$$w = 1.25$$ 时，交叉点为 $$102.4 + \frac{1{,}177.6}{N}$$ 个 token。在 10 次请求的场景下，将不少于 221 个 token 的原始前缀扩展到 1,024 个 token 更划算。随着复用次数增加，交叉点趋近 102.4 个 token。103 个 token 的前缀至少需要 1,963 次请求才能获益；在这些假设下，102 个或更少 token 的前缀永远不会获益。此比较未考虑性能、输出 token 以及未变化的请求成本。额外的未命中、写入或不同的模型费率都会改变这一结果。
+
+
+
+
+
+
+
+
+
+<a id="monitor-cache-performance"></a>
+
+
+
+### 监控缓存性能
+
+
+
+- **衡量实际缓存性能。** 跟踪 `usage.input_tokens_details.cached_tokens`, `usage.input_tokens_details.cache_write_tokens`，包括输入令牌数量、延迟和实际成本。通过将总缓存令牌数除以总输入令牌数来计算令牌缓存命中率，并可按用户、工作区、日期或其他有用的分组汇总这两个计数。
+- **计算输入成本。** 使用中的令牌计数 `response.usage` 以及模型的 [每百万令牌价格](https://developers.openai.com/api/docs/pricing).
+- **使用提示缓存仪表板。** 在以下位置监控缓存命中率： [提示缓存仪表板](https://platform.openai.com/usage?usage_section=prompt-caching).
+
+计算输入成本
+
+```javascript
+function calculateInputCost(
+  usage,
+  inputPricePerMillion,
+  cacheInputMultiplier = 0.1,
+  cacheWriteMultiplier = 1.25
+) {
+  const inputTokens = usage.input_tokens;
+  const cachedTokens = usage.input_tokens_details.cached_tokens;
+  const cacheWriteTokens = usage.input_tokens_details.cache_write_tokens;
+  const ordinaryInputTokens = inputTokens - cachedTokens - cacheWriteTokens;
+
+  const weightedInputTokens =
+    ordinaryInputTokens +
+    cachedTokens * cacheInputMultiplier +
+    cacheWriteTokens * cacheWriteMultiplier;
+  const inputCost = (weightedInputTokens * inputPricePerMillion) / 1_000_000;
+  return inputCost;
+}
+```
+
+```python
+from openai.types.responses import ResponseUsage
+
+
+def calculate_input_cost(
+    usage: ResponseUsage,
+    input_price_per_million: float,
+    cache_input_multiplier: float = 0.1,
+    cache_write_multiplier: float = 1.25,
+) -> float:
+    input_tokens = usage.input_tokens
+    cached_tokens = usage.input_tokens_details.cached_tokens
+    cache_write_tokens = usage.input_tokens_details.cache_write_tokens
+    ordinary_input_tokens = input_tokens - cached_tokens - cache_write_tokens
+
+    weighted_input_tokens = (
+        ordinary_input_tokens
+        + cached_tokens * cache_input_multiplier
+        + cache_write_tokens * cache_write_multiplier
+    )
+    input_cost = weighted_input_tokens * input_price_per_million / 1_000_000
+    return input_cost
+```
+
+
+
+
+
+
+
+
+### 将提示缓存从早期模型迁移到 GPT-5.6 及更高版本
+
+
+
+- 保留现有的稳定前缀。
+- 保留现有的 `prompt_cache_key` 取值。
+- 替换 `prompt_cache_retention` with `prompt_cache_options.ttl`.
+- 确认可复用前缀满足模型的 [最小可缓存长度](#summary-of-model-differences).
+- 如果默认断点包含在请求之间会变化的内容，请在稳定前缀之后添加一个显式断点。
+- 使用 `prompt_cache_options.mode: "explicit"` 当后续内容不值得写入时。
+- 比较 `cached_tokens`, `cache_write_tokens`,以及迁移前后的延迟和总成本。
+
+
+
+
+
+## 示例
+
+<a id="single-turn-llm-as-a-judge"></a>
+
+
+
+### 单轮 LLM 作为裁判
+
+
+
+考虑一个单轮 LLM 评判器，它用于判断一次已完成的交互是否表明用户在与聊天机器人的交互后感到满意。每次请求都使用相同的评分量表和带标注的少样本示例来评估不同的交互。
+
+- **保留前缀：** 固定的评分标准和示例排在最前面。它们的合并长度被刻意保持在刚好高于模型的 [最小可缓存长度](#summary-of-model-differences)，使用有助于校准评分模型的内容。被评估的交互放在最后。
+- **Prompt 缓存键：** 一个稳定的 `prompt_cache_key`,例如 `satisfaction_judge_v1`,将使用相同评分标准版本的请求归为一组。
+- **缓存模式与断点：** 启用仅显式缓存,并在固定的评分标准和示例之后设置一个断点。被评估的用户与聊天机器人的对话位于该断点之后,不会写入缓存,从而避免对不太可能被复用的内容产生缓存写入费用。
+
+举例来说，采用上述原则的部署可能可以达到 **约 70% 的 token 缓存命中率%**。这是一个假设数字，而非实测的部署结果。实际缓存命中率取决于你的上下文和应用使用方式。
+
+Responses API 单轮评判请求
+
+```json
+{
+  "model": "gpt-5.6-sol",
+  "reasoning": { "effort": "medium", "context": "all_turns" },
+  "text": { "verbosity": "low" },
+  "prompt_cache_key": "satisfaction_judge_v1",
+  "prompt_cache_options": { "mode": "explicit" },
+  "input": [
+    {
+      "role": "developer",
       "content": [
         {
           "type": "input_text",
-          "text": "Where is order 1234?"
-        }
-      ]
-    }
-  ]
-}
-```
-
-
-    Top-level `instructions` cannot contain a `prompt_cache_breakpoint`. To mark reusable developer instructions, place them in an `input_text` block inside a developer message, as shown above.
-
-  
-
-  
-
-    
-Chat Completions API
-
-
-    This request marks the system-message prefix. Explicit-only mode limits cache reads and writes to the marked stable content.
-
-```json
-{
-  "model": "gpt-5.6",
-  "prompt_cache_key": "support:knowledge-base-v1",
-  "prompt_cache_options": {
-    "mode": "explicit"
-  },
-  "messages": [
-    {
-      "role": "system",
-      "content": [
-        {
-          "type": "text",
-          "text": "You are a support assistant. Follow the shared policies...",
-          "prompt_cache_breakpoint": {
-            "mode": "explicit"
-          }
+          "text": "Judge whether the completed interaction provides evidence that the user is satisfied. Return true or false. Full grading rubric and labeled few-shot examples...",
+          "prompt_cache_breakpoint": { "mode": "explicit" }
         }
       ]
     },
     {
       "role": "user",
-      "content": "What should I do next?"
+      "content": "Completed interaction to evaluate..."
     }
   ]
 }
@@ -218,260 +559,194 @@ Chat Completions API
 
 
 
-要将显式断点与默认隐式断点结合使用，请省略 `prompt_cache_options.mode` 或将其设置为 `implicit`.
 
-**支持的内容块**
 
-Responses API 支持在以下位置设置断点 `input_text`, `input_image`，以及 `input_file` 块。Chat Completions API 支持在以下位置设置断点 `text`, `image_url`, `input_audio`, `file`，以及 `refusal` 块。
 
-只有 `explicit` 对 `prompt_cache_breakpoint.mode`。有效。在不支持或不可缓存的块上设置标记会返回 `400 invalid_request_error`.
+<a id="customer-support-agent"></a>
 
-工具定义、结构化输出模式、消息、图像和文件都可以贡献到渲染前缀。在应共享缓存的请求中，保持内容、顺序和相关设置一致。
 
-### 使用多个缓存断点
 
-当提示的不同部分以不同频率变化时，请使用多个明确的断点。例如，共享指令可以保持稳定，而参考材料则需更频繁地更新。分离的断点让请求能够复用最长的、保持不变且符合条件的缓存前缀。
+### 多轮 智能体
 
-每个请求最多可以创建四次新的缓存写入。来自较早对话轮次的断点是只读的：它们可以匹配缓存，但请求不会再次写入它们。如果设置了超过四个断点，仅最后四个会被写入。
 
-在 `implicit` 模式下，最新消息上的断点占用一个写入槽位。最多最新的三个显式断点可以使用剩余的槽位。在 `explicit` 模式下，最多最新的四个显式断点可以创建新的缓存写入。
 
-对于缓存读取，OpenAI 会考虑对话中最多最近的50个断点。当多个断点匹配缓存内容时，服务会从最长的匹配前缀进行读取。
+设想一个多轮 智能体，它具有冗长且共享的开发人员指令，并频繁调用工具。典型场景下，用户会同时运行多个会话，并经常分叉这些会话中的 智能体 线程。
 
-### 使用提示词缓存键改进缓存匹配
+- **保留前缀**：每一轮都会追加新的消息、工具调用和结果，而不重写较早的上下文，因此可复用的前缀会随时间不断增长。
+- **Prompt 缓存键：** 该 `prompt_cache_key` 会针对每个用户-智能体对进行定义，并在该用户与智能体的所有会话之间共享。例如， `agent_123_v1:user_456` 会将用户 456 的会话以及与 智能体 123 的分叉归为一组。当这些会话应当共享同一个可复用前缀时，会话 ID 和 thread ID 不会包含在该键中。
+- **隐式缓存模式：** 启用隐式缓存，以便由最近的符合条件的用户或工具消息提供一个断点。
+- **显式断点：** 在每个工具结果之后添加一个断点，以保留较早的可复用前缀并提升分叉的缓存效率。
 
-设置 `prompt_cache_key` 用于共享长、公共提示前缀的请求。为这些请求重用相同的键，以帮助将它们路由到相同的缓存并提高缓存命中率。常见的值包括 `prompt_cache_key` 会话 ID 和用户 ID。
+采用这些原则的一次示例部署报告了 **token 缓存命中率 >90%**。该数据展示了一种可能的结果。实际缓存命中率上限将取决于你自己的上下文和应用使用情况。
 
-对于 GPT-5.6，你必须设置 `prompt_cache_key` 以使用更可靠的匹配，适用于隐式和显式缓存。在每个断点处，服务将键与精确的提示前缀匹配。没有键，请求仍可能收到自动缓存命中，但它们不会使用改进的匹配。
-
-将每个键的所有前缀的总流量保持在大约每分钟 15 个请求。如果键接收的速率更高，某些请求可能会错过缓存。对于更高吞吐量的工作负载，将流量分配到更多键，并使用稳定的映射，以便具有相同键的请求继续共享前缀。
-
-### 衡量缓存读取和写入
-
-监控 `cached_tokens` 并 `cache_write_tokens` 以了解你的断点设置是产生缓存重用还是重复缓存写入。
-
-`cached_tokens` 是从缓存读取的输入令牌数。 `cache_write_tokens` 是新建写入缓存的输入令牌数。
-
-对于Responses API，这两个字段出现在 `usage.input_tokens_details`。中。对于Chat Completions API，它们出现在 `usage.prompt_tokens_details`.
+Responses API 请求，用于多轮 智能体
 
 ```json
 {
-  "usage": {
-    "input_tokens": 2600,
-    "input_tokens_details": {
-      "cached_tokens": 2000,
-      "cache_write_tokens": 400
+  "model": "gpt-5.6-sol",
+  "reasoning": { "effort": "medium", "context": "all_turns" },
+  "text": { "verbosity": "medium" },
+  "prompt_cache_key": "agent_123_v1:user_456",
+  "prompt_cache_options": { "mode": "implicit" },
+  "tools": [
+    {
+      "type": "function",
+      "name": "function_name",
+      "description": "Function description",
+      "parameters": { "...": "..." }
     }
-  }
+  ],
+  "input": [
+    {
+      "role": "developer",
+      "content": "Stable developer instructions and reference material..."
+    },
+    { "role": "user", "content": "Can you do...?" },
+    {
+      "type": "function_call",
+      "call_id": "call_123",
+      "name": "function_name",
+      "arguments": "..."
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_123",
+      "output": [
+        {
+          "type": "input_text",
+          "text": "Tool result...",
+          "prompt_cache_breakpoint": { "mode": "explicit" }
+        }
+      ]
+    },
+    { "role": "assistant", "content": "Assistant response..." },
+    { "role": "user", "content": "Can you also do...?" }
+  ]
 }
 ```
 
-在此示例中，从缓存读取了 2,000 个令牌，并额外写入了 400 个令牌。剩余的 200 个输入令牌既未读取也未写入。更长的缓存写入不会再次对已缓存的 2,000 个令牌计费。
 
-**了解缓存写入定价**
 
-缓存读取、缓存写入和普通输入令牌是独立的计费类别。
 
-1. 缓存输入令牌按未缓存输入令牌费率的 0.1 倍计费。
-2. 写入缓存的令牌按未缓存输入令牌费率的 1.25 倍计费。
-3. 既未读取也未写入的令牌按未缓存输入令牌费率计费。
 
-1.25× 缓存写入费率是针对已写入 token 的总费率。它不是在全额输入 token 费用之上另行收取的附加费用。断点本身不会产生费用。费用仅针对实际写入缓存的 token 收取。
 
-当生成的缓存条目未被复用时，重复写入会增加成本。如果 `cache_write_tokens` 保持较高而 `cached_tokens` 持续较低，请检查隐含断点是否包含随请求变化的内容。
+<a id="troubleshooting"></a>
 
-### 设置缓存生命周期
+## 注意事项
 
-使用 `prompt_cache_options.ttl` 可以设置请求写入的所有断点的生命周期。唯一支持的值是 `30m`，这也是默认值。
 
-30分钟的生命周期从写入前缀时开始，并在此前缀被重用时刷新。缓存前缀在其最近一次写入或重用后的30分钟内仍可被重用，尽管OpenAI可能保留更长时间。
 
-重用缓存前缀会刷新其生命周期，但不会产生另一次缓存写入费用。
+### 共享前缀并不总是缓存前缀
 
-### 排查常见的缓存问题
 
-- **`cached_tokens` 为零：** 检查渲染后的前缀在断点处是否至少包含 1,024 个 token。确认之前的请求写入了相同的前缀，并且相关请求使用了相同的 `prompt_cache_key`.
 
-- **缓存写入在每次请求时重复发生：** 检查在符合条件的断点之前是否出现时间戳、变化的用户输入、工具调用历史或其他请求特定内容。将显式断点移动到稳定前缀的末尾。
+在从早期模型迁移到 GPT-5.6 或更高版本时，这种情况尤其常见，原因是隐式缓存行为发生了变化。如果多个请求共享一个较长的前缀但后缀不同，仅隐式缓存第一个完整请求并不能让较短的共享前缀被复用。
 
-- **缓存读取和写入均非零：** 在隐式模式下，请求可以读取先前缓存的旧前缀，并在最新的断点处写入新追加的内容。如果不希望缓存这些新内容，请使用仅显式模式。
+考虑在每个请求中，一个固定的开发者消息后面跟着一个动态的用户消息。该请求会直接写入动态内容。在下一次请求中修改该内容无法匹配更长的已缓存前缀，并且静态内容之后也不存在单独的断点。
 
-- **显式模式不产生缓存命中：** 确认至少有一个受支持的内容块具有 `prompt_cache_breakpoint: { "mode": "explicit" }` 并且通过标记渲染的旧前缀满足 1,024 个 token 的最低要求。
-
-- **在较高请求量下缓存命中率降低：** 将每个 `prompt_cache_key` 的流量保持在大约每分钟 15 个请求。使用稳定、确定性的键对较大的工作负载进行分区。
-
-- **先前缓存的提示词不再匹配：** 检查在断点之前工具定义、工具排序、结构化输出模式、图片、提示词内容或请求设置是否发生变化。
-
-- **断点被拒绝：** 将标记附加到受支持的内容块，并使用 `explicit` 作为其模式。不要将断点附加到顶级 Responses API `instructions`.
-
-## 早期模型的提示缓存
-
-较早的模型使用自动提示缓存来复用匹配的提示前缀。当符合条件的请求被路由到最近处理过相同前缀的机器时，服务可以复用缓存结果，而不是再次处理该内容。
-
-提示缓存对受支持的模型自动生效。一致 `prompt_cache_key`、稳定的提示结构，以及适当的 `prompt_cache_retention` 设置可以提高缓存复用率。
-
-### 自动提示缓存如何工作
-
-缓存命中仅可能发生在提示内容中的精确前缀匹配。当请求到达时，服务会检查选定机器上的缓存中是否已存在符合条件且位于提示开头部分的内容。
-
-如果存在匹配的前缀，服务可以复用符合条件的前缀，并在 `cached_tokens`。中报告这些令牌。如果没有匹配项，服务将处理完整提示，并可能缓存符合条件的内容以供未来请求使用。
-
-缓存复用为尽力而为。缓存命中取决于提示前缀保持相同、缓存内容仍然可用，以及请求到达持有匹配条目的机器。
-
-例如，不同的请求可以在用户消息变化时复用共享指令和参考资料：
-
-```text
-Request 1: Shared instructions → Shared reference material → User message 1
-Request 2: Shared instructions → Shared reference material → User message 2
-```
-
-当共享前缀符合条件且可用时，第二个请求可以复用该内容，无需额外的请求特定缓存配置。
-
-**最小可缓存前缀**
-
-最小可缓存前缀长度因模型而异，范围从1,024到2,048个令牌。仅略高于1,024个令牌的提示可能无法一致地缓存。
-
-缓存命中以128个令牌为增量发生。因此，缓存令牌的数量可能小于共享提示内容的总长度。
-
-确保提示中重复的部分符合该模型的最小要求。请求整体可以超过最小值，但如果其匹配前缀过短，仍可能无法产生缓存命中。
-
-### 构建可复用的提示词结构
-
-缓存命中仅在提示词内的精确前缀匹配时才有可能。为充分利用缓存优势，请将静态内容（如指令和示例）放在提示词开头，并将可变内容（如特定于用户的信息）放在末尾。这也适用于图片和工具，它们必须在多次请求之间保持完全一致。
-
-保持系统或开发者指令、共享参考材料、示例、工具定义和结构化输出模式稳定。将用户输入、请求标识符、时间戳和其他变化内容放在可复用前缀之后。
-
-如果某个动态值仅用于日志记录或调试，请考虑将其放入请求元数据中，而不是插入到提示词中。
-
-**保持工具和模式一致**
-
-工具定义、工具排序和结构化输出模式会影响提示词前缀。工具描述、参数模式、模式键或排序的变更会降低缓存复用率。
-
-当需要在特定请求中限制可用工具时，请保持底层 `tools` 数组不变，并使用 `allowed_tools` （在支持的情况下）。
-
-**保留对话历史**
-
-对于多轮对话，请追加新的用户和助手消息，而不是重写早期消息。更改、删除或重新排序早期内容会改变前缀并可能导致缓存未命中。
-
-上下文截断、摘要和压缩可以减少提示词大小，但也可能重置可复用前缀。请在缩短提示词带来的节省与现有缓存复用损失之间进行权衡。
-
-### 使用提示缓存键提高缓存命中率
-
-设置 `prompt_cache_key` 适用于共享长、常见提示前缀的请求。为这些请求重复使用相同的键，以帮助路由到同一缓存并提高缓存命中率。
-
-请求基于初始提示前缀进行路由。当你提供 `prompt_cache_key`，时，它会与前缀哈希结合，使你能够影响路由。当许多请求共享长、常见前缀时，这尤其有益。
-
-保持每个键在所有前缀上的总流量约为每分钟 15 个请求。如果某个键接收到的速率更高，某些请求可能会错过缓存。对于高流量工作负载，请在更多键之间分配流量，并使用稳定的映射，以便具有相同键的请求继续共享前缀。
-
-缓存键可改善路由，但不会使不同的提示前缀匹配。在应共享缓存内容的请求之间保持前缀和缓存键一致。
-
-<a id="prompt-cache-retention"></a>
-
-### 配置提示词缓存保留
-
-使用 `prompt_cache_retention` 为支持的 Responses API 或 Chat Completions 请求选择保留策略。可用值取决于模型。
-
-对于同时支持内存和扩展保留的模型，两种策略的提示缓存定价相同。
-
-**内存提示缓存保留**
-
-内存提示缓存保留适用于接受 `prompt_cache_retention: "in_memory"`.
-
-使用内存策略时，缓存的提示前缀通常在 5 到 10 分钟不活跃后仍保持有效，最长可达一小时。内存缓存前缀仅保存在易失性内存中。
-
-<a id="extended-prompt-cache-retention"></a>
-
-**扩展提示缓存保留**
-
-扩展提示缓存保留可使缓存前缀在更长时间内保持有效，最长可达 24 小时。
-
-24 小时是最大时长，而非保证每个请求都会获得缓存命中。复用仍取决于精确匹配的前缀、缓存可用性和请求路由。
-
-**支持扩展保留的模型**
-
-以下模型支持扩展提示缓存保留：
-
-- `gpt-5.5`
-- `gpt-5.5-pro`
-- `gpt-5.4`
-- `gpt-5.2`
-- `gpt-5.1-codex-max`
-- `gpt-5.1`
-- `gpt-5.1-codex`
-- `gpt-5.1-codex-mini`
-- `gpt-5.1-chat-latest`
-- `gpt-5`
-- `gpt-5-codex`
-- `gpt-4.1`
-
-**保留默认值与零数据保留**
-
-对于 `gpt-5.5` 和 `gpt-5.5-pro`，仅支持 `24h` 通过 `prompt_cache_retention`.
-
-对于同时支持 `in_memory` 和 `24h`，的模型，默认值取决于你所在组织的数据保留策略：
-
-- 未启用零数据保留的组织默认 `24h`.
-- 已启用零数据保留的组织默认 `in_memory` 当 `prompt_cache_retention` 未指定时。
-
-在选择值之前，请验证你的模型和组织可用的保留策略。
-
-### 衡量缓存命中率与成本
-
-使用 `cached_tokens` 查看从缓存中读取了多少输入令牌。即使没有令牌被缓存，该字段也会存在。
-
-对于 Responses API，该字段出现在 `usage.input_tokens_details.cached_tokens`。中。对于 Chat Completions API，它出现在 `usage.prompt_tokens_details.cached_tokens`.
-
-以下 Chat Completions 使用示例展示了一个请求，它重用了其 2,006 个提示令牌中的 1,920 个：
+静态内容之后没有断点
 
 ```json
 {
-  "usage": {
-    "prompt_tokens": 2006,
-    "completion_tokens": 300,
-    "total_tokens": 2306,
-    "prompt_tokens_details": {
-      "cached_tokens": 1920
-    }
-  }
+  "model": "gpt-5.6-sol",
+  "reasoning": { "effort": "medium", "context": "all_turns" },
+  "text": { "verbosity": "low" },
+  "prompt_cache_key": "prompt_name_v1",
+  "prompt_cache_options": { "mode": "implicit" },
+  "input": [
+    { "role": "developer", "content": "Static content..." },
+    { "role": "user", "content": "Dynamic content..." }
+  ]
 }
 ```
 
-在此示例中，剩余的 86 个提示令牌未从缓存中读取。跨请求监控缓存的令牌使用情况，以识别提示结构、流量模式或缓存可用性的变化。
 
-**定价和速率限制**
+要修复此问题，请在两个请求的静态内容之后放置一个显式断点。第一个请求写入可复用的前缀；即使动态内容发生变化，下一个请求也可以复用该前缀。本示例使用纯显式模式，避免将动态内容写入缓存。
 
-创建缓存条目不产生额外费用。当模型提供缓存输入费率时，缓存输入按该费率计费。费率和折扣因模型而异。
+在静态内容之后设置断点
 
-缓存的输入令牌仍计入每分钟令牌速率限制。提示缓存不会改变速率限制计算，也不保证产生相同的模型输出。
+```json
+{
+  "model": "gpt-5.6-sol",
+  "reasoning": { "effort": "medium", "context": "all_turns" },
+  "text": { "verbosity": "low" },
+  "prompt_cache_key": "prompt_name_v1",
+  "prompt_cache_options": { "mode": "explicit" },
+  "input": [
+    {
+      "role": "developer",
+      "content": [{
+        "type": "input_text",
+        "text": "Static content...",
+        "prompt_cache_breakpoint": { "mode": "explicit" }
+      }]
+    },
+    { "role": "user", "content": "Dynamic content..." }
+  ]
+}
+```
 
-### 可缓存的内容
 
-- **消息：** 系统、开发者、用户和助手消息可以构成可复用的提示词前缀。
-- **图片：** 当图片及其顺序和细节设置保持不变时，图片输入可以被缓存。
-- **工具：** 工具定义、描述、参数模式和工具排序可以构成前缀的一部分。
-- **结构化输出：** 结构化输出模式可以包含在可复用的提示词前缀中。
-- **音频：** 支持的音频输入可以构成可缓存的提示词内容。
 
-所有可重复使用的内容在多次请求中必须保持一致。提示中较早部分的更改可能会使后续内容的复用失效。
+
+
+
+
+
+### 可缓存的最小长度因模型而异
+
+
+
+在某个模型上满足缓存条件的前缀，在另一个模型上可能过短。请检查该 [模型对比](#summary-of-model-differences) 并使用你实际使用的模型和设置来测量可复用前缀。更换模型时，请重新执行该检查，不要假设之前模型的阈值仍然适用。
+
+
+
+
+
+
+
+### 压缩可能会降低缓存复用率
+
+
+
+[Compaction](https://developers.openai.com/api/docs/guides/compaction) 会使用更短的表示替换早期的对话上下文。这可能会改变前缀，因此即使对话在逻辑上相同，压缩后的第一个请求复用的前序缓存可能也会更少。
+
+尽可能让可重复使用的指令和参考资料保持稳定，再让后续轮次在压缩后的上下文上继续构建。对比压缩前后的总输入成本：即使缓存命中率下降，输入令牌减少仍能节省费用。
+
+
+
+
 
 ## 常见问题
 
-1. **缓存如何维护数据隐私？**
 
-   提示缓存不在组织之间共享。只有同一组织的成员才能访问相同提示的缓存。缓存数据的处理取决于模型和保留策略。参见 [你的数据](https://developers.openai.com/api/docs/guides/your-data) 指南以了解当前的应用程序状态、零数据保留和数据驻留详情。
 
-2. **提示缓存是否影响输出令牌生成或 API 的最终响应？**
+### 提示缓存会影响输出生成吗？
 
-   提示缓存不改变模型生成输出令牌的方式。模型从缓存的提示前缀计算新的响应，因此即使请求在其他方面相同，非确定性请求也不会保证返回相同的输出。
 
-3. **有没有办法手动清除缓存？**
 
-   目前不支持手动清除缓存。对于 GPT-5.6 系列之前使用内存保留的模型，典型的缓存驱逐会在不活动 5-10 分钟后发生，但在非高峰时段条目可保留长达一小时。对于 GPT-5.6 模型及之后的模型系列，缓存的提示前缀在 30 分钟内仍有资格被重用，并且可能保留更长时间。
+不会。提示缓存不会改变模型生成输出 token 的方式。模型会使用缓存的前缀生成新响应，因此相同的请求不保证产生相同的输出。
 
-4. **写入提示缓存是否需要支付额外费用？**
 
-   在 GPT-5.6 系列之前的模型上，缓存写入没有额外费用。对于 GPT-5.6 模型及之后的模型系列，缓存写入按未缓存输入令牌费率的 1.25 倍计费，并报告在 `cache_write_tokens`。缓存读取继续报告在 `cached_tokens`.
 
-5. **缓存的提示是否计入 TPM 速率限制？**
 
-   是的，因为缓存不影响速率限制。
+
+
+
+### 我可以手动清除缓存吗？
+
+
+
+不，目前无法手动清除缓存。缓存条目的有效期取决于模型的 [缓存生命周期](#cache-lifetime) 和保留设置。
+
+
+
+
+
+
+
+### 缓存的提示词是否计入速率限制？
+
+
+
+是的。缓存的输入 token 仍会计入每分钟 token 数限制。提示缓存不会改变 [速率限制](https://developers.openai.com/api/docs/guides/rate-limits) 计算得出。

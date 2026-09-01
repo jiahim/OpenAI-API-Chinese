@@ -1,14 +1,14 @@
-# 提示工程
+# Prompt engineering
 
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。你可以在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
-使用 OpenAI API，你可以 [大型语言模型](https://developers.openai.com/api/docs/models) 根据提示生成文本，就像你使用 [ChatGPT](https://chatgpt.com)。一样。模型可以生成几乎任何类型的文本响应——如代码、数学方程式、结构化 JSON 数据或类似人类的散文。
+通过 OpenAI API，你可以使用 [大语言模型](https://developers.openai.com/api/docs/models) 根据提示生成文本，就像使用 [ChatGPT](https://chatgpt.com)。一样。模型可以生成几乎任意类型的文本响应——比如代码、数学公式、结构化的 JSON 数据，或类人散文。
 
 
 
-以下是一个使用 [Responses API](https://developers.openai.com/api/reference/resources/responses).
+下面是一个使用 [Responses API](https://developers.openai.com/api/reference/resources/responses).
 
-的简单示例。
+通过简单的提示生成文本
 
 ```javascript
 import OpenAI from "openai";
@@ -131,7 +131,7 @@ curl "https://api.openai.com/v1/responses" \
 ```
 
 
-模型生成的内容数组位于响应的 `output` 属性中。在这个简单示例中，我们只有一个输出，看起来像这样：
+模型生成的内容数组位于响应的 `output` 属性中。在这个简单示例中，我们只有一个输出，形式如下：
 
 ```json
 [
@@ -150,11 +150,11 @@ curl "https://api.openai.com/v1/responses" \
 ]
 ```
 
-**该 `output` 数组通常包含多个项目！** 它可以包含工具调用、由 [推理模型](https://developers.openai.com/api/docs/guides/reasoning)，生成的推理 token 数据以及其他项目。不能假设模型的文本输出一定位于 `output[0].content[0].text`.
+**该 `output` 数组中通常包含不止一个条目！** 它可以包含工具调用、由 [推理模型](https://developers.openai.com/api/docs/guides/reasoning)，生成的推理 token 相关数据，以及其他条目。不能假设模型的文本输出一定出现在 `output[0].content[0].text`.
 
-我们的一些 [官方 SDK](https://developers.openai.com/api/docs/libraries) 包含一个 `output_text` 模型响应上的属性，方便起见，它聚合模型的所有文本输出为一个字符串。这可能有助于快速访问模型的文本输出。
+我们提供的一些 [官方 SDK](https://developers.openai.com/api/docs/libraries) 中为模型响应提供了一个 `output_text` 属性，便于使用，它会将模型的所有文本输出聚合为单个字符串。这可以作为一种快捷方式，方便地访问模型的文本输出。
 
-除了纯文本，你还可以让模型返回 JSON 格式的结构化数据——此功能称为 [**结构化输出**](https://developers.openai.com/api/docs/guides/structured-outputs).
+除了纯文本之外，你还可以让模型以 JSON 格式返回结构化数据——这一功能称为 [**Structured Outputs**](https://developers.openai.com/api/docs/guides/structured-outputs).
 
 
 
@@ -162,34 +162,34 @@ curl "https://api.openai.com/v1/responses" \
 
 ## 选择模型
 
-通过 API 生成内容时，一个关键的选择是使用哪个模型 - `model` 上述代码示例中的参数。 [你可以在这里找到可用模型的完整列表](https://developers.openai.com/api/docs/models)。以下是选择用于文本生成的模型时需要考虑的几个因素。
+通过 API 生成内容时，一个关键的选择是你想使用哪个模型——也就是上面代码示例中的 `model` 参数。 [你可以在这里找到可用模型的完整列表](https://developers.openai.com/api/docs/models)。在为文本生成选择模型时，有以下几个因素需要考虑。
 
-- **[推理模型](https://developers.openai.com/api/docs/guides/reasoning)** 生成内部思维链来分析输入提示，擅长理解复杂任务和多步规划。它们通常也比 GPT 模型使用起来更慢、成本更高。
-- **GPT 模型** 快速、成本效益高且高度智能，但受益于关于如何完成任务更明确的指示。
-- **大型和中小型（mini 或 nano）模型** 提供速度、成本和智能之间的权衡。大型模型在理解提示和跨领域解决问题方面更有效，而小型模型通常使用起来更快、更便宜。
+- **[推理模型](https://developers.openai.com/api/docs/guides/reasoning)** 会生成内部思维链来分析输入提示，擅长理解复杂任务和多步规划。但相比 GPT 模型，它们通常更慢且使用成本更高。
+- **GPT 模型** 速度快、成本低且高度智能，但需要更明确的任务完成指令才能发挥最佳效果。
+- **大模型和小模型（mini 或 nano）** 在速度、成本和智能水平上提供不同的权衡。大模型在理解提示和跨领域解决问题方面更有效，而小模型通常更快且使用成本更低。
 
-如有疑问时， [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol) 为通用文本生成和提示迭代提供强大的默认选择。
+如有疑问， [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol) 为通用文本生成和提示迭代提供了一个强大的默认选择。
 
-## 提示工程
+## Prompt engineering
 
-**提示词工程** 是撰写有效模型指令的过程，通过这种方式让模型持续生成符合你要求的内容。
+**提示工程** 是为模型编写有效指令的过程，使其能够始终如一地生成满足你需求的内容。
 
-由于模型生成的内容具有不确定性，通过提示词来获得理想输出既是一门艺术，也是一门科学。不过，你可以应用一些技巧和最佳实践来持续获得良好结果。
+由于模型生成的内容具有不确定性，通过提示获得期望输出既是一门艺术，也是一门科学。不过，你可以应用一些技巧和最佳实践，持续获得良好结果。
 
-有些提示词工程技巧适用于所有模型，比如使用消息角色。但不同类型的模型（如推理模型与GPT模型）可能需要不同的提示方式才能产生最佳结果。即使是同一模型家族中的不同快照也可能产生不同的结果。因此，在构建更复杂的应用时，我们强烈建议：
+一些提示工程技术适用于所有模型，例如使用消息角色。但不同类型的模型（例如推理模型与 GPT 模型）可能需要采用不同的提示方式才能产生最佳效果。即使是同一模型系列中的不同快照版本，也可能会产生不同的结果。因此，当你构建更复杂的应用时，我们强烈建议你：
 
-- 将你的生产应用程序固定到特定的 [模型快照](https://developers.openai.com/api/docs/models) （如 `gpt-4.1-2025-04-14` 等）以确保行为一致
-- 构建测试和评估套件，以衡量提示行为，使你在迭代或更改和升级模型版本时能够监控性能
+- 将你的生产应用固定到特定的 [模型快照](https://developers.openai.com/api/docs/models) （比如 `gpt-4.1-2025-04-14` ）以确保行为一致
+- 构建用于衡量提示行为的测试和评估套件，以便你在迭代时或在更改和升级模型版本时监控性能
 
-现在，让我们考察一些可用于构建提示词的工具和技术。
+现在，让我们来看一些可用于你构建提示词的工具和技巧。
 
 ## 消息角色与指令遵循
 
 
 
-你可以通过以下方式向模型提供指令： [不同级别的权限](https://model-spec.openai.com/2025-02-12.html#chain_of_command) 使用 `instructions` API 参数或 **消息角色**.
+你可以通过 [不同级别的优先级](https://model-spec.openai.com/2025-02-12.html#chain_of_command) 使用 `instructions` API 参数或 **消息角色**.
 
-该 `instructions` 参数为模型提供高层级指令，指导其在生成响应时应如何表现，包括语气、目标以及正确响应的示例。通过这种方式提供的任何指令都将优先于 `input` 参数中的提示。
+该 `instructions` 参数向模型提供高层指令，说明它在生成响应时应如何表现，包括语气、目标以及正确响应的示例。通过此方式提供的任何指令将优先于 `input` 参数中的提示。
 
 使用指令生成文本
 
@@ -280,6 +280,31 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    Instructions = "Talk like a pirate.",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Are semicolons optional in JavaScript?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -307,7 +332,7 @@ curl "https://api.openai.com/v1/responses" \
 ```
 
 
-上述示例大致等同于在 `input` 数组中使用以下输入消息：
+上面的示例大致等同于在 `input` 数组中使用以下输入消息：
 
 使用不同角色的消息生成文本
 
@@ -430,6 +455,33 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateDeveloperMessageItem("Talk like a pirate.")
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Are semicolons optional in JavaScript?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -467,63 +519,63 @@ curl "https://api.openai.com/v1/responses" \
 ```
 
 
-请注意， `instructions` 参数仅适用于当前响应生成请求。如果你正在 [管理对话状态](https://developers.openai.com/api/docs/guides/conversation-state) 使用 `previous_response_id` 参数，则 `instructions` 在之前轮次中使用的将不会出现在上下文中。
+请注意， `instructions` 参数仅适用于当前的响应生成请求。如果你正在 [管理对话状态](https://developers.openai.com/api/docs/guides/conversation-state) 使用 `previous_response_id` 参数，则 `instructions` 中先前轮次使用的指令将不会出现在上下文中。
 
 
 
 
 
-该 [OpenAI 模型规范](https://model-spec.openai.com/2025-02-12.html#chain_of_command) 描述了我们的模型如何对不同角色的消息给予不同的优先级。
+该 [OpenAI 模型规范](https://model-spec.openai.com/2025-02-12.html#chain_of_command) 描述了我们的模型如何为不同角色的消息赋予不同的优先级。
 
 | `developer`                                                                                                        | `user`                                                                                             | `assistant`                                                |
 | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `developer` 消息是由应用程序开发者提供的指令，优先级排在 `user` 消息之前。 | `user` 消息是由最终用户提供的指令，优先级排在 `developer` 消息之后。 | 模型生成的消息具有 `assistant` 角色。 |
+| `developer` messages 是由应用开发者提供的指令，优先级高于 `user` messages。 | `user` messages 是由终端用户提供的指令，优先级低于 `developer` messages。 | 由模型生成的消息具有 `assistant` 角色。 |
 
-多轮对话可以包含这些类型的多条消息，以及由你和模型提供的其他内容类型。了解有关 [在此处管理对话状态](https://developers.openai.com/api/docs/guides/conversation-state).
+多轮对话可以由若干上述类型的消息，以及你和模型提供的其他内容类型组成。了解更多关于 [管理对话状态的信息](https://developers.openai.com/api/docs/guides/conversation-state).
 
-你可以将 `developer` 和 `user` 消息视为编程语言中的函数及其参数。
+你可以把 `developer` 和 `user` 消息看作是编程语言中的函数及其参数。
 
-- `developer` 消息提供了系统的规则和业务逻辑，类似于函数定义。
-- `user` 消息提供了输入和配置，这些 `developer` 消息指令将应用于此，类似于函数的参数。
+- `developer` message 提供系统的规则和业务逻辑，类似于函数定义。
+- `user` messages 提供输入和配置，是 message 指令的应用对象，类似于函数的参数。 `developer` message 指令的应用对象，类似于函数的参数。
 
-## 代码中的版本提示
+## Version prompts in code
 
-将生产提示词存储在你的应用程序代码中，而不是创建可复用的提示词对象。由代码管理的提示词让你可以使用类型化输入、代码审查、测试以及正常的部署流程来改变模型行为。
+将生产环境的提示词存储在应用代码中，而不是创建可复用的提示对象。代码管理的提示词可让你使用类型化输入、代码审查、测试以及常规部署流程来更改模型行为。
 
-OpenAI 正在弃用 API 中的可复用提示词对象。提示词创建将
-  自 2026 年 6 月 3 日起弱化， `v1/prompts` 并计划于
-  2026 年 11 月 30 日关闭。请参阅 [弃用
-  页面](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 以查看当前
-  时间线。
+OpenAI 正在弃用 API 中的可复用提示对象。提示创建将
+  从 2026-06-03 起逐步弱化，并于 `v1/prompts` 计划于
+  2026-11-30 关停。详见 [弃用
+  页面](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 以了解当前的
+  时间表。
 
 对于新的提示工程工作：
 
-- 将提示词构建器放在其所支持功能附近的小模块中。
-- 对于动态值（如客户数据、文件或任务选项），使用类型化的函数参数或模式。
-- 将生成的 `instructions` 和 `input` 直接传递到 [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create).
-- 在更改生产提示词之前，添加代表性的固定样本、测试和评估检查。
-- 通过你的部署系统推出提示词更改，在需要分阶段发布时使用功能标志或配置。
+- 将提示构建器放在靠近其所支持功能的独立小模块中。
+- 对动态值（例如客户数据、文件或任务选项）使用带类型的函数参数或 schema。
+- 将生成的 `instructions` 和 `input` 直接传递给 [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create).
+- 在修改生产环境中的提示之前，先添加具有代表性的 fixtures、测试和评估检查。
+- 通过你的部署系统发布提示变更；需要分阶段发布时，可使用功能开关或配置。
 
-如果你的集成已经通过提示词 ID 或版本调用保存的提示词，请使用 [提示词对象迁移指南](https://developers.openai.com/api/docs/guides/prompting/migrate-from-prompt-object) 将该提示词迁移到代码中。
+如果你的集成已通过提示词 ID 或版本调用已保存的提示词，请使用 [prompt 对象迁移指南](https://developers.openai.com/api/docs/guides/prompting/migrate-from-prompt-object) 将该提示词迁移到代码中。
 
 ## 使用 Markdown 和 XML 进行消息格式化
 
-当编写 `developer` 和 `user` 消息时，你可以通过组合使用 [Markdown](https://commonmark.org/help/) 格式和 [XML 标签](https://www.w3.org/TR/xml/).
+编写 `developer` 和 `user` 消息时，你可以结合使用 [Markdown](https://commonmark.org/help/) 格式和 [XML 标签](https://www.w3.org/TR/xml/).
 
-来帮助模型理解提示词和上下文数据的逻辑边界。Markdown 标题和列表有助于标记提示词的不同部分，并向模型传达层级结构。它们也可能在开发过程中让你的提示词更易读。XML 标签可以帮助界定一段内容（如用于参考的支持文档）的起始和结束。XML 属性也可用于定义提示词中内容的元数据，供你的指令引用。
+Markdown 标题和列表有助于标记提示中不同的部分，并向模型传达层级结构。它们还能让提示在开发过程中更易于阅读。XML 标签可以划分一段内容（例如用于参考的支持文档）的开始和结束位置。XML 属性还可以用来定义提示中内容的元数据，以便你的指令可以引用这些元数据。
 
-通常，开发者消息将包含以下部分，一般按此顺序排列（不过具体的最佳内容和顺序可能因你使用的模型而异）：
+一般来说，开发者消息会包含以下几个部分，通常按以下顺序排列（但具体的最优内容和顺序可能会因所用模型而异）：
 
-- **身份：** 描述助手的用途、沟通风格和总体目标。
-- **指令：** 为模型提供指导，说明如何生成你想要的响应。它应该遵循哪些规则？模型应该做什么，以及绝对不应该做什么？本节可根据你的用例包含许多相关子部分，例如模型应如何 [调用自定义函数](https://developers.openai.com/api/docs/guides/function-calling).
-- **示例：** 提供可能输入的示例，以及来自模型的期望输出。
-- **上下文：** 为模型提供生成响应所需的任何额外信息，例如训练数据之外的私有/专有数据，或你知道将特别相关的任何其他数据。此内容通常最好放在提示词的末尾附近，因为你可能为不同的生成请求包含不同的上下文。
+- **身份：** 描述助手的目的、沟通风格和高层目标。
+- **指令：** 为模型提供指导，说明如何生成你想要的回答。它应该遵循哪些规则？模型应该做什么，又绝不应该做什么？根据你的使用场景，本节可以包含许多子节，例如模型应该如何 [调用自定义函数](https://developers.openai.com/api/docs/guides/function-calling).
+- **示例：** 提供可能的输入示例，以及模型期望的输出。
+- **上下文：** 向模型提供生成回答所需的任何额外信息，例如训练数据之外的私有或专有数据，或其他你知道会特别相关的数据。通常把这部分内容放在提示词的末尾附近最为合适，因为你可以针对不同的生成请求包含不同的上下文。
 
-以下是使用 Markdown 和 XML 标签构建 `developer` 包含不同部分及相应示例的消息。
+下面是使用 Markdown 和 XML 标签构建一个 `developer` 包含不同部分和支撑示例的 message 示例。
 
 
 
-示例提示词
+示例 prompt
 
     A developer message for code generation
 
@@ -651,6 +703,27 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+string instructions = await File.ReadAllTextAsync("prompt.txt");
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    Instructions = instructions,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("How would I declare a variable for a last name?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -678,15 +751,15 @@ curl https://api.openai.com/v1/responses \
 
 
 
-#### 通过提示词缓存降低成本与延迟
+#### 通过提示缓存降低成本与延迟
 
-在构造消息时，你应该尽量将你期望在API请求中反复使用的内容放在提示词的开头， **并** 放在你在JSON请求体中传给API的最早的 [Chat Completions](https://developers.openai.com/api/reference/resources/chat) 或 [Responses](https://developers.openai.com/api/reference/resources/responses)。参数之中。这样你可以最大限度地利用 [提示词缓存](https://developers.openai.com/api/docs/guides/prompt-caching).
+在构建消息时，应将你预期会在多个 API 请求中反复使用的内容放在提示的开头， **和** 即放在你在 JSON 请求体中传入的前几个 API 参数中， [Chat Completions](https://developers.openai.com/api/reference/resources/chat) 或 [Responses](https://developers.openai.com/api/reference/resources/responses)。这样可以最大化节省成本和延迟，享受 [prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
 
-## 少样本学习
+## Few-shot learning
 
-少样本学习让你通过在提示中提供少量输入/输出示例来引导大型语言模型完成新任务，而不是 [微调](https://developers.openai.com/api/docs/guides/model-optimization) 模型。模型会隐含地"领会"这些示例中的模式并将其应用于提示。提供示例时，尽量展示具有期望输出的多样化输入范围。
+少样本学习让你可以在提示词中加入少量输入/输出示例，从而引导大型语言模型执行新任务，而不是 [微调](https://developers.openai.com/api/docs/guides/model-optimization) 模型。模型会从这些示例中隐式“理解”规律，并将其应用于提示词。提供示例时，尝试展示各种可能的输入及其期望输出。
 
-通常，你会在 `developer` API请求中提供消息部分的示例。以下是一个示例 `developer` 消息包含示例，展示模型如何对正面或负面客户服务评价进行分类。
+通常，你会将示例作为 `developer` message in your API request. 示例如下 `developer` 消息，其中包含向模型展示如何对正面或负面客户服务评论进行分类的示例。
 
 ```
 # Identity
@@ -730,66 +803,78 @@ Negative
 
 ## 包含相关上下文信息
 
-在向模型提供的提示词中加入额外的上下文信息供其用于生成响应，通常很有用。你可能出于以下几个常见原因这样做：
+在向模型提供提示时，常常需要加入一些额外的上下文信息，供模型用于生成回复。常见的理由有以下几种：
 
-- 为了让模型能够访问专有数据，或模型训练数据集之外的任何其他数据。
-- 为了将模型的响应限制在你已确定将最为有益的一组特定资源上。
+- 为模型提供对专有数据，或模型训练数据之外的任何其他数据的访问权限。
+- 将模型的响应限制在你自己确定的一组最有价值的特定资源范围内。
 
-向模型生成请求添加额外相关上下文的技术有时被称为 **检索增强生成（RAG）**。你可以通过多种方式向提示中添加额外上下文，例如查询向量数据库并将返回的文本纳入提示中，或使用OpenAI内置的 [文件搜索工具](https://developers.openai.com/api/docs/guides/tools-file-search) 来根据上传的文档生成内容。
+在模型生成请求中添加额外的相关上下文这种技术有时被称为 **检索增强生成（RAG）**。你可以通过多种方式向提示中添加额外的上下文，例如查询向量数据库并将返回的文本纳入提示，或者使用 OpenAI 内置的 [文件搜索 工具](https://developers.openai.com/api/docs/guides/tools-file-search) 来根据上传的文档生成内容。
 
 #### 规划上下文窗口
 
-模型在一次生成请求中只能在其所考虑的背景内处理这么多数据。这个记忆限制被称为 **上下文窗口**，其定义基于 [令牌](https://blogs.nvidia.com/blog/ai-tokens-explained) （你传入的数据块，从文本到图像）。
+模型在一次生成请求中能够处理的上下文数据量是有限的。这个内存上限被称为 **上下文窗口**，它以 [token](https://blogs.nvidia.com/blog/ai-tokens-explained) （你传入的数据块，从文本到图像）为单位来衡量。
 
-模型有不同的上下文窗口大小，从低至10万级别到最新的GPT-4.1模型支持的一百万个令牌。 [请参阅模型文档](https://developers.openai.com/api/docs/models) 以了解每个模型的具体上下文窗口大小。
+不同模型的上下文窗口大小不同，从较低的 100k 范围到最新的 GPT-4.1 模型的一百万个 token 不等。 [请参阅模型文档](https://developers.openai.com/api/docs/models) 以了解每个模型的具体上下文窗口大小。
 
 ## 提示当前 GPT-5 系列模型
 
-类似 [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol) 的GPT模型受益于精确的指令，这些指令在提示中明确提供了完成任务所需的逻辑和数据。为了充分利用最新的GPT-5系列模型，请从当前的提示指南开始。
+像 GPT 这样的模型在 [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol) 精确指令中受益，这些指令显式提供完成任务所需的逻辑和数据。要充分利用最新的 GPT-5 系列模型，请从当前的提示指南开始。
 
 [
 
       Get the most out of prompting the latest GPT-5 series model with current
     guidance, practical examples, and migration notes.](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices)
 
-### 最新 GPT-5 系列模型的提示词最佳实践
+### GPT-5 系列模型最新版本的提示最佳实践
 
-如需了解当前完整的最佳实践，请参阅 [最新的 GPT-5 提示词最佳实践](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices)。以下实用提醒仍然适用。
+有关完整的最新处理方式，请参阅 [最新的 GPT-5 提示词最佳实践](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices)。以下实用提醒仍然适用。
 
-编码
 
-#### 编程
 
-提示 `gpt-5.6` 在编码任务中，遵循一些最佳实践最为有效：定义智能体的角色，通过示例强制执行结构化工具使用，要求进行全面测试以确保正确性，并设定 Markdown 标准以产出整洁的输出。
+#### Coding
 
-**明确角色与工作流指导**
-将模型视为具有明确定义职责的软件工程智能体。提供使用工具的清晰说明，例如 `functions.run` 用于编码任务，并指定何时不应使用某些模式——例如，除非必要，否则避免交互式执行。
+
+
+#### Coding
+
+提示 `gpt-5.6` 遵循一些最佳实践时，编码任务的提示最为有效：定义智能体的角色，通过示例强制使用结构化工具，要求进行充分的正确性测试，并设置 Markdown 标准以保证输出整洁。
+
+**明确的角色与工作流指导**
+将模型定位为软件工程智能体，并明确其职责范围。提供关于使用工具的清晰说明，例如 `functions.run` 用于编码任务，并指明何时不使用某些模式——例如，除非必要，否则避免交互式执行。
 
 **测试与验证**
-指示模型使用单元测试或 Python 命令测试更改，并仔细验证补丁，因为工具如 `apply_patch` 即使在失败时也可能返回“完成”。
+指示模型使用单元测试或 Python 命令来测试变更，并仔细验证补丁，因为像 `apply_patch` 这类工具即使失败也可能返回“Done”。
 
 **工具使用示例**
-包含如何使用提供函数调用命令的具体示例，这提高了可靠性并确保遵循预期工作流。
+提供具体的示例，展示如何使用所提供的函数调用命令，这有助于提升可靠性以及对预期工作流的遵循程度。
 
 **Markdown 标准**
-指导模型生成整洁、语义正确的 markdown，在适当的情况下使用内联代码、代码围栏、列表和表格——并使用反引号格式化文件路径、函数和类。
+指导模型在适当时使用行内代码、代码围栏、列表和表格生成整洁、语义正确的 markdown，并使用反引号格式化文件路径、函数和类。
 
-有关编码的详细指导和提示示例，请参阅 [最新的 GPT-5 提示最佳实践](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices).
+有关编码相关的详细指导和提示示例，请参阅 [最新的 GPT-5 提示词最佳实践](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices).
 
-前端工程
+
+
+
+
+
+
+#### 前端工程
+
+
 
 [GPT-5.6](https://developers.openai.com/api/docs/models/gpt-5.6-sol)
-在从头构建前端以及为
-大型、成熟的代码库做出贡献方面表现出色。为获得最佳效果，我们建议使用
+在从零开始构建前端以及为
+大型、成熟的代码库贡献代码方面表现出色。为获得最佳结果，我们建议使用
 以下库：
 
 - **样式 / UI：** Tailwind CSS、shadcn/ui、Radix Themes
 - **图标：** Lucide、Material Symbols、Heroicons
-- **动画**：Motion
+- **动画**: Motion
 
-**零到一的 Web 应用**
+**从零到一的 Web 应用**
 
-GPT-5 可以通过单个提示生成前端 Web 应用，无需示例。以下是示例提示：
+GPT-5 只需一条提示就能生成前端 Web 应用，无需提供示例。以下是一个示例提示：
 
 ```bash
 You are a world class web developer, capable of producing stunning, interactive, and innovative websites from scratch in a single prompt. You excel at delivering top-tier one-shot solutions.
@@ -800,25 +885,33 @@ Step 3: Apply the rubric to iterate on the optimal solution to the given prompt.
 Step 4: Aim for simplicity while fully achieving the goal, and avoid external dependencies such as Next.js or React.
 ```
 
-**与大型代码库集成**
+**与大型代码库的集成**
 
-对于大型代码库中的前端工程工作，我们发现向提示中添加这些类别的指令会带来最佳结果：
+对于大型代码库中的前端工程工作，我们发现将以下几类指令加入提示中效果最佳：
 
-- **原则：** 设定视觉质量标准，使用模块化/可复用组件，并保持设计一致性。
-- **UI/UX：** 指定排版、颜色、间距/布局、交互状态（悬停、空、加载）以及可访问性。
-- **结构：** 定义文件/文件夹布局，以便无缝集成。
-- **组件：** 提供可复用包装示例和后端调用分离策略。
-- **页面：** 提供常见布局的模板。
-- **智能体 指令：** 要求模型确认设计假设、搭建项目脚手架、执行标准、集成 API、测试状态，并记录代码。
+- **原则：** 设定视觉质量标准，使用模块化/可复用组件，并保持设计的一致性。
+- **UI/UX：** 明确字体、颜色、间距/布局、交互状态（悬停、空、加载）以及无障碍要求。
+- **结构：** 定义文件/文件夹布局，以实现无缝集成。
+- **组件：** 给出可复用包装示例以及后端调用分离策略。
+- **页面：** 为常见布局提供模板。
+- **智能体 指令：** 要求模型确认设计假设、搭建项目脚手架、执行标准、集成 API、测试各种状态并记录代码。
 
-有关前端开发的具体指导和提示示例，请参阅 [最新的 GPT-5 提示最佳实践](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices).
+有关针对前端开发的详细指南和提示示例，请参阅 [最新的 GPT-5 提示词最佳实践](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices).
 
-智能体任务
 
-对于使用 `gpt-5.6`，的智能体和长期运行场景，请将提示重点放在三个核心实践上：彻底规划任务以确保完整解决，为主要工具使用决策提供清晰的前言，并使用 TODO 工具以有条理的方式跟踪工作流和进度。
 
-**规划与持久性**
-指示模型在交出控制权之前解决完整查询，将其分解为子任务，并在每次工具调用后反思以确认完整性。
+
+
+
+
+#### 智能体任务
+
+
+
+对于智能体式和长时间运行的推理任务， `gpt-5.6`，请将提示词聚焦于三个核心实践：周密地规划任务以确保完整解决，为重要的工具使用决策提供清晰的前置说明，并使用 TODO 工具以有条理的方式跟踪工作流和进度。
+
+**规划与持续推进**
+指示模型在交还控制权之前完整解决整个查询，将其分解为子任务，并在每次工具调用后进行反思以确认是否完整。
 
 ```
 Remember, you are an agent - please keep going until the user's
@@ -837,9 +930,9 @@ ensuring the user's query, and related sub-requests
 are completely resolved.
 ```
 
-**透明性前言**
+**为保持透明而设置的前置说明**
 
-要求模型解释为何调用工具，但仅在关键步骤时。
+要求模型解释其调用工具的原因，但仅限于在关键步骤中说明。
 
 ```
 Before you call a tool explain why you are calling it
@@ -847,20 +940,24 @@ Before you call a tool explain why you are calling it
 
 **使用评分标准和 TODO 跟踪进度**
 
-使用 TODO 列表工具或评分标准来强制结构化规划并避免遗漏步骤。
+使用 TODO 列表工具或评分标准来强制结构化规划，避免遗漏步骤。
 
-有关构建智能体的具体指导和提示示例，请参阅 [最新的 GPT-5 提示最佳实践](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices).
+有关构建智能体的详细指导和提示示例，请参阅 [最新的 GPT-5 提示词最佳实践](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices).
+
+
+
+
 
 ## 提示推理模型
 
-在提示 [推理模型](https://developers.openai.com/api/docs/guides/reasoning) 与提示 GPT 模型时，有一些差异需要考虑。一般来说，推理模型在仅需高层级指导的任务上会提供更好的结果。这与 GPT 模型不同，GPT 模型受益于非常精确的指令。
+在对 [推理模型](https://developers.openai.com/api/docs/guides/reasoning) 进行提示与对 GPT 模型进行提示时，需要考虑一些差异。一般来说，推理模型在仅有高层指导的任务上会提供更好的效果。这与 GPT 模型不同——后者会从非常精确的指令中受益。
 
-你可以这样理解推理模型与 GPT 模型之间的区别。
+你可以这样理解推理模型与 GPT 模型之间的差异。
 
-- 推理模型就像一位资深同事。你可以设定一个目标交给他们，并信任他们能自行处理细节。
-- GPT 模型则像一位初级同事。他们最适合在明确的指令下生成特定的输出。
+- 推理模型就像一位资深同事。你可以给它们设定一个目标，并相信它们能自行规划实现细节。
+- GPT 模型就像一位初级同事。在给出明确指令、要求其生成特定输出时，它们会表现得最好。
 
-关于使用推理模型时的最佳实践，更多信息请， [参阅本指南](https://developers.openai.com/api/docs/guides/reasoning-best-practices).
+关于使用推理模型时最佳实践的更多信息， [请参阅本指南](https://developers.openai.com/api/docs/guides/reasoning-best-practices).
 
 ## 后续步骤
 
@@ -872,13 +969,13 @@ Before you call a tool explain why you are calling it
 
       Use the Playground to develop and iterate on prompts.](https://platform.openai.com/chat/edit)
 
-[使用结构化输出生成 JSON 数据
+[使用 Structured Outputs 生成 JSON 数据
 
 
 
       Ensure JSON data emitted from a model conforms to a JSON schema.](https://developers.openai.com/api/docs/guides/structured-outputs)
 
-[完整的 API 参考
+[完整 API 参考
 
 
 
@@ -886,9 +983,9 @@ Before you call a tool explain why you are calling it
 
 ## 其他资源
 
-如需更多灵感，请访问 [OpenAI Cookbook](https://developers.openai.com/cookbook)，其中包含示例代码，还链接到第三方资源，例如：
+如需更多灵感，请访问 [OpenAI Cookbook](https://developers.openai.com/cookbook)，其中包含示例代码，并提供指向以下第三方资源的链接：
 
-- [提示词库与工具](https://developers.openai.com/cookbook/articles/related_resources#prompting-libraries--tools)
-- [提示词指南](https://developers.openai.com/cookbook/articles/related_resources#prompting-guides)
+- [提示库与工具](https://developers.openai.com/cookbook/articles/related_resources#prompting-libraries--tools)
+- [提示指南](https://developers.openai.com/cookbook/articles/related_resources#prompting-guides)
 - [视频课程](https://developers.openai.com/cookbook/articles/related_resources#video-courses)
-- [关于高级提示词以提升推理能力的论文](https://developers.openai.com/cookbook/articles/related_resources#papers-on-advanced-prompting-to-improve-reasoning)
+- [关于使用高级提示提升推理能力的论文](https://developers.openai.com/cookbook/articles/related_resources#papers-on-advanced-prompting-to-improve-reasoning)
