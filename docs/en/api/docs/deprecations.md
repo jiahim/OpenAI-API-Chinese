@@ -34,6 +34,19 @@ We use the term "legacy" to refer to models and endpoints that no longer receive
 
 Upcoming deprecations are listed below, with the most recent announcements at the top.
 
+### 2026-08-26: Transcription models
+
+On August 26, 2026, we notified developers using `whisper-1`, `gpt-4o-transcribe`, `gpt-4o-mini-transcribe`, and `gpt-4o-transcribe-diarize` of their deprecation and removal from the API on February 26, 2027.
+
+For information about the recommended replacements, see the [transcription guide](https://developers.openai.com/api/docs/guides/transcription).
+
+| Shutdown date | Model / system              | Recommended replacement                   |
+| ------------- | --------------------------- | ----------------------------------------- |
+| Feb 26, 2027  | `whisper-1`                 | `gpt-live-transcribe` or `gpt-transcribe` |
+| Feb 26, 2027  | `gpt-4o-transcribe`         | `gpt-live-transcribe` or `gpt-transcribe` |
+| Feb 26, 2027  | `gpt-4o-mini-transcribe`    | `gpt-live-transcribe` or `gpt-transcribe` |
+| Feb 26, 2027  | `gpt-4o-transcribe-diarize` | `gpt-live-transcribe` or `gpt-transcribe` |
+
 ### 2026-07-20: Legacy audio, realtime, and transcription models
 
 On July 20, 2026, we notified developers using legacy audio, realtime, and transcription model families and snapshots of their deprecation and removal from the API on January 20, 2027.
@@ -270,7 +283,7 @@ In September, 2025, we notified developers using gpt-4o-realtime-preview models 
 
 ### 2025-08-20: Assistants API
 
-The Assistants API was officially sunset on August 26, 2026, following its deprecation announcement on August 26, 2025.
+On August 26th, 2025, we notified developers using the Assistants API of its deprecation and removal from the API one year later, on August 26, 2026.
 
 When we released the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create) in [March 2025](https://developers.openai.com/api/docs/changelog), we announced plans to bring all Assistants API features to the easier to use Responses API, with a sunset date in 2026.
 

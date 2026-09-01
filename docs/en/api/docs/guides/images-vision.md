@@ -969,6 +969,10 @@ Use supported image files that are clear enough for the model to analyze.
 | Request size | Up to 512 MB total payload per request                                                |
 | Image count  | Up to 1,500 images per request                                                        |
 
+For [patch-based image inputs](#patch-based-image-tokenization), the API supports up to 30,000 patches per image after applying the resizing rules for the selected model and `detail` level. This limit applies across supported detail levels and to each image separately, not to the combined patch count of the request.
+
+Lower model- and detail-specific resizing budgets still apply. Images that exceed the 30,000-patch limit after processing are rejected, not automatically resized to meet it. Reduce the image's dimensions and try again.
+
 Image tokens and the rest of your prompt must also fit the model's input and context limits. A token estimate does not guarantee that a request meets every input limit. Image use must comply with our [usage policies](https://openai.com/policies/usage-policies/).
 
 ### Choose an image detail level
@@ -997,7 +1001,7 @@ Use the following guidance to choose a detail level:
 | `original`   | Large, dense, spatially sensitive, or computer-use images, when supported by the model.                                     |
 | `auto`       | Use the model's default sizing behavior, shown in the model sizing table.                                                   |
 
-For tasks that require fine visual detail or precise coordinates, such as optical character recognition (OCR), small-object detection, or computer use, use `"detail": "original"` when supported. Original detail can still resize images that exceed the model's limits. For coordinate-sensitive tasks, resize images to fit those limits before sending them and map returned coordinates back to the original image. See the [Computer use guide](https://developers.openai.com/api/docs/guides/tools-computer-use) for coordinate handling.
+For tasks that require fine visual detail or precise coordinates, such as optical character recognition (OCR), small-object detection, or computer use, use `"detail": "original"` when supported. Original detail can still resize images to meet the model's pixel-dimension limit or resizing patch budget, but not to meet the separate 30,000-patch rejection limit. For coordinate-sensitive tasks, resize images to fit those limits before sending them and map returned coordinates back to the original image. See the [Computer use guide](https://developers.openai.com/api/docs/guides/tools-computer-use) for coordinate handling.
 
 ### Model sizing behavior
 
@@ -1020,8 +1024,12 @@ The following table covers the general-purpose vision models available in the [i
     </td>
     <td>
       `low` fits within 512 × 512 pixels. `high` fits
-      within 2048 × 2048 pixels and 2,500 patches. `original` fits
-      within 65,535 × 65,535 pixels, with no patch-budget limit. 
+      within 2048 × 2048 pixels and 2,500 patches. `original` 
+      preserves the image's dimensions, except that images larger than 65,535
+      pixels on either side are scaled down to fit that limit. If the resulting
+      image requires more than 
+      [30,000 patches](#image-input-requirements), the API rejects
+      the request; the image is not resized to fit the patch limit. 
       `auto` uses the same sizing behavior as `original`.
     </td>
   </tr>
@@ -1099,7 +1107,7 @@ Use the [image input cost calculator](https://developers.openai.com/api/docs/gui
 
 ### Patch-based image tokenization
 
-Some models tokenize images by covering them with 32px x 32px patches. Many model and detail-level combinations define a maximum patch budget. First, the API fits the image within the selected detail level's pixel-dimension limit, preserving aspect ratio and rounding to integer pixels without enlarging smaller images. The token cost is then determined as follows:
+Some models tokenize images by covering them with 32px x 32px patches. Many model and detail-level combinations define a resizing patch budget. First, the API fits the image within the selected detail level's pixel-dimension limit, preserving aspect ratio and rounding to integer pixels without enlarging smaller images. The token cost is then determined as follows:
 
 A. Compute how many 32px x 32px patches are needed to cover the image after applying the pixel-dimension limit. A patch may extend beyond the image boundary.
 
@@ -1107,9 +1115,7 @@ A. Compute how many 32px x 32px patches are needed to cover the image after appl
 patch_count = ceil(width/32)×ceil(height/32)
 ```
 
-GPT-5.6 Sol, Terra, and Luna have no patch-budget limit for `original` or `auto`. After applying their pixel-dimension limit, skip the patch-budget resizing step. Large images can therefore use more tokens than with earlier models; resize them before sending or select `low` or `high` to control token use.
-
-B. When a patch budget applies and the image exceeds it, scale the image down proportionally. Adjust the scale to stay within budget after converting to integer pixel dimensions and computing patch coverage. Keep full precision until calculating the final dimensions.
+B. When the selected model and detail level specify a resizing patch budget, scale the image down proportionally if it exceeds that budget. Otherwise, skip this step. Adjust the scale to stay within budget after converting to integer pixel dimensions and computing patch coverage. Keep full precision until calculating the final dimensions.
 
 ```
 shrink_factor = sqrt((32^2 * patch_budget) / (width * height))
@@ -1124,6 +1130,8 @@ C. If step B resized the image, round down the final scaled width and height to 
 ```
 resized_patch_count = ceil(resized_width/32)×ceil(resized_height/32)
 ```
+
+If this count exceeds 30,000 patches, the API rejects the request. Check this limit before applying the token multiplier.
 
 D. Multiply the patch count by the model's multiplier and round up to get the billable image input tokens. Apply the model's input price to those tokens once; the multiplier does not apply to other prompt tokens or to the price again.
 

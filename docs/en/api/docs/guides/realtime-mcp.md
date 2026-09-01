@@ -335,9 +335,10 @@ A typical flow looks like this:
 1. The user speaks or sends text, and a response is created, either by your client or automatically by the session configuration.
 1. If the model chooses an MCP tool, you will see `response.mcp_call_arguments.delta` and `response.mcp_call_arguments.done`.
 1. **If approval is required**, the server adds a conversation item whose `item.type` is `mcp_approval_request`. Your client must answer it with an `mcp_approval_response` item.
-1. Once the tool runs, you will see `response.mcp_call.in_progress`. On success, you will later receive a [`response.output_item.done`](https://developers.openai.com/api/reference/resources/realtime) event whose `item.type` is `mcp_call`; on failure, you will receive [`response.mcp_call.failed`](https://developers.openai.com/api/reference/resources/realtime). The assistant message item and `response.done` complete the turn.
+1. Once the tool runs, you will see `response.mcp_call.in_progress`. On success, you will later receive a [`response.output_item.done`](https://developers.openai.com/api/reference/resources/realtime) event whose `item.type` is `mcp_call`; on failure, you will receive [`response.mcp_call.failed`](https://developers.openai.com/api/reference/resources/realtime).
+1. `response.done` for a response can arrive before its MCP calls finish. After the response is done and all of its MCP calls have finished, send another [`response.create`](https://developers.openai.com/api/reference/resources/realtime) event to let the model use the results and proceed with the conversation. Repeat this step if the model makes additional MCP calls. The Realtime API doesn't create these follow-up responses automatically.
 
-This event handler covers the main checkpoints:
+This event handler logs the main MCP lifecycle events; it doesn't manage follow-up responses:
 
 Listen for MCP events during a Realtime session
 
