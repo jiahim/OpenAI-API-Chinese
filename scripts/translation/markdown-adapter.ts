@@ -39,6 +39,7 @@ interface MarkdownNode {
 export interface MarkdownDocumentInput {
   content: string;
   id: string;
+  maxUnitCharacters?: number | undefined;
   sourceHash?: string | undefined;
 }
 
@@ -441,6 +442,136 @@ function textNodeRanges(
   return ranges;
 }
 
+const GRAPHEME_SEGMENTER = new Intl.Segmenter("en", {
+  granularity: "grapheme",
+});
+
+interface MarkdownGraphemeRange {
+  end: number;
+  start: number;
+  text: string;
+}
+
+function graphemeRanges(
+  source: string,
+  start: number,
+  end: number,
+): MarkdownGraphemeRange[] {
+  return Array.from(
+    GRAPHEME_SEGMENTER.segment(source.slice(start, end)),
+    ({ index, segment }) => ({
+      end: start + index + segment.length,
+      start: start + index,
+      text: segment,
+    }),
+  );
+}
+
+function splitPendingRange(
+  source: string,
+  range: PendingMarkdownSourceRange,
+  maxUnitCharacters: number,
+): PendingMarkdownSourceRange[] {
+  const graphemes = graphemeRanges(source, range.start, range.end);
+  let first = 0;
+  while (
+    first < graphemes.length &&
+    /^\s+$/u.test(graphemes[first]?.text ?? "")
+  ) {
+    first += 1;
+  }
+  let lastExclusive = graphemes.length;
+  while (
+    lastExclusive > first &&
+    /^\s+$/u.test(graphemes[lastExclusive - 1]?.text ?? "")
+  ) {
+    lastExclusive -= 1;
+  }
+  if (first === lastExclusive) return [];
+  const contentStart = graphemes[first]?.start ?? range.start;
+  const contentEnd = graphemes[lastExclusive - 1]?.end ?? range.end;
+  if (contentEnd - contentStart <= maxUnitCharacters) {
+    return [
+      {
+        ...range,
+        end: contentEnd,
+        sourceText: source.slice(contentStart, contentEnd),
+        start: contentStart,
+      },
+    ];
+  }
+  const split: PendingMarkdownSourceRange[] = [];
+  let current = first;
+  while (current < lastExclusive) {
+    const start = graphemes[current]?.start;
+    if (start === undefined) break;
+    let maximumExclusive = current;
+    while (
+      maximumExclusive < lastExclusive &&
+      (graphemes[maximumExclusive]?.end ?? start) - start <=
+        maxUnitCharacters
+    ) {
+      maximumExclusive += 1;
+    }
+    if (maximumExclusive === current) {
+      throw new Error(
+        `Markdown 翻译单元包含超过 ${maxUnitCharacters} 个源字符的单个 Unicode 字素。`,
+      );
+    }
+    if (maximumExclusive === lastExclusive) {
+      split.push({
+        ...range,
+        end: contentEnd,
+        sourceText: source.slice(start, contentEnd),
+        start,
+      });
+      break;
+    }
+
+    let end = graphemes[maximumExclusive - 1]?.end ?? start;
+    let next = maximumExclusive;
+    for (let index = maximumExclusive - 1; index >= current; index -= 1) {
+      const grapheme = graphemes[index];
+      if (!grapheme || !/[.!?;:\u3002\uff01\uff1f\uff1b\uff1a]/u.test(grapheme.text)) {
+        continue;
+      }
+      end = grapheme.end;
+      next = index + 1;
+      break;
+    }
+    if (next === maximumExclusive) {
+      for (let index = maximumExclusive - 1; index > current; index -= 1) {
+        const grapheme = graphemes[index];
+        if (!grapheme || !/^\s+$/u.test(grapheme.text)) continue;
+        let runStart = index;
+        while (
+          runStart > current &&
+          /^\s+$/u.test(graphemes[runStart - 1]?.text ?? "")
+        ) {
+          runStart -= 1;
+        }
+        end = graphemes[runStart]?.start ?? end;
+        next = index + 1;
+        break;
+      }
+    }
+    split.push({
+      ...range,
+      end,
+      sourceText: source.slice(start, end),
+      start,
+    });
+    while (
+      next < lastExclusive &&
+      /^\s+$/u.test(graphemes[next]?.text ?? "")
+    ) {
+      next += 1;
+    }
+    current = next;
+  }
+  return split;
+}
+
 function generatedCardTextRanges(
   source: string,
 ): Array<{ end: number; groupKey: string; start: number }> {
@@ -492,7 +623,11 @@ function imageAltRange(node: MarkdownNode, source: string): { end: number; start
   throw new Error("无法定位图片 alt 的 source range。");
 }
 
-function collectRanges(root: MarkdownNode, source: string): MarkdownSourceRange[] {
+function collectRanges(
+  root: MarkdownNode,
+  source: string,
+  maxUnitCharacters: number,
+): MarkdownSourceRange[] {
   const generatedCardRanges = generatedCardTextRanges(source);
   const pending: PendingMarkdownSourceRange[] = generatedCardRanges.map(
     ({ groupKey, ...range }) => ({
@@ -546,12 +681,15 @@ function collectRanges(root: MarkdownNode, source: string): MarkdownSourceRange[
   }
 
   visit(root, []);
-  pending.sort((left, right) => left.start - right.start || left.end - right.end);
+  const bounded = pending.flatMap((range) =>
+    splitPendingRange(source, range, maxUnitCharacters),
+  );
+  bounded.sort((left, right) => left.start - right.start || left.end - right.end);
   const groupSizes = new Map<string, number>();
-  for (const range of pending) {
+  for (const range of bounded) {
     groupSizes.set(range.groupKey, (groupSizes.get(range.groupKey) ?? 0) + 1);
   }
-  return pending.map(({ groupKey, ...range }, index) => ({
+  return bounded.map(({ groupKey, ...range }, index) => ({
     ...range,
     fragmented: (groupSizes.get(groupKey) ?? 0) > 1,
     id: `markdown-${index + 1}-${range.start}-${range.end}`,
@@ -668,7 +806,10 @@ export const markdownDocumentAdapter: DocumentAdapter<
       typeof input.id !== "string" ||
       input.id.trim() !== input.id ||
       !input.id ||
-      typeof input.content !== "string"
+      typeof input.content !== "string" ||
+      (input.maxUnitCharacters !== undefined &&
+        (!Number.isSafeInteger(input.maxUnitCharacters) ||
+          input.maxUnitCharacters <= 0))
     ) {
       throw new Error("Markdown 输入必须包含有效 id 和 content。");
     }
@@ -677,7 +818,11 @@ export const markdownDocumentAdapter: DocumentAdapter<
       throw new Error("Markdown 输入的 sourceHash 与 content 不匹配。");
     }
     const tree = parseMarkdown(input.content);
-    const ranges = collectRanges(tree, input.content);
+    const ranges = collectRanges(
+      tree,
+      input.content,
+      input.maxUnitCharacters ?? Number.MAX_SAFE_INTEGER,
+    );
     const units: TranslationPlan<MarkdownTranslationContext>["units"] = ranges.map(
       ({ id, sourceText, ...context }) => ({
         // Keep adjacent prose and inline link labels together so the provider

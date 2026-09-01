@@ -259,36 +259,48 @@ test("runner accumulates manifest records across a batch using one workspace sna
 });
 
 test("runner sends long Markdown prose through bounded semantic batches", async () => {
-  const source = Array.from(
-    { length: 60 },
-    (_, index) => `Paragraph ${index + 1}: ${"word ".repeat(80).trim()}.`,
-  ).join("\n\n");
+  const source = [
+    `# ${"a".repeat(5_000)}`,
+    ...Array.from(
+      { length: 60 },
+      (_, index) => `Paragraph ${index + 1}: ${"word ".repeat(80).trim()}.`,
+    ),
+    ...Array.from({ length: 25 }, (_, index) => `Short ${index + 1}.`),
+  ].join("\n\n");
   assert.ok(source.length > 20_000);
   const root = await createFixture(source);
   try {
     const workspace = await loadTranslationWorkspace(root);
-    const batchCharacters: number[] = [];
+    const batches: Array<{ characters: number; items: number; maxItem: number }> = [];
     const provider = defineProvider<MarkdownTranslationContext>({
       async translateBatch(request) {
-        batchCharacters.push(
-          request.items.reduce((sum, item) => sum + item.text.length, 0),
-        );
+        batches.push({
+          characters: request.items.reduce(
+            (sum, item) => sum + item.text.length,
+            0,
+          ),
+          items: request.items.length,
+          maxItem: request.items.reduce(
+            (maximum, item) => Math.max(maximum, item.text.length),
+            0,
+          ),
+        });
         return request.items.map((item) => ({ id: item.id, text: item.text }));
       },
     });
 
     const run = await runTranslationPage(workspace, SOURCE_URL, {
-      batchSize: 20,
       commit: false,
       concurrency: 1,
-      maxBatchCharacters: 4_000,
       provider,
       retry: 0,
       useCheckpoint: false,
     });
 
-    assert.ok(batchCharacters.length > 1);
-    assert.ok(batchCharacters.every((characters) => characters <= 4_000));
+    assert.ok(batches.length > 1);
+    assert.ok(batches.every((batch) => batch.characters <= 4_000));
+    assert.ok(batches.every((batch) => batch.items <= 20));
+    assert.ok(batches.every((batch) => batch.maxItem <= 4_000));
     assert.equal(run.rendered, source);
   } finally {
     await rm(root, { force: true, recursive: true });

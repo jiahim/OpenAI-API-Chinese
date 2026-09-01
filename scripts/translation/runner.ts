@@ -618,9 +618,11 @@ export async function runTranslationPage(
   if (sha256(source) !== entry.source.sha256) {
     throw new Error(`英文页面 SHA 在执行前发生变化：${entry.source.sourcePath}`);
   }
+  const maxBatchCharacters = options.maxBatchCharacters ?? 4_000;
   const prepared = await markdownDocumentAdapter.prepare({
     content: source,
     id: entry.source.sourceUrl,
+    maxUnitCharacters: maxBatchCharacters,
     sourceHash: entry.source.sha256,
   });
   const pagePolicySha256 = translationPolicySha256ForPage(
@@ -643,7 +645,7 @@ export async function runTranslationPage(
       : undefined,
     concurrency: options.concurrency ?? 1,
     instructions,
-    maxBatchCharacters: options.maxBatchCharacters ?? 4_000,
+    maxBatchCharacters,
     onCheckpoint: useCheckpoint
       ? async (checkpoint) =>
           atomicWriteRepositoryFile(
