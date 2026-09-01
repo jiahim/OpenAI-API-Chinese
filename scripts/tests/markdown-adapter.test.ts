@@ -191,6 +191,41 @@ test("multiline list and quote source ranges never consume continuation markers"
   );
 });
 
+test("bounded semantic ranges preserve whitespace outside translated fragments", async () => {
+  const source = "# a   b\tc. d\n\n![   abcdefgh   ](chart.png)\n";
+  const prepared = await markdownDocumentAdapter.prepare({
+    content: source,
+    id: "fixture.md",
+    maxUnitCharacters: 4,
+  });
+  const rendered = await markdownDocumentAdapter.render(
+    prepared.formatState,
+    result(new Map(prepared.plan.units.map((unit) => [unit.id, unit.text]))),
+  );
+
+  assert.ok(prepared.plan.units.every((unit) => unit.text.length <= 4));
+  assert.equal(rendered, source);
+});
+
+test("bounded semantic ranges never split an oversized grapheme", async () => {
+  await assert.rejects(
+    markdownDocumentAdapter.prepare({
+      content: "# a\u0301b\n",
+      id: "combining.md",
+      maxUnitCharacters: 1,
+    }),
+    /Unicode 字素/u,
+  );
+  await assert.rejects(
+    markdownDocumentAdapter.prepare({
+      content: "# 👨‍👩‍👧‍👦 family\n",
+      id: "emoji.md",
+      maxUnitCharacters: 4,
+    }),
+    /Unicode 字素/u,
+  );
+});
+
 test("generated multiline navigation cards translate labels and descriptions", async () => {
   const source = `  [Agent definitions
 

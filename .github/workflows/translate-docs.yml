@@ -92,7 +92,7 @@ jobs:
           pnpm test
           pnpm translate:check
 
-      - name: Translate up to 100 budgeted pages
+      - name: Translate up to 100 pages in semantic batches
         if: steps.open-pr.outputs.exists != 'true'
         id: translate
         continue-on-error: true
@@ -158,7 +158,7 @@ jobs:
             const body = [
               "## 自动中文翻译",
               "",
-              "本 PR 由受信任的 `main` 工作流使用环境配置的大模型供应商自动生成，每次最多处理 100 篇受预算约束的页面。",
+              "本 PR 由受信任的 `main` 工作流使用环境配置的大模型供应商自动生成，每次最多处理 100 篇页面；长页面由 easy-translate 按 Markdown 语义单元分批翻译。",
               "",
               "### 文件",
               "",
