@@ -28,6 +28,7 @@ import {
 import {
   atomicWriteRepositoryFile,
   createTranslationQualityPolicy,
+  estimateTranslationPageWorkload,
   reviewTranslationPage,
   runTranslationPage,
   runTranslationPageWithRetry,
@@ -41,6 +42,24 @@ const SECOND_SOURCE_URL = "https://developers.openai.com/api/docs/models.md";
 const SECOND_SOURCE_PATH = "docs/en/api/docs/models.md";
 const SECOND_TARGET_PATH = "docs/zh/api/docs/models.md";
 const DEFAULT_SOURCE = "# Hello OpenAI\n\nRequest API data.\n";
+
+test("runner estimates workload with easy-translate semantic batching", async () => {
+  const root = await createFixture("# One\n\nTwo\n");
+  try {
+    const workload = await estimateTranslationPageWorkload(
+      await loadTranslationWorkspace(root),
+      SOURCE_URL,
+    );
+
+    assert.deepEqual(workload, {
+      batches: 2,
+      characters: 6,
+      uniqueUnits: 2,
+    });
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
 
 function sha256(content: string): string {
   return createHash("sha256").update(content, "utf8").digest("hex");

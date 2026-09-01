@@ -35,6 +35,7 @@ import type {
 } from "../translation/types.ts";
 import {
   assertTranslationIntegrity,
+  automaticTranslationStopReason,
   automaticTranslationCandidates,
   createProductionBatchRetryPolicy,
   parseCliOptions,
@@ -783,13 +784,26 @@ test("translation CLI parses filters without changing defaults", () => {
     matches: [],
     section: "all",
   });
-  assert.deepEqual(parseCliOptions(["auto", "--limit", "100"]), {
+  assert.deepEqual(parseCliOptions([
+    "auto",
+    "--limit",
+    "100",
+    "--max-batches",
+    "2400",
+    "--max-characters",
+    "600000",
+    "--time-budget-minutes",
+    "140",
+  ]), {
     command: "auto",
     commit: false,
     configPath: "scripts/translation.config.json",
     limit: 100,
     matches: [],
+    maxBatches: 2400,
+    maxCharacters: 600000,
     section: "all",
+    timeBudgetMinutes: 140,
   });
   assert.throws(() => parseCliOptions(["auto"]), /--limit 100/u);
   assert.throws(
@@ -797,6 +811,63 @@ test("translation CLI parses filters without changing defaults", () => {
     /不允许 --match/u,
   );
   assert.throws(() => parseCliOptions(["auto", "--limit", "1"]), /--limit 100/u);
+  assert.throws(
+    () => parseCliOptions(["plan", "--max-batches", "1"]),
+    /仅适用于 auto/u,
+  );
+  assert.throws(
+    () => parseCliOptions(["auto", "--limit", "100", "--max-characters", "0"]),
+    /必须是正整数/u,
+  );
+});
+
+test("automatic translation stops before exceeding semantic or predicted time budgets", () => {
+  const budget = {
+    maxBatches: 10,
+    maxCharacters: 100,
+    timeBudgetMs: 10_000,
+  };
+
+  assert.equal(
+    automaticTranslationStopReason(
+      budget,
+      { batches: 4, characters: 40, elapsedMs: 4_000, pages: 1 },
+      { batches: 6, characters: 60 },
+    ),
+    undefined,
+  );
+  assert.equal(
+    automaticTranslationStopReason(
+      budget,
+      { batches: 4, characters: 40, elapsedMs: 4_000, pages: 1 },
+      { batches: 7, characters: 10 },
+    ),
+    "batch-budget",
+  );
+  assert.equal(
+    automaticTranslationStopReason(
+      budget,
+      { batches: 4, characters: 40, elapsedMs: 4_000, pages: 1 },
+      { batches: 1, characters: 61 },
+    ),
+    "character-budget",
+  );
+  assert.equal(
+    automaticTranslationStopReason(
+      { ...budget, maxBatches: 20 },
+      { batches: 4, characters: 40, elapsedMs: 4_000, pages: 1 },
+      { batches: 7, characters: 10 },
+    ),
+    "time-budget",
+  );
+  assert.equal(
+    automaticTranslationStopReason(
+      budget,
+      { batches: 0, characters: 0, elapsedMs: 0, pages: 0 },
+      { batches: 11, characters: 101 },
+    ),
+    undefined,
+  );
 });
 
 test("automatic selection prioritizes stale work and integrity rejects target drift", () => {
