@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T07:56:31.122Z",
+  "generatedAt": "2026-09-01T02:52:13.532Z",
   "pages": {
     "https://developers.openai.com/api/docs/actions/actions-library.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
@@ -685,11 +685,11 @@
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
       "sourcePath": "docs/en/api/docs/guides/image-cost-calculator.md",
-      "sourceSha256": "a2928d5e14093aa2215a2fafd810ddaaa954d041a0baab3018c68c69475ee30f",
+      "sourceSha256": "2718d0313faa936b3e8867579dad47b3946fc9ab44487735a82cf51ba81ca895",
       "sourceUrl": "https://developers.openai.com/api/docs/guides/image-cost-calculator.md",
       "targetPath": "docs/zh/api/docs/guides/image-cost-calculator.md",
-      "targetSha256": "289ae8a92b7e2679e4f9dcdab70ad12bfaaa8bdc8a22e25accf6f239909e866f",
-      "translatedAt": "2026-08-31T07:52:36.101Z"
+      "targetSha256": "67314e2094523b3d914d1381202ace821b552064e1c473b899763b0bbe0cd2f2",
+      "translatedAt": "2026-09-01T02:52:13.532Z"
     },
     "https://developers.openai.com/api/docs/guides/image-generation.md": {
       "policySha256": "6e9b1538f41ab5d3db960df19d735ece2c894fe9182904cf1d818170eaeeb7c2",
@@ -805,11 +805,11 @@
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
       "sourcePath": "docs/en/api/docs/guides/latest-model/gpt-5.6.md",
-      "sourceSha256": "f14333e97bbd94dfec6b622beda1ac76799b426295fbafb4e6874ba91e080c4e",
+      "sourceSha256": "48f61f648eab971334f6076bc61478d0f2bcd7a50111064722eba267a0f98d61",
       "sourceUrl": "https://developers.openai.com/api/docs/guides/latest-model/gpt-5.6.md",
       "targetPath": "docs/zh/api/docs/guides/latest-model/gpt-5.6.md",
-      "targetSha256": "b6501c26f6c8121358e0fc65e3dc73d1e05947df61d98758eb54daf1a32bec1d",
-      "translatedAt": "2026-08-31T07:18:55.533Z"
+      "targetSha256": "3cd8b72eafe7c164a6ddc77abd565b3effc2d97a8c6e1c78ecc3b21ec5020c05",
+      "translatedAt": "2026-09-01T02:51:29.195Z"
     },
     "https://developers.openai.com/api/docs/guides/latest-model/gpt-5.md": {
       "policySha256": "6e9b1538f41ab5d3db960df19d735ece2c894fe9182904cf1d818170eaeeb7c2",
