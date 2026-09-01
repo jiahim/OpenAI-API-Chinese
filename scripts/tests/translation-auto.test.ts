@@ -21,6 +21,9 @@ const REPOSITORY_ROOT = resolve(
 const SOURCE_URL = "https://developers.openai.com/api/docs/long-page.md";
 const SOURCE_PATH = "docs/en/api/docs/long-page.md";
 const TARGET_PATH = "docs/zh/api/docs/long-page.md";
+const SECOND_SOURCE_URL = "https://developers.openai.com/api/docs/second-page.md";
+const SECOND_SOURCE_PATH = "docs/en/api/docs/second-page.md";
+const SECOND_TARGET_PATH = "docs/zh/api/docs/second-page.md";
 
 function sha256(content: string): string {
   return createHash("sha256").update(content, "utf8").digest("hex");
@@ -96,6 +99,27 @@ async function createCliFixture(source: string): Promise<string> {
   return root;
 }
 
+async function addSecondPage(root: string, source: string): Promise<void> {
+  await writeFile(join(root, SECOND_SOURCE_PATH), source);
+  const manifestPath = join(root, "docs/en/.source-manifest.json");
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  manifest.pages[SECOND_SOURCE_URL] = {
+    localPath: SECOND_SOURCE_PATH,
+    section: "guides",
+    sha256: sha256(source),
+    sourceUrl: SECOND_SOURCE_URL,
+    status: "active",
+  };
+  await writeFile(manifestPath, JSON.stringify(manifest));
+  await writeFile(
+    join(root, "scripts/translation/priority.zh-CN.json"),
+    JSON.stringify({
+      schemaVersion: 1,
+      sourcePaths: [SOURCE_PATH, SECOND_SOURCE_PATH],
+    }),
+  );
+}
+
 test("auto translates a page larger than 20,000 characters through semantic batches", async () => {
   const source = `# Hello\n\n\`\`\`text\n${"x".repeat(21_000)}\n\`\`\`\n`;
   const root = await createCliFixture(source);
@@ -137,6 +161,69 @@ test("auto translates a page larger than 20,000 characters through semantic batc
     assert.equal(exitCode, 0);
     assert.equal(providerCalls, 1);
     assert.equal(translated, source.replace("Hello", "你好"));
+  } finally {
+    globalThis.fetch = originalFetch;
+    if (originalApiKey === undefined) {
+      delete process.env.DEEPSEEK_API_KEY;
+    } else {
+      process.env.DEEPSEEK_API_KEY = originalApiKey;
+    }
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("auto stops cleanly before a second page exceeds its semantic budget", async () => {
+  const root = await createCliFixture("# First\n");
+  await addSecondPage(root, "# Second\n");
+  const originalFetch = globalThis.fetch;
+  const originalApiKey = process.env.DEEPSEEK_API_KEY;
+  let providerCalls = 0;
+  globalThis.fetch = (async (_input, init) => {
+    providerCalls += 1;
+    const request = JSON.parse(String(init?.body));
+    const user = JSON.parse(request.messages[1].content);
+    return Response.json({
+      choices: [
+        {
+          message: {
+            content: JSON.stringify({
+              translations: user.items.map((item: { id: string; text: string }) => ({
+                id: item.id,
+                text: item.text === "First" ? "第一" : "第二",
+              })),
+            }),
+          },
+        },
+      ],
+    });
+  }) as typeof fetch;
+  process.env.DEEPSEEK_API_KEY = "test-secret";
+
+  try {
+    const moduleUrl = `${pathToFileURL(join(root, "scripts/translate-docs.ts")).href}?${randomUUID()}`;
+    const translationCli = await import(moduleUrl);
+    const exitCode = await translationCli.main([
+      "auto",
+      "--config",
+      "scripts/translation.config.json",
+      "--limit",
+      "100",
+      "--max-batches",
+      "100",
+      "--max-characters",
+      "5",
+      "--time-budget-minutes",
+      "140",
+    ]);
+    const firstTarget = await readFile(join(root, TARGET_PATH), "utf8");
+    const secondTarget = await readFile(join(root, SECOND_TARGET_PATH), "utf8").catch(
+      () => undefined,
+    );
+
+    assert.equal(exitCode, 0);
+    assert.equal(providerCalls, 1);
+    assert.equal(firstTarget, "# 第一\n");
+    assert.equal(secondTarget, undefined);
   } finally {
     globalThis.fetch = originalFetch;
     if (originalApiKey === undefined) {

@@ -18,6 +18,7 @@ import {
   loadTranslationWorkspace,
 } from "./translation/planner.ts";
 import {
+  estimateTranslationPageWorkload,
   reviewTranslationPage,
   runTranslationPage,
   runTranslationPageWithRetry,
@@ -47,7 +48,10 @@ interface CliOptions {
   configPath: string;
   limit?: number | undefined;
   matches: string[];
+  maxBatches?: number | undefined;
+  maxCharacters?: number | undefined;
   section: SourceSection | "all";
+  timeBudgetMinutes?: number | undefined;
 }
 
 type SourcedTranslationPageInspection = TranslationPageInspection & {
@@ -57,6 +61,10 @@ type SourcedTranslationPageInspection = TranslationPageInspection & {
 const REPOSITORY_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DEFAULT_CONFIG_PATH = "scripts/translation.config.json";
 const AUTO_PAGE_LIMIT = 100;
+const AUTO_MAX_BATCHES = 2_400;
+const AUTO_MAX_CHARACTERS = 600_000;
+const AUTO_TIME_BUDGET_MINUTES = 140;
+const AUTO_INITIAL_MILLISECONDS_PER_BATCH = 5_000;
 const TRANSLATION_BATCH_RETRY_POLICY = {
   baseDelayMs: 1_000,
   jitterMs: 250,
@@ -223,15 +231,37 @@ export function parseCliOptions(argv: string[]): CliOptions {
       const value = argv[++index];
       if (!value?.trim()) throw new Error("--match 缺少关键词。");
       options.matches.push(value.toLowerCase());
+    } else if (argument === "--max-batches") {
+      options.maxBatches = parsePositiveInteger(argv[++index], "--max-batches");
+    } else if (argument === "--max-characters") {
+      options.maxCharacters = parsePositiveInteger(
+        argv[++index],
+        "--max-characters",
+      );
     } else if (argument === "--section") {
       const value = argv[++index];
       if (value !== "all" && value !== "guides" && value !== "reference") {
         throw new Error("--section 必须是 all、guides 或 reference。");
       }
       options.section = value;
+    } else if (argument === "--time-budget-minutes") {
+      options.timeBudgetMinutes = parsePositiveInteger(
+        argv[++index],
+        "--time-budget-minutes",
+      );
     } else {
       throw new Error(`未知参数：${argument}`);
     }
+  }
+  if (
+    options.command !== "auto" &&
+    (options.maxBatches !== undefined ||
+      options.maxCharacters !== undefined ||
+      options.timeBudgetMinutes !== undefined)
+  ) {
+    throw new Error(
+      "--max-batches、--max-characters 和 --time-budget-minutes 仅适用于 auto。",
+    );
   }
   if (
     (options.command === "check" || options.command === "status") &&
@@ -266,6 +296,54 @@ export function parseCliOptions(argv: string[]): CliOptions {
     );
   }
   return options;
+}
+
+export type AutomaticTranslationStopReason =
+  | "batch-budget"
+  | "character-budget"
+  | "time-budget";
+
+interface AutomaticTranslationBudget {
+  maxBatches: number;
+  maxCharacters: number;
+  timeBudgetMs: number;
+}
+
+interface AutomaticTranslationProgress {
+  batches: number;
+  characters: number;
+  elapsedMs: number;
+  pages: number;
+}
+
+interface AutomaticTranslationWorkload {
+  batches: number;
+  characters: number;
+}
+
+export function automaticTranslationStopReason(
+  budget: AutomaticTranslationBudget,
+  progress: AutomaticTranslationProgress,
+  next: AutomaticTranslationWorkload,
+): AutomaticTranslationStopReason | undefined {
+  if (progress.pages === 0) return undefined;
+  if (progress.batches + next.batches > budget.maxBatches) {
+    return "batch-budget";
+  }
+  if (progress.characters + next.characters > budget.maxCharacters) {
+    return "character-budget";
+  }
+  const millisecondsPerBatch =
+    progress.batches > 0
+      ? progress.elapsedMs / progress.batches
+      : AUTO_INITIAL_MILLISECONDS_PER_BATCH;
+  if (
+    progress.elapsedMs + next.batches * millisecondsPerBatch >
+    budget.timeBudgetMs
+  ) {
+    return "time-budget";
+  }
+  return undefined;
 }
 
 function countStates(entries: TranslationPageInspection[]): Map<TranslationPageState, number> {
@@ -509,7 +587,40 @@ async function auto(
     workspace.glossary.preserve,
     workspace.glossary.terms,
   );
+  const budget: AutomaticTranslationBudget = {
+    maxBatches: options.maxBatches ?? AUTO_MAX_BATCHES,
+    maxCharacters: options.maxCharacters ?? AUTO_MAX_CHARACTERS,
+    timeBudgetMs:
+      (options.timeBudgetMinutes ?? AUTO_TIME_BUDGET_MINUTES) * 60_000,
+  };
+  const startedAt = Date.now();
+  const progress: AutomaticTranslationProgress = {
+    batches: 0,
+    characters: 0,
+    elapsedMs: 0,
+    pages: 0,
+  };
   for (const [index, selection] of selected.entries()) {
+    const workload = await estimateTranslationPageWorkload(
+      workspace,
+      selection.source.sourceUrl,
+    );
+    progress.elapsedMs = Date.now() - startedAt;
+    const stopReason = automaticTranslationStopReason(
+      budget,
+      progress,
+      workload,
+    );
+    if (stopReason !== undefined) {
+      console.log(
+        `自动翻译达到预算：reason=${stopReason} translated=${progress.pages} ` +
+          `batches=${progress.batches}/${budget.maxBatches} ` +
+          `characters=${progress.characters}/${budget.maxCharacters} ` +
+          `elapsedMs=${progress.elapsedMs}/${budget.timeBudgetMs} ` +
+          `nextBatches=${workload.batches} nextCharacters=${workload.characters}`,
+      );
+      break;
+    }
     const result = await runProductionTranslationPage(
       workspace,
       {
@@ -520,6 +631,10 @@ async function auto(
       provider,
       true,
     );
+    progress.pages += 1;
+    progress.batches += result.result.stats.batches;
+    progress.characters += result.result.stats.characters;
+    progress.elapsedMs = Date.now() - startedAt;
     console.log(`自动翻译页面：${result.sourceUrl}`);
     console.log(`page=${index + 1}/${selected.length}`);
     console.log(`state=${selection.state}`);
@@ -533,7 +648,11 @@ async function auto(
     console.log(`characters=${result.result.stats.characters}`);
     console.log("写入：是（译文及 manifest，reviewStatus=machine）");
   }
-  console.log(`自动翻译完成：translated=${selected.length}`);
+  console.log(
+    `自动翻译完成：translated=${progress.pages} candidates=${selected.length} ` +
+      `batches=${progress.batches} characters=${progress.characters} ` +
+      `elapsedMs=${progress.elapsedMs}`,
+  );
 }
 
 async function review(

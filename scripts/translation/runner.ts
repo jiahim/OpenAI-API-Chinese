@@ -57,6 +57,8 @@ const TRANSLATABLE_STATES = new Set([
   "stale-policy",
   "stale-source",
 ]);
+const DEFAULT_TRANSLATION_BATCH_SIZE = 20;
+const DEFAULT_TRANSLATION_MAX_BATCH_CHARACTERS = 4_000;
 const PLACEHOLDER_PATTERN =
   /\$\{[A-Z][A-Z\d_]*\}|\$[A-Z][A-Z\d_]*|\{\{[^{}\r\n]+\}\}|%[difso]/gu;
 const LITERAL_BACKTICK_PATTERN = /`+/gu;
@@ -97,6 +99,12 @@ export interface TranslationPageReviewResult {
   sourceUrl: string;
   targetPath: string;
   targetSha256: string;
+}
+
+export interface TranslationPageWorkload {
+  batches: number;
+  characters: number;
+  uniqueUnits: number;
 }
 
 function sha256(content: string): string {
@@ -618,7 +626,8 @@ export async function runTranslationPage(
   if (sha256(source) !== entry.source.sha256) {
     throw new Error(`英文页面 SHA 在执行前发生变化：${entry.source.sourcePath}`);
   }
-  const maxBatchCharacters = options.maxBatchCharacters ?? 4_000;
+  const maxBatchCharacters =
+    options.maxBatchCharacters ?? DEFAULT_TRANSLATION_MAX_BATCH_CHARACTERS;
   const prepared = await markdownDocumentAdapter.prepare({
     content: source,
     id: entry.source.sourceUrl,
@@ -639,7 +648,7 @@ export async function runTranslationPage(
     .join("\n\n");
   let lastReportedRetry: TranslationRetryEvent | undefined;
   const result = await translatePlan(prepared.plan, {
-    batchSize: options.batchSize ?? 20,
+    batchSize: options.batchSize ?? DEFAULT_TRANSLATION_BATCH_SIZE,
     checkpoint: useCheckpoint
       ? await readOptionalCheckpoint(workspace, path)
       : undefined,
@@ -699,6 +708,52 @@ export async function runTranslationPage(
     result,
     sourceUrl: entry.source.sourceUrl,
     targetPath: entry.targetPath,
+  };
+}
+
+export async function estimateTranslationPageWorkload(
+  workspace: TranslationWorkspaceSnapshot,
+  sourceUrl: string,
+): Promise<TranslationPageWorkload> {
+  const entry = workspace.entries.find(
+    (candidate) => candidate.source?.sourceUrl === sourceUrl,
+  );
+  if (!entry?.source) throw new Error(`找不到可翻译英文页面：${sourceUrl}`);
+  if (!TRANSLATABLE_STATES.has(entry.state)) {
+    throw new Error(`页面状态 ${entry.state} 不允许自动翻译：${sourceUrl}`);
+  }
+  const source = await readTranslationWorkspaceFile(
+    workspace,
+    entry.source.sourcePath,
+    "英文页面",
+  );
+  if (sha256(source) !== entry.source.sha256) {
+    throw new Error(`英文页面 SHA 在执行前发生变化：${entry.source.sourcePath}`);
+  }
+  const prepared = await markdownDocumentAdapter.prepare({
+    content: source,
+    id: entry.source.sourceUrl,
+    maxUnitCharacters: DEFAULT_TRANSLATION_MAX_BATCH_CHARACTERS,
+    sourceHash: entry.source.sha256,
+  });
+  const result = await translatePlan(prepared.plan, {
+    batchSize: DEFAULT_TRANSLATION_BATCH_SIZE,
+    concurrency: 1,
+    maxBatchCharacters: DEFAULT_TRANSLATION_MAX_BATCH_CHARACTERS,
+    provider: {
+      name: "workload-estimator",
+      async translateBatch(request) {
+        return request.items.map(({ id, text }) => ({ id, text }));
+      },
+    },
+    retry: 0,
+    sourceLanguage: "en",
+    targetLanguage: workspace.targetLanguage,
+  });
+  return {
+    batches: result.stats.batches,
+    characters: result.stats.characters,
+    uniqueUnits: result.stats.uniqueUnits,
   };
 }
 
