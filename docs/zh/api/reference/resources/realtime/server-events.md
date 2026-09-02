@@ -1,16 +1,16 @@
-# 实时服务器事件
+# Realtime server events
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
 
-这些是从 OpenAI Realtime WebSocket 服务器发送到客户端的事件。
+这些事件是从 OpenAI 实时 WebSocket 服务器向客户端发出的事件。
 
 ## conversation.created
 
-在对话创建时返回。在会话创建后立即发出。
+在创建对话时返回。紧跟在会话创建之后发出。
 
 ### Schema
 
-架构名称： `RealtimeServerEventConversationCreated`
+Schema 名称： `RealtimeServerEventConversationCreated`
 
 ```json
 {
@@ -142,7 +142,7 @@
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -157,19 +157,19 @@
 
 ## conversation.item.created
 
-当创建对话项目时返回。有几种场景会产生此事件：
-  - 服务器正在生成一个 Response，如果成功将产生
-    一个或两个 Item，其类型为 `message`
+在对话条目被创建时返回。产生该事件的情形有以下几种：
+  - 服务器正在生成一个 Response，如果成功，将生成
+    一个或两个 Items，它们的类型为 `message`
     (role `assistant`) 或类型 `function_call`.
-  - 输入音频缓冲区已被提交，无论是客户端还是服务器（在
-    模式） `server_vad` 。服务器将把
-    输入音频缓冲区的内容添加到新的用户消息 Item 中。
-  - 客户端已发送一个 `conversation.item.create` 事件以将新的 Item
-    添加到会话中。
+  - 输入音频缓冲区已被提交，由客户端或
+    服务器提交（处于 `server_vad` 模式下）。服务器将获取输入音频缓冲区的内容，并将其添加到一条新的用户消息 Item 中。
+    输入音频缓冲区并将其添加到一条新的用户消息 Item 中。
+  - 客户端已发送一个 `conversation.item.create` 事件以向该对话添加一个新的 Item
+    到该对话中。
 
 ### Schema
 
-架构名称： `RealtimeServerEventConversationItemCreated`
+Schema 名称： `RealtimeServerEventConversationItemCreated`
 
 ```json
 {
@@ -2831,7 +2831,7 @@
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -2851,13 +2851,13 @@
 
 ## conversation.item.deleted
 
-当客户端通过
-`conversation.item.delete` 事件删除对话中的某个项目时返回。此事件用于同步
-服务器对对话历史的理解与客户端的视图。
+当会话中的某一项被客户端通过以下事件删除时返回：
+`conversation.item.delete` 事件。该事件用于同步服务端
+对会话历史的理解与客户端的视图。
 
 ### Schema
 
-架构名称： `RealtimeServerEventConversationItemDeleted`
+Schema 名称： `RealtimeServerEventConversationItemDeleted`
 
 ```json
 {
@@ -2949,7 +2949,7 @@
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -2961,20 +2961,20 @@
 
 ## conversation.item.input_audio_transcription.completed
 
-此事件是写入
-用户音频缓冲区的音频转录输出。转录在输入音频缓冲区由客户端或服务器提交时（启用 VAD 时）开始。转录与响应创建异步进行，因此此事件可能出现在响应事件之前或之后。
-客户端或服务器提交输入音频缓冲区时（启用 VAD 时）开始转录。转录运行
-与响应创建异步，因此此事件可能出现在
-响应事件之前或之后。
+此事件是写入到用户音频缓冲区的用户音频转录输出
+的输出结果。当输入音频缓冲区被提交时，转录开始。
+提交方可以是客户端，也可以是服务端（启用 VAD 时）。转录与 Response 创建
+异步进行，因此该事件可能先于或后于 Response 事件到达。
+Response 事件一起出现。
 
-Realtime API 模型原生接受音频，因此输入转录是
-在单独的 ASR（自动语音识别）模型上运行的独立过程。
-转录文本可能与模型的解释有所不同，
-应视为粗略指南。
+Realtime API 模型原生支持音频，因此输入转录是一个
+独立的流程，在单独的 ASR（自动语音识别）模型上运行。
+转录文本可能与模型的解读存在一定差异，
+应视为大致参考。
 
 ### Schema
 
-架构名称： `RealtimeServerEventConversationItemInputAudioTranscriptionCompleted`
+Schema 名称： `RealtimeServerEventConversationItemInputAudioTranscriptionCompleted`
 
 ```json
 {
@@ -3549,7 +3549,7 @@ Realtime API 模型原生接受音频，因此输入转录是
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -3573,11 +3573,11 @@ Realtime API 模型原生接受音频，因此输入转录是
 
 ## conversation.item.input_audio_transcription.delta
 
-当输入音频转录内容部分的文本值通过增量转录结果更新时返回。
+当输入音频转录内容部分的文本值使用增量转录结果更新时返回。
 
 ### Schema
 
-架构名称： `RealtimeServerEventConversationItemInputAudioTranscriptionDelta`
+Schema 名称： `RealtimeServerEventConversationItemInputAudioTranscriptionDelta`
 
 ```json
 {
@@ -3806,7 +3806,7 @@ Realtime API 模型原生接受音频，因此输入转录是
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -3821,13 +3821,13 @@ Realtime API 模型原生接受音频，因此输入转录是
 
 ## conversation.item.input_audio_transcription.failed
 
-当配置了输入音频转录，且用户消息的转录
-请求失败时返回。这些事件与其他事件分开
-`error` 返回，以便客户端能够识别相关的条目。
+在配置了输入音频转写时返回，表示用户消息的转写
+请求失败。这些事件与其他事件分开，以便客户端能够识别相关的 Item。
+`error` 事件，以便客户端识别相关的 Item。
 
 ### Schema
 
-架构名称： `RealtimeServerEventConversationItemInputAudioTranscriptionFailed`
+Schema 名称： `RealtimeServerEventConversationItemInputAudioTranscriptionFailed`
 
 ```json
 {
@@ -4031,7 +4031,7 @@ Realtime API 模型原生接受音频，因此输入转录是
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -4050,11 +4050,11 @@ Realtime API 模型原生接受音频，因此输入转录是
 
 ## conversation.item.retrieved
 
-当会话条目通过以下方式检索时返回 `conversation.item.retrieve`。这提供了一种获取条目在服务端表示的方法，例如在噪声消除和VAD之后访问后处理的音频数据。它包含该条目的完整内容，包括音频数据。
+检索对话项时返回 `conversation.item.retrieve`。这提供了一种获取服务端对项的表示形式的方法，例如在降噪和 VAD 后访问经过后处理的音频数据。其中包含项的完整内容，包括音频数据。
 
 ### Schema
 
-架构名称： `(resource) realtime > (model) realtime_server_event > (schema) > (variant) 6`
+Schema 名称： `(resource) realtime > (model) realtime_server_event > (schema) > (variant) 6`
 
 ```json
 {
@@ -6698,7 +6698,7 @@ Realtime API 模型原生接受音频，因此输入转录是
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {}
@@ -6706,16 +6706,16 @@ Realtime API 模型原生接受音频，因此输入转录是
 
 ## conversation.item.truncated
 
-当较早的助手音频消息项被客户端截断时返回，
-客户端通过 `conversation.item.truncate` 事件。此事件用于
-同步服务器对音频的理解与客户端的播放。
+当较早的助手音频消息项被客户端通过
+事件截断时返回。 `conversation.item.truncate` 该事件用于
+使服务端对音频的理解与客户端的播放保持同步。
 
-此操作将截断音频并移除服务端文本转录
-，以确保上下文中没有用户未听到的文本。
+此操作将截断音频，并移除 服务端 文本转录，
+以确保上下文中不存在用户尚未听到的文本。
 
 ### Schema
 
-架构名称： `RealtimeServerEventConversationItemTruncated`
+Schema 名称： `RealtimeServerEventConversationItemTruncated`
 
 ```json
 {
@@ -6843,7 +6843,7 @@ Realtime API 模型原生接受音频，因此输入转录是
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -6857,13 +6857,13 @@ Realtime API 模型原生接受音频，因此输入转录是
 
 ## error
 
-当发生错误时返回，可能是客户端问题或服务器
-问题。大多数错误是可恢复的，会话将保持打开，我们
-建议实现者默认监控和记录错误消息。
+在发生错误时返回，错误可能由客户端或服务端
+引起。大多数错误都是可恢复的，会话将保持打开状态，我们
+建议实现者默认监控并记录错误消息。
 
 ### Schema
 
-架构名称： `RealtimeServerEventError`
+Schema 名称： `RealtimeServerEventError`
 
 ```json
 {
@@ -7070,7 +7070,7 @@ Realtime API 模型原生接受音频，因此输入转录是
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -7088,12 +7088,12 @@ Realtime API 模型原生接受音频，因此输入转录是
 
 ## input_audio_buffer.cleared
 
-当客户端通过
-`input_audio_buffer.clear` 事件清除输入音频缓冲区时返回。
+当客户端通过以下方式清除输入音频缓冲区时返回
+`input_audio_buffer.clear` event。
 
 ### Schema
 
-架构名称： `RealtimeServerEventInputAudioBufferCleared`
+Schema 名称： `RealtimeServerEventInputAudioBufferCleared`
 
 ```json
 {
@@ -7167,7 +7167,7 @@ Realtime API 模型原生接受音频，因此输入转录是
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -7178,14 +7178,14 @@ Realtime API 模型原生接受音频，因此输入转录是
 
 ## input_audio_buffer.committed
 
-当输入音频缓冲区被提交时返回，无论是客户端提交还是
-在服务端 VAD 模式下自动提交。该 `item_id` 属性是将要创建的用户
-消息项的 ID，因此一个 `conversation.item.created` 事件
-也将发送给客户端。
+在输入音频缓冲区被提交时返回，可以由客户端触发，也可以由
+服务端 VAD 模式自动触发。该 `item_id` 属性是用户消息项的 ID，因此
+同时也会向客户端发送一个 `conversation.item.created` event
+事件。
 
 ### Schema
 
-架构名称： `RealtimeServerEventInputAudioBufferCommitted`
+Schema 名称： `RealtimeServerEventInputAudioBufferCommitted`
 
 ```json
 {
@@ -7295,7 +7295,7 @@ Realtime API 模型原生接受音频，因此输入转录是
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -7308,14 +7308,14 @@ Realtime API 模型原生接受音频，因此输入转录是
 
 ## input_audio_buffer.dtmf_event_received
 
-**仅 SIP：** 当收到 DTMF 事件时返回。DTMF 事件是一条消息，
-表示电话键盘按键（0–9、*、#、A–D）。 `event` 属性
-是用户按下的按键。事件中的 `received_at` 是服务器收到事件的
-UTC Unix 时间戳。
+**SIP Only：** 在收到 DTMF 事件时返回。DTMF 事件是一种表示电话键盘按键（0–9、*、#、A–D）的消息。
+属性表示用户按下的按键。 `event` property
+是用户按下的键盘按键。 `received_at` 是服务端收到事件的 UTC Unix 时间戳。
+即服务端收到事件的时间。
 
 ### Schema
 
-架构名称： `RealtimeServerEventInputAudioBufferDtmfEventReceived`
+Schema 名称： `RealtimeServerEventInputAudioBufferDtmfEventReceived`
 
 ```json
 {
@@ -7407,7 +7407,7 @@ UTC Unix 时间戳。
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -7419,20 +7419,20 @@ UTC Unix 时间戳。
 
 ## input_audio_buffer.speech_started
 
-当服务器处于 `server_vad` 模式时发送，表示音频缓冲区中已
-检测到语音。这可能在音频被添加到缓冲区时随时发生
-（除非已检测到语音）。客户端可能希望使用此事件
-来中断音频播放或向用户提供视觉反馈。
+由服务端在 `server_vad` 模式下发送，用于指示已在音频缓冲区中检测到语音。
+检测到语音。只要音频被添加到缓冲区（除非已经检测到语音），就可能发生该事件。客户端可能希望使用该
+事件来中断音频播放或向用户提供可视化反馈。
+客户端应预期在语音停止时收到。
 
-客户端应期望在语音停止时收到 `input_audio_buffer.speech_stopped` 事件
-事件。该 `item_id` 属性是语音停止时将创建的用户消息项的 ID，
-该 ID 也将包含在
+一个 `input_audio_buffer.speech_stopped` event
+事件。 `item_id` 属性是用户消息项的 ID，
+该用户消息项将在语音停止时创建，并且也将包含在
 `input_audio_buffer.speech_stopped` 事件中（除非客户端在 VAD 激活期间手动提交
 音频缓冲区）。
 
 ### Schema
 
-架构名称： `RealtimeServerEventInputAudioBufferSpeechStarted`
+Schema 名称： `RealtimeServerEventInputAudioBufferSpeechStarted`
 
 ```json
 {
@@ -7542,7 +7542,7 @@ UTC Unix 时间戳。
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -7555,13 +7555,13 @@ UTC Unix 时间戳。
 
 ## input_audio_buffer.speech_stopped
 
-在 `server_vad` 模式下，当服务端检测到
-音频缓冲区中的语音结束时，服务器还会发送一个 `conversation.item.created`
-事件，其中包含从音频缓冲区创建的用户消息条目。
+在 `server_vad` 当服务端在以下音频缓冲区中检测到语音结束时返回的
+模式。服务端还会发送一个 `conversation.item.created`
+事件，其中包含从音频缓冲区创建的用户消息项。
 
 ### Schema
 
-架构名称： `RealtimeServerEventInputAudioBufferSpeechStopped`
+Schema 名称： `RealtimeServerEventInputAudioBufferSpeechStopped`
 
 ```json
 {
@@ -7671,7 +7671,7 @@ UTC Unix 时间戳。
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -7684,14 +7684,14 @@ UTC Unix 时间戳。
 
 ## rate_limits.updated
 
-在响应开始时发出，以指示更新后的速率限制。
-创建响应时，一些令牌将被“保留”用于输出
-令牌，此处显示的速率限制反映了该保留，然后在
-响应完成后相应调整。
+在 Response 开始时发出，用于指示已更新的速率限制。
+创建 Response 时，会为输出"预留"一部分 tokens
+此处显示的速率限制反映了该预留，并在
+Response 完成后相应地进行调整。
 
 ### Schema
 
-架构名称： `RealtimeServerEventRateLimitsUpdated`
+Schema 名称： `RealtimeServerEventRateLimitsUpdated`
 
 ```json
 {
@@ -7892,7 +7892,7 @@ UTC Unix 时间戳。
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -7917,11 +7917,11 @@ UTC Unix 时间戳。
 
 ## response.output_audio.delta
 
-当模型生成的音频被更新时返回。
+在模型生成的音频被更新时返回。
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseAudioDelta`
+Schema 名称： `RealtimeServerEventResponseAudioDelta`
 
 ```json
 {
@@ -8085,7 +8085,7 @@ UTC Unix 时间戳。
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -8101,12 +8101,12 @@ UTC Unix 时间戳。
 
 ## response.output_audio.done
 
-当模型生成的音频完成时返回。当 Response
-被中断、未完成或取消时也会发出。
+当模型生成的音频完成时返回。在 Response 中断时也会发出
+已中断、未完成或被取消。
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseAudioDone`
+Schema 名称： `RealtimeServerEventResponseAudioDone`
 
 ```json
 {
@@ -8252,7 +8252,7 @@ UTC Unix 时间戳。
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -8267,11 +8267,11 @@ UTC Unix 时间戳。
 
 ## response.output_audio_transcript.delta
 
-当模型生成的音频输出转录更新时返回。
+当音频输出的模型生成转录被更新时返回。
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseAudioTranscriptDelta`
+Schema 名称： `RealtimeServerEventResponseAudioTranscriptDelta`
 
 ```json
 {
@@ -8435,7 +8435,7 @@ UTC Unix 时间戳。
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -8452,12 +8452,12 @@ UTC Unix 时间戳。
 ## response.output_audio_transcript.done
 
 当模型生成的音频输出转录完成时返回
-流式传输。当 Response 被中断、不完整或
-取消时也会发出。
+streaming。也会在 Response 被中断、未完成或
+取消时发出。
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseAudioTranscriptDone`
+Schema 名称： `RealtimeServerEventResponseAudioTranscriptDone`
 
 ```json
 {
@@ -8621,7 +8621,7 @@ UTC Unix 时间戳。
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -8637,12 +8637,12 @@ UTC Unix 时间戳。
 
 ## response.content_part.added
 
-当在助手消息条目中添加新内容部分时返回，该条目发生于
-响应生成期间。
+在响应生成过程中，当新的内容片段被添加到助手消息项时返回。
+响应生成。
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseContentPartAdded`
+Schema 名称： `RealtimeServerEventResponseContentPartAdded`
 
 ```json
 {
@@ -8911,7 +8911,7 @@ UTC Unix 时间戳。
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -8930,12 +8930,12 @@ UTC Unix 时间戳。
 
 ## response.content_part.done
 
-当智能体消息项中的内容部分完成流式传输时返回。
-当响应被中断、不完整或取消时也会发出。
+当内容片段在智能体消息条目中流式传输完成时返回。
+也会在 Response 被中断、未完成或取消时发出。
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseContentPartDone`
+Schema 名称： `RealtimeServerEventResponseContentPartDone`
 
 ```json
 {
@@ -9204,7 +9204,7 @@ UTC Unix 时间戳。
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -9223,12 +9223,12 @@ UTC Unix 时间戳。
 
 ## response.created
 
-在创建新 Response 时返回。这是响应创建过程中的第一个事件，
-此时响应处于初始状态， `in_progress`.
+在创建新 Response 时返回。响应创建的第一个事件，
+其中响应处于初始状态 `in_progress`.
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseCreated`
+Schema 名称： `RealtimeServerEventResponseCreated`
 
 ```json
 {
@@ -13367,7 +13367,7 @@ UTC Unix 时间戳。
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -13401,19 +13401,19 @@ UTC Unix 时间戳。
 
 ## response.done
 
-当响应完成流式传输时返回。无论最终
-状态如何，都会始终发出。包含在 `response.done` 事件中的
-Response 对象将包含响应中的所有输出项，但会省略原始音频数据。
+当 Response 完成流式传输时返回。无论最终状态如何，都会被发出，
+在 `response.done` 事件中将包含
+Response 中的所有输出 Item，但会省略原始音频数据。
 
-客户端应检查 Response 的 `status` 字段，以确定它是否成功
-(`completed`）或是否存在其他结果： `cancelled`, `failed`，或 `incomplete`.
+客户端应检查 Response 的 `status` 字段以判断是否成功
+(`completed`) 或是否出现了其他结果： `cancelled`, `failed`，或 `incomplete`.
 
-响应将包含在响应期间生成的所有输出项，不包括
+响应将包含在响应过程中生成的所有输出项，不包括
 任何音频内容。
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseDone`
+Schema 名称： `RealtimeServerEventResponseDone`
 
 ```json
 {
@@ -17552,7 +17552,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -17622,7 +17622,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseFunctionCallArgumentsDelta`
+Schema 名称： `RealtimeServerEventResponseFunctionCallArgumentsDelta`
 
 ```json
 {
@@ -17786,7 +17786,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -17802,12 +17802,12 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## response.function_call_arguments.done
 
-当模型生成的函数调用参数流式传输完成时返回。
-当响应被中断、不完整或取消时也会发出。
+在模型生成的函数调用参数流式传输完成时返回。
+也会在 Response 被中断、未完成或取消时发出。
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseFunctionCallArgumentsDone`
+Schema 名称： `RealtimeServerEventResponseFunctionCallArgumentsDone`
 
 ```json
 {
@@ -17989,7 +17989,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -18006,11 +18006,11 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## response.output_item.added
 
-在 Response 生成期间创建新 Item 时返回。
+在 Response 生成过程中创建新 Item 时返回。
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseOutputItemAdded`
+Schema 名称： `RealtimeServerEventResponseOutputItemAdded`
 
 ```json
 {
@@ -20690,7 +20690,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -20711,12 +20711,12 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## response.output_item.done
 
-当 Item 完成流式传输时返回。当 Response
-被中断、未完成或取消时也会发出。
+当一个 Item 完成流式传输时返回。也会在 Response 被
+中断、未完成或被取消时发出。
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseOutputItemDone`
+Schema 名称： `RealtimeServerEventResponseOutputItemDone`
 
 ```json
 {
@@ -23396,7 +23396,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -23422,11 +23422,11 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## response.output_text.delta
 
-当 "output_text" 内容部分的文本值被更新时返回。
+当 "output_text" 内容部分的文本值更新时返回。
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseTextDelta`
+Schema 名称： `RealtimeServerEventResponseTextDelta`
 
 ```json
 {
@@ -23590,7 +23590,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -23606,12 +23606,12 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## response.output_text.done
 
-当“output_text”内容部件的文本值完成流式传输时返回。同时
-在响应被中断、不完整或取消时发出。
+当 "output_text" 内容部分的文本值完成流式传输时返回。另
+外，当 Response 被中断、未完成或被取消时也会触发。
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseTextDone`
+Schema 名称： `RealtimeServerEventResponseTextDone`
 
 ```json
 {
@@ -23775,7 +23775,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -23791,13 +23791,13 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## session.created
 
-在创建 Session 时返回。在新
-连接建立时自动作为第一个服务器事件发出。此事件将包含
+创建 Session 时返回。建立新连接后，作为第一个服务端事件自动发出
+该事件将包含
 默认的 Session 配置。
 
 ### Schema
 
-架构名称： `RealtimeServerEventSessionCreated`
+Schema 名称： `RealtimeServerEventSessionCreated`
 
 ```json
 {
@@ -29090,7 +29090,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -29145,12 +29145,12 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## session.updated
 
-当会话更新时返回 `session.update` 事件，除非
-发生错误。
+当会话通过以下事件更新时返回： `session.update` event，除非
+出现错误。
 
 ### Schema
 
-架构名称： `RealtimeServerEventSessionUpdated`
+Schema 名称： `RealtimeServerEventSessionUpdated`
 
 ```json
 {
@@ -34443,7 +34443,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -34526,14 +34526,14 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## output_audio_buffer.started
 
-**仅限 WebRTC/SIP：** 当服务器开始向客户端流式传输音频时触发。此事件在
-音频内容部分被添加（`response.content_part.added`)
-到响应中）之后触发。
+**仅限 WebRTC/SIP：** 当服务器开始向客户端流式传输音频时发出。该事件
+在音频内容部分被添加后发出（`response.content_part.added`)
+到响应中。
 [了解更多](https://developers.openai.com/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
 ### Schema
 
-架构名称： `(resource) realtime > (model) realtime_server_event > (schema) > (variant) 31`
+Schema 名称： `(resource) realtime > (model) realtime_server_event > (schema) > (variant) 31`
 
 ```json
 {
@@ -34625,7 +34625,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {}
@@ -34633,14 +34633,14 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## output_audio_buffer.stopped
 
-**仅限 WebRTC/SIP：** 当服务端输出音频缓冲区已完全耗尽时发出该事件，
-且后续不会再产生更多音频。此事件在完整响应
-数据已发送给客户端（`response.done`).
+**仅限 WebRTC/SIP：** 当服务端上的输出音频缓冲已被完全耗尽时发出，
+且不再有音频输出。此事件在完整响应
+数据已发送到客户端后发出（`response.done`).
 [了解更多](https://developers.openai.com/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
 ### Schema
 
-架构名称： `(resource) realtime > (model) realtime_server_event > (schema) > (variant) 32`
+Schema 名称： `(resource) realtime > (model) realtime_server_event > (schema) > (variant) 32`
 
 ```json
 {
@@ -34732,7 +34732,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {}
@@ -34740,15 +34740,15 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## output_audio_buffer.cleared
 
-**仅限 WebRTC/SIP：** 当输出音频缓冲区被清除时发出。这发生在 VAD
-模式下，当用户打断（`input_audio_buffer.speech_started`),
-或当客户端发出 `output_audio_buffer.clear` 事件以手动
-切断当前音频响应时。
+**仅限 WebRTC/SIP：** 当输出音频缓冲区被清除时触发。这种情况发生在 VAD
+模式下用户发生打断时（`input_audio_buffer.speech_started`),
+），或者当客户端触发了 `output_audio_buffer.clear` 事件以手动
+截断当前音频响应。
 [了解更多](https://developers.openai.com/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
 ### Schema
 
-架构名称： `(resource) realtime > (model) realtime_server_event > (schema) > (variant) 33`
+Schema 名称： `(resource) realtime > (model) realtime_server_event > (schema) > (variant) 33`
 
 ```json
 {
@@ -34840,7 +34840,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {}
@@ -34848,16 +34848,16 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## conversation.item.added
 
-服务器在项目被添加到默认对话时发送此消息。这可能在以下几种情况下发生：
+当某个 Item 被添加到默认会话时由服务端发送。这种情况可能在以下几种场景中发生：
 - 当客户端发送 `conversation.item.create` 事件时。
-- 当输入音频缓冲区被提交时。在这种情况下，条目将是一条包含缓冲区中音频的用户消息。
-- 当模型正在生成响应时。在这种情况下， `conversation.item.added` 事件将在模型开始生成特定条目时发送，因此此时该条目尚不会有任何内容（并且 `status` 将为 `in_progress`).
+- 当输入音频缓冲区被提交时。在这种情况下，该 item 将是一条包含缓冲区中音频的用户消息。
+- 当模型正在生成 Response 时。在这种情况下， `conversation.item.added` 事件将在模型开始生成特定 Item 时发送，因此此时它还不会有任何内容（并且 `status` 将 `in_progress`).
 
-该事件将包含项目的完整内容（模型生成响应时除外），但音频数据除外，音频数据可单独通过 `conversation.item.retrieve` 事件获取（如有必要）。
+该事件将包含 Item 的完整内容（模型正在生成 Response 时除外），但音频数据除外，音频数据可以通过以下事件单独获取： `conversation.item.retrieve` 事件（如有必要）。
 
 ### Schema
 
-架构名称： `RealtimeServerEventConversationItemAdded`
+Schema 名称： `RealtimeServerEventConversationItemAdded`
 
 ```json
 {
@@ -37519,7 +37519,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -37543,13 +37543,13 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## conversation.item.done
 
-当会话项目完成时返回。
+当对话条目被最终化时返回。
 
-该事件将包含项目的完整内容，音频数据除外，音频数据可通过 `conversation.item.retrieve` 事件单独检索（如需要）。
+该事件将包含条目的完整内容，但音频数据除外，音频数据可以单独通过以下方式获取： `conversation.item.retrieve` 事件（如有需要）。
 
 ### Schema
 
-架构名称： `RealtimeServerEventConversationItemDone`
+Schema 名称： `RealtimeServerEventConversationItemDone`
 
 ```json
 {
@@ -40211,7 +40211,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -40235,23 +40235,23 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## input_audio_buffer.timeout_triggered
 
-当输入音频缓冲区触发服务器端 VAD 超时时返回。这是通过
-会话的 `idle_timeout_ms` 设置 `turn_detection` 配置的，它表示
-在配置的时长内没有检测到任何语音。
+在输入音频缓冲区触发 Server VAD 超时时返回。该超时通过会话的
+在 `idle_timeout_ms` 中的 `turn_detection` 设置进行配置，表示在配置的持续时间内
+未检测到任何语音。
 
-该 `audio_start_ms` 和 `audio_end_ms` 字段表示最后一次
-模型响应之后到触发时刻之间的音频片段，以写入
-输入音频缓冲区的起始偏移量表示。这意味着它划分了静音的音频片段，并且
-起始值和结束值之间的差异将大致与配置的超时时间匹配。
+该 `audio_start_ms` 和 `audio_end_ms` 字段表示从最后一个
+模型响应之后到触发时间为止的音频片段，以写入输入音频缓冲区
+的音频开头为偏移量。这意味着它划定了处于静默状态的片段，
+且 start 与 end 之间的差值大致与所配置的超时一致。
 
-空的音频将被作为 `input_audio` 项提交到对话中（将有一个
-`input_audio_buffer.committed` 事件），并且将生成模型响应。可能会有语音
-未触发 VAD，但模型仍会检测到，因此模型可能会响应
-与对话相关的内容或提示继续说话。
+这段空音频将以 `input_audio` 项的形式提交到对话中（会触发一个
+`input_audio_buffer.committed` 事件），并生成模型响应。可能存在一些语音
+未触发 VAD 但仍被模型检测到，因此模型可能给出
+与对话相关的内容或提示你继续说话。
 
 ### Schema
 
-架构名称： `RealtimeServerEventInputAudioBufferTimeoutTriggered`
+Schema 名称： `RealtimeServerEventInputAudioBufferTimeoutTriggered`
 
 ```json
 {
@@ -40379,7 +40379,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -40393,11 +40393,11 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## conversation.item.input_audio_transcription.segment
 
-当某项的输入音频转录片段被识别时返回。
+当为某个 item 识别出输入音频转写片段时返回。
 
 ### Schema
 
-架构名称： `RealtimeServerEventConversationItemInputAudioTranscriptionSegment`
+Schema 名称： `RealtimeServerEventConversationItemInputAudioTranscriptionSegment`
 
 ```json
 {
@@ -40603,7 +40603,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -40621,11 +40621,11 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## mcp_list_tools.in_progress
 
-当某个条目的 MCP 工具列表正在进行时返回。
+当某个条目的 MCP 工具列表正在获取时返回。
 
 ### Schema
 
-架构名称： `RealtimeServerEventMCPListToolsInProgress`
+Schema 名称： `RealtimeServerEventMCPListToolsInProgress`
 
 ```json
 {
@@ -40717,7 +40717,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -40729,11 +40729,11 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## mcp_list_tools.completed
 
-当某个条目的 MCP 工具列表已完成时返回。
+当针对某个条目列出 MCP 工具的操作已完成时返回。
 
 ### Schema
 
-架构名称： `RealtimeServerEventMCPListToolsCompleted`
+Schema 名称： `RealtimeServerEventMCPListToolsCompleted`
 
 ```json
 {
@@ -40825,7 +40825,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -40837,11 +40837,11 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## mcp_list_tools.failed
 
-当列出某个条目的 MCP 工具失败时返回。
+当为某个项目列出 MCP 工具失败时返回。
 
 ### Schema
 
-架构名称： `RealtimeServerEventMCPListToolsFailed`
+Schema 名称： `RealtimeServerEventMCPListToolsFailed`
 
 ```json
 {
@@ -40933,7 +40933,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -40949,7 +40949,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseMCPCallArgumentsDelta`
+Schema 名称： `RealtimeServerEventResponseMCPCallArgumentsDelta`
 
 ```json
 {
@@ -41113,7 +41113,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -41128,11 +41128,11 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## response.mcp_call_arguments.done
 
-在响应生成期间 MCP 工具调用参数最终确定时返回。
+在响应生成期间，当 MCP 工具调用参数最终确定时返回。
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseMCPCallArgumentsDone`
+Schema 名称： `RealtimeServerEventResponseMCPCallArgumentsDone`
 
 ```json
 {
@@ -41278,7 +41278,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -41293,11 +41293,11 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ## response.mcp_call.in_progress
 
-当 MCP 工具调用已开始且正在进行时返回。
+在 MCP 工具调用已开始且正在进行时返回。
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseMCPCallInProgress`
+Schema 名称： `RealtimeServerEventResponseMCPCallInProgress`
 
 ```json
 {
@@ -41407,7 +41407,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -41424,7 +41424,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseMCPCallCompleted`
+Schema 名称： `RealtimeServerEventResponseMCPCallCompleted`
 
 ```json
 {
@@ -41534,7 +41534,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
@@ -41551,7 +41551,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 
 ### Schema
 
-架构名称： `RealtimeServerEventResponseMCPCallFailed`
+Schema 名称： `RealtimeServerEventResponseMCPCallFailed`
 
 ```json
 {
@@ -41661,7 +41661,7 @@ Response 对象将包含响应中的所有输出项，但会省略原始音频�
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {
