@@ -36958,8 +36958,7 @@ Schema name: `ResponseCreatedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -37310,6 +37309,10 @@ Schema name: `ResponseCreatedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -37320,7 +37323,8 @@ Schema name: `ResponseCreatedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -42536,23 +42540,6 @@ Schema name: `ResponseCreatedEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -42575,9 +42562,6 @@ Schema name: `ResponseCreatedEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -42587,8 +42571,7 @@ Schema name: `ResponseCreatedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -42739,6 +42722,13 @@ Schema name: `ResponseCreatedEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -91318,8 +91308,7 @@ Schema name: `ResponseInProgressEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -91670,6 +91659,10 @@ Schema name: `ResponseInProgressEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -91680,7 +91673,8 @@ Schema name: `ResponseInProgressEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -96896,23 +96890,6 @@ Schema name: `ResponseInProgressEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -96935,9 +96912,6 @@ Schema name: `ResponseInProgressEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -96947,8 +96921,7 @@ Schema name: `ResponseInProgressEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -97099,6 +97072,13 @@ Schema name: `ResponseInProgressEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -145678,8 +145658,7 @@ Schema name: `ResponseCompletedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -146030,6 +146009,10 @@ Schema name: `ResponseCompletedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -146040,7 +146023,8 @@ Schema name: `ResponseCompletedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -151256,23 +151240,6 @@ Schema name: `ResponseCompletedEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -151295,9 +151262,6 @@ Schema name: `ResponseCompletedEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -151307,8 +151271,7 @@ Schema name: `ResponseCompletedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -151459,6 +151422,13 @@ Schema name: `ResponseCompletedEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -200055,8 +200025,7 @@ Schema name: `ResponseFailedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -200407,6 +200376,10 @@ Schema name: `ResponseFailedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -200417,7 +200390,8 @@ Schema name: `ResponseFailedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -205633,23 +205607,6 @@ Schema name: `ResponseFailedEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -205672,9 +205629,6 @@ Schema name: `ResponseFailedEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -205684,8 +205638,7 @@ Schema name: `ResponseFailedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -205836,6 +205789,13 @@ Schema name: `ResponseFailedEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -254413,8 +254373,7 @@ Schema name: `ResponseIncompleteEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -254765,6 +254724,10 @@ Schema name: `ResponseIncompleteEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -254775,7 +254738,8 @@ Schema name: `ResponseIncompleteEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -259991,23 +259955,6 @@ Schema name: `ResponseIncompleteEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -260030,9 +259977,6 @@ Schema name: `ResponseIncompleteEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -260042,8 +259986,7 @@ Schema name: `ResponseIncompleteEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -260194,6 +260137,13 @@ Schema name: `ResponseIncompleteEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -365673,8 +365623,7 @@ Schema name: `ResponseQueuedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -366025,6 +365974,10 @@ Schema name: `ResponseQueuedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -366035,7 +365988,8 @@ Schema name: `ResponseQueuedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -371251,23 +371205,6 @@ Schema name: `ResponseQueuedEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -371290,9 +371227,6 @@ Schema name: `ResponseQueuedEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -371302,8 +371236,7 @@ Schema name: `ResponseQueuedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -371454,6 +371387,13 @@ Schema name: `ResponseQueuedEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",

@@ -6,6 +6,16 @@
 
 Upcoming deprecations are listed on the [deprecations page](/api/docs/deprecations).
 
+## September, 2026
+
+### Sep 2
+
+Update
+
+Updated API errors so applications can distinguish traffic that increases too quickly from temporary model overload.
+
+Traffic that increases too quickly can return a `429` error with the `slow_down` code. Temporary model overload returns a `503` error with the `server_is_overloaded` code. Both responses may include `Retry-After`. When the header is present, wait at least as long as it specifies before retrying. If it's missing, use exponential backoff. See the [error codes guide](https://developers.openai.com/api/docs/guides/error-codes) and [rate limits guide](https://developers.openai.com/api/docs/guides/rate-limits).
+
 ## August, 2026
 
 ### Aug 29

@@ -80,11 +80,13 @@ the `background` parameter set to `true` can be cancelled.
 
     Details about why the response is incomplete.
 
-    - `reason: optional "max_output_tokens" or "content_filter"`
+    - `reason: optional "max_output_tokens" or "max_messages" or "content_filter"`
 
       The reason why the response is incomplete.
 
       - `"max_output_tokens"`
+
+      - `"max_messages"`
 
       - `"content_filter"`
 
@@ -9160,10 +9162,6 @@ the `background` parameter set to `true` can be cancelled.
 
       The total number of tokens used.
 
-    - `compute_units: optional number or null`
-
-      Compute units for the request. Currently null when available.
-
   - `user: optional string`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
@@ -9344,8 +9342,7 @@ curl https://api.openai.com/v1/responses/$RESPONSE_ID/cancel \
     "output_tokens_details": {
       "reasoning_tokens": 0
     },
-    "total_tokens": 0,
-    "compute_units": 0
+    "total_tokens": 0
   },
   "user": "user-1234"
 }
