@@ -1,13 +1,13 @@
 # Responses 流式事件
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt).可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
 
-当你 [创建一个 Response](https://developers.openai.com/docs/api-reference/responses/create) 时设置
-`stream` 为 `true`，服务器将在 Response 生成时向
-客户端发送 server-sent events。本节包含服务器所发出的
-各类事件。
+当你 [创建 Response](https://developers.openai.com/docs/api-reference/responses/create) 时，设置
+`stream` 为 `true`，服务端会向
+客户端发送服务器发送事件（server-sent events），这些事件在 Response 生成过程中发出。本节列出了服务端发出的事件。
+服务端所发出的事件。
 
-[详细了解流式响应](https://developers.openai.com/docs/guides/streaming-responses?api-mode=responses).
+[了解更多关于流式 Response 的信息](https://developers.openai.com/docs/guides/streaming-responses?api-mode=responses).
 
 ## response.created
 
@@ -917,14 +917,14 @@ Schema name: `ResponseCreatedEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -1730,7 +1730,7 @@ Schema name: `ResponseCreatedEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -7094,7 +7094,7 @@ Schema name: `ResponseCreatedEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -54307,7 +54307,7 @@ Schema name: `ResponseCreatedEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-2024-08-06",
+    "model": "gpt-5.6-sol",
     "output": [],
     "parallel_tool_calls": true,
     "previous_response_id": null,
@@ -54336,7 +54336,7 @@ Schema name: `ResponseCreatedEvent`
 
 ## response.in_progress
 
-在响应进行过程中发出。
+当响应正在进行时发出。
 
 ### Schema
 
@@ -55242,14 +55242,14 @@ Schema name: `ResponseInProgressEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -56055,7 +56055,7 @@ Schema name: `ResponseInProgressEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -61419,7 +61419,7 @@ Schema name: `ResponseInProgressEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -108632,7 +108632,7 @@ Schema name: `ResponseInProgressEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-2024-08-06",
+    "model": "gpt-5.6-sol",
     "output": [],
     "parallel_tool_calls": true,
     "previous_response_id": null,
@@ -108661,7 +108661,7 @@ Schema name: `ResponseInProgressEvent`
 
 ## response.completed
 
-在模型响应完成时发出。
+当模型响应完成时发出。
 
 ### Schema
 
@@ -109567,14 +109567,14 @@ Schema name: `ResponseCompletedEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -110380,7 +110380,7 @@ Schema name: `ResponseCompletedEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -115744,7 +115744,7 @@ Schema name: `ResponseCompletedEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -162958,7 +162958,7 @@ Schema name: `ResponseCompletedEvent`
     "input": [],
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [
       {
         "id": "msg_123",
@@ -163003,7 +163003,7 @@ Schema name: `ResponseCompletedEvent`
 
 ## response.failed
 
-当响应失败时发出的事件。
+响应失败时发出的事件。
 
 ### Schema
 
@@ -163909,14 +163909,14 @@ Schema name: `ResponseFailedEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -164722,7 +164722,7 @@ Schema name: `ResponseFailedEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -170086,7 +170086,7 @@ Schema name: `ResponseFailedEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -217302,7 +217302,7 @@ Schema name: `ResponseFailedEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [],
     "previous_response_id": null,
     "reasoning_effort": null,
@@ -217326,7 +217326,7 @@ Schema name: `ResponseFailedEvent`
 
 ## response.incomplete
 
-当响应以不完整状态结束时发出的事件。
+当响应以未完成状态结束时触发的事件。
 
 ### Schema
 
@@ -218232,14 +218232,14 @@ Schema name: `ResponseIncompleteEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -219045,7 +219045,7 @@ Schema name: `ResponseIncompleteEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -224409,7 +224409,7 @@ Schema name: `ResponseIncompleteEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -271624,7 +271624,7 @@ Schema name: `ResponseIncompleteEvent`
     },
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [],
     "previous_response_id": null,
     "reasoning_effort": null,
@@ -271649,7 +271649,7 @@ Schema name: `ResponseIncompleteEvent`
 
 ## response.output_item.added
 
-在添加新的输出项时发出。
+当添加新的输出项时触发。
 
 ### Schema
 
@@ -318657,7 +318657,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
 ## response.content_part.added
 
-当新增一个内容部分时发出。
+当添加新的内容部分时触发。
 
 ### Schema
 
@@ -319806,7 +319806,7 @@ Schema name: `ResponseContentPartAddedEvent`
 
 ## response.content_part.done
 
-当某个内容部分完成时发出。
+内容部分完成时发出。
 
 ### Schema
 
@@ -320955,7 +320955,7 @@ Schema name: `ResponseContentPartDoneEvent`
 
 ## response.output_text.delta
 
-当出现额外的文本增量时触发。
+在出现额外的文本增量时发出。
 
 ### Schema
 
@@ -321244,7 +321244,7 @@ Schema name: `ResponseTextDeltaEvent`
 
 ## response.output_text.done
 
-在文本内容最终确定时发出。
+在文本内容完成时发出。
 
 ### Schema
 
@@ -321533,7 +321533,7 @@ Schema name: `ResponseTextDoneEvent`
 
 ## response.refusal.delta
 
-当存在部分拒绝文本时发出。
+当存在部分拒绝文本时触发。
 
 ### Schema
 
@@ -321863,7 +321863,7 @@ Schema name: `ResponseRefusalDoneEvent`
 
 ## response.function_call_arguments.delta
 
-当存在部分函数调用参数的增量时发出。
+当存在函数调用参数的部分增量时发出。
 
 ### Schema
 
@@ -322009,7 +322009,7 @@ Schema name: `ResponseFunctionCallArgumentsDeltaEvent`
 
 ## response.function_call_arguments.done
 
-当函数调用参数最终确定时发出。
+在函数调用参数最终确定时发出。
 
 ### Schema
 
@@ -322173,7 +322173,7 @@ Schema name: `ResponseFunctionCallArgumentsDoneEvent`
 
 ## response.file_search_call.in_progress
 
-在发起 文件搜索 调用时发出。
+当发起一次文件搜索调用时发出。
 
 ### Schema
 
@@ -322300,7 +322300,7 @@ Schema name: `ResponseFileSearchCallInProgressEvent`
 
 ## response.file_search_call.searching
 
-在当前正在执行文件搜索时发出。
+当 文件搜索 正在执行搜索时发出。
 
 ### Schema
 
@@ -322427,7 +322427,7 @@ Schema name: `ResponseFileSearchCallSearchingEvent`
 
 ## response.file_search_call.completed
 
-在文件搜索调用完成（已找到结果）时发出。
+当一次文件搜索调用完成（已找到结果）时发出。
 
 ### Schema
 
@@ -322681,7 +322681,7 @@ Schema name: `ResponseWebSearchCallInProgressEvent`
 
 ## response.web_search_call.searching
 
-在 网页搜索 调用执行时发出。
+当 网页搜索 调用正在执行时发出。
 
 ### Schema
 
@@ -322935,7 +322935,7 @@ Schema name: `ResponseWebSearchCallCompletedEvent`
 
 ## response.reasoning_summary_part.added
 
-添加新的推理摘要分块时触发。
+当新增的推理摘要分片被添加时触发。
 
 ### Schema
 
@@ -323160,7 +323160,7 @@ Schema name: `ResponseReasoningSummaryPartAddedEvent`
 
 ## response.reasoning_summary_part.done
 
-当推理摘要部分完成时发出。
+当推理摘要部分完成时触发。
 
 ### Schema
 
@@ -323420,7 +323420,7 @@ Schema name: `ResponseReasoningSummaryPartDoneEvent`
 
 ## response.reasoning_summary_text.delta
 
-当有增量添加到推理摘要文本时发出。
+当向推理摘要文本添加增量时触发。
 
 ### Schema
 
@@ -323585,7 +323585,7 @@ Schema name: `ResponseReasoningSummaryTextDeltaEvent`
 
 ## response.reasoning_summary_text.done
 
-当推理摘要文本完成时发出。
+在推理摘要文本完成时发出。
 
 ### Schema
 
@@ -323750,7 +323750,7 @@ Schema name: `ResponseReasoningSummaryTextDoneEvent`
 
 ## response.reasoning_text.delta
 
-当向推理文本添加增量时发出。
+当向推理文本添加增量时触发。
 
 ### Schema
 
@@ -323915,7 +323915,7 @@ Schema name: `ResponseReasoningTextDeltaEvent`
 
 ## response.reasoning_text.done
 
-在推理文本完成时发出。
+当一段推理文本完成时发出。
 
 ### Schema
 
@@ -324698,7 +324698,7 @@ Schema name: `ResponseImageGenCallPartialImageEvent`
 
 ## response.mcp_call_arguments.delta
 
-当 MCP 工具调用的参数存在增量（部分更新）时发出。
+在 MCP 工具调用的参数有增量（部分更新）时发出。
 
 ### Schema
 
@@ -324990,7 +324990,7 @@ Schema name: `ResponseMCPCallArgumentsDoneEvent`
 
 ## response.mcp_call.completed
 
-在 MCP 工具调用成功完成时发出。
+当 MCP 工具调用成功完成时发出。
 
 ### Schema
 
@@ -325244,7 +325244,7 @@ Schema name: `ResponseMCPCallFailedEvent`
 
 ## response.mcp_call.in_progress
 
-当 MCP 工具调用正在进行时发出。
+在 MCP 工具调用进行中时发出。
 
 ### Schema
 
@@ -325371,7 +325371,7 @@ Schema name: `ResponseMCPCallInProgressEvent`
 
 ## response.mcp_list_tools.completed
 
-当可用 MCP 工具列表被成功检索时发出。
+当可用 MCP 工具列表成功获取后发出。
 
 ### Schema
 
@@ -325498,7 +325498,7 @@ Schema name: `ResponseMCPListToolsCompletedEvent`
 
 ## response.mcp_list_tools.failed
 
-当尝试列出可用 MCP 工具失败时发出。
+当尝试列出可用的 MCP 工具失败时触发。
 
 ### Schema
 
@@ -325625,7 +325625,7 @@ Schema name: `ResponseMCPListToolsFailedEvent`
 
 ## response.mcp_list_tools.in_progress
 
-在系统正在检索可用的 MCP 工具列表时触发。
+在系统正在检索可用 MCP 工具列表时发出。
 
 ### Schema
 
@@ -326279,7 +326279,7 @@ Schema name: `ResponseCodeInterpreterCallCodeDeltaEvent`
 
 ## response.code_interpreter_call_code.done
 
-当代码片段由代码解释器完成时发出。
+当代码片段由代码解释器完成最终处理时触发。
 
 ### Schema
 
@@ -327151,7 +327151,7 @@ Schema name: `ResponseOutputTextAnnotationAddedEvent`
 
 ## response.queued
 
-当响应被排队等待处理时发出。
+当响应被排入队列并等待处理时触发。
 
 ### Schema
 
@@ -328057,14 +328057,14 @@ Schema name: `ResponseQueuedEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -328870,7 +328870,7 @@ Schema name: `ResponseQueuedEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -334234,7 +334234,7 @@ Schema name: `ResponseQueuedEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -381594,7 +381594,7 @@ Schema name: `ResponseCustomToolCallInputDeltaEvent`
 
 ## response.custom_tool_call_input.done
 
-表示自定义工具调用的输入已完成的事件。
+表示自定义工具调用的输入已完整的事件。
 
 ### Schema
 
@@ -381994,7 +381994,7 @@ Schema name: `ResponseAudioDeltaEvent`
 
 ## response.audio.done
 
-在音频响应完成时发出。
+当音频响应完成时发出。
 
 ### Schema
 
@@ -382084,7 +382084,7 @@ Schema name: `ResponseAudioDoneEvent`
 
 ## response.audio.transcript.delta
 
-当存在音频的部分转录文本时发出。
+在出现音频的部分转写时触发。
 
 ### Schema
 
@@ -382193,7 +382193,7 @@ Schema name: `ResponseAudioTranscriptDeltaEvent`
 
 ## response.audio.transcript.done
 
-当完整音频转写完成时发出。
+在完整音频转录完成时发出。
 
 ### Schema
 
@@ -382283,7 +382283,7 @@ Schema name: `ResponseAudioTranscriptDoneEvent`
 
 ## response.shell_call_command.added
 
-表示一条 shell 命令已添加到工具调用的流事件。
+指示某条 shell 命令已添加到工具调用的流事件。
 
 ### Schema
 
@@ -382430,7 +382430,7 @@ Schema name: `ResponseShellCallCommandAddedStreamingEvent`
 
 ## response.shell_call_command.delta
 
-表示 shell 命令被增量更新的流式事件。
+一个流式事件，指示 shell 命令被增量更新。
 
 ### Schema
 
@@ -382743,7 +382743,7 @@ Schema name: `ResponseShellCallCommandDoneStreamingEvent`
 
 ## response.shell_call_output_content.delta
 
-一个流式事件，表示 shell 调用输出被增量添加。
+一个流式事件，用于表示 shell 调用输出被增量添加。
 
 ### Schema
 

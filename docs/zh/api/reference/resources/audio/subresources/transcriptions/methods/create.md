@@ -1,35 +1,35 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-## 创建转录
+## Create transcription
 
 **post** `/audio/transcriptions`
 
-将音频转写为输入语言。
+将音频转录为输入语言。
 
-返回一个转录对象，格式为 `json`, `diarized_json`，或 `verbose_json`
-格式，或一个转录事件流。
+以 `json`, `diarized_json`，或 `verbose_json`
+格式返回转录对象，或返回转录事件流。
 
-### 返回
+### Returns
 
 - `Transcription object { text, languages, logprobs, usage }`
 
-  表示模型根据提供的输入返回的转录响应。
+  表示根据所提供输入由模型返回的转录响应。
 
   - `text: string`
 
-    转录的文本。
+    转录得到的文本。
 
   - `languages: optional array of TranscriptionLanguage`
 
-    音频中检测到的语言。由 `gpt-transcribe`。返回。空数组表示无法可靠检测到任何语言。
+    在音频中检测到的语言。由 `gpt-transcribe`。返回。空数组表示无法可靠地检测到任何语言。
 
     - `code: string`
 
-      音频中检测到的语言的代码。
+      在音频中检测到的语言代码。
 
   - `logprobs: optional array of object { token, bytes, logprob }`
 
-    转录中 token 的对数概率。仅在使用模型 `gpt-4o-transcribe` 且 `gpt-4o-mini-transcribe` 如果 `logprobs` 被添加到 `include` 数组时返回。
+    转录中各 token 的对数概率。仅在使用以下模型时返回： `gpt-4o-transcribe` 和 `gpt-4o-mini-transcribe` 当 `logprobs` 被添加到 `include` 数组时。
 
     - `token: optional string`
 
@@ -37,19 +37,19 @@
 
     - `bytes: optional array of number`
 
-      token 的字节。
+      该 token 的字节。
 
     - `logprob: optional number`
 
-      token 的对数概率。
+      该 token 的对数概率。
 
   - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
 
-    请求的 token 使用统计。
+    本次请求的 token 使用统计信息。
 
     - `Tokens object { input_tokens, output_tokens, total_tokens, 2 more }`
 
-      按 token 使用量计费的模型的使用统计。
+      按 token 使用量计费的模型的使用统计信息。
 
       - `input_tokens: number`
 
@@ -65,139 +65,139 @@
 
       - `type: "tokens"`
 
-        使用情况对象的类型。始终为 `tokens` 用于此变体。
+        usage 对象的类型。对于该变体始终为 `tokens` 。
 
         - `"tokens"`
 
       - `input_token_details: optional object { audio_tokens, text_tokens }`
 
-        本次请求计费的输入令牌详情。
+        本次请求计费的输入 token 详情。
 
         - `audio_tokens: optional number`
 
-          本次请求计费的音频令牌数量。
+          本次请求计费的音频 token 数量。
 
         - `text_tokens: optional number`
 
-          本次请求计费的文本令牌数量。
+          本次请求计费的文本 token 数量。
 
     - `Duration object { seconds, type }`
 
-      按音频输入时长计费的模型的使用统计信息。
+      按音频输入时长计费的模型的使用情况统计。
 
       - `seconds: number`
 
-        输入音频的时长（秒）。
+        输入音频的时长，单位为秒。
 
       - `type: "duration"`
 
-        使用情况对象的类型。始终 `duration` 用于此变体。
+        usage 对象的类型。对于该变体始终为 `duration` 。
 
         - `"duration"`
 
 - `TranscriptionDiarized object { duration, segments, task, 2 more }`
 
-  表示模型返回的带说话人分离的转录响应，包括合并后的转录文本和说话人片段注释。
+  表示模型返回的说话人分离转写响应，包括合并后的转写文本和说话人分段标注。
 
   - `duration: number`
 
-    输入音频的时长（秒）。
+    输入音频的时长，单位为秒。
 
   - `segments: array of TranscriptionDiarizedSegment`
 
-    带有时间戳和说话人标签注释的转录文本片段。
+    带有时间戳和说话人标签的转写分段。
 
     - `id: string`
 
-      片段的唯一标识符。
+      该分段的唯一标识符。
 
     - `end: number`
 
-      片段的结束时间戳（秒）。
+      该分段的结束时间戳，单位为秒。
 
     - `speaker: string`
 
-      此片段的说话人标签。提供已知说话人时，标签匹配 `known_speaker_names[]`。否则，说话人按顺序使用大写字母标记（`A`, `B`, ...).
+      该分段的说话人标签。当提供已知说话人时，标签与 `known_speaker_names[]`。匹配；否则，说话人将按顺序使用大写字母标记为（`A`, `B`, ...).
 
     - `start: number`
 
-      片段的开始时间戳（秒）。
+      该分段的起始时间戳，单位为秒。
 
     - `text: string`
 
-      此片段的转录文本。
+      该分段的转写文本。
 
     - `type: "transcript.text.segment"`
 
-      片段的类型。始终 `transcript.text.segment`.
+      分段的类型。始终为 `transcript.text.segment`.
 
       - `"transcript.text.segment"`
 
   - `task: "transcribe"`
 
-    运行的任务类型。始终 `transcribe`.
+    所运行任务的类型。始终为 `transcribe`.
 
     - `"transcribe"`
 
   - `text: string`
 
-    整个音频输入的合并转录文本。
+    整个音频输入拼接后的转写文本。
 
   - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
 
-    请求的令牌或时长使用统计信息。
+    本次请求的 token 或时长使用情况统计。
 
     - `Tokens object { input_tokens, output_tokens, total_tokens, 2 more }`
 
-      按令牌用量计费的模型的使用统计信息。
+      按 token 使用量计费的模型的使用统计信息。
 
       - `input_tokens: number`
 
-        此请求计费的输入令牌数量。
+        本次请求计费的输入 token 数。
 
       - `output_tokens: number`
 
-        生成的输出令牌数量。
+        生成的输出 token 数。
 
       - `total_tokens: number`
 
-        使用的令牌总数（输入 + 输出）。
+        使用的 token 总数（输入 + 输出）。
 
       - `type: "tokens"`
 
-        使用情况对象的类型。始终 `tokens` 用于此变体。
+        usage 对象的类型。对于该变体始终为 `tokens` 。
 
         - `"tokens"`
 
       - `input_token_details: optional object { audio_tokens, text_tokens }`
 
-        此请求计费的输入令牌的详细信息。
+        本次请求计费的输入 token 详情。
 
         - `audio_tokens: optional number`
 
-          此请求计费的音频令牌数量。
+          本次请求计费的音频 token 数量。
 
         - `text_tokens: optional number`
 
-          此请求计费的文本令牌数量。
+          本次请求计费的文本 token 数量。
 
     - `Duration object { seconds, type }`
 
-      按音频输入时长计费的模型的使用统计信息。
+      按音频输入时长计费的模型的使用情况统计。
 
       - `seconds: number`
 
-        输入音频的时长（以秒为单位）。
+        输入音频的时长，单位为秒。
 
       - `type: "duration"`
 
-        使用情况对象的类型。始终 `duration` 用于此变体。
+        usage 对象的类型。对于该变体始终为 `duration` 。
 
         - `"duration"`
 
 - `TranscriptionVerbose object { duration, language, text, 3 more }`
 
-  表示模型根据提供的输入返回的详细 json 转录响应。
+  表示模型基于提供的输入返回的详细 JSON 转写响应。
 
   - `duration: number`
 
@@ -209,81 +209,81 @@
 
   - `text: string`
 
-    转录的文本。
+    转录得到的文本。
 
   - `segments: optional array of TranscriptionSegment`
 
-    转录文本的片段及其相应详细信息。
+    转写文本的分段及其对应的详细信息。
 
     - `id: number`
 
-      片段的唯一标识符。
+      该段的唯一标识符。
 
     - `avg_logprob: number`
 
-      片段的平均 logprob。如果该值低于 -1，则认为 logprobs 计算失败。
+      该段的平均 logprob。若该值低于 -1，则视为 logprobs 失败。
 
     - `compression_ratio: number`
 
-      片段压缩比。若该值大于 2.4，则认为压缩失败。
+      该段的压缩比。若该值大于 2.4，则视为压缩失败。
 
     - `end: number`
 
-      片段结束时间，单位秒。
+      该段的结束时间，以秒为单位。
 
     - `no_speech_prob: number`
 
-      片段中无语音的概率。若该值高于 1.0 且 `avg_logprob` 低于 -1，则认为该片段为静音。
+      该段中无语音的概率。若该值高于 1.0 并且 `avg_logprob` 低于 -1，则将该段视为静音。
 
     - `seek: number`
 
-      片段偏移量。
+      该段的寻址偏移量。
 
     - `start: number`
 
-      片段开始时间，单位秒。
+      该段的开始时间，以秒为单位。
 
     - `temperature: number`
 
-      用于生成片段的温度参数。
+      用于生成该段的温度参数。
 
     - `text: string`
 
-      片段的文本内容。
+      该段的文本内容。
 
     - `tokens: array of number`
 
-      文本内容对应的 token ID 数组。
+      该文本内容的 token ID 数组。
 
   - `usage: optional object { seconds, type }`
 
-    按音频输入时长计费的模型使用统计信息。
+    按音频输入时长计费的模型的使用情况统计。
 
     - `seconds: number`
 
-      输入音频的时长，单位秒。
+      输入音频的时长，单位为秒。
 
     - `type: "duration"`
 
-      使用情况对象的类型。始终为 `duration` 用于此变体。
+      usage 对象的类型。对于该变体始终为 `duration` 。
 
       - `"duration"`
 
   - `words: optional array of TranscriptionWord`
 
-    提取的单词及其对应的时间戳。
+    提取出的词语及其对应的时间戳。
 
     - `end: number`
 
-      单词结束时间，单位秒。
+      该词语的结束时间，以秒为单位。
 
     - `start: number`
 
-      单词开始时间，单位秒。
+      该词语的开始时间，以秒为单位。
 
     - `word: string`
 
-      单词的文本内容。
+      该词语的文本内容。
 
 ### 示例
 
@@ -355,7 +355,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 }
 ```
 
-### 说话人分离
+### 说话人区分
 
 ```http
 curl https://api.openai.com/v1/audio/transcriptions \
@@ -481,7 +481,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 }
 ```
 
-### 片段时间戳
+### 分段时间戳
 
 ```http
 curl https://api.openai.com/v1/audio/transcriptions \
@@ -604,7 +604,7 @@ data: {"type":"transcript.text.delta","delta":".","logprobs":[{"token":".","logp
 data: {"type":"transcript.text.done","text":"I see skies of blue and clouds of white, the bright blessed days, the dark sacred nights, and I think to myself, what a wonderful world.","logprobs":[{"token":"I","logprob":-0.00007588794,"bytes":[73]},{"token":" see","logprob":-3.1281633e-7,"bytes":[32,115,101,101]},{"token":" skies","logprob":-2.3392786e-6,"bytes":[32,115,107,105,101,115]},{"token":" of","logprob":-3.1281633e-7,"bytes":[32,111,102]},{"token":" blue","logprob":-1.0280384e-6,"bytes":[32,98,108,117,101]},{"token":" and","logprob":-0.0005108566,"bytes":[32,97,110,100]},{"token":" clouds","logprob":-1.9361265e-7,"bytes":[32,99,108,111,117,100,115]},{"token":" of","logprob":-1.9361265e-7,"bytes":[32,111,102]},{"token":" white","logprob":-7.89631e-7,"bytes":[32,119,104,105,116,101]},{"token":",","logprob":-0.0014890312,"bytes":[44]},{"token":" the","logprob":-0.0110956915,"bytes":[32,116,104,101]},{"token":" bright","logprob":0.0,"bytes":[32,98,114,105,103,104,116]},{"token":" blessed","logprob":-0.000045848617,"bytes":[32,98,108,101,115,115,101,100]},{"token":" days","logprob":-0.000010802739,"bytes":[32,100,97,121,115]},{"token":",","logprob":-0.00001700133,"bytes":[44]},{"token":" the","logprob":-0.0000118755715,"bytes":[32,116,104,101]},{"token":" dark","logprob":-5.5122365e-7,"bytes":[32,100,97,114,107]},{"token":" sacred","logprob":-5.4385737e-6,"bytes":[32,115,97,99,114,101,100]},{"token":" nights","logprob":-4.00813e-6,"bytes":[32,110,105,103,104,116,115]},{"token":",","logprob":-0.0036910512,"bytes":[44]},{"token":" and","logprob":-0.0031903093,"bytes":[32,97,110,100]},{"token":" I","logprob":-1.504853e-6,"bytes":[32,73]},{"token":" think","logprob":-4.3202e-7,"bytes":[32,116,104,105,110,107]},{"token":" to","logprob":-1.9361265e-7,"bytes":[32,116,111]},{"token":" myself","logprob":-1.7432603e-6,"bytes":[32,109,121,115,101,108,102]},{"token":",","logprob":-0.29254505,"bytes":[44]},{"token":" what","logprob":-0.016815351,"bytes":[32,119,104,97,116]},{"token":" a","logprob":-3.1281633e-7,"bytes":[32,97]},{"token":" wonderful","logprob":-2.1008714e-6,"bytes":[32,119,111,110,100,101,114,102,117,108]},{"token":" world","logprob":-8.180258e-6,"bytes":[32,119,111,114,108,100]},{"token":".","logprob":-0.014231676,"bytes":[46]}],"usage":{"input_tokens":14,"input_token_details":{"text_tokens":0,"audio_tokens":14},"output_tokens":45,"total_tokens":59}}
 ```
 
-### 单词时间戳
+### 词级时间戳
 
 ```http
 curl https://api.openai.com/v1/audio/transcriptions \
