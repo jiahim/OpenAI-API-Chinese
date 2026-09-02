@@ -135,7 +135,7 @@ List your organization's batches.
 
   - `model: optional string`
 
-    Model ID used to process the batch, like `gpt-5-2025-08-07`. OpenAI
+    Model ID used to process the batch, like `gpt-5.6-sol`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model
     guide](/docs/models) to browse and compare available models.

@@ -1108,7 +1108,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -1532,7 +1532,7 @@ Schema name: `BetaResponseCreatedEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -2338,7 +2338,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -3860,7 +3860,7 @@ Schema name: `BetaResponseCreatedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
@@ -64208,7 +64208,7 @@ Schema name: `BetaResponseCreatedEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-2024-08-06",
+    "model": "gpt-5.6-sol",
     "output": [],
     "parallel_tool_calls": true,
     "previous_response_id": null,
@@ -65334,7 +65334,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -65758,7 +65758,7 @@ Schema name: `BetaResponseInProgressEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -66564,7 +66564,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -68086,7 +68086,7 @@ Schema name: `BetaResponseInProgressEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
@@ -128434,7 +128434,7 @@ Schema name: `BetaResponseInProgressEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-2024-08-06",
+    "model": "gpt-5.6-sol",
     "output": [],
     "parallel_tool_calls": true,
     "previous_response_id": null,
@@ -129560,7 +129560,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -129984,7 +129984,7 @@ Schema name: `BetaResponseCompletedEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -130790,7 +130790,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -132312,7 +132312,7 @@ Schema name: `BetaResponseCompletedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
@@ -192661,7 +192661,7 @@ Schema name: `BetaResponseCompletedEvent`
     "input": [],
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [
       {
         "id": "msg_123",
@@ -193803,7 +193803,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -194227,7 +194227,7 @@ Schema name: `BetaResponseFailedEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -195033,7 +195033,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -196555,7 +196555,7 @@ Schema name: `BetaResponseFailedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
@@ -256906,7 +256906,7 @@ Schema name: `BetaResponseFailedEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [],
     "previous_response_id": null,
     "reasoning_effort": null,
@@ -258027,7 +258027,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -258451,7 +258451,7 @@ Schema name: `BetaResponseIncompleteEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -259257,7 +259257,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -260779,7 +260779,7 @@ Schema name: `BetaResponseIncompleteEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
@@ -321129,7 +321129,7 @@ Schema name: `BetaResponseIncompleteEvent`
     },
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [],
     "previous_response_id": null,
     "reasoning_effort": null,
@@ -387337,7 +387337,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -387761,7 +387761,7 @@ Schema name: `BetaResponseQueuedEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -388567,7 +388567,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -390089,7 +390089,7 @@ Schema name: `BetaResponseQueuedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",

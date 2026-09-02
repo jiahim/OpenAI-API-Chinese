@@ -7,7 +7,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "sourceUrl": "https://developers.openai.com/api/docs/llms.txt",
       "etag": "W/\"2aa51de06cc463589d265a6e160614ea\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:07:04 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:03:46 GMT"
     },
     "reference": {
       "bytes": 35224,
@@ -16,7 +16,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "sourceUrl": "https://developers.openai.com/api/reference/llms.txt",
       "etag": "W/\"ccb972a4e2d6e1b29b604a717e50cad0\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:40 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:23 GMT"
     }
   },
   "pages": {
@@ -32,7 +32,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"ed1694b39d6fb172398088549725f6b8\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:15:13 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:25 GMT"
     },
     "https://developers.openai.com/api/docs/actions/authentication.md": {
       "description": "Learn about authentication options for GPT actions, including no authentication, API key, and OAuth methods.",
@@ -46,7 +46,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"a4d9b2375b6f2205502883b9369e3b29\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:20:44 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:24 GMT"
     },
     "https://developers.openai.com/api/docs/actions/data-retrieval.md": {
       "description": "Learn about performing data retrieval using APIs, relational databases, and vector databases with GPT Actions.",
@@ -60,7 +60,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"ecd8c9dbb0378c97ab77ad0622d16288\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:40 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:23 GMT"
     },
     "https://developers.openai.com/api/docs/actions/getting-started.md": {
       "description": "Learn how to set up and test GPT actions from scratch with the OpenAI API.",
@@ -74,7 +74,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"a26b83fa0d1ed063e9552db7f77b5818\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:20:44 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:24 GMT"
     },
     "https://developers.openai.com/api/docs/actions/introduction.md": {
       "description": "Learn about GPT Actions for customizing ChatGPT and interacting with external applications via APIs.",
@@ -88,7 +88,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"aac0dc139f0da94d289e26af2cf4dfd1\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:15:13 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:13 GMT"
     },
     "https://developers.openai.com/api/docs/actions/production.md": {
       "description": "Guidelines for deploying GPT Actions in a production environment, including rate limits, timeouts, and security measures.",
@@ -102,7 +102,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"de64ae029ee2cf49bbfd82f9b1f9b941\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:43 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:25 GMT"
     },
     "https://developers.openai.com/api/docs/actions/sending-files.md": {
       "description": "Learn how to send and return files using GPT Actions in the OpenAI API.",
@@ -116,7 +116,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"d089b30c2f807e02aac327ad06844ca6\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:19:25 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:14:59 GMT"
     },
     "https://developers.openai.com/api/docs/assistants/deep-dive.md": {
       "description": "A detailed guide to creating and managing assistants with the Assistants API on the OpenAI platform.",
@@ -145,7 +145,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"81757a2578f5c25bda8bdbb6edaf4f87\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:01:57 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:26 GMT"
     },
     "https://developers.openai.com/api/docs/assistants/tools.md": {
       "description": "Learn about the tools available for OpenAI Assistants, including file search, code interpreter, and function calling.",
@@ -219,7 +219,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"7135ec97066fbf6098abdc496973c2e4\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:04:54 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:27 GMT"
     },
     "https://developers.openai.com/api/docs/changelog.md": {
       "description": "Customer-visible changes to the OpenAI API and models.",
@@ -233,7 +233,7 @@
       "sourceUpdatedAt": "2026-08-31T21:21:39Z",
       "status": "active",
       "etag": "W/\"dd67c78e42eeb0cd3ce5481c468f6b53\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:06:31 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:00:57 GMT"
     },
     "https://developers.openai.com/api/docs/concepts.md": {
       "description": "Key concepts to understand when working with the OpenAI API.",
@@ -247,7 +247,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"aba8172ef2730efc6a436054b5c2a90e\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:35:52 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:28 GMT"
     },
     "https://developers.openai.com/api/docs/deprecations.md": {
       "description": "Find information about OpenAI API deprecations and recommended replacements.",
@@ -261,7 +261,7 @@
       "sourceUpdatedAt": "2026-08-31T21:21:39Z",
       "status": "active",
       "etag": "W/\"a1cb47d7260fc73e9d5c676bce998429\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:20:54 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 18:57:56 GMT"
     },
     "https://developers.openai.com/api/docs/gpts/release-notes.md": {
       "description": "Keep track of updates to OpenAI GPTs and explore new features and capabilities in the release notes.",
@@ -275,7 +275,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"644aa62ec8015e5cb3edf00daae75e13\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:47 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:29 GMT"
     },
     "https://developers.openai.com/api/docs/guides/admin-apis.md": {
       "description": "Use Admin APIs and Admin API keys to automate organization management tasks such as invitations and audit log retrieval.",
@@ -289,7 +289,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"01b1749db4863159fc0ef48fd91245be\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:59:10 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:02:51 GMT"
     },
     "https://developers.openai.com/api/docs/guides/advanced-usage.md": {
       "description": "Discover advanced usage techniques for OpenAI's API, including reproducible outputs, token management, and parameter settings.",
@@ -303,7 +303,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"d493ec097edb0f3d60fba0d67798f877\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:48 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:32 GMT"
     },
     "https://developers.openai.com/api/docs/guides/agent-builder-safety.md": {
       "description": "Minimize prompt injections and other risks when building agent workflows with OpenAI Agent Builder.",
@@ -317,7 +317,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"3861fa90102bf2280557a83e6941185e\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:11:50 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:32 GMT"
     },
     "https://developers.openai.com/api/docs/guides/agent-builder.md": {
       "description": "Use the OpenAI Agent Builder to start from templates, compose nodes, preview runs, and export workflows to code.",
@@ -331,7 +331,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"31a3dae8f85ccfbd6a2be124c6458cc1\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:19:01 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:33 GMT"
     },
     "https://developers.openai.com/api/docs/guides/agent-builder/migrate-from-agent-builder.md": {
       "description": "Learn how to export an Agent Builder workflow and continue with ChatGPT Workspace Agents or the Agents SDK.",
@@ -345,7 +345,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"ce1e2f9dbe6091846fae695ca25cf9e6\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:24 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:08 GMT"
     },
     "https://developers.openai.com/api/docs/guides/agent-evals.md": {
       "description": "Learn how to evaluate agent workflows with traces, graders, datasets, and evaluation runs on the OpenAI platform.",
@@ -359,7 +359,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"c8a77f17374b247f7111edf3488ed8fa\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:11:50 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 18:59:08 GMT"
     },
     "https://developers.openai.com/api/docs/guides/agents.md": {
       "description": "Learn how the OpenAI Agents SDK fits together and which docs to read next.",
@@ -373,7 +373,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"1600da769afb3b87dcf4045dcc9486f9\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:10:21 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:33 GMT"
     },
     "https://developers.openai.com/api/docs/guides/agents/define-agents.md": {
       "description": "Learn how to define an agent's instructions, model, tools, and local context in the OpenAI Agents SDK.",
@@ -387,7 +387,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"9f41f0e68079f62e7fc613ff5f06b343\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:41:28 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:33 GMT"
     },
     "https://developers.openai.com/api/docs/guides/agents/guardrails-approvals.md": {
       "description": "Learn how to use guardrails and human review in the OpenAI Agents SDK for safer, more controlled workflows.",
@@ -401,7 +401,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"af854da75d62fce6385f563164e69ea7\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:15:01 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:59 GMT"
     },
     "https://developers.openai.com/api/docs/guides/agents/integrations-observability.md": {
       "description": "Learn how to integrate MCP into Agents SDK workflows and how to trace and debug runs.",
@@ -415,7 +415,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"40217fc1a75037a37bb53b5af1f0d944\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:11:50 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:02 GMT"
     },
     "https://developers.openai.com/api/docs/guides/agents/models.md": {
       "description": "Learn how to choose models, set defaults, and think about providers and transport in the OpenAI Agents SDK.",
@@ -429,7 +429,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"c990aa02902a3b4324ab3df2cfe6ef54\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:28 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:11 GMT"
     },
     "https://developers.openai.com/api/docs/guides/agents/orchestration.md": {
       "description": "Learn how to orchestrate multiple agents with handoffs and agents-as-tools in the OpenAI Agents SDK.",
@@ -443,7 +443,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"abd4d675226ec5bfcc823b17fe33e3db\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:14:48 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:14 GMT"
     },
     "https://developers.openai.com/api/docs/guides/agents/quickstart.md": {
       "description": "Build your first agent with the OpenAI Agents SDK, add tools and handoffs, and understand where to go next.",
@@ -457,7 +457,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"e1f6d1d7821b4034e6efe17a9d471f6b\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:38 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:20 GMT"
     },
     "https://developers.openai.com/api/docs/guides/agents/results.md": {
       "description": "Learn which result surfaces matter most in the OpenAI Agents SDK and how they connect to resumable workflow state.",
@@ -471,7 +471,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"16b7a9c58fdb94a0647b4dca9a4321d4\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:18:38 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:29 GMT"
     },
     "https://developers.openai.com/api/docs/guides/agents/running-agents.md": {
       "description": "Learn how to run agents, stream output, and choose the right conversation-state strategy in the OpenAI Agents SDK.",
@@ -485,7 +485,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"08a8c10c5c9f4429b06f083fc6c54fab\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:48 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:03:55 GMT"
     },
     "https://developers.openai.com/api/docs/guides/agents/sandboxes.md": {
       "description": "Learn how sandboxes fit into Agents SDK workflows, when to use them, and how orchestration stays separate from execution.",
@@ -499,7 +499,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"89f7c77caebd3b3c226cae262bccc2fa\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:50 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:32 GMT"
     },
     "https://developers.openai.com/api/docs/guides/amazon-bedrock.md": {
       "description": "Learn how Amazon Bedrock availability differs from the OpenAI API, including supported capabilities, AWS-managed controls, and pricing considerations.",
@@ -513,7 +513,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"b30af8a9375274a29fd348f6b77cb121\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:31 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:13 GMT"
     },
     "https://developers.openai.com/api/docs/guides/audio.md": {
       "description": "Learn core audio and speech concepts for building with the OpenAI API.",
@@ -527,7 +527,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"f868a873003d5a17b186611cf8693989\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:39:32 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 18:59:27 GMT"
     },
     "https://developers.openai.com/api/docs/guides/background.md": {
       "description": "Run long running tasks asynchronously in the background.",
@@ -541,7 +541,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"e8543a524ce8e191f6c240f3f865ffb5\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:52 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:36 GMT"
     },
     "https://developers.openai.com/api/docs/guides/batch.md": {
       "description": "Learn how to use OpenAI's Batch API for processing jobs with asynchronous requests, increased rate limits, and cost efficiency.",
@@ -555,7 +555,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"a5ddfa36f85b9af966e0f18d9b553f2e\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:09:19 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:03:31 GMT"
     },
     "https://developers.openai.com/api/docs/guides/chatkit-actions.md": {
       "description": "Embed a widget to build your own chat experiences.",
@@ -569,7 +569,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"023d7230b40abb818661bee0cd62f312\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:15:13 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:30 GMT"
     },
     "https://developers.openai.com/api/docs/guides/chatkit-themes.md": {
       "description": "Configure colors, typography, density, and component variants in your ChatKit implementation.",
@@ -583,7 +583,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"c790b0b8613d0c3e3aad105eac0a62d4\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:56 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:38 GMT"
     },
     "https://developers.openai.com/api/docs/guides/chatkit-widgets.md": {
       "description": "Learn how to design widgets in your chat experience with ChatKit.",
@@ -597,7 +597,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"c18d2ae218e45f8ae8953b99a709dd65\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:55 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:38 GMT"
     },
     "https://developers.openai.com/api/docs/guides/chatkit.md": {
       "description": "Embed a widget to build your own chat experiences.",
@@ -611,7 +611,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"1f98c0e3a3b3e737cf0bf658fd666bc7\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:54 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:38 GMT"
     },
     "https://developers.openai.com/api/docs/guides/citation-formatting.md": {
       "description": "Learn practical citation formatting patterns that help models generate reliable citations.",
@@ -625,7 +625,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"dd5d81683947379ff1024e53907bbf51\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:55 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:39 GMT"
     },
     "https://developers.openai.com/api/docs/guides/code-generation.md": {
       "description": "Learn how to use OpenAI models and Codex to generate code.",
@@ -639,7 +639,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"fe829260e7c47247cf37e4aabf19cad5\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:46:31 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 18:58:58 GMT"
     },
     "https://developers.openai.com/api/docs/guides/compaction.md": {
       "description": "Manage long-running conversations with server-side and standalone compaction.",
@@ -653,7 +653,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"cc6ae0776c956b6615de85ccac4e3ac8\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:10:21 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:03:35 GMT"
     },
     "https://developers.openai.com/api/docs/guides/completions.md": {
       "description": "",
@@ -667,7 +667,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"4d695e853af478a0875af4429af886a1\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:57 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:42 GMT"
     },
     "https://developers.openai.com/api/docs/guides/content-provenance.md": {
       "description": "Learn how to verify images and audio, interpret content credentials and watermarks, and use provenance results responsibly.",
@@ -681,7 +681,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"0df0b69862ab29e43dc000b0a49a4496\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:45:33 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:47 GMT"
     },
     "https://developers.openai.com/api/docs/guides/conversation-state.md": {
       "description": "Learn how to manage conversation state during a model interaction with the OpenAI API.",
@@ -695,7 +695,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"ec4f409eecbc04af9703b4546e873125\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:15:00 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 18:59:16 GMT"
     },
     "https://developers.openai.com/api/docs/guides/cost-optimization.md": {
       "description": "Lower your OpenAI model costs by trying our tools and strategies.",
@@ -709,7 +709,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"e4a3c881630441310c7ad2508eb5d8ca\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:04 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:48 GMT"
     },
     "https://developers.openai.com/api/docs/guides/csam-guidance.md": {
       "description": "Learn practical guidance for addressing CSAM risks in products built with OpenAI.",
@@ -723,7 +723,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"db5556e32beaa6f6be0e5960e8a739b2\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:05 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:49 GMT"
     },
     "https://developers.openai.com/api/docs/guides/custom-chatkit.md": {
       "description": "Use your own server with ChatKit to integrate agent workflows into your product with more customization.",
@@ -737,7 +737,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"267192b1d29f20b30c53c6d42fab9b56\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:48 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:31 GMT"
     },
     "https://developers.openai.com/api/docs/guides/deep-research.md": {
       "description": "Use deep research models for complex analysis and research tasks.",
@@ -751,7 +751,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"b2f0f3a4bc3be1b88d65fd824b6971b1\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:06 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:50 GMT"
     },
     "https://developers.openai.com/api/docs/guides/deployment-checklist.md": {
       "description": "Review commonly underused Responses API design choices that improve deployment quality, speed, cost, and reliability.",
@@ -765,7 +765,7 @@
       "sourceUpdatedAt": "2026-08-31T21:21:39Z",
       "status": "active",
       "etag": "W/\"e7936dea36b235d7718c046edf6fcc14\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:51 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:03:35 GMT"
     },
     "https://developers.openai.com/api/docs/guides/developer-mode.md": {
       "description": "Full MCP client access for apps and tools.",
@@ -779,7 +779,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"4c8f9d81829676177379e00b9130d5cf\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:44:25 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:37 GMT"
     },
     "https://developers.openai.com/api/docs/guides/direct-preference-optimization.md": {
       "description": "Fine-tune models for subjective decision-making by comparing model outputs.",
@@ -793,7 +793,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"6f818410bb0a9d54f2530b3db9d3e211\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:07 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:50 GMT"
     },
     "https://developers.openai.com/api/docs/guides/embeddings.md": {
       "description": "Learn how to turn text into numbers, unlocking use cases like search, clustering, and more with OpenAI API embeddings.",
@@ -807,7 +807,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"980fd9c4c3bceb5a2804805b07ea9472\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:11:12 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:04:22 GMT"
     },
     "https://developers.openai.com/api/docs/guides/error-codes.md": {
       "description": "An overview of error codes from the OpenAI API and Python library, including solutions and guidance.",
@@ -821,7 +821,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"df3ab8a52f4a517529a846031cb78295\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:08 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:51 GMT"
     },
     "https://developers.openai.com/api/docs/guides/evals.md": {
       "description": "Learn how to test and improve AI model outputs through evaluations.",
@@ -835,7 +835,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"8068a36d00876d8a57e0bcc8bf6ed328\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:20:22 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:13:27 GMT"
     },
     "https://developers.openai.com/api/docs/guides/evaluation-best-practices.md": {
       "description": "Learn best practices for designing evals to test and improve model performance in production.",
@@ -849,7 +849,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"8d832c52739fcb724811d16a60c80ac6\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:03:55 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:03:01 GMT"
     },
     "https://developers.openai.com/api/docs/guides/evaluation-getting-started.md": {
       "description": "Learn how to get started with evals using datasets.",
@@ -863,7 +863,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"9e07b3edef1997c56d85bb81f27dd48e\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:20:54 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:57 GMT"
     },
     "https://developers.openai.com/api/docs/guides/external-models.md": {
       "description": "Learn how to run evals on non-OpenAI models, using the OpenAI platform.",
@@ -877,7 +877,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"59ad87f8cce4bbb89324053f3512f548\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:09 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:52 GMT"
     },
     "https://developers.openai.com/api/docs/guides/fast-mode.md": {
       "description": "Get up to 2.5× faster speeds in the API while retaining flexible pay-as-you-go pricing.",
@@ -891,7 +891,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"3efdf0f387b4ce029bbceabe9a5097c3\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:05:41 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:53 GMT"
     },
     "https://developers.openai.com/api/docs/guides/file-inputs.md": {
       "description": "Learn how to use files as file inputs in the OpenAI API.",
@@ -905,7 +905,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"99765d9130831971f7d5c2bf8b0248ba\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:05:46 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:03:13 GMT"
     },
     "https://developers.openai.com/api/docs/guides/fine-tuning-best-practices.md": {
       "description": "Improve results with practical tips for fine-tuning.",
@@ -919,7 +919,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"bc5d3690011a7e9092ad76c5362c8482\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:12 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:01:43 GMT"
     },
     "https://developers.openai.com/api/docs/guides/flex-processing.md": {
       "description": "Learn how to optimize costs for asynchronous tasks with flex processing.",
@@ -933,7 +933,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"c13cf927f9383b3fa6ae056e0e4d023d\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:05:29 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:01:51 GMT"
     },
     "https://developers.openai.com/api/docs/guides/frontend-prompt.md": {
       "description": "Example prompt instructions for frontend work, written for GPT-5.5.",
@@ -947,7 +947,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"b3d7789d4c70f2c5f6ab6f0e6236e542\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:13 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:56 GMT"
     },
     "https://developers.openai.com/api/docs/guides/function-calling.md": {
       "description": "Learn how function calling enables large language models to connect to external data and systems.",
@@ -961,7 +961,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"dfc6f10992df413ec2278fefd2478cb1\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:32:46 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 18:58:50 GMT"
     },
     "https://developers.openai.com/api/docs/guides/graders.md": {
       "description": "Learn about graders used for evals and fine-tuning.",
@@ -975,7 +975,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"d7e4c798a984c378010b751a699241b2\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:20:54 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:58 GMT"
     },
     "https://developers.openai.com/api/docs/guides/image-cost-calculator.md": {
       "description": "Estimate image input tokens and API costs for OpenAI vision models by model, image dimensions, and detail level.",
@@ -989,7 +989,7 @@
       "sourceUpdatedAt": "2026-08-31T21:21:39Z",
       "status": "active",
       "etag": "W/\"7258eafb80d8c20ab997ff64a5a062a8\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:17 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:00 GMT"
     },
     "https://developers.openai.com/api/docs/guides/image-generation.md": {
       "description": "Learn how to generate or edit images with the OpenAI API and image generation models.",
@@ -1003,7 +1003,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"adabafd07a149d4239a735dbc3bd9619\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:41:28 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:03:33 GMT"
     },
     "https://developers.openai.com/api/docs/guides/images-vision.md": {
       "description": "Learn how to understand or generate images with the OpenAI API.",
@@ -1017,7 +1017,7 @@
       "sourceUpdatedAt": "2026-08-31T21:21:39Z",
       "status": "active",
       "etag": "W/\"76171612252567b3b1ce304495ce8eb3\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:15:53 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:01 GMT"
     },
     "https://developers.openai.com/api/docs/guides/ip-addresses.md": {
       "description": "Find the published IP egress ranges used by OpenAI products.",
@@ -1031,7 +1031,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"33b2b19263b2531540a9e25d6453273c\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:20 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:03 GMT"
     },
     "https://developers.openai.com/api/docs/guides/ip-allowlist.md": {
       "description": "Configure organization- or project-level IP allowlists for OpenAI API requests.",
@@ -1045,7 +1045,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"0ec943e2838a5a2fae39a14dc8a628a2\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:19 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:03 GMT"
     },
     "https://developers.openai.com/api/docs/guides/latency-optimization.md": {
       "description": "Improve latency across a wide variety of LLM-related use cases.",
@@ -1059,7 +1059,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"47efbd63b1b121e418ee04133c649ae6\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:29:25 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:00:21 GMT"
     },
     "https://developers.openai.com/api/docs/guides/latest-model/gpt-4.1.md": {
       "description": "Learn how to use, migrate to, and prompt GPT-4.1 in the OpenAI API.",
@@ -1073,7 +1073,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"65c68479ff26af00589693b37978fc58\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:01 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:43 GMT"
     },
     "https://developers.openai.com/api/docs/guides/latest-model/gpt-5.1.md": {
       "description": "Learn how to use, migrate to, and prompt GPT-5.1 in the OpenAI API.",
@@ -1087,7 +1087,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"00f0405e5274cac235e8a61fa52e3931\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:35 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:44 GMT"
     },
     "https://developers.openai.com/api/docs/guides/latest-model/gpt-5.2.md": {
       "description": "Learn how to use, migrate to, and prompt GPT-5.2 in the OpenAI API.",
@@ -1101,7 +1101,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"b2ce4db0531b749ab8d0a9eb220e747b\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:03 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:45 GMT"
     },
     "https://developers.openai.com/api/docs/guides/latest-model/gpt-5.3-codex.md": {
       "description": "Learn how to use, migrate to, and prompt GPT-5.3-Codex in the Responses API.",
@@ -1115,7 +1115,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"8dcd53666ed0413546896ea4cddb647b\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:03 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:45 GMT"
     },
     "https://developers.openai.com/api/docs/guides/latest-model/gpt-5.4.md": {
       "description": "Learn how to use, migrate to, and prompt GPT-5.4 in the OpenAI API.",
@@ -1129,7 +1129,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"cf7f899653126abdb8c50f82dde751d8\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:04 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:46 GMT"
     },
     "https://developers.openai.com/api/docs/guides/latest-model/gpt-5.5.md": {
       "description": "Learn how to use and migrate to GPT-5.5 in the OpenAI API.",
@@ -1143,7 +1143,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"f85b4050b7a5fdec9b6508dc56b5fafa\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:10:26 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:47 GMT"
     },
     "https://developers.openai.com/api/docs/guides/latest-model/gpt-5.6.md": {
       "description": "Learn how to use and migrate to GPT-5.6, the latest model family in the OpenAI API.",
@@ -1157,7 +1157,7 @@
       "sourceUpdatedAt": "2026-08-31T21:21:39Z",
       "status": "active",
       "etag": "W/\"e5ad853a6d50e7796be004755cdaa6ff\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:12:08 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:47 GMT"
     },
     "https://developers.openai.com/api/docs/guides/latest-model/gpt-5.md": {
       "description": "Learn how to use, migrate to, and prompt GPT-5 in the OpenAI API.",
@@ -1171,7 +1171,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"f8239020457c6939d0e7ff7f7cc59c83\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:02 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:01:06 GMT"
     },
     "https://developers.openai.com/api/docs/guides/migrate-to-responses.md": {
       "description": "",
@@ -1185,7 +1185,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"f4c88bec3e4e4cdcfc4fa40e23a6bec7\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:39:14 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:04:54 GMT"
     },
     "https://developers.openai.com/api/docs/guides/model-optimization.md": {
       "description": "Ensure quality model outputs with evals and fine-tuning in the OpenAI platform.",
@@ -1199,7 +1199,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"2e614d7ec53fddfaf75573a182ede2ed\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:26 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 18:57:48 GMT"
     },
     "https://developers.openai.com/api/docs/guides/model-selection.md": {
       "description": "Learn how to choose the right model by balancing accuracy, latency, and cost for optimal performance.",
@@ -1213,7 +1213,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"778f82f850b1e3bdd08a2d86ee442426\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:27 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:09 GMT"
     },
     "https://developers.openai.com/api/docs/guides/moderation.md": {
       "description": "Learn how to identify harmful content in text and images with OpenAI moderation models.",
@@ -1227,7 +1227,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"0238b303a24b58a89039563a81ce029e\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:29 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:11 GMT"
     },
     "https://developers.openai.com/api/docs/guides/mutual-tls.md": {
       "description": "Configure Mutual TLS trust, certificate verification, CEL filters, rotation, and troubleshooting for OpenAI API requests.",
@@ -1241,7 +1241,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"f7126bf4823db8e350add568097e2690\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:30 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:12 GMT"
     },
     "https://developers.openai.com/api/docs/guides/node-reference.md": {
       "description": "Explore all available nodes for composing workflows in Agent Builder.",
@@ -1255,7 +1255,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"d2209e1a3e0825c646f9cf31f44a8ac3\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:30 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:13 GMT"
     },
     "https://developers.openai.com/api/docs/guides/optimizing-llm-accuracy.md": {
       "description": "Learn strategies to enhance the accuracy of large language models using techniques like prompt engineering, retrieval-augmented generation, and fine-tuning.",
@@ -1269,7 +1269,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"dc42b07fece239db3033d2628acdc45b\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:31 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:14 GMT"
     },
     "https://developers.openai.com/api/docs/guides/predicted-outputs.md": {
       "description": "Understand how to reduce latency for model responses where much of the response is known ahead of time.",
@@ -1283,7 +1283,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"0edf28877d456c52925531d1370ab29a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:32 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:15 GMT"
     },
     "https://developers.openai.com/api/docs/guides/private-link.md": {
       "description": "Configure Azure Private Link endpoints, DNS, health checks, and cross-region routing for the OpenAI API.",
@@ -1297,7 +1297,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"5733929fced6d67a356fa212678b01e9\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:33 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:15 GMT"
     },
     "https://developers.openai.com/api/docs/guides/production-best-practices.md": {
       "description": "Explore best practices for transitioning your AI projects from prototype to production, including scaling, security, and cost management.",
@@ -1311,7 +1311,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"822f4ea757289bb29ce66911d9f7dd5d\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:34 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:16 GMT"
     },
     "https://developers.openai.com/api/docs/guides/prompt-caching.md": {
       "description": "Learn how prompt caching reduces latency and cost for long prompts in OpenAI's API.",
@@ -1325,7 +1325,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"f1e02f3e963ddf666019c8617058caaf\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:08:39 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:03:32 GMT"
     },
     "https://developers.openai.com/api/docs/guides/prompt-engineering.md": {
       "description": "Learn strategies and tactics for better results using large language models in the OpenAI API.",
@@ -1339,7 +1339,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"20c14e17061c138456730b74fb874456\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:15:29 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:17 GMT"
     },
     "https://developers.openai.com/api/docs/guides/prompt-generation.md": {
       "description": "Learn how to generate prompts, functions, and schemas in the OpenAI API's Playground.",
@@ -1353,7 +1353,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"ad158ad99a45b226374fcd5cbb481094\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:59:11 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:18 GMT"
     },
     "https://developers.openai.com/api/docs/guides/prompt-guidance-gpt-5p6.md": {
       "description": "Machine-readable prompting guidance for adapting prompts and agents to GPT-5.6 Sol.",
@@ -1367,7 +1367,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"578320d8c07179094d4da89c1a2b76de\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:44:23 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:02:11 GMT"
     },
     "https://developers.openai.com/api/docs/guides/prompt-optimizer.md": {
       "description": "Learn how to use your dataset to automatically improve your prompts.",
@@ -1381,7 +1381,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"f8649ceb6497d19abed0e6218cda23fb\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:36 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:18 GMT"
     },
     "https://developers.openai.com/api/docs/guides/prompting.md": {
       "description": "Learn how to create, optimize, and maintain prompts with OpenAI models.",
@@ -1395,7 +1395,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"f66d0968952edb22f58e7feedc21058c\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:59:11 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:19 GMT"
     },
     "https://developers.openai.com/api/docs/guides/prompting/migrate-from-prompt-object.md": {
       "description": "Learn how to migrate from reusable prompt objects to versioned prompts in your application code.",
@@ -1409,7 +1409,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"72f592417d9cdc792fc363a0d5acbc96\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:25 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:08 GMT"
     },
     "https://developers.openai.com/api/docs/guides/rate-limits.md": {
       "description": "Rate limits are restrictions that our API imposes on the number of times a user or client can access our services within a specified period of time.",
@@ -1423,7 +1423,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"e2ca9335822a37fce9dfa054ba6ddd9d\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:31:52 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:21 GMT"
     },
     "https://developers.openai.com/api/docs/guides/rbac.md": {
       "description": "Learn how to use role-based access control to assign permissions, create custom roles, group users, and scope access across both the OpenAI API and dashboard.",
@@ -1437,7 +1437,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"c82358328b21ddb870ec717054a736e9\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:15:59 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:05 GMT"
     },
     "https://developers.openai.com/api/docs/guides/realtime-conversations.md": {
       "description": "Learn how to manage Realtime speech-to-speech conversations.",
@@ -1451,7 +1451,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"f559dfdb7b9e2ab4a333c5974aec6263\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:42 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:25 GMT"
     },
     "https://developers.openai.com/api/docs/guides/realtime-costs.md": {
       "description": "Learn how to monitor and optimize your costs when using the Realtime API.",
@@ -1465,7 +1465,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"bea73b0e082caa1cf8041ff4c712faf4\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:23 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:07 GMT"
     },
     "https://developers.openai.com/api/docs/guides/realtime-mcp.md": {
       "description": "Learn how to configure function tools, MCP tools, and connectors in a Realtime session.",
@@ -1479,7 +1479,7 @@
       "sourceUpdatedAt": "2026-08-31T21:21:39Z",
       "status": "active",
       "etag": "W/\"aa3e2abb92c347e8facb0ea0fde852da\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:12:38 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:26 GMT"
     },
     "https://developers.openai.com/api/docs/guides/realtime-models-prompting.md": {
       "description": "Learn how to use realtime voice models, including Realtime 2 reasoning, preambles, tool use, and migration from earlier realtime models.",
@@ -1493,7 +1493,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"e57d64a16496ab0ccb869bb9a9bd36be\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:08:17 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:48 GMT"
     },
     "https://developers.openai.com/api/docs/guides/realtime-server-controls.md": {
       "description": "Learn how to use webhooks and server-side controls with the Realtime API.",
@@ -1507,7 +1507,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"b40b3e74d7d8878a57d91a3b165f2479\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:12 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 18:57:48 GMT"
     },
     "https://developers.openai.com/api/docs/guides/realtime-sip.md": {
       "description": "Learn how to connect to the Realtime API using SIP.",
@@ -1521,7 +1521,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"81508664c3f77efc01f2893ec0389fbc\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:40:42 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:23 GMT"
     },
     "https://developers.openai.com/api/docs/guides/realtime-transcription.md": {
       "description": "Learn how to transcribe live audio with realtime transcription sessions.",
@@ -1535,7 +1535,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"32a2fff0736e80ce07976e7e72dbcaf7\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:25:25 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:25 GMT"
     },
     "https://developers.openai.com/api/docs/guides/realtime-translation.md": {
       "description": "Learn how to build live speech translation with Realtime translation sessions.",
@@ -1549,7 +1549,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"c2b33023f36304c55cc396b6ec8511bc\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:43 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:26 GMT"
     },
     "https://developers.openai.com/api/docs/guides/realtime-vad.md": {
       "description": "Learn about automatic voice activity detection in the Realtime API.",
@@ -1563,7 +1563,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"0ea24580431ac24cb0c1df74d1bff404\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:09 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:50 GMT"
     },
     "https://developers.openai.com/api/docs/guides/realtime-webrtc.md": {
       "description": "Learn how to connect to the Realtime API using WebRTC.",
@@ -1577,7 +1577,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"25725b2e92a48dd357f5359dc88b5c5c\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:43:05 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:23 GMT"
     },
     "https://developers.openai.com/api/docs/guides/realtime-websocket.md": {
       "description": "Learn how to connect to the Realtime API using WebSocket in a server-to-server application.",
@@ -1591,7 +1591,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"0d56a3d533eecb64b3ffecc6ba0feaf0\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:14 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:00:16 GMT"
     },
     "https://developers.openai.com/api/docs/guides/realtime.md": {
       "description": "Learn which realtime and audio guide to use for each speech application.",
@@ -1605,7 +1605,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"a3c968dbdef006ff241f7ca0de0cf472\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:15:06 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 18:57:29 GMT"
     },
     "https://developers.openai.com/api/docs/guides/reasoning-best-practices.md": {
       "description": "Explore best practices for using o-series reasoning models, like o1 and o3-mini, vs. GPT models—including use cases, how to choose a model, and prompting guidance.",
@@ -1619,7 +1619,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"d03e20fe5df5656318993379c73b8a1a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:44 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 18:59:58 GMT"
     },
     "https://developers.openai.com/api/docs/guides/reasoning.md": {
       "description": "Learn how to use OpenAI reasoning models in the Responses API, choose a reasoning effort, manage reasoning tokens, and keep reasoning state across turns.",
@@ -1633,7 +1633,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"aa7dafed3841f093b8acfc602449e324\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:11:14 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:03:10 GMT"
     },
     "https://developers.openai.com/api/docs/guides/red-teaming.md": {
       "description": "Learn how red teaming fits into AI evaluation, including Promptfoo open source and OpenAI Red Teaming for enterprise teams.",
@@ -1647,7 +1647,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"7355382074023ee4e5aea88d2267b964\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:45 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:27 GMT"
     },
     "https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning.md": {
       "description": "Fine-tune models for expert-level performance within a domain.",
@@ -1661,7 +1661,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"a8aa6d01dc698fb5925da19184387a97\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:47:04 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:11:22 GMT"
     },
     "https://developers.openai.com/api/docs/guides/responses-multi-agent.md": {
       "description": "Enable Responses API Multi-agent, handle client-side HTTP and WebSocket flows, and read Multi-agent output items.",
@@ -1675,7 +1675,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"98476e81e6d249ba0f068e05ae16e3c6\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:14:30 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:12 GMT"
     },
     "https://developers.openai.com/api/docs/guides/retrieval.md": {
       "description": "Learn how to search your data using semantic similarity with the OpenAI API.",
@@ -1689,7 +1689,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"5635d2037ac4e685a9d2588e1f7f6bbf\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:47 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:30 GMT"
     },
     "https://developers.openai.com/api/docs/guides/rft-use-cases.md": {
       "description": "Explore best practices and practical use cases for reinforcement fine-tuning (RFT) with OpenAI models.",
@@ -1703,7 +1703,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"4eeea5490e2dbc77aa5ab0f3ba41d375\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:46 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:29 GMT"
     },
     "https://developers.openai.com/api/docs/guides/safety-best-practices.md": {
       "description": "Learn how to implement safety measures like moderation, adversarial testing, human oversight, and prompt engineering to ensure responsible AI deployment.",
@@ -1717,7 +1717,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"79511508e8f1a2bd577e43ecb8e45d4d\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:49 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:04:14 GMT"
     },
     "https://developers.openai.com/api/docs/guides/safety-checks.md": {
       "description": "Learn how OpenAI assesses for safety, OpenAI classifiers across safety categories, and implementation tips for how to pass safety checks.",
@@ -1731,7 +1731,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"0acb531e62c04761d1451722c1fc587a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:49 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:32 GMT"
     },
     "https://developers.openai.com/api/docs/guides/safety-checks/cybersecurity.md": {
       "description": "",
@@ -1745,7 +1745,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"f820f684221193707e678a2a8d434ffa\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:18:37 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:49 GMT"
     },
     "https://developers.openai.com/api/docs/guides/safety-checks/under-18-api-guidance.md": {
       "description": "",
@@ -1759,7 +1759,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"61b37f298cf52d033a30f9ec3a2b1780\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:59 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:41 GMT"
     },
     "https://developers.openai.com/api/docs/guides/secure-mcp-tunnels.md": {
       "description": "Connect private or on-prem MCP servers to supported OpenAI products with an outbound-only MCP tunnel, without exposing them to the public internet.",
@@ -1773,7 +1773,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"aece29a480a1e76ba1e964d475c65070\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:12:26 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:33 GMT"
     },
     "https://developers.openai.com/api/docs/guides/speech-to-text.md": {
       "description": "Learn how to transcribe recorded audio files, stream file transcripts, and use specialized speech-to-text features.",
@@ -1787,7 +1787,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"aa41196ca60fa41b7526e1f77f422b68\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:25:25 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:55 GMT"
     },
     "https://developers.openai.com/api/docs/guides/spend-limits.md": {
       "description": "Control API spend with organization and project monthly spend limits.",
@@ -1801,7 +1801,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"41e7a401f0cc01348301113964e585c1\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:18:17 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:34 GMT"
     },
     "https://developers.openai.com/api/docs/guides/streaming-responses.md": {
       "description": "Learn how to stream model responses from the OpenAI API using server-sent events.",
@@ -1815,7 +1815,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"ddb3141db4bc20c478d875c789ac24f8\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:53 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 18:59:11 GMT"
     },
     "https://developers.openai.com/api/docs/guides/structured-outputs.md": {
       "description": "Understand how to ensure model responses follow specific JSON Schema you define.",
@@ -1829,7 +1829,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"20cdad1cc227a755f8e13daece473082\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:05:20 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 18:57:30 GMT"
     },
     "https://developers.openai.com/api/docs/guides/supervised-fine-tuning.md": {
       "description": "Fine-tune models with example inputs and known good outputs for better results and efficiency.",
@@ -1843,7 +1843,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"89f4315c084ae666f378a23d1fbc4e57\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:54 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:11:03 GMT"
     },
     "https://developers.openai.com/api/docs/guides/terraform.md": {
       "description": "Configure the OpenAI Terraform provider and manage organization resources through the Administration API.",
@@ -1857,7 +1857,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"dd39639a0fa75be3bfb3592ef789fd70\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:54 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:37 GMT"
     },
     "https://developers.openai.com/api/docs/guides/terraform/import-and-reconcile.md": {
       "description": "Import existing OpenAI resources into Terraform, inspect current state, reconcile drift, and understand removal behavior.",
@@ -1871,7 +1871,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"ede427bc5b5fcaf0629abd11196ba1f4\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:18 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:01 GMT"
     },
     "https://developers.openai.com/api/docs/guides/terraform/project-controls.md": {
       "description": "Manage OpenAI project model permissions, hosted-tool permissions, and data-retention controls with Terraform.",
@@ -1885,7 +1885,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"9d688bbecce8f0fbfc4354b7b61f8093\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:28 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:10 GMT"
     },
     "https://developers.openai.com/api/docs/guides/terraform/projects-and-access.md": {
       "description": "Create an OpenAI project, define least-privilege roles, and manage group and user access with Terraform.",
@@ -1899,7 +1899,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"b82965b40a6595001a0f64f4fcaf307c\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:22 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:06 GMT"
     },
     "https://developers.openai.com/api/docs/guides/terraform/rate-limits-and-spend.md": {
       "description": "Discover and manage OpenAI project rate limits and create organization or project spend alerts with Terraform.",
@@ -1913,7 +1913,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"f08a9d8d26bb847257cfd60b2c8f926c\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:39 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:22 GMT"
     },
     "https://developers.openai.com/api/docs/guides/terraform/service-accounts.md": {
       "description": "Create OpenAI project service accounts, assign least-privilege roles, and manage API keys outside Terraform state.",
@@ -1927,7 +1927,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"7014c204d3f90e8b1e0634003496a072\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:23 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:06 GMT"
     },
     "https://developers.openai.com/api/docs/guides/text-to-speech.md": {
       "description": "Learn how to turn text into lifelike spoken audio with the OpenAI API.",
@@ -1941,7 +1941,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"8248faf6fac67683115a11cd793a4331\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:43:18 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 18:59:04 GMT"
     },
     "https://developers.openai.com/api/docs/guides/text.md": {
       "description": "Learn how to use the OpenAI API to generate text from a prompt. Learn about message types and available text formats like JSON and Structured Outputs.",
@@ -1955,7 +1955,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"a7afdff075bb58b6273e649a5d0fa543\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:48:20 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:03:05 GMT"
     },
     "https://developers.openai.com/api/docs/guides/token-counting.md": {
       "description": "Use the Responses API to count input tokens for text, images, files, tools, and more—without estimation or tiktoken.",
@@ -1969,7 +1969,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"605812827bfad7b110faa0ef70ad2ea7\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:04 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:48 GMT"
     },
     "https://developers.openai.com/api/docs/guides/tools-apply-patch.md": {
       "description": "Allow models to propose structured diffs that your integration applies.",
@@ -1983,7 +1983,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"206931241c849ea63dd10405ffa7b462\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:52 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:35 GMT"
     },
     "https://developers.openai.com/api/docs/guides/tools-code-interpreter.md": {
       "description": "Allow models to write and run Python to solve problems.",
@@ -1997,7 +1997,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"782405b2db6657d2ac253fb5cf75ffeb\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:42:55 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:40 GMT"
     },
     "https://developers.openai.com/api/docs/guides/tools-computer-use.md": {
       "description": "Use the Responses API computer tool to click, type, scroll, and inspect screenshots.",
@@ -2011,7 +2011,7 @@
       "sourceUpdatedAt": "2026-08-31T21:21:39Z",
       "status": "active",
       "etag": "W/\"6bab3b50c0d9b87ee78bc727c624f847\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:19:31 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:42 GMT"
     },
     "https://developers.openai.com/api/docs/guides/tools-connectors-mcp.md": {
       "description": "Use remote MCP servers and OpenAI-maintained connectors for popular services to give models new capabilities.",
@@ -2025,7 +2025,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"9b3a2bf52b760069c5bc22a33329448a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:11:47 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:07 GMT"
     },
     "https://developers.openai.com/api/docs/guides/tools-file-search.md": {
       "description": "Allow models to search your files for relevant information before generating a response.",
@@ -2039,7 +2039,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"03e56ff97db70d1f9d204f2ca585dbaa\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:11 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:55 GMT"
     },
     "https://developers.openai.com/api/docs/guides/tools-image-generation.md": {
       "description": "Allow models to generate or edit images.",
@@ -2053,7 +2053,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"5ad16c35776fd377ee00c802f2d4d162\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:16 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:02:13 GMT"
     },
     "https://developers.openai.com/api/docs/guides/tools-local-shell.md": {
       "description": "Enable agents to run commands in a local shell.",
@@ -2067,7 +2067,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"878fed764727df11a73b88f1c0f484b6\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:21 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:04 GMT"
     },
     "https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling.md": {
       "description": "Configure Programmatic Tool Calling, control which tools programs can invoke, and resume programs after client-owned function calls.",
@@ -2081,7 +2081,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"9b761dcd9da3b739b070f87ca6834285\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:42:56 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:16 GMT"
     },
     "https://developers.openai.com/api/docs/guides/tools-shell.md": {
       "description": "Run shell commands in hosted containers or your own local runtime.",
@@ -2095,7 +2095,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"a4ffbc41a3317ea53a34383ca110970c\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:51 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:34 GMT"
     },
     "https://developers.openai.com/api/docs/guides/tools-skills.md": {
       "description": "Upload, manage, and attach reusable skills to hosted environments.",
@@ -2109,7 +2109,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"3b7b620cfacaacf8a136a2c0722760b1\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:05:10 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:01:12 GMT"
     },
     "https://developers.openai.com/api/docs/guides/tools-tool-search.md": {
       "description": "Use tool search to defer large tool surfaces, group related tools with namespaces, and load only the relevant functions at runtime.",
@@ -2123,7 +2123,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"ff6abff61496c3fec9c0571146d39af5\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:56 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:39 GMT"
     },
     "https://developers.openai.com/api/docs/guides/tools-web-search.md": {
       "description": "Allow models to search the web for the latest information before generating a response.",
@@ -2137,7 +2137,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"37ea72c57f38be8723e7768ddd1f248e\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:43:33 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:51 GMT"
     },
     "https://developers.openai.com/api/docs/guides/tools.md": {
       "description": "Use powerful tools like remote MCP servers, or built-in tools like web search and file search to extend the model's capabilities.",
@@ -2151,7 +2151,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"2b1ed65b0abe96625a01da5a0e5f668c\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:09:58 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:48 GMT"
     },
     "https://developers.openai.com/api/docs/guides/trace-grading.md": {
       "description": "Use trace grading to create datasets, configure graders, and track evaluation runs for your models.",
@@ -2165,7 +2165,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"91f350aa7470fdfd70fed8d9934bf5a3\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:57 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 18:59:10 GMT"
     },
     "https://developers.openai.com/api/docs/guides/transcription.md": {
       "description": "Choose between file transcription and realtime transcription, then start with the recommended model for your audio.",
@@ -2179,7 +2179,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"1fef875b7d71e51806af6c61292ae960\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:56:57 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:40 GMT"
     },
     "https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p4.md": {
       "description": "Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.4.",
@@ -2193,7 +2193,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"4c0c549027d867af79b9783835a798d6\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:59 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:41 GMT"
     },
     "https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p5.md": {
       "description": "Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.5.",
@@ -2207,7 +2207,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"cd18f31d6c356f0f8726d64976d71984\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:59 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:42 GMT"
     },
     "https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p6-sol.md": {
       "description": "Machine-readable guidance for migrating OpenAI API integrations to GPT-5.6 Sol and the GPT-5.6 family.",
@@ -2221,7 +2221,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"a286075014b1b3cdafe84b1d9b4f678a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:39:14 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:08:29 GMT"
     },
     "https://developers.openai.com/api/docs/guides/video-generation.md": {
       "description": "Learn how to generate, refine, and manage videos using the OpenAI Videos API.",
@@ -2235,7 +2235,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"a378debf8856b47a523a4e17bed24246\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:04:37 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:03:33 GMT"
     },
     "https://developers.openai.com/api/docs/guides/vision-fine-tuning.md": {
       "description": "Fine-tune models for better image understanding.",
@@ -2249,7 +2249,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"3d08ec05a927c90be57e0529ecc37dc6\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:08 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:50 GMT"
     },
     "https://developers.openai.com/api/docs/guides/voice-agents.md": {
       "description": "Learn how to build voice agents with the OpenAI Agents SDK, choose the right architecture, and connect voice workflows to the rest of the agent stack.",
@@ -2263,7 +2263,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"05427b18bb7e1a863204b6d7f9644a96\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:09:42 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:51 GMT"
     },
     "https://developers.openai.com/api/docs/guides/webhooks.md": {
       "description": "Use webhooks to receive real-time updates from the OpenAI API.",
@@ -2277,7 +2277,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"96a90aa5f8b7680f4d419998b3767d31\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:21:42 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:52 GMT"
     },
     "https://developers.openai.com/api/docs/guides/websocket-mode.md": {
       "description": "Learn how to use Responses API WebSocket mode with response creation, continuation, and multiplexing.",
@@ -2291,7 +2291,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"c41e7428450a7b9ee2852b1dd2598583\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:12 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:13:55 GMT"
     },
     "https://developers.openai.com/api/docs/guides/workload-identity-federation.md": {
       "description": "Authenticate trusted workloads to the OpenAI API and Codex with short-lived identity-provider tokens.",
@@ -2305,7 +2305,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"15ae073aa813de770b0f67b36a6cfd3a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:13 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:54 GMT"
     },
     "https://developers.openai.com/api/docs/guides/workload-identity-federation/admin-api.md": {
       "description": "Programmatically create, list, update, disable, and archive Codex workload identity providers and federation rules.",
@@ -2319,7 +2319,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"476f8bc30693f089e31f6da76b2dcd46\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:21 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:05 GMT"
     },
     "https://developers.openai.com/api/docs/guides/workload-identity-federation/aws.md": {
       "description": "Configure AWS outbound identity federation or Amazon EKS as a workload identity federation token provider.",
@@ -2333,7 +2333,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"4abf16388850a3c3bf39f6615dcb25d9\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:59 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:43 GMT"
     },
     "https://developers.openai.com/api/docs/guides/workload-identity-federation/federation-rules.md": {
       "description": "Reference for Codex workload identity subjects, audiences, exact claims, CEL conditions, scopes, token lifetimes, and lifecycle behavior.",
@@ -2347,7 +2347,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"bafb3618a57a0da0e8a8013536dfd716\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:56 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:41 GMT"
     },
     "https://developers.openai.com/api/docs/guides/workload-identity-federation/github-actions.md": {
       "description": "Configure GitHub Actions as a workload identity federation token provider.",
@@ -2361,7 +2361,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"4fca608dd05f595f0624ec04a0f17b19\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:59 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:44 GMT"
     },
     "https://developers.openai.com/api/docs/guides/workload-identity-federation/google-cloud.md": {
       "description": "Configure Google workload identity or GKE as a workload identity federation token provider.",
@@ -2375,7 +2375,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"5c9e75ce173506d03bd329a2d26ea0fe\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:00 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:44 GMT"
     },
     "https://developers.openai.com/api/docs/guides/workload-identity-federation/kubernetes.md": {
       "description": "Configure Kubernetes as a workload identity federation token provider.",
@@ -2389,7 +2389,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"d2cdf6897fb6d20ed27a233f428b0175\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:01 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:45 GMT"
     },
     "https://developers.openai.com/api/docs/guides/workload-identity-federation/microsoft-azure.md": {
       "description": "Configure Azure managed identity or AKS as a workload identity federation token provider.",
@@ -2403,7 +2403,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"164806bedb71d5a762b366033018c816\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:01 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:45 GMT"
     },
     "https://developers.openai.com/api/docs/guides/workload-identity-federation/oracle-cloud.md": {
       "description": "Configure Oracle Cloud Infrastructure instance principals as a workload identity federation token provider.",
@@ -2417,7 +2417,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"e5d3aacee6da288e42fcb240715568ea\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:01 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:46 GMT"
     },
     "https://developers.openai.com/api/docs/guides/workload-identity-federation/spiffe.md": {
       "description": "Configure SPIFFE JWT-SVIDs as workload identity federation subject tokens.",
@@ -2431,7 +2431,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"0a23f3f242a32e3d5a4ee5868b986899\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:22:02 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:46 GMT"
     },
     "https://developers.openai.com/api/docs/guides/workload-identity-federation/x509.md": {
       "description": "Configure an X.509 workload identity provider and exchange a TLS client certificate for a short-lived OpenAI access token.",
@@ -2445,7 +2445,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"e12342d5c34661029ca010972bcc312a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:21:58 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:15:43 GMT"
     },
     "https://developers.openai.com/api/docs/guides/your-data.md": {
       "description": "Your data is your data. An overview of how OpenAI uses your data, including retention and usage policies.",
@@ -2455,11 +2455,11 @@
       "title": "Data controls in the OpenAI platform",
       "bytes": 71176,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "470ba960f71510e9c01ff2cf3f3938c08e08b55eeed98eca128c6bf68e2953eb",
-      "sourceUpdatedAt": "2026-08-31T04:05:07Z",
+      "sha256": "65d09502e2b1791210448f3d18fcc0f686780a25b5e13d54d945492056a666b0",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"f3e2e1dd5124fc868de76d44fab020bc\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:16:52 GMT"
+      "etag": "W/\"1806bf7b8ec93f44dce56d84e2121b96\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 18:57:29 GMT"
     },
     "https://developers.openai.com/api/docs/libraries.md": {
       "description": "Discover official OpenAI SDKs, the OpenAI CLI, and the Agents SDK.",
@@ -2469,11 +2469,11 @@
       "title": "SDKs and CLI",
       "bytes": 12212,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "5dab0c297038e0ee85eaf396b5d14d47681a7e4bfc2c7aff9b3bd08296288925",
-      "sourceUpdatedAt": "2026-08-31T04:05:07Z",
+      "sha256": "b60e466cc95f9f0acbb3ed3c4b6b657fd4aa6496be7ceb1ff991cedff9c3afde",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"cf4f7c065a8bccdb2c6c8df5230590fe\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:14 GMT"
+      "etag": "W/\"385fa7970167e3b915b8e0edc8343012\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:54 GMT"
     },
     "https://developers.openai.com/api/docs/libraries/openai-cli.md": {
       "description": "Install and use the generated openai command-line tool for Responses, structured outputs, images, speech, and shell workflows.",
@@ -2487,7 +2487,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"b46c73798142c970651bfa98e505abb6\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:14 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:55 GMT"
     },
     "https://developers.openai.com/api/docs/mcp.md": {
       "description": "Learn how to build MCP servers for use with plugins, deep research, or API integrations.",
@@ -2501,7 +2501,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"a7bcfc8de033c6d5edd5a18503012403\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:21:39 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:49 GMT"
     },
     "https://developers.openai.com/api/docs/models.md": {
       "description": "Catalog of models available through the OpenAI API.",
@@ -2551,7 +2551,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"58945c38ff482d26054d8e38ac44281f\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:04:46 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 18:58:51 GMT"
     },
     "https://developers.openai.com/api/docs/quickstart.md": {
       "description": "Learn how to use the OpenAI API to generate human-like responses to natural language prompts, analyze images with computer vision, use powerful built-in tools, and more.",
@@ -2561,11 +2561,11 @@
       "title": "Developer quickstart",
       "bytes": 54082,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "3b53be774781d992361ff768b03b8033b71d922824a0e94beca66eda3acea654",
-      "sourceUpdatedAt": "2026-08-31T04:05:07Z",
+      "sha256": "37b2da97ab63d4600fd8ed1f153195aed4203586263bd6f1e2181c59abd59712",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"5732cb187ae38053813177f0ef0482d6\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:18 GMT"
+      "etag": "W/\"69a20bd9bb3a2492471f16788484ed09\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:58 GMT"
     },
     "https://developers.openai.com/api/docs/supported-countries.md": {
       "description": "Countries and territories that currently support access to our API services.",
@@ -2579,7 +2579,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"7999dddc6c053906c36106611b29fd75\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:18 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:16:59 GMT"
     },
     "https://developers.openai.com/api/docs/tutorials/meeting-minutes.md": {
       "description": "Create an automated meeting minutes generator with Whisper and a GPT model.",
@@ -2593,7 +2593,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"aae264e7cd3908dc4c53f6eb630ce70a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:19 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:00 GMT"
     },
     "https://developers.openai.com/api/docs/tutorials/web-qa-embeddings.md": {
       "description": "How to build an AI that can answer questions about your website.",
@@ -2607,7 +2607,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"d9eaa9f72933e8ab60e925ad30aee6df\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:19 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:00 GMT"
     },
     "https://developers.openai.com/api/reference/administration/overview.md": {
       "description": "",
@@ -2621,7 +2621,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"82e17bb8be14bdc89df4591934753f80\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:19 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:02:47 GMT"
     },
     "https://developers.openai.com/api/reference/chat-completions/overview.md": {
       "description": "",
@@ -2635,7 +2635,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"ac6df981ac80738b0690b64ae9ebd52a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:20 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:01 GMT"
     },
     "https://developers.openai.com/api/reference/overview.md": {
       "description": "",
@@ -2649,7 +2649,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"f9c19ac39ea613d9fb422a9d8d9be540\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:09:06 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:02 GMT"
     },
     "https://developers.openai.com/api/reference/realtime-beta/overview.md": {
       "description": "",
@@ -2663,7 +2663,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"5dca8c0488da00e81cf2c9f94dc5e907\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:21 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:02 GMT"
     },
     "https://developers.openai.com/api/reference/resources/audio.md": {
       "description": "OpenAI API endpoint reference.",
@@ -2677,7 +2677,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"03af216cbd3179c1dcab261cfe32f99e\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:10:19 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:03 GMT"
     },
     "https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -2691,7 +2691,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"4122dba4806d932dccc4926201e46afa\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:22 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:04 GMT"
     },
     "https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -2705,7 +2705,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"a9ef2fb0da29342d18f404cc31b43c87\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:55:12 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:04 GMT"
     },
     "https://developers.openai.com/api/reference/resources/audio/subresources/translations/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -2719,7 +2719,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"9fef286aa64ec443a43545cd48178355\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:24 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:05 GMT"
     },
     "https://developers.openai.com/api/reference/resources/audio/subresources/voice_consents/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -2733,7 +2733,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"e56741889afd5d098b2ac81415c22991\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:24 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:06 GMT"
     },
     "https://developers.openai.com/api/reference/resources/audio/subresources/voice_consents/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -2747,7 +2747,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"82a9cdc9a8e59676fd66b098e917562f\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:24 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:06 GMT"
     },
     "https://developers.openai.com/api/reference/resources/audio/subresources/voice_consents/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -2761,7 +2761,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"41fc91be3ff2c9195d06e48badf95de5\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:25 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:07 GMT"
     },
     "https://developers.openai.com/api/reference/resources/audio/subresources/voice_consents/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -2775,7 +2775,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"8b5361d1a2c5c528721080b978b95fc5\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:25 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:07 GMT"
     },
     "https://developers.openai.com/api/reference/resources/audio/subresources/voice_consents/methods/update.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -2789,7 +2789,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"f90de1e3321d5adfcfe66cd0c717719c\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:26 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:08 GMT"
     },
     "https://developers.openai.com/api/reference/resources/audio/subresources/voices/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -2803,7 +2803,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"bf7120d93769572e7254d57d65a143c2\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:26 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:08 GMT"
     },
     "https://developers.openai.com/api/reference/resources/batches.md": {
       "description": "OpenAI API endpoint reference.",
@@ -2811,13 +2811,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/batches.md",
       "title": "Batches",
-      "bytes": 36075,
+      "bytes": 36050,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "498cde35151362cfa9abbdd9b788b4e0b836d4248da3d20b7311efd25f6cfbf6",
-      "sourceUpdatedAt": "2026-08-17T07:50:43Z",
+      "sha256": "9d42ab38ccc96e774019d4496edc026165a6a138394be1611e03eb4c31192afe",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"5eb9a67a26bad1f76dd15c42729e9b32\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:18:33 GMT"
+      "etag": "W/\"7a60d2d8b5baed621e754eff7f059df5\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:09 GMT"
     },
     "https://developers.openai.com/api/reference/resources/batches/methods/cancel.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -2825,13 +2825,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/batches/methods/cancel.md",
       "title": "Batches — Cancel",
-      "bytes": 6885,
+      "bytes": 6880,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "202e4396936b7a4d7ec0a87e0b1a340e1f79032c5503cad90de212a67a590907",
-      "sourceUpdatedAt": "2026-08-17T07:50:43Z",
+      "sha256": "f603a5dc509434337aa9ae3b8a9a0079ef44eb120f3886b1096bd7224e60c958",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"331dbc542e6f2230d89af5499f525a71\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:27 GMT"
+      "etag": "W/\"b06888f6fdcb638a059f4d34b684150c\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:09 GMT"
     },
     "https://developers.openai.com/api/reference/resources/batches/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -2839,13 +2839,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/batches/methods/create.md",
       "title": "Batches — Create",
-      "bytes": 9050,
+      "bytes": 9045,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "b152519af5eb5b1524f497f85dc298bd6b0020c445a761fa0d4517b9c028f478",
-      "sourceUpdatedAt": "2026-08-17T07:50:43Z",
+      "sha256": "32d00a38de49f4703e910056813f43a2296581d22910d750c7740feb19aba317",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"626683236dce4db627fccc8e871dbdb6\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:28 GMT"
+      "etag": "W/\"e584795099f18589604cdcbd3e3270e6\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:10 GMT"
     },
     "https://developers.openai.com/api/reference/resources/batches/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -2853,13 +2853,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/batches/methods/list.md",
       "title": "Batches — List",
-      "bytes": 7731,
+      "bytes": 7726,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "231906e4ebb728458f5c810c8b9a15ba5c72f8de32944f7a06a4e4faeada1769",
-      "sourceUpdatedAt": "2026-08-17T07:50:43Z",
+      "sha256": "3d54dbd0bc23aa41b50ed6145bee153e265a3b288d9770f2ec083eb891287ad7",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"6fa7453f2e8ebf1407c012c7cc049eff\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:29 GMT"
+      "etag": "W/\"41577db741ed5fa31855068cc4b64e88\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:10 GMT"
     },
     "https://developers.openai.com/api/reference/resources/batches/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -2867,13 +2867,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/batches/methods/retrieve.md",
       "title": "Batches — Retrieve",
-      "bytes": 6679,
+      "bytes": 6674,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "fdc946031e7dfbbae4d649a316cdef9daf7c3a6d4c67796a7b74d3c1a5f6ba5e",
-      "sourceUpdatedAt": "2026-08-17T07:50:43Z",
+      "sha256": "e00dc113cdde95343c09cd4fe990285431ff54bbdf99496ea728e61a0ea43b82",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"3f147123365ec2f16fc9676fb93f1085\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:29 GMT"
+      "etag": "W/\"4f00daf76b6cfa185e522a7e7886e6ef\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:11 GMT"
     },
     "https://developers.openai.com/api/reference/resources/beta/subresources/assistants.md": {
       "description": "OpenAI API endpoint reference.",
@@ -2992,7 +2992,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"ecb63822e2df35315a1b13efec09f5cb\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:30 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:12 GMT"
     },
     "https://developers.openai.com/api/reference/resources/beta/subresources/chatkit/subresources/sessions.md": {
       "description": "OpenAI API endpoint reference.",
@@ -3006,7 +3006,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"a5dac9b27ff294e41c06b3c071a0d870\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:30 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:13 GMT"
     },
     "https://developers.openai.com/api/reference/resources/beta/subresources/chatkit/subresources/sessions/methods/cancel.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3020,7 +3020,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"79220769d461eeebaf372d8b04aee2cc\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:30 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:13 GMT"
     },
     "https://developers.openai.com/api/reference/resources/beta/subresources/chatkit/subresources/sessions/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3034,7 +3034,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"71f883e7d954ab1fe376adbb5756714c\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:31 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:14 GMT"
     },
     "https://developers.openai.com/api/reference/resources/beta/subresources/chatkit/subresources/threads.md": {
       "description": "OpenAI API endpoint reference.",
@@ -3048,7 +3048,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"db4c794a0c31c335e76d551bb2e5e141\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:32 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:14 GMT"
     },
     "https://developers.openai.com/api/reference/resources/beta/subresources/chatkit/subresources/threads/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3062,7 +3062,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"aa4dfcecac0cf5cb8653d16f91db2288\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:32 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:15 GMT"
     },
     "https://developers.openai.com/api/reference/resources/beta/subresources/chatkit/subresources/threads/methods/list_items.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3076,7 +3076,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"a05c97ea4bb53c18aa47d611d8cb1103\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:33 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:16 GMT"
     },
     "https://developers.openai.com/api/reference/resources/beta/subresources/chatkit/subresources/threads/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3090,7 +3090,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"57bd58d954688ee0bcfde2d876addf25\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:33 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:16 GMT"
     },
     "https://developers.openai.com/api/reference/resources/beta/subresources/chatkit/subresources/threads/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3104,7 +3104,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"6bf10e46f3655821a4054959b784354b\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:34 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:17 GMT"
     },
     "https://developers.openai.com/api/reference/resources/beta/subresources/responses/streaming-events.md": {
       "description": "OpenAI API streaming event reference.",
@@ -3112,13 +3112,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/responses/streaming-events.md",
       "title": "Beta Responses streaming events",
-      "bytes": 18525207,
+      "bytes": 18524922,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "3e577195dbac2479ad42166be11ea4d6022a94bfaa3f35741518cd24be408a34",
-      "sourceUpdatedAt": "2026-08-31T04:05:07Z",
+      "sha256": "f4564f1ea0a2047a56551939af975e0d7a44d801cf89a9dfa80165789e4483fd",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"a7113046a256243133b0833e18fa0708\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:35 GMT"
+      "etag": "W/\"ba15d9fe4c74630dd41a845c42683761\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:17 GMT"
     },
     "https://developers.openai.com/api/reference/resources/beta/subresources/responses/websocket-events.md": {
       "description": "OpenAI API streaming event reference.",
@@ -3126,13 +3126,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/responses/websocket-events.md",
       "title": "Beta Responses WebSocket events",
-      "bytes": 22800261,
+      "bytes": 22799940,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "5f9518423752b7859172e668b1b28cc97b0d8426fe3a67c1f4ed03d04e470dd3",
-      "sourceUpdatedAt": "2026-08-31T04:05:07Z",
+      "sha256": "167fc150cb5968887146b1c5589733e690327c983924b58bfa700f33982b3630",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"a14852423963e9a7480fbdfb80f30688\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:35 GMT"
+      "etag": "W/\"e2b8eab1f0e701cde43fb4f9426e2673\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:18 GMT"
     },
     "https://developers.openai.com/api/reference/resources/beta/subresources/threads.md": {
       "description": "OpenAI API endpoint reference.",
@@ -3455,13 +3455,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/chat.md",
       "title": "Chat",
-      "bytes": 237054,
+      "bytes": 237090,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "ea003164a8614c35a790d600f3e7925e581694001a90a673d7b16f82eea90316",
-      "sourceUpdatedAt": "2026-08-31T04:05:07Z",
+      "sha256": "06969eccad4d7d6f4a40227e59fc502d6f61de9ba59701a90f3d67651e9d86b0",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"4a006090df68beb2945185515722c6e3\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:09:46 GMT"
+      "etag": "W/\"debbed5986a37c1df2e13c4d3d5d19d0\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 18:57:32 GMT"
     },
     "https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3469,13 +3469,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/retrieve.md",
       "title": "Chat Completions — Retrieve",
-      "bytes": 21124,
+      "bytes": 21118,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "50f5c52c6b6a78efb2ca42aff9dcd9e29074dd25605a417416d702395bdc0f38",
-      "sourceUpdatedAt": "2026-08-31T04:05:07Z",
+      "sha256": "fbdb40c776c12edc0fabc89ab3ca41c01463039a21ac47fe05e1735ccb99a7bf",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"f11eb904a4aabc38d7b683c043c3b384\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:36 GMT"
+      "etag": "W/\"d8c7db4bae5ab99fc5c75f8c959df0b7\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:19 GMT"
     },
     "https://developers.openai.com/api/reference/resources/chat/subresources/completions/streaming-events.md": {
       "description": "OpenAI API streaming event reference.",
@@ -3485,11 +3485,11 @@
       "title": "Chat Completions streaming events",
       "bytes": 92458,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "5d68c74c7966c206c4f21d8ee1807250e405170de898049f1746331a3f7274b4",
-      "sourceUpdatedAt": "2026-08-31T04:05:07Z",
+      "sha256": "6c962133e0dd636e16b5ab4db474d0b765454f0bc5b81529be8dbea3e0aeb72b",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"c5f20703526ade05a011486265b28462\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:37 GMT"
+      "etag": "W/\"8c10a61edbac27dd5b690d284cf49f1d\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:14:09 GMT"
     },
     "https://developers.openai.com/api/reference/resources/completions.md": {
       "description": "OpenAI API endpoint reference.",
@@ -3497,13 +3497,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/completions.md",
       "title": "Completions",
-      "bytes": 21221,
+      "bytes": 21218,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "53edc9d0a41e97440fcdf33b56c832ab5b0f4666f70ed28a70fe1d854f093819",
-      "sourceUpdatedAt": "2026-08-31T04:05:07Z",
+      "sha256": "baa793b7514b2e08509ce3b4720abc34d4e49de96407f3480cb1651d2da47a73",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"42dc72bc01c36259533b6aee620af845\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:37 GMT"
+      "etag": "W/\"ce585240f2667f1adaaf7fd32791c619\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:20 GMT"
     },
     "https://developers.openai.com/api/reference/resources/completions/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3511,13 +3511,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/completions/methods/create.md",
       "title": "Completions — Create",
-      "bytes": 14446,
+      "bytes": 14443,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "524348eab66a17cd22e83e73129874c058cb2fe6e98c2bcaa16a45e13f53fabf",
-      "sourceUpdatedAt": "2026-08-31T04:05:07Z",
+      "sha256": "76826ac01218d5d474e783bc7a9ae00977e560075a230619918a5820c0b4e42e",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"f15c10c84434ef811590f56c5e68618a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:38 GMT"
+      "etag": "W/\"ae6b2dc95c5ccd7da46ce148b9744f01\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:20 GMT"
     },
     "https://developers.openai.com/api/reference/resources/containers.md": {
       "description": "OpenAI API endpoint reference.",
@@ -3531,7 +3531,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"70dda7bf06b74938944e7772f32cd210\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:38 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:21 GMT"
     },
     "https://developers.openai.com/api/reference/resources/containers/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3545,7 +3545,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"4139f46ed5afea1d0ddc404b8568e266\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:39 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:22 GMT"
     },
     "https://developers.openai.com/api/reference/resources/containers/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3559,7 +3559,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"c192813f995f793993ae081fcfd8f989\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:39 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:22 GMT"
     },
     "https://developers.openai.com/api/reference/resources/containers/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3573,7 +3573,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"2c18bd8720b24e29ec6b6bcac2ad4771\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:39 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:23 GMT"
     },
     "https://developers.openai.com/api/reference/resources/containers/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3587,7 +3587,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"4eaadff4d5c71fb741a5cdab344aea8d\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:40 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:23 GMT"
     },
     "https://developers.openai.com/api/reference/resources/containers/subresources/files.md": {
       "description": "OpenAI API endpoint reference.",
@@ -3601,7 +3601,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"cdfa3f6e8ff5f2bc6fc6216935afdd30\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:40 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:24 GMT"
     },
     "https://developers.openai.com/api/reference/resources/containers/subresources/files/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3615,7 +3615,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"8e4d70c6856bbb6d3b9a2a887ace7483\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:41 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:25 GMT"
     },
     "https://developers.openai.com/api/reference/resources/containers/subresources/files/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3629,7 +3629,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"828c3bfd8f68f49d500a8d4a308ac986\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:42 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:25 GMT"
     },
     "https://developers.openai.com/api/reference/resources/containers/subresources/files/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3643,7 +3643,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"47fa4421fa5d176a6eb959a73819c8a4\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:42 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:26 GMT"
     },
     "https://developers.openai.com/api/reference/resources/containers/subresources/files/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3657,7 +3657,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"015a10ecaff62d901ff30598fb645102\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:43 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:26 GMT"
     },
     "https://developers.openai.com/api/reference/resources/containers/subresources/files/subresources/content/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3671,7 +3671,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"b32f8bc3a3c05d3316bf7c28abc062a9\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:43 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:27 GMT"
     },
     "https://developers.openai.com/api/reference/resources/conversations.md": {
       "description": "OpenAI API endpoint reference.",
@@ -3685,7 +3685,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"a52bcb6b5999276f1e7512c803339c11\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:01:28 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:28 GMT"
     },
     "https://developers.openai.com/api/reference/resources/conversations/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3699,7 +3699,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"79a9ca2bb0087cd130a9c59b499221e5\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:44 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:28 GMT"
     },
     "https://developers.openai.com/api/reference/resources/conversations/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3713,7 +3713,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"91fe2e2e7f44f6383505f4c4e4092042\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:45 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:29 GMT"
     },
     "https://developers.openai.com/api/reference/resources/conversations/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3727,7 +3727,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"58f8f324bf21c5d83f74eb810c379459\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:46 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:29 GMT"
     },
     "https://developers.openai.com/api/reference/resources/conversations/methods/update.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3741,7 +3741,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"8d49d494ecef1247a846827e9ed24850\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:46 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:30 GMT"
     },
     "https://developers.openai.com/api/reference/resources/conversations/subresources/items/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3755,7 +3755,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"8a04478cc5f20fedd85472826267a1d1\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:47 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:31 GMT"
     },
     "https://developers.openai.com/api/reference/resources/embeddings.md": {
       "description": "OpenAI API endpoint reference.",
@@ -3769,7 +3769,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"70cf938d07f84a48d24dca015af06cf1\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:09:46 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:31 GMT"
     },
     "https://developers.openai.com/api/reference/resources/embeddings/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3783,7 +3783,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"58e4719da9b691f7e91b0bdddedb2331\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:48 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 18:59:12 GMT"
     },
     "https://developers.openai.com/api/reference/resources/evals.md": {
       "description": "OpenAI API endpoint reference.",
@@ -3791,13 +3791,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/evals.md",
       "title": "Evals",
-      "bytes": 810036,
+      "bytes": 809857,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "c6e94687b854f97a415e9ac35ed6f2a49238cf69c7ce2bfb9e784c09b27f6bf5",
-      "sourceUpdatedAt": "2026-08-24T09:37:37Z",
+      "sha256": "c8711dedb5aa9034bde1d8b98a17e0db03a4121905c9e5b5479310fd3f81aa4d",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"c76f72692d6311c7a65d2eba4f8b52db\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:21:15 GMT"
+      "etag": "W/\"c747f41f652c0dddc4f4fafdd90c6c52\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:32 GMT"
     },
     "https://developers.openai.com/api/reference/resources/evals/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3811,7 +3811,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"bb7f945d408d3cfb50f222d3efea7987\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:49 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:32 GMT"
     },
     "https://developers.openai.com/api/reference/resources/evals/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3825,7 +3825,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"7150313859006b677f169ef43496bd4b\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:49 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:33 GMT"
     },
     "https://developers.openai.com/api/reference/resources/evals/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3839,7 +3839,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"7bdbd91f3eb6485601ef140055f9a469\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:50 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:33 GMT"
     },
     "https://developers.openai.com/api/reference/resources/evals/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3853,7 +3853,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"5c2dfc58a99b909d6520915364b3c951\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:51 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:34 GMT"
     },
     "https://developers.openai.com/api/reference/resources/evals/methods/update.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3867,7 +3867,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"0e2fe7a761de82b7b3541b0c044fc07d\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:51 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:34 GMT"
     },
     "https://developers.openai.com/api/reference/resources/evals/subresources/runs/methods/cancel.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3875,13 +3875,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/evals/subresources/runs/methods/cancel.md",
       "title": "Evals Runs — Cancel",
-      "bytes": 76516,
+      "bytes": 76457,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "c86b1de3ee860eb925695b5e57a8d5538021beeddc56733e9359b336c7b95875",
-      "sourceUpdatedAt": "2026-08-24T09:37:37Z",
+      "sha256": "4fc15f8ec100803699234fb5313eee95ee3efad70b06dd325b47c50f10afa0c0",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"5873e8c989e8be5b9caf1d04c10d1c39\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:52 GMT"
+      "etag": "W/\"4e78dbb59ce1a911fca3917ea8490242\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:35 GMT"
     },
     "https://developers.openai.com/api/reference/resources/files.md": {
       "description": "OpenAI API endpoint reference.",
@@ -3895,7 +3895,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"717ec86e8ad27112d9b0d4ed87814c73\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:10:19 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:36 GMT"
     },
     "https://developers.openai.com/api/reference/resources/files/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3909,7 +3909,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"2d80605d7d2a67894108efad2f359440\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:53 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:36 GMT"
     },
     "https://developers.openai.com/api/reference/resources/files/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3923,7 +3923,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"9f4086be28022f888ba58f33515d6714\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:54 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:37 GMT"
     },
     "https://developers.openai.com/api/reference/resources/files/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3937,7 +3937,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"2f47e7dfc21d52feae1f88e701929d3e\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:54 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:38 GMT"
     },
     "https://developers.openai.com/api/reference/resources/files/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3951,7 +3951,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"49c4ead672a10e780b3561cc88068f4b\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:55 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:38 GMT"
     },
     "https://developers.openai.com/api/reference/resources/fine_tuning.md": {
       "description": "OpenAI API endpoint reference.",
@@ -3959,13 +3959,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/fine_tuning.md",
       "title": "Fine Tuning",
-      "bytes": 313380,
+      "bytes": 313366,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "1bab4a2cf8139066cf23d15b3a33ff6f826812ba6645afeb1f2573926bb9072e",
-      "sourceUpdatedAt": "2026-08-17T07:50:43Z",
+      "sha256": "684e03eacf45f4fe339a3e5fe505958a78ffcb214d75363bdc40a175ac5d8c42",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"af8cde1d073e45a21d0c86defbfa1dbe\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:10:19 GMT"
+      "etag": "W/\"0d028ed49b10b5cab9f035e17ca9747d\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:39 GMT"
     },
     "https://developers.openai.com/api/reference/resources/fine_tuning/subresources/checkpoints/subresources/permissions/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3979,7 +3979,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"cfdd10dacc771237fb85d9cacd4ae45b\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:56 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:39 GMT"
     },
     "https://developers.openai.com/api/reference/resources/fine_tuning/subresources/checkpoints/subresources/permissions/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -3993,7 +3993,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"19d523392c0cd59272a16ca74b5b1d5b\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:57 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:40 GMT"
     },
     "https://developers.openai.com/api/reference/resources/fine_tuning/subresources/jobs/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4007,7 +4007,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"8da59832dd95e4582cfbc15d4a34f0d8\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:57 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:40 GMT"
     },
     "https://developers.openai.com/api/reference/resources/fine_tuning/subresources/jobs/subresources/checkpoints/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4021,7 +4021,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"69a32b15a67c5a00411fbc0ac9358d5d\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:58 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:41 GMT"
     },
     "https://developers.openai.com/api/reference/resources/graders.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4035,7 +4035,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"d4ea4066c50a0d20650e2f774b5a6909\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:21:15 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:41 GMT"
     },
     "https://developers.openai.com/api/reference/resources/images.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4049,7 +4049,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"10bb5fed4e695b28ec878ee98b11c22c\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:05:10 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:43 GMT"
     },
     "https://developers.openai.com/api/reference/resources/images/edit-streaming-events.md": {
       "description": "OpenAI API streaming event reference.",
@@ -4063,7 +4063,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"982b1970eaee48ec8a75d4ad3a85a2c9\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:23:59 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:42 GMT"
     },
     "https://developers.openai.com/api/reference/resources/images/generation-streaming-events.md": {
       "description": "OpenAI API streaming event reference.",
@@ -4077,7 +4077,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"ad05e03cf4202592ccc2b1529a220621\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:00 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:42 GMT"
     },
     "https://developers.openai.com/api/reference/resources/images/methods/create_variation.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4091,7 +4091,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"085e7831496be73bdad18f9e76754e66\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:15:56 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:44 GMT"
     },
     "https://developers.openai.com/api/reference/resources/models.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4099,13 +4099,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/models.md",
       "title": "Models",
-      "bytes": 4713,
+      "bytes": 4701,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "d5fb0dff14226b9328762aa97ffb9a0fdb80c5db81eec288994a167fad58b758",
-      "sourceUpdatedAt": "2026-08-17T07:50:43Z",
+      "sha256": "8922d8a50f11b1df53fb19001f5ed411a7b72bdabc23343fdb579ce8aaf826d9",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"2ced2966d92dc096a06e136b0b885ae1\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:10:19 GMT"
+      "etag": "W/\"504d28261d6bb35c338c5b467e0067e6\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:44 GMT"
     },
     "https://developers.openai.com/api/reference/resources/models/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4119,7 +4119,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"acbf1b1b8143d493fecc9ac701f2f457\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:02 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:45 GMT"
     },
     "https://developers.openai.com/api/reference/resources/models/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4133,7 +4133,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"c671ad6c64209fa12233e1fdfb888a88\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:02 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:46 GMT"
     },
     "https://developers.openai.com/api/reference/resources/models/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4141,13 +4141,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/models/methods/retrieve.md",
       "title": "Models — Retrieve",
-      "bytes": 1489,
+      "bytes": 1477,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "3eb34c3d79c0123168821c609d925b1a110382e476779ec450e425ad77a60e44",
-      "sourceUpdatedAt": "2026-08-17T07:50:43Z",
+      "sha256": "77264efca7476eae8de815f8a90876bda08651c4976ea7dd108e1750b0e32ec3",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"119c066b5fa651e5cf9477993ed7b99e\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:03 GMT"
+      "etag": "W/\"16dca6990a7c81cc765b600e250cbdc3\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:46 GMT"
     },
     "https://developers.openai.com/api/reference/resources/moderations.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4161,7 +4161,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"b9dbd470ecd3893fd877ca103e75960e\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:18:33 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:47 GMT"
     },
     "https://developers.openai.com/api/reference/resources/moderations/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4175,7 +4175,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"4ee07862055415547e962f94bf206b55\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:04 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 18:59:11 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4189,7 +4189,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"8ec6272101d116294bea4d5d943c5ead\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:04 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:48 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/audit_logs.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4203,7 +4203,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"69f0e6bb89bad33f7815702b86aefff9\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:05 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:49 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/audit_logs/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4217,7 +4217,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"857045e6d3828527400e8d1decdc6595\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:05 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:49 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/audit_logs/subresources/admin_api_keys.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4231,7 +4231,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"10fdecfecb7b7f8030e49422b63a2bee\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:06 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:49 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/audit_logs/subresources/admin_api_keys/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4245,7 +4245,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"7ead6f9202cc76ab242255eacdaf48fa\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:07 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:50 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/audit_logs/subresources/admin_api_keys/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4259,7 +4259,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"849eaacf5fde134e25755146de60d298\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:07 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:50 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/audit_logs/subresources/admin_api_keys/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4273,7 +4273,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"3a65ad485eab2b5dfbd3181937fce67e\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:08 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:51 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/audit_logs/subresources/admin_api_keys/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4287,7 +4287,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"2cefb0a808e359e8204a9f8d4c13b6f6\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:08 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:51 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/audit_logs/subresources/usage.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4301,7 +4301,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"67c8564a93cf22b2587051727fa8b57e\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:09 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:52 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/groups.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4315,7 +4315,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"bcfd89cc846fc42705e993c80ae781f8\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:10 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:52 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/groups/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4329,7 +4329,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"f4d421b1fce1a61d234a62a78ec6f896\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:10 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:53 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/groups/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4343,7 +4343,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"270a6afe9728689a88d3a5bb524da0e1\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:11 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:53 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/groups/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4357,7 +4357,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"8c402e32ee6462719fe6890635cdd8e7\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:11 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:54 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/groups/methods/update.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4371,7 +4371,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"98691adf3e1377b0bb203c790cc061f9\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:12 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:54 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/groups/subresources/users.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4385,7 +4385,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"6c5522a8b3fb2a8e8d29a8226f02057b\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:12 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:55 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/groups/subresources/users/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4399,7 +4399,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"65f4fde9fcb0b7bee2cdf2c3b1d2fcee\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:13 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:55 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/groups/subresources/users/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4413,7 +4413,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"c025823b4259450d9c78070e7584669f\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:13 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:56 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/groups/subresources/users/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4427,7 +4427,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"60fc64b2afb43e0eb31213452b9d8046\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:14 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:56 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/invites.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4441,7 +4441,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"7a77b41f1579cd601961c8a8ba3b3c69\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:14 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:57 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/invites/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4455,7 +4455,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"fe34aaef689459feeb51198c154dbb1a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:15 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:58 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/invites/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4469,7 +4469,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"a25ab61c9c65116eae81d2662d2ec302\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:15 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:58 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/invites/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4483,7 +4483,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"3c2a25905bc435058d322c1f944e851b\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:16 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:59 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/invites/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4497,7 +4497,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"272b3a1647b9369c8ec4fade0689ba25\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:16 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:17:59 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4511,7 +4511,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"f5adfebbdeb8d6cce72d45aeb62d863e\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:17 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:00 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4525,7 +4525,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"3352bc4e3d49c945f31c72a21b0d558e\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:17 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:01 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4539,7 +4539,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"b2cd48d584895e75ad139126be99f270\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:18 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:02 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4553,7 +4553,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"6f45537ce63435dbd0d6a4ce7737fa91\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:18 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:02 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/methods/update.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4567,7 +4567,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"671b1e1a09709e001731894be24b23fa\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:19 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:03 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/api_keys.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4581,7 +4581,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"84b63e39d920097bd3ab9aeb65252371\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:19 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:03 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/api_keys/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4595,7 +4595,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"18724175b2212ad3ba2a01a68c00d617\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:20 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:04 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/api_keys/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4609,7 +4609,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"9d40e59e2b98a2340e9bdf161ba01b9d\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:20 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:04 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/api_keys/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4623,7 +4623,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"d6812c765c30bd95bf03f9b7a32418ac\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:21 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:05 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/groups.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4637,7 +4637,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"0d772765d3f018b8f525c95c25a33071\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:21 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:05 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/groups/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4651,7 +4651,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"6c0784d4388fb754e1f283a637105afc\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:22 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:06 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/groups/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4665,7 +4665,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"2775538ecc02832d76f94faf3c507263\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:22 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:07 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/rate_limits.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4679,7 +4679,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"4d17f629070e928cf679d5a943b29b87\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:23 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:07 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/service_accounts.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4693,7 +4693,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"b5b03bce83c9f8612508a8f88a124d80\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:23 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:08 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/service_accounts/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4707,7 +4707,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"1d878d39493015309262f8fd31b288b7\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:24 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:08 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/service_accounts/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4721,7 +4721,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"4bd01fd8531fbc5824975ffcb67c7145\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:24 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:09 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/service_accounts/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4735,7 +4735,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"89d6d52d0b52b6f78095e8120717611c\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:25 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:09 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/service_accounts/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4749,7 +4749,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"c87fde879b138faefbe42c383b3aaf8f\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:26 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:10 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/users.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4763,7 +4763,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"0be7278257110d2f374961587c847508\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:26 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:10 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/users/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4777,7 +4777,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"6016e00729829948bc3f80a34c8a5840\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:26 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:11 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/users/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4791,7 +4791,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"b09677c1e8b1fb944c3604922b38c81a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:27 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:12 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/users/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4805,7 +4805,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"a8b2cb6c38b681895b1f346f8c7b228a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:28 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:12 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/users/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4819,7 +4819,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"a88932e9145fef9329a909e6b8a6d09e\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:28 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:12 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/projects/subresources/users/methods/update.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4833,7 +4833,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"e7d799dad6154615532ba28f23eb1294\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:28 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:13 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/roles.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4847,7 +4847,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"e9903ae7a3dd474e8c2ff173d2840733\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:29 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:13 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/roles/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4861,7 +4861,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"027a9f43f74c9d08b0a16cde4ffc158a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:29 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:14 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/roles/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4875,7 +4875,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"c3bf4d2b610198bde626ad51a951fd2c\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:30 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:15 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/roles/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4889,7 +4889,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"1016a8e0765ebb50a911ba7f340ba87a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:31 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:15 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/roles/methods/update.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4903,7 +4903,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"ce15d2a30b7ff0299d6273219df6729c\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:31 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:16 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/users.md": {
       "description": "OpenAI API endpoint reference.",
@@ -4917,7 +4917,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"27bb741e9771243dcae5e078d7e010d3\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:32 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:16 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/users/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4931,7 +4931,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"20ca11a9771fdc653f3c5260fdde2faf\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:32 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:16 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/users/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4945,7 +4945,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"f653758d469851072f368c5d156d6571\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:33 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:17 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/users/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4959,7 +4959,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"a8d50e10d6d19b87e7b5e15fb23b1d80\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:33 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:17 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/users/methods/update.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4973,7 +4973,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"993ec07983557c090276d6f70ce2a443\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:34 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:18 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/users/subresources/roles/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -4987,7 +4987,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"6ba670ae08a66d9b5ff9724327f90c3d\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:34 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:19 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/users/subresources/roles/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5001,7 +5001,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"53f4503c8a58f4e45760fa5f06c0d260\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:35 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:19 GMT"
     },
     "https://developers.openai.com/api/reference/resources/organization/subresources/users/subresources/roles/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5015,7 +5015,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"239b24fc3440a01a868e61c92a6e7e72\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:35 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:20 GMT"
     },
     "https://developers.openai.com/api/reference/resources/projects.md": {
       "description": "OpenAI API endpoint reference.",
@@ -5029,7 +5029,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"cceb5ceed6856217ed2d787ef61dbcba\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:35 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:20 GMT"
     },
     "https://developers.openai.com/api/reference/resources/projects/subresources/groups.md": {
       "description": "OpenAI API endpoint reference.",
@@ -5043,7 +5043,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"5fb2520c2f41c093d5d30877ce48926f\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:36 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:21 GMT"
     },
     "https://developers.openai.com/api/reference/resources/projects/subresources/groups/subresources/roles/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5057,7 +5057,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"c2850f48049a4338370011c8ae7db664\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:37 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:21 GMT"
     },
     "https://developers.openai.com/api/reference/resources/projects/subresources/groups/subresources/roles/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5071,7 +5071,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"edccf2343cfab737f7da9a8616a9f0ed\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:37 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:22 GMT"
     },
     "https://developers.openai.com/api/reference/resources/projects/subresources/groups/subresources/roles/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5085,7 +5085,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"cd235791708aee655e5548412d4b3286\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:38 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:22 GMT"
     },
     "https://developers.openai.com/api/reference/resources/projects/subresources/roles/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5099,7 +5099,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"04beca4c7ae7514024ad7a494bc06416\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:38 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:23 GMT"
     },
     "https://developers.openai.com/api/reference/resources/projects/subresources/roles/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5113,7 +5113,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"e0dc2edd0fb348510abb65442ad47cf8\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:39 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:24 GMT"
     },
     "https://developers.openai.com/api/reference/resources/projects/subresources/roles/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5127,7 +5127,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"a5220471aa9746a5640b957c28f7da85\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:40 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:24 GMT"
     },
     "https://developers.openai.com/api/reference/resources/projects/subresources/roles/methods/update.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5141,7 +5141,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"f6e6ad3b6d29579188fc9c9f88cee4d3\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:40 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:25 GMT"
     },
     "https://developers.openai.com/api/reference/resources/projects/subresources/users.md": {
       "description": "OpenAI API endpoint reference.",
@@ -5155,7 +5155,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"7b46351649a14aefed2506c992f56e4b\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:41 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:25 GMT"
     },
     "https://developers.openai.com/api/reference/resources/projects/subresources/users/subresources/roles/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5169,7 +5169,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"49a0a3373a1c1cf0b285cb05d1055910\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:41 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:26 GMT"
     },
     "https://developers.openai.com/api/reference/resources/projects/subresources/users/subresources/roles/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5183,7 +5183,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"74f55f703fd83c96e073bbfe2d05adb8\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:42 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:26 GMT"
     },
     "https://developers.openai.com/api/reference/resources/projects/subresources/users/subresources/roles/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5197,7 +5197,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"211d381f738ff1bcf51891a890edc876\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:42 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:27 GMT"
     },
     "https://developers.openai.com/api/reference/resources/realtime.md": {
       "description": "OpenAI API endpoint reference.",
@@ -5211,7 +5211,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"964832788a7ec277aff1189b44633949\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:43 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:27 GMT"
     },
     "https://developers.openai.com/api/reference/resources/realtime/client-events.md": {
       "description": "OpenAI API streaming event reference.",
@@ -5225,7 +5225,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"79fdb5fe92667c616bd2216bef237fcb\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:46 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:31 GMT"
     },
     "https://developers.openai.com/api/reference/resources/realtime/server-events.md": {
       "description": "OpenAI API streaming event reference.",
@@ -5239,7 +5239,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"31764c20bbe8284e206d52c4cd410d05\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:48 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:33 GMT"
     },
     "https://developers.openai.com/api/reference/resources/realtime/subresources/calls.md": {
       "description": "OpenAI API endpoint reference.",
@@ -5253,7 +5253,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"4af0c5c3822393bc29cdd188fbe787c9\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:43 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:28 GMT"
     },
     "https://developers.openai.com/api/reference/resources/realtime/subresources/calls/methods/accept.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5267,7 +5267,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"08a9d090fbfe7049fbf3435e295fcff5\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:44 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:28 GMT"
     },
     "https://developers.openai.com/api/reference/resources/realtime/subresources/calls/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5281,7 +5281,7 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"d02dc3da78be6da3f12920c6e68dc5f5\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:44 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:29 GMT"
     },
     "https://developers.openai.com/api/reference/resources/realtime/subresources/calls/methods/hangup.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5295,7 +5295,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"b65df08d09dcdf54722c3feec12cce02\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:45 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:30 GMT"
     },
     "https://developers.openai.com/api/reference/resources/realtime/subresources/calls/methods/refer.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5309,7 +5309,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"a011d293217b2c7566f94ccd19bafa3c\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:45 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:30 GMT"
     },
     "https://developers.openai.com/api/reference/resources/realtime/subresources/calls/methods/reject.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5323,7 +5323,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"0a836ce07229b1a241e6031011722d88\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:46 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:31 GMT"
     },
     "https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets.md": {
       "description": "OpenAI API endpoint reference.",
@@ -5337,7 +5337,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"9f34dfcab8abc076a41ac0837292afdc\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:47 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:32 GMT"
     },
     "https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5351,7 +5351,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"1896c2b36ca572dbb44ed689e3056c1d\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:49:27 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:32 GMT"
     },
     "https://developers.openai.com/api/reference/resources/realtime/translation-client-events.md": {
       "description": "OpenAI API streaming event reference.",
@@ -5365,7 +5365,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"4fccd000d3bfbce4c0d9fdbcdbc8e2de\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:48 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:34 GMT"
     },
     "https://developers.openai.com/api/reference/resources/realtime/translation-server-events.md": {
       "description": "OpenAI API streaming event reference.",
@@ -5379,7 +5379,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"ebf11e9aa81e9cef3fd3d44f7d8f38d2\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:49 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:04:53 GMT"
     },
     "https://developers.openai.com/api/reference/resources/responses.md": {
       "description": "OpenAI API endpoint reference.",
@@ -5387,13 +5387,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/responses.md",
       "title": "Responses",
-      "bytes": 4777799,
+      "bytes": 4777292,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "56a346524d5a9da0e93f194d51b26dbc484dca81518f4efcf54bab5d5fc3fd73",
-      "sourceUpdatedAt": "2026-08-31T04:05:07Z",
+      "sha256": "b0e847f3035db84d94135b68442f6e24358fadef8306868fb98bbab82b9c011f",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"403050aed2f9da6f239b5f92920f366a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:49 GMT"
+      "etag": "W/\"00088106a58a2ca7925ac45d7c8d07ae\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:35 GMT"
     },
     "https://developers.openai.com/api/reference/resources/responses/methods/cancel.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5401,13 +5401,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/cancel.md",
       "title": "Responses — Cancel",
-      "bytes": 279713,
+      "bytes": 279668,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "62a4bbdb03e5dff154e8e4985c52fba24ba66b87b0c5865782de0b302e775da7",
-      "sourceUpdatedAt": "2026-08-31T04:05:07Z",
+      "sha256": "e47089af475693c03a0e7b45a2897ebf8804cb6a424f201048fe34ee77652265",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"8ec6beee17c0f603261ac6bdf527f8b3\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:50 GMT"
+      "etag": "W/\"675bd94cb5c6ffc8d164db2b4a8efefc\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:36 GMT"
     },
     "https://developers.openai.com/api/reference/resources/responses/methods/compact.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5415,13 +5415,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/compact.md",
       "title": "Responses — Compact",
-      "bytes": 248055,
+      "bytes": 248045,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "1257b2a948c7ac775504a36c1dd985621e1a532e4a34a64ca3dad9ae24c58365",
-      "sourceUpdatedAt": "2026-08-31T04:05:07Z",
+      "sha256": "81ed2fef55c1a54536cc3f7aa49a0a37fe24dd82709cf44e114376f00908cfe0",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"ed1d7daf61713ee809567184c95707f9\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:51 GMT"
+      "etag": "W/\"155b67b7afd79e1e395e75f8d43306e5\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:36 GMT"
     },
     "https://developers.openai.com/api/reference/resources/responses/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5429,13 +5429,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/create.md",
       "title": "Responses — Create",
-      "bytes": 475111,
+      "bytes": 475101,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "2c44f339ff0d84b54677f80fd80af0e32887f7d443ecec951eb949b744460893",
-      "sourceUpdatedAt": "2026-08-31T04:05:07Z",
+      "sha256": "2558551c5d7f8b838207fffa06e7e89beb98e43fc57e3595c641c241f08f224b",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"0d2e44b6e7922390c5021f4a89e12d92\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:09:46 GMT"
+      "etag": "W/\"a7a68aae0dcd5ac0703051fc855f429e\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 18:59:11 GMT"
     },
     "https://developers.openai.com/api/reference/resources/responses/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5449,7 +5449,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"3c3a511f1650abcc34348cc27ec763f7\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:51 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:37 GMT"
     },
     "https://developers.openai.com/api/reference/resources/responses/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5457,13 +5457,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/retrieve.md",
       "title": "Responses — Retrieve",
-      "bytes": 281280,
+      "bytes": 281235,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "300213a3ded26c711f31a8fa686eb4a84f0117b21ed1443d72af7732878f8be7",
-      "sourceUpdatedAt": "2026-08-31T04:05:07Z",
+      "sha256": "35223714d2aa6e0454c2b7690cdcd26690a51a05e0a9e686e7f37b9d212e8304",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"a96fc5813e42205d0ca230e809024d05\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:52 GMT"
+      "etag": "W/\"51ee17d534a8cde33e988f0a44005ab0\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:38 GMT"
     },
     "https://developers.openai.com/api/reference/resources/responses/streaming-events.md": {
       "description": "OpenAI API streaming event reference.",
@@ -5471,13 +5471,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/streaming-events.md",
       "title": "Responses streaming events",
-      "bytes": 14988544,
+      "bytes": 14988049,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "e0a51e7349df4d95855bebc0220ca227096bfbe614d47dab188dd7eb4cb630d4",
-      "sourceUpdatedAt": "2026-08-31T04:05:07Z",
+      "sha256": "920cb602350f5847272e48cf1df7cab859c6383258cbb5f8ccd5953a51f4b95e",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"79042eda9b0a069b184da8f5e56b5f9a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:54 GMT"
+      "etag": "W/\"96b68c63e20935f235471119938501de\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:40 GMT"
     },
     "https://developers.openai.com/api/reference/resources/responses/subresources/input_items/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5491,7 +5491,7 @@
       "sourceUpdatedAt": "2026-08-24T09:37:37Z",
       "status": "active",
       "etag": "W/\"4f43414459d969d941907f6d76b4a45d\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:53 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:39 GMT"
     },
     "https://developers.openai.com/api/reference/resources/responses/subresources/input_tokens.md": {
       "description": "OpenAI API endpoint reference.",
@@ -5499,13 +5499,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/subresources/input_tokens.md",
       "title": "Responses Input Tokens",
-      "bytes": 159511,
+      "bytes": 159517,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "9a73c4ff1caf5b7af1ec8606b7c66d571166a35b045a0397b8012a8b3ca54a0c",
-      "sourceUpdatedAt": "2026-08-26T16:49:10Z",
+      "sha256": "0635afe1c7e050a362f5289190f3c78202880dc438a877361f17cc5f760f870c",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"1bdbbcc0ea6041781e9d553181c14125\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:53 GMT"
+      "etag": "W/\"177aa77b7a0f29fd93e6b9563f5b8ab9\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:39 GMT"
     },
     "https://developers.openai.com/api/reference/resources/responses/websocket-events.md": {
       "description": "OpenAI API streaming event reference.",
@@ -5513,13 +5513,13 @@
       "section": "reference",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/websocket-events.md",
       "title": "Responses WebSocket events",
-      "bytes": 16483464,
+      "bytes": 16482898,
       "firstSeenAt": "2026-08-17T07:50:43Z",
-      "sha256": "9587401acf3e7a029a3a518abf60631ad2f1b915361eb4a4887676a18df3f78f",
-      "sourceUpdatedAt": "2026-08-31T04:05:07Z",
+      "sha256": "5c2e7ea97db804dcc5b5287500b9f74fd5ff3fa9f25d55c97314fd8c53e13f99",
+      "sourceUpdatedAt": "2026-09-01T19:15:22Z",
       "status": "active",
-      "etag": "W/\"2d9979a800a39ffaf1cf7878f4334b40\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:54 GMT"
+      "etag": "W/\"260dfce530a10c02ca767a870c9f4d07\"",
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:40 GMT"
     },
     "https://developers.openai.com/api/reference/resources/uploads.md": {
       "description": "OpenAI API endpoint reference.",
@@ -5533,7 +5533,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"93c8d163129094107269a09bcfba7ebf\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 20:18:33 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:41 GMT"
     },
     "https://developers.openai.com/api/reference/resources/uploads/methods/cancel.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5547,7 +5547,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"fe4cb0ec2a1ebec0abceec4d077e19b3\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:56 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:41 GMT"
     },
     "https://developers.openai.com/api/reference/resources/uploads/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5561,7 +5561,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"3309c403864d6bd4f22fa0466f69bfb5\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:11:12 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:42 GMT"
     },
     "https://developers.openai.com/api/reference/resources/uploads/subresources/parts/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5575,7 +5575,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"61e4a47220d91fc743b9d0fa652a15fe\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:57 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:42 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores.md": {
       "description": "OpenAI API endpoint reference.",
@@ -5589,7 +5589,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"2721d8af3c988ac111f187172598d2cd\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:58 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:43 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5603,7 +5603,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"c3a588ebef12a54f456e5f62a2cf0d5b\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:58 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:44 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5617,7 +5617,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"c07b5585181e4315e858013a5d3602dc\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:59 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:44 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5631,7 +5631,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"9c2d62392c6c852a4e999913eeb69694\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:59 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:45 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5645,7 +5645,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"033100befbd67b05405d89e219285bc2\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:00 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:45 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/methods/search.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5659,7 +5659,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"dbc7998c668e8b615b00d408c30f6267\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:00 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:46 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/methods/update.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5673,7 +5673,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"8b81519589700b2a9fa89dd31587e694\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:01 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:46 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches.md": {
       "description": "OpenAI API endpoint reference.",
@@ -5687,7 +5687,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"2c212a43ed57af997cd9b53df0ea4bbb\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:01 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:47 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches/methods/cancel.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5701,7 +5701,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"93e5e9dda709cb71649bf63fe434ee30\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:02 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:47 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5715,7 +5715,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"29c1cd771b401021c1076dc763e5b422\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:02 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:48 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches/methods/list_files.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5729,7 +5729,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"8e4578a2d81c844c8da5a475538e5674\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:03 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:48 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5743,7 +5743,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"a0be7fa983179ac868f2e814be9184fe\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:04 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:49 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/subresources/files.md": {
       "description": "OpenAI API endpoint reference.",
@@ -5757,7 +5757,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"197a1c0cde6fc1c43c25dd95c5339e29\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:04 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:49 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/content.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5771,7 +5771,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"144c686aaa16b0dd7abe6f7bc477ef7e\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:05 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:50 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5785,7 +5785,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"b7cf868f601526d713dc2f1f6c808a9f\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:05 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:50 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5799,7 +5799,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"e7974d3e4b8732affe37249751748806\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:05 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:51 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5813,7 +5813,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"de31cf8767a156c6a8450dc1dc03d92b\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:06 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:52 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5827,7 +5827,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"10e6629d126b874231eb34219aa3005a\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:07 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:52 GMT"
     },
     "https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/update.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5841,7 +5841,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"44f76d1513c00af2a3c2e7b8d2bd7973\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:07 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:53 GMT"
     },
     "https://developers.openai.com/api/reference/resources/videos.md": {
       "description": "OpenAI API endpoint reference.",
@@ -5855,7 +5855,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"2e1beabbd9a46a0990852ea3f8fc8031\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:08 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:53 GMT"
     },
     "https://developers.openai.com/api/reference/resources/videos/methods/create.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5869,7 +5869,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"b43705cf102e3463f12a3d0b1befe13b\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:08 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:03:33 GMT"
     },
     "https://developers.openai.com/api/reference/resources/videos/methods/delete.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5883,7 +5883,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"b5434a940489ff23dfe4bd8cedd09025\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:09 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:54 GMT"
     },
     "https://developers.openai.com/api/reference/resources/videos/methods/list.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5897,7 +5897,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"1aa36734b37ced2166ef6bbd6262a07d\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:10 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:55 GMT"
     },
     "https://developers.openai.com/api/reference/resources/videos/methods/retrieve.md": {
       "description": "OpenAI API endpoint method reference.",
@@ -5911,7 +5911,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"2a0d06c0d1d7a40ff495de16af28b3ca\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:10 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:55 GMT"
     },
     "https://developers.openai.com/api/reference/resources/webhooks.md": {
       "description": "OpenAI API streaming event reference.",
@@ -5925,7 +5925,7 @@
       "sourceUpdatedAt": "2026-08-31T04:05:07Z",
       "status": "active",
       "etag": "W/\"5628ef191182e41a27b904ef5b50cdbf\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:10 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:56 GMT"
     },
     "https://developers.openai.com/api/reference/resources/webhooks/methods/unwrap.md": {
       "description": "",
@@ -5939,7 +5939,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "\"b995f6a31daaf5708022111d4dfc61ad\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:24:55 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:41 GMT"
     },
     "https://developers.openai.com/api/reference/responses/overview.md": {
       "description": "",
@@ -5953,7 +5953,7 @@
       "sourceUpdatedAt": "2026-08-17T07:50:43Z",
       "status": "active",
       "etag": "W/\"c4a198a512cabe6cea40e07cf2ca3528\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:11 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:56 GMT"
     },
     "https://developers.openai.com/api/reference/workload-identity-federation.md": {
       "description": "Exchange a trusted workload identity token or an X.509 certificate identity for a short-lived OpenAI API credential.",
@@ -5967,9 +5967,9 @@
       "sourceUpdatedAt": "2026-08-26T16:49:10Z",
       "status": "active",
       "etag": "W/\"178fa0605b8d9c4d9698571e4469af58\"",
-      "sourceLastModified": "Mon, 31 Aug 2026 21:25:12 GMT"
+      "sourceLastModified": "Tue, 01 Sep 2026 19:18:57 GMT"
     }
   },
   "schemaVersion": 1,
-  "generatedAt": "2026-08-31T21:21:39Z"
+  "generatedAt": "2026-09-01T19:15:22Z"
 }

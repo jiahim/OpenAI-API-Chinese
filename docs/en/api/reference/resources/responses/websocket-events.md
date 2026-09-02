@@ -1046,14 +1046,14 @@ Schema name: `ResponsesClientEventResponseCreate`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": true,
     "nullable": false,
@@ -1223,7 +1223,7 @@ Schema name: `ResponsesClientEventResponseCreate`
     "oasRef": "#/components/schemas/CreateResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -4268,7 +4268,7 @@ Schema name: `ResponsesClientEventResponseCreate`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -34746,7 +34746,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 {
   "type": "response.create",
   "stream_id": "agent_1",
-  "model": "gpt-5.5",
+  "model": "gpt-5.6-sol",
   "input": "Say hello."
 }
 ```
@@ -35958,14 +35958,14 @@ Schema name: `ResponseCreatedEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -36771,7 +36771,7 @@ Schema name: `ResponseCreatedEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -42135,7 +42135,7 @@ Schema name: `ResponseCreatedEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -89348,7 +89348,7 @@ Schema name: `ResponseCreatedEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-2024-08-06",
+    "model": "gpt-5.6-sol",
     "output": [],
     "parallel_tool_calls": true,
     "previous_response_id": null,
@@ -90318,14 +90318,14 @@ Schema name: `ResponseInProgressEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -91131,7 +91131,7 @@ Schema name: `ResponseInProgressEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -96495,7 +96495,7 @@ Schema name: `ResponseInProgressEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -143708,7 +143708,7 @@ Schema name: `ResponseInProgressEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-2024-08-06",
+    "model": "gpt-5.6-sol",
     "output": [],
     "parallel_tool_calls": true,
     "previous_response_id": null,
@@ -144678,14 +144678,14 @@ Schema name: `ResponseCompletedEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -145491,7 +145491,7 @@ Schema name: `ResponseCompletedEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -150855,7 +150855,7 @@ Schema name: `ResponseCompletedEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -198069,7 +198069,7 @@ Schema name: `ResponseCompletedEvent`
     "input": [],
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [
       {
         "id": "msg_123",
@@ -199055,14 +199055,14 @@ Schema name: `ResponseFailedEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -199868,7 +199868,7 @@ Schema name: `ResponseFailedEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -205232,7 +205232,7 @@ Schema name: `ResponseFailedEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -252448,7 +252448,7 @@ Schema name: `ResponseFailedEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [],
     "previous_response_id": null,
     "reasoning_effort": null,
@@ -253413,14 +253413,14 @@ Schema name: `ResponseIncompleteEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -254226,7 +254226,7 @@ Schema name: `ResponseIncompleteEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -259590,7 +259590,7 @@ Schema name: `ResponseIncompleteEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -306805,7 +306805,7 @@ Schema name: `ResponseIncompleteEvent`
     },
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [],
     "previous_response_id": null,
     "reasoning_effort": null,
@@ -364673,14 +364673,14 @@ Schema name: `ResponseQueuedEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -365486,7 +365486,7 @@ Schema name: `ResponseQueuedEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -370850,7 +370850,7 @@ Schema name: `ResponseQueuedEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",

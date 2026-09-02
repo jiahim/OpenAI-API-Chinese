@@ -12,11 +12,11 @@ Learn when and how to compact long-running conversations in the [conversation st
 
 - `model: "gpt-5.6-sol" or "gpt-5.6-terra" or "gpt-5.6-luna" or 99 more or string or null`
 
-  Model ID used to generate the response, like `gpt-5` or `o3`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/docs/models) to browse and compare available models.
+  Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/docs/models) to browse and compare available models.
 
   - `"gpt-5.6-sol" or "gpt-5.6-terra" or "gpt-5.6-luna" or 99 more`
 
-    Model ID used to generate the response, like `gpt-5` or `o3`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/docs/models) to browse and compare available models.
+    Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/docs/models) to browse and compare available models.
 
     - `"gpt-5.6-sol"`
 
@@ -8550,7 +8550,7 @@ curl -X POST https://api.openai.com/v1/responses/compact \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-      "model": "gpt-5.1-codex-max",
+      "model": "gpt-5.6-sol",
       "input": [
         {
           "role": "user",

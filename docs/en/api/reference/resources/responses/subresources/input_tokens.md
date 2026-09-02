@@ -5399,7 +5399,7 @@ curl -X POST https://api.openai.com/v1/responses/input_tokens \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-      "model": "gpt-5",
+      "model": "gpt-5.6-sol",
       "input": "Tell me a joke."
     }'
 ```
