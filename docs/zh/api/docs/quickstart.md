@@ -1,8 +1,8 @@
 # 开发者快速入门
 
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获得。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，请在页面 URL 后追加 `.md` 即可。
 
-OpenAI API 为前沿 AI 提供了一致的接口 [模型](https://developers.openai.com/api/docs/models) ，用于文本生成、自然语言处理、计算机视觉等。通过创建 API 密钥并运行你的首个 API 调用来开始使用。了解如何生成文本、分析图像、构建 智能体 等。
+OpenAI API 提供了一个统一的接口，用于访问业界领先的 AI [模型](https://developers.openai.com/api/docs/models) ，涵盖文本生成、自然语言处理、计算机视觉等任务。你可以通过创建一个 API 密钥并发起你的第一次 API 调用来快速入门，了解如何生成文本、分析图像、构建智能体等等。
 
 ## 创建并导出 API 密钥
 
@@ -17,12 +17,12 @@ StatsigClient.logEvent("quickstart_create_api_key_click", null, null)
 
 
 
-在开始之前，在仪表盘中创建一个 API 密钥，你将用它来
-安全地 [访问 API](https://developers.openai.com/api/reference/overview)。将密钥
-存放在安全的位置，例如 [`.zshrc`
+开始之前，先在仪表盘中创建一个 API 密钥，后续你需要用它来
+安全地 [访问 API](https://developers.openai.com/api/reference/overview)。请将密钥
+保存在安全的位置，例如计算机上的某个 [`.zshrc`
 文件](https://www.freecodecamp.org/news/how-do-zsh-configuration-files-work/) 或
-你计算机上的另一个文本文件。生成 API 密钥后，
-将其 [导出为环境变量](https://en.wikipedia.org/wiki/Environment_variable)
+其他文本文件。生成 API 密钥后，将其导出为
+环境变量 [环境变量](https://en.wikipedia.org/wiki/Environment_variable)
 。
 
 
@@ -50,9 +50,9 @@ setx OPENAI_API_KEY "your_api_key_here"
 
 
 
-每个 OpenAI SDK 会自动从系统环境中读取你的 API 密钥。
+每个 OpenAI SDK 都会自动从系统环境中读取你的 API 密钥。
 
-## 安装 OpenAI SDK 并运行 API 调用
+## 安装 OpenAI SDK 并发起 API 调用
 
 
 
@@ -60,7 +60,7 @@ JavaScript
 
     
 
-要在 Node.js、Deno 或 Bun 等服务端 JavaScript 环境中使用 OpenAI API，你可以使用官方的 [用于 TypeScript 和 JavaScript 的 OpenAI SDK](https://github.com/openai/openai-node)。首先，使用以下命令安装 SDK： [npm](https://www.npmjs.com/) 或你喜欢的包管理器：
+要在 Node.js、Deno 或 Bun 等服务端 JavaScript 环境中使用 OpenAI API，可以使用官方的 [OpenAI TypeScript 和 JavaScript SDK](https://github.com/openai/openai-node)。首先使用 [npm](https://www.npmjs.com/) 或你偏好的包管理器安装 SDK：
 
 使用 npm 安装 OpenAI SDK
 
@@ -69,9 +69,9 @@ npm install openai
 ```
 
 
-安装 OpenAI SDK 后，创建一个文件，命名为 `example.mjs` 并将示例代码复制到其中：
+安装好 OpenAI SDK 后，创建一个名为 `example.mjs` 的文件，并将示例代码复制进去：
 
-测试一个基本的 API 请求
+测试一个基础的 API 请求
 
 ```javascript
 import OpenAI from "openai";
@@ -86,9 +86,9 @@ console.log(response.output_text);
 ```
 
 
-使用以下命令执行代码： `node example.mjs` （或用于 Deno 或 Bun 的等效命令）。片刻后，你应该会看到 API 请求的输出。
+使用 `node example.mjs` （或 Deno、Bun 中对应的命令）执行该代码。稍后你应能看到 API 请求的输出。
 
-[在 GitHub 上了解更多
+[在 GitHub 上了解更多信息
 
 
 
@@ -104,7 +104,7 @@ Python
 
     
 
-要在 Python 中使用 OpenAI API，你可以使用官方的 [用于 Python 的 OpenAI SDK](https://github.com/openai/openai-python)。首先，使用以下命令安装 SDK： [pip](https://pypi.org/project/pip/):
+要在 Python 中使用 OpenAI API，可以使用官方的 [OpenAI Python SDK](https://github.com/openai/openai-python)。首先使用 [pip](https://pypi.org/project/pip/):
 
 使用 pip 安装 OpenAI SDK
 
@@ -113,9 +113,9 @@ pip install openai
 ```
 
 
-安装 OpenAI SDK 后，创建一个文件，命名为 `example.py` 并将示例代码复制到其中：
+安装好 OpenAI SDK 后，创建一个名为 `example.py` 的文件，并将示例代码复制进去：
 
-测试一个基本的 API 请求
+测试一个基础的 API 请求
 
 ```python
 from openai import OpenAI
@@ -131,9 +131,9 @@ print(response.output_text)
 ```
 
 
-使用以下命令执行代码 `python example.py`。稍等片刻，你应该会看到你的 API 请求的输出。
+使用 `python example.py`。稍后你应能看到 API 请求的输出。
 
-[在 GitHub 上了解更多
+[在 GitHub 上了解更多信息
 
 
 
@@ -149,15 +149,15 @@ print(response.output_text)
 
     
 
-与 Microsoft 合作，OpenAI 提供官方支持的 C# API 客户端。你可以通过 .NET CLI 从以下地址安装它： [NuGet](https://www.nuget.org/).
+该公司 与 Microsoft 合作提供了一个官方支持的 C# OpenAI API 客户端。你可以使用 .NET CLI 从 [NuGet](https://www.nuget.org/).
 
 ```
 dotnet add package OpenAI
 ```
 
-一个简单的向 [Responses API](https://developers.openai.com/api/reference/resources/responses) 发出的 API 请求可能如下所示：
+向 API 发起的一个简单请求示例如下： [Responses API](https://developers.openai.com/api/reference/resources/responses) 如下所示：
 
-测试一个基本的 API 请求
+测试一个基础的 API 请求
 
 ```csharp
 using OpenAI.Responses;
@@ -184,20 +184,20 @@ Java
 
     
 
-OpenAI 为 Java 编程语言提供了一个 API 辅助工具，目前处于测试阶段。你可以使用以下配置包含 Maven 依赖：
+OpenAI 为 Java 编程语言提供了一个 API 帮助库，当前处于 beta 阶段。你可以使用以下配置引入 Maven 依赖：
 
 ```xml
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.52.0</version>
+  <version>4.54.0</version>
 </dependency>
 ```
 
 
-一个简单的向 [Responses API](https://developers.openai.com/api/reference/resources/responses) 发出的 API 请求可能如下所示：
+一个简单的 API 请求示例 [Responses API](https://developers.openai.com/api/reference/resources/responses) 如下所示：
 
-测试一个基本的 API 请求
+测试一个基础的 API 请求
 
 ```java
 import com.openai.client.OpenAIClient;
@@ -223,9 +223,9 @@ public class Main {
 ```
 
 
-要了解如何在 Java 中使用 OpenAI API，请查看下方链接的 GitHub 仓库！
+要了解有关在 Java 中使用 OpenAI API 的更多信息，请查看下方链接的 GitHub 仓库！
 
-[在 GitHub 上了解更多
+[在 GitHub 上了解更多信息
 
 
 
@@ -241,7 +241,7 @@ Go
 
     
 
-OpenAI 为 Go 编程语言提供了一个 API 辅助库，目前处于测试阶段。你可以使用以下代码导入该库：
+OpenAI 为 Go 编程语言提供了一个 API 帮助库，当前处于 beta 阶段。你可以使用下面的代码导入该库：
 
 ```go
 import (
@@ -250,9 +250,9 @@ import (
 ```
 
 
-向 [Responses API](https://developers.openai.com/api/reference/resources/responses) 发出的第一个 API 请求如下所示：
+向 API 发起的第一个请求示例 [Responses API](https://developers.openai.com/api/reference/resources/responses) 如下所示：
 
-测试一个基本的 API 请求
+测试一个基础的 API 请求
 
 ```go
 package main
@@ -281,9 +281,9 @@ func main() {
 ```
 
 
-要了解有关在 Go 中使用 OpenAI API 的更多信息，请查看下面链接的 GitHub 仓库！
+要了解有关在 Go 中使用 OpenAI API 的更多信息，请查看下方链接的 GitHub 仓库！
 
-[在 GitHub 上了解更多
+[在 GitHub 上了解更多信息
 
 
 
@@ -299,7 +299,7 @@ Ruby
 
     
 
-要在 Ruby 中使用 OpenAI API，你可以使用官方的 [OpenAI SDK for Ruby](https://github.com/openai/openai-ruby)。首先将 gem 添加到你的应用程序中：
+要在 Ruby 中使用 OpenAI API，你可以使用官方的 [OpenAI Ruby SDK](https://github.com/openai/openai-ruby)。首先将 gem 添加到你的应用中：
 
 使用 Bundler 安装 OpenAI SDK
 
@@ -308,9 +308,9 @@ gem "openai"
 ```
 
 
-安装 OpenAI SDK 后，创建一个名为 `example.rb` 的文件，并将示例代码复制到其中：
+安装好 OpenAI SDK 后，创建一个名为 `example.rb` 的文件，并将示例代码复制进去：
 
-测试一个基本的 API 请求
+测试一个基础的 API 请求
 
 ```ruby
 require "openai"
@@ -326,9 +326,9 @@ puts(response.output_text)
 ```
 
 
-使用 `ruby example.rb`。执行代码。片刻之后，你应该会看到你的 API 请求的输出。
+使用 `ruby example.rb`。稍后你应能看到 API 请求的输出。
 
-[在 GitHub 上了解更多
+[在 GitHub 上了解更多信息
 
 
 
@@ -347,24 +347,24 @@ puts(response.output_text)
 
       Learn more about prompting, message roles, and building conversational apps.](https://developers.openai.com/api/docs/guides/text)
 
-## 添加额度以继续构建
+## 充值额度以继续构建
 
 
 
 StatsigClient.logEvent("quickstart_add_credits_billing_click", null, null)
   }
 >
-  前往计费
+  前往结算
 
 
 {/* prettier-ignore */}
 
-恭喜你成功运行了一个免费测试API请求！开始构建真实应用，享受更高限额，并使用 [我们的模型](https://developers.openai.com/api/docs/models) 来生成文本、音频、图像、视频等更多内容。
+恭喜你成功运行了一次免费测试 API 请求！开始使用更高的额度构建真实的应用，并使用我们的模型生成文本、音频、图像、视频等内容。 [我们的模型](https://developers.openai.com/api/docs/models) 生成文本、音频、图像、视频等内容。
 
 
 
 
-  探索旨在帮助你更快交付的工具和文档：
+  探索专为帮助你更快交付而设计的工具和文档：
 
 
 [StatsigClient.logEvent(
@@ -374,12 +374,12 @@ StatsigClient.logEvent("quickstart_add_credits_billing_click", null, null)
     )
   }
 >
-  聊天游乐场
+  Chat Playground
 
 
 
       Build & test conversational prompts and embed them in your app.](https://platform.openai.com/chat)
-[构建智能体
+[构建 智能体
 
 
 
@@ -387,7 +387,7 @@ StatsigClient.logEvent("quickstart_add_credits_billing_click", null, null)
 
 ## 分析图像和文件
 
-将图片 URL、上传的文件或 PDF 文档直接发送给模型，以提取文本、分类内容或检测视觉元素。
+直接将图片 URL、上传的文件或 PDF 文档发送给模型，以提取文本、分类内容或检测视觉元素。
 
 
 
@@ -1103,7 +1103,7 @@ curl "https://api.openai.com/v1/responses" \
 
 ## 使用工具扩展模型
 
-通过附加，让模型可以访问外部数据和函数 [工具](https://developers.openai.com/api/docs/guides/tools)。使用内置工具，如 网页搜索 或 文件搜索，或定义自己的工具来调用 API、运行代码或与第三方系统集成。
+通过附加 [工具](https://developers.openai.com/api/docs/guides/tools)，让模型能够访问外部数据和函数。可以使用 网页搜索 或 文件搜索 等内置工具，也可以定义自己的工具来调用 API、运行代码或与第三方系统集成。
 
 
 
@@ -1330,11 +1330,12 @@ using OpenAI.Responses;
 #pragma warning disable OPENAI001
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string vectorStoreId = "<vector_store_id>";
 ResponsesClient client = new(key);
 
 CreateResponseOptions options = new() { Model = "gpt-5.6" };
 options.Tools.Add(
-    ResponseTool.CreateFileSearchTool(["<vector_store_id>"])
+    ResponseTool.CreateFileSearchTool([vectorStoreId])
 );
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")
@@ -1457,6 +1458,32 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CodeInterpreterToolContainer container = new(
+    CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration([])
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    Instructions = "You are a personal math tutor. Write and run code to answer math questions.",
+};
+options.Tools.Add(ResponseTool.CreateCodeInterpreterTool(container));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "I need to solve the equation 3x + 11 = 14. Can you help me?"
+    )
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -1658,10 +1685,7 @@ client.responses().create(params).output().forEach(System.out::println);
 ```
 
 ```csharp
-using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
 using OpenAI.Responses;
-#pragma warning disable CA1869
 #pragma warning disable OPENAI001
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
@@ -1694,16 +1718,30 @@ options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("What is the weather like in Paris today?")
 );
 
-ResponseResult response = client.CreateResponse(options);
-Console.WriteLine(
-    JsonSerializer.Serialize(
-        response.OutputItems[0],
-        new JsonSerializerOptions
+ResponseResult response = await client.CreateResponseAsync(options);
+foreach (ResponseItem outputItem in response.OutputItems)
+{
+    if (outputItem is FunctionCallResponseItem functionCall)
+    {
+        Console.WriteLine(
+            $"{functionCall.FunctionName}({functionCall.FunctionArguments})"
+        );
+    }
+    else if (outputItem is MessageResponseItem message)
+    {
+        foreach (ResponseContentPart content in message.Content)
         {
-            TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
+            if (content.Kind == ResponseContentPartKind.OutputText)
+            {
+                Console.WriteLine(content.Text);
+            }
+            else if (content.Kind == ResponseContentPartKind.Refusal)
+            {
+                Console.WriteLine(content.Refusal);
+            }
         }
-    )
-);
+    }
+}
 ```
 
 ```ruby
@@ -1960,11 +1998,11 @@ puts(response.output_text)
 
       Learn to enable the model to call your own custom code.](https://developers.openai.com/api/docs/guides/function-calling)
 
-## 流式响应并构建实时应用
+## 以流式方式接收响应并构建实时应用
 
-使用服务器发送的 [流式事件](https://developers.openai.com/api/docs/guides/streaming-responses) 在结果生成时显示结果，或使用 [Realtime API](https://developers.openai.com/api/docs/guides/realtime) 用于交互式语音应用以及包含文本、音频和图像输入的应用。
+使用服务端发送 [流式事件](https://developers.openai.com/api/docs/guides/streaming-responses) 在结果生成时即时展示，或使用 [Realtime API](https://developers.openai.com/api/docs/guides/realtime) 构建支持文本、音频和图像输入的交互式语音应用。
 
-从 API 流式接收服务器发送事件
+从 API 接收服务端发送事件流
 
 ```javascript
 import { OpenAI } from "openai";
@@ -2106,9 +2144,9 @@ end
 
 ## 构建智能体
 
-使用 OpenAI 平台构建 [智能体](https://developers.openai.com/api/docs/guides/agents) 能够采取行动——比如 [控制计算机](https://developers.openai.com/api/docs/guides/tools-computer-use)——代表你的用户。使用 [Agents SDK](https://developers.openai.com/api/docs/guides/agents) 在你的服务器上创建编排逻辑。
+使用 OpenAI 平台构建 [智能体](https://developers.openai.com/api/docs/guides/agents) ，使其能够代表你的用户采取行动——例如 [控制计算机](https://developers.openai.com/api/docs/guides/tools-computer-use)。使用 [Agents SDK](https://developers.openai.com/api/docs/guides/agents) 在你的服务端创建编排逻辑。
 
-构建一个语言分流 智能体
+构建一个语言分诊 智能体
 
 ```javascript
 import { Agent, run } from "@openai/agents";

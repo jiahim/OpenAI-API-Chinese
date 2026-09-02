@@ -1,19 +1,19 @@
-# Webhooks 事件
+# Webhooks events
 
-> 关于完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 来获取。
+> 完整文档索引请参见 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 末尾追加 `.md` 。
 
-Webhooks 是由 OpenAI 发送到你指定 URL 的 HTTP 请求，当某些
-在使用 API 过程中发生事件时触发。
+Webhooks 是由 OpenAI 在特定事件发生时向你指定的 URL 发起的 HTTP 请求。
+这些事件会在使用 API 的过程中发生。
 
-[了解更多关于 webhooks 的信息](https://developers.openai.com/docs/guides/webhooks).
+[详细了解 Webhooks](https://developers.openai.com/docs/guides/webhooks).
 
 ## response.completed
 
-当后台响应完成时发送。
+当后台响应已完成时发送。
 
 ### Schema
 
-模式名称： `WebhookResponseCompleted`
+Schema name: `WebhookResponseCompleted`
 
 ```json
 {
@@ -202,7 +202,7 @@ Webhooks 是由 OpenAI 发送到你指定 URL 的 HTTP 请求，当某些
 
 ### Schema
 
-模式名称： `WebhookResponseCancelled`
+Schema name: `WebhookResponseCancelled`
 
 ```json
 {
@@ -391,7 +391,7 @@ Webhooks 是由 OpenAI 发送到你指定 URL 的 HTTP 请求，当某些
 
 ### Schema
 
-模式名称： `WebhookResponseFailed`
+Schema name: `WebhookResponseFailed`
 
 ```json
 {
@@ -576,11 +576,11 @@ Webhooks 是由 OpenAI 发送到你指定 URL 的 HTTP 请求，当某些
 
 ## response.incomplete
 
-当后台响应被中断时发送。
+在后台响应被中断时发送。
 
 ### Schema
 
-模式名称： `WebhookResponseIncomplete`
+Schema name: `WebhookResponseIncomplete`
 
 ```json
 {
@@ -765,11 +765,11 @@ Webhooks 是由 OpenAI 发送到你指定 URL 的 HTTP 请求，当某些
 
 ## batch.completed
 
-当一批API请求已完成时发送。
+当批处理 API 请求完成时发送。
 
 ### Schema
 
-模式名称： `WebhookBatchCompleted`
+Schema name: `WebhookBatchCompleted`
 
 ```json
 {
@@ -954,11 +954,11 @@ Webhooks 是由 OpenAI 发送到你指定 URL 的 HTTP 请求，当某些
 
 ## batch.cancelled
 
-当批次 API 请求被取消时发送。
+当批量 API 请求被取消时发送。
 
 ### Schema
 
-模式名称： `WebhookBatchCancelled`
+Schema name: `WebhookBatchCancelled`
 
 ```json
 {
@@ -1143,11 +1143,11 @@ Webhooks 是由 OpenAI 发送到你指定 URL 的 HTTP 请求，当某些
 
 ## batch.expired
 
-当批次 API 请求已过期时发送。
+当批量 API 请求已过期时发送。
 
 ### Schema
 
-模式名称： `WebhookBatchExpired`
+Schema name: `WebhookBatchExpired`
 
 ```json
 {
@@ -1332,11 +1332,11 @@ Webhooks 是由 OpenAI 发送到你指定 URL 的 HTTP 请求，当某些
 
 ## batch.failed
 
-当批次 API 请求失败时发送。
+在批量 API 请求失败时发送。
 
 ### Schema
 
-模式名称： `WebhookBatchFailed`
+Schema name: `WebhookBatchFailed`
 
 ```json
 {
@@ -1521,11 +1521,11 @@ Webhooks 是由 OpenAI 发送到你指定 URL 的 HTTP 请求，当某些
 
 ## fine_tuning.job.succeeded
 
-当微调任务成功时发送。
+在微调任务成功时发送。
 
 ### Schema
 
-模式名称： `WebhookFineTuningJobSucceeded`
+Schema name: `WebhookFineTuningJobSucceeded`
 
 ```json
 {
@@ -1710,11 +1710,11 @@ Webhooks 是由 OpenAI 发送到你指定 URL 的 HTTP 请求，当某些
 
 ## fine_tuning.job.failed
 
-当微调作业失败时发送。
+当微调任务失败时发送。
 
 ### Schema
 
-模式名称： `WebhookFineTuningJobFailed`
+Schema name: `WebhookFineTuningJobFailed`
 
 ```json
 {
@@ -1899,11 +1899,11 @@ Webhooks 是由 OpenAI 发送到你指定 URL 的 HTTP 请求，当某些
 
 ## fine_tuning.job.cancelled
 
-当微调作业被取消时发送。
+当微调作业已被取消时发送。
 
 ### Schema
 
-模式名称： `WebhookFineTuningJobCancelled`
+Schema name: `WebhookFineTuningJobCancelled`
 
 ```json
 {
@@ -2088,11 +2088,11 @@ Webhooks 是由 OpenAI 发送到你指定 URL 的 HTTP 请求，当某些
 
 ## eval.run.succeeded
 
-当评估运行成功时发送。
+在评测运行成功时发送。
 
 ### Schema
 
-模式名称： `WebhookEvalRunSucceeded`
+Schema name: `WebhookEvalRunSucceeded`
 
 ```json
 {
@@ -2277,11 +2277,11 @@ Webhooks 是由 OpenAI 发送到你指定 URL 的 HTTP 请求，当某些
 
 ## eval.run.failed
 
-当一次评估运行失败时发送。
+当评估运行失败时发送。
 
 ### Schema
 
-模式名称： `WebhookEvalRunFailed`
+Schema name: `WebhookEvalRunFailed`
 
 ```json
 {
@@ -2466,11 +2466,11 @@ Webhooks 是由 OpenAI 发送到你指定 URL 的 HTTP 请求，当某些
 
 ## eval.run.canceled
 
-当一次评估运行被取消时发送。
+当评测运行被取消时发送。
 
 ### Schema
 
-模式名称： `WebhookEvalRunCanceled`
+Schema name: `WebhookEvalRunCanceled`
 
 ```json
 {
@@ -2655,13 +2655,13 @@ Webhooks 是由 OpenAI 发送到你指定 URL 的 HTTP 请求，当某些
 
 ## realtime.call.incoming
 
-当有传入的 API SIP 会话可供 Realtime 接受时触发。
-同一待处理会话也可以发出 `live.call.incoming`；第一个
-成功的 Realtime 或 Live 接受端点决定运行时表面。
+当有传入的 API SIP 会话可供 Realtime 接受时发送。
+同一待处理会话还可以发出 `live.call.incoming`；首个
+成功的 Realtime 或 Live accept 端点将选定运行时面。
 
 ### Schema
 
-模式名称： `WebhookRealtimeCallIncoming`
+Schema name: `WebhookRealtimeCallIncoming`
 
 ```json
 {
@@ -2913,13 +2913,13 @@ Webhooks 是由 OpenAI 发送到你指定 URL 的 HTTP 请求，当某些
 
 ## live.call.incoming
 
-当有传入的 API SIP 会话可用于 Live 接受时，将发出此事件。该
-同一待处理会话也可能发出 `realtime.call.incoming`；第一个
-成功的 Realtime 或 Live 接受端点决定运行时表面。
+当有可由 Live 接受的传入 API SIP 会话时发送。
+同一待处理会话还可以发出 `realtime.call.incoming`；首个
+成功的 Realtime 或 Live accept 端点将选定运行时面。
 
 ### Schema
 
-模式名称： `WebhookLiveCallIncoming`
+Schema name: `WebhookLiveCallIncoming`
 
 ```json
 {
@@ -3166,5 +3166,379 @@ Webhooks 是由 OpenAI 发送到你指定 URL 的 HTTP 请求，当某些
       {"name": "Content-Type", "value": "application/sdp"},
     ]
   }
+}
+```
+
+## safety.alert.created
+
+当已批准的安全警示可用于 API 项目时发送。
+
+### Schema
+
+Schema name: `WebhookSafetyAlertCreated`
+
+```json
+{
+  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema)": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/webhooks/safety_alert_created/post/requestBody/content/application%2Fjson/schema",
+    "docstring": "Sent when an approved safety alert is available for an API project.",
+    "ident": "SafetyAlertCreatedWebhookEvent",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "id"
+        },
+        {
+          "ident": "created_at"
+        },
+        {
+          "ident": "data"
+        },
+        {
+          "ident": "object"
+        },
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) id",
+      "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) created_at",
+      "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) data",
+      "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) object",
+      "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) type"
+    ]
+  },
+  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookSafetyAlertCreated/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of the webhook event.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "string",
+    "children": []
+  },
+  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) created_at": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookSafetyAlertCreated/properties/created_at",
+    "deprecated": false,
+    "key": "created_at",
+    "docstring": "The Unix timestamp in seconds when the event was created.",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "constraints": {
+      "format": "unixtime"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "integer",
+    "children": []
+  },
+  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) data": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookSafetyAlertCreated/properties/data",
+    "deprecated": false,
+    "key": "data",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "id"
+        }
+      ]
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "object",
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) data > (property) id"
+    ]
+  },
+  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) object": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookSafetyAlertCreated/properties/object",
+    "deprecated": false,
+    "key": "object",
+    "docstring": "Always `event`.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/WebhookSafetyAlertCreated/properties/object",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "event"
+        }
+      ]
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) object > (member) 0"
+    ]
+  },
+  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookSafetyAlertCreated/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "docstring": "Always `safety.alert.created`.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/WebhookSafetyAlertCreated/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "safety.alert.created"
+        }
+      ]
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) type > (member) 0"
+    ]
+  },
+  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) data > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookSafetyAlertCreated/properties/data/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The safety alert ID to pass to `GET /v1/safety/alerts/{id}`.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "string",
+    "children": []
+  },
+  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) object > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "event"
+    }
+  },
+  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "safety.alert.created"
+    }
+  }
+}
+```
+
+### 示例
+
+```json
+{
+  "id": "evt_123",
+  "object": "event",
+  "created_at": 1787659200,
+  "type": "safety.alert.created",
+  "data": {"id": "alert_0123456789abcdef0123456789abcdef"}
+}
+```
+
+## safety.org_alert.created
+
+当企业工作区有已批准的安全警报可用时发送。
+
+### Schema
+
+Schema name: `WebhookSafetyOrgAlertCreated`
+
+```json
+{
+  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema)": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/webhooks/safety_org_alert_created/post/requestBody/content/application%2Fjson/schema",
+    "docstring": "Sent when an approved safety alert is available for an enterprise workspace.",
+    "ident": "SafetyOrgAlertCreatedWebhookEvent",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "id"
+        },
+        {
+          "ident": "created_at"
+        },
+        {
+          "ident": "data"
+        },
+        {
+          "ident": "object"
+        },
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) id",
+      "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) created_at",
+      "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) data",
+      "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) object",
+      "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) type"
+    ]
+  },
+  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookSafetyOrgAlertCreated/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of the webhook event.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "string",
+    "children": []
+  },
+  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) created_at": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookSafetyOrgAlertCreated/properties/created_at",
+    "deprecated": false,
+    "key": "created_at",
+    "docstring": "The Unix timestamp in seconds when the event was created.",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "constraints": {
+      "format": "unixtime"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "integer",
+    "children": []
+  },
+  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) data": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookSafetyOrgAlertCreated/properties/data",
+    "deprecated": false,
+    "key": "data",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "id"
+        }
+      ]
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "object",
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) data > (property) id"
+    ]
+  },
+  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) object": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookSafetyOrgAlertCreated/properties/object",
+    "deprecated": false,
+    "key": "object",
+    "docstring": "Always `event`.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/WebhookSafetyOrgAlertCreated/properties/object",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "event"
+        }
+      ]
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) object > (member) 0"
+    ]
+  },
+  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookSafetyOrgAlertCreated/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "docstring": "Always `safety.org_alert.created`.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/WebhookSafetyOrgAlertCreated/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "safety.org_alert.created"
+        }
+      ]
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) type > (member) 0"
+    ]
+  },
+  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) data > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookSafetyOrgAlertCreated/properties/data/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The safety alert ID to pass to `GET /v1/safety/alerts/{id}`.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "string",
+    "children": []
+  },
+  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) object > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "event"
+    }
+  },
+  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "safety.org_alert.created"
+    }
+  }
+}
+```
+
+### 示例
+
+```json
+{
+  "id": "evt_123",
+  "object": "event",
+  "created_at": 1787659200,
+  "type": "safety.org_alert.created",
+  "data": {"id": "alert_0123456789abcdef0123456789abcdef"}
 }
 ```

@@ -1,8 +1,8 @@
 # WebSocket 事件
 
-> 完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
-通过持久的 Responses API WebSocket 连接发送客户端事件并接收服务器事件。 [了解 WebSocket 模式的更多信息。](https://developers.openai.com/api/docs/guides/websocket-mode)
+通过持久的 Responses API WebSocket 连接发送客户端事件并接收服务端事件。 [详细了解 WebSocket 模式。](https://developers.openai.com/api/docs/guides/websocket-mode)
 
 ## 客户端事件
 
@@ -10,18 +10,18 @@
 
 ### response.create
 
-客户端事件，用于通过持久 WebSocket 连接创建响应。
-此负载使用与 `POST /v1/responses`，相同的顶级字段，外加
-仅 WebSocket 的封装元数据。
+用于在持久 WebSocket 连接上创建 response 的客户端事件。
+此负载使用与 `POST /v1/responses`，相同的顶层字段，外加
+WebSocket 专属的信封元数据。
 
-注意：
-- `stream` 在 WebSocket 上为隐式行为，不应发送。
-- `background` 在 WebSocket 上不受支持。
+备注：
+- `stream` 在 WebSocket 上是隐式的，不应发送。
+- `background` 在 WebSocket 上不支持。
 - `stream_id` 仅适用于 WebSocket，不属于 `POST /v1/responses`.
 
 #### Schema
 
-Schema 名称： `ResponsesClientEventResponseCreate`
+Schema name: `ResponsesClientEventResponseCreate`
 
 ```json
 {
@@ -907,6 +907,9 @@ Schema 名称： `ResponsesClientEventResponseCreate`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -2710,6 +2713,9 @@ Schema 名称： `ResponsesClientEventResponseCreate`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -6336,12 +6342,16 @@ Schema 名称： `ResponsesClientEventResponseCreate`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) responses_client_event > (schema) > (property) input > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) responses_client_event > (schema) > (property) input > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) responses_client_event > (schema) > (property) input > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) responses_client_event > (schema) > (property) input > (variant) 1 > (items) > (variant) 29": {
@@ -14563,6 +14573,23 @@ Schema 名称： `ResponsesClientEventResponseCreate`
     "children": [
       "(resource) responses > (model) responses_client_event > (schema) > (property) input > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) responses_client_event > (schema) > (property) input > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) responses_client_event > (schema) > (property) input > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -34724,17 +34751,17 @@ Schema 名称： `ResponsesClientEventResponseCreate`
 }
 ```
 
-## 服务器事件（仅限 WebSocket）
+## 服务端事件（仅 WebSocket）
 
-仅通过 Responses API WebSocket 连接发出的事件。
+事件仅通过 Responses API WebSocket 连接发出。
 
-### 错误
+### error
 
-处理 Responses WebSocket 请求时发生错误时发出。
+在处理 Responses WebSocket 请求过程中发生错误时触发。
 
 #### Schema
 
-Schema 名称： `ResponseWsError`
+Schema name: `ResponseWsError`
 
 ```json
 {
@@ -34990,11 +35017,11 @@ Schema 名称： `ResponseWsError`
 
 ### response.created
 
-当响应被创建时发出的事件。
+在创建响应时发出的事件。
 
 #### Schema
 
-Schema 名称： `ResponseCreatedEvent`
+Schema name: `ResponseCreatedEvent`
 
 ```json
 {
@@ -35837,6 +35864,9 @@ Schema 名称： `ResponseCreatedEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -36928,7 +36958,8 @@ Schema 名称： `ResponseCreatedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
+      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -37903,6 +37934,9 @@ Schema 名称： `ResponseCreatedEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -42502,6 +42536,23 @@ Schema 名称： `ResponseCreatedEvent`
     "schemaType": "integer",
     "children": []
   },
+  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
+    "deprecated": false,
+    "key": "compute_units",
+    "docstring": "Compute units for the request. Currently null when available.\n",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "constraints": {
+      "minimum": 0
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "integer",
+    "children": []
+  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -42524,6 +42575,9 @@ Schema 名称： `ResponseCreatedEvent`
         },
         {
           "ident": "total_tokens"
+        },
+        {
+          "ident": "compute_units"
         }
       ]
     },
@@ -42533,7 +42587,8 @@ Schema 名称： `ResponseCreatedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
+      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -43685,12 +43740,16 @@ Schema 名称： `ResponseCreatedEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -56463,6 +56522,23 @@ Schema 名称： `ResponseCreatedEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -89301,11 +89377,11 @@ Schema 名称： `ResponseCreatedEvent`
 
 ### response.in_progress
 
-当响应正在进行时发出。
+在响应进行中时发出。
 
 #### Schema
 
-Schema 名称： `ResponseInProgressEvent`
+Schema name: `ResponseInProgressEvent`
 
 ```json
 {
@@ -90148,6 +90224,9 @@ Schema 名称： `ResponseInProgressEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -91239,7 +91318,8 @@ Schema 名称： `ResponseInProgressEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
+      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -92214,6 +92294,9 @@ Schema 名称： `ResponseInProgressEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -96813,6 +96896,23 @@ Schema 名称： `ResponseInProgressEvent`
     "schemaType": "integer",
     "children": []
   },
+  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
+    "deprecated": false,
+    "key": "compute_units",
+    "docstring": "Compute units for the request. Currently null when available.\n",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "constraints": {
+      "minimum": 0
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "integer",
+    "children": []
+  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -96835,6 +96935,9 @@ Schema 名称： `ResponseInProgressEvent`
         },
         {
           "ident": "total_tokens"
+        },
+        {
+          "ident": "compute_units"
         }
       ]
     },
@@ -96844,7 +96947,8 @@ Schema 名称： `ResponseInProgressEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
+      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -97996,12 +98100,16 @@ Schema 名称： `ResponseInProgressEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -110774,6 +110882,23 @@ Schema 名称： `ResponseInProgressEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -143612,11 +143737,11 @@ Schema 名称： `ResponseInProgressEvent`
 
 ### response.completed
 
-当模型响应完成时触发。
+在模型响应完成时发出。
 
 #### Schema
 
-Schema 名称： `ResponseCompletedEvent`
+Schema name: `ResponseCompletedEvent`
 
 ```json
 {
@@ -144459,6 +144584,9 @@ Schema 名称： `ResponseCompletedEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -145550,7 +145678,8 @@ Schema 名称： `ResponseCompletedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
+      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -146525,6 +146654,9 @@ Schema 名称： `ResponseCompletedEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -151124,6 +151256,23 @@ Schema 名称： `ResponseCompletedEvent`
     "schemaType": "integer",
     "children": []
   },
+  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
+    "deprecated": false,
+    "key": "compute_units",
+    "docstring": "Compute units for the request. Currently null when available.\n",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "constraints": {
+      "minimum": 0
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "integer",
+    "children": []
+  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -151146,6 +151295,9 @@ Schema 名称： `ResponseCompletedEvent`
         },
         {
           "ident": "total_tokens"
+        },
+        {
+          "ident": "compute_units"
         }
       ]
     },
@@ -151155,7 +151307,8 @@ Schema 名称： `ResponseCompletedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
+      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -152307,12 +152460,16 @@ Schema 名称： `ResponseCompletedEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -165085,6 +165242,23 @@ Schema 名称： `ResponseCompletedEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -197940,11 +198114,11 @@ Schema 名称： `ResponseCompletedEvent`
 
 ### response.failed
 
-当响应失败时发出的事件。
+响应失败时发出的事件。
 
 #### Schema
 
-Schema 名称： `ResponseFailedEvent`
+Schema name: `ResponseFailedEvent`
 
 ```json
 {
@@ -198787,6 +198961,9 @@ Schema 名称： `ResponseFailedEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -199878,7 +200055,8 @@ Schema 名称： `ResponseFailedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
+      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -200853,6 +201031,9 @@ Schema 名称： `ResponseFailedEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -205452,6 +205633,23 @@ Schema 名称： `ResponseFailedEvent`
     "schemaType": "integer",
     "children": []
   },
+  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
+    "deprecated": false,
+    "key": "compute_units",
+    "docstring": "Compute units for the request. Currently null when available.\n",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "constraints": {
+      "minimum": 0
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "integer",
+    "children": []
+  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -205474,6 +205672,9 @@ Schema 名称： `ResponseFailedEvent`
         },
         {
           "ident": "total_tokens"
+        },
+        {
+          "ident": "compute_units"
         }
       ]
     },
@@ -205483,7 +205684,8 @@ Schema 名称： `ResponseFailedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
+      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -206635,12 +206837,16 @@ Schema 名称： `ResponseFailedEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -219413,6 +219619,23 @@ Schema 名称： `ResponseFailedEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -252249,11 +252472,11 @@ Schema 名称： `ResponseFailedEvent`
 
 ### response.incomplete
 
-当响应不完整地完成时发出的事件。
+当响应以未完成状态结束时触发的事件。
 
 #### Schema
 
-Schema 名称： `ResponseIncompleteEvent`
+Schema name: `ResponseIncompleteEvent`
 
 ```json
 {
@@ -253096,6 +253319,9 @@ Schema 名称： `ResponseIncompleteEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -254187,7 +254413,8 @@ Schema 名称： `ResponseIncompleteEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
+      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -255162,6 +255389,9 @@ Schema 名称： `ResponseIncompleteEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -259761,6 +259991,23 @@ Schema 名称： `ResponseIncompleteEvent`
     "schemaType": "integer",
     "children": []
   },
+  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
+    "deprecated": false,
+    "key": "compute_units",
+    "docstring": "Compute units for the request. Currently null when available.\n",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "constraints": {
+      "minimum": 0
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "integer",
+    "children": []
+  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -259783,6 +260030,9 @@ Schema 名称： `ResponseIncompleteEvent`
         },
         {
           "ident": "total_tokens"
+        },
+        {
+          "ident": "compute_units"
         }
       ]
     },
@@ -259792,7 +260042,8 @@ Schema 名称： `ResponseIncompleteEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
+      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -260944,12 +261195,16 @@ Schema 名称： `ResponseIncompleteEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -273722,6 +273977,23 @@ Schema 名称： `ResponseIncompleteEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -306558,11 +306830,11 @@ Schema 名称： `ResponseIncompleteEvent`
 
 ### response.output_item.added
 
-当添加新的输出项时触发。
+当新增一个输出项时发出。
 
 #### Schema
 
-Schema 名称： `ResponseOutputItemAddedEvent`
+Schema name: `ResponseOutputItemAddedEvent`
 
 ```json
 {
@@ -330098,7 +330370,7 @@ Schema 名称： `ResponseOutputItemAddedEvent`
 
 #### Schema
 
-Schema 名称： `ResponseOutputItemDoneEvent`
+Schema name: `ResponseOutputItemDoneEvent`
 
 ```json
 {
@@ -353636,11 +353908,11 @@ Schema 名称： `ResponseOutputItemDoneEvent`
 
 ### response.content_part.added
 
-当添加新的内容部分时触发。
+当添加新的内容片段时发出。
 
 #### Schema
 
-Schema 名称： `ResponseContentPartAddedEvent`
+Schema name: `ResponseContentPartAddedEvent`
 
 ```json
 {
@@ -354820,11 +355092,11 @@ Schema 名称： `ResponseContentPartAddedEvent`
 
 ### response.content_part.done
 
-当内容部分完成时触发。
+当内容部分完成时发出。
 
 #### Schema
 
-Schema 名称： `ResponseContentPartDoneEvent`
+Schema name: `ResponseContentPartDoneEvent`
 
 ```json
 {
@@ -356004,11 +356276,11 @@ Schema 名称： `ResponseContentPartDoneEvent`
 
 ### response.output_text.delta
 
-当出现额外的文本增量时发出。
+当存在额外的文本增量时触发。
 
 #### Schema
 
-Schema 名称： `ResponseTextDeltaEvent`
+Schema name: `ResponseTextDeltaEvent`
 
 ```json
 {
@@ -356332,7 +356604,7 @@ Schema 名称： `ResponseTextDeltaEvent`
 
 #### Schema
 
-Schema 名称： `ResponseTextDoneEvent`
+Schema name: `ResponseTextDoneEvent`
 
 ```json
 {
@@ -356652,11 +356924,11 @@ Schema 名称： `ResponseTextDoneEvent`
 
 ### response.refusal.delta
 
-当存在部分拒绝文本时发出。
+当出现部分拒绝文本时触发。
 
 #### Schema
 
-Schema 名称： `ResponseRefusalDeltaEvent`
+Schema name: `ResponseRefusalDeltaEvent`
 
 ```json
 {
@@ -356852,11 +357124,11 @@ Schema 名称： `ResponseRefusalDeltaEvent`
 
 ### response.refusal.done
 
-当拒绝文本最终确定时触发。
+在拒绝文本最终确定时触发。
 
 #### Schema
 
-Schema 名称： `ResponseRefusalDoneEvent`
+Schema name: `ResponseRefusalDoneEvent`
 
 ```json
 {
@@ -357052,11 +357324,11 @@ Schema 名称： `ResponseRefusalDoneEvent`
 
 ### response.function_call_arguments.delta
 
-当存在部分函数调用参数增量时发出。
+当存在部分函数调用参数的增量时触发。
 
 #### Schema
 
-Schema 名称： `ResponseFunctionCallArgumentsDeltaEvent`
+Schema name: `ResponseFunctionCallArgumentsDeltaEvent`
 
 ```json
 {
@@ -357233,11 +357505,11 @@ Schema 名称： `ResponseFunctionCallArgumentsDeltaEvent`
 
 ### response.function_call_arguments.done
 
-当函数调用参数最终确定时发出。
+当函数调用的参数最终确定时发出。
 
 #### Schema
 
-Schema 名称： `ResponseFunctionCallArgumentsDoneEvent`
+Schema name: `ResponseFunctionCallArgumentsDoneEvent`
 
 ```json
 {
@@ -357432,11 +357704,11 @@ Schema 名称： `ResponseFunctionCallArgumentsDoneEvent`
 
 ### response.file_search_call.in_progress
 
-当文件搜索调用被发起时触发。
+在发起文件搜索调用时发出。
 
 #### Schema
 
-Schema 名称： `ResponseFileSearchCallInProgressEvent`
+Schema name: `ResponseFileSearchCallInProgressEvent`
 
 ```json
 {
@@ -357594,11 +357866,11 @@ Schema 名称： `ResponseFileSearchCallInProgressEvent`
 
 ### response.file_search_call.searching
 
-当文件搜索正在进行搜索时发出。
+在 文件搜索正在进行搜索时发出。
 
 #### Schema
 
-Schema 名称： `ResponseFileSearchCallSearchingEvent`
+Schema name: `ResponseFileSearchCallSearchingEvent`
 
 ```json
 {
@@ -357756,11 +358028,11 @@ Schema 名称： `ResponseFileSearchCallSearchingEvent`
 
 ### response.file_search_call.completed
 
-当文件搜索调用完成（找到结果）时发出。
+当 文件搜索 调用完成时（找到结果）发出。
 
 #### Schema
 
-Schema 名称： `ResponseFileSearchCallCompletedEvent`
+Schema name: `ResponseFileSearchCallCompletedEvent`
 
 ```json
 {
@@ -357918,11 +358190,11 @@ Schema 名称： `ResponseFileSearchCallCompletedEvent`
 
 ### response.web_search_call.in_progress
 
-当发起网页搜索调用时发出。
+在发起网页搜索调用时发出。
 
 #### Schema
 
-Schema 名称： `ResponseWebSearchCallInProgressEvent`
+Schema name: `ResponseWebSearchCallInProgressEvent`
 
 ```json
 {
@@ -358080,11 +358352,11 @@ Schema 名称： `ResponseWebSearchCallInProgressEvent`
 
 ### response.web_search_call.searching
 
-当网页搜索调用正在执行时触发。
+在 网页搜索 调用正在执行时发出。
 
 #### Schema
 
-Schema 名称： `ResponseWebSearchCallSearchingEvent`
+Schema name: `ResponseWebSearchCallSearchingEvent`
 
 ```json
 {
@@ -358242,11 +358514,11 @@ Schema 名称： `ResponseWebSearchCallSearchingEvent`
 
 ### response.web_search_call.completed
 
-当网页搜索调用完成时触发。
+当一次网页搜索调用完成时发出。
 
 #### Schema
 
-Schema 名称： `ResponseWebSearchCallCompletedEvent`
+Schema name: `ResponseWebSearchCallCompletedEvent`
 
 ```json
 {
@@ -358404,11 +358676,11 @@ Schema 名称： `ResponseWebSearchCallCompletedEvent`
 
 ### response.reasoning_summary_part.added
 
-当添加新的推理摘要部分时触发。
+当新增推理摘要片段时触发。
 
 #### Schema
 
-Schema 名称： `ResponseReasoningSummaryPartAddedEvent`
+Schema name: `ResponseReasoningSummaryPartAddedEvent`
 
 ```json
 {
@@ -358664,11 +358936,11 @@ Schema 名称： `ResponseReasoningSummaryPartAddedEvent`
 
 ### response.reasoning_summary_part.done
 
-当推理摘要部分完成时触发。
+当推理摘要片段完成时发出。
 
 #### Schema
 
-Schema 名称： `ResponseReasoningSummaryPartDoneEvent`
+Schema name: `ResponseReasoningSummaryPartDoneEvent`
 
 ```json
 {
@@ -358959,11 +359231,11 @@ Schema 名称： `ResponseReasoningSummaryPartDoneEvent`
 
 ### response.reasoning_summary_text.delta
 
-当增量被添加到推理摘要文本时发出。
+当向推理摘要文本添加增量时发出。
 
 #### Schema
 
-Schema 名称： `ResponseReasoningSummaryTextDeltaEvent`
+Schema name: `ResponseReasoningSummaryTextDeltaEvent`
 
 ```json
 {
@@ -359159,11 +359431,11 @@ Schema 名称： `ResponseReasoningSummaryTextDeltaEvent`
 
 ### response.reasoning_summary_text.done
 
-当推理摘要文本完成时发出。
+在推理摘要文本完成时触发。
 
 #### Schema
 
-Schema 名称： `ResponseReasoningSummaryTextDoneEvent`
+Schema name: `ResponseReasoningSummaryTextDoneEvent`
 
 ```json
 {
@@ -359359,11 +359631,11 @@ Schema 名称： `ResponseReasoningSummaryTextDoneEvent`
 
 ### response.reasoning_text.delta
 
-当增量添加到推理文本时发出。
+当有增量内容被添加到推理文本时触发。
 
 #### Schema
 
-Schema 名称： `ResponseReasoningTextDeltaEvent`
+Schema name: `ResponseReasoningTextDeltaEvent`
 
 ```json
 {
@@ -359559,11 +359831,11 @@ Schema 名称： `ResponseReasoningTextDeltaEvent`
 
 ### response.reasoning_text.done
 
-当推理文本完成时发出。
+在推理文本完成时发出。
 
 #### Schema
 
-Schema 名称： `ResponseReasoningTextDoneEvent`
+Schema name: `ResponseReasoningTextDoneEvent`
 
 ```json
 {
@@ -359759,11 +360031,11 @@ Schema 名称： `ResponseReasoningTextDoneEvent`
 
 ### response.image_generation_call.completed
 
-当图像生成工具调用完成且最终图像可用时发出。
+当图像生成工具调用已完成且最终图像可用时触发。
 
 #### Schema
 
-Schema 名称： `ResponseImageGenCallCompletedEvent`
+Schema name: `ResponseImageGenCallCompletedEvent`
 
 ```json
 {
@@ -359921,11 +360193,11 @@ Schema 名称： `ResponseImageGenCallCompletedEvent`
 
 ### response.image_generation_call.generating
 
-当图像生成工具调用正在积极生成图像时发出（中间状态）。
+当图像生成工具调用正在主动生成图像时（中间状态）触发。
 
 #### Schema
 
-Schema 名称： `ResponseImageGenCallGeneratingEvent`
+Schema name: `ResponseImageGenCallGeneratingEvent`
 
 ```json
 {
@@ -360087,7 +360359,7 @@ Schema 名称： `ResponseImageGenCallGeneratingEvent`
 
 #### Schema
 
-Schema 名称： `ResponseImageGenCallInProgressEvent`
+Schema name: `ResponseImageGenCallInProgressEvent`
 
 ```json
 {
@@ -360245,11 +360517,11 @@ Schema 名称： `ResponseImageGenCallInProgressEvent`
 
 ### response.image_generation_call.partial_image
 
-在图像生成流式传输期间，当部分图像可用时发出。
+在图像生成流式传输过程中，当有部分图像可用时发出。
 
 #### Schema
 
-Schema 名称： `ResponseImageGenCallPartialImageEvent`
+Schema name: `ResponseImageGenCallPartialImageEvent`
 
 ```json
 {
@@ -360517,11 +360789,11 @@ Schema 名称： `ResponseImageGenCallPartialImageEvent`
 
 ### response.mcp_call_arguments.delta
 
-当 MCP 工具调用的参数出现增量（部分更新）时发出。
+当 MCP 工具调用的参数出现增量（部分更新）时触发。
 
 #### Schema
 
-Schema 名称： `ResponseMCPCallArgumentsDeltaEvent`
+Schema name: `ResponseMCPCallArgumentsDeltaEvent`
 
 ```json
 {
@@ -360698,11 +360970,11 @@ Schema 名称： `ResponseMCPCallArgumentsDeltaEvent`
 
 ### response.mcp_call_arguments.done
 
-当 MCP 工具调用的参数最终确定时触发。
+在 MCP 工具调用的参数确定后发出。
 
 #### Schema
 
-Schema 名称： `ResponseMCPCallArgumentsDoneEvent`
+Schema name: `ResponseMCPCallArgumentsDoneEvent`
 
 ```json
 {
@@ -360883,7 +361155,7 @@ Schema 名称： `ResponseMCPCallArgumentsDoneEvent`
 
 #### Schema
 
-Schema 名称： `ResponseMCPCallCompletedEvent`
+Schema name: `ResponseMCPCallCompletedEvent`
 
 ```json
 {
@@ -361041,11 +361313,11 @@ Schema 名称： `ResponseMCPCallCompletedEvent`
 
 ### response.mcp_call.failed
 
-当 MCP 工具调用失败时触发。
+当 MCP 工具调用失败时发出。
 
 #### Schema
 
-Schema 名称： `ResponseMCPCallFailedEvent`
+Schema name: `ResponseMCPCallFailedEvent`
 
 ```json
 {
@@ -361207,7 +361479,7 @@ Schema 名称： `ResponseMCPCallFailedEvent`
 
 #### Schema
 
-Schema 名称： `ResponseMCPCallInProgressEvent`
+Schema name: `ResponseMCPCallInProgressEvent`
 
 ```json
 {
@@ -361365,11 +361637,11 @@ Schema 名称： `ResponseMCPCallInProgressEvent`
 
 ### response.mcp_list_tools.completed
 
-当成功获取可用 MCP 工具列表时触发。
+在成功检索到可用 MCP 工具列表时发出。
 
 #### Schema
 
-Schema 名称： `ResponseMCPListToolsCompletedEvent`
+Schema name: `ResponseMCPListToolsCompletedEvent`
 
 ```json
 {
@@ -361527,11 +361799,11 @@ Schema 名称： `ResponseMCPListToolsCompletedEvent`
 
 ### response.mcp_list_tools.failed
 
-当尝试列出可用的 MCP 工具失败时发出。
+在尝试列出可用的 MCP 工具失败时触发。
 
 #### Schema
 
-Schema 名称： `ResponseMCPListToolsFailedEvent`
+Schema name: `ResponseMCPListToolsFailedEvent`
 
 ```json
 {
@@ -361689,11 +361961,11 @@ Schema 名称： `ResponseMCPListToolsFailedEvent`
 
 ### response.mcp_list_tools.in_progress
 
-当系统正在检索可用 MCP 工具列表时发出。
+当系统正在检索可用的 MCP 工具列表时发出。
 
 #### Schema
 
-Schema 名称： `ResponseMCPListToolsInProgressEvent`
+Schema name: `ResponseMCPListToolsInProgressEvent`
 
 ```json
 {
@@ -361855,7 +362127,7 @@ Schema 名称： `ResponseMCPListToolsInProgressEvent`
 
 #### Schema
 
-Schema 名称： `ResponseCodeInterpreterCallInProgressEvent`
+Schema name: `ResponseCodeInterpreterCallInProgressEvent`
 
 ```json
 {
@@ -362013,11 +362285,11 @@ Schema 名称： `ResponseCodeInterpreterCallInProgressEvent`
 
 ### response.code_interpreter_call.interpreting
 
-当代码解释器正在积极解释代码片段时发出。
+当代码解释器正在主动解释代码片段时触发。
 
 #### Schema
 
-Schema 名称： `ResponseCodeInterpreterCallInterpretingEvent`
+Schema name: `ResponseCodeInterpreterCallInterpretingEvent`
 
 ```json
 {
@@ -362175,11 +362447,11 @@ Schema 名称： `ResponseCodeInterpreterCallInterpretingEvent`
 
 ### response.code_interpreter_call.completed
 
-当代码解释器调用完成时触发。
+在代码解释器调用完成时发出。
 
 #### Schema
 
-Schema 名称： `ResponseCodeInterpreterCallCompletedEvent`
+Schema name: `ResponseCodeInterpreterCallCompletedEvent`
 
 ```json
 {
@@ -362337,11 +362609,11 @@ Schema 名称： `ResponseCodeInterpreterCallCompletedEvent`
 
 ### response.code_interpreter_call_code.delta
 
-当代码解释器流式输出部分代码片段时发出此事件。
+当代码解释器流式输出部分代码片段时触发。
 
 #### Schema
 
-Schema 名称： `ResponseCodeInterpreterCallCodeDeltaEvent`
+Schema name: `ResponseCodeInterpreterCallCodeDeltaEvent`
 
 ```json
 {
@@ -362518,11 +362790,11 @@ Schema 名称： `ResponseCodeInterpreterCallCodeDeltaEvent`
 
 ### response.code_interpreter_call_code.done
 
-当代码解释器完成代码片段时发出。
+当代码解释器最终确定代码片段时发出。
 
 #### Schema
 
-Schema 名称： `ResponseCodeInterpreterCallCodeDoneEvent`
+Schema name: `ResponseCodeInterpreterCallCodeDoneEvent`
 
 ```json
 {
@@ -362703,7 +362975,7 @@ Schema 名称： `ResponseCodeInterpreterCallCodeDoneEvent`
 
 #### Schema
 
-Schema 名称： `ResponseOutputTextAnnotationAddedEvent`
+Schema name: `ResponseOutputTextAnnotationAddedEvent`
 
 ```json
 {
@@ -363460,11 +363732,11 @@ Schema 名称： `ResponseOutputTextAnnotationAddedEvent`
 
 ### response.queued
 
-当响应已排队并等待处理时触发。
+当响应已排队并等待处理时发出。
 
 #### Schema
 
-Schema 名称： `ResponseQueuedEvent`
+Schema name: `ResponseQueuedEvent`
 
 ```json
 {
@@ -364307,6 +364579,9 @@ Schema 名称： `ResponseQueuedEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -365398,7 +365673,8 @@ Schema 名称： `ResponseQueuedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
+      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -366373,6 +366649,9 @@ Schema 名称： `ResponseQueuedEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -370972,6 +371251,23 @@ Schema 名称： `ResponseQueuedEvent`
     "schemaType": "integer",
     "children": []
   },
+  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
+    "deprecated": false,
+    "key": "compute_units",
+    "docstring": "Compute units for the request. Currently null when available.\n",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "constraints": {
+      "minimum": 0
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "integer",
+    "children": []
+  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -370994,6 +371290,9 @@ Schema 名称： `ResponseQueuedEvent`
         },
         {
           "ident": "total_tokens"
+        },
+        {
+          "ident": "compute_units"
         }
       ]
     },
@@ -371003,7 +371302,8 @@ Schema 名称： `ResponseQueuedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
+      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -372155,12 +372455,16 @@ Schema 名称： `ResponseQueuedEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -384933,6 +385237,23 @@ Schema 名称： `ResponseQueuedEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -417744,11 +418065,11 @@ Schema 名称： `ResponseQueuedEvent`
 
 ### response.custom_tool_call_input.delta
 
-表示自定义工具调用输入增量（部分更新）的事件。
+表示对自定义工具调用输入进行增量（部分更新）的事件。
 
 #### Schema
 
-Schema 名称： `ResponseCustomToolCallInputDeltaEvent`
+Schema name: `ResponseCustomToolCallInputDeltaEvent`
 
 ```json
 {
@@ -417928,7 +418249,7 @@ Schema 名称： `ResponseCustomToolCallInputDeltaEvent`
 
 #### Schema
 
-Schema 名称： `ResponseCustomToolCallInputDoneEvent`
+Schema name: `ResponseCustomToolCallInputDoneEvent`
 
 ```json
 {
@@ -418104,11 +418425,11 @@ Schema 名称： `ResponseCustomToolCallInputDoneEvent`
 
 ### response.audio.delta
 
-当存在部分音频响应时发出。
+当出现部分音频响应时触发。
 
 #### Schema
 
-Schema 名称： `ResponseAudioDeltaEvent`
+Schema name: `ResponseAudioDeltaEvent`
 
 ```json
 {
@@ -418248,11 +418569,11 @@ Schema 名称： `ResponseAudioDeltaEvent`
 
 ### response.audio.done
 
-音频响应完成时触发。
+在音频响应完成时发出。
 
 #### Schema
 
-Schema 名称： `ResponseAudioDoneEvent`
+Schema name: `ResponseAudioDoneEvent`
 
 ```json
 {
@@ -418373,11 +418694,11 @@ Schema 名称： `ResponseAudioDoneEvent`
 
 ### response.audio.transcript.delta
 
-当存在音频的部分转录时发出。
+在出现音频的部分转录文本时发出。
 
 #### Schema
 
-Schema 名称： `ResponseAudioTranscriptDeltaEvent`
+Schema name: `ResponseAudioTranscriptDeltaEvent`
 
 ```json
 {
@@ -418517,11 +418838,11 @@ Schema 名称： `ResponseAudioTranscriptDeltaEvent`
 
 ### response.audio.transcript.done
 
-当完整音频转录完成时发出。
+在完整音频转录完成时发出。
 
 #### Schema
 
-Schema 名称： `ResponseAudioTranscriptDoneEvent`
+Schema name: `ResponseAudioTranscriptDoneEvent`
 
 ```json
 {
@@ -418642,11 +418963,11 @@ Schema 名称： `ResponseAudioTranscriptDoneEvent`
 
 ### response.shell_call_command.added
 
-一个流式事件，指示已将 shell 命令添加到工具调用中。
+一个流式事件，用于指示已将 shell 命令添加到工具调用中。
 
 #### Schema
 
-Schema 名称： `ResponseShellCallCommandAddedStreamingEvent`
+Schema name: `ResponseShellCallCommandAddedStreamingEvent`
 
 ```json
 {
@@ -418813,16 +419134,22 @@ Schema 名称： `ResponseShellCallCommandAddedStreamingEvent`
 #### 示例
 
 ```json
-{}
+{
+  "type": "response.shell_call_command.added",
+  "sequence_number": 0,
+  "output_index": 0,
+  "command_index": 0,
+  "command": "command"
+}
 ```
 
 ### response.shell_call_command.delta
 
-一个流式事件，表示 shell 命令被增量更新。
+一个流式事件，指示某个 shell 命令被增量更新。
 
 #### Schema
 
-Schema 名称： `ResponseShellCallCommandDeltaStreamingEvent`
+Schema name: `ResponseShellCallCommandDeltaStreamingEvent`
 
 ```json
 {
@@ -419007,16 +419334,23 @@ Schema 名称： `ResponseShellCallCommandDeltaStreamingEvent`
 #### 示例
 
 ```json
-{}
+{
+  "type": "response.shell_call_command.delta",
+  "sequence_number": 0,
+  "output_index": 0,
+  "command_index": 0,
+  "delta": "delta",
+  "obfuscation": "obfuscation"
+}
 ```
 
 ### response.shell_call_command.done
 
-指示 shell 命令已完成的一个流式事件。
+表示 shell 命令已完成的流式事件。
 
 #### Schema
 
-Schema 名称： `ResponseShellCallCommandDoneStreamingEvent`
+Schema name: `ResponseShellCallCommandDoneStreamingEvent`
 
 ```json
 {
@@ -419183,7 +419517,13 @@ Schema 名称： `ResponseShellCallCommandDoneStreamingEvent`
 #### 示例
 
 ```json
-{}
+{
+  "type": "response.shell_call_command.done",
+  "sequence_number": 0,
+  "output_index": 0,
+  "command_index": 0,
+  "command": "command"
+}
 ```
 
 ### response.shell_call_output_content.delta
@@ -419192,7 +419532,7 @@ Schema 名称： `ResponseShellCallCommandDoneStreamingEvent`
 
 #### Schema
 
-Schema 名称： `ResponseShellCallOutputContentDeltaStreamingEvent`
+Schema name: `ResponseShellCallOutputContentDeltaStreamingEvent`
 
 ```json
 {
@@ -419418,16 +419758,26 @@ Schema 名称： `ResponseShellCallOutputContentDeltaStreamingEvent`
 #### 示例
 
 ```json
-{}
+{
+  "type": "response.shell_call_output_content.delta",
+  "sequence_number": 0,
+  "item_id": "item_id",
+  "output_index": 0,
+  "command_index": 0,
+  "delta": {
+    "stdout": "stdout",
+    "stderr": "stderr"
+  }
+}
 ```
 
 ### response.shell_call_output_content.done
 
-一个流式事件，指示 shell 调用输出已完成。
+表示 shell 调用输出已完成的流式事件。
 
 #### Schema
 
-Schema 名称： `ResponseShellCallOutputContentDoneStreamingEvent`
+Schema name: `ResponseShellCallOutputContentDoneStreamingEvent`
 
 ```json
 {
@@ -419837,5 +420187,21 @@ Schema 名称： `ResponseShellCallOutputContentDoneStreamingEvent`
 #### 示例
 
 ```json
-{}
+{
+  "type": "response.shell_call_output_content.done",
+  "sequence_number": 0,
+  "item_id": "item_id",
+  "output_index": 0,
+  "command_index": 0,
+  "output": [
+    {
+      "stdout": "stdout",
+      "stderr": "stderr",
+      "outcome": {
+        "type": "timeout"
+      },
+      "created_by": "created_by"
+    }
+  ]
+}
 ```
