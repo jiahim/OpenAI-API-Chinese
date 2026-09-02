@@ -1,16 +1,16 @@
 # Chat Completions 流式事件
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获得文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt).可通过在页面 URL 末尾追加 `.md` 获取文档页面的 Markdown 版本。
 
-实时流式 Chat Completions。使用服务端发送事件接收模型返回的补全分块。
-返回的分块通过服务端发送事件从模型获取。
-[了解更多](https://developers.openai.com/docs/guides/streaming-responses?api-mode=chat).
+实时流式传输 Chat Completions。使用服务端发送事件接收模型返回的补全分块
+。
+[了解详情](https://developers.openai.com/docs/guides/streaming-responses?api-mode=chat).
 
 ## chat.completion.chunk
 
-表示基于所提供输入由模型返回的聊天补全响应的分块流。
-由模型根据所提供的输入返回。
-[了解更多](https://developers.openai.com/docs/guides/streaming-responses).
+表示模型基于所提供的输入返回的聊天补全响应的流式分块
+。
+[了解详情](https://developers.openai.com/docs/guides/streaming-responses).
 
 ### Schema
 
@@ -2192,11 +2192,11 @@ Schema name: `CreateChatCompletionStreamResponse`
 ### 示例
 
 ```json
-{"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-4o-mini", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"obfuscation":"r4N7vQ2m"}
+{"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-5.6-sol", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"obfuscation":"r4N7vQ2m"}
 
-{"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-4o-mini", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}],"obfuscation":"p9K3xT6w"}
+{"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-5.6-sol", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}],"obfuscation":"p9K3xT6w"}
 
 ....
 
-{"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-4o-mini", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"obfuscation":""}
+{"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-5.6-sol", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"obfuscation":""}
 ```

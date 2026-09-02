@@ -1,21 +1,21 @@
 # Beta Responses 流式事件
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获得文档页面的 Markdown 版本。
 
-当你 [创建 Response](https://developers.openai.com/docs/api-reference/responses/create) 时，如果
-`stream` 设置为 `true`，服务器会在 Response 生成过程中向
-客户端发送服务端事件。本节列出了服务器所发出的事件。
-由服务器发送的事件包括：
+当你 [创建 Response](https://developers.openai.com/docs/api-reference/responses/create) 时
+`stream` 设置为 `true`，服务器会向客户端发送服务端发送事件
+（server-sent events），在 Response 生成过程中推送。本节包含服务器
+所发送的事件。
 
-[了解流式 Response 的更多信息](https://developers.openai.com/docs/guides/streaming-responses?api-mode=responses).
+[了解有关流式响应的更多信息](https://developers.openai.com/docs/guides/streaming-responses?api-mode=responses).
 
 ## response.created
 
-当响应被创建时发出的事件。
+在响应创建时发出的事件。
 
 ### Schema
 
-Schema name: `BetaResponseCreatedEvent`
+Schema 名称: `BetaResponseCreatedEvent`
 
 ```json
 {
@@ -1108,7 +1108,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -1532,7 +1532,7 @@ Schema name: `BetaResponseCreatedEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -2338,7 +2338,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -3860,7 +3860,7 @@ Schema name: `BetaResponseCreatedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
@@ -64208,7 +64208,7 @@ Schema name: `BetaResponseCreatedEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-2024-08-06",
+    "model": "gpt-5.6-sol",
     "output": [],
     "parallel_tool_calls": true,
     "previous_response_id": null,
@@ -64237,11 +64237,11 @@ Schema name: `BetaResponseCreatedEvent`
 
 ## response.in_progress
 
-当响应进行中时发出。
+当响应正在进行时发出。
 
 ### Schema
 
-Schema name: `BetaResponseInProgressEvent`
+Schema 名称: `BetaResponseInProgressEvent`
 
 ```json
 {
@@ -65334,7 +65334,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -65758,7 +65758,7 @@ Schema name: `BetaResponseInProgressEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -66564,7 +66564,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -68086,7 +68086,7 @@ Schema name: `BetaResponseInProgressEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
@@ -128434,7 +128434,7 @@ Schema name: `BetaResponseInProgressEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-2024-08-06",
+    "model": "gpt-5.6-sol",
     "output": [],
     "parallel_tool_calls": true,
     "previous_response_id": null,
@@ -128467,7 +128467,7 @@ Schema name: `BetaResponseInProgressEvent`
 
 ### Schema
 
-Schema name: `BetaResponseCompletedEvent`
+Schema 名称: `BetaResponseCompletedEvent`
 
 ```json
 {
@@ -129560,7 +129560,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -129984,7 +129984,7 @@ Schema name: `BetaResponseCompletedEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -130790,7 +130790,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -132312,7 +132312,7 @@ Schema name: `BetaResponseCompletedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
@@ -192661,7 +192661,7 @@ Schema name: `BetaResponseCompletedEvent`
     "input": [],
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [
       {
         "id": "msg_123",
@@ -192706,11 +192706,11 @@ Schema name: `BetaResponseCompletedEvent`
 
 ## response.failed
 
-当响应失败时发出的事件。
+在响应失败时发出的事件。
 
 ### Schema
 
-Schema name: `BetaResponseFailedEvent`
+Schema 名称: `BetaResponseFailedEvent`
 
 ```json
 {
@@ -193803,7 +193803,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -194227,7 +194227,7 @@ Schema name: `BetaResponseFailedEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -195033,7 +195033,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -196555,7 +196555,7 @@ Schema name: `BetaResponseFailedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
@@ -256906,7 +256906,7 @@ Schema name: `BetaResponseFailedEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [],
     "previous_response_id": null,
     "reasoning_effort": null,
@@ -256930,11 +256930,11 @@ Schema name: `BetaResponseFailedEvent`
 
 ## response.incomplete
 
-当响应未完成结束时发出的事件。
+当响应未完成时发出的事件。
 
 ### Schema
 
-Schema name: `BetaResponseIncompleteEvent`
+Schema 名称: `BetaResponseIncompleteEvent`
 
 ```json
 {
@@ -258027,7 +258027,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -258451,7 +258451,7 @@ Schema name: `BetaResponseIncompleteEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -259257,7 +259257,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -260779,7 +260779,7 @@ Schema name: `BetaResponseIncompleteEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
@@ -321129,7 +321129,7 @@ Schema name: `BetaResponseIncompleteEvent`
     },
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [],
     "previous_response_id": null,
     "reasoning_effort": null,
@@ -321154,11 +321154,11 @@ Schema name: `BetaResponseIncompleteEvent`
 
 ## response.output_item.added
 
-当新增一个输出项时触发。
+添加新的输出项时触发。
 
 ### Schema
 
-Schema name: `BetaResponseOutputItemAddedEvent`
+Schema 名称: `BetaResponseOutputItemAddedEvent`
 
 ```json
 {
@@ -348687,11 +348687,11 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
 ## response.output_item.done
 
-当某个输出项被标记为完成时发出。
+在某个输出项被标记为完成时触发。
 
 ### Schema
 
-Schema name: `BetaResponseOutputItemDoneEvent`
+Schema 名称: `BetaResponseOutputItemDoneEvent`
 
 ```json
 {
@@ -376226,11 +376226,11 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
 ## response.content_part.added
 
-当新增内容片段时发出。
+添加新的内容部分时发出。
 
 ### Schema
 
-Schema name: `BetaResponseContentPartAddedEvent`
+Schema 名称: `BetaResponseContentPartAddedEvent`
 
 ```json
 {
@@ -377415,11 +377415,11 @@ Schema name: `BetaResponseContentPartAddedEvent`
 
 ## response.content_part.done
 
-当某个内容部分完成时发出。
+当内容部分完成时发出。
 
 ### Schema
 
-Schema name: `BetaResponseContentPartDoneEvent`
+Schema 名称: `BetaResponseContentPartDoneEvent`
 
 ```json
 {
@@ -378604,11 +378604,11 @@ Schema name: `BetaResponseContentPartDoneEvent`
 
 ## response.output_text.delta
 
-当出现额外的文本增量时发出。
+当存在额外的文本增量时发出。
 
 ### Schema
 
-Schema name: `BetaResponseTextDeltaEvent`
+Schema 名称: `BetaResponseTextDeltaEvent`
 
 ```json
 {
@@ -378933,11 +378933,11 @@ Schema name: `BetaResponseTextDeltaEvent`
 
 ## response.output_text.done
 
-在文本内容最终确定时发出。
+当文本内容最终确定时发出。
 
 ### Schema
 
-Schema name: `BetaResponseTextDoneEvent`
+Schema 名称: `BetaResponseTextDoneEvent`
 
 ```json
 {
@@ -379266,7 +379266,7 @@ Schema name: `BetaResponseTextDoneEvent`
 
 ### Schema
 
-Schema name: `BetaResponseRefusalDeltaEvent`
+Schema 名称: `BetaResponseRefusalDeltaEvent`
 
 ```json
 {
@@ -379467,11 +379467,11 @@ Schema name: `BetaResponseRefusalDeltaEvent`
 
 ## response.refusal.done
 
-当拒绝文本确定后发出。
+当拒绝文本最终确定时发出。
 
 ### Schema
 
-Schema name: `BetaResponseRefusalDoneEvent`
+Schema 名称: `BetaResponseRefusalDoneEvent`
 
 ```json
 {
@@ -379672,11 +379672,11 @@ Schema name: `BetaResponseRefusalDoneEvent`
 
 ## response.function_call_arguments.delta
 
-当存在部分函数调用参数的增量时触发。
+当存在部分函数调用参数的增量时发出。
 
 ### Schema
 
-Schema name: `BetaResponseFunctionCallArgumentsDeltaEvent`
+Schema 名称: `BetaResponseFunctionCallArgumentsDeltaEvent`
 
 ```json
 {
@@ -379862,7 +379862,7 @@ Schema name: `BetaResponseFunctionCallArgumentsDeltaEvent`
 
 ### Schema
 
-Schema name: `BetaResponseFunctionCallArgumentsDoneEvent`
+Schema 名称: `BetaResponseFunctionCallArgumentsDoneEvent`
 
 ```json
 {
@@ -380066,7 +380066,7 @@ Schema name: `BetaResponseFunctionCallArgumentsDoneEvent`
 
 ### Schema
 
-Schema name: `BetaResponseFileSearchCallInProgressEvent`
+Schema 名称: `BetaResponseFileSearchCallInProgressEvent`
 
 ```json
 {
@@ -380229,11 +380229,11 @@ Schema name: `BetaResponseFileSearchCallInProgressEvent`
 
 ## response.file_search_call.searching
 
-在文件搜索正在执行搜索时发出。
+在 文件搜索 当前正在执行搜索时发出。
 
 ### Schema
 
-Schema name: `BetaResponseFileSearchCallSearchingEvent`
+Schema 名称: `BetaResponseFileSearchCallSearchingEvent`
 
 ```json
 {
@@ -380396,11 +380396,11 @@ Schema name: `BetaResponseFileSearchCallSearchingEvent`
 
 ## response.file_search_call.completed
 
-当文件搜索调用完成（找到结果）时发出。
+当一次文件搜索调用完成（已找到结果）时发出。
 
 ### Schema
 
-Schema name: `BetaResponseFileSearchCallCompletedEvent`
+Schema 名称: `BetaResponseFileSearchCallCompletedEvent`
 
 ```json
 {
@@ -380567,7 +380567,7 @@ Schema name: `BetaResponseFileSearchCallCompletedEvent`
 
 ### Schema
 
-Schema name: `BetaResponseWebSearchCallInProgressEvent`
+Schema 名称: `BetaResponseWebSearchCallInProgressEvent`
 
 ```json
 {
@@ -380730,11 +380730,11 @@ Schema name: `BetaResponseWebSearchCallInProgressEvent`
 
 ## response.web_search_call.searching
 
-当 网页搜索 调用正在执行时发出。
+在执行网页搜索调用时发出。
 
 ### Schema
 
-Schema name: `BetaResponseWebSearchCallSearchingEvent`
+Schema 名称: `BetaResponseWebSearchCallSearchingEvent`
 
 ```json
 {
@@ -380901,7 +380901,7 @@ Schema name: `BetaResponseWebSearchCallSearchingEvent`
 
 ### Schema
 
-Schema name: `BetaResponseWebSearchCallCompletedEvent`
+Schema 名称: `BetaResponseWebSearchCallCompletedEvent`
 
 ```json
 {
@@ -381064,11 +381064,11 @@ Schema name: `BetaResponseWebSearchCallCompletedEvent`
 
 ## response.reasoning_summary_part.added
 
-当新增一个推理摘要部分时发出。
+当新增一个推理摘要片段时触发。
 
 ### Schema
 
-Schema name: `BetaResponseReasoningSummaryPartAddedEvent`
+Schema 名称: `BetaResponseReasoningSummaryPartAddedEvent`
 
 ```json
 {
@@ -381329,11 +381329,11 @@ Schema name: `BetaResponseReasoningSummaryPartAddedEvent`
 
 ## response.reasoning_summary_part.done
 
-当某个推理摘要部分完成时触发。
+当推理摘要部分完成时发出。
 
 ### Schema
 
-Schema name: `BetaResponseReasoningSummaryPartDoneEvent`
+Schema 名称: `BetaResponseReasoningSummaryPartDoneEvent`
 
 ```json
 {
@@ -381633,7 +381633,7 @@ Schema name: `BetaResponseReasoningSummaryPartDoneEvent`
 
 ### Schema
 
-Schema name: `BetaResponseReasoningSummaryTextDeltaEvent`
+Schema 名称: `BetaResponseReasoningSummaryTextDeltaEvent`
 
 ```json
 {
@@ -381834,11 +381834,11 @@ Schema name: `BetaResponseReasoningSummaryTextDeltaEvent`
 
 ## response.reasoning_summary_text.done
 
-当推理摘要文本完成时触发。
+当推理摘要文本完成时发出。
 
 ### Schema
 
-Schema name: `BetaResponseReasoningSummaryTextDoneEvent`
+Schema 名称: `BetaResponseReasoningSummaryTextDoneEvent`
 
 ```json
 {
@@ -382039,11 +382039,11 @@ Schema name: `BetaResponseReasoningSummaryTextDoneEvent`
 
 ## response.reasoning_text.delta
 
-当向推理文本添加增量时发出。
+在向推理文本添加增量时发出。
 
 ### Schema
 
-Schema name: `BetaResponseReasoningTextDeltaEvent`
+Schema 名称: `BetaResponseReasoningTextDeltaEvent`
 
 ```json
 {
@@ -382244,11 +382244,11 @@ Schema name: `BetaResponseReasoningTextDeltaEvent`
 
 ## response.reasoning_text.done
 
-在推理文本完成时发出。
+当一段推理文本完成时发出。
 
 ### Schema
 
-Schema name: `BetaResponseReasoningTextDoneEvent`
+Schema 名称: `BetaResponseReasoningTextDoneEvent`
 
 ```json
 {
@@ -382449,11 +382449,11 @@ Schema name: `BetaResponseReasoningTextDoneEvent`
 
 ## response.image_generation_call.completed
 
-当图像生成工具调用完成且最终图像可用时发出。
+当图片生成工具调用完成且最终图片可用时触发。
 
 ### Schema
 
-Schema name: `BetaResponseImageGenCallCompletedEvent`
+Schema 名称: `BetaResponseImageGenCallCompletedEvent`
 
 ```json
 {
@@ -382616,11 +382616,11 @@ Schema name: `BetaResponseImageGenCallCompletedEvent`
 
 ## response.image_generation_call.generating
 
-在图像生成工具调用正在主动生成图像时触发（中间状态）。
+当图像生成工具调用正在主动生成图像时发出（中间状态）。
 
 ### Schema
 
-Schema name: `BetaResponseImageGenCallGeneratingEvent`
+Schema 名称: `BetaResponseImageGenCallGeneratingEvent`
 
 ```json
 {
@@ -382783,11 +382783,11 @@ Schema name: `BetaResponseImageGenCallGeneratingEvent`
 
 ## response.image_generation_call.in_progress
 
-当图像生成工具调用正在进行时发出。
+当图像生成工具调用进行中时发出。
 
 ### Schema
 
-Schema name: `BetaResponseImageGenCallInProgressEvent`
+Schema 名称: `BetaResponseImageGenCallInProgressEvent`
 
 ```json
 {
@@ -382950,11 +382950,11 @@ Schema name: `BetaResponseImageGenCallInProgressEvent`
 
 ## response.image_generation_call.partial_image
 
-在图像生成流式传输期间，当部分图像可用时发出。
+在图像生成流式传输期间，当有部分图像可用时发出。
 
 ### Schema
 
-Schema name: `BetaResponseImageGenCallPartialImageEvent`
+Schema 名称: `BetaResponseImageGenCallPartialImageEvent`
 
 ```json
 {
@@ -383227,11 +383227,11 @@ Schema name: `BetaResponseImageGenCallPartialImageEvent`
 
 ## response.mcp_call_arguments.delta
 
-在 MCP 工具调用的参数产生增量（部分更新）时发出。
+当 MCP 工具调用的参数出现增量（部分更新）时触发。
 
 ### Schema
 
-Schema name: `BetaResponseMCPCallArgumentsDeltaEvent`
+Schema 名称: `BetaResponseMCPCallArgumentsDeltaEvent`
 
 ```json
 {
@@ -383417,7 +383417,7 @@ Schema name: `BetaResponseMCPCallArgumentsDeltaEvent`
 
 ### Schema
 
-Schema name: `BetaResponseMCPCallArgumentsDoneEvent`
+Schema 名称: `BetaResponseMCPCallArgumentsDoneEvent`
 
 ```json
 {
@@ -383603,7 +383603,7 @@ Schema name: `BetaResponseMCPCallArgumentsDoneEvent`
 
 ### Schema
 
-Schema name: `BetaResponseMCPCallCompletedEvent`
+Schema 名称: `BetaResponseMCPCallCompletedEvent`
 
 ```json
 {
@@ -383770,7 +383770,7 @@ Schema name: `BetaResponseMCPCallCompletedEvent`
 
 ### Schema
 
-Schema name: `BetaResponseMCPCallFailedEvent`
+Schema 名称: `BetaResponseMCPCallFailedEvent`
 
 ```json
 {
@@ -383933,11 +383933,11 @@ Schema name: `BetaResponseMCPCallFailedEvent`
 
 ## response.mcp_call.in_progress
 
-在 MCP 工具调用进行时发出。
+当 MCP 工具调用进行时发出。
 
 ### Schema
 
-Schema name: `BetaResponseMCPCallInProgressEvent`
+Schema 名称: `BetaResponseMCPCallInProgressEvent`
 
 ```json
 {
@@ -384100,11 +384100,11 @@ Schema name: `BetaResponseMCPCallInProgressEvent`
 
 ## response.mcp_list_tools.completed
 
-成功检索可用 MCP 工具列表时发出。
+在成功获取可用 MCP 工具列表时发出。
 
 ### Schema
 
-Schema name: `BetaResponseMCPListToolsCompletedEvent`
+Schema 名称: `BetaResponseMCPListToolsCompletedEvent`
 
 ```json
 {
@@ -384267,11 +384267,11 @@ Schema name: `BetaResponseMCPListToolsCompletedEvent`
 
 ## response.mcp_list_tools.failed
 
-在尝试列出可用 MCP 工具失败时发出。
+在尝试列出可用的 MCP 工具失败时发出。
 
 ### Schema
 
-Schema name: `BetaResponseMCPListToolsFailedEvent`
+Schema 名称: `BetaResponseMCPListToolsFailedEvent`
 
 ```json
 {
@@ -384434,11 +384434,11 @@ Schema name: `BetaResponseMCPListToolsFailedEvent`
 
 ## response.mcp_list_tools.in_progress
 
-当系统正在检索可用的 MCP 工具列表时触发。
+当系统正在检索可用的 MCP 工具列表时发出。
 
 ### Schema
 
-Schema name: `BetaResponseMCPListToolsInProgressEvent`
+Schema 名称: `BetaResponseMCPListToolsInProgressEvent`
 
 ```json
 {
@@ -384601,11 +384601,11 @@ Schema name: `BetaResponseMCPListToolsInProgressEvent`
 
 ## response.code_interpreter_call.in_progress
 
-当代码解释器调用进行时发出。
+当代码解释器调用进行中时发出。
 
 ### Schema
 
-Schema name: `BetaResponseCodeInterpreterCallInProgressEvent`
+Schema 名称: `BetaResponseCodeInterpreterCallInProgressEvent`
 
 ```json
 {
@@ -384768,11 +384768,11 @@ Schema name: `BetaResponseCodeInterpreterCallInProgressEvent`
 
 ## response.code_interpreter_call.interpreting
 
-在代码解释器正在主动解释代码片段时触发。
+在代码解释器正在主动解释代码片段时发出。
 
 ### Schema
 
-Schema name: `BetaResponseCodeInterpreterCallInterpretingEvent`
+Schema 名称: `BetaResponseCodeInterpreterCallInterpretingEvent`
 
 ```json
 {
@@ -384935,11 +384935,11 @@ Schema name: `BetaResponseCodeInterpreterCallInterpretingEvent`
 
 ## response.code_interpreter_call.completed
 
-在代码解释器调用完成时发出。
+当代码解释器调用完成时触发。
 
 ### Schema
 
-Schema name: `BetaResponseCodeInterpreterCallCompletedEvent`
+Schema 名称: `BetaResponseCodeInterpreterCallCompletedEvent`
 
 ```json
 {
@@ -385102,11 +385102,11 @@ Schema name: `BetaResponseCodeInterpreterCallCompletedEvent`
 
 ## response.code_interpreter_call_code.delta
 
-当代码解释器流式传输部分代码片段时发出。
+当代码解释器流式传输部分代码片段时触发。
 
 ### Schema
 
-Schema name: `BetaResponseCodeInterpreterCallCodeDeltaEvent`
+Schema 名称: `BetaResponseCodeInterpreterCallCodeDeltaEvent`
 
 ```json
 {
@@ -385288,11 +385288,11 @@ Schema name: `BetaResponseCodeInterpreterCallCodeDeltaEvent`
 
 ## response.code_interpreter_call_code.done
 
-当代码片段由代码解释器最终确定时发出。
+当代码解释器完成代码片段时发出。
 
 ### Schema
 
-Schema name: `BetaResponseCodeInterpreterCallCodeDoneEvent`
+Schema 名称: `BetaResponseCodeInterpreterCallCodeDoneEvent`
 
 ```json
 {
@@ -385474,11 +385474,11 @@ Schema name: `BetaResponseCodeInterpreterCallCodeDoneEvent`
 
 ## response.output_text.annotation.added
 
-当向输出文本内容添加注解时发出。
+当有标注被添加到输出文本内容时发出。
 
 ### Schema
 
-Schema name: `BetaResponseOutputTextAnnotationAddedEvent`
+Schema 名称: `BetaResponseOutputTextAnnotationAddedEvent`
 
 ```json
 {
@@ -386240,11 +386240,11 @@ Schema name: `BetaResponseOutputTextAnnotationAddedEvent`
 
 ## response.queued
 
-当响应被排队并等待处理时发出。
+当响应被排队等待处理时触发。
 
 ### Schema
 
-Schema name: `BetaResponseQueuedEvent`
+Schema 名称: `BetaResponseQueuedEvent`
 
 ```json
 {
@@ -387337,7 +387337,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -387761,7 +387761,7 @@ Schema name: `BetaResponseQueuedEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -388567,7 +388567,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -390089,7 +390089,7 @@ Schema name: `BetaResponseQueuedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
@@ -450443,7 +450443,7 @@ Schema name: `BetaResponseQueuedEvent`
 
 ### Schema
 
-Schema name: `BetaResponseCustomToolCallInputDeltaEvent`
+Schema 名称: `BetaResponseCustomToolCallInputDeltaEvent`
 
 ```json
 {
@@ -450624,11 +450624,11 @@ Schema name: `BetaResponseCustomToolCallInputDeltaEvent`
 
 ## response.custom_tool_call_input.done
 
-表示自定义工具调用的输入已完整的事件。
+表示自定义工具调用的输入已完成的事件。
 
 ### Schema
 
-Schema name: `BetaResponseCustomToolCallInputDoneEvent`
+Schema 名称: `BetaResponseCustomToolCallInputDoneEvent`
 
 ```json
 {
@@ -450809,11 +450809,11 @@ Schema name: `BetaResponseCustomToolCallInputDoneEvent`
 
 ## error
 
-发生错误时触发。
+在发生错误时发出。
 
 ### Schema
 
-Schema name: `BetaResponseErrorEvent`
+Schema 名称: `BetaResponseErrorEvent`
 
 ```json
 {
@@ -450999,7 +450999,7 @@ Schema name: `BetaResponseErrorEvent`
 
 ### Schema
 
-Schema name: `BetaResponseAudioDeltaEvent`
+Schema 名称: `BetaResponseAudioDeltaEvent`
 
 ```json
 {
@@ -451144,11 +451144,11 @@ Schema name: `BetaResponseAudioDeltaEvent`
 
 ## response.audio.done
 
-在音频响应完成时发出。
+当音频响应完成时发出。
 
 ### Schema
 
-Schema name: `BetaResponseAudioDoneEvent`
+Schema 名称: `BetaResponseAudioDoneEvent`
 
 ```json
 {
@@ -451274,11 +451274,11 @@ Schema name: `BetaResponseAudioDoneEvent`
 
 ## response.audio.transcript.delta
 
-当存在音频的部分转写文本时触发。
+当存在音频的部分转录时发出。
 
 ### Schema
 
-Schema name: `BetaResponseAudioTranscriptDeltaEvent`
+Schema 名称: `BetaResponseAudioTranscriptDeltaEvent`
 
 ```json
 {
@@ -451427,7 +451427,7 @@ Schema name: `BetaResponseAudioTranscriptDeltaEvent`
 
 ### Schema
 
-Schema name: `BetaResponseAudioTranscriptDoneEvent`
+Schema 名称: `BetaResponseAudioTranscriptDoneEvent`
 
 ```json
 {
@@ -451553,11 +451553,11 @@ Schema name: `BetaResponseAudioTranscriptDoneEvent`
 
 ## response.shell_call_command.added
 
-一个流式事件，用于指示一条 shell 命令已被添加到工具调用中。
+一个流式事件，用于指示已将 shell 命令添加到工具调用中。
 
 ### Schema
 
-Schema name: `BetaResponseShellCallCommandAddedStreamingEvent`
+Schema 名称: `BetaResponseShellCallCommandAddedStreamingEvent`
 
 ```json
 {
@@ -451743,11 +451743,11 @@ Schema name: `BetaResponseShellCallCommandAddedStreamingEvent`
 
 ## response.shell_call_command.delta
 
-一个流事件，用于指示 shell 命令被增量更新。
+表示 shell 命令被增量更新的流式事件。
 
 ### Schema
 
-Schema name: `BetaResponseShellCallCommandDeltaStreamingEvent`
+Schema 名称: `BetaResponseShellCallCommandDeltaStreamingEvent`
 
 ```json
 {
@@ -451956,7 +451956,7 @@ Schema name: `BetaResponseShellCallCommandDeltaStreamingEvent`
 
 ### Schema
 
-Schema name: `BetaResponseShellCallCommandDoneStreamingEvent`
+Schema 名称: `BetaResponseShellCallCommandDoneStreamingEvent`
 
 ```json
 {
@@ -452142,11 +452142,11 @@ Schema name: `BetaResponseShellCallCommandDoneStreamingEvent`
 
 ## response.shell_call_output_content.delta
 
-一个流式事件，用于表示 shell 调用输出被增量添加。
+表示 shell 调用输出被增量添加的流式事件。
 
 ### Schema
 
-Schema name: `BetaResponseShellCallOutputContentDeltaStreamingEvent`
+Schema 名称: `BetaResponseShellCallOutputContentDeltaStreamingEvent`
 
 ```json
 {
@@ -452395,11 +452395,11 @@ Schema name: `BetaResponseShellCallOutputContentDeltaStreamingEvent`
 
 ## response.shell_call_output_content.done
 
-表示 shell 调用输出已完成的流式事件。
+指示 shell 调用输出已完成的一个流事件。
 
 ### Schema
 
-Schema name: `BetaResponseShellCallOutputContentDoneStreamingEvent`
+Schema 名称: `BetaResponseShellCallOutputContentDoneStreamingEvent`
 
 ```json
 {
