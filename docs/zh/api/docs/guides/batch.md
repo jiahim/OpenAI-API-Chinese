@@ -1,31 +1,31 @@
-# 批处理 API
+# Batch API
 
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
 
-了解如何使用 OpenAI 的批量 API 发送异步请求组，享受 50% 更低的成本、独立且显著更高的速率限制池，以及明确的 24 小时周转时间。该服务非常适合处理不需要即时响应的作业。你也可以 [直接在此处探索 API 参考文档](https://developers.openai.com/api/reference/resources/batches).
+了解如何使用 OpenAI 的 Batch API 以 50% 的更低成本发送异步请求组，享受独立的更高额度速率限制，以及明确的 24 小时周转时间。该服务非常适合处理不需要立即响应的任务。你还可以 [在此直接浏览 API 参考](https://developers.openai.com/api/reference/resources/batches).
 
 ## 概述
 
-虽然 OpenAI 平台的某些用途需要你发送同步请求，但在许多情况下，请求并不需要立即响应，或者 [速率限制](https://developers.openai.com/api/docs/guides/rate-limits) 会阻止你快速执行大量查询。批处理作业在以下场景中通常很有帮助：
+虽然 OpenAI 平台的某些用法要求你发送同步请求，但在许多情况下请求并不需要立即响应，或者 [速率限制](https://developers.openai.com/api/docs/guides/rate-limits) 会阻止你快速执行大量查询。批处理任务在以下用例中通常很有用：
 
-1. 运行评估
+1. 运行评测
 2. 对大型数据集进行分类
-3. 嵌入内容仓库
-4. 排队大型离线视频渲染任务
+3. 嵌入内容存储库
+4. 对大型离线视频渲染任务进行排队
 
-批量API提供了一套简洁的端点，让你能够将一组请求收集到单个文件中，启动一个批处理作业来执行这些请求，在底层请求执行时查询该批处理的状态，并在批处理完成后最终检索收集到的结果。
+Batch API 提供了一组简洁的接口，允许你将一组请求打包到单个文件中，启动批处理任务来执行这些请求，在底层请求执行过程中查询批处理任务的状态，并在批处理完成后检索汇总结果。
 
-与直接使用标准端点相比，批量API具有以下特点：
+与直接使用标准接口相比，Batch API 具有以下特点：
 
-1. **更好的成本效率：** 与同步 API 相比，可享受 50% 的成本折扣
-2. **更高的速率限制：** [更高的余量](https://platform.openai.com/settings/organization/limits) 与同步 API 相比
+1. **更优的成本效率：** 相比同步 API，成本折扣 50%
+2. **更高的速率限制：** [显著更大的余量](https://platform.openai.com/settings/organization/limits) 相比同步 API
 3. **更快的完成时间：** 每个批次在 24 小时内完成（通常更快）
 
-## 开始使用
+## 入门
 
-### 1. 准备你的批处理文件
+### 1. 准备批处理文件
 
-批次以一个 `.jsonl` 文件开始，其中每一行包含对 API 的单个请求的详细信息。目前，可用的端点为：
+批次从一个 `.jsonl` 文件开始，其中每行包含一个发往 API 的单个请求的详细信息。目前可用的端点包括：
 
 - `/v1/responses` ([Responses API](https://developers.openai.com/api/reference/resources/responses))
 - `/v1/chat/completions` ([Chat Completions API](https://developers.openai.com/api/reference/resources/chat))
@@ -36,18 +36,18 @@
 - `/v1/images/edits` ([Images API](https://developers.openai.com/api/reference/resources/images))
 - `/v1/videos` ([视频生成指南](https://developers.openai.com/api/docs/guides/video-generation))
 
-对于给定的输入文件，每一行参数中的 `body` 字段与底层端点的参数相同。每个请求必须包含一个唯一的 `custom_id` 值，你可以使用该值在完成后引用结果。以下是一个包含 2 个请求的输入文件示例。请注意，每个输入文件只能包含对单个模型的请求。
+对于给定的输入文件，每一行的 `body` 字段与底层端点的参数相同。每个请求必须包含唯一的 `custom_id` 值，你可以在完成后用它来引用结果。下面是一个包含 2 个请求的输入文件示例。请注意，每个输入文件只能包含发往同一模型的请求。
 
-对于批量处理中的视频生成：
+关于 Batch 中的视频生成：
 
-- Batch 目前支持 `POST /v1/videos` 。
-- 视频的批量请求必须使用 JSON，而非 multipart。
-- 提前上传资源，并在请求体中传递支持的资源引用，而不是使用 multipart 上传。
-- 使用 `input_reference` 进行 Batch 中的图像引导生成。在 JSON 请求中，传递 `input_reference` 作为一个包含 `file_id` 或 `image_url`.
-- Multipart `input_reference` 上传，包括视频引用输入，在 Batch 中不受支持。
-- 批量生成的视频可在 Batch 完成后下载最多 `24` 小时。
+- Batch 目前仅支持 `POST /v1/videos` 。
+- 视频的 Batch 请求必须使用 JSON，不能使用 multipart。
+- 请提前上传素材，并在请求体中传入受支持的素材引用，而不是使用 multipart 上传。
+- 在 Batch 中用于 `input_reference` 的图像引导生成。在 JSON 请求中，传入作为对象的 `input_reference` ，其中包含 `file_id` 或 `image_url`.
+- Multipart `input_reference` 上传（包括视频参考输入）在 Batch 中不受支持。
+- Batch 生成的视频在批处理完成后可供下载，时长最长为 `24` 小时。
 
-当目标为 `/v1/moderations`，时，在每个请求体中包含一个 `input` 字段。Batch 接受纯文本输入以及包含文本或图像输入的内容数组，使用 `omni-moderation-latest`。Batch 工作进程会拒绝设置 `stream=true`，的请求，与同步审核端点一致。
+在针对 `/v1/moderations`，时，请在每个请求体中包含 `input` 字段。Batch 接受纯文本输入以及使用文本或图像输入的内容数组。 `omni-moderation-latest`。Batch 工作进程会拒绝设置这些参数的请求 `stream=true`，与同步的 moderation 端点一致。
 
 ```jsonl
 {"custom_id": "request-1", "method": "POST", "url": "/v1/chat/completions", "body": {"model": "gpt-3.5-turbo-0125", "messages": [{"role": "system", "content": "You are a helpful assistant."},{"role": "user", "content": "Hello world!"}],"max_tokens": 1000}}
@@ -70,7 +70,7 @@
 }
 ```
 
-带有文本和图像输入的请求：
+包含文本和图像输入的请求：
 
 ```jsonl
 {
@@ -95,15 +95,15 @@
 }
 ```
 
-建议引用远程资源，使用 `image_url` （而不是 base64 块）来
-  保持你的 `.jsonl` 文件远低于 200&nbsp;MB 批量上传限制，
-  尤其是对于多模态审核请求。
+推荐使用 `image_url` （而不是 base64 blob）来
+  保持你的 `.jsonl` 文件大小远低于 200&nbsp;MB 的批量上传限制，
+  特别是针对多模态 Moderations 请求。
 
 ### 2. 上传你的批量输入文件
 
-与我们 [微调 API](https://developers.openai.com/api/docs/guides/model-optimization)，类似，你必须首先上传输入文件，以便在启动批次时正确引用它。使用 `.jsonl` 文件，通过 [文件 API](https://developers.openai.com/api/reference/resources/files).
+与我们的 [微调 API](https://developers.openai.com/api/docs/guides/model-optimization)，类似，你需要先上传输入文件，以便在启动批次时正确引用它。上传你的 `.jsonl` 使用文件 [Files API](https://developers.openai.com/api/reference/resources/files).
 
-为批量 API 上传文件
+上传文件用于 Batch API
 
 ```javascript
 import fs from "fs";
@@ -205,9 +205,9 @@ openai files create \
 
 ### 3. 创建批次
 
-成功上传输入文件后，你可以使用输入 File 对象的 ID 来创建批次。在此示例中，假设文件 ID 为 `file-abc123`。目前，完成窗口只能设置为 `24h`。你还可以通过可选的 `metadata` 参数提供自定义元数据。
+成功上传输入文件后，你可以使用输入的 File 对象 ID 来创建 batch。这里，我们假设文件 ID 为 `file-abc123`。目前，completion window 只能设置为 `24h`。你还可以通过可选的 `metadata` 参数来提供自定义元数据。
 
-创建批次
+创建 Batch
 
 ```javascript
 import OpenAI from "openai";
@@ -303,7 +303,7 @@ openai batches create \
 ```
 
 
-此请求将返回一个 [Batch 对象](https://developers.openai.com/api/reference/resources/batches) ，其中包含有关你的批次的元数据：
+该请求将返回一个 [Batch 对象](https://developers.openai.com/api/reference/resources/batches) ，其中包含有关你 batch 的元数据：
 
 ```json
 {
@@ -331,11 +331,11 @@ openai batches create \
 }
 ```
 
-### 4. 检查批处理的状态
+### 4. 查看批量任务的状态
 
-你可以随时检查批次的状态，这也将返回一个 Batch 对象。
+你可以随时检查批处理的状态，这也会返回一个 Batch 对象。
 
-检查批次状态
+检查批处理的状态
 
 ```javascript
 import OpenAI from "openai";
@@ -401,24 +401,24 @@ openai batches retrieve \
 ```
 
 
-给定 Batch 对象的状态可以是以下任意一种：
+给定的 Batch 对象的状态可以是以下任意一种：
 
 | 状态        | 描述                                                                    |
 | ------------- | ------------------------------------------------------------------------------ |
-| `validating`  | 输入文件正在验证中，批次尚未开始                   |
-| `failed`      | 输入文件未通过验证过程                               |
-| `in_progress` | 输入文件已成功验证，批次当前正在运行 |
-| `finalizing`  | 批次已完成，正在准备结果                     |
-| `completed`   | 批次已完成，结果已就绪                         |
-| `expired`     | 批次无法在24小时时间窗口内完成          |
-| `cancelling`  | 批次正在被取消（可能需要最多10分钟）                       |
-| `cancelled`   | 批次已被取消                                                        |
+| `validating`  | 正在校验输入文件，然后才能开始批量任务                   |
+| `failed`      | 输入文件未通过校验                               |
+| `in_progress` | 输入文件已成功校验，正在执行批量任务 |
+| `finalizing`  | 批量任务已完成，正在准备结果                     |
+| `completed`   | 批量任务已完成，结果已就绪                         |
+| `expired`     | 批量任务未能在 24 小时时间窗口内完成          |
+| `cancelling`  | 批量任务正在取消（最长可能需要 10 分钟）                       |
+| `cancelled`   | 批量任务已取消                                                        |
 
-### 5. 检索结果
+### 5. 获取结果
 
-批次完成后，你可以通过对以下内容发起请求来下载输出 [Files API](https://developers.openai.com/api/reference/resources/files) 通过 `output_file_id` 从 Batch 对象中的字段并将其写入到你机器上的文件中，在本例中为 `batch_output.jsonl`
+批次完成后，你可以通过向以下接口发起请求来下载输出 [Files API](https://developers.openai.com/api/reference/resources/files) 通过 `output_file_id` 字段（来自 Batch 对象）获取，并将内容写入你本地的文件，例如 `batch_output.jsonl`
 
-检索批次结果
+获取批次结果
 
 ```javascript
 import OpenAI from "openai";
@@ -505,27 +505,27 @@ openai files content \
 ```
 
 
-输出 `.jsonl` 文件中，输入文件中的每个成功请求行将对应一个响应行。批次中任何失败的请求，其错误信息都会被写入一个错误文件，你可以通过批次的 `error_file_id`.
+输出 `.jsonl` 文件中，输入文件里每一条成功的请求都会对应一行响应。批次中任何失败的请求，其错误信息会被写入一个错误文件，可通过该批次的 `error_file_id`.
 
-对于 `/v1/videos`，一个已完成的批次结果包含已达到终态（如 `completed`, `failed`，或 `expired`）的视频对象。你可以使用返回的视频 ID 在批次完成后立即下载最终资产。
+对于 `/v1/videos`，已完成的批次结果包含已达到终止状态的视频对象，例如 `completed`, `failed`，或 `expired`。你可以使用返回的 video ID 在批次结束后立即下载最终资源。
 
 请注意，输出行的顺序 **可能与** 输入行的顺序不一致。
-  不要依赖顺序来处理结果，请使用 custom_id 字段，
-  该字段会出现在输出文件的每一行中，使你能够将
-  输入中的请求与输出中的结果对应起来。
+  不要依赖顺序来处理结果，而是使用 custom_id 字段
+  ，该字段会出现在输出文件的每一行中，方便你将
+  输入中的请求映射到输出中的结果。
 
 ```jsonl
 {"id": "batch_req_123", "custom_id": "request-2", "response": {"status_code": 200, "request_id": "req_123", "body": {"id": "chatcmpl-123", "object": "chat.completion", "created": 1711652795, "model": "gpt-3.5-turbo-0125", "choices": [{"index": 0, "message": {"role": "assistant", "content": "Hello."}, "logprobs": null, "finish_reason": "stop"}], "usage": {"prompt_tokens": 22, "completion_tokens": 2, "total_tokens": 24}, "system_fingerprint": "fp_123"}}, "error": null}
 {"id": "batch_req_456", "custom_id": "request-1", "response": {"status_code": 200, "request_id": "req_789", "body": {"id": "chatcmpl-abc", "object": "chat.completion", "created": 1711652789, "model": "gpt-3.5-turbo-0125", "choices": [{"index": 0, "message": {"role": "assistant", "content": "Hello! How can I assist you today?"}, "logprobs": null, "finish_reason": "stop"}], "usage": {"prompt_tokens": 20, "completion_tokens": 9, "total_tokens": 29}, "system_fingerprint": "fp_3ba"}}, "error": null}
 ```
 
-输出文件将在批次完成后 30 天自动删除。
+输出文件将在批次完成后 30 天被自动删除。
 
-### 6. 取消一个批次
+### 6. 取消批量任务
 
-如有必要，你可以取消进行中的批处理。批处理的状态将变为 `cancelling` ，直到在途请求完成（最多 10 分钟），之后状态将变为 `cancelled`.
+如果需要，你可以取消正在进行的批量任务。批量任务的状态将变为 `cancelling` ，直至所有进行中的请求完成（最多 10 分钟），之后状态将变为 `cancelled`.
 
-取消批处理
+取消批量任务
 
 ```javascript
 import OpenAI from "openai";
@@ -596,9 +596,9 @@ openai batches cancel \
 ```
 
 
-### 7. 获取所有批次的列表
+### 7. 获取所有批处理列表
 
-你随时可以查看所有批次。对于批次较多的用户，你可以使用 `limit` 和 `after` 参数来对结果进行分页。
+你可以随时查看所有的批次。对于拥有大量批次的用户，你可以使用 `limit` 和 `after` 参数对结果进行分页。
 
 获取所有批次的列表
 
@@ -678,23 +678,23 @@ openai batches list \
 
 ## 模型可用性
 
-批量 API 在我们的绝大多数模型中广泛可用，但并非所有模型都支持。请参阅 [模型参考文档](https://developers.openai.com/api/docs/models) 以确保你所使用的模型支持批量 API。
+Batch API 在我们的大多数模型中可用，但并非全部。请参阅 [模型参考文档](https://developers.openai.com/api/docs/models) 以确认你使用的模型支持 Batch API。
 
 ## 速率限制
 
-批量 API 速率限制与现有的按模型速率限制是分开的。批量 API 有三种类型的速率限制：
+Batch API 速率限制与现有的按模型速率限制是分开的。Batch API 有三种速率限制类型：
 
-1. **每个批次的限制：** 单个批次最多可包含 50,000 个请求，且批次输入文件大小上限为 200 MB。请注意， `/v1/embeddings` 批次中所有请求的嵌入输入总数也限制为最多 50,000 个。
-2. **每个模型的排队提示词令牌数：** 每个模型有可排队用于批处理的提示词令牌数量上限。你可以在 [平台设置页面](https://platform.openai.com/settings/organization/limits).
-3. **批次创建速率限制：** 你每小时最多可创建 2,000 个批次。如需提交更多请求，请增加每个批次的请求数量。
+1. **每个批次的限制：** 单个批次最多可包含 50,000 个请求，批次输入文件大小最大为 200 MB。请注意， `/v1/embeddings` 批次中所有请求的 embedding 输入总数也限制为最多 50,000 个。
+2. **每个模型的已排队 prompt token 数：** 每个模型都有一个可排队用于批处理的最大 prompt token 数。你可以在 [Platform Settings 页面](https://platform.openai.com/settings/organization/limits).
+3. **批次创建速率限制：** 你每小时最多可以创建 2,000 个批次。如果需要提交更多请求，请增加每个批次的请求数量。
 
-Batch API 目前没有输出令牌限制。由于 Batch API 速率限制是一个新的独立池， **使用 Batch API 不会消耗你标准按模型速率限制中的令牌，**，从而为你提供一种便捷的方式，在查询我们的 API 时增加可用请求数和已处理令牌数。
+Batch API 目前没有输出 token 限制。由于 Batch API 速率限制是一个全新的独立池， **使用 Batch API 不会消耗你标准按模型速率限制中的 token**，从而为你提供了一种便捷的方式，可以在调用我们的 API 时增加可用请求数和已处理的 token 数。
 
-## 批量任务过期
+## Batch 过期
 
-未及时完成的批处理最终会进入 `expired` 状态；该批处理中未完成的请求将被取消，而已完成请求的任何响应都会通过批处理的输出文件提供。你将按已完成请求消耗的令牌数被收费。
+未能在时限内完成的批次最终会转入 `expired` 状态；该批次中未完成的请求将被取消，已完成请求的任何响应可通过批次的输出文件获取。你将按已完成请求所消耗的 token 计费。
 
-过期的请求将被写入你的错误文件，并显示如下所示的消息。你可以使用 `custom_id` 来检索过期请求的数据。
+过期的请求将按下方所示消息写入你的错误文件。你可以使用 `custom_id` 检索过期请求的请求数据。
 
 ```jsonl
 {"id": "batch_req_123", "custom_id": "request-3", "response": null, "error": {"code": "batch_expired", "message": "This request could not be executed before the completion window expired."}}

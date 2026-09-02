@@ -1,12 +1,12 @@
 # 模型
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾附加 `.md` 获取文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 末尾追加 `.md` 。
 
 ## 删除微调模型
 
 **delete** `/models/{model}`
 
-删除一个微调模型。你必须在组织中拥有 Owner 角色才能删除模型。
+删除已微调的模型。你必须在组织中拥有 Owner 角色才能删除模型。
 
 ### 路径参数
 
@@ -160,7 +160,7 @@ curl https://api.openai.com/v1/models \
 
 **get** `/models/{model}`
 
-检索模型实例，提供有关该模型的基本信息，例如所有者和权限设置。
+检索模型实例，提供关于该模型的基本信息，例如所有者和权限设置。
 
 ### 路径参数
 
@@ -170,7 +170,7 @@ curl https://api.openai.com/v1/models \
 
 - `Model object { id, created, object, 2 more }`
 
-  描述可与 API 配合使用的 OpenAI 模型服务。
+  描述可与 API 一起使用的 OpenAI 模型服务。
 
   - `id: string`
 
@@ -216,7 +216,7 @@ curl https://api.openai.com/v1/models/$MODEL \
 ### 示例
 
 ```http
-curl https://api.openai.com/v1/models/VAR_chat_model_id \
+curl https://api.openai.com/v1/models/gpt-5.6-sol \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
@@ -224,7 +224,7 @@ curl https://api.openai.com/v1/models/VAR_chat_model_id \
 
 ```json
 {
-  "id": "VAR_chat_model_id",
+  "id": "gpt-5.6-sol",
   "object": "model",
   "created": 1686935002,
   "owned_by": "openai",
@@ -234,11 +234,11 @@ curl https://api.openai.com/v1/models/VAR_chat_model_id \
 
 ## 域类型
 
-### Model
+### 模型
 
 - `Model object { id, created, object, 2 more }`
 
-  描述可与 API 配合使用的 OpenAI 模型服务。
+  描述可与 API 一起使用的 OpenAI 模型服务。
 
   - `id: string`
 

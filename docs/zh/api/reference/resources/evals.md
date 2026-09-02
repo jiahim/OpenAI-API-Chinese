@@ -1,51 +1,51 @@
-# 评估
+# Evals
 
-> 有关完整的文档索引，请参见 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获得。
+> 完整文档索引请参见 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 获取文档页面的 Markdown 版本。
 
-## 创建评估
+## Create eval
 
 **post** `/evals`
 
-创建可用于测试模型性能的评估结构。
-评估是一组测试标准和数据源的配置，它决定了评估中所用数据的模式。创建评估后，你可以在不同的模型和模型参数上运行它。我们支持多种评分器和数据源。
-有关更多信息，请参阅 [评估指南](/docs/guides/evals).
+创建一个可用于测试模型表现的评估结构。
+评估是一组测试标准以及数据源的配置，它决定了评估中所使用数据的 schema。创建评估后，你可以在不同的模型和模型参数上运行它。我们支持多种评分器和数据源类型。
+更多信息，请参阅 [Evals guide](/docs/guides/evals).
 
-### 请求体参数
+### Body Parameters
 
 - `data_source_config: object { item_schema, type, include_sample_schema }  or object { type, metadata }  or object { type, metadata }`
 
-  用于评估运行的数据源的配置。决定评估中使用的数据的模式。
+  用于评估运行的数据源的配置。决定评估中使用的数据的 schema。
 
   - `CustomDataSourceConfig object { item_schema, type, include_sample_schema }`
 
-    一个 CustomDataSourceConfig 对象，定义用于评估运行的数据源的模式。
-    该模式用于定义数据的形状，这些数据将：
+    一个 CustomDataSourceConfig 对象，用于定义评估运行所用数据源的 schema。
+    此 schema 用于定义以下数据的形状：
 
-    - 用于定义你的测试标准，并且
-    - 创建运行所需的数据
+    - 用于定义你的测试标准，以及
+    - 创建运行 (run) 时所需的数据
 
     - `item_schema: map[unknown]`
 
-      数据源中每一行的 JSON 模式。
+      数据源中每一行的 json schema。
 
     - `type: "custom"`
 
-      数据源的类型。始终是 `custom`.
+      数据源的类型。始终为 `custom`.
 
       - `"custom"`
 
     - `include_sample_schema: optional boolean`
 
-      评估是否应期望你填充样本命名空间（即，通过根据你的数据源生成响应）
+      eval 是否应期望你填充 sample 命名空间（即，基于你的数据源生成响应）
 
   - `LogsDataSourceConfig object { type, metadata }`
 
-    一个数据源配置，指定你的日志查询的元数据属性。
-    这通常是这样的一些元数据，例如 `usecase=chatbot` 或 `prompt-version=v2`，等。
+    一个数据源配置，指定你的日志查询的 metadata 属性。
+    这通常是类似 `usecase=chatbot` 或 `prompt-version=v2`，等元数据。
 
     - `type: "logs"`
 
-      数据源的类型。始终是 `logs`.
+      数据源的类型。始终为 `logs`.
 
       - `"logs"`
 
@@ -55,11 +55,11 @@
 
   - `StoredCompletionsDataSourceConfig object { type, metadata }`
 
-    已弃用，改用 LogsDataSourceConfig。
+    已弃用，建议改用 LogsDataSourceConfig。
 
     - `type: "stored_completions"`
 
-      数据源的类型。始终是 `stored_completions`.
+      数据源的类型。始终为 `stored_completions`.
 
       - `"stored_completions"`
 
@@ -69,16 +69,16 @@
 
 - `testing_criteria: array of object { input, labels, model, 3 more }  or StringCheckGrader or TextSimilarityGrader or 2 more`
 
-  此组中所有评估运行的评分器列表。评分器可以使用双花括号表示法引用数据源中的变量，例如 `{{item.variable_name}}`。要引用模型的输出，请使用 `sample` 命名空间（即， `{{sample.output_text}}`).
+  此组中所有评估运行的评分器列表。评分器可以使用双花括号表示法引用数据源中的变量，例如 `{{item.variable_name}}`。若要引用模型的输出，请使用 `sample` 命名空间（即， `{{sample.output_text}}`).
 
   - `LabelModelGrader object { input, labels, model, 3 more }`
 
-    一个 LabelModelGrader 对象，使用模型为评估中的每个项目分配标签
+    一个 LabelModelGrader 对象，使用模型为评估中的每一项分配标签
     。
 
     - `input: array of object { content, role }  or object { content, role, type }`
 
-      构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+      构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
       - `SimpleInputMessage object { content, role }`
 
@@ -92,27 +92,27 @@
 
       - `EvalMessageObject object { content, role, type }`
 
-        输入给模型的消息，其角色指示指令遵循
-        层级。以 `developer` 或 `system` 角色给出的指令
-        优先于以 `user` 角色给出的指令。具有
-        `assistant` 角色的消息被认为是由模型在之前的
-        交互中生成的。
+        输入到模型的消息，其角色指示指令的
+        层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+        角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+        `assistant` 消息。
+        互动。
 
         - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-          模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+          模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
           - `TextInput = string`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
             - `text: string`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `type: "input_text"`
 
@@ -122,7 +122,7 @@
 
             - `prompt_cache_breakpoint: optional object { mode }`
 
-              标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+              标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
               - `mode: "explicit"`
 
@@ -132,11 +132,11 @@
 
           - `OutputText object { text, type }`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
             - `text: string`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
             - `type: "output_text"`
 
@@ -146,21 +146,21 @@
 
           - `InputImage object { image_url, type, detail }`
 
-            用于 EvalItem 内容数组中的图像输入块。
+            在 EvalItem 内容数组中使用的图片输入块。
 
             - `image_url: string`
 
-              图像输入的 URL。
+              图片输入的 URL。
 
             - `type: "input_image"`
 
-              图像输入的类型。始终为 `input_image`.
+              图片输入的类型。始终为 `input_image`.
 
               - `"input_image"`
 
             - `detail: optional string`
 
-              发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+              发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
@@ -170,11 +170,11 @@
 
               - `data: string`
 
-                Base64 编码的音频数据。
+                经过 Base64 编码的音频数据。
 
               - `format: "mp3" or "wav"`
 
-                音频数据的格式。目前支持的格式为 `mp3` 和
+                音频数据的格式。当前支持的格式有 `mp3` 和
                 `wav`.
 
                 - `"mp3"`
@@ -189,24 +189,24 @@
 
           - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-            输入列表，每个输入可以是输入文本、输出文本、输入
-            图像或输入音频对象。
+            输入列表，其中每个输入可以是输入文本、输出文本、输入
+            图片或输入音频对象。
 
             - `TextInput = string`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `OutputText object { text, type }`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
               - `text: string`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
               - `type: "output_text"`
 
@@ -216,21 +216,21 @@
 
             - `InputImage object { image_url, type, detail }`
 
-              用于 EvalItem 内容数组中的图像输入块。
+              在 EvalItem 内容数组中使用的图片输入块。
 
               - `image_url: string`
 
-                图像输入的 URL。
+                图片输入的 URL。
 
               - `type: "input_image"`
 
-                图像输入的类型。始终为 `input_image`.
+                图片输入的类型。始终为 `input_image`.
 
                 - `"input_image"`
 
               - `detail: optional string`
 
-                发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
             - `ResponseInputAudio object { input_audio, type }`
 
@@ -238,7 +238,7 @@
 
         - `role: "user" or "assistant" or "system" or "developer"`
 
-          消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+          消息输入的角色。可选值为 `user`, `assistant`, `system`、或
           `developer`.
 
           - `"user"`
@@ -257,7 +257,7 @@
 
     - `labels: array of string`
 
-      用于对评估中的每个项目进行分类的标签。
+      用于对评估中每个项目进行分类的标签。
 
     - `model: string`
 
@@ -269,7 +269,7 @@
 
     - `passing_labels: array of string`
 
-      表示通过结果的标签。必须是标签的子集。
+      表示通过结果的标签。必须是 labels 的子集。
 
     - `type: "label_model"`
 
@@ -279,11 +279,11 @@
 
   - `StringCheckGrader object { input, name, operation, 2 more }`
 
-    一个 StringCheckGrader 对象，使用指定操作对输入和参考文本执行字符串比较。
+    一个 StringCheckGrader 对象，使用指定操作在输入和参考之间进行字符串比较。
 
     - `input: string`
 
-      输入文本。可能包含模板字符串。
+      输入文本。可以包含模板字符串。
 
     - `name: string`
 
@@ -291,7 +291,7 @@
 
     - `operation: "eq" or "ne" or "like" or "ilike"`
 
-      要执行的字符串检查操作。可选值： `eq`, `ne`, `like`，或 `ilike`.
+      要执行的字符串检查操作。可选值为 `eq`, `ne`, `like`、或 `ilike`.
 
       - `"eq"`
 
@@ -303,7 +303,7 @@
 
     - `reference: string`
 
-      参考文本。可能包含模板字符串。
+      参考文本。可以包含模板字符串。
 
     - `type: "string_check"`
 
@@ -313,7 +313,7 @@
 
   - `TextSimilarity = TextSimilarityGrader`
 
-    一个 TextSimilarityGrader 对象，根据相似度指标对文本进行评分。
+    一个 TextSimilarityGrader 对象，基于相似度指标对文本进行评分。
 
     - `pass_threshold: number`
 
@@ -321,7 +321,7 @@
 
   - `Python = PythonGrader`
 
-    一个 PythonGrader 对象，对输入运行 Python 脚本。
+    一个 PythonGrader 对象，对输入运行 python 脚本。
 
     - `pass_threshold: optional number`
 
@@ -329,7 +329,7 @@
 
   - `ScoreModel = ScoreModelGrader`
 
-    一个 ScoreModelGrader 对象，使用模型为输入分配分数。
+    一个 ScoreModelGrader 对象，使用模型为输入打分。
 
     - `pass_threshold: optional number`
 
@@ -337,108 +337,108 @@
 
 - `metadata: optional Metadata or null`
 
-  一组 16 个键值对，可附加到对象上。这可以
-  用于以结构化格式存储有关对象的额外信息，
+  可附加到对象的 16 组键值对。这可以
+  用于以结构化格式存储有关对象的附加信息，
   并通过 API 或仪表板查询对象。
 
-  键是字符串，最大长度为 64 个字符。值是字符串，
+  键为字符串，最大长度为 64 个字符。值为字符串，
   最大长度为 512 个字符。
 
 - `name: optional string`
 
   评估的名称。
 
-### 返回
+### Returns
 
 - `id: string`
 
-  评估的唯一标识符。
+  评估任务的唯一标识符。
 
 - `created_at: number`
 
-  评估创建时的 Unix 时间戳（秒）。
+  评估任务创建时的 Unix 时间戳（以秒为单位）。
 
 - `data_source_config: EvalCustomDataSourceConfig or object { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
-  评估运行中使用的数据源配置。
+  用于评估运行的数据源配置。
 
   - `EvalCustomDataSourceConfig object { schema, type }`
 
-    一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选地 `sample` 命名空间。
-    响应模式定义了数据的形状，数据将被：
+    一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选的 `sample` 命名空间。
+    响应架构定义了数据的以下形状：
 
-    - 用于定义你的测试标准，并且
-    - 创建运行所需的数据
+    - 用于定义你的测试标准，以及
+    - 创建运行 (run) 时所需的数据
 
     - `schema: map[unknown]`
 
-      运行数据源项目的 JSON 模式。
-      了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+      运行数据源条目的 json 架构。
+      了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
     - `type: "custom"`
 
-      数据源的类型。始终是 `custom`.
+      数据源的类型。始终为 `custom`.
 
       - `"custom"`
 
   - `LogsDataSourceConfig object { schema, type, metadata }`
 
-    一个 LogsDataSourceConfig，用于指定你的日志查询的元数据属性。
-    这通常是这样的一些元数据，例如 `usecase=chatbot` 或 `prompt-version=v2`，等。
-    此数据源配置返回的模式用于定义评估中可用的变量。
-    `item` 和 `sample` 在使用此数据源配置时，两者均被定义。
+    一个 LogsDataSourceConfig，用于指定日志查询的元数据属性。
+    这通常是类似 `usecase=chatbot` 或 `prompt-version=v2`，等元数据。
+    此数据源配置返回的架构用于定义评估中可用的变量。
+    `item` 和 `sample` 在使用此数据源配置时均会被定义。
 
     - `schema: map[unknown]`
 
-      运行数据源项目的 JSON 模式。
-      了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+      运行数据源条目的 json 架构。
+      了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
     - `type: "logs"`
 
-      数据源的类型。始终是 `logs`.
+      数据源的类型。始终为 `logs`.
 
       - `"logs"`
 
     - `metadata: optional Metadata or null`
 
-      一组 16 个键值对，可附加到对象上。这可以
-      用于以结构化格式存储有关对象的额外信息，
+      可附加到对象的 16 组键值对。这可以
+      用于以结构化格式存储有关对象的附加信息，
       并通过 API 或仪表板查询对象。
 
-      键是字符串，最大长度为 64 个字符。值是字符串，
+      键为字符串，最大长度为 64 个字符。值为字符串，
       最大长度为 512 个字符。
 
   - `EvalStoredCompletionsDataSourceConfig object { schema, type, metadata }`
 
-    已弃用，改用 LogsDataSourceConfig。
+    已弃用，建议改用 LogsDataSourceConfig。
 
     - `schema: map[unknown]`
 
-      运行数据源项目的 JSON 模式。
-      了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+      运行数据源条目的 json 架构。
+      了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
     - `type: "stored_completions"`
 
-      数据源的类型。始终是 `stored_completions`.
+      数据源的类型。始终为 `stored_completions`.
 
       - `"stored_completions"`
 
     - `metadata: optional Metadata or null`
 
-      一组 16 个键值对，可附加到对象上。这可以
-      用于以结构化格式存储有关对象的额外信息，
+      可附加到对象的 16 组键值对。这可以
+      用于以结构化格式存储有关对象的附加信息，
       并通过 API 或仪表板查询对象。
 
-      键是字符串，最大长度为 64 个字符。值是字符串，
+      键为字符串，最大长度为 64 个字符。值为字符串，
       最大长度为 512 个字符。
 
 - `metadata: Metadata or null`
 
-  一组 16 个键值对，可附加到对象上。这可以
-  用于以结构化格式存储有关对象的额外信息，
+  可附加到对象的 16 组键值对。这可以
+  用于以结构化格式存储有关对象的附加信息，
   并通过 API 或仪表板查询对象。
 
-  键是字符串，最大长度为 64 个字符。值是字符串，
+  键为字符串，最大长度为 64 个字符。值为字符串，
   最大长度为 512 个字符。
 
 - `name: string`
@@ -453,30 +453,30 @@
 
 - `testing_criteria: array of LabelModelGrader or StringCheckGrader or TextSimilarityGrader or 2 more`
 
-  测试标准列表。
+  测试条件列表。
 
   - `LabelModelGrader object { input, labels, model, 3 more }`
 
-    一个 LabelModelGrader 对象，使用模型为评估中的每个项目分配标签
+    一个 LabelModelGrader 对象，使用模型为评估中的每一项分配标签
     。
 
     - `input: array of object { content, role, type }`
 
       - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-        模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+        模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
         - `TextInput = string`
 
-          模型的文本输入。
+          发送给模型的文本输入。
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          模型的文本输入。
+          发送给模型的文本输入。
 
           - `text: string`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
           - `type: "input_text"`
 
@@ -486,7 +486,7 @@
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+            标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -496,11 +496,11 @@
 
         - `OutputText object { text, type }`
 
-          模型的文本输出。
+          来自模型的文本输出。
 
           - `text: string`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
           - `type: "output_text"`
 
@@ -510,21 +510,21 @@
 
         - `InputImage object { image_url, type, detail }`
 
-          用于 EvalItem 内容数组中的图像输入块。
+          在 EvalItem 内容数组中使用的图片输入块。
 
           - `image_url: string`
 
-            图像输入的 URL。
+            图片输入的 URL。
 
           - `type: "input_image"`
 
-            图像输入的类型。始终为 `input_image`.
+            图片输入的类型。始终为 `input_image`.
 
             - `"input_image"`
 
           - `detail: optional string`
 
-            发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+            发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
         - `ResponseInputAudio object { input_audio, type }`
 
@@ -534,11 +534,11 @@
 
             - `data: string`
 
-              Base64 编码的音频数据。
+              经过 Base64 编码的音频数据。
 
             - `format: "mp3" or "wav"`
 
-              音频数据的格式。目前支持的格式为 `mp3` 和
+              音频数据的格式。当前支持的格式有 `mp3` 和
               `wav`.
 
               - `"mp3"`
@@ -553,24 +553,24 @@
 
         - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-          输入列表，每个输入可以是输入文本、输出文本、输入
-          图像或输入音频对象。
+          输入列表，其中每个输入可以是输入文本、输出文本、输入
+          图片或输入音频对象。
 
           - `TextInput = string`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
           - `OutputText object { text, type }`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
             - `text: string`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
             - `type: "output_text"`
 
@@ -580,21 +580,21 @@
 
           - `InputImage object { image_url, type, detail }`
 
-            用于 EvalItem 内容数组中的图像输入块。
+            在 EvalItem 内容数组中使用的图片输入块。
 
             - `image_url: string`
 
-              图像输入的 URL。
+              图片输入的 URL。
 
             - `type: "input_image"`
 
-              图像输入的类型。始终为 `input_image`.
+              图片输入的类型。始终为 `input_image`.
 
               - `"input_image"`
 
             - `detail: optional string`
 
-              发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+              发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
@@ -602,7 +602,7 @@
 
       - `role: "user" or "assistant" or "system" or "developer"`
 
-        消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+        消息输入的角色。可选值为 `user`, `assistant`, `system`、或
         `developer`.
 
         - `"user"`
@@ -621,7 +621,7 @@
 
     - `labels: array of string`
 
-      要分配给评估中每个项目的标签。
+      要分配给评估中每个条目标签。
 
     - `model: string`
 
@@ -633,7 +633,7 @@
 
     - `passing_labels: array of string`
 
-      表示通过结果的标签。必须是标签的子集。
+      表示通过结果的标签。必须是 labels 的子集。
 
     - `type: "label_model"`
 
@@ -643,11 +643,11 @@
 
   - `StringCheckGrader object { input, name, operation, 2 more }`
 
-    一个 StringCheckGrader 对象，使用指定操作对输入和参考文本执行字符串比较。
+    一个 StringCheckGrader 对象，使用指定操作在输入和参考之间进行字符串比较。
 
     - `input: string`
 
-      输入文本。可能包含模板字符串。
+      输入文本。可以包含模板字符串。
 
     - `name: string`
 
@@ -655,7 +655,7 @@
 
     - `operation: "eq" or "ne" or "like" or "ilike"`
 
-      要执行的字符串检查操作。可选值： `eq`, `ne`, `like`，或 `ilike`.
+      要执行的字符串检查操作。可选值为 `eq`, `ne`, `like`、或 `ilike`.
 
       - `"eq"`
 
@@ -667,7 +667,7 @@
 
     - `reference: string`
 
-      参考文本。可能包含模板字符串。
+      参考文本。可以包含模板字符串。
 
     - `type: "string_check"`
 
@@ -677,7 +677,7 @@
 
   - `TextSimilarityGrader = TextSimilarityGrader`
 
-    一个 TextSimilarityGrader 对象，根据相似度指标对文本进行评分。
+    一个 TextSimilarityGrader 对象，基于相似度指标对文本进行评分。
 
     - `pass_threshold: number`
 
@@ -685,7 +685,7 @@
 
   - `PythonGrader = PythonGrader`
 
-    一个 PythonGrader 对象，对输入运行 Python 脚本。
+    一个 PythonGrader 对象，对输入运行 python 脚本。
 
     - `pass_threshold: optional number`
 
@@ -693,7 +693,7 @@
 
   - `ScoreModelGrader = ScoreModelGrader`
 
-    一个 ScoreModelGrader 对象，使用模型为输入分配分数。
+    一个 ScoreModelGrader 对象，使用模型为输入打分。
 
     - `pass_threshold: optional number`
 
@@ -887,13 +887,13 @@ curl https://api.openai.com/v1/evals \
 
 **删除** `/evals/{eval_id}`
 
-删除一个评估。
+删除评测。
 
 ### 路径参数
 
 - `eval_id: string`
 
-### 返回
+### Returns
 
 - `deleted: boolean`
 
@@ -937,7 +937,7 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 }
 ```
 
-## 列出评估
+## 列出 evals
 
 **get** `/evals`
 
@@ -947,15 +947,15 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
 - `after: optional string`
 
-  上一个分页请求中最后一个评估的标识符。
+  上一次分页请求中最后一条 eval 的标识符。
 
 - `limit: optional number`
 
-  要检索的评估数量。
+  要检索的 eval 数量。
 
 - `order: optional "asc" or "desc"`
 
-  按时间戳对评估的排序顺序。使用 `asc` 表示升序或 `desc` 表示降序。
+  按时间戳对 eval 排序的顺序。使用 `asc` 表示升序，或 `desc` 表示降序。
 
   - `"asc"`
 
@@ -963,108 +963,108 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
 - `order_by: optional "created_at" or "updated_at"`
 
-  评估可以按创建时间或最后更新时间排序。使用
-  `created_at` 表示创建时间或 `updated_at` 表示最后更新时间。
+  eval 可以按创建时间或最后更新时间排序。使用
+  `created_at` 表示创建时间，或 `updated_at` 表示最后更新时间。
 
   - `"created_at"`
 
   - `"updated_at"`
 
-### 返回
+### Returns
 
 - `data: array of object { id, created_at, data_source_config, 4 more }`
 
-  评估对象数组。
+  eval 对象数组。
 
   - `id: string`
 
-    评估的唯一标识符。
+    评估任务的唯一标识符。
 
   - `created_at: number`
 
-    评估创建时的 Unix 时间戳（秒）。
+    评估任务创建时的 Unix 时间戳（以秒为单位）。
 
   - `data_source_config: EvalCustomDataSourceConfig or object { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
-    评估运行中使用的数据源配置。
+    用于评估运行的数据源配置。
 
     - `EvalCustomDataSourceConfig object { schema, type }`
 
-      一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选地 `sample` 命名空间。
-      响应模式定义了数据的形状，数据将被：
+      一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选的 `sample` 命名空间。
+      响应架构定义了数据的以下形状：
 
-      - 用于定义你的测试标准，并且
-      - 创建运行所需的数据
+      - 用于定义你的测试标准，以及
+      - 创建运行 (run) 时所需的数据
 
       - `schema: map[unknown]`
 
-        运行数据源项目的 JSON 模式。
-        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+        运行数据源条目的 json 架构。
+        了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
       - `type: "custom"`
 
-        数据源的类型。始终是 `custom`.
+        数据源的类型。始终为 `custom`.
 
         - `"custom"`
 
     - `LogsDataSourceConfig object { schema, type, metadata }`
 
-      一个 LogsDataSourceConfig，用于指定你的日志查询的元数据属性。
-      这通常是这样的一些元数据，例如 `usecase=chatbot` 或 `prompt-version=v2`，等。
-      此数据源配置返回的模式用于定义评估中可用的变量。
-      `item` 和 `sample` 在使用此数据源配置时，两者均被定义。
+      一个 LogsDataSourceConfig，用于指定日志查询的元数据属性。
+      这通常是类似 `usecase=chatbot` 或 `prompt-version=v2`，等元数据。
+      此数据源配置返回的架构用于定义评估中可用的变量。
+      `item` 和 `sample` 在使用此数据源配置时均会被定义。
 
       - `schema: map[unknown]`
 
-        运行数据源项目的 JSON 模式。
-        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+        运行数据源条目的 json 架构。
+        了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
       - `type: "logs"`
 
-        数据源的类型。始终是 `logs`.
+        数据源的类型。始终为 `logs`.
 
         - `"logs"`
 
       - `metadata: optional Metadata or null`
 
-        一组 16 个键值对，可附加到对象上。这可以
-        用于以结构化格式存储有关对象的额外信息，
+        可附加到对象的 16 组键值对。这可以
+        用于以结构化格式存储有关对象的附加信息，
         并通过 API 或仪表板查询对象。
 
-        键是字符串，最大长度为 64 个字符。值是字符串，
+        键为字符串，最大长度为 64 个字符。值为字符串，
         最大长度为 512 个字符。
 
     - `EvalStoredCompletionsDataSourceConfig object { schema, type, metadata }`
 
-      已弃用，改用 LogsDataSourceConfig。
+      已弃用，建议改用 LogsDataSourceConfig。
 
       - `schema: map[unknown]`
 
-        运行数据源项目的 JSON 模式。
-        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+        运行数据源条目的 json 架构。
+        了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
       - `type: "stored_completions"`
 
-        数据源的类型。始终是 `stored_completions`.
+        数据源的类型。始终为 `stored_completions`.
 
         - `"stored_completions"`
 
       - `metadata: optional Metadata or null`
 
-        一组 16 个键值对，可附加到对象上。这可以
-        用于以结构化格式存储有关对象的额外信息，
+        可附加到对象的 16 组键值对。这可以
+        用于以结构化格式存储有关对象的附加信息，
         并通过 API 或仪表板查询对象。
 
-        键是字符串，最大长度为 64 个字符。值是字符串，
+        键为字符串，最大长度为 64 个字符。值为字符串，
         最大长度为 512 个字符。
 
   - `metadata: Metadata or null`
 
-    一组 16 个键值对，可附加到对象上。这可以
-    用于以结构化格式存储有关对象的额外信息，
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
     并通过 API 或仪表板查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串，
+    键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
   - `name: string`
@@ -1079,30 +1079,30 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
   - `testing_criteria: array of LabelModelGrader or StringCheckGrader or TextSimilarityGrader or 2 more`
 
-    测试标准列表。
+    测试条件列表。
 
     - `LabelModelGrader object { input, labels, model, 3 more }`
 
-      一个 LabelModelGrader 对象，使用模型为评估中的每个项目分配标签
+      一个 LabelModelGrader 对象，使用模型为评估中的每一项分配标签
       。
 
       - `input: array of object { content, role, type }`
 
         - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-          模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+          模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
           - `TextInput = string`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
             - `text: string`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `type: "input_text"`
 
@@ -1112,7 +1112,7 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
             - `prompt_cache_breakpoint: optional object { mode }`
 
-              标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+              标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
               - `mode: "explicit"`
 
@@ -1122,11 +1122,11 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
           - `OutputText object { text, type }`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
             - `text: string`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
             - `type: "output_text"`
 
@@ -1136,21 +1136,21 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
           - `InputImage object { image_url, type, detail }`
 
-            用于 EvalItem 内容数组中的图像输入块。
+            在 EvalItem 内容数组中使用的图片输入块。
 
             - `image_url: string`
 
-              图像输入的 URL。
+              图片输入的 URL。
 
             - `type: "input_image"`
 
-              图像输入的类型。始终为 `input_image`.
+              图片输入的类型。始终为 `input_image`.
 
               - `"input_image"`
 
             - `detail: optional string`
 
-              发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+              发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
@@ -1160,11 +1160,11 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
               - `data: string`
 
-                Base64 编码的音频数据。
+                经过 Base64 编码的音频数据。
 
               - `format: "mp3" or "wav"`
 
-                音频数据的格式。目前支持的格式为 `mp3` 和
+                音频数据的格式。当前支持的格式有 `mp3` 和
                 `wav`.
 
                 - `"mp3"`
@@ -1179,24 +1179,24 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
           - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-            输入列表，每个输入可以是输入文本、输出文本、输入
-            图像或输入音频对象。
+            输入列表，其中每个输入可以是输入文本、输出文本、输入
+            图片或输入音频对象。
 
             - `TextInput = string`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `OutputText object { text, type }`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
               - `text: string`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
               - `type: "output_text"`
 
@@ -1206,21 +1206,21 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
             - `InputImage object { image_url, type, detail }`
 
-              用于 EvalItem 内容数组中的图像输入块。
+              在 EvalItem 内容数组中使用的图片输入块。
 
               - `image_url: string`
 
-                图像输入的 URL。
+                图片输入的 URL。
 
               - `type: "input_image"`
 
-                图像输入的类型。始终为 `input_image`.
+                图片输入的类型。始终为 `input_image`.
 
                 - `"input_image"`
 
               - `detail: optional string`
 
-                发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
             - `ResponseInputAudio object { input_audio, type }`
 
@@ -1228,7 +1228,7 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
         - `role: "user" or "assistant" or "system" or "developer"`
 
-          消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+          消息输入的角色。可选值为 `user`, `assistant`, `system`、或
           `developer`.
 
           - `"user"`
@@ -1247,7 +1247,7 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
       - `labels: array of string`
 
-        要分配给评估中每个项目的标签。
+        要分配给评估中每个条目标签。
 
       - `model: string`
 
@@ -1259,7 +1259,7 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
       - `passing_labels: array of string`
 
-        表示通过结果的标签。必须是标签的子集。
+        表示通过结果的标签。必须是 labels 的子集。
 
       - `type: "label_model"`
 
@@ -1269,11 +1269,11 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
     - `StringCheckGrader object { input, name, operation, 2 more }`
 
-      一个 StringCheckGrader 对象，使用指定操作对输入和参考文本执行字符串比较。
+      一个 StringCheckGrader 对象，使用指定操作在输入和参考之间进行字符串比较。
 
       - `input: string`
 
-        输入文本。可能包含模板字符串。
+        输入文本。可以包含模板字符串。
 
       - `name: string`
 
@@ -1281,7 +1281,7 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
       - `operation: "eq" or "ne" or "like" or "ilike"`
 
-        要执行的字符串检查操作。可选值： `eq`, `ne`, `like`，或 `ilike`.
+        要执行的字符串检查操作。可选值为 `eq`, `ne`, `like`、或 `ilike`.
 
         - `"eq"`
 
@@ -1293,7 +1293,7 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
       - `reference: string`
 
-        参考文本。可能包含模板字符串。
+        参考文本。可以包含模板字符串。
 
       - `type: "string_check"`
 
@@ -1303,7 +1303,7 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
     - `TextSimilarityGrader = TextSimilarityGrader`
 
-      一个 TextSimilarityGrader 对象，根据相似度指标对文本进行评分。
+      一个 TextSimilarityGrader 对象，基于相似度指标对文本进行评分。
 
       - `pass_threshold: number`
 
@@ -1311,7 +1311,7 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
     - `PythonGrader = PythonGrader`
 
-      一个 PythonGrader 对象，对输入运行 Python 脚本。
+      一个 PythonGrader 对象，对输入运行 python 脚本。
 
       - `pass_threshold: optional number`
 
@@ -1319,7 +1319,7 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
     - `ScoreModelGrader = ScoreModelGrader`
 
-      一个 ScoreModelGrader 对象，使用模型为输入分配分数。
+      一个 ScoreModelGrader 对象，使用模型为输入打分。
 
       - `pass_threshold: optional number`
 
@@ -1327,15 +1327,15 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
 
 - `first_id: string`
 
-  数据数组中第一个评估的标识符。
+  data 数组中第一条 eval 的标识符。
 
 - `has_more: boolean`
 
-  指示是否还有更多评估可用。
+  指示是否还有更多 eval 可用。
 
 - `last_id: string`
 
-  数据数组中最后一个评估的标识符。
+  data 数组中最后一条 eval 的标识符。
 
 - `object: "list"`
 
@@ -1487,103 +1487,103 @@ curl https://api.openai.com/v1/evals?limit=1 \
 
 **get** `/evals/{eval_id}`
 
-按 ID 获取评估。
+通过 ID 获取评估。
 
 ### 路径参数
 
 - `eval_id: string`
 
-### 返回
+### Returns
 
 - `id: string`
 
-  评估的唯一标识符。
+  评估任务的唯一标识符。
 
 - `created_at: number`
 
-  评估创建时的 Unix 时间戳（秒）。
+  评估任务创建时的 Unix 时间戳（以秒为单位）。
 
 - `data_source_config: EvalCustomDataSourceConfig or object { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
-  评估运行中使用的数据源配置。
+  用于评估运行的数据源配置。
 
   - `EvalCustomDataSourceConfig object { schema, type }`
 
-    一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选地 `sample` 命名空间。
-    响应模式定义了数据的形状，数据将被：
+    一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选的 `sample` 命名空间。
+    响应架构定义了数据的以下形状：
 
-    - 用于定义你的测试标准，并且
-    - 创建运行所需的数据
+    - 用于定义你的测试标准，以及
+    - 创建运行 (run) 时所需的数据
 
     - `schema: map[unknown]`
 
-      运行数据源项目的 JSON 模式。
-      了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+      运行数据源条目的 json 架构。
+      了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
     - `type: "custom"`
 
-      数据源的类型。始终是 `custom`.
+      数据源的类型。始终为 `custom`.
 
       - `"custom"`
 
   - `LogsDataSourceConfig object { schema, type, metadata }`
 
-    一个 LogsDataSourceConfig，用于指定你的日志查询的元数据属性。
-    这通常是这样的一些元数据，例如 `usecase=chatbot` 或 `prompt-version=v2`，等。
-    此数据源配置返回的模式用于定义评估中可用的变量。
-    `item` 和 `sample` 在使用此数据源配置时，两者均被定义。
+    一个 LogsDataSourceConfig，用于指定日志查询的元数据属性。
+    这通常是类似 `usecase=chatbot` 或 `prompt-version=v2`，等元数据。
+    此数据源配置返回的架构用于定义评估中可用的变量。
+    `item` 和 `sample` 在使用此数据源配置时均会被定义。
 
     - `schema: map[unknown]`
 
-      运行数据源项目的 JSON 模式。
-      了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+      运行数据源条目的 json 架构。
+      了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
     - `type: "logs"`
 
-      数据源的类型。始终是 `logs`.
+      数据源的类型。始终为 `logs`.
 
       - `"logs"`
 
     - `metadata: optional Metadata or null`
 
-      一组 16 个键值对，可附加到对象上。这可以
-      用于以结构化格式存储有关对象的额外信息，
+      可附加到对象的 16 组键值对。这可以
+      用于以结构化格式存储有关对象的附加信息，
       并通过 API 或仪表板查询对象。
 
-      键是字符串，最大长度为 64 个字符。值是字符串，
+      键为字符串，最大长度为 64 个字符。值为字符串，
       最大长度为 512 个字符。
 
   - `EvalStoredCompletionsDataSourceConfig object { schema, type, metadata }`
 
-    已弃用，改用 LogsDataSourceConfig。
+    已弃用，建议改用 LogsDataSourceConfig。
 
     - `schema: map[unknown]`
 
-      运行数据源项目的 JSON 模式。
-      了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+      运行数据源条目的 json 架构。
+      了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
     - `type: "stored_completions"`
 
-      数据源的类型。始终是 `stored_completions`.
+      数据源的类型。始终为 `stored_completions`.
 
       - `"stored_completions"`
 
     - `metadata: optional Metadata or null`
 
-      一组 16 个键值对，可附加到对象上。这可以
-      用于以结构化格式存储有关对象的额外信息，
+      可附加到对象的 16 组键值对。这可以
+      用于以结构化格式存储有关对象的附加信息，
       并通过 API 或仪表板查询对象。
 
-      键是字符串，最大长度为 64 个字符。值是字符串，
+      键为字符串，最大长度为 64 个字符。值为字符串，
       最大长度为 512 个字符。
 
 - `metadata: Metadata or null`
 
-  一组 16 个键值对，可附加到对象上。这可以
-  用于以结构化格式存储有关对象的额外信息，
+  可附加到对象的 16 组键值对。这可以
+  用于以结构化格式存储有关对象的附加信息，
   并通过 API 或仪表板查询对象。
 
-  键是字符串，最大长度为 64 个字符。值是字符串，
+  键为字符串，最大长度为 64 个字符。值为字符串，
   最大长度为 512 个字符。
 
 - `name: string`
@@ -1598,30 +1598,30 @@ curl https://api.openai.com/v1/evals?limit=1 \
 
 - `testing_criteria: array of LabelModelGrader or StringCheckGrader or TextSimilarityGrader or 2 more`
 
-  测试标准列表。
+  测试条件列表。
 
   - `LabelModelGrader object { input, labels, model, 3 more }`
 
-    一个 LabelModelGrader 对象，使用模型为评估中的每个项目分配标签
+    一个 LabelModelGrader 对象，使用模型为评估中的每一项分配标签
     。
 
     - `input: array of object { content, role, type }`
 
       - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-        模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+        模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
         - `TextInput = string`
 
-          模型的文本输入。
+          发送给模型的文本输入。
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          模型的文本输入。
+          发送给模型的文本输入。
 
           - `text: string`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
           - `type: "input_text"`
 
@@ -1631,7 +1631,7 @@ curl https://api.openai.com/v1/evals?limit=1 \
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+            标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -1641,11 +1641,11 @@ curl https://api.openai.com/v1/evals?limit=1 \
 
         - `OutputText object { text, type }`
 
-          模型的文本输出。
+          来自模型的文本输出。
 
           - `text: string`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
           - `type: "output_text"`
 
@@ -1655,21 +1655,21 @@ curl https://api.openai.com/v1/evals?limit=1 \
 
         - `InputImage object { image_url, type, detail }`
 
-          用于 EvalItem 内容数组中的图像输入块。
+          在 EvalItem 内容数组中使用的图片输入块。
 
           - `image_url: string`
 
-            图像输入的 URL。
+            图片输入的 URL。
 
           - `type: "input_image"`
 
-            图像输入的类型。始终为 `input_image`.
+            图片输入的类型。始终为 `input_image`.
 
             - `"input_image"`
 
           - `detail: optional string`
 
-            发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+            发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
         - `ResponseInputAudio object { input_audio, type }`
 
@@ -1679,11 +1679,11 @@ curl https://api.openai.com/v1/evals?limit=1 \
 
             - `data: string`
 
-              Base64 编码的音频数据。
+              经过 Base64 编码的音频数据。
 
             - `format: "mp3" or "wav"`
 
-              音频数据的格式。目前支持的格式为 `mp3` 和
+              音频数据的格式。当前支持的格式有 `mp3` 和
               `wav`.
 
               - `"mp3"`
@@ -1698,24 +1698,24 @@ curl https://api.openai.com/v1/evals?limit=1 \
 
         - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-          输入列表，每个输入可以是输入文本、输出文本、输入
-          图像或输入音频对象。
+          输入列表，其中每个输入可以是输入文本、输出文本、输入
+          图片或输入音频对象。
 
           - `TextInput = string`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
           - `OutputText object { text, type }`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
             - `text: string`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
             - `type: "output_text"`
 
@@ -1725,21 +1725,21 @@ curl https://api.openai.com/v1/evals?limit=1 \
 
           - `InputImage object { image_url, type, detail }`
 
-            用于 EvalItem 内容数组中的图像输入块。
+            在 EvalItem 内容数组中使用的图片输入块。
 
             - `image_url: string`
 
-              图像输入的 URL。
+              图片输入的 URL。
 
             - `type: "input_image"`
 
-              图像输入的类型。始终为 `input_image`.
+              图片输入的类型。始终为 `input_image`.
 
               - `"input_image"`
 
             - `detail: optional string`
 
-              发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+              发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
@@ -1747,7 +1747,7 @@ curl https://api.openai.com/v1/evals?limit=1 \
 
       - `role: "user" or "assistant" or "system" or "developer"`
 
-        消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+        消息输入的角色。可选值为 `user`, `assistant`, `system`、或
         `developer`.
 
         - `"user"`
@@ -1766,7 +1766,7 @@ curl https://api.openai.com/v1/evals?limit=1 \
 
     - `labels: array of string`
 
-      要分配给评估中每个项目的标签。
+      要分配给评估中每个条目标签。
 
     - `model: string`
 
@@ -1778,7 +1778,7 @@ curl https://api.openai.com/v1/evals?limit=1 \
 
     - `passing_labels: array of string`
 
-      表示通过结果的标签。必须是标签的子集。
+      表示通过结果的标签。必须是 labels 的子集。
 
     - `type: "label_model"`
 
@@ -1788,11 +1788,11 @@ curl https://api.openai.com/v1/evals?limit=1 \
 
   - `StringCheckGrader object { input, name, operation, 2 more }`
 
-    一个 StringCheckGrader 对象，使用指定操作对输入和参考文本执行字符串比较。
+    一个 StringCheckGrader 对象，使用指定操作在输入和参考之间进行字符串比较。
 
     - `input: string`
 
-      输入文本。可能包含模板字符串。
+      输入文本。可以包含模板字符串。
 
     - `name: string`
 
@@ -1800,7 +1800,7 @@ curl https://api.openai.com/v1/evals?limit=1 \
 
     - `operation: "eq" or "ne" or "like" or "ilike"`
 
-      要执行的字符串检查操作。可选值： `eq`, `ne`, `like`，或 `ilike`.
+      要执行的字符串检查操作。可选值为 `eq`, `ne`, `like`、或 `ilike`.
 
       - `"eq"`
 
@@ -1812,7 +1812,7 @@ curl https://api.openai.com/v1/evals?limit=1 \
 
     - `reference: string`
 
-      参考文本。可能包含模板字符串。
+      参考文本。可以包含模板字符串。
 
     - `type: "string_check"`
 
@@ -1822,7 +1822,7 @@ curl https://api.openai.com/v1/evals?limit=1 \
 
   - `TextSimilarityGrader = TextSimilarityGrader`
 
-    一个 TextSimilarityGrader 对象，根据相似度指标对文本进行评分。
+    一个 TextSimilarityGrader 对象，基于相似度指标对文本进行评分。
 
     - `pass_threshold: number`
 
@@ -1830,7 +1830,7 @@ curl https://api.openai.com/v1/evals?limit=1 \
 
   - `PythonGrader = PythonGrader`
 
-    一个 PythonGrader 对象，对输入运行 Python 脚本。
+    一个 PythonGrader 对象，对输入运行 python 脚本。
 
     - `pass_threshold: optional number`
 
@@ -1838,7 +1838,7 @@ curl https://api.openai.com/v1/evals?limit=1 \
 
   - `ScoreModelGrader = ScoreModelGrader`
 
-    一个 ScoreModelGrader 对象，使用模型为输入分配分数。
+    一个 ScoreModelGrader 对象，使用模型为输入打分。
 
     - `pass_threshold: optional number`
 
@@ -1947,7 +1947,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 }
 ```
 
-## 更新评估
+## 更新评测
 
 **post** `/evals/{eval_id}`
 
@@ -1957,112 +1957,112 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
 - `eval_id: string`
 
-### 请求体参数
+### Body Parameters
 
 - `metadata: optional Metadata or null`
 
-  一组 16 个键值对，可附加到对象上。这可以
-  用于以结构化格式存储有关对象的额外信息，
+  可附加到对象的 16 组键值对。这可以
+  用于以结构化格式存储有关对象的附加信息，
   并通过 API 或仪表板查询对象。
 
-  键是字符串，最大长度为 64 个字符。值是字符串，
+  键为字符串，最大长度为 64 个字符。值为字符串，
   最大长度为 512 个字符。
 
 - `name: optional string`
 
   重命名评估。
 
-### 返回
+### Returns
 
 - `id: string`
 
-  评估的唯一标识符。
+  评估任务的唯一标识符。
 
 - `created_at: number`
 
-  评估创建时的 Unix 时间戳（秒）。
+  评估任务创建时的 Unix 时间戳（以秒为单位）。
 
 - `data_source_config: EvalCustomDataSourceConfig or object { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
-  评估运行中使用的数据源配置。
+  用于评估运行的数据源配置。
 
   - `EvalCustomDataSourceConfig object { schema, type }`
 
-    一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选地 `sample` 命名空间。
-    响应模式定义了数据的形状，数据将被：
+    一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选的 `sample` 命名空间。
+    响应架构定义了数据的以下形状：
 
-    - 用于定义你的测试标准，并且
-    - 创建运行所需的数据
+    - 用于定义你的测试标准，以及
+    - 创建运行 (run) 时所需的数据
 
     - `schema: map[unknown]`
 
-      运行数据源项目的 JSON 模式。
-      了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+      运行数据源条目的 json 架构。
+      了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
     - `type: "custom"`
 
-      数据源的类型。始终是 `custom`.
+      数据源的类型。始终为 `custom`.
 
       - `"custom"`
 
   - `LogsDataSourceConfig object { schema, type, metadata }`
 
-    一个 LogsDataSourceConfig，用于指定你的日志查询的元数据属性。
-    这通常是这样的一些元数据，例如 `usecase=chatbot` 或 `prompt-version=v2`，等。
-    此数据源配置返回的模式用于定义评估中可用的变量。
-    `item` 和 `sample` 在使用此数据源配置时，两者均被定义。
+    一个 LogsDataSourceConfig，用于指定日志查询的元数据属性。
+    这通常是类似 `usecase=chatbot` 或 `prompt-version=v2`，等元数据。
+    此数据源配置返回的架构用于定义评估中可用的变量。
+    `item` 和 `sample` 在使用此数据源配置时均会被定义。
 
     - `schema: map[unknown]`
 
-      运行数据源项目的 JSON 模式。
-      了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+      运行数据源条目的 json 架构。
+      了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
     - `type: "logs"`
 
-      数据源的类型。始终是 `logs`.
+      数据源的类型。始终为 `logs`.
 
       - `"logs"`
 
     - `metadata: optional Metadata or null`
 
-      一组 16 个键值对，可附加到对象上。这可以
-      用于以结构化格式存储有关对象的额外信息，
+      可附加到对象的 16 组键值对。这可以
+      用于以结构化格式存储有关对象的附加信息，
       并通过 API 或仪表板查询对象。
 
-      键是字符串，最大长度为 64 个字符。值是字符串，
+      键为字符串，最大长度为 64 个字符。值为字符串，
       最大长度为 512 个字符。
 
   - `EvalStoredCompletionsDataSourceConfig object { schema, type, metadata }`
 
-    已弃用，改用 LogsDataSourceConfig。
+    已弃用，建议改用 LogsDataSourceConfig。
 
     - `schema: map[unknown]`
 
-      运行数据源项目的 JSON 模式。
-      了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+      运行数据源条目的 json 架构。
+      了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
     - `type: "stored_completions"`
 
-      数据源的类型。始终是 `stored_completions`.
+      数据源的类型。始终为 `stored_completions`.
 
       - `"stored_completions"`
 
     - `metadata: optional Metadata or null`
 
-      一组 16 个键值对，可附加到对象上。这可以
-      用于以结构化格式存储有关对象的额外信息，
+      可附加到对象的 16 组键值对。这可以
+      用于以结构化格式存储有关对象的附加信息，
       并通过 API 或仪表板查询对象。
 
-      键是字符串，最大长度为 64 个字符。值是字符串，
+      键为字符串，最大长度为 64 个字符。值为字符串，
       最大长度为 512 个字符。
 
 - `metadata: Metadata or null`
 
-  一组 16 个键值对，可附加到对象上。这可以
-  用于以结构化格式存储有关对象的额外信息，
+  可附加到对象的 16 组键值对。这可以
+  用于以结构化格式存储有关对象的附加信息，
   并通过 API 或仪表板查询对象。
 
-  键是字符串，最大长度为 64 个字符。值是字符串，
+  键为字符串，最大长度为 64 个字符。值为字符串，
   最大长度为 512 个字符。
 
 - `name: string`
@@ -2077,30 +2077,30 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
 - `testing_criteria: array of LabelModelGrader or StringCheckGrader or TextSimilarityGrader or 2 more`
 
-  测试标准列表。
+  测试条件列表。
 
   - `LabelModelGrader object { input, labels, model, 3 more }`
 
-    一个 LabelModelGrader 对象，使用模型为评估中的每个项目分配标签
+    一个 LabelModelGrader 对象，使用模型为评估中的每一项分配标签
     。
 
     - `input: array of object { content, role, type }`
 
       - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-        模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+        模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
         - `TextInput = string`
 
-          模型的文本输入。
+          发送给模型的文本输入。
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          模型的文本输入。
+          发送给模型的文本输入。
 
           - `text: string`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
           - `type: "input_text"`
 
@@ -2110,7 +2110,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+            标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -2120,11 +2120,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `OutputText object { text, type }`
 
-          模型的文本输出。
+          来自模型的文本输出。
 
           - `text: string`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
           - `type: "output_text"`
 
@@ -2134,21 +2134,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `InputImage object { image_url, type, detail }`
 
-          用于 EvalItem 内容数组中的图像输入块。
+          在 EvalItem 内容数组中使用的图片输入块。
 
           - `image_url: string`
 
-            图像输入的 URL。
+            图片输入的 URL。
 
           - `type: "input_image"`
 
-            图像输入的类型。始终为 `input_image`.
+            图片输入的类型。始终为 `input_image`.
 
             - `"input_image"`
 
           - `detail: optional string`
 
-            发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+            发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
         - `ResponseInputAudio object { input_audio, type }`
 
@@ -2158,11 +2158,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `data: string`
 
-              Base64 编码的音频数据。
+              经过 Base64 编码的音频数据。
 
             - `format: "mp3" or "wav"`
 
-              音频数据的格式。目前支持的格式为 `mp3` 和
+              音频数据的格式。当前支持的格式有 `mp3` 和
               `wav`.
 
               - `"mp3"`
@@ -2177,24 +2177,24 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-          输入列表，每个输入可以是输入文本、输出文本、输入
-          图像或输入音频对象。
+          输入列表，其中每个输入可以是输入文本、输出文本、输入
+          图片或输入音频对象。
 
           - `TextInput = string`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
           - `OutputText object { text, type }`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
             - `text: string`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
             - `type: "output_text"`
 
@@ -2204,21 +2204,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `InputImage object { image_url, type, detail }`
 
-            用于 EvalItem 内容数组中的图像输入块。
+            在 EvalItem 内容数组中使用的图片输入块。
 
             - `image_url: string`
 
-              图像输入的 URL。
+              图片输入的 URL。
 
             - `type: "input_image"`
 
-              图像输入的类型。始终为 `input_image`.
+              图片输入的类型。始终为 `input_image`.
 
               - `"input_image"`
 
             - `detail: optional string`
 
-              发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+              发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
@@ -2226,7 +2226,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `role: "user" or "assistant" or "system" or "developer"`
 
-        消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+        消息输入的角色。可选值为 `user`, `assistant`, `system`、或
         `developer`.
 
         - `"user"`
@@ -2245,7 +2245,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `labels: array of string`
 
-      要分配给评估中每个项目的标签。
+      要分配给评估中每个条目标签。
 
     - `model: string`
 
@@ -2257,7 +2257,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `passing_labels: array of string`
 
-      表示通过结果的标签。必须是标签的子集。
+      表示通过结果的标签。必须是 labels 的子集。
 
     - `type: "label_model"`
 
@@ -2267,11 +2267,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
   - `StringCheckGrader object { input, name, operation, 2 more }`
 
-    一个 StringCheckGrader 对象，使用指定操作对输入和参考文本执行字符串比较。
+    一个 StringCheckGrader 对象，使用指定操作在输入和参考之间进行字符串比较。
 
     - `input: string`
 
-      输入文本。可能包含模板字符串。
+      输入文本。可以包含模板字符串。
 
     - `name: string`
 
@@ -2279,7 +2279,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `operation: "eq" or "ne" or "like" or "ilike"`
 
-      要执行的字符串检查操作。可选值： `eq`, `ne`, `like`，或 `ilike`.
+      要执行的字符串检查操作。可选值为 `eq`, `ne`, `like`、或 `ilike`.
 
       - `"eq"`
 
@@ -2291,7 +2291,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `reference: string`
 
-      参考文本。可能包含模板字符串。
+      参考文本。可以包含模板字符串。
 
     - `type: "string_check"`
 
@@ -2301,7 +2301,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
   - `TextSimilarityGrader = TextSimilarityGrader`
 
-    一个 TextSimilarityGrader 对象，根据相似度指标对文本进行评分。
+    一个 TextSimilarityGrader 对象，基于相似度指标对文本进行评分。
 
     - `pass_threshold: number`
 
@@ -2309,7 +2309,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
   - `PythonGrader = PythonGrader`
 
-    一个 PythonGrader 对象，对输入运行 Python 脚本。
+    一个 PythonGrader 对象，对输入运行 python 脚本。
 
     - `pass_threshold: optional number`
 
@@ -2317,7 +2317,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
   - `ScoreModelGrader = ScoreModelGrader`
 
-    一个 ScoreModelGrader 对象，使用模型为输入分配分数。
+    一个 ScoreModelGrader 对象，使用模型为输入打分。
 
     - `pass_threshold: optional number`
 
@@ -2429,109 +2429,109 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 }
 ```
 
-## 域类型
+## 域名类型
 
-### Eval 创建响应
+### 评估创建响应
 
 - `EvalCreateResponse object { id, created_at, data_source_config, 4 more }`
 
-  一个带有数据源配置和测试标准的 Eval 对象。
-  Eval 表示要为你的 LLM 集成完成的任务。
+  一个包含数据源配置和测试标准的 Eval 对象。
+  Eval 代表需要为你的 LLM 集成完成的一项任务。
   例如：
 
-  - 提高我的聊天机器人的质量
-  - 看看我的聊天机器人处理客户支持的效果如何
-  - 检查 o4-mini 是否比 gpt-4o 更适合我的使用场景
+  - 提升我的聊天机器人质量
+  - 查看我的聊天机器人在客户支持方面的表现
+  - 检查 o4-mini 在我的用例上是否优于 gpt-5.6-sol
 
   - `id: string`
 
-    评估的唯一标识符。
+    评估任务的唯一标识符。
 
   - `created_at: number`
 
-    评估创建时的 Unix 时间戳（秒）。
+    评估任务创建时的 Unix 时间戳（以秒为单位）。
 
   - `data_source_config: EvalCustomDataSourceConfig or object { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
-    评估运行中使用的数据源配置。
+    用于评估运行的数据源配置。
 
     - `EvalCustomDataSourceConfig object { schema, type }`
 
-      一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选地 `sample` 命名空间。
-      响应模式定义了数据的形状，数据将被：
+      一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选的 `sample` 命名空间。
+      响应架构定义了数据的以下形状：
 
-      - 用于定义你的测试标准，并且
-      - 创建运行所需的数据
+      - 用于定义你的测试标准，以及
+      - 创建运行 (run) 时所需的数据
 
       - `schema: map[unknown]`
 
-        运行数据源项目的 JSON 模式。
-        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+        运行数据源条目的 json 架构。
+        了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
       - `type: "custom"`
 
-        数据源的类型。始终是 `custom`.
+        数据源的类型。始终为 `custom`.
 
         - `"custom"`
 
     - `LogsDataSourceConfig object { schema, type, metadata }`
 
-      一个 LogsDataSourceConfig，用于指定你的日志查询的元数据属性。
-      这通常是这样的一些元数据，例如 `usecase=chatbot` 或 `prompt-version=v2`，等。
-      此数据源配置返回的模式用于定义评估中可用的变量。
-      `item` 和 `sample` 在使用此数据源配置时，两者均被定义。
+      一个 LogsDataSourceConfig，用于指定日志查询的元数据属性。
+      这通常是类似 `usecase=chatbot` 或 `prompt-version=v2`，等元数据。
+      此数据源配置返回的架构用于定义评估中可用的变量。
+      `item` 和 `sample` 在使用此数据源配置时均会被定义。
 
       - `schema: map[unknown]`
 
-        运行数据源项目的 JSON 模式。
-        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+        运行数据源条目的 json 架构。
+        了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
       - `type: "logs"`
 
-        数据源的类型。始终是 `logs`.
+        数据源的类型。始终为 `logs`.
 
         - `"logs"`
 
       - `metadata: optional Metadata or null`
 
-        一组 16 个键值对，可附加到对象上。这可以
-        用于以结构化格式存储有关对象的额外信息，
+        可附加到对象的 16 组键值对。这可以
+        用于以结构化格式存储有关对象的附加信息，
         并通过 API 或仪表板查询对象。
 
-        键是字符串，最大长度为 64 个字符。值是字符串，
+        键为字符串，最大长度为 64 个字符。值为字符串，
         最大长度为 512 个字符。
 
     - `EvalStoredCompletionsDataSourceConfig object { schema, type, metadata }`
 
-      已弃用，改用 LogsDataSourceConfig。
+      已弃用，建议改用 LogsDataSourceConfig。
 
       - `schema: map[unknown]`
 
-        运行数据源项目的 JSON 模式。
-        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+        运行数据源条目的 json 架构。
+        了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
       - `type: "stored_completions"`
 
-        数据源的类型。始终是 `stored_completions`.
+        数据源的类型。始终为 `stored_completions`.
 
         - `"stored_completions"`
 
       - `metadata: optional Metadata or null`
 
-        一组 16 个键值对，可附加到对象上。这可以
-        用于以结构化格式存储有关对象的额外信息，
+        可附加到对象的 16 组键值对。这可以
+        用于以结构化格式存储有关对象的附加信息，
         并通过 API 或仪表板查询对象。
 
-        键是字符串，最大长度为 64 个字符。值是字符串，
+        键为字符串，最大长度为 64 个字符。值为字符串，
         最大长度为 512 个字符。
 
   - `metadata: Metadata or null`
 
-    一组 16 个键值对，可附加到对象上。这可以
-    用于以结构化格式存储有关对象的额外信息，
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
     并通过 API 或仪表板查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串，
+    键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
   - `name: string`
@@ -2546,30 +2546,30 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
   - `testing_criteria: array of LabelModelGrader or StringCheckGrader or TextSimilarityGrader or 2 more`
 
-    测试标准列表。
+    测试条件列表。
 
     - `LabelModelGrader object { input, labels, model, 3 more }`
 
-      一个 LabelModelGrader 对象，使用模型为评估中的每个项目分配标签
+      一个 LabelModelGrader 对象，使用模型为评估中的每一项分配标签
       。
 
       - `input: array of object { content, role, type }`
 
         - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-          模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+          模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
           - `TextInput = string`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
             - `text: string`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `type: "input_text"`
 
@@ -2579,7 +2579,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `prompt_cache_breakpoint: optional object { mode }`
 
-              标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+              标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
               - `mode: "explicit"`
 
@@ -2589,11 +2589,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `OutputText object { text, type }`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
             - `text: string`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
             - `type: "output_text"`
 
@@ -2603,21 +2603,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `InputImage object { image_url, type, detail }`
 
-            用于 EvalItem 内容数组中的图像输入块。
+            在 EvalItem 内容数组中使用的图片输入块。
 
             - `image_url: string`
 
-              图像输入的 URL。
+              图片输入的 URL。
 
             - `type: "input_image"`
 
-              图像输入的类型。始终为 `input_image`.
+              图片输入的类型。始终为 `input_image`.
 
               - `"input_image"`
 
             - `detail: optional string`
 
-              发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+              发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
@@ -2627,11 +2627,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               - `data: string`
 
-                Base64 编码的音频数据。
+                经过 Base64 编码的音频数据。
 
               - `format: "mp3" or "wav"`
 
-                音频数据的格式。目前支持的格式为 `mp3` 和
+                音频数据的格式。当前支持的格式有 `mp3` 和
                 `wav`.
 
                 - `"mp3"`
@@ -2646,24 +2646,24 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-            输入列表，每个输入可以是输入文本、输出文本、输入
-            图像或输入音频对象。
+            输入列表，其中每个输入可以是输入文本、输出文本、输入
+            图片或输入音频对象。
 
             - `TextInput = string`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `OutputText object { text, type }`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
               - `text: string`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
               - `type: "output_text"`
 
@@ -2673,21 +2673,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `InputImage object { image_url, type, detail }`
 
-              用于 EvalItem 内容数组中的图像输入块。
+              在 EvalItem 内容数组中使用的图片输入块。
 
               - `image_url: string`
 
-                图像输入的 URL。
+                图片输入的 URL。
 
               - `type: "input_image"`
 
-                图像输入的类型。始终为 `input_image`.
+                图片输入的类型。始终为 `input_image`.
 
                 - `"input_image"`
 
               - `detail: optional string`
 
-                发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
             - `ResponseInputAudio object { input_audio, type }`
 
@@ -2695,7 +2695,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `role: "user" or "assistant" or "system" or "developer"`
 
-          消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+          消息输入的角色。可选值为 `user`, `assistant`, `system`、或
           `developer`.
 
           - `"user"`
@@ -2714,7 +2714,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `labels: array of string`
 
-        要分配给评估中每个项目的标签。
+        要分配给评估中每个条目标签。
 
       - `model: string`
 
@@ -2726,7 +2726,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `passing_labels: array of string`
 
-        表示通过结果的标签。必须是标签的子集。
+        表示通过结果的标签。必须是 labels 的子集。
 
       - `type: "label_model"`
 
@@ -2736,11 +2736,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `StringCheckGrader object { input, name, operation, 2 more }`
 
-      一个 StringCheckGrader 对象，使用指定操作对输入和参考文本执行字符串比较。
+      一个 StringCheckGrader 对象，使用指定操作在输入和参考之间进行字符串比较。
 
       - `input: string`
 
-        输入文本。可能包含模板字符串。
+        输入文本。可以包含模板字符串。
 
       - `name: string`
 
@@ -2748,7 +2748,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `operation: "eq" or "ne" or "like" or "ilike"`
 
-        要执行的字符串检查操作。可选值： `eq`, `ne`, `like`，或 `ilike`.
+        要执行的字符串检查操作。可选值为 `eq`, `ne`, `like`、或 `ilike`.
 
         - `"eq"`
 
@@ -2760,7 +2760,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `reference: string`
 
-        参考文本。可能包含模板字符串。
+        参考文本。可以包含模板字符串。
 
       - `type: "string_check"`
 
@@ -2770,7 +2770,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `TextSimilarityGrader = TextSimilarityGrader`
 
-      一个 TextSimilarityGrader 对象，根据相似度指标对文本进行评分。
+      一个 TextSimilarityGrader 对象，基于相似度指标对文本进行评分。
 
       - `pass_threshold: number`
 
@@ -2778,7 +2778,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `PythonGrader = PythonGrader`
 
-      一个 PythonGrader 对象，对输入运行 Python 脚本。
+      一个 PythonGrader 对象，对输入运行 python 脚本。
 
       - `pass_threshold: optional number`
 
@@ -2786,34 +2786,34 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `ScoreModelGrader = ScoreModelGrader`
 
-      一个 ScoreModelGrader 对象，使用模型为输入分配分数。
+      一个 ScoreModelGrader 对象，使用模型为输入打分。
 
       - `pass_threshold: optional number`
 
         分数的阈值。
 
-### 评估自定义数据源配置
+### Eval 自定义数据源配置
 
 - `EvalCustomDataSourceConfig object { schema, type }`
 
-  一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选地 `sample` 命名空间。
-  响应模式定义了数据的形状，数据将被：
+  一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选的 `sample` 命名空间。
+  响应架构定义了数据的以下形状：
 
-  - 用于定义你的测试标准，并且
-  - 创建运行所需的数据
+  - 用于定义你的测试标准，以及
+  - 创建运行 (run) 时所需的数据
 
   - `schema: map[unknown]`
 
-    运行数据源项目的 JSON 模式。
-    了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+    运行数据源条目的 json 架构。
+    了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
   - `type: "custom"`
 
-    数据源的类型。始终是 `custom`.
+    数据源的类型。始终为 `custom`.
 
     - `"custom"`
 
-### 评估删除响应
+### Eval 删除响应
 
 - `EvalDeleteResponse object { deleted, eval_id, object }`
 
@@ -2823,107 +2823,107 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
   - `object: string`
 
-### 评估列表响应
+### Eval 列表响应
 
 - `EvalListResponse object { id, created_at, data_source_config, 4 more }`
 
-  一个带有数据源配置和测试标准的 Eval 对象。
-  Eval 表示要为你的 LLM 集成完成的任务。
+  一个包含数据源配置和测试标准的 Eval 对象。
+  Eval 代表需要为你的 LLM 集成完成的一项任务。
   例如：
 
-  - 提高我的聊天机器人的质量
-  - 看看我的聊天机器人处理客户支持的效果如何
-  - 检查 o4-mini 是否比 gpt-4o 更适合我的使用场景
+  - 提升我的聊天机器人质量
+  - 查看我的聊天机器人在客户支持方面的表现
+  - 检查 o4-mini 在我的用例上是否优于 gpt-5.6-sol
 
   - `id: string`
 
-    评估的唯一标识符。
+    评估任务的唯一标识符。
 
   - `created_at: number`
 
-    评估创建时的 Unix 时间戳（秒）。
+    评估任务创建时的 Unix 时间戳（以秒为单位）。
 
   - `data_source_config: EvalCustomDataSourceConfig or object { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
-    评估运行中使用的数据源配置。
+    用于评估运行的数据源配置。
 
     - `EvalCustomDataSourceConfig object { schema, type }`
 
-      一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选地 `sample` 命名空间。
-      响应模式定义了数据的形状，数据将被：
+      一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选的 `sample` 命名空间。
+      响应架构定义了数据的以下形状：
 
-      - 用于定义你的测试标准，并且
-      - 创建运行所需的数据
+      - 用于定义你的测试标准，以及
+      - 创建运行 (run) 时所需的数据
 
       - `schema: map[unknown]`
 
-        运行数据源项目的 JSON 模式。
-        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+        运行数据源条目的 json 架构。
+        了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
       - `type: "custom"`
 
-        数据源的类型。始终是 `custom`.
+        数据源的类型。始终为 `custom`.
 
         - `"custom"`
 
     - `LogsDataSourceConfig object { schema, type, metadata }`
 
-      一个 LogsDataSourceConfig，用于指定你的日志查询的元数据属性。
-      这通常是这样的一些元数据，例如 `usecase=chatbot` 或 `prompt-version=v2`，等。
-      此数据源配置返回的模式用于定义评估中可用的变量。
-      `item` 和 `sample` 在使用此数据源配置时，两者均被定义。
+      一个 LogsDataSourceConfig，用于指定日志查询的元数据属性。
+      这通常是类似 `usecase=chatbot` 或 `prompt-version=v2`，等元数据。
+      此数据源配置返回的架构用于定义评估中可用的变量。
+      `item` 和 `sample` 在使用此数据源配置时均会被定义。
 
       - `schema: map[unknown]`
 
-        运行数据源项目的 JSON 模式。
-        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+        运行数据源条目的 json 架构。
+        了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
       - `type: "logs"`
 
-        数据源的类型。始终是 `logs`.
+        数据源的类型。始终为 `logs`.
 
         - `"logs"`
 
       - `metadata: optional Metadata or null`
 
-        一组 16 个键值对，可附加到对象上。这可以
-        用于以结构化格式存储有关对象的额外信息，
+        可附加到对象的 16 组键值对。这可以
+        用于以结构化格式存储有关对象的附加信息，
         并通过 API 或仪表板查询对象。
 
-        键是字符串，最大长度为 64 个字符。值是字符串，
+        键为字符串，最大长度为 64 个字符。值为字符串，
         最大长度为 512 个字符。
 
     - `EvalStoredCompletionsDataSourceConfig object { schema, type, metadata }`
 
-      已弃用，改用 LogsDataSourceConfig。
+      已弃用，建议改用 LogsDataSourceConfig。
 
       - `schema: map[unknown]`
 
-        运行数据源项目的 JSON 模式。
-        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+        运行数据源条目的 json 架构。
+        了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
       - `type: "stored_completions"`
 
-        数据源的类型。始终是 `stored_completions`.
+        数据源的类型。始终为 `stored_completions`.
 
         - `"stored_completions"`
 
       - `metadata: optional Metadata or null`
 
-        一组 16 个键值对，可附加到对象上。这可以
-        用于以结构化格式存储有关对象的额外信息，
+        可附加到对象的 16 组键值对。这可以
+        用于以结构化格式存储有关对象的附加信息，
         并通过 API 或仪表板查询对象。
 
-        键是字符串，最大长度为 64 个字符。值是字符串，
+        键为字符串，最大长度为 64 个字符。值为字符串，
         最大长度为 512 个字符。
 
   - `metadata: Metadata or null`
 
-    一组 16 个键值对，可附加到对象上。这可以
-    用于以结构化格式存储有关对象的额外信息，
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
     并通过 API 或仪表板查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串，
+    键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
   - `name: string`
@@ -2938,30 +2938,30 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
   - `testing_criteria: array of LabelModelGrader or StringCheckGrader or TextSimilarityGrader or 2 more`
 
-    测试标准列表。
+    测试条件列表。
 
     - `LabelModelGrader object { input, labels, model, 3 more }`
 
-      一个 LabelModelGrader 对象，使用模型为评估中的每个项目分配标签
+      一个 LabelModelGrader 对象，使用模型为评估中的每一项分配标签
       。
 
       - `input: array of object { content, role, type }`
 
         - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-          模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+          模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
           - `TextInput = string`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
             - `text: string`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `type: "input_text"`
 
@@ -2971,7 +2971,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `prompt_cache_breakpoint: optional object { mode }`
 
-              标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+              标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
               - `mode: "explicit"`
 
@@ -2981,11 +2981,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `OutputText object { text, type }`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
             - `text: string`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
             - `type: "output_text"`
 
@@ -2995,21 +2995,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `InputImage object { image_url, type, detail }`
 
-            用于 EvalItem 内容数组中的图像输入块。
+            在 EvalItem 内容数组中使用的图片输入块。
 
             - `image_url: string`
 
-              图像输入的 URL。
+              图片输入的 URL。
 
             - `type: "input_image"`
 
-              图像输入的类型。始终为 `input_image`.
+              图片输入的类型。始终为 `input_image`.
 
               - `"input_image"`
 
             - `detail: optional string`
 
-              发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+              发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
@@ -3019,11 +3019,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               - `data: string`
 
-                Base64 编码的音频数据。
+                经过 Base64 编码的音频数据。
 
               - `format: "mp3" or "wav"`
 
-                音频数据的格式。目前支持的格式为 `mp3` 和
+                音频数据的格式。当前支持的格式有 `mp3` 和
                 `wav`.
 
                 - `"mp3"`
@@ -3038,24 +3038,24 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-            输入列表，每个输入可以是输入文本、输出文本、输入
-            图像或输入音频对象。
+            输入列表，其中每个输入可以是输入文本、输出文本、输入
+            图片或输入音频对象。
 
             - `TextInput = string`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `OutputText object { text, type }`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
               - `text: string`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
               - `type: "output_text"`
 
@@ -3065,21 +3065,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `InputImage object { image_url, type, detail }`
 
-              用于 EvalItem 内容数组中的图像输入块。
+              在 EvalItem 内容数组中使用的图片输入块。
 
               - `image_url: string`
 
-                图像输入的 URL。
+                图片输入的 URL。
 
               - `type: "input_image"`
 
-                图像输入的类型。始终为 `input_image`.
+                图片输入的类型。始终为 `input_image`.
 
                 - `"input_image"`
 
               - `detail: optional string`
 
-                发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
             - `ResponseInputAudio object { input_audio, type }`
 
@@ -3087,7 +3087,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `role: "user" or "assistant" or "system" or "developer"`
 
-          消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+          消息输入的角色。可选值为 `user`, `assistant`, `system`、或
           `developer`.
 
           - `"user"`
@@ -3106,7 +3106,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `labels: array of string`
 
-        要分配给评估中每个项目的标签。
+        要分配给评估中每个条目标签。
 
       - `model: string`
 
@@ -3118,7 +3118,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `passing_labels: array of string`
 
-        表示通过结果的标签。必须是标签的子集。
+        表示通过结果的标签。必须是 labels 的子集。
 
       - `type: "label_model"`
 
@@ -3128,11 +3128,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `StringCheckGrader object { input, name, operation, 2 more }`
 
-      一个 StringCheckGrader 对象，使用指定操作对输入和参考文本执行字符串比较。
+      一个 StringCheckGrader 对象，使用指定操作在输入和参考之间进行字符串比较。
 
       - `input: string`
 
-        输入文本。可能包含模板字符串。
+        输入文本。可以包含模板字符串。
 
       - `name: string`
 
@@ -3140,7 +3140,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `operation: "eq" or "ne" or "like" or "ilike"`
 
-        要执行的字符串检查操作。可选值： `eq`, `ne`, `like`，或 `ilike`.
+        要执行的字符串检查操作。可选值为 `eq`, `ne`, `like`、或 `ilike`.
 
         - `"eq"`
 
@@ -3152,7 +3152,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `reference: string`
 
-        参考文本。可能包含模板字符串。
+        参考文本。可以包含模板字符串。
 
       - `type: "string_check"`
 
@@ -3162,7 +3162,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `TextSimilarityGrader = TextSimilarityGrader`
 
-      一个 TextSimilarityGrader 对象，根据相似度指标对文本进行评分。
+      一个 TextSimilarityGrader 对象，基于相似度指标对文本进行评分。
 
       - `pass_threshold: number`
 
@@ -3170,7 +3170,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `PythonGrader = PythonGrader`
 
-      一个 PythonGrader 对象，对输入运行 Python 脚本。
+      一个 PythonGrader 对象，对输入运行 python 脚本。
 
       - `pass_threshold: optional number`
 
@@ -3178,113 +3178,113 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `ScoreModelGrader = ScoreModelGrader`
 
-      一个 ScoreModelGrader 对象，使用模型为输入分配分数。
+      一个 ScoreModelGrader 对象，使用模型为输入打分。
 
       - `pass_threshold: optional number`
 
         分数的阈值。
 
-### 评估检索响应
+### Eval 检索响应
 
 - `EvalRetrieveResponse object { id, created_at, data_source_config, 4 more }`
 
-  一个带有数据源配置和测试标准的 Eval 对象。
-  Eval 表示要为你的 LLM 集成完成的任务。
+  一个包含数据源配置和测试标准的 Eval 对象。
+  Eval 代表需要为你的 LLM 集成完成的一项任务。
   例如：
 
-  - 提高我的聊天机器人的质量
-  - 看看我的聊天机器人处理客户支持的效果如何
-  - 检查 o4-mini 是否比 gpt-4o 更适合我的使用场景
+  - 提升我的聊天机器人质量
+  - 查看我的聊天机器人在客户支持方面的表现
+  - 检查 o4-mini 在我的用例上是否优于 gpt-5.6-sol
 
   - `id: string`
 
-    评估的唯一标识符。
+    评估任务的唯一标识符。
 
   - `created_at: number`
 
-    评估创建时的 Unix 时间戳（秒）。
+    评估任务创建时的 Unix 时间戳（以秒为单位）。
 
   - `data_source_config: EvalCustomDataSourceConfig or object { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
-    评估运行中使用的数据源配置。
+    用于评估运行的数据源配置。
 
     - `EvalCustomDataSourceConfig object { schema, type }`
 
-      一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选地 `sample` 命名空间。
-      响应模式定义了数据的形状，数据将被：
+      一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选的 `sample` 命名空间。
+      响应架构定义了数据的以下形状：
 
-      - 用于定义你的测试标准，并且
-      - 创建运行所需的数据
+      - 用于定义你的测试标准，以及
+      - 创建运行 (run) 时所需的数据
 
       - `schema: map[unknown]`
 
-        运行数据源项目的 JSON 模式。
-        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+        运行数据源条目的 json 架构。
+        了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
       - `type: "custom"`
 
-        数据源的类型。始终是 `custom`.
+        数据源的类型。始终为 `custom`.
 
         - `"custom"`
 
     - `LogsDataSourceConfig object { schema, type, metadata }`
 
-      一个 LogsDataSourceConfig，用于指定你的日志查询的元数据属性。
-      这通常是这样的一些元数据，例如 `usecase=chatbot` 或 `prompt-version=v2`，等。
-      此数据源配置返回的模式用于定义评估中可用的变量。
-      `item` 和 `sample` 在使用此数据源配置时，两者均被定义。
+      一个 LogsDataSourceConfig，用于指定日志查询的元数据属性。
+      这通常是类似 `usecase=chatbot` 或 `prompt-version=v2`，等元数据。
+      此数据源配置返回的架构用于定义评估中可用的变量。
+      `item` 和 `sample` 在使用此数据源配置时均会被定义。
 
       - `schema: map[unknown]`
 
-        运行数据源项目的 JSON 模式。
-        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+        运行数据源条目的 json 架构。
+        了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
       - `type: "logs"`
 
-        数据源的类型。始终是 `logs`.
+        数据源的类型。始终为 `logs`.
 
         - `"logs"`
 
       - `metadata: optional Metadata or null`
 
-        一组 16 个键值对，可附加到对象上。这可以
-        用于以结构化格式存储有关对象的额外信息，
+        可附加到对象的 16 组键值对。这可以
+        用于以结构化格式存储有关对象的附加信息，
         并通过 API 或仪表板查询对象。
 
-        键是字符串，最大长度为 64 个字符。值是字符串，
+        键为字符串，最大长度为 64 个字符。值为字符串，
         最大长度为 512 个字符。
 
     - `EvalStoredCompletionsDataSourceConfig object { schema, type, metadata }`
 
-      已弃用，改用 LogsDataSourceConfig。
+      已弃用，建议改用 LogsDataSourceConfig。
 
       - `schema: map[unknown]`
 
-        运行数据源项目的 JSON 模式。
-        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+        运行数据源条目的 json 架构。
+        了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
       - `type: "stored_completions"`
 
-        数据源的类型。始终是 `stored_completions`.
+        数据源的类型。始终为 `stored_completions`.
 
         - `"stored_completions"`
 
       - `metadata: optional Metadata or null`
 
-        一组 16 个键值对，可附加到对象上。这可以
-        用于以结构化格式存储有关对象的额外信息，
+        可附加到对象的 16 组键值对。这可以
+        用于以结构化格式存储有关对象的附加信息，
         并通过 API 或仪表板查询对象。
 
-        键是字符串，最大长度为 64 个字符。值是字符串，
+        键为字符串，最大长度为 64 个字符。值为字符串，
         最大长度为 512 个字符。
 
   - `metadata: Metadata or null`
 
-    一组 16 个键值对，可附加到对象上。这可以
-    用于以结构化格式存储有关对象的额外信息，
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
     并通过 API 或仪表板查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串，
+    键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
   - `name: string`
@@ -3299,30 +3299,30 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
   - `testing_criteria: array of LabelModelGrader or StringCheckGrader or TextSimilarityGrader or 2 more`
 
-    测试标准列表。
+    测试条件列表。
 
     - `LabelModelGrader object { input, labels, model, 3 more }`
 
-      一个 LabelModelGrader 对象，使用模型为评估中的每个项目分配标签
+      一个 LabelModelGrader 对象，使用模型为评估中的每一项分配标签
       。
 
       - `input: array of object { content, role, type }`
 
         - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-          模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+          模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
           - `TextInput = string`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
             - `text: string`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `type: "input_text"`
 
@@ -3332,7 +3332,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `prompt_cache_breakpoint: optional object { mode }`
 
-              标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+              标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
               - `mode: "explicit"`
 
@@ -3342,11 +3342,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `OutputText object { text, type }`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
             - `text: string`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
             - `type: "output_text"`
 
@@ -3356,21 +3356,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `InputImage object { image_url, type, detail }`
 
-            用于 EvalItem 内容数组中的图像输入块。
+            在 EvalItem 内容数组中使用的图片输入块。
 
             - `image_url: string`
 
-              图像输入的 URL。
+              图片输入的 URL。
 
             - `type: "input_image"`
 
-              图像输入的类型。始终为 `input_image`.
+              图片输入的类型。始终为 `input_image`.
 
               - `"input_image"`
 
             - `detail: optional string`
 
-              发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+              发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
@@ -3380,11 +3380,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               - `data: string`
 
-                Base64 编码的音频数据。
+                经过 Base64 编码的音频数据。
 
               - `format: "mp3" or "wav"`
 
-                音频数据的格式。目前支持的格式为 `mp3` 和
+                音频数据的格式。当前支持的格式有 `mp3` 和
                 `wav`.
 
                 - `"mp3"`
@@ -3399,24 +3399,24 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-            输入列表，每个输入可以是输入文本、输出文本、输入
-            图像或输入音频对象。
+            输入列表，其中每个输入可以是输入文本、输出文本、输入
+            图片或输入音频对象。
 
             - `TextInput = string`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `OutputText object { text, type }`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
               - `text: string`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
               - `type: "output_text"`
 
@@ -3426,21 +3426,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `InputImage object { image_url, type, detail }`
 
-              用于 EvalItem 内容数组中的图像输入块。
+              在 EvalItem 内容数组中使用的图片输入块。
 
               - `image_url: string`
 
-                图像输入的 URL。
+                图片输入的 URL。
 
               - `type: "input_image"`
 
-                图像输入的类型。始终为 `input_image`.
+                图片输入的类型。始终为 `input_image`.
 
                 - `"input_image"`
 
               - `detail: optional string`
 
-                发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
             - `ResponseInputAudio object { input_audio, type }`
 
@@ -3448,7 +3448,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `role: "user" or "assistant" or "system" or "developer"`
 
-          消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+          消息输入的角色。可选值为 `user`, `assistant`, `system`、或
           `developer`.
 
           - `"user"`
@@ -3467,7 +3467,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `labels: array of string`
 
-        要分配给评估中每个项目的标签。
+        要分配给评估中每个条目标签。
 
       - `model: string`
 
@@ -3479,7 +3479,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `passing_labels: array of string`
 
-        表示通过结果的标签。必须是标签的子集。
+        表示通过结果的标签。必须是 labels 的子集。
 
       - `type: "label_model"`
 
@@ -3489,11 +3489,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `StringCheckGrader object { input, name, operation, 2 more }`
 
-      一个 StringCheckGrader 对象，使用指定操作对输入和参考文本执行字符串比较。
+      一个 StringCheckGrader 对象，使用指定操作在输入和参考之间进行字符串比较。
 
       - `input: string`
 
-        输入文本。可能包含模板字符串。
+        输入文本。可以包含模板字符串。
 
       - `name: string`
 
@@ -3501,7 +3501,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `operation: "eq" or "ne" or "like" or "ilike"`
 
-        要执行的字符串检查操作。可选值： `eq`, `ne`, `like`，或 `ilike`.
+        要执行的字符串检查操作。可选值为 `eq`, `ne`, `like`、或 `ilike`.
 
         - `"eq"`
 
@@ -3513,7 +3513,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `reference: string`
 
-        参考文本。可能包含模板字符串。
+        参考文本。可以包含模板字符串。
 
       - `type: "string_check"`
 
@@ -3523,7 +3523,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `TextSimilarityGrader = TextSimilarityGrader`
 
-      一个 TextSimilarityGrader 对象，根据相似度指标对文本进行评分。
+      一个 TextSimilarityGrader 对象，基于相似度指标对文本进行评分。
 
       - `pass_threshold: number`
 
@@ -3531,7 +3531,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `PythonGrader = PythonGrader`
 
-      一个 PythonGrader 对象，对输入运行 Python 脚本。
+      一个 PythonGrader 对象，对输入运行 python 脚本。
 
       - `pass_threshold: optional number`
 
@@ -3539,139 +3539,139 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `ScoreModelGrader = ScoreModelGrader`
 
-      一个 ScoreModelGrader 对象，使用模型为输入分配分数。
+      一个 ScoreModelGrader 对象，使用模型为输入打分。
 
       - `pass_threshold: optional number`
 
         分数的阈值。
 
-### 评估存储补全数据源配置
+### Eval 已存储补全数据源配置
 
 - `EvalStoredCompletionsDataSourceConfig object { schema, type, metadata }`
 
-  已弃用，改用 LogsDataSourceConfig。
+  已弃用，建议改用 LogsDataSourceConfig。
 
   - `schema: map[unknown]`
 
-    运行数据源项目的 JSON 模式。
-    了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+    运行数据源条目的 json 架构。
+    了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
   - `type: "stored_completions"`
 
-    数据源的类型。始终是 `stored_completions`.
+    数据源的类型。始终为 `stored_completions`.
 
     - `"stored_completions"`
 
   - `metadata: optional Metadata or null`
 
-    一组 16 个键值对，可附加到对象上。这可以
-    用于以结构化格式存储有关对象的额外信息，
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
     并通过 API 或仪表板查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串，
+    键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
-### 评估更新响应
+### Eval 更新响应
 
 - `EvalUpdateResponse object { id, created_at, data_source_config, 4 more }`
 
-  一个带有数据源配置和测试标准的 Eval 对象。
-  Eval 表示要为你的 LLM 集成完成的任务。
+  一个包含数据源配置和测试标准的 Eval 对象。
+  Eval 代表需要为你的 LLM 集成完成的一项任务。
   例如：
 
-  - 提高我的聊天机器人的质量
-  - 看看我的聊天机器人处理客户支持的效果如何
-  - 检查 o4-mini 是否比 gpt-4o 更适合我的使用场景
+  - 提升我的聊天机器人质量
+  - 查看我的聊天机器人在客户支持方面的表现
+  - 检查 o4-mini 在我的用例上是否优于 gpt-5.6-sol
 
   - `id: string`
 
-    评估的唯一标识符。
+    评估任务的唯一标识符。
 
   - `created_at: number`
 
-    评估创建时的 Unix 时间戳（秒）。
+    评估任务创建时的 Unix 时间戳（以秒为单位）。
 
   - `data_source_config: EvalCustomDataSourceConfig or object { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
-    评估运行中使用的数据源配置。
+    用于评估运行的数据源配置。
 
     - `EvalCustomDataSourceConfig object { schema, type }`
 
-      一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选地 `sample` 命名空间。
-      响应模式定义了数据的形状，数据将被：
+      一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选的 `sample` 命名空间。
+      响应架构定义了数据的以下形状：
 
-      - 用于定义你的测试标准，并且
-      - 创建运行所需的数据
+      - 用于定义你的测试标准，以及
+      - 创建运行 (run) 时所需的数据
 
       - `schema: map[unknown]`
 
-        运行数据源项目的 JSON 模式。
-        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+        运行数据源条目的 json 架构。
+        了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
       - `type: "custom"`
 
-        数据源的类型。始终是 `custom`.
+        数据源的类型。始终为 `custom`.
 
         - `"custom"`
 
     - `LogsDataSourceConfig object { schema, type, metadata }`
 
-      一个 LogsDataSourceConfig，用于指定你的日志查询的元数据属性。
-      这通常是这样的一些元数据，例如 `usecase=chatbot` 或 `prompt-version=v2`，等。
-      此数据源配置返回的模式用于定义评估中可用的变量。
-      `item` 和 `sample` 在使用此数据源配置时，两者均被定义。
+      一个 LogsDataSourceConfig，用于指定日志查询的元数据属性。
+      这通常是类似 `usecase=chatbot` 或 `prompt-version=v2`，等元数据。
+      此数据源配置返回的架构用于定义评估中可用的变量。
+      `item` 和 `sample` 在使用此数据源配置时均会被定义。
 
       - `schema: map[unknown]`
 
-        运行数据源项目的 JSON 模式。
-        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+        运行数据源条目的 json 架构。
+        了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
       - `type: "logs"`
 
-        数据源的类型。始终是 `logs`.
+        数据源的类型。始终为 `logs`.
 
         - `"logs"`
 
       - `metadata: optional Metadata or null`
 
-        一组 16 个键值对，可附加到对象上。这可以
-        用于以结构化格式存储有关对象的额外信息，
+        可附加到对象的 16 组键值对。这可以
+        用于以结构化格式存储有关对象的附加信息，
         并通过 API 或仪表板查询对象。
 
-        键是字符串，最大长度为 64 个字符。值是字符串，
+        键为字符串，最大长度为 64 个字符。值为字符串，
         最大长度为 512 个字符。
 
     - `EvalStoredCompletionsDataSourceConfig object { schema, type, metadata }`
 
-      已弃用，改用 LogsDataSourceConfig。
+      已弃用，建议改用 LogsDataSourceConfig。
 
       - `schema: map[unknown]`
 
-        运行数据源项目的 JSON 模式。
-        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+        运行数据源条目的 json 架构。
+        了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
       - `type: "stored_completions"`
 
-        数据源的类型。始终是 `stored_completions`.
+        数据源的类型。始终为 `stored_completions`.
 
         - `"stored_completions"`
 
       - `metadata: optional Metadata or null`
 
-        一组 16 个键值对，可附加到对象上。这可以
-        用于以结构化格式存储有关对象的额外信息，
+        可附加到对象的 16 组键值对。这可以
+        用于以结构化格式存储有关对象的附加信息，
         并通过 API 或仪表板查询对象。
 
-        键是字符串，最大长度为 64 个字符。值是字符串，
+        键为字符串，最大长度为 64 个字符。值为字符串，
         最大长度为 512 个字符。
 
   - `metadata: Metadata or null`
 
-    一组 16 个键值对，可附加到对象上。这可以
-    用于以结构化格式存储有关对象的额外信息，
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
     并通过 API 或仪表板查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串，
+    键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
   - `name: string`
@@ -3686,30 +3686,30 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
   - `testing_criteria: array of LabelModelGrader or StringCheckGrader or TextSimilarityGrader or 2 more`
 
-    测试标准列表。
+    测试条件列表。
 
     - `LabelModelGrader object { input, labels, model, 3 more }`
 
-      一个 LabelModelGrader 对象，使用模型为评估中的每个项目分配标签
+      一个 LabelModelGrader 对象，使用模型为评估中的每一项分配标签
       。
 
       - `input: array of object { content, role, type }`
 
         - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-          模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+          模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
           - `TextInput = string`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            模型的文本输入。
+            发送给模型的文本输入。
 
             - `text: string`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `type: "input_text"`
 
@@ -3719,7 +3719,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `prompt_cache_breakpoint: optional object { mode }`
 
-              标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+              标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
               - `mode: "explicit"`
 
@@ -3729,11 +3729,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `OutputText object { text, type }`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
             - `text: string`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
             - `type: "output_text"`
 
@@ -3743,21 +3743,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `InputImage object { image_url, type, detail }`
 
-            用于 EvalItem 内容数组中的图像输入块。
+            在 EvalItem 内容数组中使用的图片输入块。
 
             - `image_url: string`
 
-              图像输入的 URL。
+              图片输入的 URL。
 
             - `type: "input_image"`
 
-              图像输入的类型。始终为 `input_image`.
+              图片输入的类型。始终为 `input_image`.
 
               - `"input_image"`
 
             - `detail: optional string`
 
-              发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+              发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
@@ -3767,11 +3767,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               - `data: string`
 
-                Base64 编码的音频数据。
+                经过 Base64 编码的音频数据。
 
               - `format: "mp3" or "wav"`
 
-                音频数据的格式。目前支持的格式为 `mp3` 和
+                音频数据的格式。当前支持的格式有 `mp3` 和
                 `wav`.
 
                 - `"mp3"`
@@ -3786,24 +3786,24 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-            输入列表，每个输入可以是输入文本、输出文本、输入
-            图像或输入音频对象。
+            输入列表，其中每个输入可以是输入文本、输出文本、输入
+            图片或输入音频对象。
 
             - `TextInput = string`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `OutputText object { text, type }`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
               - `text: string`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
               - `type: "output_text"`
 
@@ -3813,21 +3813,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `InputImage object { image_url, type, detail }`
 
-              用于 EvalItem 内容数组中的图像输入块。
+              在 EvalItem 内容数组中使用的图片输入块。
 
               - `image_url: string`
 
-                图像输入的 URL。
+                图片输入的 URL。
 
               - `type: "input_image"`
 
-                图像输入的类型。始终为 `input_image`.
+                图片输入的类型。始终为 `input_image`.
 
                 - `"input_image"`
 
               - `detail: optional string`
 
-                发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
             - `ResponseInputAudio object { input_audio, type }`
 
@@ -3835,7 +3835,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `role: "user" or "assistant" or "system" or "developer"`
 
-          消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+          消息输入的角色。可选值为 `user`, `assistant`, `system`、或
           `developer`.
 
           - `"user"`
@@ -3854,7 +3854,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `labels: array of string`
 
-        要分配给评估中每个项目的标签。
+        要分配给评估中每个条目标签。
 
       - `model: string`
 
@@ -3866,7 +3866,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `passing_labels: array of string`
 
-        表示通过结果的标签。必须是标签的子集。
+        表示通过结果的标签。必须是 labels 的子集。
 
       - `type: "label_model"`
 
@@ -3876,11 +3876,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `StringCheckGrader object { input, name, operation, 2 more }`
 
-      一个 StringCheckGrader 对象，使用指定操作对输入和参考文本执行字符串比较。
+      一个 StringCheckGrader 对象，使用指定操作在输入和参考之间进行字符串比较。
 
       - `input: string`
 
-        输入文本。可能包含模板字符串。
+        输入文本。可以包含模板字符串。
 
       - `name: string`
 
@@ -3888,7 +3888,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `operation: "eq" or "ne" or "like" or "ilike"`
 
-        要执行的字符串检查操作。可选值： `eq`, `ne`, `like`，或 `ilike`.
+        要执行的字符串检查操作。可选值为 `eq`, `ne`, `like`、或 `ilike`.
 
         - `"eq"`
 
@@ -3900,7 +3900,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `reference: string`
 
-        参考文本。可能包含模板字符串。
+        参考文本。可以包含模板字符串。
 
       - `type: "string_check"`
 
@@ -3910,7 +3910,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `TextSimilarityGrader = TextSimilarityGrader`
 
-      一个 TextSimilarityGrader 对象，根据相似度指标对文本进行评分。
+      一个 TextSimilarityGrader 对象，基于相似度指标对文本进行评分。
 
       - `pass_threshold: number`
 
@@ -3918,7 +3918,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `PythonGrader = PythonGrader`
 
-      一个 PythonGrader 对象，对输入运行 Python 脚本。
+      一个 PythonGrader 对象，对输入运行 python 脚本。
 
       - `pass_threshold: optional number`
 
@@ -3926,7 +3926,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `ScoreModelGrader = ScoreModelGrader`
 
-      一个 ScoreModelGrader 对象，使用模型为输入分配分数。
+      一个 ScoreModelGrader 对象，使用模型为输入打分。
 
       - `pass_threshold: optional number`
 
@@ -3934,7 +3934,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
 # 运行
 
-## 取消评估运行
+## 取消 eval 运行
 
 **post** `/evals/{eval_id}/runs/{run_id}`
 
@@ -3946,27 +3946,27 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
 - `run_id: string`
 
-### 返回
+### Returns
 
 - `id: string`
 
-  评估运行的唯一标识符。
+  评估运行（evaluation run）的唯一标识符。
 
 - `created_at: number`
 
-  评估运行创建时的 Unix 时间戳（秒）。
+  评估运行创建时的 Unix 时间戳（以秒为单位）。
 
 - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or object { source, type, input_messages, 2 more }`
 
-  有关运行数据源的信息。
+  关于该运行数据源的信息。
 
   - `CreateEvalJSONLRunDataSource object { source, type }`
 
-    一个 JsonlRunDataSource 对象，指定一个 JSONL 文件，该文件与评估
+    一个 JsonlRunDataSource 对象，用于指定与该评估匹配的 JSONL 文件
 
     - `source: object { content, type }  or object { id, type }`
 
-      决定什么填充 `item` 数据源中的命名空间。
+      决定数据源中如何填充 `item` 命名空间。
 
       - `EvalJSONLFileContentSource object { content, type }`
 
@@ -3980,7 +3980,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `type: "file_content"`
 
-          jsonl 源的类型。始终为 `file_content`.
+          jsonl 数据源的类型。始终为 `file_content`.
 
           - `"file_content"`
 
@@ -3992,23 +3992,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `type: "file_id"`
 
-          jsonl 源的类型。始终为 `file_id`.
+          jsonl 数据源的类型。始终为 `file_id`.
 
           - `"file_id"`
 
     - `type: "jsonl"`
 
-      数据源的类型。始终是 `jsonl`.
+      数据源的类型。始终为 `jsonl`.
 
       - `"jsonl"`
 
   - `CreateEvalCompletionsRunDataSource object { source, type, input_messages, 2 more }`
 
-    描述模型采样配置的 CompletionsRunDataSource 对象。
+    一个 CompletionsRunDataSource 对象，用于描述模型采样配置。
 
     - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 3 more }`
 
-      决定什么填充 `item` 此运行数据源中的命名空间。
+      决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
       - `EvalJSONLFileContentSource object { content, type }`
 
@@ -4022,7 +4022,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `type: "file_content"`
 
-          jsonl 源的类型。始终为 `file_content`.
+          jsonl 数据源的类型。始终为 `file_content`.
 
           - `"file_content"`
 
@@ -4034,44 +4034,44 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `type: "file_id"`
 
-          jsonl 源的类型。始终为 `file_id`.
+          jsonl 数据源的类型。始终为 `file_id`.
 
           - `"file_id"`
 
       - `StoredCompletionsRunDataSource object { type, created_after, created_before, 3 more }`
 
-        描述一组过滤器的 StoredCompletionsRunDataSource 配置
+        一个 StoredCompletionsRunDataSource 配置，用于描述一组筛选条件
 
         - `type: "stored_completions"`
 
-          源的类型。始终为 `stored_completions`.
+          数据源的类型。始终为 `stored_completions`.
 
           - `"stored_completions"`
 
         - `created_after: optional number or null`
 
-          可选的 Unix 时间戳，用于过滤在此时间之后创建的项。
+          一个可选的 Unix 时间戳，用于筛选在此时间之后创建的项。
 
         - `created_before: optional number or null`
 
-          可选的 Unix 时间戳，用于过滤在此时间之前创建的项。
+          一个可选的 Unix 时间戳，用于筛选在此时间之前创建的项。
 
         - `limit: optional number or null`
 
-          可选的最大返回项数。
+          一个可选的返回项的最大数量。
 
         - `metadata: optional Metadata or null`
 
-          一组 16 个键值对，可附加到对象上。这可以
-          用于以结构化格式存储有关对象的额外信息，
+          可附加到对象的 16 组键值对。这可以
+          用于以结构化格式存储有关对象的附加信息，
           并通过 API 或仪表板查询对象。
 
-          键是字符串，最大长度为 64 个字符。值是字符串，
+          键为字符串，最大长度为 64 个字符。值为字符串，
           最大长度为 512 个字符。
 
         - `model: optional string or null`
 
-          可选的模型过滤条件（例如，'gpt-4o'）。
+          一个可选的用于筛选的模型（例如 'gpt-5.6-sol'）。
 
     - `type: "completions"`
 
@@ -4081,43 +4081,43 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-      用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+      在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
       - `TemplateInputMessages object { template, type }`
 
         - `template: array of EasyInputMessage or object { content, role, type }`
 
-          构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+          构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
           - `EasyInputMessage object { content, role, phase, type }`
 
-            输入给模型的消息，其角色指示指令遵循
-            层级。以 `developer` 或 `system` 角色给出的指令
-            优先于以 `user` 角色给出的指令。具有
-            `assistant` 角色的消息被认为是由模型在之前的
-            交互中生成的。
+            输入到模型的消息，其角色指示指令的
+            层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+            角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+            `assistant` 消息。
+            互动。
 
             - `content: string or ResponseInputMessageContentList`
 
               发送给模型的文本、图像或音频输入，用于生成响应。
-              也可以包含先前的助手响应。
+              也可以包含之前的助手响应。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `ResponseInputMessageContentList = array of ResponseInputContent`
 
-                发送给模型的一个或多个输入项的列表，包含不同类型的内容
-                。
+                发送给模型的一个或多个输入项的列表，其中包含不同的内容
+                类型。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                   - `text: string`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                   - `type: "input_text"`
 
@@ -4127,7 +4127,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
                   - `prompt_cache_breakpoint: optional object { mode }`
 
-                    标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                    标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                     - `mode: "explicit"`
 
@@ -4141,7 +4141,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
                   - `detail: ImageDetail`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`, `auto`、或 `original`。之一。默认为 `auto`.
 
                     - `"low"`
 
@@ -4163,11 +4163,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
                   - `image_url: optional string or null`
 
-                    要发送给模型的图像的 URL。完全限定的 URL 或数据 URL 中的 base64 编码图像。
+                    要发送给模型的图像的 URL。可以是完整的 URL，也可以是 base64 编码的 data URL 图像。
 
                   - `prompt_cache_breakpoint: optional object { mode }`
 
-                    标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                    标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                     - `mode: "explicit"`
 
@@ -4187,7 +4187,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
                   - `detail: optional "auto" or "low" or "high"`
 
-                    要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入令牌的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+                    要发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
                     - `"auto"`
 
@@ -4197,7 +4197,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
                   - `file_data: optional string`
 
-                    要发送给模型的文件的内容。
+                    要发送给模型的文件内容。
 
                   - `file_id: optional string or null`
 
@@ -4213,7 +4213,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
                   - `prompt_cache_breakpoint: optional object { mode }`
 
-                    标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                    标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                     - `mode: "explicit"`
 
@@ -4223,7 +4223,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。可选值为 `user`, `assistant`, `system`、或
               `developer`.
 
               - `"user"`
@@ -4236,9 +4236,9 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `phase: optional "commentary" or "final_answer" or null`
 
-              将 `assistant` 消息标记为中间评论（`commentary`) 或最终答案 (`final_answer`).
-              对于像 `gpt-5.3-codex` 及更新的模型，发送后续请求时，请保留并重新发送
-              阶段到所有助手消息中——省略该阶段可能会降低性能。不用于用户消息。
+              将 `assistant` 消息标记为中间补充说明（`commentary`) 或最终答案（`final_answer`).
+              对于类似 `gpt-5.3-codex` 及更高版本，发送后续请求时，请在所有助手消息上保留并重新发送
+              阶段，遗漏会降低性能。不用于用户消息。
 
               - `"commentary"`
 
@@ -4252,31 +4252,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `EvalMessageObject object { content, role, type }`
 
-            输入给模型的消息，其角色指示指令遵循
-            层级。以 `developer` 或 `system` 角色给出的指令
-            优先于以 `user` 角色给出的指令。具有
-            `assistant` 角色的消息被认为是由模型在之前的
-            交互中生成的。
+            输入到模型的消息，其角色指示指令的
+            层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+            角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+            `assistant` 消息。
+            互动。
 
             - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-              模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+              模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -4286,21 +4286,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               - `InputImage object { image_url, type, detail }`
 
-                用于 EvalItem 内容数组中的图像输入块。
+                在 EvalItem 内容数组中使用的图片输入块。
 
                 - `image_url: string`
 
-                  图像输入的 URL。
+                  图片输入的 URL。
 
                 - `type: "input_image"`
 
-                  图像输入的类型。始终为 `input_image`.
+                  图片输入的类型。始终为 `input_image`.
 
                   - `"input_image"`
 
                 - `detail: optional string`
 
-                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
@@ -4310,11 +4310,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
                   - `data: string`
 
-                    Base64 编码的音频数据。
+                    经过 Base64 编码的音频数据。
 
                   - `format: "mp3" or "wav"`
 
-                    音频数据的格式。目前支持的格式为 `mp3` 和
+                    音频数据的格式。当前支持的格式有 `mp3` 和
                     `wav`.
 
                     - `"mp3"`
@@ -4329,24 +4329,24 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                输入列表，每个输入可以是输入文本、输出文本、输入
-                图像或输入音频对象。
+                输入列表，其中每个输入可以是输入文本、输出文本、输入
+                图片或输入音频对象。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -4356,21 +4356,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
                 - `InputImage object { image_url, type, detail }`
 
-                  用于 EvalItem 内容数组中的图像输入块。
+                  在 EvalItem 内容数组中使用的图片输入块。
 
                   - `image_url: string`
 
-                    图像输入的 URL。
+                    图片输入的 URL。
 
                   - `type: "input_image"`
 
-                    图像输入的类型。始终为 `input_image`.
+                    图片输入的类型。始终为 `input_image`.
 
                     - `"input_image"`
 
                   - `detail: optional string`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
@@ -4378,7 +4378,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。可选值为 `user`, `assistant`, `system`、或
               `developer`.
 
               - `"user"`
@@ -4405,7 +4405,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `item_reference: string`
 
-          对 `item` 命名空间中变量的引用。例如，"item.input_trajectory"
+          命名空间中的变量引用。例如“ `item` .item.input_trajectory”
 
         - `type: "item_reference"`
 
@@ -4415,7 +4415,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `model: optional string`
 
-      用于生成补全的模型名称（例如 "o3-mini"）。
+      用于生成补全的模型名称（例如 “o3-mini”）。
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
@@ -4425,13 +4425,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `reasoning_effort: optional ReasoningEffort or null`
 
-        约束推理模型的推理工作量。目前支持的
-        值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-        降低推理工作量可以加快响应速度并减少响应中
-        用于推理的令牌数。并非所有推理模型都支持每个
+        约束推理模型在推理上的投入程度。当前支持
+        的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+        降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+        消耗。并非所有推理模型都支持每个
         值。请参阅
         [推理指南](https://platform.openai.com/docs/guides/reasoning)
-        了解各模型的特定支持。
+        了解特定模型的支持情况。
 
         - `"none"`
 
@@ -4449,20 +4449,20 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `response_format: optional ResponseFormatText or ResponseFormatJSONSchema or ResponseFormatJSONObject`
 
-        指定模型必须输出的格式的对象。
+        指定模型必须输出格式的对象。
 
-        设置为 `{ "type": "json_schema", "json_schema": {...} }` 启用
-        结构化输出，确保模型匹配你提供的 JSON
-        架构。更多信息请参阅 [Structured Outputs
+        设置为 `{ "type": "json_schema", "json_schema": {...} }` 会启用
+        Structured Outputs，用于确保模型匹配你提供的 JSON
+        schema。详细了解请参阅 [Structured Outputs
         指南](/docs/guides/structured-outputs).
 
         设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-        确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-        。
+        确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+        使用。
 
         - `ResponseFormatText object { type }`
 
-          默认响应格式，用于生成文本响应。
+          默认响应格式。用于生成文本响应。
 
           - `type: "text"`
 
@@ -4472,34 +4472,34 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `ResponseFormatJSONSchema object { json_schema, type }`
 
-          JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-          了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+          JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+          详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
           - `json_schema: object { name, description, schema, strict }`
 
-            结构化输出配置选项，包括 JSON Schema。
+            Structured Outputs 配置选项，包括 JSON Schema。
 
             - `name: string`
 
-              响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-              下划线和破折号，最大长度为 64。
+              响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+              下划线和短横线，最大长度为 64。
 
             - `description: optional string`
 
-              响应格式用途的描述，模型使用它来
-              决定如何以该格式进行响应。
+              对响应格式用途的描述，供模型用来
+              决定如何按该格式进行响应。
 
             - `schema: optional map[unknown]`
 
-              响应格式的架构，以 JSON Schema 对象描述。
-              了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+              响应格式对应的 schema，以 JSON Schema 对象形式描述。
+              了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
             - `strict: optional boolean or null`
 
-              是否在生成输出时启用严格的架构遵循。
-              如果设置为 true，模型将始终遵循定义的精确架构
-              中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-              `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+              是否在生成输出时启用严格的 schema 遵循。
+              若设置为 true，模型将始终遵循在
+              中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+              `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
               指南](/docs/guides/structured-outputs).
 
           - `type: "json_schema"`
@@ -4510,10 +4510,10 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `ResponseFormatJSONObject object { type }`
 
-          JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-          使用 `json_schema` 建议用于支持它的模型。请注意，
-          模型在没有系统或用户消息指示它的情况下不会生成 JSON
-          去这样做。
+          JSON 对象响应格式。生成 JSON 响应的旧方法。
+          对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+          模型将不会生成 JSON
+          。
 
           - `type: "json_object"`
 
@@ -4523,53 +4523,53 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `seed: optional number`
 
-        用于在采样时初始化随机性的种子值。
+        用于在采样过程中初始化随机性的种子值。
 
       - `temperature: optional number`
 
-        更高的温度会增加输出的随机性。
+        较高的 temperature 会增加输出的随机性。
 
       - `tools: optional array of ChatCompletionFunctionTool`
 
-        模型可能调用的工具列表。目前，仅支持函数作为工具。使用此选项提供模型可能生成 JSON 输入的函数列表。最多支持 128 个函数。
+        模型可以调用的工具列表。目前，作为工具仅支持函数。使用此项提供模型可以为其生成 JSON 输入的函数列表。最多支持 128 个函数。
 
         - `function: FunctionDefinition`
 
           - `name: string`
 
-            要调用的函数名称。必须是 a-z、A-Z、0-9，或包含下划线和破折号，最大长度为 64。
+            要调用的函数的名称。必须为 a-z、A-Z、0-9 或包含下划线和短划线，最大长度为 64。
 
           - `description: optional string`
 
-            函数功能的描述，模型用它来决定何时以及如何调用该函数。
+            对函数功能的描述，供模型选择何时以及如何调用该函数时使用。
 
           - `parameters: optional FunctionParameters`
 
-            函数接受的参数，描述为 JSON Schema 对象。参见 [指南](/docs/guides/function-calling) 获取示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) 获取有关格式的文档。
+            函数接受的参数，使用 JSON Schema 对象进行描述。请参阅 [指南](/docs/guides/function-calling) 中的示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) ，了解相关格式的文档。
 
-            省略 `parameters` 定义了一个具有空参数列表的函数。
+            省略 `parameters` 将定义一个具有空参数列表的函数。
 
           - `strict: optional boolean or null`
 
-            是否在生成函数调用时启用严格模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的子集，当 `strict` 为 `true`。在 [函数调用指南](/docs/guides/function-calling).
+            在生成函数调用时是否启用严格的模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的一个子集，当 `strict` 是 `true`。在以下位置详细了解结构化输出 [函数调用指南](/docs/guides/function-calling).
 
         - `type: "function"`
 
-          中了解更多关于结构化输出的信息。工具的类型。目前仅支持 `function` 。
+          工具的类型。目前，仅支持 `function` 是受支持的。
 
           - `"function"`
 
       - `top_p: optional number`
 
-        用于核采样的温度替代参数；1.0 包含所有标记。
+        作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
   - `ResponsesRunDataSource object { source, type, input_messages, 2 more }`
 
-    描述模型采样配置的 ResponsesRunDataSource 对象。
+    一个 ResponsesRunDataSource 对象，用于描述模型采样配置。
 
     - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 8 more }`
 
-      决定什么填充 `item` 此运行数据源中的命名空间。
+      决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
       - `EvalJSONLFileContentSource object { content, type }`
 
@@ -4583,7 +4583,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `type: "file_content"`
 
-          jsonl 源的类型。始终为 `file_content`.
+          jsonl 数据源的类型。始终为 `file_content`.
 
           - `"file_content"`
 
@@ -4595,13 +4595,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `type: "file_id"`
 
-          jsonl 源的类型。始终为 `file_id`.
+          jsonl 数据源的类型。始终为 `file_id`.
 
           - `"file_id"`
 
       - `EvalResponsesSource object { type, created_after, created_before, 8 more }`
 
-        描述运行数据源配置的 EvalResponsesSource 对象。
+        一个 EvalResponsesSource 对象，用于描述运行数据源配置。
 
         - `type: "responses"`
 
@@ -4611,49 +4611,49 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `created_after: optional number or null`
 
-          仅包含在此时间戳之后（含）创建的项。这是用于选择响应的查询参数。
+          仅包含在此时间戳之后（包含）创建的项目。这是一个用于选择响应的查询参数。
 
         - `created_before: optional number or null`
 
-          仅包含在此时间戳之前（含）创建的项。这是用于选择响应的查询参数。
+          仅包含在此时间戳之前（包含）创建的项目。这是一个用于选择响应的查询参数。
 
         - `instructions_search: optional string or null`
 
-          用于搜索“instructions”字段的可选字符串。这是用于选择响应的查询参数。
+          用于搜索 'instructions' 字段的可选字符串。这是一个用于选择响应的查询参数。
 
         - `metadata: optional unknown or null`
 
-          响应的元数据过滤器。这是用于选择响应的查询参数。
+          响应的元数据过滤器。这是一个用于选择响应的查询参数。
 
         - `model: optional string or null`
 
-          要查找响应的模型名称。这是用于选择响应的查询参数。
+          要为其查找响应的模型名称。这是一个用于选择响应的查询参数。
 
         - `reasoning_effort: optional ReasoningEffort or null`
 
-          约束推理模型的推理工作量。目前支持的
-          值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-          降低推理工作量可以加快响应速度并减少响应中
-          用于推理的令牌数。并非所有推理模型都支持每个
+          约束推理模型在推理上的投入程度。当前支持
+          的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+          降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+          消耗。并非所有推理模型都支持每个
           值。请参阅
           [推理指南](https://platform.openai.com/docs/guides/reasoning)
-          了解各模型的特定支持。
+          了解特定模型的支持情况。
 
         - `temperature: optional number or null`
 
-          采样温度。这是用于选择响应的查询参数。
+          采样温度。这是一个用于选择响应的查询参数。
 
         - `tools: optional array of string or null`
 
-          工具名称列表。这是用于选择响应的查询参数。
+          工具名称列表。这是一个用于选择响应的查询参数。
 
         - `top_p: optional number or null`
 
-          核采样参数。这是用于选择响应的查询参数。
+          核采样参数。这是一个用于选择响应的查询参数。
 
         - `users: optional array of string or null`
 
-          用户标识符列表。这是用于选择响应的查询参数。
+          用户标识符列表。这是一个用于选择响应的查询参数。
 
     - `type: "responses"`
 
@@ -4663,13 +4663,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-      用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+      在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
       - `InputMessagesTemplate object { template, type }`
 
         - `template: array of object { content, role }  or object { content, role, type }`
 
-          构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+          构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
           - `ChatMessage object { content, role }`
 
@@ -4683,31 +4683,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `EvalMessageObject object { content, role, type }`
 
-            输入给模型的消息，其角色指示指令遵循
-            层级。以 `developer` 或 `system` 角色给出的指令
-            优先于以 `user` 角色给出的指令。具有
-            `assistant` 角色的消息被认为是由模型在之前的
-            交互中生成的。
+            输入到模型的消息，其角色指示指令的
+            层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+            角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+            `assistant` 消息。
+            互动。
 
             - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-              模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+              模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -4717,21 +4717,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               - `InputImage object { image_url, type, detail }`
 
-                用于 EvalItem 内容数组中的图像输入块。
+                在 EvalItem 内容数组中使用的图片输入块。
 
                 - `image_url: string`
 
-                  图像输入的 URL。
+                  图片输入的 URL。
 
                 - `type: "input_image"`
 
-                  图像输入的类型。始终为 `input_image`.
+                  图片输入的类型。始终为 `input_image`.
 
                   - `"input_image"`
 
                 - `detail: optional string`
 
-                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
@@ -4739,12 +4739,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                输入列表，每个输入可以是输入文本、输出文本、输入
-                图像或输入音频对象。
+                输入列表，其中每个输入可以是输入文本、输出文本、输入
+                图片或输入音频对象。
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。可选值为 `user`, `assistant`, `system`、或
               `developer`.
 
               - `"user"`
@@ -4771,7 +4771,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `item_reference: string`
 
-          对 `item` 命名空间。即“item.name”
+          命名空间中的变量引用。例如“ `item` 命名空间。例如，“item.name”
 
         - `type: "item_reference"`
 
@@ -4781,7 +4781,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     - `model: optional string`
 
-      用于生成补全的模型名称（例如 "o3-mini"）。
+      用于生成补全的模型名称（例如 “o3-mini”）。
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
@@ -4791,64 +4791,64 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `reasoning_effort: optional ReasoningEffort or null`
 
-        约束推理模型的推理工作量。目前支持的
-        值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-        降低推理工作量可以加快响应速度并减少响应中
-        用于推理的令牌数。并非所有推理模型都支持每个
+        约束推理模型在推理上的投入程度。当前支持
+        的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+        降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+        消耗。并非所有推理模型都支持每个
         值。请参阅
         [推理指南](https://platform.openai.com/docs/guides/reasoning)
-        了解各模型的特定支持。
+        了解特定模型的支持情况。
 
       - `seed: optional number`
 
-        用于在采样时初始化随机性的种子值。
+        用于在采样过程中初始化随机性的种子值。
 
       - `temperature: optional number`
 
-        更高的温度会增加输出的随机性。
+        较高的 temperature 会增加输出的随机性。
 
       - `text: optional object { format }`
 
-        模型文本响应的配置选项。可以是纯
-        文本或结构化 JSON 数据。了解更多：
+        来自模型的文本响应的配置选项。可以是纯
+        文本或结构化 JSON 数据。了解更多信息：
 
         - [文本输入和输出](/docs/guides/text)
         - [结构化输出](/docs/guides/structured-outputs)
 
         - `format: optional ResponseFormatTextConfig`
 
-          指定模型必须输出的格式的对象。
+          指定模型必须输出格式的对象。
 
-          配置 `{ "type": "json_schema" }` 可启用结构化输出，
-          这确保模型将匹配你提供的 JSON 模式。更多信息请参阅
+          配置 `{ "type": "json_schema" }` 启用结构化输出，
+          可确保模型匹配你提供的 JSON schema。详情请参阅
           [结构化输出指南](/docs/guides/structured-outputs).
 
           默认格式为 `{ "type": "text" }` ，无其他选项。
 
-          **不建议用于 gpt-4o 及更新的模型：**
+          **不推荐用于 gpt-4o 及更新模型：**
 
           设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-          确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-          。
+          确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+          使用。
 
           - `ResponseFormatText object { type }`
 
-            默认响应格式，用于生成文本响应。
+            默认响应格式。用于生成文本响应。
 
           - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
-            JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-            了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+            JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+            详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
             - `name: string`
 
-              响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-              下划线和破折号，最大长度为 64。
+              响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+              下划线和短横线，最大长度为 64。
 
             - `schema: map[unknown]`
 
-              响应格式的架构，以 JSON Schema 对象描述。
-              了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+              响应格式对应的 schema，以 JSON Schema 对象形式描述。
+              了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
             - `type: "json_schema"`
 
@@ -4858,42 +4858,42 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `description: optional string`
 
-              响应格式用途的描述，模型使用它来
-              决定如何以该格式进行响应。
+              对响应格式用途的描述，供模型用来
+              决定如何按该格式进行响应。
 
             - `strict: optional boolean or null`
 
-              是否在生成输出时启用严格的架构遵循。
-              如果设置为 true，模型将始终遵循定义的精确架构
-              中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-              `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+              是否在生成输出时启用严格的 schema 遵循。
+              若设置为 true，模型将始终遵循在
+              中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+              `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
               指南](/docs/guides/structured-outputs).
 
           - `ResponseFormatJSONObject object { type }`
 
-            JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-            使用 `json_schema` 建议用于支持它的模型。请注意，
-            模型在没有系统或用户消息指示它的情况下不会生成 JSON
-            去这样做。
+            JSON 对象响应格式。生成 JSON 响应的旧方法。
+            对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+            模型将不会生成 JSON
+            。
 
       - `tools: optional array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-        模型在生成响应时可能调用的工具数组。你
-        可以通过设置 `tool_choice` 参数来指定使用哪个工具。
+        模型在生成响应时可以调用的工具数组。你可以
+        通过设置 `tool_choice` 参数来指定要使用的工具。
 
-        你可以提供给模型的工具分为两类：
+        你可以向模型提供的两类工具包括：
 
-        - **内置工具**：由 OpenAI 提供的工具，用于扩展
-          模型的能力，例如 [网页搜索](/docs/guides/tools-web-search)
-          或 [文件搜索](/docs/guides/tools-file-search)。了解更多关于
+        - **内置工具**: 由 OpenAI 提供的工具，用于扩展模型的
+          能力，例如 [网页搜索](/docs/guides/tools-web-search)
+          或 [文件搜索](/docs/guides/tools-file-search)。详细了解
           [内置工具](/docs/guides/tools).
-        - **函数调用（自定义工具）**：由你定义的函数，
-          使模型能够调用你自己的代码。了解更多关于
+        - **函数调用（自定义工具）**: 由你定义的函数，
+          使模型能够调用你自己的代码。详细了解
           [函数调用](/docs/guides/function-calling).
 
         - `Function object { name, parameters, strict, 5 more }`
 
-          在你自己的代码中定义一个模型可以选择调用的函数。了解更多关于 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+          定义你自己代码中的一个函数，模型可以选择调用它。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
 
           - `name: string`
 
@@ -4901,11 +4901,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `parameters: map[unknown] or null`
 
-            描述函数参数的 JSON schema 对象。
+            描述该函数参数的 JSON schema 对象。
 
           - `strict: boolean or null`
 
-            是否对此函数工具强制执行严格的参数验证。
+            是否对此函数工具强制执行严格的参数校验。
 
           - `type: "function"`
 
@@ -4923,54 +4923,54 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `defer_loading: optional boolean`
 
-            此函数是否延迟并通过工具搜索加载。
+            此函数是否被延迟加载并通过 tool search 加载。
 
           - `description: optional string or null`
 
-            函数的描述。模型用它来决定是否调用该函数。
+            函数的描述。由模型用于决定是否调用该函数。
 
           - `output_schema: optional map[unknown] or null`
 
-            描述此函数字符串输出中编码的 JSON 值的 JSON schema 对象。
+            描述该函数在字符串输出中所编码 JSON 值的 JSON schema 对象。
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          一种从上传文件中搜索相关内容的工具。了解更多关于 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+          用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 工具](https://platform.openai.com/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
-            文件搜索工具的类型。始终为 `file_search`.
+            文件搜索 工具的类型。始终为 `file_search`.
 
             - `"file_search"`
 
           - `vector_store_ids: array of string`
 
-            要搜索的向量存储的 ID。
+            要搜索的向量存储库 ID。
 
           - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-            要应用的筛选器。
+            要应用的筛选条件。
 
             - `ComparisonFilter object { key, type, value }`
 
-              用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+              用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
               - `key: string`
 
-                要与值进行比较的键。
+                要与该值进行比较的键。
 
               - `type: "eq" or "ne" or "gt" or 5 more`
 
                 指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-                - `eq`：等于
-                - `ne`：不等于
-                - `gt`：大于
-                - `gte`：大于或等于
-                - `lt`：小于
-                - `lte`：小于或等于
-                - `in`：在…中
-                - `nin`：不在…中
+                - `eq`: 等于
+                - `ne`: 不等于
+                - `gt`: 大于
+                - `gte`: 大于或等于
+                - `lt`: 小于
+                - `lte`: 小于或等于
+                - `in`: 包含于
+                - `nin`: 不包含于
 
                 - `"eq"`
 
@@ -4990,7 +4990,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               - `value: string or number or boolean or array of string or number`
 
-                要与属性键比较的值；支持字符串、数字或布尔类型。
+                用于与属性键进行比较的值；支持字符串、数字或布尔类型。
 
                 - `string`
 
@@ -5006,15 +5006,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `CompoundFilter object { filters, type }`
 
-              使用以下方式组合多个过滤器： `and` 或 `or`.
+              使用以下方式组合多个筛选条件 `and` 或 `or`.
 
               - `filters: array of ComparisonFilter or unknown`
 
-                要组合的过滤器数组。项目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+                要组合的筛选条件数组。项可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
                 - `ComparisonFilter object { key, type, value }`
 
-                  用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+                  用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
                 - `unknown`
 
@@ -5028,27 +5028,27 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `max_num_results: optional number`
 
-            要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+            返回的最大结果数。该数值应介于 1 到 50 之间（含端点）。
 
           - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
-            搜索的排名选项。
+            搜索的排序选项。
 
             - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-              启用混合搜索时，控制倒数排名融合如何平衡语义嵌入匹配与稀疏关键词匹配的权重。
+              在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
               - `embedding_weight: number`
 
-                嵌入在倒数排名融合中的权重。
+                倒数排名融合中嵌入的权重。
 
               - `text_weight: number`
 
-                文本在倒数排名融合中的权重。
+                倒数排名融合中文本的权重。
 
             - `ranker: optional "auto" or "default-2024-11-15"`
 
-              用于文件搜索的排名器。
+              用于文件搜索的排序器。
 
               - `"auto"`
 
@@ -5056,29 +5056,29 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `score_threshold: optional number`
 
-              文件搜索的分数阈值，为 0 到 1 之间的数字。接近 1 的数字将尝试仅返回最相关的结果，但可能返回更少的结果。
+              文件搜索的分数阈值，取值介于 0 到 1 之间。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
 
         - `Computer object { type }`
 
-          控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
-            计算机工具的类型。始终为 `computer`.
+            computer 工具的类型。始终是 `computer`.
 
             - `"computer"`
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
-            计算机显示屏的高度。
+            计算机显示器的高度。
 
           - `display_width: number`
 
-            计算机显示屏的宽度。
+            计算机显示器的宽度。
 
           - `environment: "windows" or "mac" or "linux" or 2 more`
 
@@ -5096,18 +5096,18 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `type: "computer_use_preview"`
 
-            计算机使用工具的类型。始终为 `computer_use_preview`.
+            computer use 工具的类型。始终是 `computer_use_preview`.
 
             - `"computer_use_preview"`
 
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-          搜索互联网以获取与提示相关的来源。了解更多关于
-          [网页搜索工具](/docs/guides/tools-web-search).
+          在互联网上搜索与提示相关的来源。详细了解
+          [网页搜索 tool](/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
-            网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+            网页搜索 工具的类型。其一为 `web_search` 或 `web_search_2025_08_26`.
 
             - `"web_search"`
 
@@ -5115,22 +5115,22 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `external_web_access: optional boolean`
 
-            允许网页搜索实时访问互联网。省略时默认为 true。为 false 时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+            允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索 工具将以离线/仅缓存模式运行，并且不会获取新的外部内容。
 
           - `filters: optional object { allowed_domains }  or null`
 
-            搜索的过滤器。
+            搜索的筛选条件。
 
             - `allowed_domains: optional array of string or null`
 
-              搜索允许的域。如果未提供，则允许所有域。
-              也允许所提供域的子域。
+              搜索允许的域名。如果未提供，则允许所有域名。
+              所提供域名的子域名也被允许。
 
               示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -5152,7 +5152,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -5160,14 +5160,14 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `type: optional "approximate"`
 
-              位置近似的类型。始终为 `approximate`.
+              位置近似值的类型。始终为 `approximate`.
 
               - `"approximate"`
 
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-          通过远程 Model Context Protocol 向模型提供额外工具的访问权限
-          （MCP）服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+          通过远程 Model Context Protocol
+          （MCP）服务器让模型访问更多工具。 [详细了解 MCP](/docs/guides/tools-remote-mcp).
 
           - `server_label: string`
 
@@ -5189,48 +5189,48 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
 
-            允许的工具名称列表或过滤器对象。
+            允许使用的工具名称列表或筛选对象。
 
             - `McpAllowedTools = array of string`
 
-              允许的工具名称的字符串数组
+              允许使用的工具名称字符串数组
 
             - `McpToolFilter object { read_only, tool_names }`
 
-              用于指定允许哪些工具的过滤器对象。
+              用于指定允许使用哪些工具的筛选对象。
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                它将匹配此过滤器。
+                指示工具是否会修改数据或仅为只读。如果某个
+                MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                标注，则会匹配此筛选器。
 
               - `tool_names: optional array of string`
 
-                允许的工具名称列表。
+                允许使用的工具名称列表。
 
           - `authorization: optional string`
 
-            可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-            使用自定义 MCP 服务器 URL 或服务连接器。您的应用程序
-            必须处理 OAuth 授权流程，并在此处提供令牌。
+            可用于远程 MCP 服务器的 OAuth 访问令牌，可配合
+            自定义 MCP 服务器 URL 或服务连接器一起使用。你的应用
+            必须处理 OAuth 授权流程并在此处提供令牌。
 
           - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-            服务连接器的标识符，例如 ChatGPT 中可用的那些。其中一个
-            `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解更多
-            关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+            服务连接器的标识符，例如 ChatGPT 中提供的那些。值为以下之一
+            `server_url`, `connector_id`、或 `tunnel_id` 必须提供。了解更多
+            关于服务连接器的信息 [请参考此处](/docs/guides/tools-remote-mcp#connectors).
 
-            目前支持的 `connector_id` 值为：
+            当前支持的 `connector_id` 值包括：
 
-            - Dropbox： `connector_dropbox`
-            - Gmail： `connector_gmail`
-            - Google Calendar： `connector_googlecalendar`
-            - Google Drive： `connector_googledrive`
-            - Microsoft Teams： `connector_microsoftteams`
-            - Outlook Calendar： `connector_outlookcalendar`
-            - Outlook Email： `connector_outlookemail`
-            - SharePoint： `connector_sharepoint`
+            - Dropbox: `connector_dropbox`
+            - Gmail: `connector_gmail`
+            - Google Calendar: `connector_googlecalendar`
+            - Google Drive: `connector_googledrive`
+            - Microsoft Teams: `connector_microsoftteams`
+            - Outlook Calendar: `connector_outlookcalendar`
+            - Outlook Email: `connector_outlookemail`
+            - SharePoint: `connector_sharepoint`
 
             - `"connector_dropbox"`
 
@@ -5250,12 +5250,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `defer_loading: optional boolean`
 
-            此 MCP 工具是否被推迟并通过工具搜索发现。
+            该 MCP 工具是否被延迟，并通过工具搜索被发现。
 
           - `headers: optional map[string] or null`
 
-            发送到 MCP 服务器的可选 HTTP 头。用于认证
-            或其他目的。
+            发送到 MCP 服务器的可选 HTTP 标头。用于身份验证
+            或其他用途。
 
           - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
@@ -5264,41 +5264,41 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
             - `McpToolApprovalFilter object { always, never }`
 
               指定 MCP 服务器中哪些工具需要审批。可以是
-              `always`, `never`，或与工具关联的筛选器对象
-              需要审批的。
+              `always`, `never`，或与工具关联的过滤器对象
+              需要审批的工具。
 
               - `always: optional object { read_only, tool_names }`
 
-                用于指定允许哪些工具的过滤器对象。
+                用于指定允许使用哪些工具的筛选对象。
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  它将匹配此过滤器。
+                  指示工具是否会修改数据或仅为只读。如果某个
+                  MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  标注，则会匹配此筛选器。
 
                 - `tool_names: optional array of string`
 
-                  允许的工具名称列表。
+                  允许使用的工具名称列表。
 
               - `never: optional object { read_only, tool_names }`
 
-                用于指定允许哪些工具的过滤器对象。
+                用于指定允许使用哪些工具的筛选对象。
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  它将匹配此过滤器。
+                  指示工具是否会修改数据或仅为只读。如果某个
+                  MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  标注，则会匹配此筛选器。
 
                 - `tool_names: optional array of string`
 
-                  允许的工具名称列表。
+                  允许使用的工具名称列表。
 
             - `McpToolApprovalSetting = "always" or "never"`
 
-              为所有工具指定单一审批策略。可选值为 `always` 或
-              `never`。当设置为 `always`，时，所有工具都需要审批。当
+              为所有工具指定一个统一的审批策略。可选值为 `always` 或
+              `never`。之一。当设置为 `always`，时，所有工具都需要审批。当设置为
               设置为 `never`，时，所有工具都不需要审批。
 
               - `"always"`
@@ -5311,23 +5311,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `server_url: optional string`
 
-            MCP 服务器的 URL。必须是 `server_url`, `connector_id`，或
-            `tunnel_id` 中的一项。
+            MCP 服务器的 URL。 `server_url`, `connector_id`、或
+            `tunnel_id` 必须提供其中之一。
 
           - `tunnel_id: optional string`
 
-            要使用的 Secure MCP Tunnel ID，而非直接服务器 URL。必须是
-            `server_url`, `connector_id`，或 `tunnel_id` 中的一项。
+            用于替代直接服务器 URL 的 Secure MCP Tunnel ID。
+            `server_url`, `connector_id`、或 `tunnel_id` 必须提供其中之一。
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
-          一种运行 Python 代码以帮助生成提示响应的工具。
+          用于运行 Python 代码以辅助生成对提示词回复的工具。
 
           - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器。可以是容器 ID 或一个对象，该对象
-            指定上传的文件 ID 以供你的代码使用，以及一个
-            可选 `memory_limit` 设置。
+            代码解释器容器。可以是容器 ID，也可以是一个指定了供代码使用的已上传文件 ID 的对象，以及
+            ，该对象同时包含一个
+            可选的 `memory_limit` 设置。
 
             - `string`
 
@@ -5335,17 +5335,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-              代码解释器容器的配置。可选地指定要运行代码的文件的 ID。
+              代码解释器容器的配置。可指定运行代码所需文件的 ID。
 
               - `type: "auto"`
 
-                始终 `auto`.
+                Always `auto`.
 
                 - `"auto"`
 
               - `file_ids: optional array of string`
 
-                可选的已上传文件列表，供你的代码使用。
+                提供给代码使用的已上传文件的可选列表。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -5367,7 +5367,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
                   - `type: "disabled"`
 
-                    禁用出站网络访问。始终 `disabled`.
+                    禁用出站网络访问。始终为 `disabled`.
 
                     - `"disabled"`
 
@@ -5375,33 +5375,33 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
                   - `allowed_domains: array of string`
 
-                    当类型为 `allowlist`.
+                    当 type 为 `allowlist`.
 
                   - `type: "allowlist"`
 
-                    仅允许对指定域名的出站网络访问。始终 `allowlist`.
+                    仅允许向指定域发出站网络访问。始终为 `allowlist`.
 
                     - `"allowlist"`
 
                   - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                    可选，针对允许列表域名的域范围密钥。
+                    可选的、限定域的密钥，用于允许列表中的域。
 
                     - `domain: string`
 
-                      与该密钥关联的域名。
+                      与该密钥关联的域。
 
                     - `name: string`
 
-                      要为该域名注入的密钥名称。
+                      要为该域注入的密钥名称。
 
                     - `value: string`
 
-                      要为该域名注入的密钥值。
+                      要为该域注入的密钥值。
 
           - `type: "code_interpreter"`
 
-            代码解释器工具的类型。始终 `code_interpreter`.
+            代码解释器工具的类型。始终为 `code_interpreter`.
 
             - `"code_interpreter"`
 
@@ -5417,7 +5417,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `type: "programmatic_tool_calling"`
 
-            工具的类型。始终 `programmatic_tool_calling`.
+            工具的类型。始终为 `programmatic_tool_calling`.
 
             - `"programmatic_tool_calling"`
 
@@ -5427,13 +5427,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `type: "image_generation"`
 
-            图像生成工具的类型。始终 `image_generation`.
+            图像生成工具的类型。始终为 `image_generation`.
 
             - `"image_generation"`
 
           - `action: optional "generate" or "edit" or "auto"`
 
-            是否生成新图像或编辑现有图像。默认： `auto`.
+            是生成新图像还是编辑现有图像。默认值： `auto`.
 
             - `"generate"`
 
@@ -5443,11 +5443,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            设置生成图像的背景。可选值之一： `transparent`,
-            `opaque`，或 `auto`。透明背景可用于
+            设置生成图像的背景。可选值为 `transparent`,
+            `opaque`、或 `auto`。透明背景适用于
             支持的 GPT 图像模型。对于 `gpt-image-2` 和
-            `gpt-image-2-2026-04-21`，此支持处于预览阶段。当使用
-            `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认： `auto`.
+            `gpt-image-2-2026-04-21`，该支持处于预览阶段。使用
+            `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
             - `"transparent"`
 
@@ -5457,7 +5457,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            控制模型在匹配输入图像的样式和特征（尤其是面部特征）方面投入的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
+            控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所需的投入程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。之一。默认为 `low`.
 
             - `"high"`
 
@@ -5465,31 +5465,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `input_image_mask: optional object { file_id, image_url }`
 
-            用于修复的可选掩码。包含 `image_url`
+            用于修复的可选遮罩。包含 `image_url`
             （字符串，可选）和 `file_id` （字符串，可选）。
 
             - `file_id: optional string`
 
-              掩码图像的文件ID。
+              遮罩图像的文件 ID。
 
             - `image_url: optional string`
 
-              Base64编码的掩码图像。
+              Base64 编码的遮罩图像。
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。其中一个为 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+            `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              要使用的图像生成模型。其中一个为 `gpt-image-1`,
+              要使用的图像生成模型。可选值为 `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+              `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -5504,7 +5504,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `moderation: optional "auto" or "low"`
 
-            生成图像的审核级别。默认值： `auto`.
+            生成图像的内容审核级别。默认值： `auto`.
 
             - `"auto"`
 
@@ -5516,8 +5516,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `output_format: optional "png" or "webp" or "jpeg"`
 
-            生成图像的输出格式。其中一个为 `png`, `webp`，或
-            `jpeg`。默认： `png`.
+            生成图像的输出格式。可选值为 `png`, `webp`、或
+            `jpeg`。默认值： `png`.
 
             - `"png"`
 
@@ -5527,12 +5527,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `partial_images: optional number`
 
-            流式模式下生成的部分图像数量，范围从0（默认值）到3。
+            在流式模式下要生成的中间图像数量，范围为 0（默认值）到 3。
 
           - `quality: optional "low" or "medium" or "high" or "auto"`
 
-            生成图像的质量。其中一个为 `low`, `medium`, `high`,
-            或 `auto`。默认： `auto`.
+            生成图像的质量。可选值为 `low`, `medium`, `high`,
+            或 `auto`。默认值： `auto`.
 
             - `"low"`
 
@@ -5544,13 +5544,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
               - `"1024x1024"`
 
@@ -5562,7 +5562,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `LocalShell object { type }`
 
-          一种允许模型在本地环境中执行 shell 命令的工具。
+          允许模型在本地环境中执行 shell 命令的工具。
 
           - `type: "local_shell"`
 
@@ -5572,7 +5572,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `Shell object { type, allowed_callers, environment }`
 
-          一种允许模型执行 shell 命令的工具。
+          允许模型执行 shell 命令的工具。
 
           - `type: "shell"`
 
@@ -5594,13 +5594,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               - `type: "container_auto"`
 
-                自动为此请求创建容器
+                自动为本次请求创建一个容器
 
                 - `"container_auto"`
 
               - `file_ids: optional array of string`
 
-                可选的已上传文件列表，供你的代码使用。
+                提供给代码使用的已上传文件的可选列表。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -5624,7 +5624,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               - `skills: optional array of SkillReference or InlineSkill`
 
-                可选的技能列表，通过 ID 或内联数据引用。
+                通过 id 引用或内联数据的可选技能列表。
 
                 - `SkillReference object { skill_id, type, version }`
 
@@ -5674,7 +5674,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
                   - `type: "inline"`
 
-                    为此请求定义内联技能。
+                    为本次请求定义一个内联技能。
 
                     - `"inline"`
 
@@ -5688,7 +5688,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               - `skills: optional array of LocalSkill`
 
-                可选技能列表。
+                可选的技能列表。
 
                 - `description: string`
 
@@ -5700,7 +5700,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
                 - `path: string`
 
-                  包含技能的目录路径。
+                  包含该技能的目录路径。
 
             - `ContainerReference object { container_id, type }`
 
@@ -5716,7 +5716,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `Custom object { name, type, allowed_callers, 3 more }`
 
-          一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+          使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -5724,7 +5724,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `type: "custom"`
 
-            自定义工具的类型。始终 `custom`.
+            自定义工具的类型。始终为 `custom`.
 
             - `"custom"`
 
@@ -5738,7 +5738,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `defer_loading: optional boolean`
 
-            是否应延迟此工具并通过工具搜索发现。
+            该工具是否应被延迟，并通过工具搜索发现。
 
           - `description: optional string`
 
@@ -5750,11 +5750,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `Text object { type }`
 
-              无约束的自由形式文本。
+              无约束的自由格式文本。
 
               - `type: "text"`
 
-                无约束文本格式。始终 `text`.
+                无约束文本格式。始终为 `text`.
 
                 - `"text"`
 
@@ -5768,7 +5768,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               - `syntax: "lark" or "regex"`
 
-                语法定义的语法。之一 `lark` 或 `regex`.
+                语法定义的语法格式。可选值为 `lark` 或 `regex`.
 
                 - `"lark"`
 
@@ -5776,21 +5776,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               - `type: "grammar"`
 
-                语法格式。始终 `grammar`.
+                语法格式。始终为 `grammar`.
 
                 - `"grammar"`
 
         - `Namespace object { description, name, tools, type }`
 
-          将函数/自定义工具分组到共享命名空间下。
+          在共享命名空间下对函数/自定义工具进行分组。
 
           - `description: string`
 
-            显示给模型的命名空间描述。
+            展示给模型的命名空间描述。
 
           - `name: string`
 
-            工具调用中使用的命名空间名称（例如， `crm`).
+            在工具调用中使用的命名空间名称（例如， `crm`).
 
           - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
@@ -5814,23 +5814,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               - `defer_loading: optional boolean`
 
-                此函数是否应被延迟并通过工具搜索发现。
+                是否应推迟此函数并通过工具搜索发现它。
 
               - `description: optional string or null`
 
               - `output_schema: optional map[unknown] or null`
 
-                描述此函数工具字符串输出中 JSON 值的 JSON Schema。这不描述内容数组输出。
+                描述此函数工具字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content 数组输出。
 
               - `parameters: optional unknown or null`
 
               - `strict: optional boolean or null`
 
-                是否强制进行严格的参数验证。如果省略，Responses 会在 schema 兼容时尝试使用严格验证，否则回退到非严格验证。
+                是否强制执行严格的参数校验。如果省略，Responses 会在 schema 兼容时尝试使用严格校验，否则回退到非严格校验。
 
             - `Custom object { name, type, allowed_callers, 3 more }`
 
-              一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+              使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -5838,7 +5838,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               - `type: "custom"`
 
-                自定义工具的类型。始终 `custom`.
+                自定义工具的类型。始终为 `custom`.
 
                 - `"custom"`
 
@@ -5852,7 +5852,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               - `defer_loading: optional boolean`
 
-                是否应延迟此工具并通过工具搜索发现。
+                该工具是否应被延迟，并通过工具搜索发现。
 
               - `description: optional string`
 
@@ -5864,27 +5864,27 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `type: "namespace"`
 
-            工具的类型。始终 `namespace`.
+            工具的类型。始终为 `namespace`.
 
             - `"namespace"`
 
         - `ToolSearch object { type, description, execution, parameters }`
 
-          用于延迟工具的托管或 BYOT 工具搜索配置。
+          针对延迟工具的托管或 BYOT 工具搜索配置。
 
           - `type: "tool_search"`
 
-            工具的类型。始终 `tool_search`.
+            工具的类型。始终为 `tool_search`.
 
             - `"tool_search"`
 
           - `description: optional string or null`
 
-            为客户端执行的工具搜索工具向模型显示的描述。
+            向模型展示的客户端执行工具搜索工具的描述。
 
           - `execution: optional "server" or "client"`
 
-            工具搜索是由服务器还是客户端执行。
+            工具搜索是由服务端执行还是由客户端执行。
 
             - `"server"`
 
@@ -5892,15 +5892,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `parameters: optional unknown or null`
 
-            客户端执行的工具搜索工具的参数 schema。
+            客户端执行工具搜索工具的参数 schema。
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          此工具在网页上搜索相关内容以用于响应。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+          此工具会在网页上搜索相关结果以用于回复。详细了解 [网页搜索 tool](https://platform.openai.com/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-            网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+            网页搜索 工具的类型。其一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
             - `"web_search_preview"`
 
@@ -5914,7 +5914,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -5924,11 +5924,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            用户的位置。
+            用户所在的位置。
 
             - `type: "approximate"`
 
-              位置近似的类型。始终为 `approximate`.
+              位置近似值的类型。始终为 `approximate`.
 
               - `"approximate"`
 
@@ -5942,7 +5942,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -5950,11 +5950,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
         - `ApplyPatch object { type, allowed_callers }`
 
-          允许助手使用统一差异创建、删除或更新文件。
+          允许助手使用 unified diff 创建、删除或更新文件。
 
           - `type: "apply_patch"`
 
-            工具的类型。始终 `apply_patch`.
+            工具的类型。始终为 `apply_patch`.
 
             - `"apply_patch"`
 
@@ -5968,11 +5968,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
       - `top_p: optional number`
 
-        用于核采样的温度替代参数；1.0 包含所有标记。
+        作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
 - `error: EvalAPIError`
 
-  表示 Eval API 错误响应的对象。
+  表示来自 Eval API 错误响应的对象。
 
   - `code: string`
 
@@ -5984,20 +5984,20 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
 - `eval_id: string`
 
-  相关评估的标识符。
+  关联评估的标识符。
 
 - `metadata: Metadata or null`
 
-  一组 16 个键值对，可附加到对象上。这可以
-  用于以结构化格式存储有关对象的额外信息，
+  可附加到对象的 16 组键值对。这可以
+  用于以结构化格式存储有关对象的附加信息，
   并通过 API 或仪表板查询对象。
 
-  键是字符串，最大长度为 64 个字符。值是字符串，
+  键为字符串，最大长度为 64 个字符。值为字符串，
   最大长度为 512 个字符。
 
 - `model: string`
 
-  被评估的模型（如果适用）。
+  被评估的模型（如适用）。
 
 - `name: string`
 
@@ -6005,21 +6005,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
 - `object: "eval.run"`
 
-  对象的类型。始终为 "eval.run"。
+  对象类型，始终为 "eval.run"。
 
   - `"eval.run"`
 
 - `per_model_usage: array of object { cached_tokens, completion_tokens, invocation_count, 3 more }`
 
-  评估运行期间每个模型的使用统计。
+  评估运行期间每个模型的使用统计信息。
 
   - `cached_tokens: number`
 
-    从缓存中检索到的令牌数。
+    从缓存中检索到的 token 数量。
 
   - `completion_tokens: number`
 
-    生成的完成令牌数。
+    生成的 completion token 数量。
 
   - `invocation_count: number`
 
@@ -6031,31 +6031,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
   - `prompt_tokens: number`
 
-    使用的提示令牌数。
+    使用的 prompt token 数量。
 
   - `total_tokens: number`
 
-    使用的令牌总数。
+    使用的 token 总数。
 
 - `per_testing_criteria_results: array of object { failed, passed, testing_criteria }`
 
-  评估运行期间应用的每项测试标准的结果。
+  评估运行期间应用的每个测试条件的测试结果。
 
   - `failed: number`
 
-    此标准失败的测试数量。
+    此条件下未通过的测试数。
 
   - `passed: number`
 
-    此标准通过的测试数量。
+    此条件下通过的测试数。
 
   - `testing_criteria: string`
 
-    测试标准的说明。
+    测试条件的描述。
 
 - `report_url: string`
 
-  UI 仪表板上呈现的评估运行报告的 URL。
+  在 UI 仪表板上指向已渲染评估运行报告的 URL。
 
 - `result_counts: object { errored, failed, passed, total }`
 
@@ -6063,11 +6063,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
   - `errored: number`
 
-    导致错误的输出项数量。
+    出现错误的输出项数量。
 
   - `failed: number`
 
-    未能通过评估的输出项数量。
+    未通过评估的输出项数量。
 
   - `passed: number`
 
@@ -6168,8 +6168,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
   "eval_id": "eval_67abd54d9b0081909a86353f6fb9317a",
   "report_url": "https://platform.openai.com/evaluations/eval_67abd54d9b0081909a86353f6fb9317a?run_id=evalrun_67abd54d60ec8190832b46859da808f7",
   "status": "canceled",
-  "model": "gpt-4o-mini",
-  "name": "gpt-4o-mini",
+  "model": "gpt-5.6-sol",
+  "name": "gpt-5.6-sol",
   "created_at": 1743092069,
   "result_counts": {
     "total": 0,
@@ -6297,11 +6297,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
         }
       ]
     },
-    "model": "gpt-4o-mini",
+    "model": "gpt-5.6-sol",
     "sampling_params": {
-      "seed": 42,
-      "temperature": 1.0,
-      "top_p": 1.0,
       "max_completions_tokens": 2048
     }
   },
@@ -6314,25 +6311,25 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
 **post** `/evals/{eval_id}/runs`
 
-为给定评估启动新的运行，指定数据源以及用于测试的模型配置。数据源将根据评估配置中指定的模式进行验证。
+为给定的评估启动一次新的运行，指定数据源以及要使用的模型配置以进行测试。数据源将根据评估配置中指定的 schema 进行校验。
 
 ### 路径参数
 
 - `eval_id: string`
 
-### 请求体参数
+### Body Parameters
 
 - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or object { source, type, input_messages, 2 more }`
 
-  关于运行数据源的详细信息。
+  运行数据源的详细信息。
 
   - `CreateEvalJSONLRunDataSource object { source, type }`
 
-    一个 JsonlRunDataSource 对象，指定一个 JSONL 文件，该文件与评估
+    一个 JsonlRunDataSource 对象，用于指定与该评估匹配的 JSONL 文件
 
     - `source: object { content, type }  or object { id, type }`
 
-      决定什么填充 `item` 数据源中的命名空间。
+      决定数据源中如何填充 `item` 命名空间。
 
       - `EvalJSONLFileContentSource object { content, type }`
 
@@ -6346,7 +6343,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `type: "file_content"`
 
-          jsonl 源的类型。始终为 `file_content`.
+          jsonl 数据源的类型。始终为 `file_content`.
 
           - `"file_content"`
 
@@ -6358,23 +6355,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `type: "file_id"`
 
-          jsonl 源的类型。始终为 `file_id`.
+          jsonl 数据源的类型。始终为 `file_id`.
 
           - `"file_id"`
 
     - `type: "jsonl"`
 
-      数据源的类型。始终是 `jsonl`.
+      数据源的类型。始终为 `jsonl`.
 
       - `"jsonl"`
 
   - `CreateEvalCompletionsRunDataSource object { source, type, input_messages, 2 more }`
 
-    描述模型采样配置的 CompletionsRunDataSource 对象。
+    一个 CompletionsRunDataSource 对象，用于描述模型采样配置。
 
     - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 3 more }`
 
-      决定什么填充 `item` 此运行数据源中的命名空间。
+      决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
       - `EvalJSONLFileContentSource object { content, type }`
 
@@ -6388,7 +6385,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `type: "file_content"`
 
-          jsonl 源的类型。始终为 `file_content`.
+          jsonl 数据源的类型。始终为 `file_content`.
 
           - `"file_content"`
 
@@ -6400,44 +6397,44 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `type: "file_id"`
 
-          jsonl 源的类型。始终为 `file_id`.
+          jsonl 数据源的类型。始终为 `file_id`.
 
           - `"file_id"`
 
       - `StoredCompletionsRunDataSource object { type, created_after, created_before, 3 more }`
 
-        描述一组过滤器的 StoredCompletionsRunDataSource 配置
+        一个 StoredCompletionsRunDataSource 配置，用于描述一组筛选条件
 
         - `type: "stored_completions"`
 
-          源的类型。始终为 `stored_completions`.
+          数据源的类型。始终为 `stored_completions`.
 
           - `"stored_completions"`
 
         - `created_after: optional number or null`
 
-          可选的 Unix 时间戳，用于过滤在此时间之后创建的项。
+          一个可选的 Unix 时间戳，用于筛选在此时间之后创建的项。
 
         - `created_before: optional number or null`
 
-          可选的 Unix 时间戳，用于过滤在此时间之前创建的项。
+          一个可选的 Unix 时间戳，用于筛选在此时间之前创建的项。
 
         - `limit: optional number or null`
 
-          可选的最大返回项数。
+          一个可选的返回项的最大数量。
 
         - `metadata: optional Metadata or null`
 
-          一组 16 个键值对，可附加到对象上。这可以
-          用于以结构化格式存储有关对象的额外信息，
+          可附加到对象的 16 组键值对。这可以
+          用于以结构化格式存储有关对象的附加信息，
           并通过 API 或仪表板查询对象。
 
-          键是字符串，最大长度为 64 个字符。值是字符串，
+          键为字符串，最大长度为 64 个字符。值为字符串，
           最大长度为 512 个字符。
 
         - `model: optional string or null`
 
-          可选的模型过滤条件（例如，'gpt-4o'）。
+          一个可选的用于筛选的模型（例如 'gpt-5.6-sol'）。
 
     - `type: "completions"`
 
@@ -6447,43 +6444,43 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-      用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+      在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
       - `TemplateInputMessages object { template, type }`
 
         - `template: array of EasyInputMessage or object { content, role, type }`
 
-          构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+          构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
           - `EasyInputMessage object { content, role, phase, type }`
 
-            输入给模型的消息，其角色指示指令遵循
-            层级。以 `developer` 或 `system` 角色给出的指令
-            优先于以 `user` 角色给出的指令。具有
-            `assistant` 角色的消息被认为是由模型在之前的
-            交互中生成的。
+            输入到模型的消息，其角色指示指令的
+            层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+            角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+            `assistant` 消息。
+            互动。
 
             - `content: string or ResponseInputMessageContentList`
 
               发送给模型的文本、图像或音频输入，用于生成响应。
-              也可以包含先前的助手响应。
+              也可以包含之前的助手响应。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `ResponseInputMessageContentList = array of ResponseInputContent`
 
-                发送给模型的一个或多个输入项的列表，包含不同类型的内容
-                。
+                发送给模型的一个或多个输入项的列表，其中包含不同的内容
+                类型。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                   - `text: string`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                   - `type: "input_text"`
 
@@ -6493,7 +6490,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `prompt_cache_breakpoint: optional object { mode }`
 
-                    标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                    标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                     - `mode: "explicit"`
 
@@ -6507,7 +6504,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `detail: ImageDetail`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`, `auto`、或 `original`。之一。默认为 `auto`.
 
                     - `"low"`
 
@@ -6529,11 +6526,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `image_url: optional string or null`
 
-                    要发送给模型的图像的 URL。完全限定的 URL 或数据 URL 中的 base64 编码图像。
+                    要发送给模型的图像的 URL。可以是完整的 URL，也可以是 base64 编码的 data URL 图像。
 
                   - `prompt_cache_breakpoint: optional object { mode }`
 
-                    标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                    标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                     - `mode: "explicit"`
 
@@ -6553,7 +6550,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `detail: optional "auto" or "low" or "high"`
 
-                    要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入令牌的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+                    要发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
                     - `"auto"`
 
@@ -6563,7 +6560,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `file_data: optional string`
 
-                    要发送给模型的文件的内容。
+                    要发送给模型的文件内容。
 
                   - `file_id: optional string or null`
 
@@ -6579,7 +6576,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `prompt_cache_breakpoint: optional object { mode }`
 
-                    标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                    标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                     - `mode: "explicit"`
 
@@ -6589,7 +6586,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。可选值为 `user`, `assistant`, `system`、或
               `developer`.
 
               - `"user"`
@@ -6602,9 +6599,9 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `phase: optional "commentary" or "final_answer" or null`
 
-              将 `assistant` 消息标记为中间评论（`commentary`) 或最终答案 (`final_answer`).
-              对于像 `gpt-5.3-codex` 及更新的模型，发送后续请求时，请保留并重新发送
-              阶段到所有助手消息中——省略该阶段可能会降低性能。不用于用户消息。
+              将 `assistant` 消息标记为中间补充说明（`commentary`) 或最终答案（`final_answer`).
+              对于类似 `gpt-5.3-codex` 及更高版本，发送后续请求时，请在所有助手消息上保留并重新发送
+              阶段，遗漏会降低性能。不用于用户消息。
 
               - `"commentary"`
 
@@ -6618,31 +6615,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `EvalMessageObject object { content, role, type }`
 
-            输入给模型的消息，其角色指示指令遵循
-            层级。以 `developer` 或 `system` 角色给出的指令
-            优先于以 `user` 角色给出的指令。具有
-            `assistant` 角色的消息被认为是由模型在之前的
-            交互中生成的。
+            输入到模型的消息，其角色指示指令的
+            层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+            角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+            `assistant` 消息。
+            互动。
 
             - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-              模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+              模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -6652,21 +6649,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `InputImage object { image_url, type, detail }`
 
-                用于 EvalItem 内容数组中的图像输入块。
+                在 EvalItem 内容数组中使用的图片输入块。
 
                 - `image_url: string`
 
-                  图像输入的 URL。
+                  图片输入的 URL。
 
                 - `type: "input_image"`
 
-                  图像输入的类型。始终为 `input_image`.
+                  图片输入的类型。始终为 `input_image`.
 
                   - `"input_image"`
 
                 - `detail: optional string`
 
-                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
@@ -6676,11 +6673,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `data: string`
 
-                    Base64 编码的音频数据。
+                    经过 Base64 编码的音频数据。
 
                   - `format: "mp3" or "wav"`
 
-                    音频数据的格式。目前支持的格式为 `mp3` 和
+                    音频数据的格式。当前支持的格式有 `mp3` 和
                     `wav`.
 
                     - `"mp3"`
@@ -6695,24 +6692,24 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                输入列表，每个输入可以是输入文本、输出文本、输入
-                图像或输入音频对象。
+                输入列表，其中每个输入可以是输入文本、输出文本、输入
+                图片或输入音频对象。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -6722,21 +6719,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `InputImage object { image_url, type, detail }`
 
-                  用于 EvalItem 内容数组中的图像输入块。
+                  在 EvalItem 内容数组中使用的图片输入块。
 
                   - `image_url: string`
 
-                    图像输入的 URL。
+                    图片输入的 URL。
 
                   - `type: "input_image"`
 
-                    图像输入的类型。始终为 `input_image`.
+                    图片输入的类型。始终为 `input_image`.
 
                     - `"input_image"`
 
                   - `detail: optional string`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
@@ -6744,7 +6741,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。可选值为 `user`, `assistant`, `system`、或
               `developer`.
 
               - `"user"`
@@ -6771,7 +6768,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `item_reference: string`
 
-          对 `item` 命名空间中变量的引用。例如，"item.input_trajectory"
+          命名空间中的变量引用。例如“ `item` .item.input_trajectory”
 
         - `type: "item_reference"`
 
@@ -6781,7 +6778,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `model: optional string`
 
-      用于生成补全的模型名称（例如 "o3-mini"）。
+      用于生成补全的模型名称（例如 “o3-mini”）。
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
@@ -6791,13 +6788,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `reasoning_effort: optional ReasoningEffort or null`
 
-        约束推理模型的推理工作量。目前支持的
-        值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-        降低推理工作量可以加快响应速度并减少响应中
-        用于推理的令牌数。并非所有推理模型都支持每个
+        约束推理模型在推理上的投入程度。当前支持
+        的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+        降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+        消耗。并非所有推理模型都支持每个
         值。请参阅
         [推理指南](https://platform.openai.com/docs/guides/reasoning)
-        了解各模型的特定支持。
+        了解特定模型的支持情况。
 
         - `"none"`
 
@@ -6815,20 +6812,20 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `response_format: optional ResponseFormatText or ResponseFormatJSONSchema or ResponseFormatJSONObject`
 
-        指定模型必须输出的格式的对象。
+        指定模型必须输出格式的对象。
 
-        设置为 `{ "type": "json_schema", "json_schema": {...} }` 启用
-        结构化输出，确保模型匹配你提供的 JSON
-        架构。更多信息请参阅 [Structured Outputs
+        设置为 `{ "type": "json_schema", "json_schema": {...} }` 会启用
+        Structured Outputs，用于确保模型匹配你提供的 JSON
+        schema。详细了解请参阅 [Structured Outputs
         指南](/docs/guides/structured-outputs).
 
         设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-        确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-        。
+        确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+        使用。
 
         - `ResponseFormatText object { type }`
 
-          默认响应格式，用于生成文本响应。
+          默认响应格式。用于生成文本响应。
 
           - `type: "text"`
 
@@ -6838,34 +6835,34 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `ResponseFormatJSONSchema object { json_schema, type }`
 
-          JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-          了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+          JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+          详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
           - `json_schema: object { name, description, schema, strict }`
 
-            结构化输出配置选项，包括 JSON Schema。
+            Structured Outputs 配置选项，包括 JSON Schema。
 
             - `name: string`
 
-              响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-              下划线和破折号，最大长度为 64。
+              响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+              下划线和短横线，最大长度为 64。
 
             - `description: optional string`
 
-              响应格式用途的描述，模型使用它来
-              决定如何以该格式进行响应。
+              对响应格式用途的描述，供模型用来
+              决定如何按该格式进行响应。
 
             - `schema: optional map[unknown]`
 
-              响应格式的架构，以 JSON Schema 对象描述。
-              了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+              响应格式对应的 schema，以 JSON Schema 对象形式描述。
+              了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
             - `strict: optional boolean or null`
 
-              是否在生成输出时启用严格的架构遵循。
-              如果设置为 true，模型将始终遵循定义的精确架构
-              中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-              `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+              是否在生成输出时启用严格的 schema 遵循。
+              若设置为 true，模型将始终遵循在
+              中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+              `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
               指南](/docs/guides/structured-outputs).
 
           - `type: "json_schema"`
@@ -6876,10 +6873,10 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `ResponseFormatJSONObject object { type }`
 
-          JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-          使用 `json_schema` 建议用于支持它的模型。请注意，
-          模型在没有系统或用户消息指示它的情况下不会生成 JSON
-          去这样做。
+          JSON 对象响应格式。生成 JSON 响应的旧方法。
+          对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+          模型将不会生成 JSON
+          。
 
           - `type: "json_object"`
 
@@ -6889,53 +6886,53 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `seed: optional number`
 
-        用于在采样时初始化随机性的种子值。
+        用于在采样过程中初始化随机性的种子值。
 
       - `temperature: optional number`
 
-        更高的温度会增加输出的随机性。
+        较高的 temperature 会增加输出的随机性。
 
       - `tools: optional array of ChatCompletionFunctionTool`
 
-        模型可能调用的工具列表。目前，仅支持函数作为工具。使用此选项提供模型可能生成 JSON 输入的函数列表。最多支持 128 个函数。
+        模型可以调用的工具列表。目前，作为工具仅支持函数。使用此项提供模型可以为其生成 JSON 输入的函数列表。最多支持 128 个函数。
 
         - `function: FunctionDefinition`
 
           - `name: string`
 
-            要调用的函数名称。必须是 a-z、A-Z、0-9，或包含下划线和破折号，最大长度为 64。
+            要调用的函数的名称。必须为 a-z、A-Z、0-9 或包含下划线和短划线，最大长度为 64。
 
           - `description: optional string`
 
-            函数功能的描述，模型用它来决定何时以及如何调用该函数。
+            对函数功能的描述，供模型选择何时以及如何调用该函数时使用。
 
           - `parameters: optional FunctionParameters`
 
-            函数接受的参数，描述为 JSON Schema 对象。参见 [指南](/docs/guides/function-calling) 获取示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) 获取有关格式的文档。
+            函数接受的参数，使用 JSON Schema 对象进行描述。请参阅 [指南](/docs/guides/function-calling) 中的示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) ，了解相关格式的文档。
 
-            省略 `parameters` 定义了一个具有空参数列表的函数。
+            省略 `parameters` 将定义一个具有空参数列表的函数。
 
           - `strict: optional boolean or null`
 
-            是否在生成函数调用时启用严格模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的子集，当 `strict` 为 `true`。在 [函数调用指南](/docs/guides/function-calling).
+            在生成函数调用时是否启用严格的模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的一个子集，当 `strict` 是 `true`。在以下位置详细了解结构化输出 [函数调用指南](/docs/guides/function-calling).
 
         - `type: "function"`
 
-          中了解更多关于结构化输出的信息。工具的类型。目前仅支持 `function` 。
+          工具的类型。目前，仅支持 `function` 是受支持的。
 
           - `"function"`
 
       - `top_p: optional number`
 
-        用于核采样的温度替代参数；1.0 包含所有标记。
+        作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
   - `ResponsesRunDataSource object { source, type, input_messages, 2 more }`
 
-    描述模型采样配置的 ResponsesRunDataSource 对象。
+    一个 ResponsesRunDataSource 对象，用于描述模型采样配置。
 
     - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 8 more }`
 
-      决定什么填充 `item` 此运行数据源中的命名空间。
+      决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
       - `EvalJSONLFileContentSource object { content, type }`
 
@@ -6949,7 +6946,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `type: "file_content"`
 
-          jsonl 源的类型。始终为 `file_content`.
+          jsonl 数据源的类型。始终为 `file_content`.
 
           - `"file_content"`
 
@@ -6961,13 +6958,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `type: "file_id"`
 
-          jsonl 源的类型。始终为 `file_id`.
+          jsonl 数据源的类型。始终为 `file_id`.
 
           - `"file_id"`
 
       - `EvalResponsesSource object { type, created_after, created_before, 8 more }`
 
-        描述运行数据源配置的 EvalResponsesSource 对象。
+        一个 EvalResponsesSource 对象，用于描述运行数据源配置。
 
         - `type: "responses"`
 
@@ -6977,49 +6974,49 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `created_after: optional number or null`
 
-          仅包含在此时间戳之后（含）创建的项。这是用于选择响应的查询参数。
+          仅包含在此时间戳之后（包含）创建的项目。这是一个用于选择响应的查询参数。
 
         - `created_before: optional number or null`
 
-          仅包含在此时间戳之前（含）创建的项。这是用于选择响应的查询参数。
+          仅包含在此时间戳之前（包含）创建的项目。这是一个用于选择响应的查询参数。
 
         - `instructions_search: optional string or null`
 
-          用于搜索“instructions”字段的可选字符串。这是用于选择响应的查询参数。
+          用于搜索 'instructions' 字段的可选字符串。这是一个用于选择响应的查询参数。
 
         - `metadata: optional unknown or null`
 
-          响应的元数据过滤器。这是用于选择响应的查询参数。
+          响应的元数据过滤器。这是一个用于选择响应的查询参数。
 
         - `model: optional string or null`
 
-          要查找响应的模型名称。这是用于选择响应的查询参数。
+          要为其查找响应的模型名称。这是一个用于选择响应的查询参数。
 
         - `reasoning_effort: optional ReasoningEffort or null`
 
-          约束推理模型的推理工作量。目前支持的
-          值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-          降低推理工作量可以加快响应速度并减少响应中
-          用于推理的令牌数。并非所有推理模型都支持每个
+          约束推理模型在推理上的投入程度。当前支持
+          的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+          降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+          消耗。并非所有推理模型都支持每个
           值。请参阅
           [推理指南](https://platform.openai.com/docs/guides/reasoning)
-          了解各模型的特定支持。
+          了解特定模型的支持情况。
 
         - `temperature: optional number or null`
 
-          采样温度。这是用于选择响应的查询参数。
+          采样温度。这是一个用于选择响应的查询参数。
 
         - `tools: optional array of string or null`
 
-          工具名称列表。这是用于选择响应的查询参数。
+          工具名称列表。这是一个用于选择响应的查询参数。
 
         - `top_p: optional number or null`
 
-          核采样参数。这是用于选择响应的查询参数。
+          核采样参数。这是一个用于选择响应的查询参数。
 
         - `users: optional array of string or null`
 
-          用户标识符列表。这是用于选择响应的查询参数。
+          用户标识符列表。这是一个用于选择响应的查询参数。
 
     - `type: "responses"`
 
@@ -7029,13 +7026,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-      用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+      在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
       - `InputMessagesTemplate object { template, type }`
 
         - `template: array of object { content, role }  or object { content, role, type }`
 
-          构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+          构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
           - `ChatMessage object { content, role }`
 
@@ -7049,31 +7046,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `EvalMessageObject object { content, role, type }`
 
-            输入给模型的消息，其角色指示指令遵循
-            层级。以 `developer` 或 `system` 角色给出的指令
-            优先于以 `user` 角色给出的指令。具有
-            `assistant` 角色的消息被认为是由模型在之前的
-            交互中生成的。
+            输入到模型的消息，其角色指示指令的
+            层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+            角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+            `assistant` 消息。
+            互动。
 
             - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-              模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+              模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -7083,21 +7080,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `InputImage object { image_url, type, detail }`
 
-                用于 EvalItem 内容数组中的图像输入块。
+                在 EvalItem 内容数组中使用的图片输入块。
 
                 - `image_url: string`
 
-                  图像输入的 URL。
+                  图片输入的 URL。
 
                 - `type: "input_image"`
 
-                  图像输入的类型。始终为 `input_image`.
+                  图片输入的类型。始终为 `input_image`.
 
                   - `"input_image"`
 
                 - `detail: optional string`
 
-                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
@@ -7105,12 +7102,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                输入列表，每个输入可以是输入文本、输出文本、输入
-                图像或输入音频对象。
+                输入列表，其中每个输入可以是输入文本、输出文本、输入
+                图片或输入音频对象。
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。可选值为 `user`, `assistant`, `system`、或
               `developer`.
 
               - `"user"`
@@ -7137,7 +7134,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `item_reference: string`
 
-          对 `item` 命名空间。即“item.name”
+          命名空间中的变量引用。例如“ `item` 命名空间。例如，“item.name”
 
         - `type: "item_reference"`
 
@@ -7147,7 +7144,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `model: optional string`
 
-      用于生成补全的模型名称（例如 "o3-mini"）。
+      用于生成补全的模型名称（例如 “o3-mini”）。
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
@@ -7157,64 +7154,64 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `reasoning_effort: optional ReasoningEffort or null`
 
-        约束推理模型的推理工作量。目前支持的
-        值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-        降低推理工作量可以加快响应速度并减少响应中
-        用于推理的令牌数。并非所有推理模型都支持每个
+        约束推理模型在推理上的投入程度。当前支持
+        的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+        降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+        消耗。并非所有推理模型都支持每个
         值。请参阅
         [推理指南](https://platform.openai.com/docs/guides/reasoning)
-        了解各模型的特定支持。
+        了解特定模型的支持情况。
 
       - `seed: optional number`
 
-        用于在采样时初始化随机性的种子值。
+        用于在采样过程中初始化随机性的种子值。
 
       - `temperature: optional number`
 
-        更高的温度会增加输出的随机性。
+        较高的 temperature 会增加输出的随机性。
 
       - `text: optional object { format }`
 
-        模型文本响应的配置选项。可以是纯
-        文本或结构化 JSON 数据。了解更多：
+        来自模型的文本响应的配置选项。可以是纯
+        文本或结构化 JSON 数据。了解更多信息：
 
         - [文本输入和输出](/docs/guides/text)
         - [结构化输出](/docs/guides/structured-outputs)
 
         - `format: optional ResponseFormatTextConfig`
 
-          指定模型必须输出的格式的对象。
+          指定模型必须输出格式的对象。
 
-          配置 `{ "type": "json_schema" }` 可启用结构化输出，
-          这确保模型将匹配你提供的 JSON 模式。更多信息请参阅
+          配置 `{ "type": "json_schema" }` 启用结构化输出，
+          可确保模型匹配你提供的 JSON schema。详情请参阅
           [结构化输出指南](/docs/guides/structured-outputs).
 
           默认格式为 `{ "type": "text" }` ，无其他选项。
 
-          **不建议用于 gpt-4o 及更新的模型：**
+          **不推荐用于 gpt-4o 及更新模型：**
 
           设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-          确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-          。
+          确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+          使用。
 
           - `ResponseFormatText object { type }`
 
-            默认响应格式，用于生成文本响应。
+            默认响应格式。用于生成文本响应。
 
           - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
-            JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-            了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+            JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+            详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
             - `name: string`
 
-              响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-              下划线和破折号，最大长度为 64。
+              响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+              下划线和短横线，最大长度为 64。
 
             - `schema: map[unknown]`
 
-              响应格式的架构，以 JSON Schema 对象描述。
-              了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+              响应格式对应的 schema，以 JSON Schema 对象形式描述。
+              了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
             - `type: "json_schema"`
 
@@ -7224,42 +7221,42 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `description: optional string`
 
-              响应格式用途的描述，模型使用它来
-              决定如何以该格式进行响应。
+              对响应格式用途的描述，供模型用来
+              决定如何按该格式进行响应。
 
             - `strict: optional boolean or null`
 
-              是否在生成输出时启用严格的架构遵循。
-              如果设置为 true，模型将始终遵循定义的精确架构
-              中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-              `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+              是否在生成输出时启用严格的 schema 遵循。
+              若设置为 true，模型将始终遵循在
+              中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+              `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
               指南](/docs/guides/structured-outputs).
 
           - `ResponseFormatJSONObject object { type }`
 
-            JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-            使用 `json_schema` 建议用于支持它的模型。请注意，
-            模型在没有系统或用户消息指示它的情况下不会生成 JSON
-            去这样做。
+            JSON 对象响应格式。生成 JSON 响应的旧方法。
+            对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+            模型将不会生成 JSON
+            。
 
       - `tools: optional array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-        模型在生成响应时可能调用的工具数组。你
-        可以通过设置 `tool_choice` 参数来指定使用哪个工具。
+        模型在生成响应时可以调用的工具数组。你可以
+        通过设置 `tool_choice` 参数来指定要使用的工具。
 
-        你可以提供给模型的工具分为两类：
+        你可以向模型提供的两类工具包括：
 
-        - **内置工具**：由 OpenAI 提供的工具，用于扩展
-          模型的能力，例如 [网页搜索](/docs/guides/tools-web-search)
-          或 [文件搜索](/docs/guides/tools-file-search)。了解更多关于
+        - **内置工具**: 由 OpenAI 提供的工具，用于扩展模型的
+          能力，例如 [网页搜索](/docs/guides/tools-web-search)
+          或 [文件搜索](/docs/guides/tools-file-search)。详细了解
           [内置工具](/docs/guides/tools).
-        - **函数调用（自定义工具）**：由你定义的函数，
-          使模型能够调用你自己的代码。了解更多关于
+        - **函数调用（自定义工具）**: 由你定义的函数，
+          使模型能够调用你自己的代码。详细了解
           [函数调用](/docs/guides/function-calling).
 
         - `Function object { name, parameters, strict, 5 more }`
 
-          在你自己的代码中定义一个模型可以选择调用的函数。了解更多关于 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+          定义你自己代码中的一个函数，模型可以选择调用它。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
 
           - `name: string`
 
@@ -7267,11 +7264,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `parameters: map[unknown] or null`
 
-            描述函数参数的 JSON schema 对象。
+            描述该函数参数的 JSON schema 对象。
 
           - `strict: boolean or null`
 
-            是否对此函数工具强制执行严格的参数验证。
+            是否对此函数工具强制执行严格的参数校验。
 
           - `type: "function"`
 
@@ -7289,54 +7286,54 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `defer_loading: optional boolean`
 
-            此函数是否延迟并通过工具搜索加载。
+            此函数是否被延迟加载并通过 tool search 加载。
 
           - `description: optional string or null`
 
-            函数的描述。模型用它来决定是否调用该函数。
+            函数的描述。由模型用于决定是否调用该函数。
 
           - `output_schema: optional map[unknown] or null`
 
-            描述此函数字符串输出中编码的 JSON 值的 JSON schema 对象。
+            描述该函数在字符串输出中所编码 JSON 值的 JSON schema 对象。
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          一种从上传文件中搜索相关内容的工具。了解更多关于 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+          用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 工具](https://platform.openai.com/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
-            文件搜索工具的类型。始终为 `file_search`.
+            文件搜索 工具的类型。始终为 `file_search`.
 
             - `"file_search"`
 
           - `vector_store_ids: array of string`
 
-            要搜索的向量存储的 ID。
+            要搜索的向量存储库 ID。
 
           - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-            要应用的筛选器。
+            要应用的筛选条件。
 
             - `ComparisonFilter object { key, type, value }`
 
-              用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+              用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
               - `key: string`
 
-                要与值进行比较的键。
+                要与该值进行比较的键。
 
               - `type: "eq" or "ne" or "gt" or 5 more`
 
                 指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-                - `eq`：等于
-                - `ne`：不等于
-                - `gt`：大于
-                - `gte`：大于或等于
-                - `lt`：小于
-                - `lte`：小于或等于
-                - `in`：在…中
-                - `nin`：不在…中
+                - `eq`: 等于
+                - `ne`: 不等于
+                - `gt`: 大于
+                - `gte`: 大于或等于
+                - `lt`: 小于
+                - `lte`: 小于或等于
+                - `in`: 包含于
+                - `nin`: 不包含于
 
                 - `"eq"`
 
@@ -7356,7 +7353,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `value: string or number or boolean or array of string or number`
 
-                要与属性键比较的值；支持字符串、数字或布尔类型。
+                用于与属性键进行比较的值；支持字符串、数字或布尔类型。
 
                 - `string`
 
@@ -7372,15 +7369,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `CompoundFilter object { filters, type }`
 
-              使用以下方式组合多个过滤器： `and` 或 `or`.
+              使用以下方式组合多个筛选条件 `and` 或 `or`.
 
               - `filters: array of ComparisonFilter or unknown`
 
-                要组合的过滤器数组。项目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+                要组合的筛选条件数组。项可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
                 - `ComparisonFilter object { key, type, value }`
 
-                  用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+                  用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
                 - `unknown`
 
@@ -7394,27 +7391,27 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `max_num_results: optional number`
 
-            要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+            返回的最大结果数。该数值应介于 1 到 50 之间（含端点）。
 
           - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
-            搜索的排名选项。
+            搜索的排序选项。
 
             - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-              启用混合搜索时，控制倒数排名融合如何平衡语义嵌入匹配与稀疏关键词匹配的权重。
+              在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
               - `embedding_weight: number`
 
-                嵌入在倒数排名融合中的权重。
+                倒数排名融合中嵌入的权重。
 
               - `text_weight: number`
 
-                文本在倒数排名融合中的权重。
+                倒数排名融合中文本的权重。
 
             - `ranker: optional "auto" or "default-2024-11-15"`
 
-              用于文件搜索的排名器。
+              用于文件搜索的排序器。
 
               - `"auto"`
 
@@ -7422,29 +7419,29 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `score_threshold: optional number`
 
-              文件搜索的分数阈值，为 0 到 1 之间的数字。接近 1 的数字将尝试仅返回最相关的结果，但可能返回更少的结果。
+              文件搜索的分数阈值，取值介于 0 到 1 之间。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
 
         - `Computer object { type }`
 
-          控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
-            计算机工具的类型。始终为 `computer`.
+            computer 工具的类型。始终是 `computer`.
 
             - `"computer"`
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
-            计算机显示屏的高度。
+            计算机显示器的高度。
 
           - `display_width: number`
 
-            计算机显示屏的宽度。
+            计算机显示器的宽度。
 
           - `environment: "windows" or "mac" or "linux" or 2 more`
 
@@ -7462,18 +7459,18 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "computer_use_preview"`
 
-            计算机使用工具的类型。始终为 `computer_use_preview`.
+            computer use 工具的类型。始终是 `computer_use_preview`.
 
             - `"computer_use_preview"`
 
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-          搜索互联网以获取与提示相关的来源。了解更多关于
-          [网页搜索工具](/docs/guides/tools-web-search).
+          在互联网上搜索与提示相关的来源。详细了解
+          [网页搜索 tool](/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
-            网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+            网页搜索 工具的类型。其一为 `web_search` 或 `web_search_2025_08_26`.
 
             - `"web_search"`
 
@@ -7481,22 +7478,22 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `external_web_access: optional boolean`
 
-            允许网页搜索实时访问互联网。省略时默认为 true。为 false 时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+            允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索 工具将以离线/仅缓存模式运行，并且不会获取新的外部内容。
 
           - `filters: optional object { allowed_domains }  or null`
 
-            搜索的过滤器。
+            搜索的筛选条件。
 
             - `allowed_domains: optional array of string or null`
 
-              搜索允许的域。如果未提供，则允许所有域。
-              也允许所提供域的子域。
+              搜索允许的域名。如果未提供，则允许所有域名。
+              所提供域名的子域名也被允许。
 
               示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -7518,7 +7515,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -7526,14 +7523,14 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: optional "approximate"`
 
-              位置近似的类型。始终为 `approximate`.
+              位置近似值的类型。始终为 `approximate`.
 
               - `"approximate"`
 
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-          通过远程 Model Context Protocol 向模型提供额外工具的访问权限
-          （MCP）服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+          通过远程 Model Context Protocol
+          （MCP）服务器让模型访问更多工具。 [详细了解 MCP](/docs/guides/tools-remote-mcp).
 
           - `server_label: string`
 
@@ -7555,48 +7552,48 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
 
-            允许的工具名称列表或过滤器对象。
+            允许使用的工具名称列表或筛选对象。
 
             - `McpAllowedTools = array of string`
 
-              允许的工具名称的字符串数组
+              允许使用的工具名称字符串数组
 
             - `McpToolFilter object { read_only, tool_names }`
 
-              用于指定允许哪些工具的过滤器对象。
+              用于指定允许使用哪些工具的筛选对象。
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                它将匹配此过滤器。
+                指示工具是否会修改数据或仅为只读。如果某个
+                MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                标注，则会匹配此筛选器。
 
               - `tool_names: optional array of string`
 
-                允许的工具名称列表。
+                允许使用的工具名称列表。
 
           - `authorization: optional string`
 
-            可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-            使用自定义 MCP 服务器 URL 或服务连接器。您的应用程序
-            必须处理 OAuth 授权流程，并在此处提供令牌。
+            可用于远程 MCP 服务器的 OAuth 访问令牌，可配合
+            自定义 MCP 服务器 URL 或服务连接器一起使用。你的应用
+            必须处理 OAuth 授权流程并在此处提供令牌。
 
           - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-            服务连接器的标识符，例如 ChatGPT 中可用的那些。其中一个
-            `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解更多
-            关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+            服务连接器的标识符，例如 ChatGPT 中提供的那些。值为以下之一
+            `server_url`, `connector_id`、或 `tunnel_id` 必须提供。了解更多
+            关于服务连接器的信息 [请参考此处](/docs/guides/tools-remote-mcp#connectors).
 
-            目前支持的 `connector_id` 值为：
+            当前支持的 `connector_id` 值包括：
 
-            - Dropbox： `connector_dropbox`
-            - Gmail： `connector_gmail`
-            - Google Calendar： `connector_googlecalendar`
-            - Google Drive： `connector_googledrive`
-            - Microsoft Teams： `connector_microsoftteams`
-            - Outlook Calendar： `connector_outlookcalendar`
-            - Outlook Email： `connector_outlookemail`
-            - SharePoint： `connector_sharepoint`
+            - Dropbox: `connector_dropbox`
+            - Gmail: `connector_gmail`
+            - Google Calendar: `connector_googlecalendar`
+            - Google Drive: `connector_googledrive`
+            - Microsoft Teams: `connector_microsoftteams`
+            - Outlook Calendar: `connector_outlookcalendar`
+            - Outlook Email: `connector_outlookemail`
+            - SharePoint: `connector_sharepoint`
 
             - `"connector_dropbox"`
 
@@ -7616,12 +7613,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `defer_loading: optional boolean`
 
-            此 MCP 工具是否被推迟并通过工具搜索发现。
+            该 MCP 工具是否被延迟，并通过工具搜索被发现。
 
           - `headers: optional map[string] or null`
 
-            发送到 MCP 服务器的可选 HTTP 头。用于认证
-            或其他目的。
+            发送到 MCP 服务器的可选 HTTP 标头。用于身份验证
+            或其他用途。
 
           - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
@@ -7630,41 +7627,41 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             - `McpToolApprovalFilter object { always, never }`
 
               指定 MCP 服务器中哪些工具需要审批。可以是
-              `always`, `never`，或与工具关联的筛选器对象
-              需要审批的。
+              `always`, `never`，或与工具关联的过滤器对象
+              需要审批的工具。
 
               - `always: optional object { read_only, tool_names }`
 
-                用于指定允许哪些工具的过滤器对象。
+                用于指定允许使用哪些工具的筛选对象。
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  它将匹配此过滤器。
+                  指示工具是否会修改数据或仅为只读。如果某个
+                  MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  标注，则会匹配此筛选器。
 
                 - `tool_names: optional array of string`
 
-                  允许的工具名称列表。
+                  允许使用的工具名称列表。
 
               - `never: optional object { read_only, tool_names }`
 
-                用于指定允许哪些工具的过滤器对象。
+                用于指定允许使用哪些工具的筛选对象。
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  它将匹配此过滤器。
+                  指示工具是否会修改数据或仅为只读。如果某个
+                  MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  标注，则会匹配此筛选器。
 
                 - `tool_names: optional array of string`
 
-                  允许的工具名称列表。
+                  允许使用的工具名称列表。
 
             - `McpToolApprovalSetting = "always" or "never"`
 
-              为所有工具指定单一审批策略。可选值为 `always` 或
-              `never`。当设置为 `always`，时，所有工具都需要审批。当
+              为所有工具指定一个统一的审批策略。可选值为 `always` 或
+              `never`。之一。当设置为 `always`，时，所有工具都需要审批。当设置为
               设置为 `never`，时，所有工具都不需要审批。
 
               - `"always"`
@@ -7677,23 +7674,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `server_url: optional string`
 
-            MCP 服务器的 URL。必须是 `server_url`, `connector_id`，或
-            `tunnel_id` 中的一项。
+            MCP 服务器的 URL。 `server_url`, `connector_id`、或
+            `tunnel_id` 必须提供其中之一。
 
           - `tunnel_id: optional string`
 
-            要使用的 Secure MCP Tunnel ID，而非直接服务器 URL。必须是
-            `server_url`, `connector_id`，或 `tunnel_id` 中的一项。
+            用于替代直接服务器 URL 的 Secure MCP Tunnel ID。
+            `server_url`, `connector_id`、或 `tunnel_id` 必须提供其中之一。
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
-          一种运行 Python 代码以帮助生成提示响应的工具。
+          用于运行 Python 代码以辅助生成对提示词回复的工具。
 
           - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器。可以是容器 ID 或一个对象，该对象
-            指定上传的文件 ID 以供你的代码使用，以及一个
-            可选 `memory_limit` 设置。
+            代码解释器容器。可以是容器 ID，也可以是一个指定了供代码使用的已上传文件 ID 的对象，以及
+            ，该对象同时包含一个
+            可选的 `memory_limit` 设置。
 
             - `string`
 
@@ -7701,17 +7698,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-              代码解释器容器的配置。可选地指定要运行代码的文件的 ID。
+              代码解释器容器的配置。可指定运行代码所需文件的 ID。
 
               - `type: "auto"`
 
-                始终 `auto`.
+                Always `auto`.
 
                 - `"auto"`
 
               - `file_ids: optional array of string`
 
-                可选的已上传文件列表，供你的代码使用。
+                提供给代码使用的已上传文件的可选列表。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -7733,7 +7730,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `type: "disabled"`
 
-                    禁用出站网络访问。始终 `disabled`.
+                    禁用出站网络访问。始终为 `disabled`.
 
                     - `"disabled"`
 
@@ -7741,33 +7738,33 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `allowed_domains: array of string`
 
-                    当类型为 `allowlist`.
+                    当 type 为 `allowlist`.
 
                   - `type: "allowlist"`
 
-                    仅允许对指定域名的出站网络访问。始终 `allowlist`.
+                    仅允许向指定域发出站网络访问。始终为 `allowlist`.
 
                     - `"allowlist"`
 
                   - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                    可选，针对允许列表域名的域范围密钥。
+                    可选的、限定域的密钥，用于允许列表中的域。
 
                     - `domain: string`
 
-                      与该密钥关联的域名。
+                      与该密钥关联的域。
 
                     - `name: string`
 
-                      要为该域名注入的密钥名称。
+                      要为该域注入的密钥名称。
 
                     - `value: string`
 
-                      要为该域名注入的密钥值。
+                      要为该域注入的密钥值。
 
           - `type: "code_interpreter"`
 
-            代码解释器工具的类型。始终 `code_interpreter`.
+            代码解释器工具的类型。始终为 `code_interpreter`.
 
             - `"code_interpreter"`
 
@@ -7783,7 +7780,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "programmatic_tool_calling"`
 
-            工具的类型。始终 `programmatic_tool_calling`.
+            工具的类型。始终为 `programmatic_tool_calling`.
 
             - `"programmatic_tool_calling"`
 
@@ -7793,13 +7790,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "image_generation"`
 
-            图像生成工具的类型。始终 `image_generation`.
+            图像生成工具的类型。始终为 `image_generation`.
 
             - `"image_generation"`
 
           - `action: optional "generate" or "edit" or "auto"`
 
-            是否生成新图像或编辑现有图像。默认： `auto`.
+            是生成新图像还是编辑现有图像。默认值： `auto`.
 
             - `"generate"`
 
@@ -7809,11 +7806,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            设置生成图像的背景。可选值之一： `transparent`,
-            `opaque`，或 `auto`。透明背景可用于
+            设置生成图像的背景。可选值为 `transparent`,
+            `opaque`、或 `auto`。透明背景适用于
             支持的 GPT 图像模型。对于 `gpt-image-2` 和
-            `gpt-image-2-2026-04-21`，此支持处于预览阶段。当使用
-            `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认： `auto`.
+            `gpt-image-2-2026-04-21`，该支持处于预览阶段。使用
+            `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
             - `"transparent"`
 
@@ -7823,7 +7820,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            控制模型在匹配输入图像的样式和特征（尤其是面部特征）方面投入的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
+            控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所需的投入程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。之一。默认为 `low`.
 
             - `"high"`
 
@@ -7831,31 +7828,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `input_image_mask: optional object { file_id, image_url }`
 
-            用于修复的可选掩码。包含 `image_url`
+            用于修复的可选遮罩。包含 `image_url`
             （字符串，可选）和 `file_id` （字符串，可选）。
 
             - `file_id: optional string`
 
-              掩码图像的文件ID。
+              遮罩图像的文件 ID。
 
             - `image_url: optional string`
 
-              Base64编码的掩码图像。
+              Base64 编码的遮罩图像。
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。其中一个为 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+            `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              要使用的图像生成模型。其中一个为 `gpt-image-1`,
+              要使用的图像生成模型。可选值为 `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+              `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -7870,7 +7867,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `moderation: optional "auto" or "low"`
 
-            生成图像的审核级别。默认值： `auto`.
+            生成图像的内容审核级别。默认值： `auto`.
 
             - `"auto"`
 
@@ -7882,8 +7879,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `output_format: optional "png" or "webp" or "jpeg"`
 
-            生成图像的输出格式。其中一个为 `png`, `webp`，或
-            `jpeg`。默认： `png`.
+            生成图像的输出格式。可选值为 `png`, `webp`、或
+            `jpeg`。默认值： `png`.
 
             - `"png"`
 
@@ -7893,12 +7890,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `partial_images: optional number`
 
-            流式模式下生成的部分图像数量，范围从0（默认值）到3。
+            在流式模式下要生成的中间图像数量，范围为 0（默认值）到 3。
 
           - `quality: optional "low" or "medium" or "high" or "auto"`
 
-            生成图像的质量。其中一个为 `low`, `medium`, `high`,
-            或 `auto`。默认： `auto`.
+            生成图像的质量。可选值为 `low`, `medium`, `high`,
+            或 `auto`。默认值： `auto`.
 
             - `"low"`
 
@@ -7910,13 +7907,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
               - `"1024x1024"`
 
@@ -7928,7 +7925,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `LocalShell object { type }`
 
-          一种允许模型在本地环境中执行 shell 命令的工具。
+          允许模型在本地环境中执行 shell 命令的工具。
 
           - `type: "local_shell"`
 
@@ -7938,7 +7935,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `Shell object { type, allowed_callers, environment }`
 
-          一种允许模型执行 shell 命令的工具。
+          允许模型执行 shell 命令的工具。
 
           - `type: "shell"`
 
@@ -7960,13 +7957,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `type: "container_auto"`
 
-                自动为此请求创建容器
+                自动为本次请求创建一个容器
 
                 - `"container_auto"`
 
               - `file_ids: optional array of string`
 
-                可选的已上传文件列表，供你的代码使用。
+                提供给代码使用的已上传文件的可选列表。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -7990,7 +7987,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `skills: optional array of SkillReference or InlineSkill`
 
-                可选的技能列表，通过 ID 或内联数据引用。
+                通过 id 引用或内联数据的可选技能列表。
 
                 - `SkillReference object { skill_id, type, version }`
 
@@ -8040,7 +8037,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `type: "inline"`
 
-                    为此请求定义内联技能。
+                    为本次请求定义一个内联技能。
 
                     - `"inline"`
 
@@ -8054,7 +8051,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `skills: optional array of LocalSkill`
 
-                可选技能列表。
+                可选的技能列表。
 
                 - `description: string`
 
@@ -8066,7 +8063,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `path: string`
 
-                  包含技能的目录路径。
+                  包含该技能的目录路径。
 
             - `ContainerReference object { container_id, type }`
 
@@ -8082,7 +8079,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `Custom object { name, type, allowed_callers, 3 more }`
 
-          一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+          使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -8090,7 +8087,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "custom"`
 
-            自定义工具的类型。始终 `custom`.
+            自定义工具的类型。始终为 `custom`.
 
             - `"custom"`
 
@@ -8104,7 +8101,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `defer_loading: optional boolean`
 
-            是否应延迟此工具并通过工具搜索发现。
+            该工具是否应被延迟，并通过工具搜索发现。
 
           - `description: optional string`
 
@@ -8116,11 +8113,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `Text object { type }`
 
-              无约束的自由形式文本。
+              无约束的自由格式文本。
 
               - `type: "text"`
 
-                无约束文本格式。始终 `text`.
+                无约束文本格式。始终为 `text`.
 
                 - `"text"`
 
@@ -8134,7 +8131,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `syntax: "lark" or "regex"`
 
-                语法定义的语法。之一 `lark` 或 `regex`.
+                语法定义的语法格式。可选值为 `lark` 或 `regex`.
 
                 - `"lark"`
 
@@ -8142,21 +8139,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `type: "grammar"`
 
-                语法格式。始终 `grammar`.
+                语法格式。始终为 `grammar`.
 
                 - `"grammar"`
 
         - `Namespace object { description, name, tools, type }`
 
-          将函数/自定义工具分组到共享命名空间下。
+          在共享命名空间下对函数/自定义工具进行分组。
 
           - `description: string`
 
-            显示给模型的命名空间描述。
+            展示给模型的命名空间描述。
 
           - `name: string`
 
-            工具调用中使用的命名空间名称（例如， `crm`).
+            在工具调用中使用的命名空间名称（例如， `crm`).
 
           - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
@@ -8180,23 +8177,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `defer_loading: optional boolean`
 
-                此函数是否应被延迟并通过工具搜索发现。
+                是否应推迟此函数并通过工具搜索发现它。
 
               - `description: optional string or null`
 
               - `output_schema: optional map[unknown] or null`
 
-                描述此函数工具字符串输出中 JSON 值的 JSON Schema。这不描述内容数组输出。
+                描述此函数工具字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content 数组输出。
 
               - `parameters: optional unknown or null`
 
               - `strict: optional boolean or null`
 
-                是否强制进行严格的参数验证。如果省略，Responses 会在 schema 兼容时尝试使用严格验证，否则回退到非严格验证。
+                是否强制执行严格的参数校验。如果省略，Responses 会在 schema 兼容时尝试使用严格校验，否则回退到非严格校验。
 
             - `Custom object { name, type, allowed_callers, 3 more }`
 
-              一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+              使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -8204,7 +8201,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `type: "custom"`
 
-                自定义工具的类型。始终 `custom`.
+                自定义工具的类型。始终为 `custom`.
 
                 - `"custom"`
 
@@ -8218,7 +8215,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `defer_loading: optional boolean`
 
-                是否应延迟此工具并通过工具搜索发现。
+                该工具是否应被延迟，并通过工具搜索发现。
 
               - `description: optional string`
 
@@ -8230,27 +8227,27 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "namespace"`
 
-            工具的类型。始终 `namespace`.
+            工具的类型。始终为 `namespace`.
 
             - `"namespace"`
 
         - `ToolSearch object { type, description, execution, parameters }`
 
-          用于延迟工具的托管或 BYOT 工具搜索配置。
+          针对延迟工具的托管或 BYOT 工具搜索配置。
 
           - `type: "tool_search"`
 
-            工具的类型。始终 `tool_search`.
+            工具的类型。始终为 `tool_search`.
 
             - `"tool_search"`
 
           - `description: optional string or null`
 
-            为客户端执行的工具搜索工具向模型显示的描述。
+            向模型展示的客户端执行工具搜索工具的描述。
 
           - `execution: optional "server" or "client"`
 
-            工具搜索是由服务器还是客户端执行。
+            工具搜索是由服务端执行还是由客户端执行。
 
             - `"server"`
 
@@ -8258,15 +8255,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `parameters: optional unknown or null`
 
-            客户端执行的工具搜索工具的参数 schema。
+            客户端执行工具搜索工具的参数 schema。
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          此工具在网页上搜索相关内容以用于响应。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+          此工具会在网页上搜索相关结果以用于回复。详细了解 [网页搜索 tool](https://platform.openai.com/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-            网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+            网页搜索 工具的类型。其一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
             - `"web_search_preview"`
 
@@ -8280,7 +8277,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -8290,11 +8287,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            用户的位置。
+            用户所在的位置。
 
             - `type: "approximate"`
 
-              位置近似的类型。始终为 `approximate`.
+              位置近似值的类型。始终为 `approximate`.
 
               - `"approximate"`
 
@@ -8308,7 +8305,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -8316,11 +8313,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `ApplyPatch object { type, allowed_callers }`
 
-          允许助手使用统一差异创建、删除或更新文件。
+          允许助手使用 unified diff 创建、删除或更新文件。
 
           - `type: "apply_patch"`
 
-            工具的类型。始终 `apply_patch`.
+            工具的类型。始终为 `apply_patch`.
 
             - `"apply_patch"`
 
@@ -8334,42 +8331,42 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `top_p: optional number`
 
-        用于核采样的温度替代参数；1.0 包含所有标记。
+        作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
 - `metadata: optional Metadata or null`
 
-  一组 16 个键值对，可附加到对象上。这可以
-  用于以结构化格式存储有关对象的额外信息，
+  可附加到对象的 16 组键值对。这可以
+  用于以结构化格式存储有关对象的附加信息，
   并通过 API 或仪表板查询对象。
 
-  键是字符串，最大长度为 64 个字符。值是字符串，
+  键为字符串，最大长度为 64 个字符。值为字符串，
   最大长度为 512 个字符。
 
 - `name: optional string`
 
   运行的名称。
 
-### 返回
+### Returns
 
 - `id: string`
 
-  评估运行的唯一标识符。
+  评估运行（evaluation run）的唯一标识符。
 
 - `created_at: number`
 
-  评估运行创建时的 Unix 时间戳（秒）。
+  评估运行创建时的 Unix 时间戳（以秒为单位）。
 
 - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or object { source, type, input_messages, 2 more }`
 
-  有关运行数据源的信息。
+  关于该运行数据源的信息。
 
   - `CreateEvalJSONLRunDataSource object { source, type }`
 
-    一个 JsonlRunDataSource 对象，指定一个 JSONL 文件，该文件与评估
+    一个 JsonlRunDataSource 对象，用于指定与该评估匹配的 JSONL 文件
 
     - `source: object { content, type }  or object { id, type }`
 
-      决定什么填充 `item` 数据源中的命名空间。
+      决定数据源中如何填充 `item` 命名空间。
 
       - `EvalJSONLFileContentSource object { content, type }`
 
@@ -8383,7 +8380,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `type: "file_content"`
 
-          jsonl 源的类型。始终为 `file_content`.
+          jsonl 数据源的类型。始终为 `file_content`.
 
           - `"file_content"`
 
@@ -8395,23 +8392,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `type: "file_id"`
 
-          jsonl 源的类型。始终为 `file_id`.
+          jsonl 数据源的类型。始终为 `file_id`.
 
           - `"file_id"`
 
     - `type: "jsonl"`
 
-      数据源的类型。始终是 `jsonl`.
+      数据源的类型。始终为 `jsonl`.
 
       - `"jsonl"`
 
   - `CreateEvalCompletionsRunDataSource object { source, type, input_messages, 2 more }`
 
-    描述模型采样配置的 CompletionsRunDataSource 对象。
+    一个 CompletionsRunDataSource 对象，用于描述模型采样配置。
 
     - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 3 more }`
 
-      决定什么填充 `item` 此运行数据源中的命名空间。
+      决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
       - `EvalJSONLFileContentSource object { content, type }`
 
@@ -8425,7 +8422,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `type: "file_content"`
 
-          jsonl 源的类型。始终为 `file_content`.
+          jsonl 数据源的类型。始终为 `file_content`.
 
           - `"file_content"`
 
@@ -8437,44 +8434,44 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `type: "file_id"`
 
-          jsonl 源的类型。始终为 `file_id`.
+          jsonl 数据源的类型。始终为 `file_id`.
 
           - `"file_id"`
 
       - `StoredCompletionsRunDataSource object { type, created_after, created_before, 3 more }`
 
-        描述一组过滤器的 StoredCompletionsRunDataSource 配置
+        一个 StoredCompletionsRunDataSource 配置，用于描述一组筛选条件
 
         - `type: "stored_completions"`
 
-          源的类型。始终为 `stored_completions`.
+          数据源的类型。始终为 `stored_completions`.
 
           - `"stored_completions"`
 
         - `created_after: optional number or null`
 
-          可选的 Unix 时间戳，用于过滤在此时间之后创建的项。
+          一个可选的 Unix 时间戳，用于筛选在此时间之后创建的项。
 
         - `created_before: optional number or null`
 
-          可选的 Unix 时间戳，用于过滤在此时间之前创建的项。
+          一个可选的 Unix 时间戳，用于筛选在此时间之前创建的项。
 
         - `limit: optional number or null`
 
-          可选的最大返回项数。
+          一个可选的返回项的最大数量。
 
         - `metadata: optional Metadata or null`
 
-          一组 16 个键值对，可附加到对象上。这可以
-          用于以结构化格式存储有关对象的额外信息，
+          可附加到对象的 16 组键值对。这可以
+          用于以结构化格式存储有关对象的附加信息，
           并通过 API 或仪表板查询对象。
 
-          键是字符串，最大长度为 64 个字符。值是字符串，
+          键为字符串，最大长度为 64 个字符。值为字符串，
           最大长度为 512 个字符。
 
         - `model: optional string or null`
 
-          可选的模型过滤条件（例如，'gpt-4o'）。
+          一个可选的用于筛选的模型（例如 'gpt-5.6-sol'）。
 
     - `type: "completions"`
 
@@ -8484,43 +8481,43 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-      用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+      在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
       - `TemplateInputMessages object { template, type }`
 
         - `template: array of EasyInputMessage or object { content, role, type }`
 
-          构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+          构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
           - `EasyInputMessage object { content, role, phase, type }`
 
-            输入给模型的消息，其角色指示指令遵循
-            层级。以 `developer` 或 `system` 角色给出的指令
-            优先于以 `user` 角色给出的指令。具有
-            `assistant` 角色的消息被认为是由模型在之前的
-            交互中生成的。
+            输入到模型的消息，其角色指示指令的
+            层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+            角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+            `assistant` 消息。
+            互动。
 
             - `content: string or ResponseInputMessageContentList`
 
               发送给模型的文本、图像或音频输入，用于生成响应。
-              也可以包含先前的助手响应。
+              也可以包含之前的助手响应。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `ResponseInputMessageContentList = array of ResponseInputContent`
 
-                发送给模型的一个或多个输入项的列表，包含不同类型的内容
-                。
+                发送给模型的一个或多个输入项的列表，其中包含不同的内容
+                类型。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                   - `text: string`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                   - `type: "input_text"`
 
@@ -8530,7 +8527,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `prompt_cache_breakpoint: optional object { mode }`
 
-                    标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                    标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                     - `mode: "explicit"`
 
@@ -8544,7 +8541,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `detail: ImageDetail`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`, `auto`、或 `original`。之一。默认为 `auto`.
 
                     - `"low"`
 
@@ -8566,11 +8563,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `image_url: optional string or null`
 
-                    要发送给模型的图像的 URL。完全限定的 URL 或数据 URL 中的 base64 编码图像。
+                    要发送给模型的图像的 URL。可以是完整的 URL，也可以是 base64 编码的 data URL 图像。
 
                   - `prompt_cache_breakpoint: optional object { mode }`
 
-                    标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                    标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                     - `mode: "explicit"`
 
@@ -8590,7 +8587,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `detail: optional "auto" or "low" or "high"`
 
-                    要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入令牌的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+                    要发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
                     - `"auto"`
 
@@ -8600,7 +8597,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `file_data: optional string`
 
-                    要发送给模型的文件的内容。
+                    要发送给模型的文件内容。
 
                   - `file_id: optional string or null`
 
@@ -8616,7 +8613,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `prompt_cache_breakpoint: optional object { mode }`
 
-                    标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                    标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                     - `mode: "explicit"`
 
@@ -8626,7 +8623,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。可选值为 `user`, `assistant`, `system`、或
               `developer`.
 
               - `"user"`
@@ -8639,9 +8636,9 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `phase: optional "commentary" or "final_answer" or null`
 
-              将 `assistant` 消息标记为中间评论（`commentary`) 或最终答案 (`final_answer`).
-              对于像 `gpt-5.3-codex` 及更新的模型，发送后续请求时，请保留并重新发送
-              阶段到所有助手消息中——省略该阶段可能会降低性能。不用于用户消息。
+              将 `assistant` 消息标记为中间补充说明（`commentary`) 或最终答案（`final_answer`).
+              对于类似 `gpt-5.3-codex` 及更高版本，发送后续请求时，请在所有助手消息上保留并重新发送
+              阶段，遗漏会降低性能。不用于用户消息。
 
               - `"commentary"`
 
@@ -8655,31 +8652,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `EvalMessageObject object { content, role, type }`
 
-            输入给模型的消息，其角色指示指令遵循
-            层级。以 `developer` 或 `system` 角色给出的指令
-            优先于以 `user` 角色给出的指令。具有
-            `assistant` 角色的消息被认为是由模型在之前的
-            交互中生成的。
+            输入到模型的消息，其角色指示指令的
+            层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+            角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+            `assistant` 消息。
+            互动。
 
             - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-              模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+              模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -8689,21 +8686,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `InputImage object { image_url, type, detail }`
 
-                用于 EvalItem 内容数组中的图像输入块。
+                在 EvalItem 内容数组中使用的图片输入块。
 
                 - `image_url: string`
 
-                  图像输入的 URL。
+                  图片输入的 URL。
 
                 - `type: "input_image"`
 
-                  图像输入的类型。始终为 `input_image`.
+                  图片输入的类型。始终为 `input_image`.
 
                   - `"input_image"`
 
                 - `detail: optional string`
 
-                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
@@ -8713,11 +8710,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `data: string`
 
-                    Base64 编码的音频数据。
+                    经过 Base64 编码的音频数据。
 
                   - `format: "mp3" or "wav"`
 
-                    音频数据的格式。目前支持的格式为 `mp3` 和
+                    音频数据的格式。当前支持的格式有 `mp3` 和
                     `wav`.
 
                     - `"mp3"`
@@ -8732,24 +8729,24 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                输入列表，每个输入可以是输入文本、输出文本、输入
-                图像或输入音频对象。
+                输入列表，其中每个输入可以是输入文本、输出文本、输入
+                图片或输入音频对象。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -8759,21 +8756,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `InputImage object { image_url, type, detail }`
 
-                  用于 EvalItem 内容数组中的图像输入块。
+                  在 EvalItem 内容数组中使用的图片输入块。
 
                   - `image_url: string`
 
-                    图像输入的 URL。
+                    图片输入的 URL。
 
                   - `type: "input_image"`
 
-                    图像输入的类型。始终为 `input_image`.
+                    图片输入的类型。始终为 `input_image`.
 
                     - `"input_image"`
 
                   - `detail: optional string`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
@@ -8781,7 +8778,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。可选值为 `user`, `assistant`, `system`、或
               `developer`.
 
               - `"user"`
@@ -8808,7 +8805,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `item_reference: string`
 
-          对 `item` 命名空间中变量的引用。例如，"item.input_trajectory"
+          命名空间中的变量引用。例如“ `item` .item.input_trajectory”
 
         - `type: "item_reference"`
 
@@ -8818,7 +8815,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `model: optional string`
 
-      用于生成补全的模型名称（例如 "o3-mini"）。
+      用于生成补全的模型名称（例如 “o3-mini”）。
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
@@ -8828,13 +8825,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `reasoning_effort: optional ReasoningEffort or null`
 
-        约束推理模型的推理工作量。目前支持的
-        值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-        降低推理工作量可以加快响应速度并减少响应中
-        用于推理的令牌数。并非所有推理模型都支持每个
+        约束推理模型在推理上的投入程度。当前支持
+        的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+        降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+        消耗。并非所有推理模型都支持每个
         值。请参阅
         [推理指南](https://platform.openai.com/docs/guides/reasoning)
-        了解各模型的特定支持。
+        了解特定模型的支持情况。
 
         - `"none"`
 
@@ -8852,20 +8849,20 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `response_format: optional ResponseFormatText or ResponseFormatJSONSchema or ResponseFormatJSONObject`
 
-        指定模型必须输出的格式的对象。
+        指定模型必须输出格式的对象。
 
-        设置为 `{ "type": "json_schema", "json_schema": {...} }` 启用
-        结构化输出，确保模型匹配你提供的 JSON
-        架构。更多信息请参阅 [Structured Outputs
+        设置为 `{ "type": "json_schema", "json_schema": {...} }` 会启用
+        Structured Outputs，用于确保模型匹配你提供的 JSON
+        schema。详细了解请参阅 [Structured Outputs
         指南](/docs/guides/structured-outputs).
 
         设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-        确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-        。
+        确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+        使用。
 
         - `ResponseFormatText object { type }`
 
-          默认响应格式，用于生成文本响应。
+          默认响应格式。用于生成文本响应。
 
           - `type: "text"`
 
@@ -8875,34 +8872,34 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `ResponseFormatJSONSchema object { json_schema, type }`
 
-          JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-          了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+          JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+          详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
           - `json_schema: object { name, description, schema, strict }`
 
-            结构化输出配置选项，包括 JSON Schema。
+            Structured Outputs 配置选项，包括 JSON Schema。
 
             - `name: string`
 
-              响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-              下划线和破折号，最大长度为 64。
+              响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+              下划线和短横线，最大长度为 64。
 
             - `description: optional string`
 
-              响应格式用途的描述，模型使用它来
-              决定如何以该格式进行响应。
+              对响应格式用途的描述，供模型用来
+              决定如何按该格式进行响应。
 
             - `schema: optional map[unknown]`
 
-              响应格式的架构，以 JSON Schema 对象描述。
-              了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+              响应格式对应的 schema，以 JSON Schema 对象形式描述。
+              了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
             - `strict: optional boolean or null`
 
-              是否在生成输出时启用严格的架构遵循。
-              如果设置为 true，模型将始终遵循定义的精确架构
-              中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-              `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+              是否在生成输出时启用严格的 schema 遵循。
+              若设置为 true，模型将始终遵循在
+              中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+              `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
               指南](/docs/guides/structured-outputs).
 
           - `type: "json_schema"`
@@ -8913,10 +8910,10 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `ResponseFormatJSONObject object { type }`
 
-          JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-          使用 `json_schema` 建议用于支持它的模型。请注意，
-          模型在没有系统或用户消息指示它的情况下不会生成 JSON
-          去这样做。
+          JSON 对象响应格式。生成 JSON 响应的旧方法。
+          对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+          模型将不会生成 JSON
+          。
 
           - `type: "json_object"`
 
@@ -8926,53 +8923,53 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `seed: optional number`
 
-        用于在采样时初始化随机性的种子值。
+        用于在采样过程中初始化随机性的种子值。
 
       - `temperature: optional number`
 
-        更高的温度会增加输出的随机性。
+        较高的 temperature 会增加输出的随机性。
 
       - `tools: optional array of ChatCompletionFunctionTool`
 
-        模型可能调用的工具列表。目前，仅支持函数作为工具。使用此选项提供模型可能生成 JSON 输入的函数列表。最多支持 128 个函数。
+        模型可以调用的工具列表。目前，作为工具仅支持函数。使用此项提供模型可以为其生成 JSON 输入的函数列表。最多支持 128 个函数。
 
         - `function: FunctionDefinition`
 
           - `name: string`
 
-            要调用的函数名称。必须是 a-z、A-Z、0-9，或包含下划线和破折号，最大长度为 64。
+            要调用的函数的名称。必须为 a-z、A-Z、0-9 或包含下划线和短划线，最大长度为 64。
 
           - `description: optional string`
 
-            函数功能的描述，模型用它来决定何时以及如何调用该函数。
+            对函数功能的描述，供模型选择何时以及如何调用该函数时使用。
 
           - `parameters: optional FunctionParameters`
 
-            函数接受的参数，描述为 JSON Schema 对象。参见 [指南](/docs/guides/function-calling) 获取示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) 获取有关格式的文档。
+            函数接受的参数，使用 JSON Schema 对象进行描述。请参阅 [指南](/docs/guides/function-calling) 中的示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) ，了解相关格式的文档。
 
-            省略 `parameters` 定义了一个具有空参数列表的函数。
+            省略 `parameters` 将定义一个具有空参数列表的函数。
 
           - `strict: optional boolean or null`
 
-            是否在生成函数调用时启用严格模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的子集，当 `strict` 为 `true`。在 [函数调用指南](/docs/guides/function-calling).
+            在生成函数调用时是否启用严格的模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的一个子集，当 `strict` 是 `true`。在以下位置详细了解结构化输出 [函数调用指南](/docs/guides/function-calling).
 
         - `type: "function"`
 
-          中了解更多关于结构化输出的信息。工具的类型。目前仅支持 `function` 。
+          工具的类型。目前，仅支持 `function` 是受支持的。
 
           - `"function"`
 
       - `top_p: optional number`
 
-        用于核采样的温度替代参数；1.0 包含所有标记。
+        作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
   - `ResponsesRunDataSource object { source, type, input_messages, 2 more }`
 
-    描述模型采样配置的 ResponsesRunDataSource 对象。
+    一个 ResponsesRunDataSource 对象，用于描述模型采样配置。
 
     - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 8 more }`
 
-      决定什么填充 `item` 此运行数据源中的命名空间。
+      决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
       - `EvalJSONLFileContentSource object { content, type }`
 
@@ -8986,7 +8983,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `type: "file_content"`
 
-          jsonl 源的类型。始终为 `file_content`.
+          jsonl 数据源的类型。始终为 `file_content`.
 
           - `"file_content"`
 
@@ -8998,13 +8995,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `type: "file_id"`
 
-          jsonl 源的类型。始终为 `file_id`.
+          jsonl 数据源的类型。始终为 `file_id`.
 
           - `"file_id"`
 
       - `EvalResponsesSource object { type, created_after, created_before, 8 more }`
 
-        描述运行数据源配置的 EvalResponsesSource 对象。
+        一个 EvalResponsesSource 对象，用于描述运行数据源配置。
 
         - `type: "responses"`
 
@@ -9014,49 +9011,49 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `created_after: optional number or null`
 
-          仅包含在此时间戳之后（含）创建的项。这是用于选择响应的查询参数。
+          仅包含在此时间戳之后（包含）创建的项目。这是一个用于选择响应的查询参数。
 
         - `created_before: optional number or null`
 
-          仅包含在此时间戳之前（含）创建的项。这是用于选择响应的查询参数。
+          仅包含在此时间戳之前（包含）创建的项目。这是一个用于选择响应的查询参数。
 
         - `instructions_search: optional string or null`
 
-          用于搜索“instructions”字段的可选字符串。这是用于选择响应的查询参数。
+          用于搜索 'instructions' 字段的可选字符串。这是一个用于选择响应的查询参数。
 
         - `metadata: optional unknown or null`
 
-          响应的元数据过滤器。这是用于选择响应的查询参数。
+          响应的元数据过滤器。这是一个用于选择响应的查询参数。
 
         - `model: optional string or null`
 
-          要查找响应的模型名称。这是用于选择响应的查询参数。
+          要为其查找响应的模型名称。这是一个用于选择响应的查询参数。
 
         - `reasoning_effort: optional ReasoningEffort or null`
 
-          约束推理模型的推理工作量。目前支持的
-          值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-          降低推理工作量可以加快响应速度并减少响应中
-          用于推理的令牌数。并非所有推理模型都支持每个
+          约束推理模型在推理上的投入程度。当前支持
+          的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+          降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+          消耗。并非所有推理模型都支持每个
           值。请参阅
           [推理指南](https://platform.openai.com/docs/guides/reasoning)
-          了解各模型的特定支持。
+          了解特定模型的支持情况。
 
         - `temperature: optional number or null`
 
-          采样温度。这是用于选择响应的查询参数。
+          采样温度。这是一个用于选择响应的查询参数。
 
         - `tools: optional array of string or null`
 
-          工具名称列表。这是用于选择响应的查询参数。
+          工具名称列表。这是一个用于选择响应的查询参数。
 
         - `top_p: optional number or null`
 
-          核采样参数。这是用于选择响应的查询参数。
+          核采样参数。这是一个用于选择响应的查询参数。
 
         - `users: optional array of string or null`
 
-          用户标识符列表。这是用于选择响应的查询参数。
+          用户标识符列表。这是一个用于选择响应的查询参数。
 
     - `type: "responses"`
 
@@ -9066,13 +9063,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-      用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+      在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
       - `InputMessagesTemplate object { template, type }`
 
         - `template: array of object { content, role }  or object { content, role, type }`
 
-          构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+          构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
           - `ChatMessage object { content, role }`
 
@@ -9086,31 +9083,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `EvalMessageObject object { content, role, type }`
 
-            输入给模型的消息，其角色指示指令遵循
-            层级。以 `developer` 或 `system` 角色给出的指令
-            优先于以 `user` 角色给出的指令。具有
-            `assistant` 角色的消息被认为是由模型在之前的
-            交互中生成的。
+            输入到模型的消息，其角色指示指令的
+            层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+            角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+            `assistant` 消息。
+            互动。
 
             - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-              模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+              模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -9120,21 +9117,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `InputImage object { image_url, type, detail }`
 
-                用于 EvalItem 内容数组中的图像输入块。
+                在 EvalItem 内容数组中使用的图片输入块。
 
                 - `image_url: string`
 
-                  图像输入的 URL。
+                  图片输入的 URL。
 
                 - `type: "input_image"`
 
-                  图像输入的类型。始终为 `input_image`.
+                  图片输入的类型。始终为 `input_image`.
 
                   - `"input_image"`
 
                 - `detail: optional string`
 
-                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
@@ -9142,12 +9139,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                输入列表，每个输入可以是输入文本、输出文本、输入
-                图像或输入音频对象。
+                输入列表，其中每个输入可以是输入文本、输出文本、输入
+                图片或输入音频对象。
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。可选值为 `user`, `assistant`, `system`、或
               `developer`.
 
               - `"user"`
@@ -9174,7 +9171,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `item_reference: string`
 
-          对 `item` 命名空间。即“item.name”
+          命名空间中的变量引用。例如“ `item` 命名空间。例如，“item.name”
 
         - `type: "item_reference"`
 
@@ -9184,7 +9181,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `model: optional string`
 
-      用于生成补全的模型名称（例如 "o3-mini"）。
+      用于生成补全的模型名称（例如 “o3-mini”）。
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
@@ -9194,64 +9191,64 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `reasoning_effort: optional ReasoningEffort or null`
 
-        约束推理模型的推理工作量。目前支持的
-        值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-        降低推理工作量可以加快响应速度并减少响应中
-        用于推理的令牌数。并非所有推理模型都支持每个
+        约束推理模型在推理上的投入程度。当前支持
+        的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+        降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+        消耗。并非所有推理模型都支持每个
         值。请参阅
         [推理指南](https://platform.openai.com/docs/guides/reasoning)
-        了解各模型的特定支持。
+        了解特定模型的支持情况。
 
       - `seed: optional number`
 
-        用于在采样时初始化随机性的种子值。
+        用于在采样过程中初始化随机性的种子值。
 
       - `temperature: optional number`
 
-        更高的温度会增加输出的随机性。
+        较高的 temperature 会增加输出的随机性。
 
       - `text: optional object { format }`
 
-        模型文本响应的配置选项。可以是纯
-        文本或结构化 JSON 数据。了解更多：
+        来自模型的文本响应的配置选项。可以是纯
+        文本或结构化 JSON 数据。了解更多信息：
 
         - [文本输入和输出](/docs/guides/text)
         - [结构化输出](/docs/guides/structured-outputs)
 
         - `format: optional ResponseFormatTextConfig`
 
-          指定模型必须输出的格式的对象。
+          指定模型必须输出格式的对象。
 
-          配置 `{ "type": "json_schema" }` 可启用结构化输出，
-          这确保模型将匹配你提供的 JSON 模式。更多信息请参阅
+          配置 `{ "type": "json_schema" }` 启用结构化输出，
+          可确保模型匹配你提供的 JSON schema。详情请参阅
           [结构化输出指南](/docs/guides/structured-outputs).
 
           默认格式为 `{ "type": "text" }` ，无其他选项。
 
-          **不建议用于 gpt-4o 及更新的模型：**
+          **不推荐用于 gpt-4o 及更新模型：**
 
           设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-          确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-          。
+          确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+          使用。
 
           - `ResponseFormatText object { type }`
 
-            默认响应格式，用于生成文本响应。
+            默认响应格式。用于生成文本响应。
 
           - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
-            JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-            了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+            JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+            详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
             - `name: string`
 
-              响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-              下划线和破折号，最大长度为 64。
+              响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+              下划线和短横线，最大长度为 64。
 
             - `schema: map[unknown]`
 
-              响应格式的架构，以 JSON Schema 对象描述。
-              了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+              响应格式对应的 schema，以 JSON Schema 对象形式描述。
+              了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
             - `type: "json_schema"`
 
@@ -9261,42 +9258,42 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `description: optional string`
 
-              响应格式用途的描述，模型使用它来
-              决定如何以该格式进行响应。
+              对响应格式用途的描述，供模型用来
+              决定如何按该格式进行响应。
 
             - `strict: optional boolean or null`
 
-              是否在生成输出时启用严格的架构遵循。
-              如果设置为 true，模型将始终遵循定义的精确架构
-              中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-              `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+              是否在生成输出时启用严格的 schema 遵循。
+              若设置为 true，模型将始终遵循在
+              中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+              `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
               指南](/docs/guides/structured-outputs).
 
           - `ResponseFormatJSONObject object { type }`
 
-            JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-            使用 `json_schema` 建议用于支持它的模型。请注意，
-            模型在没有系统或用户消息指示它的情况下不会生成 JSON
-            去这样做。
+            JSON 对象响应格式。生成 JSON 响应的旧方法。
+            对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+            模型将不会生成 JSON
+            。
 
       - `tools: optional array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-        模型在生成响应时可能调用的工具数组。你
-        可以通过设置 `tool_choice` 参数来指定使用哪个工具。
+        模型在生成响应时可以调用的工具数组。你可以
+        通过设置 `tool_choice` 参数来指定要使用的工具。
 
-        你可以提供给模型的工具分为两类：
+        你可以向模型提供的两类工具包括：
 
-        - **内置工具**：由 OpenAI 提供的工具，用于扩展
-          模型的能力，例如 [网页搜索](/docs/guides/tools-web-search)
-          或 [文件搜索](/docs/guides/tools-file-search)。了解更多关于
+        - **内置工具**: 由 OpenAI 提供的工具，用于扩展模型的
+          能力，例如 [网页搜索](/docs/guides/tools-web-search)
+          或 [文件搜索](/docs/guides/tools-file-search)。详细了解
           [内置工具](/docs/guides/tools).
-        - **函数调用（自定义工具）**：由你定义的函数，
-          使模型能够调用你自己的代码。了解更多关于
+        - **函数调用（自定义工具）**: 由你定义的函数，
+          使模型能够调用你自己的代码。详细了解
           [函数调用](/docs/guides/function-calling).
 
         - `Function object { name, parameters, strict, 5 more }`
 
-          在你自己的代码中定义一个模型可以选择调用的函数。了解更多关于 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+          定义你自己代码中的一个函数，模型可以选择调用它。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
 
           - `name: string`
 
@@ -9304,11 +9301,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `parameters: map[unknown] or null`
 
-            描述函数参数的 JSON schema 对象。
+            描述该函数参数的 JSON schema 对象。
 
           - `strict: boolean or null`
 
-            是否对此函数工具强制执行严格的参数验证。
+            是否对此函数工具强制执行严格的参数校验。
 
           - `type: "function"`
 
@@ -9326,54 +9323,54 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `defer_loading: optional boolean`
 
-            此函数是否延迟并通过工具搜索加载。
+            此函数是否被延迟加载并通过 tool search 加载。
 
           - `description: optional string or null`
 
-            函数的描述。模型用它来决定是否调用该函数。
+            函数的描述。由模型用于决定是否调用该函数。
 
           - `output_schema: optional map[unknown] or null`
 
-            描述此函数字符串输出中编码的 JSON 值的 JSON schema 对象。
+            描述该函数在字符串输出中所编码 JSON 值的 JSON schema 对象。
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          一种从上传文件中搜索相关内容的工具。了解更多关于 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+          用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 工具](https://platform.openai.com/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
-            文件搜索工具的类型。始终为 `file_search`.
+            文件搜索 工具的类型。始终为 `file_search`.
 
             - `"file_search"`
 
           - `vector_store_ids: array of string`
 
-            要搜索的向量存储的 ID。
+            要搜索的向量存储库 ID。
 
           - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-            要应用的筛选器。
+            要应用的筛选条件。
 
             - `ComparisonFilter object { key, type, value }`
 
-              用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+              用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
               - `key: string`
 
-                要与值进行比较的键。
+                要与该值进行比较的键。
 
               - `type: "eq" or "ne" or "gt" or 5 more`
 
                 指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-                - `eq`：等于
-                - `ne`：不等于
-                - `gt`：大于
-                - `gte`：大于或等于
-                - `lt`：小于
-                - `lte`：小于或等于
-                - `in`：在…中
-                - `nin`：不在…中
+                - `eq`: 等于
+                - `ne`: 不等于
+                - `gt`: 大于
+                - `gte`: 大于或等于
+                - `lt`: 小于
+                - `lte`: 小于或等于
+                - `in`: 包含于
+                - `nin`: 不包含于
 
                 - `"eq"`
 
@@ -9393,7 +9390,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `value: string or number or boolean or array of string or number`
 
-                要与属性键比较的值；支持字符串、数字或布尔类型。
+                用于与属性键进行比较的值；支持字符串、数字或布尔类型。
 
                 - `string`
 
@@ -9409,15 +9406,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `CompoundFilter object { filters, type }`
 
-              使用以下方式组合多个过滤器： `and` 或 `or`.
+              使用以下方式组合多个筛选条件 `and` 或 `or`.
 
               - `filters: array of ComparisonFilter or unknown`
 
-                要组合的过滤器数组。项目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+                要组合的筛选条件数组。项可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
                 - `ComparisonFilter object { key, type, value }`
 
-                  用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+                  用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
                 - `unknown`
 
@@ -9431,27 +9428,27 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `max_num_results: optional number`
 
-            要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+            返回的最大结果数。该数值应介于 1 到 50 之间（含端点）。
 
           - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
-            搜索的排名选项。
+            搜索的排序选项。
 
             - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-              启用混合搜索时，控制倒数排名融合如何平衡语义嵌入匹配与稀疏关键词匹配的权重。
+              在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
               - `embedding_weight: number`
 
-                嵌入在倒数排名融合中的权重。
+                倒数排名融合中嵌入的权重。
 
               - `text_weight: number`
 
-                文本在倒数排名融合中的权重。
+                倒数排名融合中文本的权重。
 
             - `ranker: optional "auto" or "default-2024-11-15"`
 
-              用于文件搜索的排名器。
+              用于文件搜索的排序器。
 
               - `"auto"`
 
@@ -9459,29 +9456,29 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `score_threshold: optional number`
 
-              文件搜索的分数阈值，为 0 到 1 之间的数字。接近 1 的数字将尝试仅返回最相关的结果，但可能返回更少的结果。
+              文件搜索的分数阈值，取值介于 0 到 1 之间。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
 
         - `Computer object { type }`
 
-          控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
-            计算机工具的类型。始终为 `computer`.
+            computer 工具的类型。始终是 `computer`.
 
             - `"computer"`
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
-            计算机显示屏的高度。
+            计算机显示器的高度。
 
           - `display_width: number`
 
-            计算机显示屏的宽度。
+            计算机显示器的宽度。
 
           - `environment: "windows" or "mac" or "linux" or 2 more`
 
@@ -9499,18 +9496,18 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "computer_use_preview"`
 
-            计算机使用工具的类型。始终为 `computer_use_preview`.
+            computer use 工具的类型。始终是 `computer_use_preview`.
 
             - `"computer_use_preview"`
 
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-          搜索互联网以获取与提示相关的来源。了解更多关于
-          [网页搜索工具](/docs/guides/tools-web-search).
+          在互联网上搜索与提示相关的来源。详细了解
+          [网页搜索 tool](/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
-            网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+            网页搜索 工具的类型。其一为 `web_search` 或 `web_search_2025_08_26`.
 
             - `"web_search"`
 
@@ -9518,22 +9515,22 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `external_web_access: optional boolean`
 
-            允许网页搜索实时访问互联网。省略时默认为 true。为 false 时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+            允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索 工具将以离线/仅缓存模式运行，并且不会获取新的外部内容。
 
           - `filters: optional object { allowed_domains }  or null`
 
-            搜索的过滤器。
+            搜索的筛选条件。
 
             - `allowed_domains: optional array of string or null`
 
-              搜索允许的域。如果未提供，则允许所有域。
-              也允许所提供域的子域。
+              搜索允许的域名。如果未提供，则允许所有域名。
+              所提供域名的子域名也被允许。
 
               示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -9555,7 +9552,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -9563,14 +9560,14 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: optional "approximate"`
 
-              位置近似的类型。始终为 `approximate`.
+              位置近似值的类型。始终为 `approximate`.
 
               - `"approximate"`
 
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-          通过远程 Model Context Protocol 向模型提供额外工具的访问权限
-          （MCP）服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+          通过远程 Model Context Protocol
+          （MCP）服务器让模型访问更多工具。 [详细了解 MCP](/docs/guides/tools-remote-mcp).
 
           - `server_label: string`
 
@@ -9592,48 +9589,48 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
 
-            允许的工具名称列表或过滤器对象。
+            允许使用的工具名称列表或筛选对象。
 
             - `McpAllowedTools = array of string`
 
-              允许的工具名称的字符串数组
+              允许使用的工具名称字符串数组
 
             - `McpToolFilter object { read_only, tool_names }`
 
-              用于指定允许哪些工具的过滤器对象。
+              用于指定允许使用哪些工具的筛选对象。
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                它将匹配此过滤器。
+                指示工具是否会修改数据或仅为只读。如果某个
+                MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                标注，则会匹配此筛选器。
 
               - `tool_names: optional array of string`
 
-                允许的工具名称列表。
+                允许使用的工具名称列表。
 
           - `authorization: optional string`
 
-            可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-            使用自定义 MCP 服务器 URL 或服务连接器。您的应用程序
-            必须处理 OAuth 授权流程，并在此处提供令牌。
+            可用于远程 MCP 服务器的 OAuth 访问令牌，可配合
+            自定义 MCP 服务器 URL 或服务连接器一起使用。你的应用
+            必须处理 OAuth 授权流程并在此处提供令牌。
 
           - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-            服务连接器的标识符，例如 ChatGPT 中可用的那些。其中一个
-            `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解更多
-            关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+            服务连接器的标识符，例如 ChatGPT 中提供的那些。值为以下之一
+            `server_url`, `connector_id`、或 `tunnel_id` 必须提供。了解更多
+            关于服务连接器的信息 [请参考此处](/docs/guides/tools-remote-mcp#connectors).
 
-            目前支持的 `connector_id` 值为：
+            当前支持的 `connector_id` 值包括：
 
-            - Dropbox： `connector_dropbox`
-            - Gmail： `connector_gmail`
-            - Google Calendar： `connector_googlecalendar`
-            - Google Drive： `connector_googledrive`
-            - Microsoft Teams： `connector_microsoftteams`
-            - Outlook Calendar： `connector_outlookcalendar`
-            - Outlook Email： `connector_outlookemail`
-            - SharePoint： `connector_sharepoint`
+            - Dropbox: `connector_dropbox`
+            - Gmail: `connector_gmail`
+            - Google Calendar: `connector_googlecalendar`
+            - Google Drive: `connector_googledrive`
+            - Microsoft Teams: `connector_microsoftteams`
+            - Outlook Calendar: `connector_outlookcalendar`
+            - Outlook Email: `connector_outlookemail`
+            - SharePoint: `connector_sharepoint`
 
             - `"connector_dropbox"`
 
@@ -9653,12 +9650,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `defer_loading: optional boolean`
 
-            此 MCP 工具是否被推迟并通过工具搜索发现。
+            该 MCP 工具是否被延迟，并通过工具搜索被发现。
 
           - `headers: optional map[string] or null`
 
-            发送到 MCP 服务器的可选 HTTP 头。用于认证
-            或其他目的。
+            发送到 MCP 服务器的可选 HTTP 标头。用于身份验证
+            或其他用途。
 
           - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
@@ -9667,41 +9664,41 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             - `McpToolApprovalFilter object { always, never }`
 
               指定 MCP 服务器中哪些工具需要审批。可以是
-              `always`, `never`，或与工具关联的筛选器对象
-              需要审批的。
+              `always`, `never`，或与工具关联的过滤器对象
+              需要审批的工具。
 
               - `always: optional object { read_only, tool_names }`
 
-                用于指定允许哪些工具的过滤器对象。
+                用于指定允许使用哪些工具的筛选对象。
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  它将匹配此过滤器。
+                  指示工具是否会修改数据或仅为只读。如果某个
+                  MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  标注，则会匹配此筛选器。
 
                 - `tool_names: optional array of string`
 
-                  允许的工具名称列表。
+                  允许使用的工具名称列表。
 
               - `never: optional object { read_only, tool_names }`
 
-                用于指定允许哪些工具的过滤器对象。
+                用于指定允许使用哪些工具的筛选对象。
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  它将匹配此过滤器。
+                  指示工具是否会修改数据或仅为只读。如果某个
+                  MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  标注，则会匹配此筛选器。
 
                 - `tool_names: optional array of string`
 
-                  允许的工具名称列表。
+                  允许使用的工具名称列表。
 
             - `McpToolApprovalSetting = "always" or "never"`
 
-              为所有工具指定单一审批策略。可选值为 `always` 或
-              `never`。当设置为 `always`，时，所有工具都需要审批。当
+              为所有工具指定一个统一的审批策略。可选值为 `always` 或
+              `never`。之一。当设置为 `always`，时，所有工具都需要审批。当设置为
               设置为 `never`，时，所有工具都不需要审批。
 
               - `"always"`
@@ -9714,23 +9711,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `server_url: optional string`
 
-            MCP 服务器的 URL。必须是 `server_url`, `connector_id`，或
-            `tunnel_id` 中的一项。
+            MCP 服务器的 URL。 `server_url`, `connector_id`、或
+            `tunnel_id` 必须提供其中之一。
 
           - `tunnel_id: optional string`
 
-            要使用的 Secure MCP Tunnel ID，而非直接服务器 URL。必须是
-            `server_url`, `connector_id`，或 `tunnel_id` 中的一项。
+            用于替代直接服务器 URL 的 Secure MCP Tunnel ID。
+            `server_url`, `connector_id`、或 `tunnel_id` 必须提供其中之一。
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
-          一种运行 Python 代码以帮助生成提示响应的工具。
+          用于运行 Python 代码以辅助生成对提示词回复的工具。
 
           - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器。可以是容器 ID 或一个对象，该对象
-            指定上传的文件 ID 以供你的代码使用，以及一个
-            可选 `memory_limit` 设置。
+            代码解释器容器。可以是容器 ID，也可以是一个指定了供代码使用的已上传文件 ID 的对象，以及
+            ，该对象同时包含一个
+            可选的 `memory_limit` 设置。
 
             - `string`
 
@@ -9738,17 +9735,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-              代码解释器容器的配置。可选地指定要运行代码的文件的 ID。
+              代码解释器容器的配置。可指定运行代码所需文件的 ID。
 
               - `type: "auto"`
 
-                始终 `auto`.
+                Always `auto`.
 
                 - `"auto"`
 
               - `file_ids: optional array of string`
 
-                可选的已上传文件列表，供你的代码使用。
+                提供给代码使用的已上传文件的可选列表。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -9770,7 +9767,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `type: "disabled"`
 
-                    禁用出站网络访问。始终 `disabled`.
+                    禁用出站网络访问。始终为 `disabled`.
 
                     - `"disabled"`
 
@@ -9778,33 +9775,33 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `allowed_domains: array of string`
 
-                    当类型为 `allowlist`.
+                    当 type 为 `allowlist`.
 
                   - `type: "allowlist"`
 
-                    仅允许对指定域名的出站网络访问。始终 `allowlist`.
+                    仅允许向指定域发出站网络访问。始终为 `allowlist`.
 
                     - `"allowlist"`
 
                   - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                    可选，针对允许列表域名的域范围密钥。
+                    可选的、限定域的密钥，用于允许列表中的域。
 
                     - `domain: string`
 
-                      与该密钥关联的域名。
+                      与该密钥关联的域。
 
                     - `name: string`
 
-                      要为该域名注入的密钥名称。
+                      要为该域注入的密钥名称。
 
                     - `value: string`
 
-                      要为该域名注入的密钥值。
+                      要为该域注入的密钥值。
 
           - `type: "code_interpreter"`
 
-            代码解释器工具的类型。始终 `code_interpreter`.
+            代码解释器工具的类型。始终为 `code_interpreter`.
 
             - `"code_interpreter"`
 
@@ -9820,7 +9817,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "programmatic_tool_calling"`
 
-            工具的类型。始终 `programmatic_tool_calling`.
+            工具的类型。始终为 `programmatic_tool_calling`.
 
             - `"programmatic_tool_calling"`
 
@@ -9830,13 +9827,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "image_generation"`
 
-            图像生成工具的类型。始终 `image_generation`.
+            图像生成工具的类型。始终为 `image_generation`.
 
             - `"image_generation"`
 
           - `action: optional "generate" or "edit" or "auto"`
 
-            是否生成新图像或编辑现有图像。默认： `auto`.
+            是生成新图像还是编辑现有图像。默认值： `auto`.
 
             - `"generate"`
 
@@ -9846,11 +9843,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            设置生成图像的背景。可选值之一： `transparent`,
-            `opaque`，或 `auto`。透明背景可用于
+            设置生成图像的背景。可选值为 `transparent`,
+            `opaque`、或 `auto`。透明背景适用于
             支持的 GPT 图像模型。对于 `gpt-image-2` 和
-            `gpt-image-2-2026-04-21`，此支持处于预览阶段。当使用
-            `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认： `auto`.
+            `gpt-image-2-2026-04-21`，该支持处于预览阶段。使用
+            `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
             - `"transparent"`
 
@@ -9860,7 +9857,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            控制模型在匹配输入图像的样式和特征（尤其是面部特征）方面投入的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
+            控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所需的投入程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。之一。默认为 `low`.
 
             - `"high"`
 
@@ -9868,31 +9865,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `input_image_mask: optional object { file_id, image_url }`
 
-            用于修复的可选掩码。包含 `image_url`
+            用于修复的可选遮罩。包含 `image_url`
             （字符串，可选）和 `file_id` （字符串，可选）。
 
             - `file_id: optional string`
 
-              掩码图像的文件ID。
+              遮罩图像的文件 ID。
 
             - `image_url: optional string`
 
-              Base64编码的掩码图像。
+              Base64 编码的遮罩图像。
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。其中一个为 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+            `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              要使用的图像生成模型。其中一个为 `gpt-image-1`,
+              要使用的图像生成模型。可选值为 `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+              `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -9907,7 +9904,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `moderation: optional "auto" or "low"`
 
-            生成图像的审核级别。默认值： `auto`.
+            生成图像的内容审核级别。默认值： `auto`.
 
             - `"auto"`
 
@@ -9919,8 +9916,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `output_format: optional "png" or "webp" or "jpeg"`
 
-            生成图像的输出格式。其中一个为 `png`, `webp`，或
-            `jpeg`。默认： `png`.
+            生成图像的输出格式。可选值为 `png`, `webp`、或
+            `jpeg`。默认值： `png`.
 
             - `"png"`
 
@@ -9930,12 +9927,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `partial_images: optional number`
 
-            流式模式下生成的部分图像数量，范围从0（默认值）到3。
+            在流式模式下要生成的中间图像数量，范围为 0（默认值）到 3。
 
           - `quality: optional "low" or "medium" or "high" or "auto"`
 
-            生成图像的质量。其中一个为 `low`, `medium`, `high`,
-            或 `auto`。默认： `auto`.
+            生成图像的质量。可选值为 `low`, `medium`, `high`,
+            或 `auto`。默认值： `auto`.
 
             - `"low"`
 
@@ -9947,13 +9944,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
               - `"1024x1024"`
 
@@ -9965,7 +9962,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `LocalShell object { type }`
 
-          一种允许模型在本地环境中执行 shell 命令的工具。
+          允许模型在本地环境中执行 shell 命令的工具。
 
           - `type: "local_shell"`
 
@@ -9975,7 +9972,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `Shell object { type, allowed_callers, environment }`
 
-          一种允许模型执行 shell 命令的工具。
+          允许模型执行 shell 命令的工具。
 
           - `type: "shell"`
 
@@ -9997,13 +9994,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `type: "container_auto"`
 
-                自动为此请求创建容器
+                自动为本次请求创建一个容器
 
                 - `"container_auto"`
 
               - `file_ids: optional array of string`
 
-                可选的已上传文件列表，供你的代码使用。
+                提供给代码使用的已上传文件的可选列表。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -10027,7 +10024,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `skills: optional array of SkillReference or InlineSkill`
 
-                可选的技能列表，通过 ID 或内联数据引用。
+                通过 id 引用或内联数据的可选技能列表。
 
                 - `SkillReference object { skill_id, type, version }`
 
@@ -10077,7 +10074,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `type: "inline"`
 
-                    为此请求定义内联技能。
+                    为本次请求定义一个内联技能。
 
                     - `"inline"`
 
@@ -10091,7 +10088,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `skills: optional array of LocalSkill`
 
-                可选技能列表。
+                可选的技能列表。
 
                 - `description: string`
 
@@ -10103,7 +10100,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `path: string`
 
-                  包含技能的目录路径。
+                  包含该技能的目录路径。
 
             - `ContainerReference object { container_id, type }`
 
@@ -10119,7 +10116,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `Custom object { name, type, allowed_callers, 3 more }`
 
-          一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+          使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -10127,7 +10124,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "custom"`
 
-            自定义工具的类型。始终 `custom`.
+            自定义工具的类型。始终为 `custom`.
 
             - `"custom"`
 
@@ -10141,7 +10138,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `defer_loading: optional boolean`
 
-            是否应延迟此工具并通过工具搜索发现。
+            该工具是否应被延迟，并通过工具搜索发现。
 
           - `description: optional string`
 
@@ -10153,11 +10150,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `Text object { type }`
 
-              无约束的自由形式文本。
+              无约束的自由格式文本。
 
               - `type: "text"`
 
-                无约束文本格式。始终 `text`.
+                无约束文本格式。始终为 `text`.
 
                 - `"text"`
 
@@ -10171,7 +10168,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `syntax: "lark" or "regex"`
 
-                语法定义的语法。之一 `lark` 或 `regex`.
+                语法定义的语法格式。可选值为 `lark` 或 `regex`.
 
                 - `"lark"`
 
@@ -10179,21 +10176,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `type: "grammar"`
 
-                语法格式。始终 `grammar`.
+                语法格式。始终为 `grammar`.
 
                 - `"grammar"`
 
         - `Namespace object { description, name, tools, type }`
 
-          将函数/自定义工具分组到共享命名空间下。
+          在共享命名空间下对函数/自定义工具进行分组。
 
           - `description: string`
 
-            显示给模型的命名空间描述。
+            展示给模型的命名空间描述。
 
           - `name: string`
 
-            工具调用中使用的命名空间名称（例如， `crm`).
+            在工具调用中使用的命名空间名称（例如， `crm`).
 
           - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
@@ -10217,23 +10214,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `defer_loading: optional boolean`
 
-                此函数是否应被延迟并通过工具搜索发现。
+                是否应推迟此函数并通过工具搜索发现它。
 
               - `description: optional string or null`
 
               - `output_schema: optional map[unknown] or null`
 
-                描述此函数工具字符串输出中 JSON 值的 JSON Schema。这不描述内容数组输出。
+                描述此函数工具字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content 数组输出。
 
               - `parameters: optional unknown or null`
 
               - `strict: optional boolean or null`
 
-                是否强制进行严格的参数验证。如果省略，Responses 会在 schema 兼容时尝试使用严格验证，否则回退到非严格验证。
+                是否强制执行严格的参数校验。如果省略，Responses 会在 schema 兼容时尝试使用严格校验，否则回退到非严格校验。
 
             - `Custom object { name, type, allowed_callers, 3 more }`
 
-              一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+              使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -10241,7 +10238,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `type: "custom"`
 
-                自定义工具的类型。始终 `custom`.
+                自定义工具的类型。始终为 `custom`.
 
                 - `"custom"`
 
@@ -10255,7 +10252,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `defer_loading: optional boolean`
 
-                是否应延迟此工具并通过工具搜索发现。
+                该工具是否应被延迟，并通过工具搜索发现。
 
               - `description: optional string`
 
@@ -10267,27 +10264,27 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "namespace"`
 
-            工具的类型。始终 `namespace`.
+            工具的类型。始终为 `namespace`.
 
             - `"namespace"`
 
         - `ToolSearch object { type, description, execution, parameters }`
 
-          用于延迟工具的托管或 BYOT 工具搜索配置。
+          针对延迟工具的托管或 BYOT 工具搜索配置。
 
           - `type: "tool_search"`
 
-            工具的类型。始终 `tool_search`.
+            工具的类型。始终为 `tool_search`.
 
             - `"tool_search"`
 
           - `description: optional string or null`
 
-            为客户端执行的工具搜索工具向模型显示的描述。
+            向模型展示的客户端执行工具搜索工具的描述。
 
           - `execution: optional "server" or "client"`
 
-            工具搜索是由服务器还是客户端执行。
+            工具搜索是由服务端执行还是由客户端执行。
 
             - `"server"`
 
@@ -10295,15 +10292,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `parameters: optional unknown or null`
 
-            客户端执行的工具搜索工具的参数 schema。
+            客户端执行工具搜索工具的参数 schema。
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          此工具在网页上搜索相关内容以用于响应。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+          此工具会在网页上搜索相关结果以用于回复。详细了解 [网页搜索 tool](https://platform.openai.com/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-            网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+            网页搜索 工具的类型。其一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
             - `"web_search_preview"`
 
@@ -10317,7 +10314,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -10327,11 +10324,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            用户的位置。
+            用户所在的位置。
 
             - `type: "approximate"`
 
-              位置近似的类型。始终为 `approximate`.
+              位置近似值的类型。始终为 `approximate`.
 
               - `"approximate"`
 
@@ -10345,7 +10342,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -10353,11 +10350,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `ApplyPatch object { type, allowed_callers }`
 
-          允许助手使用统一差异创建、删除或更新文件。
+          允许助手使用 unified diff 创建、删除或更新文件。
 
           - `type: "apply_patch"`
 
-            工具的类型。始终 `apply_patch`.
+            工具的类型。始终为 `apply_patch`.
 
             - `"apply_patch"`
 
@@ -10371,11 +10368,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `top_p: optional number`
 
-        用于核采样的温度替代参数；1.0 包含所有标记。
+        作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
 - `error: EvalAPIError`
 
-  表示 Eval API 错误响应的对象。
+  表示来自 Eval API 错误响应的对象。
 
   - `code: string`
 
@@ -10387,20 +10384,20 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
 - `eval_id: string`
 
-  相关评估的标识符。
+  关联评估的标识符。
 
 - `metadata: Metadata or null`
 
-  一组 16 个键值对，可附加到对象上。这可以
-  用于以结构化格式存储有关对象的额外信息，
+  可附加到对象的 16 组键值对。这可以
+  用于以结构化格式存储有关对象的附加信息，
   并通过 API 或仪表板查询对象。
 
-  键是字符串，最大长度为 64 个字符。值是字符串，
+  键为字符串，最大长度为 64 个字符。值为字符串，
   最大长度为 512 个字符。
 
 - `model: string`
 
-  被评估的模型（如果适用）。
+  被评估的模型（如适用）。
 
 - `name: string`
 
@@ -10408,21 +10405,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
 - `object: "eval.run"`
 
-  对象的类型。始终为 "eval.run"。
+  对象类型，始终为 "eval.run"。
 
   - `"eval.run"`
 
 - `per_model_usage: array of object { cached_tokens, completion_tokens, invocation_count, 3 more }`
 
-  评估运行期间每个模型的使用统计。
+  评估运行期间每个模型的使用统计信息。
 
   - `cached_tokens: number`
 
-    从缓存中检索到的令牌数。
+    从缓存中检索到的 token 数量。
 
   - `completion_tokens: number`
 
-    生成的完成令牌数。
+    生成的 completion token 数量。
 
   - `invocation_count: number`
 
@@ -10434,31 +10431,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `prompt_tokens: number`
 
-    使用的提示令牌数。
+    使用的 prompt token 数量。
 
   - `total_tokens: number`
 
-    使用的令牌总数。
+    使用的 token 总数。
 
 - `per_testing_criteria_results: array of object { failed, passed, testing_criteria }`
 
-  评估运行期间应用的每项测试标准的结果。
+  评估运行期间应用的每个测试条件的测试结果。
 
   - `failed: number`
 
-    此标准失败的测试数量。
+    此条件下未通过的测试数。
 
   - `passed: number`
 
-    此标准通过的测试数量。
+    此条件下通过的测试数。
 
   - `testing_criteria: string`
 
-    测试标准的说明。
+    测试条件的描述。
 
 - `report_url: string`
 
-  UI 仪表板上呈现的评估运行报告的 URL。
+  在 UI 仪表板上指向已渲染评估运行报告的 URL。
 
 - `result_counts: object { errored, failed, passed, total }`
 
@@ -10466,11 +10463,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `errored: number`
 
-    导致错误的输出项数量。
+    出现错误的输出项数量。
 
   - `failed: number`
 
-    未能通过评估的输出项数量。
+    未通过评估的输出项数量。
 
   - `passed: number`
 
@@ -10575,7 +10572,7 @@ curl https://api.openai.com/v1/evals/eval_67e579652b548190aaa83ada4b125f47/runs 
   -X POST \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"name":"gpt-4o-mini","data_source":{"type":"completions","input_messages":{"type":"template","template":[{"role":"developer","content":"Categorize a given news headline into one of the following topics: Technology, Markets, World, Business, or Sports.\n\n# Steps\n\n1. Analyze the content of the news headline to understand its primary focus.\n2. Extract the subject matter, identifying any key indicators or keywords.\n3. Use the identified indicators to determine the most suitable category out of the five options: Technology, Markets, World, Business, or Sports.\n4. Ensure only one category is selected per headline.\n\n# Output Format\n\nRespond with the chosen category as a single word. For instance: \"Technology\", \"Markets\", \"World\", \"Business\", or \"Sports\".\n\n# Examples\n\n**Input**: \"Apple Unveils New iPhone Model, Featuring Advanced AI Features\"  \n**Output**: \"Technology\"\n\n**Input**: \"Global Stocks Mixed as Investors Await Central Bank Decisions\"  \n**Output**: \"Markets\"\n\n**Input**: \"War in Ukraine: Latest Updates on Negotiation Status\"  \n**Output**: \"World\"\n\n**Input**: \"Microsoft in Talks to Acquire Gaming Company for $2 Billion\"  \n**Output**: \"Business\"\n\n**Input**: \"Manchester United Secures Win in Premier League Football Match\"  \n**Output**: \"Sports\" \n\n# Notes\n\n- If the headline appears to fit into more than one category, choose the most dominant theme.\n- Keywords or phrases such as \"stocks\", \"company acquisition\", \"match\", or technological brands can be good indicators for classification.\n"} , {"role":"user","content":"{{item.input}}"}]} ,"sampling_params":{"temperature":1,"max_completions_tokens":2048,"top_p":1,"seed":42},"model":"gpt-4o-mini","source":{"type":"file_content","content":[{"item":{"input":"Tech Company Launches Advanced Artificial Intelligence Platform","ground_truth":"Technology"}}]}}'
+  -d '{"name":"gpt-5.6-sol","data_source":{"type":"completions","input_messages":{"type":"template","template":[{"role":"developer","content":"Categorize a given news headline into one of the following topics: Technology, Markets, World, Business, or Sports.\n\n# Steps\n\n1. Analyze the content of the news headline to understand its primary focus.\n2. Extract the subject matter, identifying any key indicators or keywords.\n3. Use the identified indicators to determine the most suitable category out of the five options: Technology, Markets, World, Business, or Sports.\n4. Ensure only one category is selected per headline.\n\n# Output Format\n\nRespond with the chosen category as a single word. For instance: \"Technology\", \"Markets\", \"World\", \"Business\", or \"Sports\".\n\n# Examples\n\n**Input**: \"Apple Unveils New iPhone Model, Featuring Advanced AI Features\"  \n**Output**: \"Technology\"\n\n**Input**: \"Global Stocks Mixed as Investors Await Central Bank Decisions\"  \n**Output**: \"Markets\"\n\n**Input**: \"War in Ukraine: Latest Updates on Negotiation Status\"  \n**Output**: \"World\"\n\n**Input**: \"Microsoft in Talks to Acquire Gaming Company for $2 Billion\"  \n**Output**: \"Business\"\n\n**Input**: \"Manchester United Secures Win in Premier League Football Match\"  \n**Output**: \"Sports\" \n\n# Notes\n\n- If the headline appears to fit into more than one category, choose the most dominant theme.\n- Keywords or phrases such as \"stocks\", \"company acquisition\", \"match\", or technological brands can be good indicators for classification.\n"} , {"role":"user","content":"{{item.input}}"}]} ,"sampling_params":{"max_completions_tokens":2048},"model":"gpt-5.6-sol","source":{"type":"file_content","content":[{"item":{"input":"Tech Company Launches Advanced Artificial Intelligence Platform","ground_truth":"Technology"}}]}}}'
 ```
 
 #### 响应
@@ -10587,8 +10584,8 @@ curl https://api.openai.com/v1/evals/eval_67e579652b548190aaa83ada4b125f47/runs 
   "eval_id": "eval_67e579652b548190aaa83ada4b125f47",
   "report_url": "https://platform.openai.com/evaluations/eval_67e579652b548190aaa83ada4b125f47&run_id=evalrun_67e57965b480819094274e3a32235e4c",
   "status": "queued",
-  "model": "gpt-4o-mini",
-  "name": "gpt-4o-mini",
+  "model": "gpt-5.6-sol",
+  "name": "gpt-5.6-sol",
   "created_at": 1743092069,
   "result_counts": {
     "total": 0,
@@ -10632,11 +10629,8 @@ curl https://api.openai.com/v1/evals/eval_67e579652b548190aaa83ada4b125f47/runs 
         }
       ]
     },
-    "model": "gpt-4o-mini",
+    "model": "gpt-5.6-sol",
     "sampling_params": {
-      "seed": 42,
-      "temperature": 1.0,
-      "top_p": 1.0,
       "max_completions_tokens": 2048
     }
   },
@@ -10649,7 +10643,7 @@ curl https://api.openai.com/v1/evals/eval_67e579652b548190aaa83ada4b125f47/runs 
 
 **删除** `/evals/{eval_id}/runs/{run_id}`
 
-删除一次评估运行。
+删除评测运行。
 
 ### 路径参数
 
@@ -10657,7 +10651,7 @@ curl https://api.openai.com/v1/evals/eval_67e579652b548190aaa83ada4b125f47/runs 
 
 - `run_id: string`
 
-### 返回
+### Returns
 
 - `deleted: optional boolean`
 
@@ -10702,7 +10696,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 }
 ```
 
-## 获取评估运行
+## 获取评估运行列表
 
 **get** `/evals/{eval_id}/runs`
 
@@ -10724,7 +10718,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
 - `order: optional "asc" or "desc"`
 
-  按时间戳对运行进行排序的顺序。使用 `asc` 表示升序或 `desc` 表示降序。默认为 `asc`.
+  按时间戳排序运行的方向。使用 `asc` 表示升序，或 `desc` 表示降序。默认为 `asc`.
 
   - `"asc"`
 
@@ -10732,7 +10726,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
 - `status: optional "queued" or "in_progress" or "completed" or 2 more`
 
-  按状态筛选运行。可选值为 `queued` | `in_progress` | `failed` | `completed` | `canceled`.
+  按状态过滤运行。可选值之一 `queued` | `in_progress` | `failed` | `completed` | `canceled`.
 
   - `"queued"`
 
@@ -10744,31 +10738,31 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
   - `"failed"`
 
-### 返回
+### Returns
 
 - `data: array of object { id, created_at, data_source, 11 more }`
 
-  评估运行对象的数组。
+  一个由评估运行对象组成的数组。
 
   - `id: string`
 
-    评估运行的唯一标识符。
+    评估运行（evaluation run）的唯一标识符。
 
   - `created_at: number`
 
-    评估运行创建时的 Unix 时间戳（秒）。
+    评估运行创建时的 Unix 时间戳（以秒为单位）。
 
   - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or object { source, type, input_messages, 2 more }`
 
-    有关运行数据源的信息。
+    关于该运行数据源的信息。
 
     - `CreateEvalJSONLRunDataSource object { source, type }`
 
-      一个 JsonlRunDataSource 对象，指定一个 JSONL 文件，该文件与评估
+      一个 JsonlRunDataSource 对象，用于指定与该评估匹配的 JSONL 文件
 
       - `source: object { content, type }  or object { id, type }`
 
-        决定什么填充 `item` 数据源中的命名空间。
+        决定数据源中如何填充 `item` 命名空间。
 
         - `EvalJSONLFileContentSource object { content, type }`
 
@@ -10782,7 +10776,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
           - `type: "file_content"`
 
-            jsonl 源的类型。始终为 `file_content`.
+            jsonl 数据源的类型。始终为 `file_content`.
 
             - `"file_content"`
 
@@ -10794,23 +10788,23 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
           - `type: "file_id"`
 
-            jsonl 源的类型。始终为 `file_id`.
+            jsonl 数据源的类型。始终为 `file_id`.
 
             - `"file_id"`
 
       - `type: "jsonl"`
 
-        数据源的类型。始终是 `jsonl`.
+        数据源的类型。始终为 `jsonl`.
 
         - `"jsonl"`
 
     - `CreateEvalCompletionsRunDataSource object { source, type, input_messages, 2 more }`
 
-      描述模型采样配置的 CompletionsRunDataSource 对象。
+      一个 CompletionsRunDataSource 对象，用于描述模型采样配置。
 
       - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 3 more }`
 
-        决定什么填充 `item` 此运行数据源中的命名空间。
+        决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
         - `EvalJSONLFileContentSource object { content, type }`
 
@@ -10824,7 +10818,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
           - `type: "file_content"`
 
-            jsonl 源的类型。始终为 `file_content`.
+            jsonl 数据源的类型。始终为 `file_content`.
 
             - `"file_content"`
 
@@ -10836,44 +10830,44 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
           - `type: "file_id"`
 
-            jsonl 源的类型。始终为 `file_id`.
+            jsonl 数据源的类型。始终为 `file_id`.
 
             - `"file_id"`
 
         - `StoredCompletionsRunDataSource object { type, created_after, created_before, 3 more }`
 
-          描述一组过滤器的 StoredCompletionsRunDataSource 配置
+          一个 StoredCompletionsRunDataSource 配置，用于描述一组筛选条件
 
           - `type: "stored_completions"`
 
-            源的类型。始终为 `stored_completions`.
+            数据源的类型。始终为 `stored_completions`.
 
             - `"stored_completions"`
 
           - `created_after: optional number or null`
 
-            可选的 Unix 时间戳，用于过滤在此时间之后创建的项。
+            一个可选的 Unix 时间戳，用于筛选在此时间之后创建的项。
 
           - `created_before: optional number or null`
 
-            可选的 Unix 时间戳，用于过滤在此时间之前创建的项。
+            一个可选的 Unix 时间戳，用于筛选在此时间之前创建的项。
 
           - `limit: optional number or null`
 
-            可选的最大返回项数。
+            一个可选的返回项的最大数量。
 
           - `metadata: optional Metadata or null`
 
-            一组 16 个键值对，可附加到对象上。这可以
-            用于以结构化格式存储有关对象的额外信息，
+            可附加到对象的 16 组键值对。这可以
+            用于以结构化格式存储有关对象的附加信息，
             并通过 API 或仪表板查询对象。
 
-            键是字符串，最大长度为 64 个字符。值是字符串，
+            键为字符串，最大长度为 64 个字符。值为字符串，
             最大长度为 512 个字符。
 
           - `model: optional string or null`
 
-            可选的模型过滤条件（例如，'gpt-4o'）。
+            一个可选的用于筛选的模型（例如 'gpt-5.6-sol'）。
 
       - `type: "completions"`
 
@@ -10883,43 +10877,43 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
       - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-        用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+        在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
         - `TemplateInputMessages object { template, type }`
 
           - `template: array of EasyInputMessage or object { content, role, type }`
 
-            构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+            构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
             - `EasyInputMessage object { content, role, phase, type }`
 
-              输入给模型的消息，其角色指示指令遵循
-              层级。以 `developer` 或 `system` 角色给出的指令
-              优先于以 `user` 角色给出的指令。具有
-              `assistant` 角色的消息被认为是由模型在之前的
-              交互中生成的。
+              输入到模型的消息，其角色指示指令的
+              层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+              角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+              `assistant` 消息。
+              互动。
 
               - `content: string or ResponseInputMessageContentList`
 
                 发送给模型的文本、图像或音频输入，用于生成响应。
-                也可以包含先前的助手响应。
+                也可以包含之前的助手响应。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputMessageContentList = array of ResponseInputContent`
 
-                  发送给模型的一个或多个输入项的列表，包含不同类型的内容
-                  。
+                  发送给模型的一个或多个输入项的列表，其中包含不同的内容
+                  类型。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                     - `text: string`
 
-                      模型的文本输入。
+                      发送给模型的文本输入。
 
                     - `type: "input_text"`
 
@@ -10929,7 +10923,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                     - `prompt_cache_breakpoint: optional object { mode }`
 
-                      标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                       - `mode: "explicit"`
 
@@ -10943,7 +10937,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                     - `detail: ImageDetail`
 
-                      发送给模型的图像的细节级别。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+                      发送到模型的图片的细节级别。可选值为 `high`, `low`, `auto`、或 `original`。之一。默认为 `auto`.
 
                       - `"low"`
 
@@ -10965,11 +10959,11 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                     - `image_url: optional string or null`
 
-                      要发送给模型的图像的 URL。完全限定的 URL 或数据 URL 中的 base64 编码图像。
+                      要发送给模型的图像的 URL。可以是完整的 URL，也可以是 base64 编码的 data URL 图像。
 
                     - `prompt_cache_breakpoint: optional object { mode }`
 
-                      标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                       - `mode: "explicit"`
 
@@ -10989,7 +10983,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                     - `detail: optional "auto" or "low" or "high"`
 
-                      要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入令牌的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+                      要发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
                       - `"auto"`
 
@@ -10999,7 +10993,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                     - `file_data: optional string`
 
-                      要发送给模型的文件的内容。
+                      要发送给模型的文件内容。
 
                     - `file_id: optional string or null`
 
@@ -11015,7 +11009,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                     - `prompt_cache_breakpoint: optional object { mode }`
 
-                      标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                       - `mode: "explicit"`
 
@@ -11025,7 +11019,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
               - `role: "user" or "assistant" or "system" or "developer"`
 
-                消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                消息输入的角色。可选值为 `user`, `assistant`, `system`、或
                 `developer`.
 
                 - `"user"`
@@ -11038,9 +11032,9 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
               - `phase: optional "commentary" or "final_answer" or null`
 
-                将 `assistant` 消息标记为中间评论（`commentary`) 或最终答案 (`final_answer`).
-                对于像 `gpt-5.3-codex` 及更新的模型，发送后续请求时，请保留并重新发送
-                阶段到所有助手消息中——省略该阶段可能会降低性能。不用于用户消息。
+                将 `assistant` 消息标记为中间补充说明（`commentary`) 或最终答案（`final_answer`).
+                对于类似 `gpt-5.3-codex` 及更高版本，发送后续请求时，请在所有助手消息上保留并重新发送
+                阶段，遗漏会降低性能。不用于用户消息。
 
                 - `"commentary"`
 
@@ -11054,31 +11048,31 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `EvalMessageObject object { content, role, type }`
 
-              输入给模型的消息，其角色指示指令遵循
-              层级。以 `developer` 或 `system` 角色给出的指令
-              优先于以 `user` 角色给出的指令。具有
-              `assistant` 角色的消息被认为是由模型在之前的
-              交互中生成的。
+              输入到模型的消息，其角色指示指令的
+              层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+              角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+              `assistant` 消息。
+              互动。
 
               - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -11088,21 +11082,21 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                 - `InputImage object { image_url, type, detail }`
 
-                  用于 EvalItem 内容数组中的图像输入块。
+                  在 EvalItem 内容数组中使用的图片输入块。
 
                   - `image_url: string`
 
-                    图像输入的 URL。
+                    图片输入的 URL。
 
                   - `type: "input_image"`
 
-                    图像输入的类型。始终为 `input_image`.
+                    图片输入的类型。始终为 `input_image`.
 
                     - `"input_image"`
 
                   - `detail: optional string`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
@@ -11112,11 +11106,11 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                     - `data: string`
 
-                      Base64 编码的音频数据。
+                      经过 Base64 编码的音频数据。
 
                     - `format: "mp3" or "wav"`
 
-                      音频数据的格式。目前支持的格式为 `mp3` 和
+                      音频数据的格式。当前支持的格式有 `mp3` 和
                       `wav`.
 
                       - `"mp3"`
@@ -11131,24 +11125,24 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                 - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                  输入列表，每个输入可以是输入文本、输出文本、输入
-                  图像或输入音频对象。
+                  输入列表，其中每个输入可以是输入文本、输出文本、输入
+                  图片或输入音频对象。
 
                   - `TextInput = string`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                   - `OutputText object { text, type }`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                     - `text: string`
 
-                      模型的文本输出。
+                      来自模型的文本输出。
 
                     - `type: "output_text"`
 
@@ -11158,21 +11152,21 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                   - `InputImage object { image_url, type, detail }`
 
-                    用于 EvalItem 内容数组中的图像输入块。
+                    在 EvalItem 内容数组中使用的图片输入块。
 
                     - `image_url: string`
 
-                      图像输入的 URL。
+                      图片输入的 URL。
 
                     - `type: "input_image"`
 
-                      图像输入的类型。始终为 `input_image`.
+                      图片输入的类型。始终为 `input_image`.
 
                       - `"input_image"`
 
                     - `detail: optional string`
 
-                      发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                      发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                   - `ResponseInputAudio object { input_audio, type }`
 
@@ -11180,7 +11174,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
               - `role: "user" or "assistant" or "system" or "developer"`
 
-                消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                消息输入的角色。可选值为 `user`, `assistant`, `system`、或
                 `developer`.
 
                 - `"user"`
@@ -11207,7 +11201,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
           - `item_reference: string`
 
-            对 `item` 命名空间中变量的引用。例如，"item.input_trajectory"
+            命名空间中的变量引用。例如“ `item` .item.input_trajectory”
 
           - `type: "item_reference"`
 
@@ -11217,7 +11211,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
       - `model: optional string`
 
-        用于生成补全的模型名称（例如 "o3-mini"）。
+        用于生成补全的模型名称（例如 “o3-mini”）。
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
@@ -11227,13 +11221,13 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
         - `reasoning_effort: optional ReasoningEffort or null`
 
-          约束推理模型的推理工作量。目前支持的
-          值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-          降低推理工作量可以加快响应速度并减少响应中
-          用于推理的令牌数。并非所有推理模型都支持每个
+          约束推理模型在推理上的投入程度。当前支持
+          的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+          降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+          消耗。并非所有推理模型都支持每个
           值。请参阅
           [推理指南](https://platform.openai.com/docs/guides/reasoning)
-          了解各模型的特定支持。
+          了解特定模型的支持情况。
 
           - `"none"`
 
@@ -11251,20 +11245,20 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
         - `response_format: optional ResponseFormatText or ResponseFormatJSONSchema or ResponseFormatJSONObject`
 
-          指定模型必须输出的格式的对象。
+          指定模型必须输出格式的对象。
 
-          设置为 `{ "type": "json_schema", "json_schema": {...} }` 启用
-          结构化输出，确保模型匹配你提供的 JSON
-          架构。更多信息请参阅 [Structured Outputs
+          设置为 `{ "type": "json_schema", "json_schema": {...} }` 会启用
+          Structured Outputs，用于确保模型匹配你提供的 JSON
+          schema。详细了解请参阅 [Structured Outputs
           指南](/docs/guides/structured-outputs).
 
           设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-          确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-          。
+          确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+          使用。
 
           - `ResponseFormatText object { type }`
 
-            默认响应格式，用于生成文本响应。
+            默认响应格式。用于生成文本响应。
 
             - `type: "text"`
 
@@ -11274,34 +11268,34 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
           - `ResponseFormatJSONSchema object { json_schema, type }`
 
-            JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-            了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+            JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+            详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
             - `json_schema: object { name, description, schema, strict }`
 
-              结构化输出配置选项，包括 JSON Schema。
+              Structured Outputs 配置选项，包括 JSON Schema。
 
               - `name: string`
 
-                响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-                下划线和破折号，最大长度为 64。
+                响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+                下划线和短横线，最大长度为 64。
 
               - `description: optional string`
 
-                响应格式用途的描述，模型使用它来
-                决定如何以该格式进行响应。
+                对响应格式用途的描述，供模型用来
+                决定如何按该格式进行响应。
 
               - `schema: optional map[unknown]`
 
-                响应格式的架构，以 JSON Schema 对象描述。
-                了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+                响应格式对应的 schema，以 JSON Schema 对象形式描述。
+                了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
               - `strict: optional boolean or null`
 
-                是否在生成输出时启用严格的架构遵循。
-                如果设置为 true，模型将始终遵循定义的精确架构
-                中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-                `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+                是否在生成输出时启用严格的 schema 遵循。
+                若设置为 true，模型将始终遵循在
+                中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+                `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
                 指南](/docs/guides/structured-outputs).
 
             - `type: "json_schema"`
@@ -11312,10 +11306,10 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
           - `ResponseFormatJSONObject object { type }`
 
-            JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-            使用 `json_schema` 建议用于支持它的模型。请注意，
-            模型在没有系统或用户消息指示它的情况下不会生成 JSON
-            去这样做。
+            JSON 对象响应格式。生成 JSON 响应的旧方法。
+            对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+            模型将不会生成 JSON
+            。
 
             - `type: "json_object"`
 
@@ -11325,53 +11319,53 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
         - `seed: optional number`
 
-          用于在采样时初始化随机性的种子值。
+          用于在采样过程中初始化随机性的种子值。
 
         - `temperature: optional number`
 
-          更高的温度会增加输出的随机性。
+          较高的 temperature 会增加输出的随机性。
 
         - `tools: optional array of ChatCompletionFunctionTool`
 
-          模型可能调用的工具列表。目前，仅支持函数作为工具。使用此选项提供模型可能生成 JSON 输入的函数列表。最多支持 128 个函数。
+          模型可以调用的工具列表。目前，作为工具仅支持函数。使用此项提供模型可以为其生成 JSON 输入的函数列表。最多支持 128 个函数。
 
           - `function: FunctionDefinition`
 
             - `name: string`
 
-              要调用的函数名称。必须是 a-z、A-Z、0-9，或包含下划线和破折号，最大长度为 64。
+              要调用的函数的名称。必须为 a-z、A-Z、0-9 或包含下划线和短划线，最大长度为 64。
 
             - `description: optional string`
 
-              函数功能的描述，模型用它来决定何时以及如何调用该函数。
+              对函数功能的描述，供模型选择何时以及如何调用该函数时使用。
 
             - `parameters: optional FunctionParameters`
 
-              函数接受的参数，描述为 JSON Schema 对象。参见 [指南](/docs/guides/function-calling) 获取示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) 获取有关格式的文档。
+              函数接受的参数，使用 JSON Schema 对象进行描述。请参阅 [指南](/docs/guides/function-calling) 中的示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) ，了解相关格式的文档。
 
-              省略 `parameters` 定义了一个具有空参数列表的函数。
+              省略 `parameters` 将定义一个具有空参数列表的函数。
 
             - `strict: optional boolean or null`
 
-              是否在生成函数调用时启用严格模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的子集，当 `strict` 为 `true`。在 [函数调用指南](/docs/guides/function-calling).
+              在生成函数调用时是否启用严格的模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的一个子集，当 `strict` 是 `true`。在以下位置详细了解结构化输出 [函数调用指南](/docs/guides/function-calling).
 
           - `type: "function"`
 
-            中了解更多关于结构化输出的信息。工具的类型。目前仅支持 `function` 。
+            工具的类型。目前，仅支持 `function` 是受支持的。
 
             - `"function"`
 
         - `top_p: optional number`
 
-          用于核采样的温度替代参数；1.0 包含所有标记。
+          作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
     - `ResponsesRunDataSource object { source, type, input_messages, 2 more }`
 
-      描述模型采样配置的 ResponsesRunDataSource 对象。
+      一个 ResponsesRunDataSource 对象，用于描述模型采样配置。
 
       - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 8 more }`
 
-        决定什么填充 `item` 此运行数据源中的命名空间。
+        决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
         - `EvalJSONLFileContentSource object { content, type }`
 
@@ -11385,7 +11379,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
           - `type: "file_content"`
 
-            jsonl 源的类型。始终为 `file_content`.
+            jsonl 数据源的类型。始终为 `file_content`.
 
             - `"file_content"`
 
@@ -11397,13 +11391,13 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
           - `type: "file_id"`
 
-            jsonl 源的类型。始终为 `file_id`.
+            jsonl 数据源的类型。始终为 `file_id`.
 
             - `"file_id"`
 
         - `EvalResponsesSource object { type, created_after, created_before, 8 more }`
 
-          描述运行数据源配置的 EvalResponsesSource 对象。
+          一个 EvalResponsesSource 对象，用于描述运行数据源配置。
 
           - `type: "responses"`
 
@@ -11413,49 +11407,49 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
           - `created_after: optional number or null`
 
-            仅包含在此时间戳之后（含）创建的项。这是用于选择响应的查询参数。
+            仅包含在此时间戳之后（包含）创建的项目。这是一个用于选择响应的查询参数。
 
           - `created_before: optional number or null`
 
-            仅包含在此时间戳之前（含）创建的项。这是用于选择响应的查询参数。
+            仅包含在此时间戳之前（包含）创建的项目。这是一个用于选择响应的查询参数。
 
           - `instructions_search: optional string or null`
 
-            用于搜索“instructions”字段的可选字符串。这是用于选择响应的查询参数。
+            用于搜索 'instructions' 字段的可选字符串。这是一个用于选择响应的查询参数。
 
           - `metadata: optional unknown or null`
 
-            响应的元数据过滤器。这是用于选择响应的查询参数。
+            响应的元数据过滤器。这是一个用于选择响应的查询参数。
 
           - `model: optional string or null`
 
-            要查找响应的模型名称。这是用于选择响应的查询参数。
+            要为其查找响应的模型名称。这是一个用于选择响应的查询参数。
 
           - `reasoning_effort: optional ReasoningEffort or null`
 
-            约束推理模型的推理工作量。目前支持的
-            值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-            降低推理工作量可以加快响应速度并减少响应中
-            用于推理的令牌数。并非所有推理模型都支持每个
+            约束推理模型在推理上的投入程度。当前支持
+            的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+            降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+            消耗。并非所有推理模型都支持每个
             值。请参阅
             [推理指南](https://platform.openai.com/docs/guides/reasoning)
-            了解各模型的特定支持。
+            了解特定模型的支持情况。
 
           - `temperature: optional number or null`
 
-            采样温度。这是用于选择响应的查询参数。
+            采样温度。这是一个用于选择响应的查询参数。
 
           - `tools: optional array of string or null`
 
-            工具名称列表。这是用于选择响应的查询参数。
+            工具名称列表。这是一个用于选择响应的查询参数。
 
           - `top_p: optional number or null`
 
-            核采样参数。这是用于选择响应的查询参数。
+            核采样参数。这是一个用于选择响应的查询参数。
 
           - `users: optional array of string or null`
 
-            用户标识符列表。这是用于选择响应的查询参数。
+            用户标识符列表。这是一个用于选择响应的查询参数。
 
       - `type: "responses"`
 
@@ -11465,13 +11459,13 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
       - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-        用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+        在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
         - `InputMessagesTemplate object { template, type }`
 
           - `template: array of object { content, role }  or object { content, role, type }`
 
-            构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+            构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
             - `ChatMessage object { content, role }`
 
@@ -11485,31 +11479,31 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `EvalMessageObject object { content, role, type }`
 
-              输入给模型的消息，其角色指示指令遵循
-              层级。以 `developer` 或 `system` 角色给出的指令
-              优先于以 `user` 角色给出的指令。具有
-              `assistant` 角色的消息被认为是由模型在之前的
-              交互中生成的。
+              输入到模型的消息，其角色指示指令的
+              层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+              角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+              `assistant` 消息。
+              互动。
 
               - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -11519,21 +11513,21 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                 - `InputImage object { image_url, type, detail }`
 
-                  用于 EvalItem 内容数组中的图像输入块。
+                  在 EvalItem 内容数组中使用的图片输入块。
 
                   - `image_url: string`
 
-                    图像输入的 URL。
+                    图片输入的 URL。
 
                   - `type: "input_image"`
 
-                    图像输入的类型。始终为 `input_image`.
+                    图片输入的类型。始终为 `input_image`.
 
                     - `"input_image"`
 
                   - `detail: optional string`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
@@ -11541,12 +11535,12 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                 - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                  输入列表，每个输入可以是输入文本、输出文本、输入
-                  图像或输入音频对象。
+                  输入列表，其中每个输入可以是输入文本、输出文本、输入
+                  图片或输入音频对象。
 
               - `role: "user" or "assistant" or "system" or "developer"`
 
-                消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                消息输入的角色。可选值为 `user`, `assistant`, `system`、或
                 `developer`.
 
                 - `"user"`
@@ -11573,7 +11567,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
           - `item_reference: string`
 
-            对 `item` 命名空间。即“item.name”
+            命名空间中的变量引用。例如“ `item` 命名空间。例如，“item.name”
 
           - `type: "item_reference"`
 
@@ -11583,7 +11577,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
       - `model: optional string`
 
-        用于生成补全的模型名称（例如 "o3-mini"）。
+        用于生成补全的模型名称（例如 “o3-mini”）。
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
@@ -11593,64 +11587,64 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
         - `reasoning_effort: optional ReasoningEffort or null`
 
-          约束推理模型的推理工作量。目前支持的
-          值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-          降低推理工作量可以加快响应速度并减少响应中
-          用于推理的令牌数。并非所有推理模型都支持每个
+          约束推理模型在推理上的投入程度。当前支持
+          的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+          降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+          消耗。并非所有推理模型都支持每个
           值。请参阅
           [推理指南](https://platform.openai.com/docs/guides/reasoning)
-          了解各模型的特定支持。
+          了解特定模型的支持情况。
 
         - `seed: optional number`
 
-          用于在采样时初始化随机性的种子值。
+          用于在采样过程中初始化随机性的种子值。
 
         - `temperature: optional number`
 
-          更高的温度会增加输出的随机性。
+          较高的 temperature 会增加输出的随机性。
 
         - `text: optional object { format }`
 
-          模型文本响应的配置选项。可以是纯
-          文本或结构化 JSON 数据。了解更多：
+          来自模型的文本响应的配置选项。可以是纯
+          文本或结构化 JSON 数据。了解更多信息：
 
           - [文本输入和输出](/docs/guides/text)
           - [结构化输出](/docs/guides/structured-outputs)
 
           - `format: optional ResponseFormatTextConfig`
 
-            指定模型必须输出的格式的对象。
+            指定模型必须输出格式的对象。
 
-            配置 `{ "type": "json_schema" }` 可启用结构化输出，
-            这确保模型将匹配你提供的 JSON 模式。更多信息请参阅
+            配置 `{ "type": "json_schema" }` 启用结构化输出，
+            可确保模型匹配你提供的 JSON schema。详情请参阅
             [结构化输出指南](/docs/guides/structured-outputs).
 
             默认格式为 `{ "type": "text" }` ，无其他选项。
 
-            **不建议用于 gpt-4o 及更新的模型：**
+            **不推荐用于 gpt-4o 及更新模型：**
 
             设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-            确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-            。
+            确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+            使用。
 
             - `ResponseFormatText object { type }`
 
-              默认响应格式，用于生成文本响应。
+              默认响应格式。用于生成文本响应。
 
             - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
-              JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-              了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+              JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+              详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
               - `name: string`
 
-                响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-                下划线和破折号，最大长度为 64。
+                响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+                下划线和短横线，最大长度为 64。
 
               - `schema: map[unknown]`
 
-                响应格式的架构，以 JSON Schema 对象描述。
-                了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+                响应格式对应的 schema，以 JSON Schema 对象形式描述。
+                了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
               - `type: "json_schema"`
 
@@ -11660,42 +11654,42 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
               - `description: optional string`
 
-                响应格式用途的描述，模型使用它来
-                决定如何以该格式进行响应。
+                对响应格式用途的描述，供模型用来
+                决定如何按该格式进行响应。
 
               - `strict: optional boolean or null`
 
-                是否在生成输出时启用严格的架构遵循。
-                如果设置为 true，模型将始终遵循定义的精确架构
-                中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-                `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+                是否在生成输出时启用严格的 schema 遵循。
+                若设置为 true，模型将始终遵循在
+                中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+                `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
                 指南](/docs/guides/structured-outputs).
 
             - `ResponseFormatJSONObject object { type }`
 
-              JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-              使用 `json_schema` 建议用于支持它的模型。请注意，
-              模型在没有系统或用户消息指示它的情况下不会生成 JSON
-              去这样做。
+              JSON 对象响应格式。生成 JSON 响应的旧方法。
+              对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+              模型将不会生成 JSON
+              。
 
         - `tools: optional array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-          模型在生成响应时可能调用的工具数组。你
-          可以通过设置 `tool_choice` 参数来指定使用哪个工具。
+          模型在生成响应时可以调用的工具数组。你可以
+          通过设置 `tool_choice` 参数来指定要使用的工具。
 
-          你可以提供给模型的工具分为两类：
+          你可以向模型提供的两类工具包括：
 
-          - **内置工具**：由 OpenAI 提供的工具，用于扩展
-            模型的能力，例如 [网页搜索](/docs/guides/tools-web-search)
-            或 [文件搜索](/docs/guides/tools-file-search)。了解更多关于
+          - **内置工具**: 由 OpenAI 提供的工具，用于扩展模型的
+            能力，例如 [网页搜索](/docs/guides/tools-web-search)
+            或 [文件搜索](/docs/guides/tools-file-search)。详细了解
             [内置工具](/docs/guides/tools).
-          - **函数调用（自定义工具）**：由你定义的函数，
-            使模型能够调用你自己的代码。了解更多关于
+          - **函数调用（自定义工具）**: 由你定义的函数，
+            使模型能够调用你自己的代码。详细了解
             [函数调用](/docs/guides/function-calling).
 
           - `Function object { name, parameters, strict, 5 more }`
 
-            在你自己的代码中定义一个模型可以选择调用的函数。了解更多关于 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+            定义你自己代码中的一个函数，模型可以选择调用它。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
 
             - `name: string`
 
@@ -11703,11 +11697,11 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `parameters: map[unknown] or null`
 
-              描述函数参数的 JSON schema 对象。
+              描述该函数参数的 JSON schema 对象。
 
             - `strict: boolean or null`
 
-              是否对此函数工具强制执行严格的参数验证。
+              是否对此函数工具强制执行严格的参数校验。
 
             - `type: "function"`
 
@@ -11725,54 +11719,54 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `defer_loading: optional boolean`
 
-              此函数是否延迟并通过工具搜索加载。
+              此函数是否被延迟加载并通过 tool search 加载。
 
             - `description: optional string or null`
 
-              函数的描述。模型用它来决定是否调用该函数。
+              函数的描述。由模型用于决定是否调用该函数。
 
             - `output_schema: optional map[unknown] or null`
 
-              描述此函数字符串输出中编码的 JSON 值的 JSON schema 对象。
+              描述该函数在字符串输出中所编码 JSON 值的 JSON schema 对象。
 
           - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-            一种从上传文件中搜索相关内容的工具。了解更多关于 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+            用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 工具](https://platform.openai.com/docs/guides/tools-file-search).
 
             - `type: "file_search"`
 
-              文件搜索工具的类型。始终为 `file_search`.
+              文件搜索 工具的类型。始终为 `file_search`.
 
               - `"file_search"`
 
             - `vector_store_ids: array of string`
 
-              要搜索的向量存储的 ID。
+              要搜索的向量存储库 ID。
 
             - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-              要应用的筛选器。
+              要应用的筛选条件。
 
               - `ComparisonFilter object { key, type, value }`
 
-                用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+                用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
                 - `key: string`
 
-                  要与值进行比较的键。
+                  要与该值进行比较的键。
 
                 - `type: "eq" or "ne" or "gt" or 5 more`
 
                   指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-                  - `eq`：等于
-                  - `ne`：不等于
-                  - `gt`：大于
-                  - `gte`：大于或等于
-                  - `lt`：小于
-                  - `lte`：小于或等于
-                  - `in`：在…中
-                  - `nin`：不在…中
+                  - `eq`: 等于
+                  - `ne`: 不等于
+                  - `gt`: 大于
+                  - `gte`: 大于或等于
+                  - `lt`: 小于
+                  - `lte`: 小于或等于
+                  - `in`: 包含于
+                  - `nin`: 不包含于
 
                   - `"eq"`
 
@@ -11792,7 +11786,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                 - `value: string or number or boolean or array of string or number`
 
-                  要与属性键比较的值；支持字符串、数字或布尔类型。
+                  用于与属性键进行比较的值；支持字符串、数字或布尔类型。
 
                   - `string`
 
@@ -11808,15 +11802,15 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
               - `CompoundFilter object { filters, type }`
 
-                使用以下方式组合多个过滤器： `and` 或 `or`.
+                使用以下方式组合多个筛选条件 `and` 或 `or`.
 
                 - `filters: array of ComparisonFilter or unknown`
 
-                  要组合的过滤器数组。项目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+                  要组合的筛选条件数组。项可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
                   - `ComparisonFilter object { key, type, value }`
 
-                    用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+                    用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
                   - `unknown`
 
@@ -11830,27 +11824,27 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `max_num_results: optional number`
 
-              要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+              返回的最大结果数。该数值应介于 1 到 50 之间（含端点）。
 
             - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
-              搜索的排名选项。
+              搜索的排序选项。
 
               - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-                启用混合搜索时，控制倒数排名融合如何平衡语义嵌入匹配与稀疏关键词匹配的权重。
+                在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
                 - `embedding_weight: number`
 
-                  嵌入在倒数排名融合中的权重。
+                  倒数排名融合中嵌入的权重。
 
                 - `text_weight: number`
 
-                  文本在倒数排名融合中的权重。
+                  倒数排名融合中文本的权重。
 
               - `ranker: optional "auto" or "default-2024-11-15"`
 
-                用于文件搜索的排名器。
+                用于文件搜索的排序器。
 
                 - `"auto"`
 
@@ -11858,29 +11852,29 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
               - `score_threshold: optional number`
 
-                文件搜索的分数阈值，为 0 到 1 之间的数字。接近 1 的数字将尝试仅返回最相关的结果，但可能返回更少的结果。
+                文件搜索的分数阈值，取值介于 0 到 1 之间。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
 
           - `Computer object { type }`
 
-            控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+            用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
             - `type: "computer"`
 
-              计算机工具的类型。始终为 `computer`.
+              computer 工具的类型。始终是 `computer`.
 
               - `"computer"`
 
           - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-            控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+            用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
             - `display_height: number`
 
-              计算机显示屏的高度。
+              计算机显示器的高度。
 
             - `display_width: number`
 
-              计算机显示屏的宽度。
+              计算机显示器的宽度。
 
             - `environment: "windows" or "mac" or "linux" or 2 more`
 
@@ -11898,18 +11892,18 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `type: "computer_use_preview"`
 
-              计算机使用工具的类型。始终为 `computer_use_preview`.
+              computer use 工具的类型。始终是 `computer_use_preview`.
 
               - `"computer_use_preview"`
 
           - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-            搜索互联网以获取与提示相关的来源。了解更多关于
-            [网页搜索工具](/docs/guides/tools-web-search).
+            在互联网上搜索与提示相关的来源。详细了解
+            [网页搜索 tool](/docs/guides/tools-web-search).
 
             - `type: "web_search" or "web_search_2025_08_26"`
 
-              网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+              网页搜索 工具的类型。其一为 `web_search` 或 `web_search_2025_08_26`.
 
               - `"web_search"`
 
@@ -11917,22 +11911,22 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `external_web_access: optional boolean`
 
-              允许网页搜索实时访问互联网。省略时默认为 true。为 false 时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+              允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索 工具将以离线/仅缓存模式运行，并且不会获取新的外部内容。
 
             - `filters: optional object { allowed_domains }  or null`
 
-              搜索的过滤器。
+              搜索的筛选条件。
 
               - `allowed_domains: optional array of string or null`
 
-                搜索允许的域。如果未提供，则允许所有域。
-                也允许所提供域的子域。
+                搜索允许的域名。如果未提供，则允许所有域名。
+                所提供域名的子域名也被允许。
 
                 示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
             - `search_context_size: optional "low" or "medium" or "high"`
 
-              关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+              搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
               - `"low"`
 
@@ -11954,7 +11948,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
               - `region: optional string or null`
 
-                用户的地区的自由文本输入，例如 `California`.
+                用户所在地区的自由文本输入，例如 `California`.
 
               - `timezone: optional string or null`
 
@@ -11962,14 +11956,14 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
               - `type: optional "approximate"`
 
-                位置近似的类型。始终为 `approximate`.
+                位置近似值的类型。始终为 `approximate`.
 
                 - `"approximate"`
 
           - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-            通过远程 Model Context Protocol 向模型提供额外工具的访问权限
-            （MCP）服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+            通过远程 Model Context Protocol
+            （MCP）服务器让模型访问更多工具。 [详细了解 MCP](/docs/guides/tools-remote-mcp).
 
             - `server_label: string`
 
@@ -11991,48 +11985,48 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
 
-              允许的工具名称列表或过滤器对象。
+              允许使用的工具名称列表或筛选对象。
 
               - `McpAllowedTools = array of string`
 
-                允许的工具名称的字符串数组
+                允许使用的工具名称字符串数组
 
               - `McpToolFilter object { read_only, tool_names }`
 
-                用于指定允许哪些工具的过滤器对象。
+                用于指定允许使用哪些工具的筛选对象。
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  它将匹配此过滤器。
+                  指示工具是否会修改数据或仅为只读。如果某个
+                  MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  标注，则会匹配此筛选器。
 
                 - `tool_names: optional array of string`
 
-                  允许的工具名称列表。
+                  允许使用的工具名称列表。
 
             - `authorization: optional string`
 
-              可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-              使用自定义 MCP 服务器 URL 或服务连接器。您的应用程序
-              必须处理 OAuth 授权流程，并在此处提供令牌。
+              可用于远程 MCP 服务器的 OAuth 访问令牌，可配合
+              自定义 MCP 服务器 URL 或服务连接器一起使用。你的应用
+              必须处理 OAuth 授权流程并在此处提供令牌。
 
             - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-              服务连接器的标识符，例如 ChatGPT 中可用的那些。其中一个
-              `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解更多
-              关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+              服务连接器的标识符，例如 ChatGPT 中提供的那些。值为以下之一
+              `server_url`, `connector_id`、或 `tunnel_id` 必须提供。了解更多
+              关于服务连接器的信息 [请参考此处](/docs/guides/tools-remote-mcp#connectors).
 
-              目前支持的 `connector_id` 值为：
+              当前支持的 `connector_id` 值包括：
 
-              - Dropbox： `connector_dropbox`
-              - Gmail： `connector_gmail`
-              - Google Calendar： `connector_googlecalendar`
-              - Google Drive： `connector_googledrive`
-              - Microsoft Teams： `connector_microsoftteams`
-              - Outlook Calendar： `connector_outlookcalendar`
-              - Outlook Email： `connector_outlookemail`
-              - SharePoint： `connector_sharepoint`
+              - Dropbox: `connector_dropbox`
+              - Gmail: `connector_gmail`
+              - Google Calendar: `connector_googlecalendar`
+              - Google Drive: `connector_googledrive`
+              - Microsoft Teams: `connector_microsoftteams`
+              - Outlook Calendar: `connector_outlookcalendar`
+              - Outlook Email: `connector_outlookemail`
+              - SharePoint: `connector_sharepoint`
 
               - `"connector_dropbox"`
 
@@ -12052,12 +12046,12 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `defer_loading: optional boolean`
 
-              此 MCP 工具是否被推迟并通过工具搜索发现。
+              该 MCP 工具是否被延迟，并通过工具搜索被发现。
 
             - `headers: optional map[string] or null`
 
-              发送到 MCP 服务器的可选 HTTP 头。用于认证
-              或其他目的。
+              发送到 MCP 服务器的可选 HTTP 标头。用于身份验证
+              或其他用途。
 
             - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
@@ -12066,41 +12060,41 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
               - `McpToolApprovalFilter object { always, never }`
 
                 指定 MCP 服务器中哪些工具需要审批。可以是
-                `always`, `never`，或与工具关联的筛选器对象
-                需要审批的。
+                `always`, `never`，或与工具关联的过滤器对象
+                需要审批的工具。
 
                 - `always: optional object { read_only, tool_names }`
 
-                  用于指定允许哪些工具的过滤器对象。
+                  用于指定允许使用哪些工具的筛选对象。
 
                   - `read_only: optional boolean`
 
-                    指示工具是否修改数据或为只读。如果
-                    MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                    它将匹配此过滤器。
+                    指示工具是否会修改数据或仅为只读。如果某个
+                    MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                    标注，则会匹配此筛选器。
 
                   - `tool_names: optional array of string`
 
-                    允许的工具名称列表。
+                    允许使用的工具名称列表。
 
                 - `never: optional object { read_only, tool_names }`
 
-                  用于指定允许哪些工具的过滤器对象。
+                  用于指定允许使用哪些工具的筛选对象。
 
                   - `read_only: optional boolean`
 
-                    指示工具是否修改数据或为只读。如果
-                    MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                    它将匹配此过滤器。
+                    指示工具是否会修改数据或仅为只读。如果某个
+                    MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                    标注，则会匹配此筛选器。
 
                   - `tool_names: optional array of string`
 
-                    允许的工具名称列表。
+                    允许使用的工具名称列表。
 
               - `McpToolApprovalSetting = "always" or "never"`
 
-                为所有工具指定单一审批策略。可选值为 `always` 或
-                `never`。当设置为 `always`，时，所有工具都需要审批。当
+                为所有工具指定一个统一的审批策略。可选值为 `always` 或
+                `never`。之一。当设置为 `always`，时，所有工具都需要审批。当设置为
                 设置为 `never`，时，所有工具都不需要审批。
 
                 - `"always"`
@@ -12113,23 +12107,23 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `server_url: optional string`
 
-              MCP 服务器的 URL。必须是 `server_url`, `connector_id`，或
-              `tunnel_id` 中的一项。
+              MCP 服务器的 URL。 `server_url`, `connector_id`、或
+              `tunnel_id` 必须提供其中之一。
 
             - `tunnel_id: optional string`
 
-              要使用的 Secure MCP Tunnel ID，而非直接服务器 URL。必须是
-              `server_url`, `connector_id`，或 `tunnel_id` 中的一项。
+              用于替代直接服务器 URL 的 Secure MCP Tunnel ID。
+              `server_url`, `connector_id`、或 `tunnel_id` 必须提供其中之一。
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
-            一种运行 Python 代码以帮助生成提示响应的工具。
+            用于运行 Python 代码以辅助生成对提示词回复的工具。
 
             - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-              代码解释器容器。可以是容器 ID 或一个对象，该对象
-              指定上传的文件 ID 以供你的代码使用，以及一个
-              可选 `memory_limit` 设置。
+              代码解释器容器。可以是容器 ID，也可以是一个指定了供代码使用的已上传文件 ID 的对象，以及
+              ，该对象同时包含一个
+              可选的 `memory_limit` 设置。
 
               - `string`
 
@@ -12137,17 +12131,17 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
               - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-                代码解释器容器的配置。可选地指定要运行代码的文件的 ID。
+                代码解释器容器的配置。可指定运行代码所需文件的 ID。
 
                 - `type: "auto"`
 
-                  始终 `auto`.
+                  Always `auto`.
 
                   - `"auto"`
 
                 - `file_ids: optional array of string`
 
-                  可选的已上传文件列表，供你的代码使用。
+                  提供给代码使用的已上传文件的可选列表。
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -12169,7 +12163,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                     - `type: "disabled"`
 
-                      禁用出站网络访问。始终 `disabled`.
+                      禁用出站网络访问。始终为 `disabled`.
 
                       - `"disabled"`
 
@@ -12177,33 +12171,33 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                     - `allowed_domains: array of string`
 
-                      当类型为 `allowlist`.
+                      当 type 为 `allowlist`.
 
                     - `type: "allowlist"`
 
-                      仅允许对指定域名的出站网络访问。始终 `allowlist`.
+                      仅允许向指定域发出站网络访问。始终为 `allowlist`.
 
                       - `"allowlist"`
 
                     - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                      可选，针对允许列表域名的域范围密钥。
+                      可选的、限定域的密钥，用于允许列表中的域。
 
                       - `domain: string`
 
-                        与该密钥关联的域名。
+                        与该密钥关联的域。
 
                       - `name: string`
 
-                        要为该域名注入的密钥名称。
+                        要为该域注入的密钥名称。
 
                       - `value: string`
 
-                        要为该域名注入的密钥值。
+                        要为该域注入的密钥值。
 
             - `type: "code_interpreter"`
 
-              代码解释器工具的类型。始终 `code_interpreter`.
+              代码解释器工具的类型。始终为 `code_interpreter`.
 
               - `"code_interpreter"`
 
@@ -12219,7 +12213,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `type: "programmatic_tool_calling"`
 
-              工具的类型。始终 `programmatic_tool_calling`.
+              工具的类型。始终为 `programmatic_tool_calling`.
 
               - `"programmatic_tool_calling"`
 
@@ -12229,13 +12223,13 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `type: "image_generation"`
 
-              图像生成工具的类型。始终 `image_generation`.
+              图像生成工具的类型。始终为 `image_generation`.
 
               - `"image_generation"`
 
             - `action: optional "generate" or "edit" or "auto"`
 
-              是否生成新图像或编辑现有图像。默认： `auto`.
+              是生成新图像还是编辑现有图像。默认值： `auto`.
 
               - `"generate"`
 
@@ -12245,11 +12239,11 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              设置生成图像的背景。可选值之一： `transparent`,
-              `opaque`，或 `auto`。透明背景可用于
+              设置生成图像的背景。可选值为 `transparent`,
+              `opaque`、或 `auto`。透明背景适用于
               支持的 GPT 图像模型。对于 `gpt-image-2` 和
-              `gpt-image-2-2026-04-21`，此支持处于预览阶段。当使用
-              `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认： `auto`.
+              `gpt-image-2-2026-04-21`，该支持处于预览阶段。使用
+              `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
               - `"transparent"`
 
@@ -12259,7 +12253,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              控制模型在匹配输入图像的样式和特征（尤其是面部特征）方面投入的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
+              控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所需的投入程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。之一。默认为 `low`.
 
               - `"high"`
 
@@ -12267,31 +12261,31 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `input_image_mask: optional object { file_id, image_url }`
 
-              用于修复的可选掩码。包含 `image_url`
+              用于修复的可选遮罩。包含 `image_url`
               （字符串，可选）和 `file_id` （字符串，可选）。
 
               - `file_id: optional string`
 
-                掩码图像的文件ID。
+                遮罩图像的文件 ID。
 
               - `image_url: optional string`
 
-                Base64编码的掩码图像。
+                Base64 编码的遮罩图像。
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              要使用的图像生成模型。其中一个为 `gpt-image-1`,
+              要使用的图像生成模型。可选值为 `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+              `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
               `gpt-image-1`.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-                要使用的图像生成模型。其中一个为 `gpt-image-1`,
+                要使用的图像生成模型。可选值为 `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+                `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -12306,7 +12300,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `moderation: optional "auto" or "low"`
 
-              生成图像的审核级别。默认值： `auto`.
+              生成图像的内容审核级别。默认值： `auto`.
 
               - `"auto"`
 
@@ -12318,8 +12312,8 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `output_format: optional "png" or "webp" or "jpeg"`
 
-              生成图像的输出格式。其中一个为 `png`, `webp`，或
-              `jpeg`。默认： `png`.
+              生成图像的输出格式。可选值为 `png`, `webp`、或
+              `jpeg`。默认值： `png`.
 
               - `"png"`
 
@@ -12329,12 +12323,12 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `partial_images: optional number`
 
-              流式模式下生成的部分图像数量，范围从0（默认值）到3。
+              在流式模式下要生成的中间图像数量，范围为 0（默认值）到 3。
 
             - `quality: optional "low" or "medium" or "high" or "auto"`
 
-              生成图像的质量。其中一个为 `low`, `medium`, `high`,
-              或 `auto`。默认： `auto`.
+              生成图像的质量。可选值为 `low`, `medium`, `high`,
+              或 `auto`。默认值： `auto`.
 
               - `"low"`
 
@@ -12346,13 +12340,13 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+                生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -12364,7 +12358,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
           - `LocalShell object { type }`
 
-            一种允许模型在本地环境中执行 shell 命令的工具。
+            允许模型在本地环境中执行 shell 命令的工具。
 
             - `type: "local_shell"`
 
@@ -12374,7 +12368,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
           - `Shell object { type, allowed_callers, environment }`
 
-            一种允许模型执行 shell 命令的工具。
+            允许模型执行 shell 命令的工具。
 
             - `type: "shell"`
 
@@ -12396,13 +12390,13 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                 - `type: "container_auto"`
 
-                  自动为此请求创建容器
+                  自动为本次请求创建一个容器
 
                   - `"container_auto"`
 
                 - `file_ids: optional array of string`
 
-                  可选的已上传文件列表，供你的代码使用。
+                  提供给代码使用的已上传文件的可选列表。
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -12426,7 +12420,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                 - `skills: optional array of SkillReference or InlineSkill`
 
-                  可选的技能列表，通过 ID 或内联数据引用。
+                  通过 id 引用或内联数据的可选技能列表。
 
                   - `SkillReference object { skill_id, type, version }`
 
@@ -12476,7 +12470,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                     - `type: "inline"`
 
-                      为此请求定义内联技能。
+                      为本次请求定义一个内联技能。
 
                       - `"inline"`
 
@@ -12490,7 +12484,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                 - `skills: optional array of LocalSkill`
 
-                  可选技能列表。
+                  可选的技能列表。
 
                   - `description: string`
 
@@ -12502,7 +12496,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                   - `path: string`
 
-                    包含技能的目录路径。
+                    包含该技能的目录路径。
 
               - `ContainerReference object { container_id, type }`
 
@@ -12518,7 +12512,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
           - `Custom object { name, type, allowed_callers, 3 more }`
 
-            一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+            使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -12526,7 +12520,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `type: "custom"`
 
-              自定义工具的类型。始终 `custom`.
+              自定义工具的类型。始终为 `custom`.
 
               - `"custom"`
 
@@ -12540,7 +12534,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `defer_loading: optional boolean`
 
-              是否应延迟此工具并通过工具搜索发现。
+              该工具是否应被延迟，并通过工具搜索发现。
 
             - `description: optional string`
 
@@ -12552,11 +12546,11 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
               - `Text object { type }`
 
-                无约束的自由形式文本。
+                无约束的自由格式文本。
 
                 - `type: "text"`
 
-                  无约束文本格式。始终 `text`.
+                  无约束文本格式。始终为 `text`.
 
                   - `"text"`
 
@@ -12570,7 +12564,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                 - `syntax: "lark" or "regex"`
 
-                  语法定义的语法。之一 `lark` 或 `regex`.
+                  语法定义的语法格式。可选值为 `lark` 或 `regex`.
 
                   - `"lark"`
 
@@ -12578,21 +12572,21 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                 - `type: "grammar"`
 
-                  语法格式。始终 `grammar`.
+                  语法格式。始终为 `grammar`.
 
                   - `"grammar"`
 
           - `Namespace object { description, name, tools, type }`
 
-            将函数/自定义工具分组到共享命名空间下。
+            在共享命名空间下对函数/自定义工具进行分组。
 
             - `description: string`
 
-              显示给模型的命名空间描述。
+              展示给模型的命名空间描述。
 
             - `name: string`
 
-              工具调用中使用的命名空间名称（例如， `crm`).
+              在工具调用中使用的命名空间名称（例如， `crm`).
 
             - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
@@ -12616,23 +12610,23 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                 - `defer_loading: optional boolean`
 
-                  此函数是否应被延迟并通过工具搜索发现。
+                  是否应推迟此函数并通过工具搜索发现它。
 
                 - `description: optional string or null`
 
                 - `output_schema: optional map[unknown] or null`
 
-                  描述此函数工具字符串输出中 JSON 值的 JSON Schema。这不描述内容数组输出。
+                  描述此函数工具字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content 数组输出。
 
                 - `parameters: optional unknown or null`
 
                 - `strict: optional boolean or null`
 
-                  是否强制进行严格的参数验证。如果省略，Responses 会在 schema 兼容时尝试使用严格验证，否则回退到非严格验证。
+                  是否强制执行严格的参数校验。如果省略，Responses 会在 schema 兼容时尝试使用严格校验，否则回退到非严格校验。
 
               - `Custom object { name, type, allowed_callers, 3 more }`
 
-                一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+                使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
                 - `name: string`
 
@@ -12640,7 +12634,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                 - `type: "custom"`
 
-                  自定义工具的类型。始终 `custom`.
+                  自定义工具的类型。始终为 `custom`.
 
                   - `"custom"`
 
@@ -12654,7 +12648,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
                 - `defer_loading: optional boolean`
 
-                  是否应延迟此工具并通过工具搜索发现。
+                  该工具是否应被延迟，并通过工具搜索发现。
 
                 - `description: optional string`
 
@@ -12666,27 +12660,27 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `type: "namespace"`
 
-              工具的类型。始终 `namespace`.
+              工具的类型。始终为 `namespace`.
 
               - `"namespace"`
 
           - `ToolSearch object { type, description, execution, parameters }`
 
-            用于延迟工具的托管或 BYOT 工具搜索配置。
+            针对延迟工具的托管或 BYOT 工具搜索配置。
 
             - `type: "tool_search"`
 
-              工具的类型。始终 `tool_search`.
+              工具的类型。始终为 `tool_search`.
 
               - `"tool_search"`
 
             - `description: optional string or null`
 
-              为客户端执行的工具搜索工具向模型显示的描述。
+              向模型展示的客户端执行工具搜索工具的描述。
 
             - `execution: optional "server" or "client"`
 
-              工具搜索是由服务器还是客户端执行。
+              工具搜索是由服务端执行还是由客户端执行。
 
               - `"server"`
 
@@ -12694,15 +12688,15 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `parameters: optional unknown or null`
 
-              客户端执行的工具搜索工具的参数 schema。
+              客户端执行工具搜索工具的参数 schema。
 
           - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-            此工具在网页上搜索相关内容以用于响应。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+            此工具会在网页上搜索相关结果以用于回复。详细了解 [网页搜索 tool](https://platform.openai.com/docs/guides/tools-web-search).
 
             - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-              网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+              网页搜索 工具的类型。其一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
               - `"web_search_preview"`
 
@@ -12716,7 +12710,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `search_context_size: optional "low" or "medium" or "high"`
 
-              关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+              搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
               - `"low"`
 
@@ -12726,11 +12720,11 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              用户的位置。
+              用户所在的位置。
 
               - `type: "approximate"`
 
-                位置近似的类型。始终为 `approximate`.
+                位置近似值的类型。始终为 `approximate`.
 
                 - `"approximate"`
 
@@ -12744,7 +12738,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
               - `region: optional string or null`
 
-                用户的地区的自由文本输入，例如 `California`.
+                用户所在地区的自由文本输入，例如 `California`.
 
               - `timezone: optional string or null`
 
@@ -12752,11 +12746,11 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
           - `ApplyPatch object { type, allowed_callers }`
 
-            允许助手使用统一差异创建、删除或更新文件。
+            允许助手使用 unified diff 创建、删除或更新文件。
 
             - `type: "apply_patch"`
 
-              工具的类型。始终 `apply_patch`.
+              工具的类型。始终为 `apply_patch`.
 
               - `"apply_patch"`
 
@@ -12770,11 +12764,11 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
         - `top_p: optional number`
 
-          用于核采样的温度替代参数；1.0 包含所有标记。
+          作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
   - `error: EvalAPIError`
 
-    表示 Eval API 错误响应的对象。
+    表示来自 Eval API 错误响应的对象。
 
     - `code: string`
 
@@ -12786,20 +12780,20 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
   - `eval_id: string`
 
-    相关评估的标识符。
+    关联评估的标识符。
 
   - `metadata: Metadata or null`
 
-    一组 16 个键值对，可附加到对象上。这可以
-    用于以结构化格式存储有关对象的额外信息，
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
     并通过 API 或仪表板查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串，
+    键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
   - `model: string`
 
-    被评估的模型（如果适用）。
+    被评估的模型（如适用）。
 
   - `name: string`
 
@@ -12807,21 +12801,21 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
   - `object: "eval.run"`
 
-    对象的类型。始终为 "eval.run"。
+    对象类型，始终为 "eval.run"。
 
     - `"eval.run"`
 
   - `per_model_usage: array of object { cached_tokens, completion_tokens, invocation_count, 3 more }`
 
-    评估运行期间每个模型的使用统计。
+    评估运行期间每个模型的使用统计信息。
 
     - `cached_tokens: number`
 
-      从缓存中检索到的令牌数。
+      从缓存中检索到的 token 数量。
 
     - `completion_tokens: number`
 
-      生成的完成令牌数。
+      生成的 completion token 数量。
 
     - `invocation_count: number`
 
@@ -12833,31 +12827,31 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
     - `prompt_tokens: number`
 
-      使用的提示令牌数。
+      使用的 prompt token 数量。
 
     - `total_tokens: number`
 
-      使用的令牌总数。
+      使用的 token 总数。
 
   - `per_testing_criteria_results: array of object { failed, passed, testing_criteria }`
 
-    评估运行期间应用的每项测试标准的结果。
+    评估运行期间应用的每个测试条件的测试结果。
 
     - `failed: number`
 
-      此标准失败的测试数量。
+      此条件下未通过的测试数。
 
     - `passed: number`
 
-      此标准通过的测试数量。
+      此条件下通过的测试数。
 
     - `testing_criteria: string`
 
-      测试标准的说明。
+      测试条件的描述。
 
   - `report_url: string`
 
-    UI 仪表板上呈现的评估运行报告的 URL。
+    在 UI 仪表板上指向已渲染评估运行报告的 URL。
 
   - `result_counts: object { errored, failed, passed, total }`
 
@@ -12865,11 +12859,11 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
     - `errored: number`
 
-      导致错误的输出项数量。
+      出现错误的输出项数量。
 
     - `failed: number`
 
-      未能通过评估的输出项数量。
+      未通过评估的输出项数量。
 
     - `passed: number`
 
@@ -12889,7 +12883,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
 
 - `has_more: boolean`
 
-  指示是否还有更多评估可用。
+  指示是否还有更多 eval 可用。
 
 - `last_id: string`
 
@@ -13069,11 +13063,11 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 }
 ```
 
-## 获取一次评估运行
+## 获取评估运行
 
 **get** `/evals/{eval_id}/runs/{run_id}`
 
-按 ID 获取一次评估运行。
+通过 ID 获取评估运行。
 
 ### 路径参数
 
@@ -13081,27 +13075,27 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
 - `run_id: string`
 
-### 返回
+### Returns
 
 - `id: string`
 
-  评估运行的唯一标识符。
+  评估运行（evaluation run）的唯一标识符。
 
 - `created_at: number`
 
-  评估运行创建时的 Unix 时间戳（秒）。
+  评估运行创建时的 Unix 时间戳（以秒为单位）。
 
 - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or object { source, type, input_messages, 2 more }`
 
-  有关运行数据源的信息。
+  关于该运行数据源的信息。
 
   - `CreateEvalJSONLRunDataSource object { source, type }`
 
-    一个 JsonlRunDataSource 对象，指定一个 JSONL 文件，该文件与评估
+    一个 JsonlRunDataSource 对象，用于指定与该评估匹配的 JSONL 文件
 
     - `source: object { content, type }  or object { id, type }`
 
-      决定什么填充 `item` 数据源中的命名空间。
+      决定数据源中如何填充 `item` 命名空间。
 
       - `EvalJSONLFileContentSource object { content, type }`
 
@@ -13115,7 +13109,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
         - `type: "file_content"`
 
-          jsonl 源的类型。始终为 `file_content`.
+          jsonl 数据源的类型。始终为 `file_content`.
 
           - `"file_content"`
 
@@ -13127,23 +13121,23 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
         - `type: "file_id"`
 
-          jsonl 源的类型。始终为 `file_id`.
+          jsonl 数据源的类型。始终为 `file_id`.
 
           - `"file_id"`
 
     - `type: "jsonl"`
 
-      数据源的类型。始终是 `jsonl`.
+      数据源的类型。始终为 `jsonl`.
 
       - `"jsonl"`
 
   - `CreateEvalCompletionsRunDataSource object { source, type, input_messages, 2 more }`
 
-    描述模型采样配置的 CompletionsRunDataSource 对象。
+    一个 CompletionsRunDataSource 对象，用于描述模型采样配置。
 
     - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 3 more }`
 
-      决定什么填充 `item` 此运行数据源中的命名空间。
+      决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
       - `EvalJSONLFileContentSource object { content, type }`
 
@@ -13157,7 +13151,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
         - `type: "file_content"`
 
-          jsonl 源的类型。始终为 `file_content`.
+          jsonl 数据源的类型。始终为 `file_content`.
 
           - `"file_content"`
 
@@ -13169,44 +13163,44 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
         - `type: "file_id"`
 
-          jsonl 源的类型。始终为 `file_id`.
+          jsonl 数据源的类型。始终为 `file_id`.
 
           - `"file_id"`
 
       - `StoredCompletionsRunDataSource object { type, created_after, created_before, 3 more }`
 
-        描述一组过滤器的 StoredCompletionsRunDataSource 配置
+        一个 StoredCompletionsRunDataSource 配置，用于描述一组筛选条件
 
         - `type: "stored_completions"`
 
-          源的类型。始终为 `stored_completions`.
+          数据源的类型。始终为 `stored_completions`.
 
           - `"stored_completions"`
 
         - `created_after: optional number or null`
 
-          可选的 Unix 时间戳，用于过滤在此时间之后创建的项。
+          一个可选的 Unix 时间戳，用于筛选在此时间之后创建的项。
 
         - `created_before: optional number or null`
 
-          可选的 Unix 时间戳，用于过滤在此时间之前创建的项。
+          一个可选的 Unix 时间戳，用于筛选在此时间之前创建的项。
 
         - `limit: optional number or null`
 
-          可选的最大返回项数。
+          一个可选的返回项的最大数量。
 
         - `metadata: optional Metadata or null`
 
-          一组 16 个键值对，可附加到对象上。这可以
-          用于以结构化格式存储有关对象的额外信息，
+          可附加到对象的 16 组键值对。这可以
+          用于以结构化格式存储有关对象的附加信息，
           并通过 API 或仪表板查询对象。
 
-          键是字符串，最大长度为 64 个字符。值是字符串，
+          键为字符串，最大长度为 64 个字符。值为字符串，
           最大长度为 512 个字符。
 
         - `model: optional string or null`
 
-          可选的模型过滤条件（例如，'gpt-4o'）。
+          一个可选的用于筛选的模型（例如 'gpt-5.6-sol'）。
 
     - `type: "completions"`
 
@@ -13216,43 +13210,43 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
     - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-      用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+      在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
       - `TemplateInputMessages object { template, type }`
 
         - `template: array of EasyInputMessage or object { content, role, type }`
 
-          构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+          构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
           - `EasyInputMessage object { content, role, phase, type }`
 
-            输入给模型的消息，其角色指示指令遵循
-            层级。以 `developer` 或 `system` 角色给出的指令
-            优先于以 `user` 角色给出的指令。具有
-            `assistant` 角色的消息被认为是由模型在之前的
-            交互中生成的。
+            输入到模型的消息，其角色指示指令的
+            层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+            角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+            `assistant` 消息。
+            互动。
 
             - `content: string or ResponseInputMessageContentList`
 
               发送给模型的文本、图像或音频输入，用于生成响应。
-              也可以包含先前的助手响应。
+              也可以包含之前的助手响应。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `ResponseInputMessageContentList = array of ResponseInputContent`
 
-                发送给模型的一个或多个输入项的列表，包含不同类型的内容
-                。
+                发送给模型的一个或多个输入项的列表，其中包含不同的内容
+                类型。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                   - `text: string`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                   - `type: "input_text"`
 
@@ -13262,7 +13256,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
                   - `prompt_cache_breakpoint: optional object { mode }`
 
-                    标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                    标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                     - `mode: "explicit"`
 
@@ -13276,7 +13270,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
                   - `detail: ImageDetail`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`, `auto`、或 `original`。之一。默认为 `auto`.
 
                     - `"low"`
 
@@ -13298,11 +13292,11 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
                   - `image_url: optional string or null`
 
-                    要发送给模型的图像的 URL。完全限定的 URL 或数据 URL 中的 base64 编码图像。
+                    要发送给模型的图像的 URL。可以是完整的 URL，也可以是 base64 编码的 data URL 图像。
 
                   - `prompt_cache_breakpoint: optional object { mode }`
 
-                    标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                    标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                     - `mode: "explicit"`
 
@@ -13322,7 +13316,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
                   - `detail: optional "auto" or "low" or "high"`
 
-                    要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入令牌的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+                    要发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
                     - `"auto"`
 
@@ -13332,7 +13326,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
                   - `file_data: optional string`
 
-                    要发送给模型的文件的内容。
+                    要发送给模型的文件内容。
 
                   - `file_id: optional string or null`
 
@@ -13348,7 +13342,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
                   - `prompt_cache_breakpoint: optional object { mode }`
 
-                    标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                    标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                     - `mode: "explicit"`
 
@@ -13358,7 +13352,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。可选值为 `user`, `assistant`, `system`、或
               `developer`.
 
               - `"user"`
@@ -13371,9 +13365,9 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
             - `phase: optional "commentary" or "final_answer" or null`
 
-              将 `assistant` 消息标记为中间评论（`commentary`) 或最终答案 (`final_answer`).
-              对于像 `gpt-5.3-codex` 及更新的模型，发送后续请求时，请保留并重新发送
-              阶段到所有助手消息中——省略该阶段可能会降低性能。不用于用户消息。
+              将 `assistant` 消息标记为中间补充说明（`commentary`) 或最终答案（`final_answer`).
+              对于类似 `gpt-5.3-codex` 及更高版本，发送后续请求时，请在所有助手消息上保留并重新发送
+              阶段，遗漏会降低性能。不用于用户消息。
 
               - `"commentary"`
 
@@ -13387,31 +13381,31 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `EvalMessageObject object { content, role, type }`
 
-            输入给模型的消息，其角色指示指令遵循
-            层级。以 `developer` 或 `system` 角色给出的指令
-            优先于以 `user` 角色给出的指令。具有
-            `assistant` 角色的消息被认为是由模型在之前的
-            交互中生成的。
+            输入到模型的消息，其角色指示指令的
+            层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+            角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+            `assistant` 消息。
+            互动。
 
             - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-              模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+              模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -13421,21 +13415,21 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
               - `InputImage object { image_url, type, detail }`
 
-                用于 EvalItem 内容数组中的图像输入块。
+                在 EvalItem 内容数组中使用的图片输入块。
 
                 - `image_url: string`
 
-                  图像输入的 URL。
+                  图片输入的 URL。
 
                 - `type: "input_image"`
 
-                  图像输入的类型。始终为 `input_image`.
+                  图片输入的类型。始终为 `input_image`.
 
                   - `"input_image"`
 
                 - `detail: optional string`
 
-                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
@@ -13445,11 +13439,11 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
                   - `data: string`
 
-                    Base64 编码的音频数据。
+                    经过 Base64 编码的音频数据。
 
                   - `format: "mp3" or "wav"`
 
-                    音频数据的格式。目前支持的格式为 `mp3` 和
+                    音频数据的格式。当前支持的格式有 `mp3` 和
                     `wav`.
 
                     - `"mp3"`
@@ -13464,24 +13458,24 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
               - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                输入列表，每个输入可以是输入文本、输出文本、输入
-                图像或输入音频对象。
+                输入列表，其中每个输入可以是输入文本、输出文本、输入
+                图片或输入音频对象。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -13491,21 +13485,21 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
                 - `InputImage object { image_url, type, detail }`
 
-                  用于 EvalItem 内容数组中的图像输入块。
+                  在 EvalItem 内容数组中使用的图片输入块。
 
                   - `image_url: string`
 
-                    图像输入的 URL。
+                    图片输入的 URL。
 
                   - `type: "input_image"`
 
-                    图像输入的类型。始终为 `input_image`.
+                    图片输入的类型。始终为 `input_image`.
 
                     - `"input_image"`
 
                   - `detail: optional string`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
@@ -13513,7 +13507,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。可选值为 `user`, `assistant`, `system`、或
               `developer`.
 
               - `"user"`
@@ -13540,7 +13534,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
         - `item_reference: string`
 
-          对 `item` 命名空间中变量的引用。例如，"item.input_trajectory"
+          命名空间中的变量引用。例如“ `item` .item.input_trajectory”
 
         - `type: "item_reference"`
 
@@ -13550,7 +13544,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
     - `model: optional string`
 
-      用于生成补全的模型名称（例如 "o3-mini"）。
+      用于生成补全的模型名称（例如 “o3-mini”）。
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
@@ -13560,13 +13554,13 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
       - `reasoning_effort: optional ReasoningEffort or null`
 
-        约束推理模型的推理工作量。目前支持的
-        值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-        降低推理工作量可以加快响应速度并减少响应中
-        用于推理的令牌数。并非所有推理模型都支持每个
+        约束推理模型在推理上的投入程度。当前支持
+        的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+        降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+        消耗。并非所有推理模型都支持每个
         值。请参阅
         [推理指南](https://platform.openai.com/docs/guides/reasoning)
-        了解各模型的特定支持。
+        了解特定模型的支持情况。
 
         - `"none"`
 
@@ -13584,20 +13578,20 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
       - `response_format: optional ResponseFormatText or ResponseFormatJSONSchema or ResponseFormatJSONObject`
 
-        指定模型必须输出的格式的对象。
+        指定模型必须输出格式的对象。
 
-        设置为 `{ "type": "json_schema", "json_schema": {...} }` 启用
-        结构化输出，确保模型匹配你提供的 JSON
-        架构。更多信息请参阅 [Structured Outputs
+        设置为 `{ "type": "json_schema", "json_schema": {...} }` 会启用
+        Structured Outputs，用于确保模型匹配你提供的 JSON
+        schema。详细了解请参阅 [Structured Outputs
         指南](/docs/guides/structured-outputs).
 
         设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-        确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-        。
+        确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+        使用。
 
         - `ResponseFormatText object { type }`
 
-          默认响应格式，用于生成文本响应。
+          默认响应格式。用于生成文本响应。
 
           - `type: "text"`
 
@@ -13607,34 +13601,34 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
         - `ResponseFormatJSONSchema object { json_schema, type }`
 
-          JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-          了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+          JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+          详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
           - `json_schema: object { name, description, schema, strict }`
 
-            结构化输出配置选项，包括 JSON Schema。
+            Structured Outputs 配置选项，包括 JSON Schema。
 
             - `name: string`
 
-              响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-              下划线和破折号，最大长度为 64。
+              响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+              下划线和短横线，最大长度为 64。
 
             - `description: optional string`
 
-              响应格式用途的描述，模型使用它来
-              决定如何以该格式进行响应。
+              对响应格式用途的描述，供模型用来
+              决定如何按该格式进行响应。
 
             - `schema: optional map[unknown]`
 
-              响应格式的架构，以 JSON Schema 对象描述。
-              了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+              响应格式对应的 schema，以 JSON Schema 对象形式描述。
+              了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
             - `strict: optional boolean or null`
 
-              是否在生成输出时启用严格的架构遵循。
-              如果设置为 true，模型将始终遵循定义的精确架构
-              中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-              `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+              是否在生成输出时启用严格的 schema 遵循。
+              若设置为 true，模型将始终遵循在
+              中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+              `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
               指南](/docs/guides/structured-outputs).
 
           - `type: "json_schema"`
@@ -13645,10 +13639,10 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
         - `ResponseFormatJSONObject object { type }`
 
-          JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-          使用 `json_schema` 建议用于支持它的模型。请注意，
-          模型在没有系统或用户消息指示它的情况下不会生成 JSON
-          去这样做。
+          JSON 对象响应格式。生成 JSON 响应的旧方法。
+          对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+          模型将不会生成 JSON
+          。
 
           - `type: "json_object"`
 
@@ -13658,53 +13652,53 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
       - `seed: optional number`
 
-        用于在采样时初始化随机性的种子值。
+        用于在采样过程中初始化随机性的种子值。
 
       - `temperature: optional number`
 
-        更高的温度会增加输出的随机性。
+        较高的 temperature 会增加输出的随机性。
 
       - `tools: optional array of ChatCompletionFunctionTool`
 
-        模型可能调用的工具列表。目前，仅支持函数作为工具。使用此选项提供模型可能生成 JSON 输入的函数列表。最多支持 128 个函数。
+        模型可以调用的工具列表。目前，作为工具仅支持函数。使用此项提供模型可以为其生成 JSON 输入的函数列表。最多支持 128 个函数。
 
         - `function: FunctionDefinition`
 
           - `name: string`
 
-            要调用的函数名称。必须是 a-z、A-Z、0-9，或包含下划线和破折号，最大长度为 64。
+            要调用的函数的名称。必须为 a-z、A-Z、0-9 或包含下划线和短划线，最大长度为 64。
 
           - `description: optional string`
 
-            函数功能的描述，模型用它来决定何时以及如何调用该函数。
+            对函数功能的描述，供模型选择何时以及如何调用该函数时使用。
 
           - `parameters: optional FunctionParameters`
 
-            函数接受的参数，描述为 JSON Schema 对象。参见 [指南](/docs/guides/function-calling) 获取示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) 获取有关格式的文档。
+            函数接受的参数，使用 JSON Schema 对象进行描述。请参阅 [指南](/docs/guides/function-calling) 中的示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) ，了解相关格式的文档。
 
-            省略 `parameters` 定义了一个具有空参数列表的函数。
+            省略 `parameters` 将定义一个具有空参数列表的函数。
 
           - `strict: optional boolean or null`
 
-            是否在生成函数调用时启用严格模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的子集，当 `strict` 为 `true`。在 [函数调用指南](/docs/guides/function-calling).
+            在生成函数调用时是否启用严格的模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的一个子集，当 `strict` 是 `true`。在以下位置详细了解结构化输出 [函数调用指南](/docs/guides/function-calling).
 
         - `type: "function"`
 
-          中了解更多关于结构化输出的信息。工具的类型。目前仅支持 `function` 。
+          工具的类型。目前，仅支持 `function` 是受支持的。
 
           - `"function"`
 
       - `top_p: optional number`
 
-        用于核采样的温度替代参数；1.0 包含所有标记。
+        作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
   - `ResponsesRunDataSource object { source, type, input_messages, 2 more }`
 
-    描述模型采样配置的 ResponsesRunDataSource 对象。
+    一个 ResponsesRunDataSource 对象，用于描述模型采样配置。
 
     - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 8 more }`
 
-      决定什么填充 `item` 此运行数据源中的命名空间。
+      决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
       - `EvalJSONLFileContentSource object { content, type }`
 
@@ -13718,7 +13712,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
         - `type: "file_content"`
 
-          jsonl 源的类型。始终为 `file_content`.
+          jsonl 数据源的类型。始终为 `file_content`.
 
           - `"file_content"`
 
@@ -13730,13 +13724,13 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
         - `type: "file_id"`
 
-          jsonl 源的类型。始终为 `file_id`.
+          jsonl 数据源的类型。始终为 `file_id`.
 
           - `"file_id"`
 
       - `EvalResponsesSource object { type, created_after, created_before, 8 more }`
 
-        描述运行数据源配置的 EvalResponsesSource 对象。
+        一个 EvalResponsesSource 对象，用于描述运行数据源配置。
 
         - `type: "responses"`
 
@@ -13746,49 +13740,49 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
         - `created_after: optional number or null`
 
-          仅包含在此时间戳之后（含）创建的项。这是用于选择响应的查询参数。
+          仅包含在此时间戳之后（包含）创建的项目。这是一个用于选择响应的查询参数。
 
         - `created_before: optional number or null`
 
-          仅包含在此时间戳之前（含）创建的项。这是用于选择响应的查询参数。
+          仅包含在此时间戳之前（包含）创建的项目。这是一个用于选择响应的查询参数。
 
         - `instructions_search: optional string or null`
 
-          用于搜索“instructions”字段的可选字符串。这是用于选择响应的查询参数。
+          用于搜索 'instructions' 字段的可选字符串。这是一个用于选择响应的查询参数。
 
         - `metadata: optional unknown or null`
 
-          响应的元数据过滤器。这是用于选择响应的查询参数。
+          响应的元数据过滤器。这是一个用于选择响应的查询参数。
 
         - `model: optional string or null`
 
-          要查找响应的模型名称。这是用于选择响应的查询参数。
+          要为其查找响应的模型名称。这是一个用于选择响应的查询参数。
 
         - `reasoning_effort: optional ReasoningEffort or null`
 
-          约束推理模型的推理工作量。目前支持的
-          值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-          降低推理工作量可以加快响应速度并减少响应中
-          用于推理的令牌数。并非所有推理模型都支持每个
+          约束推理模型在推理上的投入程度。当前支持
+          的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+          降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+          消耗。并非所有推理模型都支持每个
           值。请参阅
           [推理指南](https://platform.openai.com/docs/guides/reasoning)
-          了解各模型的特定支持。
+          了解特定模型的支持情况。
 
         - `temperature: optional number or null`
 
-          采样温度。这是用于选择响应的查询参数。
+          采样温度。这是一个用于选择响应的查询参数。
 
         - `tools: optional array of string or null`
 
-          工具名称列表。这是用于选择响应的查询参数。
+          工具名称列表。这是一个用于选择响应的查询参数。
 
         - `top_p: optional number or null`
 
-          核采样参数。这是用于选择响应的查询参数。
+          核采样参数。这是一个用于选择响应的查询参数。
 
         - `users: optional array of string or null`
 
-          用户标识符列表。这是用于选择响应的查询参数。
+          用户标识符列表。这是一个用于选择响应的查询参数。
 
     - `type: "responses"`
 
@@ -13798,13 +13792,13 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
     - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-      用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+      在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
       - `InputMessagesTemplate object { template, type }`
 
         - `template: array of object { content, role }  or object { content, role, type }`
 
-          构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+          构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
           - `ChatMessage object { content, role }`
 
@@ -13818,31 +13812,31 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `EvalMessageObject object { content, role, type }`
 
-            输入给模型的消息，其角色指示指令遵循
-            层级。以 `developer` 或 `system` 角色给出的指令
-            优先于以 `user` 角色给出的指令。具有
-            `assistant` 角色的消息被认为是由模型在之前的
-            交互中生成的。
+            输入到模型的消息，其角色指示指令的
+            层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+            角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+            `assistant` 消息。
+            互动。
 
             - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-              模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+              模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -13852,21 +13846,21 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
               - `InputImage object { image_url, type, detail }`
 
-                用于 EvalItem 内容数组中的图像输入块。
+                在 EvalItem 内容数组中使用的图片输入块。
 
                 - `image_url: string`
 
-                  图像输入的 URL。
+                  图片输入的 URL。
 
                 - `type: "input_image"`
 
-                  图像输入的类型。始终为 `input_image`.
+                  图片输入的类型。始终为 `input_image`.
 
                   - `"input_image"`
 
                 - `detail: optional string`
 
-                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
@@ -13874,12 +13868,12 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
               - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                输入列表，每个输入可以是输入文本、输出文本、输入
-                图像或输入音频对象。
+                输入列表，其中每个输入可以是输入文本、输出文本、输入
+                图片或输入音频对象。
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。可选值为 `user`, `assistant`, `system`、或
               `developer`.
 
               - `"user"`
@@ -13906,7 +13900,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
         - `item_reference: string`
 
-          对 `item` 命名空间。即“item.name”
+          命名空间中的变量引用。例如“ `item` 命名空间。例如，“item.name”
 
         - `type: "item_reference"`
 
@@ -13916,7 +13910,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
     - `model: optional string`
 
-      用于生成补全的模型名称（例如 "o3-mini"）。
+      用于生成补全的模型名称（例如 “o3-mini”）。
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
@@ -13926,64 +13920,64 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
       - `reasoning_effort: optional ReasoningEffort or null`
 
-        约束推理模型的推理工作量。目前支持的
-        值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-        降低推理工作量可以加快响应速度并减少响应中
-        用于推理的令牌数。并非所有推理模型都支持每个
+        约束推理模型在推理上的投入程度。当前支持
+        的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+        降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+        消耗。并非所有推理模型都支持每个
         值。请参阅
         [推理指南](https://platform.openai.com/docs/guides/reasoning)
-        了解各模型的特定支持。
+        了解特定模型的支持情况。
 
       - `seed: optional number`
 
-        用于在采样时初始化随机性的种子值。
+        用于在采样过程中初始化随机性的种子值。
 
       - `temperature: optional number`
 
-        更高的温度会增加输出的随机性。
+        较高的 temperature 会增加输出的随机性。
 
       - `text: optional object { format }`
 
-        模型文本响应的配置选项。可以是纯
-        文本或结构化 JSON 数据。了解更多：
+        来自模型的文本响应的配置选项。可以是纯
+        文本或结构化 JSON 数据。了解更多信息：
 
         - [文本输入和输出](/docs/guides/text)
         - [结构化输出](/docs/guides/structured-outputs)
 
         - `format: optional ResponseFormatTextConfig`
 
-          指定模型必须输出的格式的对象。
+          指定模型必须输出格式的对象。
 
-          配置 `{ "type": "json_schema" }` 可启用结构化输出，
-          这确保模型将匹配你提供的 JSON 模式。更多信息请参阅
+          配置 `{ "type": "json_schema" }` 启用结构化输出，
+          可确保模型匹配你提供的 JSON schema。详情请参阅
           [结构化输出指南](/docs/guides/structured-outputs).
 
           默认格式为 `{ "type": "text" }` ，无其他选项。
 
-          **不建议用于 gpt-4o 及更新的模型：**
+          **不推荐用于 gpt-4o 及更新模型：**
 
           设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-          确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-          。
+          确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+          使用。
 
           - `ResponseFormatText object { type }`
 
-            默认响应格式，用于生成文本响应。
+            默认响应格式。用于生成文本响应。
 
           - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
-            JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-            了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+            JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+            详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
             - `name: string`
 
-              响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-              下划线和破折号，最大长度为 64。
+              响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+              下划线和短横线，最大长度为 64。
 
             - `schema: map[unknown]`
 
-              响应格式的架构，以 JSON Schema 对象描述。
-              了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+              响应格式对应的 schema，以 JSON Schema 对象形式描述。
+              了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
             - `type: "json_schema"`
 
@@ -13993,42 +13987,42 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
             - `description: optional string`
 
-              响应格式用途的描述，模型使用它来
-              决定如何以该格式进行响应。
+              对响应格式用途的描述，供模型用来
+              决定如何按该格式进行响应。
 
             - `strict: optional boolean or null`
 
-              是否在生成输出时启用严格的架构遵循。
-              如果设置为 true，模型将始终遵循定义的精确架构
-              中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-              `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+              是否在生成输出时启用严格的 schema 遵循。
+              若设置为 true，模型将始终遵循在
+              中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+              `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
               指南](/docs/guides/structured-outputs).
 
           - `ResponseFormatJSONObject object { type }`
 
-            JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-            使用 `json_schema` 建议用于支持它的模型。请注意，
-            模型在没有系统或用户消息指示它的情况下不会生成 JSON
-            去这样做。
+            JSON 对象响应格式。生成 JSON 响应的旧方法。
+            对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+            模型将不会生成 JSON
+            。
 
       - `tools: optional array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-        模型在生成响应时可能调用的工具数组。你
-        可以通过设置 `tool_choice` 参数来指定使用哪个工具。
+        模型在生成响应时可以调用的工具数组。你可以
+        通过设置 `tool_choice` 参数来指定要使用的工具。
 
-        你可以提供给模型的工具分为两类：
+        你可以向模型提供的两类工具包括：
 
-        - **内置工具**：由 OpenAI 提供的工具，用于扩展
-          模型的能力，例如 [网页搜索](/docs/guides/tools-web-search)
-          或 [文件搜索](/docs/guides/tools-file-search)。了解更多关于
+        - **内置工具**: 由 OpenAI 提供的工具，用于扩展模型的
+          能力，例如 [网页搜索](/docs/guides/tools-web-search)
+          或 [文件搜索](/docs/guides/tools-file-search)。详细了解
           [内置工具](/docs/guides/tools).
-        - **函数调用（自定义工具）**：由你定义的函数，
-          使模型能够调用你自己的代码。了解更多关于
+        - **函数调用（自定义工具）**: 由你定义的函数，
+          使模型能够调用你自己的代码。详细了解
           [函数调用](/docs/guides/function-calling).
 
         - `Function object { name, parameters, strict, 5 more }`
 
-          在你自己的代码中定义一个模型可以选择调用的函数。了解更多关于 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+          定义你自己代码中的一个函数，模型可以选择调用它。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
 
           - `name: string`
 
@@ -14036,11 +14030,11 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `parameters: map[unknown] or null`
 
-            描述函数参数的 JSON schema 对象。
+            描述该函数参数的 JSON schema 对象。
 
           - `strict: boolean or null`
 
-            是否对此函数工具强制执行严格的参数验证。
+            是否对此函数工具强制执行严格的参数校验。
 
           - `type: "function"`
 
@@ -14058,54 +14052,54 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `defer_loading: optional boolean`
 
-            此函数是否延迟并通过工具搜索加载。
+            此函数是否被延迟加载并通过 tool search 加载。
 
           - `description: optional string or null`
 
-            函数的描述。模型用它来决定是否调用该函数。
+            函数的描述。由模型用于决定是否调用该函数。
 
           - `output_schema: optional map[unknown] or null`
 
-            描述此函数字符串输出中编码的 JSON 值的 JSON schema 对象。
+            描述该函数在字符串输出中所编码 JSON 值的 JSON schema 对象。
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          一种从上传文件中搜索相关内容的工具。了解更多关于 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+          用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 工具](https://platform.openai.com/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
-            文件搜索工具的类型。始终为 `file_search`.
+            文件搜索 工具的类型。始终为 `file_search`.
 
             - `"file_search"`
 
           - `vector_store_ids: array of string`
 
-            要搜索的向量存储的 ID。
+            要搜索的向量存储库 ID。
 
           - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-            要应用的筛选器。
+            要应用的筛选条件。
 
             - `ComparisonFilter object { key, type, value }`
 
-              用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+              用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
               - `key: string`
 
-                要与值进行比较的键。
+                要与该值进行比较的键。
 
               - `type: "eq" or "ne" or "gt" or 5 more`
 
                 指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-                - `eq`：等于
-                - `ne`：不等于
-                - `gt`：大于
-                - `gte`：大于或等于
-                - `lt`：小于
-                - `lte`：小于或等于
-                - `in`：在…中
-                - `nin`：不在…中
+                - `eq`: 等于
+                - `ne`: 不等于
+                - `gt`: 大于
+                - `gte`: 大于或等于
+                - `lt`: 小于
+                - `lte`: 小于或等于
+                - `in`: 包含于
+                - `nin`: 不包含于
 
                 - `"eq"`
 
@@ -14125,7 +14119,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
               - `value: string or number or boolean or array of string or number`
 
-                要与属性键比较的值；支持字符串、数字或布尔类型。
+                用于与属性键进行比较的值；支持字符串、数字或布尔类型。
 
                 - `string`
 
@@ -14141,15 +14135,15 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
             - `CompoundFilter object { filters, type }`
 
-              使用以下方式组合多个过滤器： `and` 或 `or`.
+              使用以下方式组合多个筛选条件 `and` 或 `or`.
 
               - `filters: array of ComparisonFilter or unknown`
 
-                要组合的过滤器数组。项目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+                要组合的筛选条件数组。项可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
                 - `ComparisonFilter object { key, type, value }`
 
-                  用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+                  用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
                 - `unknown`
 
@@ -14163,27 +14157,27 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `max_num_results: optional number`
 
-            要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+            返回的最大结果数。该数值应介于 1 到 50 之间（含端点）。
 
           - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
-            搜索的排名选项。
+            搜索的排序选项。
 
             - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-              启用混合搜索时，控制倒数排名融合如何平衡语义嵌入匹配与稀疏关键词匹配的权重。
+              在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
               - `embedding_weight: number`
 
-                嵌入在倒数排名融合中的权重。
+                倒数排名融合中嵌入的权重。
 
               - `text_weight: number`
 
-                文本在倒数排名融合中的权重。
+                倒数排名融合中文本的权重。
 
             - `ranker: optional "auto" or "default-2024-11-15"`
 
-              用于文件搜索的排名器。
+              用于文件搜索的排序器。
 
               - `"auto"`
 
@@ -14191,29 +14185,29 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
             - `score_threshold: optional number`
 
-              文件搜索的分数阈值，为 0 到 1 之间的数字。接近 1 的数字将尝试仅返回最相关的结果，但可能返回更少的结果。
+              文件搜索的分数阈值，取值介于 0 到 1 之间。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
 
         - `Computer object { type }`
 
-          控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
-            计算机工具的类型。始终为 `computer`.
+            computer 工具的类型。始终是 `computer`.
 
             - `"computer"`
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
-            计算机显示屏的高度。
+            计算机显示器的高度。
 
           - `display_width: number`
 
-            计算机显示屏的宽度。
+            计算机显示器的宽度。
 
           - `environment: "windows" or "mac" or "linux" or 2 more`
 
@@ -14231,18 +14225,18 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `type: "computer_use_preview"`
 
-            计算机使用工具的类型。始终为 `computer_use_preview`.
+            computer use 工具的类型。始终是 `computer_use_preview`.
 
             - `"computer_use_preview"`
 
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-          搜索互联网以获取与提示相关的来源。了解更多关于
-          [网页搜索工具](/docs/guides/tools-web-search).
+          在互联网上搜索与提示相关的来源。详细了解
+          [网页搜索 tool](/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
-            网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+            网页搜索 工具的类型。其一为 `web_search` 或 `web_search_2025_08_26`.
 
             - `"web_search"`
 
@@ -14250,22 +14244,22 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `external_web_access: optional boolean`
 
-            允许网页搜索实时访问互联网。省略时默认为 true。为 false 时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+            允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索 工具将以离线/仅缓存模式运行，并且不会获取新的外部内容。
 
           - `filters: optional object { allowed_domains }  or null`
 
-            搜索的过滤器。
+            搜索的筛选条件。
 
             - `allowed_domains: optional array of string or null`
 
-              搜索允许的域。如果未提供，则允许所有域。
-              也允许所提供域的子域。
+              搜索允许的域名。如果未提供，则允许所有域名。
+              所提供域名的子域名也被允许。
 
               示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -14287,7 +14281,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -14295,14 +14289,14 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
             - `type: optional "approximate"`
 
-              位置近似的类型。始终为 `approximate`.
+              位置近似值的类型。始终为 `approximate`.
 
               - `"approximate"`
 
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-          通过远程 Model Context Protocol 向模型提供额外工具的访问权限
-          （MCP）服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+          通过远程 Model Context Protocol
+          （MCP）服务器让模型访问更多工具。 [详细了解 MCP](/docs/guides/tools-remote-mcp).
 
           - `server_label: string`
 
@@ -14324,48 +14318,48 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
 
-            允许的工具名称列表或过滤器对象。
+            允许使用的工具名称列表或筛选对象。
 
             - `McpAllowedTools = array of string`
 
-              允许的工具名称的字符串数组
+              允许使用的工具名称字符串数组
 
             - `McpToolFilter object { read_only, tool_names }`
 
-              用于指定允许哪些工具的过滤器对象。
+              用于指定允许使用哪些工具的筛选对象。
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                它将匹配此过滤器。
+                指示工具是否会修改数据或仅为只读。如果某个
+                MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                标注，则会匹配此筛选器。
 
               - `tool_names: optional array of string`
 
-                允许的工具名称列表。
+                允许使用的工具名称列表。
 
           - `authorization: optional string`
 
-            可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-            使用自定义 MCP 服务器 URL 或服务连接器。您的应用程序
-            必须处理 OAuth 授权流程，并在此处提供令牌。
+            可用于远程 MCP 服务器的 OAuth 访问令牌，可配合
+            自定义 MCP 服务器 URL 或服务连接器一起使用。你的应用
+            必须处理 OAuth 授权流程并在此处提供令牌。
 
           - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-            服务连接器的标识符，例如 ChatGPT 中可用的那些。其中一个
-            `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解更多
-            关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+            服务连接器的标识符，例如 ChatGPT 中提供的那些。值为以下之一
+            `server_url`, `connector_id`、或 `tunnel_id` 必须提供。了解更多
+            关于服务连接器的信息 [请参考此处](/docs/guides/tools-remote-mcp#connectors).
 
-            目前支持的 `connector_id` 值为：
+            当前支持的 `connector_id` 值包括：
 
-            - Dropbox： `connector_dropbox`
-            - Gmail： `connector_gmail`
-            - Google Calendar： `connector_googlecalendar`
-            - Google Drive： `connector_googledrive`
-            - Microsoft Teams： `connector_microsoftteams`
-            - Outlook Calendar： `connector_outlookcalendar`
-            - Outlook Email： `connector_outlookemail`
-            - SharePoint： `connector_sharepoint`
+            - Dropbox: `connector_dropbox`
+            - Gmail: `connector_gmail`
+            - Google Calendar: `connector_googlecalendar`
+            - Google Drive: `connector_googledrive`
+            - Microsoft Teams: `connector_microsoftteams`
+            - Outlook Calendar: `connector_outlookcalendar`
+            - Outlook Email: `connector_outlookemail`
+            - SharePoint: `connector_sharepoint`
 
             - `"connector_dropbox"`
 
@@ -14385,12 +14379,12 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `defer_loading: optional boolean`
 
-            此 MCP 工具是否被推迟并通过工具搜索发现。
+            该 MCP 工具是否被延迟，并通过工具搜索被发现。
 
           - `headers: optional map[string] or null`
 
-            发送到 MCP 服务器的可选 HTTP 头。用于认证
-            或其他目的。
+            发送到 MCP 服务器的可选 HTTP 标头。用于身份验证
+            或其他用途。
 
           - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
@@ -14399,41 +14393,41 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
             - `McpToolApprovalFilter object { always, never }`
 
               指定 MCP 服务器中哪些工具需要审批。可以是
-              `always`, `never`，或与工具关联的筛选器对象
-              需要审批的。
+              `always`, `never`，或与工具关联的过滤器对象
+              需要审批的工具。
 
               - `always: optional object { read_only, tool_names }`
 
-                用于指定允许哪些工具的过滤器对象。
+                用于指定允许使用哪些工具的筛选对象。
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  它将匹配此过滤器。
+                  指示工具是否会修改数据或仅为只读。如果某个
+                  MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  标注，则会匹配此筛选器。
 
                 - `tool_names: optional array of string`
 
-                  允许的工具名称列表。
+                  允许使用的工具名称列表。
 
               - `never: optional object { read_only, tool_names }`
 
-                用于指定允许哪些工具的过滤器对象。
+                用于指定允许使用哪些工具的筛选对象。
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  它将匹配此过滤器。
+                  指示工具是否会修改数据或仅为只读。如果某个
+                  MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  标注，则会匹配此筛选器。
 
                 - `tool_names: optional array of string`
 
-                  允许的工具名称列表。
+                  允许使用的工具名称列表。
 
             - `McpToolApprovalSetting = "always" or "never"`
 
-              为所有工具指定单一审批策略。可选值为 `always` 或
-              `never`。当设置为 `always`，时，所有工具都需要审批。当
+              为所有工具指定一个统一的审批策略。可选值为 `always` 或
+              `never`。之一。当设置为 `always`，时，所有工具都需要审批。当设置为
               设置为 `never`，时，所有工具都不需要审批。
 
               - `"always"`
@@ -14446,23 +14440,23 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `server_url: optional string`
 
-            MCP 服务器的 URL。必须是 `server_url`, `connector_id`，或
-            `tunnel_id` 中的一项。
+            MCP 服务器的 URL。 `server_url`, `connector_id`、或
+            `tunnel_id` 必须提供其中之一。
 
           - `tunnel_id: optional string`
 
-            要使用的 Secure MCP Tunnel ID，而非直接服务器 URL。必须是
-            `server_url`, `connector_id`，或 `tunnel_id` 中的一项。
+            用于替代直接服务器 URL 的 Secure MCP Tunnel ID。
+            `server_url`, `connector_id`、或 `tunnel_id` 必须提供其中之一。
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
-          一种运行 Python 代码以帮助生成提示响应的工具。
+          用于运行 Python 代码以辅助生成对提示词回复的工具。
 
           - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器。可以是容器 ID 或一个对象，该对象
-            指定上传的文件 ID 以供你的代码使用，以及一个
-            可选 `memory_limit` 设置。
+            代码解释器容器。可以是容器 ID，也可以是一个指定了供代码使用的已上传文件 ID 的对象，以及
+            ，该对象同时包含一个
+            可选的 `memory_limit` 设置。
 
             - `string`
 
@@ -14470,17 +14464,17 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
             - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-              代码解释器容器的配置。可选地指定要运行代码的文件的 ID。
+              代码解释器容器的配置。可指定运行代码所需文件的 ID。
 
               - `type: "auto"`
 
-                始终 `auto`.
+                Always `auto`.
 
                 - `"auto"`
 
               - `file_ids: optional array of string`
 
-                可选的已上传文件列表，供你的代码使用。
+                提供给代码使用的已上传文件的可选列表。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -14502,7 +14496,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
                   - `type: "disabled"`
 
-                    禁用出站网络访问。始终 `disabled`.
+                    禁用出站网络访问。始终为 `disabled`.
 
                     - `"disabled"`
 
@@ -14510,33 +14504,33 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
                   - `allowed_domains: array of string`
 
-                    当类型为 `allowlist`.
+                    当 type 为 `allowlist`.
 
                   - `type: "allowlist"`
 
-                    仅允许对指定域名的出站网络访问。始终 `allowlist`.
+                    仅允许向指定域发出站网络访问。始终为 `allowlist`.
 
                     - `"allowlist"`
 
                   - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                    可选，针对允许列表域名的域范围密钥。
+                    可选的、限定域的密钥，用于允许列表中的域。
 
                     - `domain: string`
 
-                      与该密钥关联的域名。
+                      与该密钥关联的域。
 
                     - `name: string`
 
-                      要为该域名注入的密钥名称。
+                      要为该域注入的密钥名称。
 
                     - `value: string`
 
-                      要为该域名注入的密钥值。
+                      要为该域注入的密钥值。
 
           - `type: "code_interpreter"`
 
-            代码解释器工具的类型。始终 `code_interpreter`.
+            代码解释器工具的类型。始终为 `code_interpreter`.
 
             - `"code_interpreter"`
 
@@ -14552,7 +14546,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `type: "programmatic_tool_calling"`
 
-            工具的类型。始终 `programmatic_tool_calling`.
+            工具的类型。始终为 `programmatic_tool_calling`.
 
             - `"programmatic_tool_calling"`
 
@@ -14562,13 +14556,13 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `type: "image_generation"`
 
-            图像生成工具的类型。始终 `image_generation`.
+            图像生成工具的类型。始终为 `image_generation`.
 
             - `"image_generation"`
 
           - `action: optional "generate" or "edit" or "auto"`
 
-            是否生成新图像或编辑现有图像。默认： `auto`.
+            是生成新图像还是编辑现有图像。默认值： `auto`.
 
             - `"generate"`
 
@@ -14578,11 +14572,11 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            设置生成图像的背景。可选值之一： `transparent`,
-            `opaque`，或 `auto`。透明背景可用于
+            设置生成图像的背景。可选值为 `transparent`,
+            `opaque`、或 `auto`。透明背景适用于
             支持的 GPT 图像模型。对于 `gpt-image-2` 和
-            `gpt-image-2-2026-04-21`，此支持处于预览阶段。当使用
-            `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认： `auto`.
+            `gpt-image-2-2026-04-21`，该支持处于预览阶段。使用
+            `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
             - `"transparent"`
 
@@ -14592,7 +14586,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            控制模型在匹配输入图像的样式和特征（尤其是面部特征）方面投入的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
+            控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所需的投入程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。之一。默认为 `low`.
 
             - `"high"`
 
@@ -14600,31 +14594,31 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `input_image_mask: optional object { file_id, image_url }`
 
-            用于修复的可选掩码。包含 `image_url`
+            用于修复的可选遮罩。包含 `image_url`
             （字符串，可选）和 `file_id` （字符串，可选）。
 
             - `file_id: optional string`
 
-              掩码图像的文件ID。
+              遮罩图像的文件 ID。
 
             - `image_url: optional string`
 
-              Base64编码的掩码图像。
+              Base64 编码的遮罩图像。
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。其中一个为 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+            `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              要使用的图像生成模型。其中一个为 `gpt-image-1`,
+              要使用的图像生成模型。可选值为 `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+              `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -14639,7 +14633,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `moderation: optional "auto" or "low"`
 
-            生成图像的审核级别。默认值： `auto`.
+            生成图像的内容审核级别。默认值： `auto`.
 
             - `"auto"`
 
@@ -14651,8 +14645,8 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `output_format: optional "png" or "webp" or "jpeg"`
 
-            生成图像的输出格式。其中一个为 `png`, `webp`，或
-            `jpeg`。默认： `png`.
+            生成图像的输出格式。可选值为 `png`, `webp`、或
+            `jpeg`。默认值： `png`.
 
             - `"png"`
 
@@ -14662,12 +14656,12 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `partial_images: optional number`
 
-            流式模式下生成的部分图像数量，范围从0（默认值）到3。
+            在流式模式下要生成的中间图像数量，范围为 0（默认值）到 3。
 
           - `quality: optional "low" or "medium" or "high" or "auto"`
 
-            生成图像的质量。其中一个为 `low`, `medium`, `high`,
-            或 `auto`。默认： `auto`.
+            生成图像的质量。可选值为 `low`, `medium`, `high`,
+            或 `auto`。默认值： `auto`.
 
             - `"low"`
 
@@ -14679,13 +14673,13 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
               - `"1024x1024"`
 
@@ -14697,7 +14691,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
         - `LocalShell object { type }`
 
-          一种允许模型在本地环境中执行 shell 命令的工具。
+          允许模型在本地环境中执行 shell 命令的工具。
 
           - `type: "local_shell"`
 
@@ -14707,7 +14701,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
         - `Shell object { type, allowed_callers, environment }`
 
-          一种允许模型执行 shell 命令的工具。
+          允许模型执行 shell 命令的工具。
 
           - `type: "shell"`
 
@@ -14729,13 +14723,13 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
               - `type: "container_auto"`
 
-                自动为此请求创建容器
+                自动为本次请求创建一个容器
 
                 - `"container_auto"`
 
               - `file_ids: optional array of string`
 
-                可选的已上传文件列表，供你的代码使用。
+                提供给代码使用的已上传文件的可选列表。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -14759,7 +14753,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
               - `skills: optional array of SkillReference or InlineSkill`
 
-                可选的技能列表，通过 ID 或内联数据引用。
+                通过 id 引用或内联数据的可选技能列表。
 
                 - `SkillReference object { skill_id, type, version }`
 
@@ -14809,7 +14803,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
                   - `type: "inline"`
 
-                    为此请求定义内联技能。
+                    为本次请求定义一个内联技能。
 
                     - `"inline"`
 
@@ -14823,7 +14817,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
               - `skills: optional array of LocalSkill`
 
-                可选技能列表。
+                可选的技能列表。
 
                 - `description: string`
 
@@ -14835,7 +14829,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
                 - `path: string`
 
-                  包含技能的目录路径。
+                  包含该技能的目录路径。
 
             - `ContainerReference object { container_id, type }`
 
@@ -14851,7 +14845,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
         - `Custom object { name, type, allowed_callers, 3 more }`
 
-          一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+          使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -14859,7 +14853,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `type: "custom"`
 
-            自定义工具的类型。始终 `custom`.
+            自定义工具的类型。始终为 `custom`.
 
             - `"custom"`
 
@@ -14873,7 +14867,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `defer_loading: optional boolean`
 
-            是否应延迟此工具并通过工具搜索发现。
+            该工具是否应被延迟，并通过工具搜索发现。
 
           - `description: optional string`
 
@@ -14885,11 +14879,11 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
             - `Text object { type }`
 
-              无约束的自由形式文本。
+              无约束的自由格式文本。
 
               - `type: "text"`
 
-                无约束文本格式。始终 `text`.
+                无约束文本格式。始终为 `text`.
 
                 - `"text"`
 
@@ -14903,7 +14897,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
               - `syntax: "lark" or "regex"`
 
-                语法定义的语法。之一 `lark` 或 `regex`.
+                语法定义的语法格式。可选值为 `lark` 或 `regex`.
 
                 - `"lark"`
 
@@ -14911,21 +14905,21 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
               - `type: "grammar"`
 
-                语法格式。始终 `grammar`.
+                语法格式。始终为 `grammar`.
 
                 - `"grammar"`
 
         - `Namespace object { description, name, tools, type }`
 
-          将函数/自定义工具分组到共享命名空间下。
+          在共享命名空间下对函数/自定义工具进行分组。
 
           - `description: string`
 
-            显示给模型的命名空间描述。
+            展示给模型的命名空间描述。
 
           - `name: string`
 
-            工具调用中使用的命名空间名称（例如， `crm`).
+            在工具调用中使用的命名空间名称（例如， `crm`).
 
           - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
@@ -14949,23 +14943,23 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
               - `defer_loading: optional boolean`
 
-                此函数是否应被延迟并通过工具搜索发现。
+                是否应推迟此函数并通过工具搜索发现它。
 
               - `description: optional string or null`
 
               - `output_schema: optional map[unknown] or null`
 
-                描述此函数工具字符串输出中 JSON 值的 JSON Schema。这不描述内容数组输出。
+                描述此函数工具字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content 数组输出。
 
               - `parameters: optional unknown or null`
 
               - `strict: optional boolean or null`
 
-                是否强制进行严格的参数验证。如果省略，Responses 会在 schema 兼容时尝试使用严格验证，否则回退到非严格验证。
+                是否强制执行严格的参数校验。如果省略，Responses 会在 schema 兼容时尝试使用严格校验，否则回退到非严格校验。
 
             - `Custom object { name, type, allowed_callers, 3 more }`
 
-              一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+              使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -14973,7 +14967,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
               - `type: "custom"`
 
-                自定义工具的类型。始终 `custom`.
+                自定义工具的类型。始终为 `custom`.
 
                 - `"custom"`
 
@@ -14987,7 +14981,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
               - `defer_loading: optional boolean`
 
-                是否应延迟此工具并通过工具搜索发现。
+                该工具是否应被延迟，并通过工具搜索发现。
 
               - `description: optional string`
 
@@ -14999,27 +14993,27 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `type: "namespace"`
 
-            工具的类型。始终 `namespace`.
+            工具的类型。始终为 `namespace`.
 
             - `"namespace"`
 
         - `ToolSearch object { type, description, execution, parameters }`
 
-          用于延迟工具的托管或 BYOT 工具搜索配置。
+          针对延迟工具的托管或 BYOT 工具搜索配置。
 
           - `type: "tool_search"`
 
-            工具的类型。始终 `tool_search`.
+            工具的类型。始终为 `tool_search`.
 
             - `"tool_search"`
 
           - `description: optional string or null`
 
-            为客户端执行的工具搜索工具向模型显示的描述。
+            向模型展示的客户端执行工具搜索工具的描述。
 
           - `execution: optional "server" or "client"`
 
-            工具搜索是由服务器还是客户端执行。
+            工具搜索是由服务端执行还是由客户端执行。
 
             - `"server"`
 
@@ -15027,15 +15021,15 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `parameters: optional unknown or null`
 
-            客户端执行的工具搜索工具的参数 schema。
+            客户端执行工具搜索工具的参数 schema。
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          此工具在网页上搜索相关内容以用于响应。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+          此工具会在网页上搜索相关结果以用于回复。详细了解 [网页搜索 tool](https://platform.openai.com/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-            网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+            网页搜索 工具的类型。其一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
             - `"web_search_preview"`
 
@@ -15049,7 +15043,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -15059,11 +15053,11 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            用户的位置。
+            用户所在的位置。
 
             - `type: "approximate"`
 
-              位置近似的类型。始终为 `approximate`.
+              位置近似值的类型。始终为 `approximate`.
 
               - `"approximate"`
 
@@ -15077,7 +15071,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -15085,11 +15079,11 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
         - `ApplyPatch object { type, allowed_callers }`
 
-          允许助手使用统一差异创建、删除或更新文件。
+          允许助手使用 unified diff 创建、删除或更新文件。
 
           - `type: "apply_patch"`
 
-            工具的类型。始终 `apply_patch`.
+            工具的类型。始终为 `apply_patch`.
 
             - `"apply_patch"`
 
@@ -15103,11 +15097,11 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
       - `top_p: optional number`
 
-        用于核采样的温度替代参数；1.0 包含所有标记。
+        作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
 - `error: EvalAPIError`
 
-  表示 Eval API 错误响应的对象。
+  表示来自 Eval API 错误响应的对象。
 
   - `code: string`
 
@@ -15119,20 +15113,20 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
 - `eval_id: string`
 
-  相关评估的标识符。
+  关联评估的标识符。
 
 - `metadata: Metadata or null`
 
-  一组 16 个键值对，可附加到对象上。这可以
-  用于以结构化格式存储有关对象的额外信息，
+  可附加到对象的 16 组键值对。这可以
+  用于以结构化格式存储有关对象的附加信息，
   并通过 API 或仪表板查询对象。
 
-  键是字符串，最大长度为 64 个字符。值是字符串，
+  键为字符串，最大长度为 64 个字符。值为字符串，
   最大长度为 512 个字符。
 
 - `model: string`
 
-  被评估的模型（如果适用）。
+  被评估的模型（如适用）。
 
 - `name: string`
 
@@ -15140,21 +15134,21 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
 - `object: "eval.run"`
 
-  对象的类型。始终为 "eval.run"。
+  对象类型，始终为 "eval.run"。
 
   - `"eval.run"`
 
 - `per_model_usage: array of object { cached_tokens, completion_tokens, invocation_count, 3 more }`
 
-  评估运行期间每个模型的使用统计。
+  评估运行期间每个模型的使用统计信息。
 
   - `cached_tokens: number`
 
-    从缓存中检索到的令牌数。
+    从缓存中检索到的 token 数量。
 
   - `completion_tokens: number`
 
-    生成的完成令牌数。
+    生成的 completion token 数量。
 
   - `invocation_count: number`
 
@@ -15166,31 +15160,31 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
   - `prompt_tokens: number`
 
-    使用的提示令牌数。
+    使用的 prompt token 数量。
 
   - `total_tokens: number`
 
-    使用的令牌总数。
+    使用的 token 总数。
 
 - `per_testing_criteria_results: array of object { failed, passed, testing_criteria }`
 
-  评估运行期间应用的每项测试标准的结果。
+  评估运行期间应用的每个测试条件的测试结果。
 
   - `failed: number`
 
-    此标准失败的测试数量。
+    此条件下未通过的测试数。
 
   - `passed: number`
 
-    此标准通过的测试数量。
+    此条件下通过的测试数。
 
   - `testing_criteria: string`
 
-    测试标准的说明。
+    测试条件的描述。
 
 - `report_url: string`
 
-  UI 仪表板上呈现的评估运行报告的 URL。
+  在 UI 仪表板上指向已渲染评估运行报告的 URL。
 
 - `result_counts: object { errored, failed, passed, total }`
 
@@ -15198,11 +15192,11 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
   - `errored: number`
 
-    导致错误的输出项数量。
+    出现错误的输出项数量。
 
   - `failed: number`
 
-    未能通过评估的输出项数量。
+    未通过评估的输出项数量。
 
   - `passed: number`
 
@@ -15301,8 +15295,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
   "eval_id": "eval_67abd54d9b0081909a86353f6fb9317a",
   "report_url": "https://platform.openai.com/evaluations/eval_67abd54d9b0081909a86353f6fb9317a?run_id=evalrun_67abd54d60ec8190832b46859da808f7",
   "status": "queued",
-  "model": "gpt-4o-mini",
-  "name": "gpt-4o-mini",
+  "model": "gpt-5.6-sol",
+  "name": "gpt-5.6-sol",
   "created_at": 1743092069,
   "result_counts": {
     "total": 0,
@@ -15430,11 +15424,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
         }
       ]
     },
-    "model": "gpt-4o-mini",
+    "model": "gpt-5.6-sol",
     "sampling_params": {
-      "seed": 42,
-      "temperature": 1.0,
-      "top_p": 1.0,
       "max_completions_tokens": 2048
     }
   },
@@ -15443,17 +15434,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 }
 ```
 
-## 域类型
+## 域名类型
 
-### 创建评估补全运行数据源
+### 创建 Eval Completions 运行数据源
 
 - `CreateEvalCompletionsRunDataSource object { source, type, input_messages, 2 more }`
 
-  描述模型采样配置的 CompletionsRunDataSource 对象。
+  一个 CompletionsRunDataSource 对象，用于描述模型采样配置。
 
   - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 3 more }`
 
-    决定什么填充 `item` 此运行数据源中的命名空间。
+    决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
     - `EvalJSONLFileContentSource object { content, type }`
 
@@ -15467,7 +15458,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `type: "file_content"`
 
-        jsonl 源的类型。始终为 `file_content`.
+        jsonl 数据源的类型。始终为 `file_content`.
 
         - `"file_content"`
 
@@ -15479,44 +15470,44 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `type: "file_id"`
 
-        jsonl 源的类型。始终为 `file_id`.
+        jsonl 数据源的类型。始终为 `file_id`.
 
         - `"file_id"`
 
     - `StoredCompletionsRunDataSource object { type, created_after, created_before, 3 more }`
 
-      描述一组过滤器的 StoredCompletionsRunDataSource 配置
+      一个 StoredCompletionsRunDataSource 配置，用于描述一组筛选条件
 
       - `type: "stored_completions"`
 
-        源的类型。始终为 `stored_completions`.
+        数据源的类型。始终为 `stored_completions`.
 
         - `"stored_completions"`
 
       - `created_after: optional number or null`
 
-        可选的 Unix 时间戳，用于过滤在此时间之后创建的项。
+        一个可选的 Unix 时间戳，用于筛选在此时间之后创建的项。
 
       - `created_before: optional number or null`
 
-        可选的 Unix 时间戳，用于过滤在此时间之前创建的项。
+        一个可选的 Unix 时间戳，用于筛选在此时间之前创建的项。
 
       - `limit: optional number or null`
 
-        可选的最大返回项数。
+        一个可选的返回项的最大数量。
 
       - `metadata: optional Metadata or null`
 
-        一组 16 个键值对，可附加到对象上。这可以
-        用于以结构化格式存储有关对象的额外信息，
+        可附加到对象的 16 组键值对。这可以
+        用于以结构化格式存储有关对象的附加信息，
         并通过 API 或仪表板查询对象。
 
-        键是字符串，最大长度为 64 个字符。值是字符串，
+        键为字符串，最大长度为 64 个字符。值为字符串，
         最大长度为 512 个字符。
 
       - `model: optional string or null`
 
-        可选的模型过滤条件（例如，'gpt-4o'）。
+        一个可选的用于筛选的模型（例如 'gpt-5.6-sol'）。
 
   - `type: "completions"`
 
@@ -15526,43 +15517,43 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-    用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+    在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
     - `TemplateInputMessages object { template, type }`
 
       - `template: array of EasyInputMessage or object { content, role, type }`
 
-        构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+        构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
         - `EasyInputMessage object { content, role, phase, type }`
 
-          输入给模型的消息，其角色指示指令遵循
-          层级。以 `developer` 或 `system` 角色给出的指令
-          优先于以 `user` 角色给出的指令。具有
-          `assistant` 角色的消息被认为是由模型在之前的
-          交互中生成的。
+          输入到模型的消息，其角色指示指令的
+          层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+          角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+          `assistant` 消息。
+          互动。
 
           - `content: string or ResponseInputMessageContentList`
 
             发送给模型的文本、图像或音频输入，用于生成响应。
-            也可以包含先前的助手响应。
+            也可以包含之前的助手响应。
 
             - `TextInput = string`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `ResponseInputMessageContentList = array of ResponseInputContent`
 
-              发送给模型的一个或多个输入项的列表，包含不同类型的内容
-              。
+              发送给模型的一个或多个输入项的列表，其中包含不同的内容
+              类型。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
                 - `text: string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `type: "input_text"`
 
@@ -15572,7 +15563,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `prompt_cache_breakpoint: optional object { mode }`
 
-                  标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                  标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                   - `mode: "explicit"`
 
@@ -15586,7 +15577,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `detail: ImageDetail`
 
-                  发送给模型的图像的细节级别。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+                  发送到模型的图片的细节级别。可选值为 `high`, `low`, `auto`、或 `original`。之一。默认为 `auto`.
 
                   - `"low"`
 
@@ -15608,11 +15599,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `image_url: optional string or null`
 
-                  要发送给模型的图像的 URL。完全限定的 URL 或数据 URL 中的 base64 编码图像。
+                  要发送给模型的图像的 URL。可以是完整的 URL，也可以是 base64 编码的 data URL 图像。
 
                 - `prompt_cache_breakpoint: optional object { mode }`
 
-                  标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                  标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                   - `mode: "explicit"`
 
@@ -15632,7 +15623,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `detail: optional "auto" or "low" or "high"`
 
-                  要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入令牌的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+                  要发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
                   - `"auto"`
 
@@ -15642,7 +15633,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `file_data: optional string`
 
-                  要发送给模型的文件的内容。
+                  要发送给模型的文件内容。
 
                 - `file_id: optional string or null`
 
@@ -15658,7 +15649,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `prompt_cache_breakpoint: optional object { mode }`
 
-                  标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                  标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                   - `mode: "explicit"`
 
@@ -15668,7 +15659,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `role: "user" or "assistant" or "system" or "developer"`
 
-            消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+            消息输入的角色。可选值为 `user`, `assistant`, `system`、或
             `developer`.
 
             - `"user"`
@@ -15681,9 +15672,9 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `phase: optional "commentary" or "final_answer" or null`
 
-            将 `assistant` 消息标记为中间评论（`commentary`) 或最终答案 (`final_answer`).
-            对于像 `gpt-5.3-codex` 及更新的模型，发送后续请求时，请保留并重新发送
-            阶段到所有助手消息中——省略该阶段可能会降低性能。不用于用户消息。
+            将 `assistant` 消息标记为中间补充说明（`commentary`) 或最终答案（`final_answer`).
+            对于类似 `gpt-5.3-codex` 及更高版本，发送后续请求时，请在所有助手消息上保留并重新发送
+            阶段，遗漏会降低性能。不用于用户消息。
 
             - `"commentary"`
 
@@ -15697,31 +15688,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `EvalMessageObject object { content, role, type }`
 
-          输入给模型的消息，其角色指示指令遵循
-          层级。以 `developer` 或 `system` 角色给出的指令
-          优先于以 `user` 角色给出的指令。具有
-          `assistant` 角色的消息被认为是由模型在之前的
-          交互中生成的。
+          输入到模型的消息，其角色指示指令的
+          层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+          角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+          `assistant` 消息。
+          互动。
 
           - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-            模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+            模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
             - `TextInput = string`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-              模型的文本输入。
+              发送给模型的文本输入。
 
             - `OutputText object { text, type }`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
               - `text: string`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
               - `type: "output_text"`
 
@@ -15731,21 +15722,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `InputImage object { image_url, type, detail }`
 
-              用于 EvalItem 内容数组中的图像输入块。
+              在 EvalItem 内容数组中使用的图片输入块。
 
               - `image_url: string`
 
-                图像输入的 URL。
+                图片输入的 URL。
 
               - `type: "input_image"`
 
-                图像输入的类型。始终为 `input_image`.
+                图片输入的类型。始终为 `input_image`.
 
                 - `"input_image"`
 
               - `detail: optional string`
 
-                发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
             - `ResponseInputAudio object { input_audio, type }`
 
@@ -15755,11 +15746,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `data: string`
 
-                  Base64 编码的音频数据。
+                  经过 Base64 编码的音频数据。
 
                 - `format: "mp3" or "wav"`
 
-                  音频数据的格式。目前支持的格式为 `mp3` 和
+                  音频数据的格式。当前支持的格式有 `mp3` 和
                   `wav`.
 
                   - `"mp3"`
@@ -15774,24 +15765,24 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-              输入列表，每个输入可以是输入文本、输出文本、输入
-              图像或输入音频对象。
+              输入列表，其中每个输入可以是输入文本、输出文本、输入
+              图片或输入音频对象。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发送给模型的文本输入。
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -15801,21 +15792,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `InputImage object { image_url, type, detail }`
 
-                用于 EvalItem 内容数组中的图像输入块。
+                在 EvalItem 内容数组中使用的图片输入块。
 
                 - `image_url: string`
 
-                  图像输入的 URL。
+                  图片输入的 URL。
 
                 - `type: "input_image"`
 
-                  图像输入的类型。始终为 `input_image`.
+                  图片输入的类型。始终为 `input_image`.
 
                   - `"input_image"`
 
                 - `detail: optional string`
 
-                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
@@ -15823,7 +15814,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `role: "user" or "assistant" or "system" or "developer"`
 
-            消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+            消息输入的角色。可选值为 `user`, `assistant`, `system`、或
             `developer`.
 
             - `"user"`
@@ -15850,7 +15841,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `item_reference: string`
 
-        对 `item` 命名空间中变量的引用。例如，"item.input_trajectory"
+        命名空间中的变量引用。例如“ `item` .item.input_trajectory”
 
       - `type: "item_reference"`
 
@@ -15860,7 +15851,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `model: optional string`
 
-    用于生成补全的模型名称（例如 "o3-mini"）。
+    用于生成补全的模型名称（例如 “o3-mini”）。
 
   - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
@@ -15870,13 +15861,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `reasoning_effort: optional ReasoningEffort or null`
 
-      约束推理模型的推理工作量。目前支持的
-      值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-      降低推理工作量可以加快响应速度并减少响应中
-      用于推理的令牌数。并非所有推理模型都支持每个
+      约束推理模型在推理上的投入程度。当前支持
+      的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+      降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+      消耗。并非所有推理模型都支持每个
       值。请参阅
       [推理指南](https://platform.openai.com/docs/guides/reasoning)
-      了解各模型的特定支持。
+      了解特定模型的支持情况。
 
       - `"none"`
 
@@ -15894,20 +15885,20 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `response_format: optional ResponseFormatText or ResponseFormatJSONSchema or ResponseFormatJSONObject`
 
-      指定模型必须输出的格式的对象。
+      指定模型必须输出格式的对象。
 
-      设置为 `{ "type": "json_schema", "json_schema": {...} }` 启用
-      结构化输出，确保模型匹配你提供的 JSON
-      架构。更多信息请参阅 [Structured Outputs
+      设置为 `{ "type": "json_schema", "json_schema": {...} }` 会启用
+      Structured Outputs，用于确保模型匹配你提供的 JSON
+      schema。详细了解请参阅 [Structured Outputs
       指南](/docs/guides/structured-outputs).
 
       设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-      确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-      。
+      确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+      使用。
 
       - `ResponseFormatText object { type }`
 
-        默认响应格式，用于生成文本响应。
+        默认响应格式。用于生成文本响应。
 
         - `type: "text"`
 
@@ -15917,34 +15908,34 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `ResponseFormatJSONSchema object { json_schema, type }`
 
-        JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-        了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+        JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+        详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
         - `json_schema: object { name, description, schema, strict }`
 
-          结构化输出配置选项，包括 JSON Schema。
+          Structured Outputs 配置选项，包括 JSON Schema。
 
           - `name: string`
 
-            响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-            下划线和破折号，最大长度为 64。
+            响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+            下划线和短横线，最大长度为 64。
 
           - `description: optional string`
 
-            响应格式用途的描述，模型使用它来
-            决定如何以该格式进行响应。
+            对响应格式用途的描述，供模型用来
+            决定如何按该格式进行响应。
 
           - `schema: optional map[unknown]`
 
-            响应格式的架构，以 JSON Schema 对象描述。
-            了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+            响应格式对应的 schema，以 JSON Schema 对象形式描述。
+            了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
           - `strict: optional boolean or null`
 
-            是否在生成输出时启用严格的架构遵循。
-            如果设置为 true，模型将始终遵循定义的精确架构
-            中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-            `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+            是否在生成输出时启用严格的 schema 遵循。
+            若设置为 true，模型将始终遵循在
+            中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+            `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
             指南](/docs/guides/structured-outputs).
 
         - `type: "json_schema"`
@@ -15955,10 +15946,10 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `ResponseFormatJSONObject object { type }`
 
-        JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-        使用 `json_schema` 建议用于支持它的模型。请注意，
-        模型在没有系统或用户消息指示它的情况下不会生成 JSON
-        去这样做。
+        JSON 对象响应格式。生成 JSON 响应的旧方法。
+        对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+        模型将不会生成 JSON
+        。
 
         - `type: "json_object"`
 
@@ -15968,55 +15959,55 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `seed: optional number`
 
-      用于在采样时初始化随机性的种子值。
+      用于在采样过程中初始化随机性的种子值。
 
     - `temperature: optional number`
 
-      更高的温度会增加输出的随机性。
+      较高的 temperature 会增加输出的随机性。
 
     - `tools: optional array of ChatCompletionFunctionTool`
 
-      模型可能调用的工具列表。目前，仅支持函数作为工具。使用此选项提供模型可能生成 JSON 输入的函数列表。最多支持 128 个函数。
+      模型可以调用的工具列表。目前，作为工具仅支持函数。使用此项提供模型可以为其生成 JSON 输入的函数列表。最多支持 128 个函数。
 
       - `function: FunctionDefinition`
 
         - `name: string`
 
-          要调用的函数名称。必须是 a-z、A-Z、0-9，或包含下划线和破折号，最大长度为 64。
+          要调用的函数的名称。必须为 a-z、A-Z、0-9 或包含下划线和短划线，最大长度为 64。
 
         - `description: optional string`
 
-          函数功能的描述，模型用它来决定何时以及如何调用该函数。
+          对函数功能的描述，供模型选择何时以及如何调用该函数时使用。
 
         - `parameters: optional FunctionParameters`
 
-          函数接受的参数，描述为 JSON Schema 对象。参见 [指南](/docs/guides/function-calling) 获取示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) 获取有关格式的文档。
+          函数接受的参数，使用 JSON Schema 对象进行描述。请参阅 [指南](/docs/guides/function-calling) 中的示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) ，了解相关格式的文档。
 
-          省略 `parameters` 定义了一个具有空参数列表的函数。
+          省略 `parameters` 将定义一个具有空参数列表的函数。
 
         - `strict: optional boolean or null`
 
-          是否在生成函数调用时启用严格模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的子集，当 `strict` 为 `true`。在 [函数调用指南](/docs/guides/function-calling).
+          在生成函数调用时是否启用严格的模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的一个子集，当 `strict` 是 `true`。在以下位置详细了解结构化输出 [函数调用指南](/docs/guides/function-calling).
 
       - `type: "function"`
 
-        中了解更多关于结构化输出的信息。工具的类型。目前仅支持 `function` 。
+        工具的类型。目前，仅支持 `function` 是受支持的。
 
         - `"function"`
 
     - `top_p: optional number`
 
-      用于核采样的温度替代参数；1.0 包含所有标记。
+      作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
-### 创建评估 JSONL 运行数据源
+### 创建 Eval JSONL 运行数据源
 
 - `CreateEvalJSONLRunDataSource object { source, type }`
 
-  一个 JsonlRunDataSource 对象，指定一个 JSONL 文件，该文件与评估
+  一个 JsonlRunDataSource 对象，用于指定与该评估匹配的 JSONL 文件
 
   - `source: object { content, type }  or object { id, type }`
 
-    决定什么填充 `item` 数据源中的命名空间。
+    决定数据源中如何填充 `item` 命名空间。
 
     - `EvalJSONLFileContentSource object { content, type }`
 
@@ -16030,7 +16021,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `type: "file_content"`
 
-        jsonl 源的类型。始终为 `file_content`.
+        jsonl 数据源的类型。始终为 `file_content`.
 
         - `"file_content"`
 
@@ -16042,21 +16033,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `type: "file_id"`
 
-        jsonl 源的类型。始终为 `file_id`.
+        jsonl 数据源的类型。始终为 `file_id`.
 
         - `"file_id"`
 
   - `type: "jsonl"`
 
-    数据源的类型。始终是 `jsonl`.
+    数据源的类型。始终为 `jsonl`.
 
     - `"jsonl"`
 
-### 评估 API 错误
+### Eval API 错误
 
 - `EvalAPIError object { code, message }`
 
-  表示 Eval API 错误响应的对象。
+  表示来自 Eval API 错误响应的对象。
 
   - `code: string`
 
@@ -16070,27 +16061,27 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
 - `RunCancelResponse object { id, created_at, data_source, 11 more }`
 
-  表示一次评估运行的架构。
+  表示评估运行结果的架构。
 
   - `id: string`
 
-    评估运行的唯一标识符。
+    评估运行（evaluation run）的唯一标识符。
 
   - `created_at: number`
 
-    评估运行创建时的 Unix 时间戳（秒）。
+    评估运行创建时的 Unix 时间戳（以秒为单位）。
 
   - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or object { source, type, input_messages, 2 more }`
 
-    有关运行数据源的信息。
+    关于该运行数据源的信息。
 
     - `CreateEvalJSONLRunDataSource object { source, type }`
 
-      一个 JsonlRunDataSource 对象，指定一个 JSONL 文件，该文件与评估
+      一个 JsonlRunDataSource 对象，用于指定与该评估匹配的 JSONL 文件
 
       - `source: object { content, type }  or object { id, type }`
 
-        决定什么填充 `item` 数据源中的命名空间。
+        决定数据源中如何填充 `item` 命名空间。
 
         - `EvalJSONLFileContentSource object { content, type }`
 
@@ -16104,7 +16095,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_content"`
 
-            jsonl 源的类型。始终为 `file_content`.
+            jsonl 数据源的类型。始终为 `file_content`.
 
             - `"file_content"`
 
@@ -16116,23 +16107,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_id"`
 
-            jsonl 源的类型。始终为 `file_id`.
+            jsonl 数据源的类型。始终为 `file_id`.
 
             - `"file_id"`
 
       - `type: "jsonl"`
 
-        数据源的类型。始终是 `jsonl`.
+        数据源的类型。始终为 `jsonl`.
 
         - `"jsonl"`
 
     - `CreateEvalCompletionsRunDataSource object { source, type, input_messages, 2 more }`
 
-      描述模型采样配置的 CompletionsRunDataSource 对象。
+      一个 CompletionsRunDataSource 对象，用于描述模型采样配置。
 
       - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 3 more }`
 
-        决定什么填充 `item` 此运行数据源中的命名空间。
+        决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
         - `EvalJSONLFileContentSource object { content, type }`
 
@@ -16146,7 +16137,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_content"`
 
-            jsonl 源的类型。始终为 `file_content`.
+            jsonl 数据源的类型。始终为 `file_content`.
 
             - `"file_content"`
 
@@ -16158,44 +16149,44 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_id"`
 
-            jsonl 源的类型。始终为 `file_id`.
+            jsonl 数据源的类型。始终为 `file_id`.
 
             - `"file_id"`
 
         - `StoredCompletionsRunDataSource object { type, created_after, created_before, 3 more }`
 
-          描述一组过滤器的 StoredCompletionsRunDataSource 配置
+          一个 StoredCompletionsRunDataSource 配置，用于描述一组筛选条件
 
           - `type: "stored_completions"`
 
-            源的类型。始终为 `stored_completions`.
+            数据源的类型。始终为 `stored_completions`.
 
             - `"stored_completions"`
 
           - `created_after: optional number or null`
 
-            可选的 Unix 时间戳，用于过滤在此时间之后创建的项。
+            一个可选的 Unix 时间戳，用于筛选在此时间之后创建的项。
 
           - `created_before: optional number or null`
 
-            可选的 Unix 时间戳，用于过滤在此时间之前创建的项。
+            一个可选的 Unix 时间戳，用于筛选在此时间之前创建的项。
 
           - `limit: optional number or null`
 
-            可选的最大返回项数。
+            一个可选的返回项的最大数量。
 
           - `metadata: optional Metadata or null`
 
-            一组 16 个键值对，可附加到对象上。这可以
-            用于以结构化格式存储有关对象的额外信息，
+            可附加到对象的 16 组键值对。这可以
+            用于以结构化格式存储有关对象的附加信息，
             并通过 API 或仪表板查询对象。
 
-            键是字符串，最大长度为 64 个字符。值是字符串，
+            键为字符串，最大长度为 64 个字符。值为字符串，
             最大长度为 512 个字符。
 
           - `model: optional string or null`
 
-            可选的模型过滤条件（例如，'gpt-4o'）。
+            一个可选的用于筛选的模型（例如 'gpt-5.6-sol'）。
 
       - `type: "completions"`
 
@@ -16205,43 +16196,43 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-        用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+        在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
         - `TemplateInputMessages object { template, type }`
 
           - `template: array of EasyInputMessage or object { content, role, type }`
 
-            构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+            构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
             - `EasyInputMessage object { content, role, phase, type }`
 
-              输入给模型的消息，其角色指示指令遵循
-              层级。以 `developer` 或 `system` 角色给出的指令
-              优先于以 `user` 角色给出的指令。具有
-              `assistant` 角色的消息被认为是由模型在之前的
-              交互中生成的。
+              输入到模型的消息，其角色指示指令的
+              层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+              角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+              `assistant` 消息。
+              互动。
 
               - `content: string or ResponseInputMessageContentList`
 
                 发送给模型的文本、图像或音频输入，用于生成响应。
-                也可以包含先前的助手响应。
+                也可以包含之前的助手响应。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputMessageContentList = array of ResponseInputContent`
 
-                  发送给模型的一个或多个输入项的列表，包含不同类型的内容
-                  。
+                  发送给模型的一个或多个输入项的列表，其中包含不同的内容
+                  类型。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                     - `text: string`
 
-                      模型的文本输入。
+                      发送给模型的文本输入。
 
                     - `type: "input_text"`
 
@@ -16251,7 +16242,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `prompt_cache_breakpoint: optional object { mode }`
 
-                      标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                       - `mode: "explicit"`
 
@@ -16265,7 +16256,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `detail: ImageDetail`
 
-                      发送给模型的图像的细节级别。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+                      发送到模型的图片的细节级别。可选值为 `high`, `low`, `auto`、或 `original`。之一。默认为 `auto`.
 
                       - `"low"`
 
@@ -16287,11 +16278,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `image_url: optional string or null`
 
-                      要发送给模型的图像的 URL。完全限定的 URL 或数据 URL 中的 base64 编码图像。
+                      要发送给模型的图像的 URL。可以是完整的 URL，也可以是 base64 编码的 data URL 图像。
 
                     - `prompt_cache_breakpoint: optional object { mode }`
 
-                      标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                       - `mode: "explicit"`
 
@@ -16311,7 +16302,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `detail: optional "auto" or "low" or "high"`
 
-                      要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入令牌的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+                      要发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
                       - `"auto"`
 
@@ -16321,7 +16312,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `file_data: optional string`
 
-                      要发送给模型的文件的内容。
+                      要发送给模型的文件内容。
 
                     - `file_id: optional string or null`
 
@@ -16337,7 +16328,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `prompt_cache_breakpoint: optional object { mode }`
 
-                      标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                       - `mode: "explicit"`
 
@@ -16347,7 +16338,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `role: "user" or "assistant" or "system" or "developer"`
 
-                消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                消息输入的角色。可选值为 `user`, `assistant`, `system`、或
                 `developer`.
 
                 - `"user"`
@@ -16360,9 +16351,9 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `phase: optional "commentary" or "final_answer" or null`
 
-                将 `assistant` 消息标记为中间评论（`commentary`) 或最终答案 (`final_answer`).
-                对于像 `gpt-5.3-codex` 及更新的模型，发送后续请求时，请保留并重新发送
-                阶段到所有助手消息中——省略该阶段可能会降低性能。不用于用户消息。
+                将 `assistant` 消息标记为中间补充说明（`commentary`) 或最终答案（`final_answer`).
+                对于类似 `gpt-5.3-codex` 及更高版本，发送后续请求时，请在所有助手消息上保留并重新发送
+                阶段，遗漏会降低性能。不用于用户消息。
 
                 - `"commentary"`
 
@@ -16376,31 +16367,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `EvalMessageObject object { content, role, type }`
 
-              输入给模型的消息，其角色指示指令遵循
-              层级。以 `developer` 或 `system` 角色给出的指令
-              优先于以 `user` 角色给出的指令。具有
-              `assistant` 角色的消息被认为是由模型在之前的
-              交互中生成的。
+              输入到模型的消息，其角色指示指令的
+              层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+              角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+              `assistant` 消息。
+              互动。
 
               - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -16410,21 +16401,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `InputImage object { image_url, type, detail }`
 
-                  用于 EvalItem 内容数组中的图像输入块。
+                  在 EvalItem 内容数组中使用的图片输入块。
 
                   - `image_url: string`
 
-                    图像输入的 URL。
+                    图片输入的 URL。
 
                   - `type: "input_image"`
 
-                    图像输入的类型。始终为 `input_image`.
+                    图片输入的类型。始终为 `input_image`.
 
                     - `"input_image"`
 
                   - `detail: optional string`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
@@ -16434,11 +16425,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `data: string`
 
-                      Base64 编码的音频数据。
+                      经过 Base64 编码的音频数据。
 
                     - `format: "mp3" or "wav"`
 
-                      音频数据的格式。目前支持的格式为 `mp3` 和
+                      音频数据的格式。当前支持的格式有 `mp3` 和
                       `wav`.
 
                       - `"mp3"`
@@ -16453,24 +16444,24 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                  输入列表，每个输入可以是输入文本、输出文本、输入
-                  图像或输入音频对象。
+                  输入列表，其中每个输入可以是输入文本、输出文本、输入
+                  图片或输入音频对象。
 
                   - `TextInput = string`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                   - `OutputText object { text, type }`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                     - `text: string`
 
-                      模型的文本输出。
+                      来自模型的文本输出。
 
                     - `type: "output_text"`
 
@@ -16480,21 +16471,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `InputImage object { image_url, type, detail }`
 
-                    用于 EvalItem 内容数组中的图像输入块。
+                    在 EvalItem 内容数组中使用的图片输入块。
 
                     - `image_url: string`
 
-                      图像输入的 URL。
+                      图片输入的 URL。
 
                     - `type: "input_image"`
 
-                      图像输入的类型。始终为 `input_image`.
+                      图片输入的类型。始终为 `input_image`.
 
                       - `"input_image"`
 
                     - `detail: optional string`
 
-                      发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                      发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                   - `ResponseInputAudio object { input_audio, type }`
 
@@ -16502,7 +16493,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `role: "user" or "assistant" or "system" or "developer"`
 
-                消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                消息输入的角色。可选值为 `user`, `assistant`, `system`、或
                 `developer`.
 
                 - `"user"`
@@ -16529,7 +16520,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `item_reference: string`
 
-            对 `item` 命名空间中变量的引用。例如，"item.input_trajectory"
+            命名空间中的变量引用。例如“ `item` .item.input_trajectory”
 
           - `type: "item_reference"`
 
@@ -16539,7 +16530,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `model: optional string`
 
-        用于生成补全的模型名称（例如 "o3-mini"）。
+        用于生成补全的模型名称（例如 “o3-mini”）。
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
@@ -16549,13 +16540,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `reasoning_effort: optional ReasoningEffort or null`
 
-          约束推理模型的推理工作量。目前支持的
-          值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-          降低推理工作量可以加快响应速度并减少响应中
-          用于推理的令牌数。并非所有推理模型都支持每个
+          约束推理模型在推理上的投入程度。当前支持
+          的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+          降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+          消耗。并非所有推理模型都支持每个
           值。请参阅
           [推理指南](https://platform.openai.com/docs/guides/reasoning)
-          了解各模型的特定支持。
+          了解特定模型的支持情况。
 
           - `"none"`
 
@@ -16573,20 +16564,20 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `response_format: optional ResponseFormatText or ResponseFormatJSONSchema or ResponseFormatJSONObject`
 
-          指定模型必须输出的格式的对象。
+          指定模型必须输出格式的对象。
 
-          设置为 `{ "type": "json_schema", "json_schema": {...} }` 启用
-          结构化输出，确保模型匹配你提供的 JSON
-          架构。更多信息请参阅 [Structured Outputs
+          设置为 `{ "type": "json_schema", "json_schema": {...} }` 会启用
+          Structured Outputs，用于确保模型匹配你提供的 JSON
+          schema。详细了解请参阅 [Structured Outputs
           指南](/docs/guides/structured-outputs).
 
           设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-          确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-          。
+          确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+          使用。
 
           - `ResponseFormatText object { type }`
 
-            默认响应格式，用于生成文本响应。
+            默认响应格式。用于生成文本响应。
 
             - `type: "text"`
 
@@ -16596,34 +16587,34 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `ResponseFormatJSONSchema object { json_schema, type }`
 
-            JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-            了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+            JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+            详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
             - `json_schema: object { name, description, schema, strict }`
 
-              结构化输出配置选项，包括 JSON Schema。
+              Structured Outputs 配置选项，包括 JSON Schema。
 
               - `name: string`
 
-                响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-                下划线和破折号，最大长度为 64。
+                响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+                下划线和短横线，最大长度为 64。
 
               - `description: optional string`
 
-                响应格式用途的描述，模型使用它来
-                决定如何以该格式进行响应。
+                对响应格式用途的描述，供模型用来
+                决定如何按该格式进行响应。
 
               - `schema: optional map[unknown]`
 
-                响应格式的架构，以 JSON Schema 对象描述。
-                了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+                响应格式对应的 schema，以 JSON Schema 对象形式描述。
+                了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
               - `strict: optional boolean or null`
 
-                是否在生成输出时启用严格的架构遵循。
-                如果设置为 true，模型将始终遵循定义的精确架构
-                中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-                `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+                是否在生成输出时启用严格的 schema 遵循。
+                若设置为 true，模型将始终遵循在
+                中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+                `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
                 指南](/docs/guides/structured-outputs).
 
             - `type: "json_schema"`
@@ -16634,10 +16625,10 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `ResponseFormatJSONObject object { type }`
 
-            JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-            使用 `json_schema` 建议用于支持它的模型。请注意，
-            模型在没有系统或用户消息指示它的情况下不会生成 JSON
-            去这样做。
+            JSON 对象响应格式。生成 JSON 响应的旧方法。
+            对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+            模型将不会生成 JSON
+            。
 
             - `type: "json_object"`
 
@@ -16647,53 +16638,53 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `seed: optional number`
 
-          用于在采样时初始化随机性的种子值。
+          用于在采样过程中初始化随机性的种子值。
 
         - `temperature: optional number`
 
-          更高的温度会增加输出的随机性。
+          较高的 temperature 会增加输出的随机性。
 
         - `tools: optional array of ChatCompletionFunctionTool`
 
-          模型可能调用的工具列表。目前，仅支持函数作为工具。使用此选项提供模型可能生成 JSON 输入的函数列表。最多支持 128 个函数。
+          模型可以调用的工具列表。目前，作为工具仅支持函数。使用此项提供模型可以为其生成 JSON 输入的函数列表。最多支持 128 个函数。
 
           - `function: FunctionDefinition`
 
             - `name: string`
 
-              要调用的函数名称。必须是 a-z、A-Z、0-9，或包含下划线和破折号，最大长度为 64。
+              要调用的函数的名称。必须为 a-z、A-Z、0-9 或包含下划线和短划线，最大长度为 64。
 
             - `description: optional string`
 
-              函数功能的描述，模型用它来决定何时以及如何调用该函数。
+              对函数功能的描述，供模型选择何时以及如何调用该函数时使用。
 
             - `parameters: optional FunctionParameters`
 
-              函数接受的参数，描述为 JSON Schema 对象。参见 [指南](/docs/guides/function-calling) 获取示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) 获取有关格式的文档。
+              函数接受的参数，使用 JSON Schema 对象进行描述。请参阅 [指南](/docs/guides/function-calling) 中的示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) ，了解相关格式的文档。
 
-              省略 `parameters` 定义了一个具有空参数列表的函数。
+              省略 `parameters` 将定义一个具有空参数列表的函数。
 
             - `strict: optional boolean or null`
 
-              是否在生成函数调用时启用严格模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的子集，当 `strict` 为 `true`。在 [函数调用指南](/docs/guides/function-calling).
+              在生成函数调用时是否启用严格的模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的一个子集，当 `strict` 是 `true`。在以下位置详细了解结构化输出 [函数调用指南](/docs/guides/function-calling).
 
           - `type: "function"`
 
-            中了解更多关于结构化输出的信息。工具的类型。目前仅支持 `function` 。
+            工具的类型。目前，仅支持 `function` 是受支持的。
 
             - `"function"`
 
         - `top_p: optional number`
 
-          用于核采样的温度替代参数；1.0 包含所有标记。
+          作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
     - `ResponsesRunDataSource object { source, type, input_messages, 2 more }`
 
-      描述模型采样配置的 ResponsesRunDataSource 对象。
+      一个 ResponsesRunDataSource 对象，用于描述模型采样配置。
 
       - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 8 more }`
 
-        决定什么填充 `item` 此运行数据源中的命名空间。
+        决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
         - `EvalJSONLFileContentSource object { content, type }`
 
@@ -16707,7 +16698,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_content"`
 
-            jsonl 源的类型。始终为 `file_content`.
+            jsonl 数据源的类型。始终为 `file_content`.
 
             - `"file_content"`
 
@@ -16719,13 +16710,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_id"`
 
-            jsonl 源的类型。始终为 `file_id`.
+            jsonl 数据源的类型。始终为 `file_id`.
 
             - `"file_id"`
 
         - `EvalResponsesSource object { type, created_after, created_before, 8 more }`
 
-          描述运行数据源配置的 EvalResponsesSource 对象。
+          一个 EvalResponsesSource 对象，用于描述运行数据源配置。
 
           - `type: "responses"`
 
@@ -16735,49 +16726,49 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `created_after: optional number or null`
 
-            仅包含在此时间戳之后（含）创建的项。这是用于选择响应的查询参数。
+            仅包含在此时间戳之后（包含）创建的项目。这是一个用于选择响应的查询参数。
 
           - `created_before: optional number or null`
 
-            仅包含在此时间戳之前（含）创建的项。这是用于选择响应的查询参数。
+            仅包含在此时间戳之前（包含）创建的项目。这是一个用于选择响应的查询参数。
 
           - `instructions_search: optional string or null`
 
-            用于搜索“instructions”字段的可选字符串。这是用于选择响应的查询参数。
+            用于搜索 'instructions' 字段的可选字符串。这是一个用于选择响应的查询参数。
 
           - `metadata: optional unknown or null`
 
-            响应的元数据过滤器。这是用于选择响应的查询参数。
+            响应的元数据过滤器。这是一个用于选择响应的查询参数。
 
           - `model: optional string or null`
 
-            要查找响应的模型名称。这是用于选择响应的查询参数。
+            要为其查找响应的模型名称。这是一个用于选择响应的查询参数。
 
           - `reasoning_effort: optional ReasoningEffort or null`
 
-            约束推理模型的推理工作量。目前支持的
-            值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-            降低推理工作量可以加快响应速度并减少响应中
-            用于推理的令牌数。并非所有推理模型都支持每个
+            约束推理模型在推理上的投入程度。当前支持
+            的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+            降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+            消耗。并非所有推理模型都支持每个
             值。请参阅
             [推理指南](https://platform.openai.com/docs/guides/reasoning)
-            了解各模型的特定支持。
+            了解特定模型的支持情况。
 
           - `temperature: optional number or null`
 
-            采样温度。这是用于选择响应的查询参数。
+            采样温度。这是一个用于选择响应的查询参数。
 
           - `tools: optional array of string or null`
 
-            工具名称列表。这是用于选择响应的查询参数。
+            工具名称列表。这是一个用于选择响应的查询参数。
 
           - `top_p: optional number or null`
 
-            核采样参数。这是用于选择响应的查询参数。
+            核采样参数。这是一个用于选择响应的查询参数。
 
           - `users: optional array of string or null`
 
-            用户标识符列表。这是用于选择响应的查询参数。
+            用户标识符列表。这是一个用于选择响应的查询参数。
 
       - `type: "responses"`
 
@@ -16787,13 +16778,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-        用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+        在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
         - `InputMessagesTemplate object { template, type }`
 
           - `template: array of object { content, role }  or object { content, role, type }`
 
-            构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+            构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
             - `ChatMessage object { content, role }`
 
@@ -16807,31 +16798,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `EvalMessageObject object { content, role, type }`
 
-              输入给模型的消息，其角色指示指令遵循
-              层级。以 `developer` 或 `system` 角色给出的指令
-              优先于以 `user` 角色给出的指令。具有
-              `assistant` 角色的消息被认为是由模型在之前的
-              交互中生成的。
+              输入到模型的消息，其角色指示指令的
+              层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+              角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+              `assistant` 消息。
+              互动。
 
               - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -16841,21 +16832,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `InputImage object { image_url, type, detail }`
 
-                  用于 EvalItem 内容数组中的图像输入块。
+                  在 EvalItem 内容数组中使用的图片输入块。
 
                   - `image_url: string`
 
-                    图像输入的 URL。
+                    图片输入的 URL。
 
                   - `type: "input_image"`
 
-                    图像输入的类型。始终为 `input_image`.
+                    图片输入的类型。始终为 `input_image`.
 
                     - `"input_image"`
 
                   - `detail: optional string`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
@@ -16863,12 +16854,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                  输入列表，每个输入可以是输入文本、输出文本、输入
-                  图像或输入音频对象。
+                  输入列表，其中每个输入可以是输入文本、输出文本、输入
+                  图片或输入音频对象。
 
               - `role: "user" or "assistant" or "system" or "developer"`
 
-                消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                消息输入的角色。可选值为 `user`, `assistant`, `system`、或
                 `developer`.
 
                 - `"user"`
@@ -16895,7 +16886,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `item_reference: string`
 
-            对 `item` 命名空间。即“item.name”
+            命名空间中的变量引用。例如“ `item` 命名空间。例如，“item.name”
 
           - `type: "item_reference"`
 
@@ -16905,7 +16896,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `model: optional string`
 
-        用于生成补全的模型名称（例如 "o3-mini"）。
+        用于生成补全的模型名称（例如 “o3-mini”）。
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
@@ -16915,64 +16906,64 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `reasoning_effort: optional ReasoningEffort or null`
 
-          约束推理模型的推理工作量。目前支持的
-          值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-          降低推理工作量可以加快响应速度并减少响应中
-          用于推理的令牌数。并非所有推理模型都支持每个
+          约束推理模型在推理上的投入程度。当前支持
+          的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+          降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+          消耗。并非所有推理模型都支持每个
           值。请参阅
           [推理指南](https://platform.openai.com/docs/guides/reasoning)
-          了解各模型的特定支持。
+          了解特定模型的支持情况。
 
         - `seed: optional number`
 
-          用于在采样时初始化随机性的种子值。
+          用于在采样过程中初始化随机性的种子值。
 
         - `temperature: optional number`
 
-          更高的温度会增加输出的随机性。
+          较高的 temperature 会增加输出的随机性。
 
         - `text: optional object { format }`
 
-          模型文本响应的配置选项。可以是纯
-          文本或结构化 JSON 数据。了解更多：
+          来自模型的文本响应的配置选项。可以是纯
+          文本或结构化 JSON 数据。了解更多信息：
 
           - [文本输入和输出](/docs/guides/text)
           - [结构化输出](/docs/guides/structured-outputs)
 
           - `format: optional ResponseFormatTextConfig`
 
-            指定模型必须输出的格式的对象。
+            指定模型必须输出格式的对象。
 
-            配置 `{ "type": "json_schema" }` 可启用结构化输出，
-            这确保模型将匹配你提供的 JSON 模式。更多信息请参阅
+            配置 `{ "type": "json_schema" }` 启用结构化输出，
+            可确保模型匹配你提供的 JSON schema。详情请参阅
             [结构化输出指南](/docs/guides/structured-outputs).
 
             默认格式为 `{ "type": "text" }` ，无其他选项。
 
-            **不建议用于 gpt-4o 及更新的模型：**
+            **不推荐用于 gpt-4o 及更新模型：**
 
             设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-            确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-            。
+            确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+            使用。
 
             - `ResponseFormatText object { type }`
 
-              默认响应格式，用于生成文本响应。
+              默认响应格式。用于生成文本响应。
 
             - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
-              JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-              了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+              JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+              详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
               - `name: string`
 
-                响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-                下划线和破折号，最大长度为 64。
+                响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+                下划线和短横线，最大长度为 64。
 
               - `schema: map[unknown]`
 
-                响应格式的架构，以 JSON Schema 对象描述。
-                了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+                响应格式对应的 schema，以 JSON Schema 对象形式描述。
+                了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
               - `type: "json_schema"`
 
@@ -16982,42 +16973,42 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `description: optional string`
 
-                响应格式用途的描述，模型使用它来
-                决定如何以该格式进行响应。
+                对响应格式用途的描述，供模型用来
+                决定如何按该格式进行响应。
 
               - `strict: optional boolean or null`
 
-                是否在生成输出时启用严格的架构遵循。
-                如果设置为 true，模型将始终遵循定义的精确架构
-                中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-                `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+                是否在生成输出时启用严格的 schema 遵循。
+                若设置为 true，模型将始终遵循在
+                中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+                `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
                 指南](/docs/guides/structured-outputs).
 
             - `ResponseFormatJSONObject object { type }`
 
-              JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-              使用 `json_schema` 建议用于支持它的模型。请注意，
-              模型在没有系统或用户消息指示它的情况下不会生成 JSON
-              去这样做。
+              JSON 对象响应格式。生成 JSON 响应的旧方法。
+              对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+              模型将不会生成 JSON
+              。
 
         - `tools: optional array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-          模型在生成响应时可能调用的工具数组。你
-          可以通过设置 `tool_choice` 参数来指定使用哪个工具。
+          模型在生成响应时可以调用的工具数组。你可以
+          通过设置 `tool_choice` 参数来指定要使用的工具。
 
-          你可以提供给模型的工具分为两类：
+          你可以向模型提供的两类工具包括：
 
-          - **内置工具**：由 OpenAI 提供的工具，用于扩展
-            模型的能力，例如 [网页搜索](/docs/guides/tools-web-search)
-            或 [文件搜索](/docs/guides/tools-file-search)。了解更多关于
+          - **内置工具**: 由 OpenAI 提供的工具，用于扩展模型的
+            能力，例如 [网页搜索](/docs/guides/tools-web-search)
+            或 [文件搜索](/docs/guides/tools-file-search)。详细了解
             [内置工具](/docs/guides/tools).
-          - **函数调用（自定义工具）**：由你定义的函数，
-            使模型能够调用你自己的代码。了解更多关于
+          - **函数调用（自定义工具）**: 由你定义的函数，
+            使模型能够调用你自己的代码。详细了解
             [函数调用](/docs/guides/function-calling).
 
           - `Function object { name, parameters, strict, 5 more }`
 
-            在你自己的代码中定义一个模型可以选择调用的函数。了解更多关于 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+            定义你自己代码中的一个函数，模型可以选择调用它。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
 
             - `name: string`
 
@@ -17025,11 +17016,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `parameters: map[unknown] or null`
 
-              描述函数参数的 JSON schema 对象。
+              描述该函数参数的 JSON schema 对象。
 
             - `strict: boolean or null`
 
-              是否对此函数工具强制执行严格的参数验证。
+              是否对此函数工具强制执行严格的参数校验。
 
             - `type: "function"`
 
@@ -17047,54 +17038,54 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `defer_loading: optional boolean`
 
-              此函数是否延迟并通过工具搜索加载。
+              此函数是否被延迟加载并通过 tool search 加载。
 
             - `description: optional string or null`
 
-              函数的描述。模型用它来决定是否调用该函数。
+              函数的描述。由模型用于决定是否调用该函数。
 
             - `output_schema: optional map[unknown] or null`
 
-              描述此函数字符串输出中编码的 JSON 值的 JSON schema 对象。
+              描述该函数在字符串输出中所编码 JSON 值的 JSON schema 对象。
 
           - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-            一种从上传文件中搜索相关内容的工具。了解更多关于 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+            用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 工具](https://platform.openai.com/docs/guides/tools-file-search).
 
             - `type: "file_search"`
 
-              文件搜索工具的类型。始终为 `file_search`.
+              文件搜索 工具的类型。始终为 `file_search`.
 
               - `"file_search"`
 
             - `vector_store_ids: array of string`
 
-              要搜索的向量存储的 ID。
+              要搜索的向量存储库 ID。
 
             - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-              要应用的筛选器。
+              要应用的筛选条件。
 
               - `ComparisonFilter object { key, type, value }`
 
-                用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+                用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
                 - `key: string`
 
-                  要与值进行比较的键。
+                  要与该值进行比较的键。
 
                 - `type: "eq" or "ne" or "gt" or 5 more`
 
                   指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-                  - `eq`：等于
-                  - `ne`：不等于
-                  - `gt`：大于
-                  - `gte`：大于或等于
-                  - `lt`：小于
-                  - `lte`：小于或等于
-                  - `in`：在…中
-                  - `nin`：不在…中
+                  - `eq`: 等于
+                  - `ne`: 不等于
+                  - `gt`: 大于
+                  - `gte`: 大于或等于
+                  - `lt`: 小于
+                  - `lte`: 小于或等于
+                  - `in`: 包含于
+                  - `nin`: 不包含于
 
                   - `"eq"`
 
@@ -17114,7 +17105,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `value: string or number or boolean or array of string or number`
 
-                  要与属性键比较的值；支持字符串、数字或布尔类型。
+                  用于与属性键进行比较的值；支持字符串、数字或布尔类型。
 
                   - `string`
 
@@ -17130,15 +17121,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `CompoundFilter object { filters, type }`
 
-                使用以下方式组合多个过滤器： `and` 或 `or`.
+                使用以下方式组合多个筛选条件 `and` 或 `or`.
 
                 - `filters: array of ComparisonFilter or unknown`
 
-                  要组合的过滤器数组。项目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+                  要组合的筛选条件数组。项可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
                   - `ComparisonFilter object { key, type, value }`
 
-                    用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+                    用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
                   - `unknown`
 
@@ -17152,27 +17143,27 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `max_num_results: optional number`
 
-              要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+              返回的最大结果数。该数值应介于 1 到 50 之间（含端点）。
 
             - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
-              搜索的排名选项。
+              搜索的排序选项。
 
               - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-                启用混合搜索时，控制倒数排名融合如何平衡语义嵌入匹配与稀疏关键词匹配的权重。
+                在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
                 - `embedding_weight: number`
 
-                  嵌入在倒数排名融合中的权重。
+                  倒数排名融合中嵌入的权重。
 
                 - `text_weight: number`
 
-                  文本在倒数排名融合中的权重。
+                  倒数排名融合中文本的权重。
 
               - `ranker: optional "auto" or "default-2024-11-15"`
 
-                用于文件搜索的排名器。
+                用于文件搜索的排序器。
 
                 - `"auto"`
 
@@ -17180,29 +17171,29 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `score_threshold: optional number`
 
-                文件搜索的分数阈值，为 0 到 1 之间的数字。接近 1 的数字将尝试仅返回最相关的结果，但可能返回更少的结果。
+                文件搜索的分数阈值，取值介于 0 到 1 之间。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
 
           - `Computer object { type }`
 
-            控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+            用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
             - `type: "computer"`
 
-              计算机工具的类型。始终为 `computer`.
+              computer 工具的类型。始终是 `computer`.
 
               - `"computer"`
 
           - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-            控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+            用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
             - `display_height: number`
 
-              计算机显示屏的高度。
+              计算机显示器的高度。
 
             - `display_width: number`
 
-              计算机显示屏的宽度。
+              计算机显示器的宽度。
 
             - `environment: "windows" or "mac" or "linux" or 2 more`
 
@@ -17220,18 +17211,18 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "computer_use_preview"`
 
-              计算机使用工具的类型。始终为 `computer_use_preview`.
+              computer use 工具的类型。始终是 `computer_use_preview`.
 
               - `"computer_use_preview"`
 
           - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-            搜索互联网以获取与提示相关的来源。了解更多关于
-            [网页搜索工具](/docs/guides/tools-web-search).
+            在互联网上搜索与提示相关的来源。详细了解
+            [网页搜索 tool](/docs/guides/tools-web-search).
 
             - `type: "web_search" or "web_search_2025_08_26"`
 
-              网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+              网页搜索 工具的类型。其一为 `web_search` 或 `web_search_2025_08_26`.
 
               - `"web_search"`
 
@@ -17239,22 +17230,22 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `external_web_access: optional boolean`
 
-              允许网页搜索实时访问互联网。省略时默认为 true。为 false 时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+              允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索 工具将以离线/仅缓存模式运行，并且不会获取新的外部内容。
 
             - `filters: optional object { allowed_domains }  or null`
 
-              搜索的过滤器。
+              搜索的筛选条件。
 
               - `allowed_domains: optional array of string or null`
 
-                搜索允许的域。如果未提供，则允许所有域。
-                也允许所提供域的子域。
+                搜索允许的域名。如果未提供，则允许所有域名。
+                所提供域名的子域名也被允许。
 
                 示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
             - `search_context_size: optional "low" or "medium" or "high"`
 
-              关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+              搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
               - `"low"`
 
@@ -17276,7 +17267,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `region: optional string or null`
 
-                用户的地区的自由文本输入，例如 `California`.
+                用户所在地区的自由文本输入，例如 `California`.
 
               - `timezone: optional string or null`
 
@@ -17284,14 +17275,14 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `type: optional "approximate"`
 
-                位置近似的类型。始终为 `approximate`.
+                位置近似值的类型。始终为 `approximate`.
 
                 - `"approximate"`
 
           - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-            通过远程 Model Context Protocol 向模型提供额外工具的访问权限
-            （MCP）服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+            通过远程 Model Context Protocol
+            （MCP）服务器让模型访问更多工具。 [详细了解 MCP](/docs/guides/tools-remote-mcp).
 
             - `server_label: string`
 
@@ -17313,48 +17304,48 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
 
-              允许的工具名称列表或过滤器对象。
+              允许使用的工具名称列表或筛选对象。
 
               - `McpAllowedTools = array of string`
 
-                允许的工具名称的字符串数组
+                允许使用的工具名称字符串数组
 
               - `McpToolFilter object { read_only, tool_names }`
 
-                用于指定允许哪些工具的过滤器对象。
+                用于指定允许使用哪些工具的筛选对象。
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  它将匹配此过滤器。
+                  指示工具是否会修改数据或仅为只读。如果某个
+                  MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  标注，则会匹配此筛选器。
 
                 - `tool_names: optional array of string`
 
-                  允许的工具名称列表。
+                  允许使用的工具名称列表。
 
             - `authorization: optional string`
 
-              可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-              使用自定义 MCP 服务器 URL 或服务连接器。您的应用程序
-              必须处理 OAuth 授权流程，并在此处提供令牌。
+              可用于远程 MCP 服务器的 OAuth 访问令牌，可配合
+              自定义 MCP 服务器 URL 或服务连接器一起使用。你的应用
+              必须处理 OAuth 授权流程并在此处提供令牌。
 
             - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-              服务连接器的标识符，例如 ChatGPT 中可用的那些。其中一个
-              `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解更多
-              关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+              服务连接器的标识符，例如 ChatGPT 中提供的那些。值为以下之一
+              `server_url`, `connector_id`、或 `tunnel_id` 必须提供。了解更多
+              关于服务连接器的信息 [请参考此处](/docs/guides/tools-remote-mcp#connectors).
 
-              目前支持的 `connector_id` 值为：
+              当前支持的 `connector_id` 值包括：
 
-              - Dropbox： `connector_dropbox`
-              - Gmail： `connector_gmail`
-              - Google Calendar： `connector_googlecalendar`
-              - Google Drive： `connector_googledrive`
-              - Microsoft Teams： `connector_microsoftteams`
-              - Outlook Calendar： `connector_outlookcalendar`
-              - Outlook Email： `connector_outlookemail`
-              - SharePoint： `connector_sharepoint`
+              - Dropbox: `connector_dropbox`
+              - Gmail: `connector_gmail`
+              - Google Calendar: `connector_googlecalendar`
+              - Google Drive: `connector_googledrive`
+              - Microsoft Teams: `connector_microsoftteams`
+              - Outlook Calendar: `connector_outlookcalendar`
+              - Outlook Email: `connector_outlookemail`
+              - SharePoint: `connector_sharepoint`
 
               - `"connector_dropbox"`
 
@@ -17374,12 +17365,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `defer_loading: optional boolean`
 
-              此 MCP 工具是否被推迟并通过工具搜索发现。
+              该 MCP 工具是否被延迟，并通过工具搜索被发现。
 
             - `headers: optional map[string] or null`
 
-              发送到 MCP 服务器的可选 HTTP 头。用于认证
-              或其他目的。
+              发送到 MCP 服务器的可选 HTTP 标头。用于身份验证
+              或其他用途。
 
             - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
@@ -17388,41 +17379,41 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
               - `McpToolApprovalFilter object { always, never }`
 
                 指定 MCP 服务器中哪些工具需要审批。可以是
-                `always`, `never`，或与工具关联的筛选器对象
-                需要审批的。
+                `always`, `never`，或与工具关联的过滤器对象
+                需要审批的工具。
 
                 - `always: optional object { read_only, tool_names }`
 
-                  用于指定允许哪些工具的过滤器对象。
+                  用于指定允许使用哪些工具的筛选对象。
 
                   - `read_only: optional boolean`
 
-                    指示工具是否修改数据或为只读。如果
-                    MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                    它将匹配此过滤器。
+                    指示工具是否会修改数据或仅为只读。如果某个
+                    MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                    标注，则会匹配此筛选器。
 
                   - `tool_names: optional array of string`
 
-                    允许的工具名称列表。
+                    允许使用的工具名称列表。
 
                 - `never: optional object { read_only, tool_names }`
 
-                  用于指定允许哪些工具的过滤器对象。
+                  用于指定允许使用哪些工具的筛选对象。
 
                   - `read_only: optional boolean`
 
-                    指示工具是否修改数据或为只读。如果
-                    MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                    它将匹配此过滤器。
+                    指示工具是否会修改数据或仅为只读。如果某个
+                    MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                    标注，则会匹配此筛选器。
 
                   - `tool_names: optional array of string`
 
-                    允许的工具名称列表。
+                    允许使用的工具名称列表。
 
               - `McpToolApprovalSetting = "always" or "never"`
 
-                为所有工具指定单一审批策略。可选值为 `always` 或
-                `never`。当设置为 `always`，时，所有工具都需要审批。当
+                为所有工具指定一个统一的审批策略。可选值为 `always` 或
+                `never`。之一。当设置为 `always`，时，所有工具都需要审批。当设置为
                 设置为 `never`，时，所有工具都不需要审批。
 
                 - `"always"`
@@ -17435,23 +17426,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `server_url: optional string`
 
-              MCP 服务器的 URL。必须是 `server_url`, `connector_id`，或
-              `tunnel_id` 中的一项。
+              MCP 服务器的 URL。 `server_url`, `connector_id`、或
+              `tunnel_id` 必须提供其中之一。
 
             - `tunnel_id: optional string`
 
-              要使用的 Secure MCP Tunnel ID，而非直接服务器 URL。必须是
-              `server_url`, `connector_id`，或 `tunnel_id` 中的一项。
+              用于替代直接服务器 URL 的 Secure MCP Tunnel ID。
+              `server_url`, `connector_id`、或 `tunnel_id` 必须提供其中之一。
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
-            一种运行 Python 代码以帮助生成提示响应的工具。
+            用于运行 Python 代码以辅助生成对提示词回复的工具。
 
             - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-              代码解释器容器。可以是容器 ID 或一个对象，该对象
-              指定上传的文件 ID 以供你的代码使用，以及一个
-              可选 `memory_limit` 设置。
+              代码解释器容器。可以是容器 ID，也可以是一个指定了供代码使用的已上传文件 ID 的对象，以及
+              ，该对象同时包含一个
+              可选的 `memory_limit` 设置。
 
               - `string`
 
@@ -17459,17 +17450,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-                代码解释器容器的配置。可选地指定要运行代码的文件的 ID。
+                代码解释器容器的配置。可指定运行代码所需文件的 ID。
 
                 - `type: "auto"`
 
-                  始终 `auto`.
+                  Always `auto`.
 
                   - `"auto"`
 
                 - `file_ids: optional array of string`
 
-                  可选的已上传文件列表，供你的代码使用。
+                  提供给代码使用的已上传文件的可选列表。
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -17491,7 +17482,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `type: "disabled"`
 
-                      禁用出站网络访问。始终 `disabled`.
+                      禁用出站网络访问。始终为 `disabled`.
 
                       - `"disabled"`
 
@@ -17499,33 +17490,33 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `allowed_domains: array of string`
 
-                      当类型为 `allowlist`.
+                      当 type 为 `allowlist`.
 
                     - `type: "allowlist"`
 
-                      仅允许对指定域名的出站网络访问。始终 `allowlist`.
+                      仅允许向指定域发出站网络访问。始终为 `allowlist`.
 
                       - `"allowlist"`
 
                     - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                      可选，针对允许列表域名的域范围密钥。
+                      可选的、限定域的密钥，用于允许列表中的域。
 
                       - `domain: string`
 
-                        与该密钥关联的域名。
+                        与该密钥关联的域。
 
                       - `name: string`
 
-                        要为该域名注入的密钥名称。
+                        要为该域注入的密钥名称。
 
                       - `value: string`
 
-                        要为该域名注入的密钥值。
+                        要为该域注入的密钥值。
 
             - `type: "code_interpreter"`
 
-              代码解释器工具的类型。始终 `code_interpreter`.
+              代码解释器工具的类型。始终为 `code_interpreter`.
 
               - `"code_interpreter"`
 
@@ -17541,7 +17532,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "programmatic_tool_calling"`
 
-              工具的类型。始终 `programmatic_tool_calling`.
+              工具的类型。始终为 `programmatic_tool_calling`.
 
               - `"programmatic_tool_calling"`
 
@@ -17551,13 +17542,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "image_generation"`
 
-              图像生成工具的类型。始终 `image_generation`.
+              图像生成工具的类型。始终为 `image_generation`.
 
               - `"image_generation"`
 
             - `action: optional "generate" or "edit" or "auto"`
 
-              是否生成新图像或编辑现有图像。默认： `auto`.
+              是生成新图像还是编辑现有图像。默认值： `auto`.
 
               - `"generate"`
 
@@ -17567,11 +17558,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              设置生成图像的背景。可选值之一： `transparent`,
-              `opaque`，或 `auto`。透明背景可用于
+              设置生成图像的背景。可选值为 `transparent`,
+              `opaque`、或 `auto`。透明背景适用于
               支持的 GPT 图像模型。对于 `gpt-image-2` 和
-              `gpt-image-2-2026-04-21`，此支持处于预览阶段。当使用
-              `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认： `auto`.
+              `gpt-image-2-2026-04-21`，该支持处于预览阶段。使用
+              `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
               - `"transparent"`
 
@@ -17581,7 +17572,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              控制模型在匹配输入图像的样式和特征（尤其是面部特征）方面投入的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
+              控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所需的投入程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。之一。默认为 `low`.
 
               - `"high"`
 
@@ -17589,31 +17580,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `input_image_mask: optional object { file_id, image_url }`
 
-              用于修复的可选掩码。包含 `image_url`
+              用于修复的可选遮罩。包含 `image_url`
               （字符串，可选）和 `file_id` （字符串，可选）。
 
               - `file_id: optional string`
 
-                掩码图像的文件ID。
+                遮罩图像的文件 ID。
 
               - `image_url: optional string`
 
-                Base64编码的掩码图像。
+                Base64 编码的遮罩图像。
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              要使用的图像生成模型。其中一个为 `gpt-image-1`,
+              要使用的图像生成模型。可选值为 `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+              `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
               `gpt-image-1`.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-                要使用的图像生成模型。其中一个为 `gpt-image-1`,
+                要使用的图像生成模型。可选值为 `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+                `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -17628,7 +17619,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `moderation: optional "auto" or "low"`
 
-              生成图像的审核级别。默认值： `auto`.
+              生成图像的内容审核级别。默认值： `auto`.
 
               - `"auto"`
 
@@ -17640,8 +17631,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `output_format: optional "png" or "webp" or "jpeg"`
 
-              生成图像的输出格式。其中一个为 `png`, `webp`，或
-              `jpeg`。默认： `png`.
+              生成图像的输出格式。可选值为 `png`, `webp`、或
+              `jpeg`。默认值： `png`.
 
               - `"png"`
 
@@ -17651,12 +17642,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `partial_images: optional number`
 
-              流式模式下生成的部分图像数量，范围从0（默认值）到3。
+              在流式模式下要生成的中间图像数量，范围为 0（默认值）到 3。
 
             - `quality: optional "low" or "medium" or "high" or "auto"`
 
-              生成图像的质量。其中一个为 `low`, `medium`, `high`,
-              或 `auto`。默认： `auto`.
+              生成图像的质量。可选值为 `low`, `medium`, `high`,
+              或 `auto`。默认值： `auto`.
 
               - `"low"`
 
@@ -17668,13 +17659,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+                生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -17686,7 +17677,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `LocalShell object { type }`
 
-            一种允许模型在本地环境中执行 shell 命令的工具。
+            允许模型在本地环境中执行 shell 命令的工具。
 
             - `type: "local_shell"`
 
@@ -17696,7 +17687,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `Shell object { type, allowed_callers, environment }`
 
-            一种允许模型执行 shell 命令的工具。
+            允许模型执行 shell 命令的工具。
 
             - `type: "shell"`
 
@@ -17718,13 +17709,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `type: "container_auto"`
 
-                  自动为此请求创建容器
+                  自动为本次请求创建一个容器
 
                   - `"container_auto"`
 
                 - `file_ids: optional array of string`
 
-                  可选的已上传文件列表，供你的代码使用。
+                  提供给代码使用的已上传文件的可选列表。
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -17748,7 +17739,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `skills: optional array of SkillReference or InlineSkill`
 
-                  可选的技能列表，通过 ID 或内联数据引用。
+                  通过 id 引用或内联数据的可选技能列表。
 
                   - `SkillReference object { skill_id, type, version }`
 
@@ -17798,7 +17789,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `type: "inline"`
 
-                      为此请求定义内联技能。
+                      为本次请求定义一个内联技能。
 
                       - `"inline"`
 
@@ -17812,7 +17803,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `skills: optional array of LocalSkill`
 
-                  可选技能列表。
+                  可选的技能列表。
 
                   - `description: string`
 
@@ -17824,7 +17815,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `path: string`
 
-                    包含技能的目录路径。
+                    包含该技能的目录路径。
 
               - `ContainerReference object { container_id, type }`
 
@@ -17840,7 +17831,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `Custom object { name, type, allowed_callers, 3 more }`
 
-            一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+            使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -17848,7 +17839,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "custom"`
 
-              自定义工具的类型。始终 `custom`.
+              自定义工具的类型。始终为 `custom`.
 
               - `"custom"`
 
@@ -17862,7 +17853,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `defer_loading: optional boolean`
 
-              是否应延迟此工具并通过工具搜索发现。
+              该工具是否应被延迟，并通过工具搜索发现。
 
             - `description: optional string`
 
@@ -17874,11 +17865,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `Text object { type }`
 
-                无约束的自由形式文本。
+                无约束的自由格式文本。
 
                 - `type: "text"`
 
-                  无约束文本格式。始终 `text`.
+                  无约束文本格式。始终为 `text`.
 
                   - `"text"`
 
@@ -17892,7 +17883,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `syntax: "lark" or "regex"`
 
-                  语法定义的语法。之一 `lark` 或 `regex`.
+                  语法定义的语法格式。可选值为 `lark` 或 `regex`.
 
                   - `"lark"`
 
@@ -17900,21 +17891,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `type: "grammar"`
 
-                  语法格式。始终 `grammar`.
+                  语法格式。始终为 `grammar`.
 
                   - `"grammar"`
 
           - `Namespace object { description, name, tools, type }`
 
-            将函数/自定义工具分组到共享命名空间下。
+            在共享命名空间下对函数/自定义工具进行分组。
 
             - `description: string`
 
-              显示给模型的命名空间描述。
+              展示给模型的命名空间描述。
 
             - `name: string`
 
-              工具调用中使用的命名空间名称（例如， `crm`).
+              在工具调用中使用的命名空间名称（例如， `crm`).
 
             - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
@@ -17938,23 +17929,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `defer_loading: optional boolean`
 
-                  此函数是否应被延迟并通过工具搜索发现。
+                  是否应推迟此函数并通过工具搜索发现它。
 
                 - `description: optional string or null`
 
                 - `output_schema: optional map[unknown] or null`
 
-                  描述此函数工具字符串输出中 JSON 值的 JSON Schema。这不描述内容数组输出。
+                  描述此函数工具字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content 数组输出。
 
                 - `parameters: optional unknown or null`
 
                 - `strict: optional boolean or null`
 
-                  是否强制进行严格的参数验证。如果省略，Responses 会在 schema 兼容时尝试使用严格验证，否则回退到非严格验证。
+                  是否强制执行严格的参数校验。如果省略，Responses 会在 schema 兼容时尝试使用严格校验，否则回退到非严格校验。
 
               - `Custom object { name, type, allowed_callers, 3 more }`
 
-                一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+                使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
                 - `name: string`
 
@@ -17962,7 +17953,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `type: "custom"`
 
-                  自定义工具的类型。始终 `custom`.
+                  自定义工具的类型。始终为 `custom`.
 
                   - `"custom"`
 
@@ -17976,7 +17967,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `defer_loading: optional boolean`
 
-                  是否应延迟此工具并通过工具搜索发现。
+                  该工具是否应被延迟，并通过工具搜索发现。
 
                 - `description: optional string`
 
@@ -17988,27 +17979,27 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "namespace"`
 
-              工具的类型。始终 `namespace`.
+              工具的类型。始终为 `namespace`.
 
               - `"namespace"`
 
           - `ToolSearch object { type, description, execution, parameters }`
 
-            用于延迟工具的托管或 BYOT 工具搜索配置。
+            针对延迟工具的托管或 BYOT 工具搜索配置。
 
             - `type: "tool_search"`
 
-              工具的类型。始终 `tool_search`.
+              工具的类型。始终为 `tool_search`.
 
               - `"tool_search"`
 
             - `description: optional string or null`
 
-              为客户端执行的工具搜索工具向模型显示的描述。
+              向模型展示的客户端执行工具搜索工具的描述。
 
             - `execution: optional "server" or "client"`
 
-              工具搜索是由服务器还是客户端执行。
+              工具搜索是由服务端执行还是由客户端执行。
 
               - `"server"`
 
@@ -18016,15 +18007,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `parameters: optional unknown or null`
 
-              客户端执行的工具搜索工具的参数 schema。
+              客户端执行工具搜索工具的参数 schema。
 
           - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-            此工具在网页上搜索相关内容以用于响应。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+            此工具会在网页上搜索相关结果以用于回复。详细了解 [网页搜索 tool](https://platform.openai.com/docs/guides/tools-web-search).
 
             - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-              网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+              网页搜索 工具的类型。其一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
               - `"web_search_preview"`
 
@@ -18038,7 +18029,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `search_context_size: optional "low" or "medium" or "high"`
 
-              关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+              搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
               - `"low"`
 
@@ -18048,11 +18039,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              用户的位置。
+              用户所在的位置。
 
               - `type: "approximate"`
 
-                位置近似的类型。始终为 `approximate`.
+                位置近似值的类型。始终为 `approximate`.
 
                 - `"approximate"`
 
@@ -18066,7 +18057,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `region: optional string or null`
 
-                用户的地区的自由文本输入，例如 `California`.
+                用户所在地区的自由文本输入，例如 `California`.
 
               - `timezone: optional string or null`
 
@@ -18074,11 +18065,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `ApplyPatch object { type, allowed_callers }`
 
-            允许助手使用统一差异创建、删除或更新文件。
+            允许助手使用 unified diff 创建、删除或更新文件。
 
             - `type: "apply_patch"`
 
-              工具的类型。始终 `apply_patch`.
+              工具的类型。始终为 `apply_patch`.
 
               - `"apply_patch"`
 
@@ -18092,11 +18083,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `top_p: optional number`
 
-          用于核采样的温度替代参数；1.0 包含所有标记。
+          作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
   - `error: EvalAPIError`
 
-    表示 Eval API 错误响应的对象。
+    表示来自 Eval API 错误响应的对象。
 
     - `code: string`
 
@@ -18108,20 +18099,20 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `eval_id: string`
 
-    相关评估的标识符。
+    关联评估的标识符。
 
   - `metadata: Metadata or null`
 
-    一组 16 个键值对，可附加到对象上。这可以
-    用于以结构化格式存储有关对象的额外信息，
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
     并通过 API 或仪表板查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串，
+    键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
   - `model: string`
 
-    被评估的模型（如果适用）。
+    被评估的模型（如适用）。
 
   - `name: string`
 
@@ -18129,21 +18120,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `object: "eval.run"`
 
-    对象的类型。始终为 "eval.run"。
+    对象类型，始终为 "eval.run"。
 
     - `"eval.run"`
 
   - `per_model_usage: array of object { cached_tokens, completion_tokens, invocation_count, 3 more }`
 
-    评估运行期间每个模型的使用统计。
+    评估运行期间每个模型的使用统计信息。
 
     - `cached_tokens: number`
 
-      从缓存中检索到的令牌数。
+      从缓存中检索到的 token 数量。
 
     - `completion_tokens: number`
 
-      生成的完成令牌数。
+      生成的 completion token 数量。
 
     - `invocation_count: number`
 
@@ -18155,31 +18146,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `prompt_tokens: number`
 
-      使用的提示令牌数。
+      使用的 prompt token 数量。
 
     - `total_tokens: number`
 
-      使用的令牌总数。
+      使用的 token 总数。
 
   - `per_testing_criteria_results: array of object { failed, passed, testing_criteria }`
 
-    评估运行期间应用的每项测试标准的结果。
+    评估运行期间应用的每个测试条件的测试结果。
 
     - `failed: number`
 
-      此标准失败的测试数量。
+      此条件下未通过的测试数。
 
     - `passed: number`
 
-      此标准通过的测试数量。
+      此条件下通过的测试数。
 
     - `testing_criteria: string`
 
-      测试标准的说明。
+      测试条件的描述。
 
   - `report_url: string`
 
-    UI 仪表板上呈现的评估运行报告的 URL。
+    在 UI 仪表板上指向已渲染评估运行报告的 URL。
 
   - `result_counts: object { errored, failed, passed, total }`
 
@@ -18187,11 +18178,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `errored: number`
 
-      导致错误的输出项数量。
+      出现错误的输出项数量。
 
     - `failed: number`
 
-      未能通过评估的输出项数量。
+      未通过评估的输出项数量。
 
     - `passed: number`
 
@@ -18205,31 +18196,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     评估运行的状态。
 
-### 运行创建响应
+### Run Create Response
 
 - `RunCreateResponse object { id, created_at, data_source, 11 more }`
 
-  表示一次评估运行的架构。
+  表示评估运行结果的架构。
 
   - `id: string`
 
-    评估运行的唯一标识符。
+    评估运行（evaluation run）的唯一标识符。
 
   - `created_at: number`
 
-    评估运行创建时的 Unix 时间戳（秒）。
+    评估运行创建时的 Unix 时间戳（以秒为单位）。
 
   - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or object { source, type, input_messages, 2 more }`
 
-    有关运行数据源的信息。
+    关于该运行数据源的信息。
 
     - `CreateEvalJSONLRunDataSource object { source, type }`
 
-      一个 JsonlRunDataSource 对象，指定一个 JSONL 文件，该文件与评估
+      一个 JsonlRunDataSource 对象，用于指定与该评估匹配的 JSONL 文件
 
       - `source: object { content, type }  or object { id, type }`
 
-        决定什么填充 `item` 数据源中的命名空间。
+        决定数据源中如何填充 `item` 命名空间。
 
         - `EvalJSONLFileContentSource object { content, type }`
 
@@ -18243,7 +18234,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_content"`
 
-            jsonl 源的类型。始终为 `file_content`.
+            jsonl 数据源的类型。始终为 `file_content`.
 
             - `"file_content"`
 
@@ -18255,23 +18246,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_id"`
 
-            jsonl 源的类型。始终为 `file_id`.
+            jsonl 数据源的类型。始终为 `file_id`.
 
             - `"file_id"`
 
       - `type: "jsonl"`
 
-        数据源的类型。始终是 `jsonl`.
+        数据源的类型。始终为 `jsonl`.
 
         - `"jsonl"`
 
     - `CreateEvalCompletionsRunDataSource object { source, type, input_messages, 2 more }`
 
-      描述模型采样配置的 CompletionsRunDataSource 对象。
+      一个 CompletionsRunDataSource 对象，用于描述模型采样配置。
 
       - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 3 more }`
 
-        决定什么填充 `item` 此运行数据源中的命名空间。
+        决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
         - `EvalJSONLFileContentSource object { content, type }`
 
@@ -18285,7 +18276,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_content"`
 
-            jsonl 源的类型。始终为 `file_content`.
+            jsonl 数据源的类型。始终为 `file_content`.
 
             - `"file_content"`
 
@@ -18297,44 +18288,44 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_id"`
 
-            jsonl 源的类型。始终为 `file_id`.
+            jsonl 数据源的类型。始终为 `file_id`.
 
             - `"file_id"`
 
         - `StoredCompletionsRunDataSource object { type, created_after, created_before, 3 more }`
 
-          描述一组过滤器的 StoredCompletionsRunDataSource 配置
+          一个 StoredCompletionsRunDataSource 配置，用于描述一组筛选条件
 
           - `type: "stored_completions"`
 
-            源的类型。始终为 `stored_completions`.
+            数据源的类型。始终为 `stored_completions`.
 
             - `"stored_completions"`
 
           - `created_after: optional number or null`
 
-            可选的 Unix 时间戳，用于过滤在此时间之后创建的项。
+            一个可选的 Unix 时间戳，用于筛选在此时间之后创建的项。
 
           - `created_before: optional number or null`
 
-            可选的 Unix 时间戳，用于过滤在此时间之前创建的项。
+            一个可选的 Unix 时间戳，用于筛选在此时间之前创建的项。
 
           - `limit: optional number or null`
 
-            可选的最大返回项数。
+            一个可选的返回项的最大数量。
 
           - `metadata: optional Metadata or null`
 
-            一组 16 个键值对，可附加到对象上。这可以
-            用于以结构化格式存储有关对象的额外信息，
+            可附加到对象的 16 组键值对。这可以
+            用于以结构化格式存储有关对象的附加信息，
             并通过 API 或仪表板查询对象。
 
-            键是字符串，最大长度为 64 个字符。值是字符串，
+            键为字符串，最大长度为 64 个字符。值为字符串，
             最大长度为 512 个字符。
 
           - `model: optional string or null`
 
-            可选的模型过滤条件（例如，'gpt-4o'）。
+            一个可选的用于筛选的模型（例如 'gpt-5.6-sol'）。
 
       - `type: "completions"`
 
@@ -18344,43 +18335,43 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-        用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+        在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
         - `TemplateInputMessages object { template, type }`
 
           - `template: array of EasyInputMessage or object { content, role, type }`
 
-            构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+            构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
             - `EasyInputMessage object { content, role, phase, type }`
 
-              输入给模型的消息，其角色指示指令遵循
-              层级。以 `developer` 或 `system` 角色给出的指令
-              优先于以 `user` 角色给出的指令。具有
-              `assistant` 角色的消息被认为是由模型在之前的
-              交互中生成的。
+              输入到模型的消息，其角色指示指令的
+              层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+              角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+              `assistant` 消息。
+              互动。
 
               - `content: string or ResponseInputMessageContentList`
 
                 发送给模型的文本、图像或音频输入，用于生成响应。
-                也可以包含先前的助手响应。
+                也可以包含之前的助手响应。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputMessageContentList = array of ResponseInputContent`
 
-                  发送给模型的一个或多个输入项的列表，包含不同类型的内容
-                  。
+                  发送给模型的一个或多个输入项的列表，其中包含不同的内容
+                  类型。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                     - `text: string`
 
-                      模型的文本输入。
+                      发送给模型的文本输入。
 
                     - `type: "input_text"`
 
@@ -18390,7 +18381,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `prompt_cache_breakpoint: optional object { mode }`
 
-                      标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                       - `mode: "explicit"`
 
@@ -18404,7 +18395,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `detail: ImageDetail`
 
-                      发送给模型的图像的细节级别。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+                      发送到模型的图片的细节级别。可选值为 `high`, `low`, `auto`、或 `original`。之一。默认为 `auto`.
 
                       - `"low"`
 
@@ -18426,11 +18417,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `image_url: optional string or null`
 
-                      要发送给模型的图像的 URL。完全限定的 URL 或数据 URL 中的 base64 编码图像。
+                      要发送给模型的图像的 URL。可以是完整的 URL，也可以是 base64 编码的 data URL 图像。
 
                     - `prompt_cache_breakpoint: optional object { mode }`
 
-                      标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                       - `mode: "explicit"`
 
@@ -18450,7 +18441,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `detail: optional "auto" or "low" or "high"`
 
-                      要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入令牌的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+                      要发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
                       - `"auto"`
 
@@ -18460,7 +18451,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `file_data: optional string`
 
-                      要发送给模型的文件的内容。
+                      要发送给模型的文件内容。
 
                     - `file_id: optional string or null`
 
@@ -18476,7 +18467,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `prompt_cache_breakpoint: optional object { mode }`
 
-                      标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                       - `mode: "explicit"`
 
@@ -18486,7 +18477,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `role: "user" or "assistant" or "system" or "developer"`
 
-                消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                消息输入的角色。可选值为 `user`, `assistant`, `system`、或
                 `developer`.
 
                 - `"user"`
@@ -18499,9 +18490,9 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `phase: optional "commentary" or "final_answer" or null`
 
-                将 `assistant` 消息标记为中间评论（`commentary`) 或最终答案 (`final_answer`).
-                对于像 `gpt-5.3-codex` 及更新的模型，发送后续请求时，请保留并重新发送
-                阶段到所有助手消息中——省略该阶段可能会降低性能。不用于用户消息。
+                将 `assistant` 消息标记为中间补充说明（`commentary`) 或最终答案（`final_answer`).
+                对于类似 `gpt-5.3-codex` 及更高版本，发送后续请求时，请在所有助手消息上保留并重新发送
+                阶段，遗漏会降低性能。不用于用户消息。
 
                 - `"commentary"`
 
@@ -18515,31 +18506,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `EvalMessageObject object { content, role, type }`
 
-              输入给模型的消息，其角色指示指令遵循
-              层级。以 `developer` 或 `system` 角色给出的指令
-              优先于以 `user` 角色给出的指令。具有
-              `assistant` 角色的消息被认为是由模型在之前的
-              交互中生成的。
+              输入到模型的消息，其角色指示指令的
+              层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+              角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+              `assistant` 消息。
+              互动。
 
               - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -18549,21 +18540,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `InputImage object { image_url, type, detail }`
 
-                  用于 EvalItem 内容数组中的图像输入块。
+                  在 EvalItem 内容数组中使用的图片输入块。
 
                   - `image_url: string`
 
-                    图像输入的 URL。
+                    图片输入的 URL。
 
                   - `type: "input_image"`
 
-                    图像输入的类型。始终为 `input_image`.
+                    图片输入的类型。始终为 `input_image`.
 
                     - `"input_image"`
 
                   - `detail: optional string`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
@@ -18573,11 +18564,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `data: string`
 
-                      Base64 编码的音频数据。
+                      经过 Base64 编码的音频数据。
 
                     - `format: "mp3" or "wav"`
 
-                      音频数据的格式。目前支持的格式为 `mp3` 和
+                      音频数据的格式。当前支持的格式有 `mp3` 和
                       `wav`.
 
                       - `"mp3"`
@@ -18592,24 +18583,24 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                  输入列表，每个输入可以是输入文本、输出文本、输入
-                  图像或输入音频对象。
+                  输入列表，其中每个输入可以是输入文本、输出文本、输入
+                  图片或输入音频对象。
 
                   - `TextInput = string`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                   - `OutputText object { text, type }`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                     - `text: string`
 
-                      模型的文本输出。
+                      来自模型的文本输出。
 
                     - `type: "output_text"`
 
@@ -18619,21 +18610,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `InputImage object { image_url, type, detail }`
 
-                    用于 EvalItem 内容数组中的图像输入块。
+                    在 EvalItem 内容数组中使用的图片输入块。
 
                     - `image_url: string`
 
-                      图像输入的 URL。
+                      图片输入的 URL。
 
                     - `type: "input_image"`
 
-                      图像输入的类型。始终为 `input_image`.
+                      图片输入的类型。始终为 `input_image`.
 
                       - `"input_image"`
 
                     - `detail: optional string`
 
-                      发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                      发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                   - `ResponseInputAudio object { input_audio, type }`
 
@@ -18641,7 +18632,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `role: "user" or "assistant" or "system" or "developer"`
 
-                消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                消息输入的角色。可选值为 `user`, `assistant`, `system`、或
                 `developer`.
 
                 - `"user"`
@@ -18668,7 +18659,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `item_reference: string`
 
-            对 `item` 命名空间中变量的引用。例如，"item.input_trajectory"
+            命名空间中的变量引用。例如“ `item` .item.input_trajectory”
 
           - `type: "item_reference"`
 
@@ -18678,7 +18669,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `model: optional string`
 
-        用于生成补全的模型名称（例如 "o3-mini"）。
+        用于生成补全的模型名称（例如 “o3-mini”）。
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
@@ -18688,13 +18679,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `reasoning_effort: optional ReasoningEffort or null`
 
-          约束推理模型的推理工作量。目前支持的
-          值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-          降低推理工作量可以加快响应速度并减少响应中
-          用于推理的令牌数。并非所有推理模型都支持每个
+          约束推理模型在推理上的投入程度。当前支持
+          的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+          降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+          消耗。并非所有推理模型都支持每个
           值。请参阅
           [推理指南](https://platform.openai.com/docs/guides/reasoning)
-          了解各模型的特定支持。
+          了解特定模型的支持情况。
 
           - `"none"`
 
@@ -18712,20 +18703,20 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `response_format: optional ResponseFormatText or ResponseFormatJSONSchema or ResponseFormatJSONObject`
 
-          指定模型必须输出的格式的对象。
+          指定模型必须输出格式的对象。
 
-          设置为 `{ "type": "json_schema", "json_schema": {...} }` 启用
-          结构化输出，确保模型匹配你提供的 JSON
-          架构。更多信息请参阅 [Structured Outputs
+          设置为 `{ "type": "json_schema", "json_schema": {...} }` 会启用
+          Structured Outputs，用于确保模型匹配你提供的 JSON
+          schema。详细了解请参阅 [Structured Outputs
           指南](/docs/guides/structured-outputs).
 
           设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-          确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-          。
+          确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+          使用。
 
           - `ResponseFormatText object { type }`
 
-            默认响应格式，用于生成文本响应。
+            默认响应格式。用于生成文本响应。
 
             - `type: "text"`
 
@@ -18735,34 +18726,34 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `ResponseFormatJSONSchema object { json_schema, type }`
 
-            JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-            了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+            JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+            详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
             - `json_schema: object { name, description, schema, strict }`
 
-              结构化输出配置选项，包括 JSON Schema。
+              Structured Outputs 配置选项，包括 JSON Schema。
 
               - `name: string`
 
-                响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-                下划线和破折号，最大长度为 64。
+                响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+                下划线和短横线，最大长度为 64。
 
               - `description: optional string`
 
-                响应格式用途的描述，模型使用它来
-                决定如何以该格式进行响应。
+                对响应格式用途的描述，供模型用来
+                决定如何按该格式进行响应。
 
               - `schema: optional map[unknown]`
 
-                响应格式的架构，以 JSON Schema 对象描述。
-                了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+                响应格式对应的 schema，以 JSON Schema 对象形式描述。
+                了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
               - `strict: optional boolean or null`
 
-                是否在生成输出时启用严格的架构遵循。
-                如果设置为 true，模型将始终遵循定义的精确架构
-                中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-                `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+                是否在生成输出时启用严格的 schema 遵循。
+                若设置为 true，模型将始终遵循在
+                中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+                `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
                 指南](/docs/guides/structured-outputs).
 
             - `type: "json_schema"`
@@ -18773,10 +18764,10 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `ResponseFormatJSONObject object { type }`
 
-            JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-            使用 `json_schema` 建议用于支持它的模型。请注意，
-            模型在没有系统或用户消息指示它的情况下不会生成 JSON
-            去这样做。
+            JSON 对象响应格式。生成 JSON 响应的旧方法。
+            对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+            模型将不会生成 JSON
+            。
 
             - `type: "json_object"`
 
@@ -18786,53 +18777,53 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `seed: optional number`
 
-          用于在采样时初始化随机性的种子值。
+          用于在采样过程中初始化随机性的种子值。
 
         - `temperature: optional number`
 
-          更高的温度会增加输出的随机性。
+          较高的 temperature 会增加输出的随机性。
 
         - `tools: optional array of ChatCompletionFunctionTool`
 
-          模型可能调用的工具列表。目前，仅支持函数作为工具。使用此选项提供模型可能生成 JSON 输入的函数列表。最多支持 128 个函数。
+          模型可以调用的工具列表。目前，作为工具仅支持函数。使用此项提供模型可以为其生成 JSON 输入的函数列表。最多支持 128 个函数。
 
           - `function: FunctionDefinition`
 
             - `name: string`
 
-              要调用的函数名称。必须是 a-z、A-Z、0-9，或包含下划线和破折号，最大长度为 64。
+              要调用的函数的名称。必须为 a-z、A-Z、0-9 或包含下划线和短划线，最大长度为 64。
 
             - `description: optional string`
 
-              函数功能的描述，模型用它来决定何时以及如何调用该函数。
+              对函数功能的描述，供模型选择何时以及如何调用该函数时使用。
 
             - `parameters: optional FunctionParameters`
 
-              函数接受的参数，描述为 JSON Schema 对象。参见 [指南](/docs/guides/function-calling) 获取示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) 获取有关格式的文档。
+              函数接受的参数，使用 JSON Schema 对象进行描述。请参阅 [指南](/docs/guides/function-calling) 中的示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) ，了解相关格式的文档。
 
-              省略 `parameters` 定义了一个具有空参数列表的函数。
+              省略 `parameters` 将定义一个具有空参数列表的函数。
 
             - `strict: optional boolean or null`
 
-              是否在生成函数调用时启用严格模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的子集，当 `strict` 为 `true`。在 [函数调用指南](/docs/guides/function-calling).
+              在生成函数调用时是否启用严格的模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的一个子集，当 `strict` 是 `true`。在以下位置详细了解结构化输出 [函数调用指南](/docs/guides/function-calling).
 
           - `type: "function"`
 
-            中了解更多关于结构化输出的信息。工具的类型。目前仅支持 `function` 。
+            工具的类型。目前，仅支持 `function` 是受支持的。
 
             - `"function"`
 
         - `top_p: optional number`
 
-          用于核采样的温度替代参数；1.0 包含所有标记。
+          作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
     - `ResponsesRunDataSource object { source, type, input_messages, 2 more }`
 
-      描述模型采样配置的 ResponsesRunDataSource 对象。
+      一个 ResponsesRunDataSource 对象，用于描述模型采样配置。
 
       - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 8 more }`
 
-        决定什么填充 `item` 此运行数据源中的命名空间。
+        决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
         - `EvalJSONLFileContentSource object { content, type }`
 
@@ -18846,7 +18837,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_content"`
 
-            jsonl 源的类型。始终为 `file_content`.
+            jsonl 数据源的类型。始终为 `file_content`.
 
             - `"file_content"`
 
@@ -18858,13 +18849,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_id"`
 
-            jsonl 源的类型。始终为 `file_id`.
+            jsonl 数据源的类型。始终为 `file_id`.
 
             - `"file_id"`
 
         - `EvalResponsesSource object { type, created_after, created_before, 8 more }`
 
-          描述运行数据源配置的 EvalResponsesSource 对象。
+          一个 EvalResponsesSource 对象，用于描述运行数据源配置。
 
           - `type: "responses"`
 
@@ -18874,49 +18865,49 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `created_after: optional number or null`
 
-            仅包含在此时间戳之后（含）创建的项。这是用于选择响应的查询参数。
+            仅包含在此时间戳之后（包含）创建的项目。这是一个用于选择响应的查询参数。
 
           - `created_before: optional number or null`
 
-            仅包含在此时间戳之前（含）创建的项。这是用于选择响应的查询参数。
+            仅包含在此时间戳之前（包含）创建的项目。这是一个用于选择响应的查询参数。
 
           - `instructions_search: optional string or null`
 
-            用于搜索“instructions”字段的可选字符串。这是用于选择响应的查询参数。
+            用于搜索 'instructions' 字段的可选字符串。这是一个用于选择响应的查询参数。
 
           - `metadata: optional unknown or null`
 
-            响应的元数据过滤器。这是用于选择响应的查询参数。
+            响应的元数据过滤器。这是一个用于选择响应的查询参数。
 
           - `model: optional string or null`
 
-            要查找响应的模型名称。这是用于选择响应的查询参数。
+            要为其查找响应的模型名称。这是一个用于选择响应的查询参数。
 
           - `reasoning_effort: optional ReasoningEffort or null`
 
-            约束推理模型的推理工作量。目前支持的
-            值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-            降低推理工作量可以加快响应速度并减少响应中
-            用于推理的令牌数。并非所有推理模型都支持每个
+            约束推理模型在推理上的投入程度。当前支持
+            的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+            降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+            消耗。并非所有推理模型都支持每个
             值。请参阅
             [推理指南](https://platform.openai.com/docs/guides/reasoning)
-            了解各模型的特定支持。
+            了解特定模型的支持情况。
 
           - `temperature: optional number or null`
 
-            采样温度。这是用于选择响应的查询参数。
+            采样温度。这是一个用于选择响应的查询参数。
 
           - `tools: optional array of string or null`
 
-            工具名称列表。这是用于选择响应的查询参数。
+            工具名称列表。这是一个用于选择响应的查询参数。
 
           - `top_p: optional number or null`
 
-            核采样参数。这是用于选择响应的查询参数。
+            核采样参数。这是一个用于选择响应的查询参数。
 
           - `users: optional array of string or null`
 
-            用户标识符列表。这是用于选择响应的查询参数。
+            用户标识符列表。这是一个用于选择响应的查询参数。
 
       - `type: "responses"`
 
@@ -18926,13 +18917,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-        用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+        在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
         - `InputMessagesTemplate object { template, type }`
 
           - `template: array of object { content, role }  or object { content, role, type }`
 
-            构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+            构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
             - `ChatMessage object { content, role }`
 
@@ -18946,31 +18937,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `EvalMessageObject object { content, role, type }`
 
-              输入给模型的消息，其角色指示指令遵循
-              层级。以 `developer` 或 `system` 角色给出的指令
-              优先于以 `user` 角色给出的指令。具有
-              `assistant` 角色的消息被认为是由模型在之前的
-              交互中生成的。
+              输入到模型的消息，其角色指示指令的
+              层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+              角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+              `assistant` 消息。
+              互动。
 
               - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -18980,21 +18971,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `InputImage object { image_url, type, detail }`
 
-                  用于 EvalItem 内容数组中的图像输入块。
+                  在 EvalItem 内容数组中使用的图片输入块。
 
                   - `image_url: string`
 
-                    图像输入的 URL。
+                    图片输入的 URL。
 
                   - `type: "input_image"`
 
-                    图像输入的类型。始终为 `input_image`.
+                    图片输入的类型。始终为 `input_image`.
 
                     - `"input_image"`
 
                   - `detail: optional string`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
@@ -19002,12 +18993,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                  输入列表，每个输入可以是输入文本、输出文本、输入
-                  图像或输入音频对象。
+                  输入列表，其中每个输入可以是输入文本、输出文本、输入
+                  图片或输入音频对象。
 
               - `role: "user" or "assistant" or "system" or "developer"`
 
-                消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                消息输入的角色。可选值为 `user`, `assistant`, `system`、或
                 `developer`.
 
                 - `"user"`
@@ -19034,7 +19025,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `item_reference: string`
 
-            对 `item` 命名空间。即“item.name”
+            命名空间中的变量引用。例如“ `item` 命名空间。例如，“item.name”
 
           - `type: "item_reference"`
 
@@ -19044,7 +19035,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `model: optional string`
 
-        用于生成补全的模型名称（例如 "o3-mini"）。
+        用于生成补全的模型名称（例如 “o3-mini”）。
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
@@ -19054,64 +19045,64 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `reasoning_effort: optional ReasoningEffort or null`
 
-          约束推理模型的推理工作量。目前支持的
-          值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-          降低推理工作量可以加快响应速度并减少响应中
-          用于推理的令牌数。并非所有推理模型都支持每个
+          约束推理模型在推理上的投入程度。当前支持
+          的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+          降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+          消耗。并非所有推理模型都支持每个
           值。请参阅
           [推理指南](https://platform.openai.com/docs/guides/reasoning)
-          了解各模型的特定支持。
+          了解特定模型的支持情况。
 
         - `seed: optional number`
 
-          用于在采样时初始化随机性的种子值。
+          用于在采样过程中初始化随机性的种子值。
 
         - `temperature: optional number`
 
-          更高的温度会增加输出的随机性。
+          较高的 temperature 会增加输出的随机性。
 
         - `text: optional object { format }`
 
-          模型文本响应的配置选项。可以是纯
-          文本或结构化 JSON 数据。了解更多：
+          来自模型的文本响应的配置选项。可以是纯
+          文本或结构化 JSON 数据。了解更多信息：
 
           - [文本输入和输出](/docs/guides/text)
           - [结构化输出](/docs/guides/structured-outputs)
 
           - `format: optional ResponseFormatTextConfig`
 
-            指定模型必须输出的格式的对象。
+            指定模型必须输出格式的对象。
 
-            配置 `{ "type": "json_schema" }` 可启用结构化输出，
-            这确保模型将匹配你提供的 JSON 模式。更多信息请参阅
+            配置 `{ "type": "json_schema" }` 启用结构化输出，
+            可确保模型匹配你提供的 JSON schema。详情请参阅
             [结构化输出指南](/docs/guides/structured-outputs).
 
             默认格式为 `{ "type": "text" }` ，无其他选项。
 
-            **不建议用于 gpt-4o 及更新的模型：**
+            **不推荐用于 gpt-4o 及更新模型：**
 
             设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-            确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-            。
+            确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+            使用。
 
             - `ResponseFormatText object { type }`
 
-              默认响应格式，用于生成文本响应。
+              默认响应格式。用于生成文本响应。
 
             - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
-              JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-              了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+              JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+              详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
               - `name: string`
 
-                响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-                下划线和破折号，最大长度为 64。
+                响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+                下划线和短横线，最大长度为 64。
 
               - `schema: map[unknown]`
 
-                响应格式的架构，以 JSON Schema 对象描述。
-                了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+                响应格式对应的 schema，以 JSON Schema 对象形式描述。
+                了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
               - `type: "json_schema"`
 
@@ -19121,42 +19112,42 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `description: optional string`
 
-                响应格式用途的描述，模型使用它来
-                决定如何以该格式进行响应。
+                对响应格式用途的描述，供模型用来
+                决定如何按该格式进行响应。
 
               - `strict: optional boolean or null`
 
-                是否在生成输出时启用严格的架构遵循。
-                如果设置为 true，模型将始终遵循定义的精确架构
-                中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-                `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+                是否在生成输出时启用严格的 schema 遵循。
+                若设置为 true，模型将始终遵循在
+                中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+                `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
                 指南](/docs/guides/structured-outputs).
 
             - `ResponseFormatJSONObject object { type }`
 
-              JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-              使用 `json_schema` 建议用于支持它的模型。请注意，
-              模型在没有系统或用户消息指示它的情况下不会生成 JSON
-              去这样做。
+              JSON 对象响应格式。生成 JSON 响应的旧方法。
+              对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+              模型将不会生成 JSON
+              。
 
         - `tools: optional array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-          模型在生成响应时可能调用的工具数组。你
-          可以通过设置 `tool_choice` 参数来指定使用哪个工具。
+          模型在生成响应时可以调用的工具数组。你可以
+          通过设置 `tool_choice` 参数来指定要使用的工具。
 
-          你可以提供给模型的工具分为两类：
+          你可以向模型提供的两类工具包括：
 
-          - **内置工具**：由 OpenAI 提供的工具，用于扩展
-            模型的能力，例如 [网页搜索](/docs/guides/tools-web-search)
-            或 [文件搜索](/docs/guides/tools-file-search)。了解更多关于
+          - **内置工具**: 由 OpenAI 提供的工具，用于扩展模型的
+            能力，例如 [网页搜索](/docs/guides/tools-web-search)
+            或 [文件搜索](/docs/guides/tools-file-search)。详细了解
             [内置工具](/docs/guides/tools).
-          - **函数调用（自定义工具）**：由你定义的函数，
-            使模型能够调用你自己的代码。了解更多关于
+          - **函数调用（自定义工具）**: 由你定义的函数，
+            使模型能够调用你自己的代码。详细了解
             [函数调用](/docs/guides/function-calling).
 
           - `Function object { name, parameters, strict, 5 more }`
 
-            在你自己的代码中定义一个模型可以选择调用的函数。了解更多关于 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+            定义你自己代码中的一个函数，模型可以选择调用它。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
 
             - `name: string`
 
@@ -19164,11 +19155,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `parameters: map[unknown] or null`
 
-              描述函数参数的 JSON schema 对象。
+              描述该函数参数的 JSON schema 对象。
 
             - `strict: boolean or null`
 
-              是否对此函数工具强制执行严格的参数验证。
+              是否对此函数工具强制执行严格的参数校验。
 
             - `type: "function"`
 
@@ -19186,54 +19177,54 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `defer_loading: optional boolean`
 
-              此函数是否延迟并通过工具搜索加载。
+              此函数是否被延迟加载并通过 tool search 加载。
 
             - `description: optional string or null`
 
-              函数的描述。模型用它来决定是否调用该函数。
+              函数的描述。由模型用于决定是否调用该函数。
 
             - `output_schema: optional map[unknown] or null`
 
-              描述此函数字符串输出中编码的 JSON 值的 JSON schema 对象。
+              描述该函数在字符串输出中所编码 JSON 值的 JSON schema 对象。
 
           - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-            一种从上传文件中搜索相关内容的工具。了解更多关于 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+            用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 工具](https://platform.openai.com/docs/guides/tools-file-search).
 
             - `type: "file_search"`
 
-              文件搜索工具的类型。始终为 `file_search`.
+              文件搜索 工具的类型。始终为 `file_search`.
 
               - `"file_search"`
 
             - `vector_store_ids: array of string`
 
-              要搜索的向量存储的 ID。
+              要搜索的向量存储库 ID。
 
             - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-              要应用的筛选器。
+              要应用的筛选条件。
 
               - `ComparisonFilter object { key, type, value }`
 
-                用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+                用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
                 - `key: string`
 
-                  要与值进行比较的键。
+                  要与该值进行比较的键。
 
                 - `type: "eq" or "ne" or "gt" or 5 more`
 
                   指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-                  - `eq`：等于
-                  - `ne`：不等于
-                  - `gt`：大于
-                  - `gte`：大于或等于
-                  - `lt`：小于
-                  - `lte`：小于或等于
-                  - `in`：在…中
-                  - `nin`：不在…中
+                  - `eq`: 等于
+                  - `ne`: 不等于
+                  - `gt`: 大于
+                  - `gte`: 大于或等于
+                  - `lt`: 小于
+                  - `lte`: 小于或等于
+                  - `in`: 包含于
+                  - `nin`: 不包含于
 
                   - `"eq"`
 
@@ -19253,7 +19244,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `value: string or number or boolean or array of string or number`
 
-                  要与属性键比较的值；支持字符串、数字或布尔类型。
+                  用于与属性键进行比较的值；支持字符串、数字或布尔类型。
 
                   - `string`
 
@@ -19269,15 +19260,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `CompoundFilter object { filters, type }`
 
-                使用以下方式组合多个过滤器： `and` 或 `or`.
+                使用以下方式组合多个筛选条件 `and` 或 `or`.
 
                 - `filters: array of ComparisonFilter or unknown`
 
-                  要组合的过滤器数组。项目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+                  要组合的筛选条件数组。项可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
                   - `ComparisonFilter object { key, type, value }`
 
-                    用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+                    用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
                   - `unknown`
 
@@ -19291,27 +19282,27 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `max_num_results: optional number`
 
-              要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+              返回的最大结果数。该数值应介于 1 到 50 之间（含端点）。
 
             - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
-              搜索的排名选项。
+              搜索的排序选项。
 
               - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-                启用混合搜索时，控制倒数排名融合如何平衡语义嵌入匹配与稀疏关键词匹配的权重。
+                在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
                 - `embedding_weight: number`
 
-                  嵌入在倒数排名融合中的权重。
+                  倒数排名融合中嵌入的权重。
 
                 - `text_weight: number`
 
-                  文本在倒数排名融合中的权重。
+                  倒数排名融合中文本的权重。
 
               - `ranker: optional "auto" or "default-2024-11-15"`
 
-                用于文件搜索的排名器。
+                用于文件搜索的排序器。
 
                 - `"auto"`
 
@@ -19319,29 +19310,29 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `score_threshold: optional number`
 
-                文件搜索的分数阈值，为 0 到 1 之间的数字。接近 1 的数字将尝试仅返回最相关的结果，但可能返回更少的结果。
+                文件搜索的分数阈值，取值介于 0 到 1 之间。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
 
           - `Computer object { type }`
 
-            控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+            用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
             - `type: "computer"`
 
-              计算机工具的类型。始终为 `computer`.
+              computer 工具的类型。始终是 `computer`.
 
               - `"computer"`
 
           - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-            控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+            用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
             - `display_height: number`
 
-              计算机显示屏的高度。
+              计算机显示器的高度。
 
             - `display_width: number`
 
-              计算机显示屏的宽度。
+              计算机显示器的宽度。
 
             - `environment: "windows" or "mac" or "linux" or 2 more`
 
@@ -19359,18 +19350,18 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "computer_use_preview"`
 
-              计算机使用工具的类型。始终为 `computer_use_preview`.
+              computer use 工具的类型。始终是 `computer_use_preview`.
 
               - `"computer_use_preview"`
 
           - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-            搜索互联网以获取与提示相关的来源。了解更多关于
-            [网页搜索工具](/docs/guides/tools-web-search).
+            在互联网上搜索与提示相关的来源。详细了解
+            [网页搜索 tool](/docs/guides/tools-web-search).
 
             - `type: "web_search" or "web_search_2025_08_26"`
 
-              网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+              网页搜索 工具的类型。其一为 `web_search` 或 `web_search_2025_08_26`.
 
               - `"web_search"`
 
@@ -19378,22 +19369,22 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `external_web_access: optional boolean`
 
-              允许网页搜索实时访问互联网。省略时默认为 true。为 false 时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+              允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索 工具将以离线/仅缓存模式运行，并且不会获取新的外部内容。
 
             - `filters: optional object { allowed_domains }  or null`
 
-              搜索的过滤器。
+              搜索的筛选条件。
 
               - `allowed_domains: optional array of string or null`
 
-                搜索允许的域。如果未提供，则允许所有域。
-                也允许所提供域的子域。
+                搜索允许的域名。如果未提供，则允许所有域名。
+                所提供域名的子域名也被允许。
 
                 示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
             - `search_context_size: optional "low" or "medium" or "high"`
 
-              关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+              搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
               - `"low"`
 
@@ -19415,7 +19406,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `region: optional string or null`
 
-                用户的地区的自由文本输入，例如 `California`.
+                用户所在地区的自由文本输入，例如 `California`.
 
               - `timezone: optional string or null`
 
@@ -19423,14 +19414,14 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `type: optional "approximate"`
 
-                位置近似的类型。始终为 `approximate`.
+                位置近似值的类型。始终为 `approximate`.
 
                 - `"approximate"`
 
           - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-            通过远程 Model Context Protocol 向模型提供额外工具的访问权限
-            （MCP）服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+            通过远程 Model Context Protocol
+            （MCP）服务器让模型访问更多工具。 [详细了解 MCP](/docs/guides/tools-remote-mcp).
 
             - `server_label: string`
 
@@ -19452,48 +19443,48 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
 
-              允许的工具名称列表或过滤器对象。
+              允许使用的工具名称列表或筛选对象。
 
               - `McpAllowedTools = array of string`
 
-                允许的工具名称的字符串数组
+                允许使用的工具名称字符串数组
 
               - `McpToolFilter object { read_only, tool_names }`
 
-                用于指定允许哪些工具的过滤器对象。
+                用于指定允许使用哪些工具的筛选对象。
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  它将匹配此过滤器。
+                  指示工具是否会修改数据或仅为只读。如果某个
+                  MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  标注，则会匹配此筛选器。
 
                 - `tool_names: optional array of string`
 
-                  允许的工具名称列表。
+                  允许使用的工具名称列表。
 
             - `authorization: optional string`
 
-              可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-              使用自定义 MCP 服务器 URL 或服务连接器。您的应用程序
-              必须处理 OAuth 授权流程，并在此处提供令牌。
+              可用于远程 MCP 服务器的 OAuth 访问令牌，可配合
+              自定义 MCP 服务器 URL 或服务连接器一起使用。你的应用
+              必须处理 OAuth 授权流程并在此处提供令牌。
 
             - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-              服务连接器的标识符，例如 ChatGPT 中可用的那些。其中一个
-              `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解更多
-              关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+              服务连接器的标识符，例如 ChatGPT 中提供的那些。值为以下之一
+              `server_url`, `connector_id`、或 `tunnel_id` 必须提供。了解更多
+              关于服务连接器的信息 [请参考此处](/docs/guides/tools-remote-mcp#connectors).
 
-              目前支持的 `connector_id` 值为：
+              当前支持的 `connector_id` 值包括：
 
-              - Dropbox： `connector_dropbox`
-              - Gmail： `connector_gmail`
-              - Google Calendar： `connector_googlecalendar`
-              - Google Drive： `connector_googledrive`
-              - Microsoft Teams： `connector_microsoftteams`
-              - Outlook Calendar： `connector_outlookcalendar`
-              - Outlook Email： `connector_outlookemail`
-              - SharePoint： `connector_sharepoint`
+              - Dropbox: `connector_dropbox`
+              - Gmail: `connector_gmail`
+              - Google Calendar: `connector_googlecalendar`
+              - Google Drive: `connector_googledrive`
+              - Microsoft Teams: `connector_microsoftteams`
+              - Outlook Calendar: `connector_outlookcalendar`
+              - Outlook Email: `connector_outlookemail`
+              - SharePoint: `connector_sharepoint`
 
               - `"connector_dropbox"`
 
@@ -19513,12 +19504,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `defer_loading: optional boolean`
 
-              此 MCP 工具是否被推迟并通过工具搜索发现。
+              该 MCP 工具是否被延迟，并通过工具搜索被发现。
 
             - `headers: optional map[string] or null`
 
-              发送到 MCP 服务器的可选 HTTP 头。用于认证
-              或其他目的。
+              发送到 MCP 服务器的可选 HTTP 标头。用于身份验证
+              或其他用途。
 
             - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
@@ -19527,41 +19518,41 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
               - `McpToolApprovalFilter object { always, never }`
 
                 指定 MCP 服务器中哪些工具需要审批。可以是
-                `always`, `never`，或与工具关联的筛选器对象
-                需要审批的。
+                `always`, `never`，或与工具关联的过滤器对象
+                需要审批的工具。
 
                 - `always: optional object { read_only, tool_names }`
 
-                  用于指定允许哪些工具的过滤器对象。
+                  用于指定允许使用哪些工具的筛选对象。
 
                   - `read_only: optional boolean`
 
-                    指示工具是否修改数据或为只读。如果
-                    MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                    它将匹配此过滤器。
+                    指示工具是否会修改数据或仅为只读。如果某个
+                    MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                    标注，则会匹配此筛选器。
 
                   - `tool_names: optional array of string`
 
-                    允许的工具名称列表。
+                    允许使用的工具名称列表。
 
                 - `never: optional object { read_only, tool_names }`
 
-                  用于指定允许哪些工具的过滤器对象。
+                  用于指定允许使用哪些工具的筛选对象。
 
                   - `read_only: optional boolean`
 
-                    指示工具是否修改数据或为只读。如果
-                    MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                    它将匹配此过滤器。
+                    指示工具是否会修改数据或仅为只读。如果某个
+                    MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                    标注，则会匹配此筛选器。
 
                   - `tool_names: optional array of string`
 
-                    允许的工具名称列表。
+                    允许使用的工具名称列表。
 
               - `McpToolApprovalSetting = "always" or "never"`
 
-                为所有工具指定单一审批策略。可选值为 `always` 或
-                `never`。当设置为 `always`，时，所有工具都需要审批。当
+                为所有工具指定一个统一的审批策略。可选值为 `always` 或
+                `never`。之一。当设置为 `always`，时，所有工具都需要审批。当设置为
                 设置为 `never`，时，所有工具都不需要审批。
 
                 - `"always"`
@@ -19574,23 +19565,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `server_url: optional string`
 
-              MCP 服务器的 URL。必须是 `server_url`, `connector_id`，或
-              `tunnel_id` 中的一项。
+              MCP 服务器的 URL。 `server_url`, `connector_id`、或
+              `tunnel_id` 必须提供其中之一。
 
             - `tunnel_id: optional string`
 
-              要使用的 Secure MCP Tunnel ID，而非直接服务器 URL。必须是
-              `server_url`, `connector_id`，或 `tunnel_id` 中的一项。
+              用于替代直接服务器 URL 的 Secure MCP Tunnel ID。
+              `server_url`, `connector_id`、或 `tunnel_id` 必须提供其中之一。
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
-            一种运行 Python 代码以帮助生成提示响应的工具。
+            用于运行 Python 代码以辅助生成对提示词回复的工具。
 
             - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-              代码解释器容器。可以是容器 ID 或一个对象，该对象
-              指定上传的文件 ID 以供你的代码使用，以及一个
-              可选 `memory_limit` 设置。
+              代码解释器容器。可以是容器 ID，也可以是一个指定了供代码使用的已上传文件 ID 的对象，以及
+              ，该对象同时包含一个
+              可选的 `memory_limit` 设置。
 
               - `string`
 
@@ -19598,17 +19589,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-                代码解释器容器的配置。可选地指定要运行代码的文件的 ID。
+                代码解释器容器的配置。可指定运行代码所需文件的 ID。
 
                 - `type: "auto"`
 
-                  始终 `auto`.
+                  Always `auto`.
 
                   - `"auto"`
 
                 - `file_ids: optional array of string`
 
-                  可选的已上传文件列表，供你的代码使用。
+                  提供给代码使用的已上传文件的可选列表。
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -19630,7 +19621,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `type: "disabled"`
 
-                      禁用出站网络访问。始终 `disabled`.
+                      禁用出站网络访问。始终为 `disabled`.
 
                       - `"disabled"`
 
@@ -19638,33 +19629,33 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `allowed_domains: array of string`
 
-                      当类型为 `allowlist`.
+                      当 type 为 `allowlist`.
 
                     - `type: "allowlist"`
 
-                      仅允许对指定域名的出站网络访问。始终 `allowlist`.
+                      仅允许向指定域发出站网络访问。始终为 `allowlist`.
 
                       - `"allowlist"`
 
                     - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                      可选，针对允许列表域名的域范围密钥。
+                      可选的、限定域的密钥，用于允许列表中的域。
 
                       - `domain: string`
 
-                        与该密钥关联的域名。
+                        与该密钥关联的域。
 
                       - `name: string`
 
-                        要为该域名注入的密钥名称。
+                        要为该域注入的密钥名称。
 
                       - `value: string`
 
-                        要为该域名注入的密钥值。
+                        要为该域注入的密钥值。
 
             - `type: "code_interpreter"`
 
-              代码解释器工具的类型。始终 `code_interpreter`.
+              代码解释器工具的类型。始终为 `code_interpreter`.
 
               - `"code_interpreter"`
 
@@ -19680,7 +19671,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "programmatic_tool_calling"`
 
-              工具的类型。始终 `programmatic_tool_calling`.
+              工具的类型。始终为 `programmatic_tool_calling`.
 
               - `"programmatic_tool_calling"`
 
@@ -19690,13 +19681,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "image_generation"`
 
-              图像生成工具的类型。始终 `image_generation`.
+              图像生成工具的类型。始终为 `image_generation`.
 
               - `"image_generation"`
 
             - `action: optional "generate" or "edit" or "auto"`
 
-              是否生成新图像或编辑现有图像。默认： `auto`.
+              是生成新图像还是编辑现有图像。默认值： `auto`.
 
               - `"generate"`
 
@@ -19706,11 +19697,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              设置生成图像的背景。可选值之一： `transparent`,
-              `opaque`，或 `auto`。透明背景可用于
+              设置生成图像的背景。可选值为 `transparent`,
+              `opaque`、或 `auto`。透明背景适用于
               支持的 GPT 图像模型。对于 `gpt-image-2` 和
-              `gpt-image-2-2026-04-21`，此支持处于预览阶段。当使用
-              `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认： `auto`.
+              `gpt-image-2-2026-04-21`，该支持处于预览阶段。使用
+              `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
               - `"transparent"`
 
@@ -19720,7 +19711,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              控制模型在匹配输入图像的样式和特征（尤其是面部特征）方面投入的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
+              控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所需的投入程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。之一。默认为 `low`.
 
               - `"high"`
 
@@ -19728,31 +19719,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `input_image_mask: optional object { file_id, image_url }`
 
-              用于修复的可选掩码。包含 `image_url`
+              用于修复的可选遮罩。包含 `image_url`
               （字符串，可选）和 `file_id` （字符串，可选）。
 
               - `file_id: optional string`
 
-                掩码图像的文件ID。
+                遮罩图像的文件 ID。
 
               - `image_url: optional string`
 
-                Base64编码的掩码图像。
+                Base64 编码的遮罩图像。
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              要使用的图像生成模型。其中一个为 `gpt-image-1`,
+              要使用的图像生成模型。可选值为 `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+              `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
               `gpt-image-1`.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-                要使用的图像生成模型。其中一个为 `gpt-image-1`,
+                要使用的图像生成模型。可选值为 `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+                `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -19767,7 +19758,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `moderation: optional "auto" or "low"`
 
-              生成图像的审核级别。默认值： `auto`.
+              生成图像的内容审核级别。默认值： `auto`.
 
               - `"auto"`
 
@@ -19779,8 +19770,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `output_format: optional "png" or "webp" or "jpeg"`
 
-              生成图像的输出格式。其中一个为 `png`, `webp`，或
-              `jpeg`。默认： `png`.
+              生成图像的输出格式。可选值为 `png`, `webp`、或
+              `jpeg`。默认值： `png`.
 
               - `"png"`
 
@@ -19790,12 +19781,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `partial_images: optional number`
 
-              流式模式下生成的部分图像数量，范围从0（默认值）到3。
+              在流式模式下要生成的中间图像数量，范围为 0（默认值）到 3。
 
             - `quality: optional "low" or "medium" or "high" or "auto"`
 
-              生成图像的质量。其中一个为 `low`, `medium`, `high`,
-              或 `auto`。默认： `auto`.
+              生成图像的质量。可选值为 `low`, `medium`, `high`,
+              或 `auto`。默认值： `auto`.
 
               - `"low"`
 
@@ -19807,13 +19798,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+                生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -19825,7 +19816,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `LocalShell object { type }`
 
-            一种允许模型在本地环境中执行 shell 命令的工具。
+            允许模型在本地环境中执行 shell 命令的工具。
 
             - `type: "local_shell"`
 
@@ -19835,7 +19826,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `Shell object { type, allowed_callers, environment }`
 
-            一种允许模型执行 shell 命令的工具。
+            允许模型执行 shell 命令的工具。
 
             - `type: "shell"`
 
@@ -19857,13 +19848,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `type: "container_auto"`
 
-                  自动为此请求创建容器
+                  自动为本次请求创建一个容器
 
                   - `"container_auto"`
 
                 - `file_ids: optional array of string`
 
-                  可选的已上传文件列表，供你的代码使用。
+                  提供给代码使用的已上传文件的可选列表。
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -19887,7 +19878,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `skills: optional array of SkillReference or InlineSkill`
 
-                  可选的技能列表，通过 ID 或内联数据引用。
+                  通过 id 引用或内联数据的可选技能列表。
 
                   - `SkillReference object { skill_id, type, version }`
 
@@ -19937,7 +19928,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `type: "inline"`
 
-                      为此请求定义内联技能。
+                      为本次请求定义一个内联技能。
 
                       - `"inline"`
 
@@ -19951,7 +19942,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `skills: optional array of LocalSkill`
 
-                  可选技能列表。
+                  可选的技能列表。
 
                   - `description: string`
 
@@ -19963,7 +19954,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `path: string`
 
-                    包含技能的目录路径。
+                    包含该技能的目录路径。
 
               - `ContainerReference object { container_id, type }`
 
@@ -19979,7 +19970,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `Custom object { name, type, allowed_callers, 3 more }`
 
-            一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+            使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -19987,7 +19978,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "custom"`
 
-              自定义工具的类型。始终 `custom`.
+              自定义工具的类型。始终为 `custom`.
 
               - `"custom"`
 
@@ -20001,7 +19992,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `defer_loading: optional boolean`
 
-              是否应延迟此工具并通过工具搜索发现。
+              该工具是否应被延迟，并通过工具搜索发现。
 
             - `description: optional string`
 
@@ -20013,11 +20004,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `Text object { type }`
 
-                无约束的自由形式文本。
+                无约束的自由格式文本。
 
                 - `type: "text"`
 
-                  无约束文本格式。始终 `text`.
+                  无约束文本格式。始终为 `text`.
 
                   - `"text"`
 
@@ -20031,7 +20022,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `syntax: "lark" or "regex"`
 
-                  语法定义的语法。之一 `lark` 或 `regex`.
+                  语法定义的语法格式。可选值为 `lark` 或 `regex`.
 
                   - `"lark"`
 
@@ -20039,21 +20030,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `type: "grammar"`
 
-                  语法格式。始终 `grammar`.
+                  语法格式。始终为 `grammar`.
 
                   - `"grammar"`
 
           - `Namespace object { description, name, tools, type }`
 
-            将函数/自定义工具分组到共享命名空间下。
+            在共享命名空间下对函数/自定义工具进行分组。
 
             - `description: string`
 
-              显示给模型的命名空间描述。
+              展示给模型的命名空间描述。
 
             - `name: string`
 
-              工具调用中使用的命名空间名称（例如， `crm`).
+              在工具调用中使用的命名空间名称（例如， `crm`).
 
             - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
@@ -20077,23 +20068,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `defer_loading: optional boolean`
 
-                  此函数是否应被延迟并通过工具搜索发现。
+                  是否应推迟此函数并通过工具搜索发现它。
 
                 - `description: optional string or null`
 
                 - `output_schema: optional map[unknown] or null`
 
-                  描述此函数工具字符串输出中 JSON 值的 JSON Schema。这不描述内容数组输出。
+                  描述此函数工具字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content 数组输出。
 
                 - `parameters: optional unknown or null`
 
                 - `strict: optional boolean or null`
 
-                  是否强制进行严格的参数验证。如果省略，Responses 会在 schema 兼容时尝试使用严格验证，否则回退到非严格验证。
+                  是否强制执行严格的参数校验。如果省略，Responses 会在 schema 兼容时尝试使用严格校验，否则回退到非严格校验。
 
               - `Custom object { name, type, allowed_callers, 3 more }`
 
-                一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+                使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
                 - `name: string`
 
@@ -20101,7 +20092,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `type: "custom"`
 
-                  自定义工具的类型。始终 `custom`.
+                  自定义工具的类型。始终为 `custom`.
 
                   - `"custom"`
 
@@ -20115,7 +20106,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `defer_loading: optional boolean`
 
-                  是否应延迟此工具并通过工具搜索发现。
+                  该工具是否应被延迟，并通过工具搜索发现。
 
                 - `description: optional string`
 
@@ -20127,27 +20118,27 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "namespace"`
 
-              工具的类型。始终 `namespace`.
+              工具的类型。始终为 `namespace`.
 
               - `"namespace"`
 
           - `ToolSearch object { type, description, execution, parameters }`
 
-            用于延迟工具的托管或 BYOT 工具搜索配置。
+            针对延迟工具的托管或 BYOT 工具搜索配置。
 
             - `type: "tool_search"`
 
-              工具的类型。始终 `tool_search`.
+              工具的类型。始终为 `tool_search`.
 
               - `"tool_search"`
 
             - `description: optional string or null`
 
-              为客户端执行的工具搜索工具向模型显示的描述。
+              向模型展示的客户端执行工具搜索工具的描述。
 
             - `execution: optional "server" or "client"`
 
-              工具搜索是由服务器还是客户端执行。
+              工具搜索是由服务端执行还是由客户端执行。
 
               - `"server"`
 
@@ -20155,15 +20146,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `parameters: optional unknown or null`
 
-              客户端执行的工具搜索工具的参数 schema。
+              客户端执行工具搜索工具的参数 schema。
 
           - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-            此工具在网页上搜索相关内容以用于响应。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+            此工具会在网页上搜索相关结果以用于回复。详细了解 [网页搜索 tool](https://platform.openai.com/docs/guides/tools-web-search).
 
             - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-              网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+              网页搜索 工具的类型。其一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
               - `"web_search_preview"`
 
@@ -20177,7 +20168,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `search_context_size: optional "low" or "medium" or "high"`
 
-              关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+              搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
               - `"low"`
 
@@ -20187,11 +20178,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              用户的位置。
+              用户所在的位置。
 
               - `type: "approximate"`
 
-                位置近似的类型。始终为 `approximate`.
+                位置近似值的类型。始终为 `approximate`.
 
                 - `"approximate"`
 
@@ -20205,7 +20196,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `region: optional string or null`
 
-                用户的地区的自由文本输入，例如 `California`.
+                用户所在地区的自由文本输入，例如 `California`.
 
               - `timezone: optional string or null`
 
@@ -20213,11 +20204,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `ApplyPatch object { type, allowed_callers }`
 
-            允许助手使用统一差异创建、删除或更新文件。
+            允许助手使用 unified diff 创建、删除或更新文件。
 
             - `type: "apply_patch"`
 
-              工具的类型。始终 `apply_patch`.
+              工具的类型。始终为 `apply_patch`.
 
               - `"apply_patch"`
 
@@ -20231,11 +20222,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `top_p: optional number`
 
-          用于核采样的温度替代参数；1.0 包含所有标记。
+          作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
   - `error: EvalAPIError`
 
-    表示 Eval API 错误响应的对象。
+    表示来自 Eval API 错误响应的对象。
 
     - `code: string`
 
@@ -20247,20 +20238,20 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `eval_id: string`
 
-    相关评估的标识符。
+    关联评估的标识符。
 
   - `metadata: Metadata or null`
 
-    一组 16 个键值对，可附加到对象上。这可以
-    用于以结构化格式存储有关对象的额外信息，
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
     并通过 API 或仪表板查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串，
+    键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
   - `model: string`
 
-    被评估的模型（如果适用）。
+    被评估的模型（如适用）。
 
   - `name: string`
 
@@ -20268,21 +20259,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `object: "eval.run"`
 
-    对象的类型。始终为 "eval.run"。
+    对象类型，始终为 "eval.run"。
 
     - `"eval.run"`
 
   - `per_model_usage: array of object { cached_tokens, completion_tokens, invocation_count, 3 more }`
 
-    评估运行期间每个模型的使用统计。
+    评估运行期间每个模型的使用统计信息。
 
     - `cached_tokens: number`
 
-      从缓存中检索到的令牌数。
+      从缓存中检索到的 token 数量。
 
     - `completion_tokens: number`
 
-      生成的完成令牌数。
+      生成的 completion token 数量。
 
     - `invocation_count: number`
 
@@ -20294,31 +20285,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `prompt_tokens: number`
 
-      使用的提示令牌数。
+      使用的 prompt token 数量。
 
     - `total_tokens: number`
 
-      使用的令牌总数。
+      使用的 token 总数。
 
   - `per_testing_criteria_results: array of object { failed, passed, testing_criteria }`
 
-    评估运行期间应用的每项测试标准的结果。
+    评估运行期间应用的每个测试条件的测试结果。
 
     - `failed: number`
 
-      此标准失败的测试数量。
+      此条件下未通过的测试数。
 
     - `passed: number`
 
-      此标准通过的测试数量。
+      此条件下通过的测试数。
 
     - `testing_criteria: string`
 
-      测试标准的说明。
+      测试条件的描述。
 
   - `report_url: string`
 
-    UI 仪表板上呈现的评估运行报告的 URL。
+    在 UI 仪表板上指向已渲染评估运行报告的 URL。
 
   - `result_counts: object { errored, failed, passed, total }`
 
@@ -20326,11 +20317,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `errored: number`
 
-      导致错误的输出项数量。
+      出现错误的输出项数量。
 
     - `failed: number`
 
-      未能通过评估的输出项数量。
+      未通过评估的输出项数量。
 
     - `passed: number`
 
@@ -20344,7 +20335,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     评估运行的状态。
 
-### 运行删除响应
+### Run Delete Response
 
 - `RunDeleteResponse object { deleted, object, run_id }`
 
@@ -20354,31 +20345,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `run_id: optional string`
 
-### 运行列表响应
+### Run List Response
 
 - `RunListResponse object { id, created_at, data_source, 11 more }`
 
-  表示一次评估运行的架构。
+  表示评估运行结果的架构。
 
   - `id: string`
 
-    评估运行的唯一标识符。
+    评估运行（evaluation run）的唯一标识符。
 
   - `created_at: number`
 
-    评估运行创建时的 Unix 时间戳（秒）。
+    评估运行创建时的 Unix 时间戳（以秒为单位）。
 
   - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or object { source, type, input_messages, 2 more }`
 
-    有关运行数据源的信息。
+    关于该运行数据源的信息。
 
     - `CreateEvalJSONLRunDataSource object { source, type }`
 
-      一个 JsonlRunDataSource 对象，指定一个 JSONL 文件，该文件与评估
+      一个 JsonlRunDataSource 对象，用于指定与该评估匹配的 JSONL 文件
 
       - `source: object { content, type }  or object { id, type }`
 
-        决定什么填充 `item` 数据源中的命名空间。
+        决定数据源中如何填充 `item` 命名空间。
 
         - `EvalJSONLFileContentSource object { content, type }`
 
@@ -20392,7 +20383,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_content"`
 
-            jsonl 源的类型。始终为 `file_content`.
+            jsonl 数据源的类型。始终为 `file_content`.
 
             - `"file_content"`
 
@@ -20404,23 +20395,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_id"`
 
-            jsonl 源的类型。始终为 `file_id`.
+            jsonl 数据源的类型。始终为 `file_id`.
 
             - `"file_id"`
 
       - `type: "jsonl"`
 
-        数据源的类型。始终是 `jsonl`.
+        数据源的类型。始终为 `jsonl`.
 
         - `"jsonl"`
 
     - `CreateEvalCompletionsRunDataSource object { source, type, input_messages, 2 more }`
 
-      描述模型采样配置的 CompletionsRunDataSource 对象。
+      一个 CompletionsRunDataSource 对象，用于描述模型采样配置。
 
       - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 3 more }`
 
-        决定什么填充 `item` 此运行数据源中的命名空间。
+        决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
         - `EvalJSONLFileContentSource object { content, type }`
 
@@ -20434,7 +20425,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_content"`
 
-            jsonl 源的类型。始终为 `file_content`.
+            jsonl 数据源的类型。始终为 `file_content`.
 
             - `"file_content"`
 
@@ -20446,44 +20437,44 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_id"`
 
-            jsonl 源的类型。始终为 `file_id`.
+            jsonl 数据源的类型。始终为 `file_id`.
 
             - `"file_id"`
 
         - `StoredCompletionsRunDataSource object { type, created_after, created_before, 3 more }`
 
-          描述一组过滤器的 StoredCompletionsRunDataSource 配置
+          一个 StoredCompletionsRunDataSource 配置，用于描述一组筛选条件
 
           - `type: "stored_completions"`
 
-            源的类型。始终为 `stored_completions`.
+            数据源的类型。始终为 `stored_completions`.
 
             - `"stored_completions"`
 
           - `created_after: optional number or null`
 
-            可选的 Unix 时间戳，用于过滤在此时间之后创建的项。
+            一个可选的 Unix 时间戳，用于筛选在此时间之后创建的项。
 
           - `created_before: optional number or null`
 
-            可选的 Unix 时间戳，用于过滤在此时间之前创建的项。
+            一个可选的 Unix 时间戳，用于筛选在此时间之前创建的项。
 
           - `limit: optional number or null`
 
-            可选的最大返回项数。
+            一个可选的返回项的最大数量。
 
           - `metadata: optional Metadata or null`
 
-            一组 16 个键值对，可附加到对象上。这可以
-            用于以结构化格式存储有关对象的额外信息，
+            可附加到对象的 16 组键值对。这可以
+            用于以结构化格式存储有关对象的附加信息，
             并通过 API 或仪表板查询对象。
 
-            键是字符串，最大长度为 64 个字符。值是字符串，
+            键为字符串，最大长度为 64 个字符。值为字符串，
             最大长度为 512 个字符。
 
           - `model: optional string or null`
 
-            可选的模型过滤条件（例如，'gpt-4o'）。
+            一个可选的用于筛选的模型（例如 'gpt-5.6-sol'）。
 
       - `type: "completions"`
 
@@ -20493,43 +20484,43 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-        用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+        在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
         - `TemplateInputMessages object { template, type }`
 
           - `template: array of EasyInputMessage or object { content, role, type }`
 
-            构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+            构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
             - `EasyInputMessage object { content, role, phase, type }`
 
-              输入给模型的消息，其角色指示指令遵循
-              层级。以 `developer` 或 `system` 角色给出的指令
-              优先于以 `user` 角色给出的指令。具有
-              `assistant` 角色的消息被认为是由模型在之前的
-              交互中生成的。
+              输入到模型的消息，其角色指示指令的
+              层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+              角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+              `assistant` 消息。
+              互动。
 
               - `content: string or ResponseInputMessageContentList`
 
                 发送给模型的文本、图像或音频输入，用于生成响应。
-                也可以包含先前的助手响应。
+                也可以包含之前的助手响应。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputMessageContentList = array of ResponseInputContent`
 
-                  发送给模型的一个或多个输入项的列表，包含不同类型的内容
-                  。
+                  发送给模型的一个或多个输入项的列表，其中包含不同的内容
+                  类型。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                     - `text: string`
 
-                      模型的文本输入。
+                      发送给模型的文本输入。
 
                     - `type: "input_text"`
 
@@ -20539,7 +20530,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `prompt_cache_breakpoint: optional object { mode }`
 
-                      标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                       - `mode: "explicit"`
 
@@ -20553,7 +20544,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `detail: ImageDetail`
 
-                      发送给模型的图像的细节级别。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+                      发送到模型的图片的细节级别。可选值为 `high`, `low`, `auto`、或 `original`。之一。默认为 `auto`.
 
                       - `"low"`
 
@@ -20575,11 +20566,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `image_url: optional string or null`
 
-                      要发送给模型的图像的 URL。完全限定的 URL 或数据 URL 中的 base64 编码图像。
+                      要发送给模型的图像的 URL。可以是完整的 URL，也可以是 base64 编码的 data URL 图像。
 
                     - `prompt_cache_breakpoint: optional object { mode }`
 
-                      标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                       - `mode: "explicit"`
 
@@ -20599,7 +20590,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `detail: optional "auto" or "low" or "high"`
 
-                      要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入令牌的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+                      要发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
                       - `"auto"`
 
@@ -20609,7 +20600,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `file_data: optional string`
 
-                      要发送给模型的文件的内容。
+                      要发送给模型的文件内容。
 
                     - `file_id: optional string or null`
 
@@ -20625,7 +20616,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `prompt_cache_breakpoint: optional object { mode }`
 
-                      标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                       - `mode: "explicit"`
 
@@ -20635,7 +20626,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `role: "user" or "assistant" or "system" or "developer"`
 
-                消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                消息输入的角色。可选值为 `user`, `assistant`, `system`、或
                 `developer`.
 
                 - `"user"`
@@ -20648,9 +20639,9 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `phase: optional "commentary" or "final_answer" or null`
 
-                将 `assistant` 消息标记为中间评论（`commentary`) 或最终答案 (`final_answer`).
-                对于像 `gpt-5.3-codex` 及更新的模型，发送后续请求时，请保留并重新发送
-                阶段到所有助手消息中——省略该阶段可能会降低性能。不用于用户消息。
+                将 `assistant` 消息标记为中间补充说明（`commentary`) 或最终答案（`final_answer`).
+                对于类似 `gpt-5.3-codex` 及更高版本，发送后续请求时，请在所有助手消息上保留并重新发送
+                阶段，遗漏会降低性能。不用于用户消息。
 
                 - `"commentary"`
 
@@ -20664,31 +20655,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `EvalMessageObject object { content, role, type }`
 
-              输入给模型的消息，其角色指示指令遵循
-              层级。以 `developer` 或 `system` 角色给出的指令
-              优先于以 `user` 角色给出的指令。具有
-              `assistant` 角色的消息被认为是由模型在之前的
-              交互中生成的。
+              输入到模型的消息，其角色指示指令的
+              层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+              角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+              `assistant` 消息。
+              互动。
 
               - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -20698,21 +20689,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `InputImage object { image_url, type, detail }`
 
-                  用于 EvalItem 内容数组中的图像输入块。
+                  在 EvalItem 内容数组中使用的图片输入块。
 
                   - `image_url: string`
 
-                    图像输入的 URL。
+                    图片输入的 URL。
 
                   - `type: "input_image"`
 
-                    图像输入的类型。始终为 `input_image`.
+                    图片输入的类型。始终为 `input_image`.
 
                     - `"input_image"`
 
                   - `detail: optional string`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
@@ -20722,11 +20713,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `data: string`
 
-                      Base64 编码的音频数据。
+                      经过 Base64 编码的音频数据。
 
                     - `format: "mp3" or "wav"`
 
-                      音频数据的格式。目前支持的格式为 `mp3` 和
+                      音频数据的格式。当前支持的格式有 `mp3` 和
                       `wav`.
 
                       - `"mp3"`
@@ -20741,24 +20732,24 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                  输入列表，每个输入可以是输入文本、输出文本、输入
-                  图像或输入音频对象。
+                  输入列表，其中每个输入可以是输入文本、输出文本、输入
+                  图片或输入音频对象。
 
                   - `TextInput = string`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                   - `OutputText object { text, type }`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                     - `text: string`
 
-                      模型的文本输出。
+                      来自模型的文本输出。
 
                     - `type: "output_text"`
 
@@ -20768,21 +20759,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `InputImage object { image_url, type, detail }`
 
-                    用于 EvalItem 内容数组中的图像输入块。
+                    在 EvalItem 内容数组中使用的图片输入块。
 
                     - `image_url: string`
 
-                      图像输入的 URL。
+                      图片输入的 URL。
 
                     - `type: "input_image"`
 
-                      图像输入的类型。始终为 `input_image`.
+                      图片输入的类型。始终为 `input_image`.
 
                       - `"input_image"`
 
                     - `detail: optional string`
 
-                      发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                      发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                   - `ResponseInputAudio object { input_audio, type }`
 
@@ -20790,7 +20781,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `role: "user" or "assistant" or "system" or "developer"`
 
-                消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                消息输入的角色。可选值为 `user`, `assistant`, `system`、或
                 `developer`.
 
                 - `"user"`
@@ -20817,7 +20808,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `item_reference: string`
 
-            对 `item` 命名空间中变量的引用。例如，"item.input_trajectory"
+            命名空间中的变量引用。例如“ `item` .item.input_trajectory”
 
           - `type: "item_reference"`
 
@@ -20827,7 +20818,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `model: optional string`
 
-        用于生成补全的模型名称（例如 "o3-mini"）。
+        用于生成补全的模型名称（例如 “o3-mini”）。
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
@@ -20837,13 +20828,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `reasoning_effort: optional ReasoningEffort or null`
 
-          约束推理模型的推理工作量。目前支持的
-          值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-          降低推理工作量可以加快响应速度并减少响应中
-          用于推理的令牌数。并非所有推理模型都支持每个
+          约束推理模型在推理上的投入程度。当前支持
+          的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+          降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+          消耗。并非所有推理模型都支持每个
           值。请参阅
           [推理指南](https://platform.openai.com/docs/guides/reasoning)
-          了解各模型的特定支持。
+          了解特定模型的支持情况。
 
           - `"none"`
 
@@ -20861,20 +20852,20 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `response_format: optional ResponseFormatText or ResponseFormatJSONSchema or ResponseFormatJSONObject`
 
-          指定模型必须输出的格式的对象。
+          指定模型必须输出格式的对象。
 
-          设置为 `{ "type": "json_schema", "json_schema": {...} }` 启用
-          结构化输出，确保模型匹配你提供的 JSON
-          架构。更多信息请参阅 [Structured Outputs
+          设置为 `{ "type": "json_schema", "json_schema": {...} }` 会启用
+          Structured Outputs，用于确保模型匹配你提供的 JSON
+          schema。详细了解请参阅 [Structured Outputs
           指南](/docs/guides/structured-outputs).
 
           设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-          确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-          。
+          确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+          使用。
 
           - `ResponseFormatText object { type }`
 
-            默认响应格式，用于生成文本响应。
+            默认响应格式。用于生成文本响应。
 
             - `type: "text"`
 
@@ -20884,34 +20875,34 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `ResponseFormatJSONSchema object { json_schema, type }`
 
-            JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-            了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+            JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+            详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
             - `json_schema: object { name, description, schema, strict }`
 
-              结构化输出配置选项，包括 JSON Schema。
+              Structured Outputs 配置选项，包括 JSON Schema。
 
               - `name: string`
 
-                响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-                下划线和破折号，最大长度为 64。
+                响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+                下划线和短横线，最大长度为 64。
 
               - `description: optional string`
 
-                响应格式用途的描述，模型使用它来
-                决定如何以该格式进行响应。
+                对响应格式用途的描述，供模型用来
+                决定如何按该格式进行响应。
 
               - `schema: optional map[unknown]`
 
-                响应格式的架构，以 JSON Schema 对象描述。
-                了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+                响应格式对应的 schema，以 JSON Schema 对象形式描述。
+                了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
               - `strict: optional boolean or null`
 
-                是否在生成输出时启用严格的架构遵循。
-                如果设置为 true，模型将始终遵循定义的精确架构
-                中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-                `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+                是否在生成输出时启用严格的 schema 遵循。
+                若设置为 true，模型将始终遵循在
+                中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+                `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
                 指南](/docs/guides/structured-outputs).
 
             - `type: "json_schema"`
@@ -20922,10 +20913,10 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `ResponseFormatJSONObject object { type }`
 
-            JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-            使用 `json_schema` 建议用于支持它的模型。请注意，
-            模型在没有系统或用户消息指示它的情况下不会生成 JSON
-            去这样做。
+            JSON 对象响应格式。生成 JSON 响应的旧方法。
+            对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+            模型将不会生成 JSON
+            。
 
             - `type: "json_object"`
 
@@ -20935,53 +20926,53 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `seed: optional number`
 
-          用于在采样时初始化随机性的种子值。
+          用于在采样过程中初始化随机性的种子值。
 
         - `temperature: optional number`
 
-          更高的温度会增加输出的随机性。
+          较高的 temperature 会增加输出的随机性。
 
         - `tools: optional array of ChatCompletionFunctionTool`
 
-          模型可能调用的工具列表。目前，仅支持函数作为工具。使用此选项提供模型可能生成 JSON 输入的函数列表。最多支持 128 个函数。
+          模型可以调用的工具列表。目前，作为工具仅支持函数。使用此项提供模型可以为其生成 JSON 输入的函数列表。最多支持 128 个函数。
 
           - `function: FunctionDefinition`
 
             - `name: string`
 
-              要调用的函数名称。必须是 a-z、A-Z、0-9，或包含下划线和破折号，最大长度为 64。
+              要调用的函数的名称。必须为 a-z、A-Z、0-9 或包含下划线和短划线，最大长度为 64。
 
             - `description: optional string`
 
-              函数功能的描述，模型用它来决定何时以及如何调用该函数。
+              对函数功能的描述，供模型选择何时以及如何调用该函数时使用。
 
             - `parameters: optional FunctionParameters`
 
-              函数接受的参数，描述为 JSON Schema 对象。参见 [指南](/docs/guides/function-calling) 获取示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) 获取有关格式的文档。
+              函数接受的参数，使用 JSON Schema 对象进行描述。请参阅 [指南](/docs/guides/function-calling) 中的示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) ，了解相关格式的文档。
 
-              省略 `parameters` 定义了一个具有空参数列表的函数。
+              省略 `parameters` 将定义一个具有空参数列表的函数。
 
             - `strict: optional boolean or null`
 
-              是否在生成函数调用时启用严格模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的子集，当 `strict` 为 `true`。在 [函数调用指南](/docs/guides/function-calling).
+              在生成函数调用时是否启用严格的模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的一个子集，当 `strict` 是 `true`。在以下位置详细了解结构化输出 [函数调用指南](/docs/guides/function-calling).
 
           - `type: "function"`
 
-            中了解更多关于结构化输出的信息。工具的类型。目前仅支持 `function` 。
+            工具的类型。目前，仅支持 `function` 是受支持的。
 
             - `"function"`
 
         - `top_p: optional number`
 
-          用于核采样的温度替代参数；1.0 包含所有标记。
+          作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
     - `ResponsesRunDataSource object { source, type, input_messages, 2 more }`
 
-      描述模型采样配置的 ResponsesRunDataSource 对象。
+      一个 ResponsesRunDataSource 对象，用于描述模型采样配置。
 
       - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 8 more }`
 
-        决定什么填充 `item` 此运行数据源中的命名空间。
+        决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
         - `EvalJSONLFileContentSource object { content, type }`
 
@@ -20995,7 +20986,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_content"`
 
-            jsonl 源的类型。始终为 `file_content`.
+            jsonl 数据源的类型。始终为 `file_content`.
 
             - `"file_content"`
 
@@ -21007,13 +20998,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_id"`
 
-            jsonl 源的类型。始终为 `file_id`.
+            jsonl 数据源的类型。始终为 `file_id`.
 
             - `"file_id"`
 
         - `EvalResponsesSource object { type, created_after, created_before, 8 more }`
 
-          描述运行数据源配置的 EvalResponsesSource 对象。
+          一个 EvalResponsesSource 对象，用于描述运行数据源配置。
 
           - `type: "responses"`
 
@@ -21023,49 +21014,49 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `created_after: optional number or null`
 
-            仅包含在此时间戳之后（含）创建的项。这是用于选择响应的查询参数。
+            仅包含在此时间戳之后（包含）创建的项目。这是一个用于选择响应的查询参数。
 
           - `created_before: optional number or null`
 
-            仅包含在此时间戳之前（含）创建的项。这是用于选择响应的查询参数。
+            仅包含在此时间戳之前（包含）创建的项目。这是一个用于选择响应的查询参数。
 
           - `instructions_search: optional string or null`
 
-            用于搜索“instructions”字段的可选字符串。这是用于选择响应的查询参数。
+            用于搜索 'instructions' 字段的可选字符串。这是一个用于选择响应的查询参数。
 
           - `metadata: optional unknown or null`
 
-            响应的元数据过滤器。这是用于选择响应的查询参数。
+            响应的元数据过滤器。这是一个用于选择响应的查询参数。
 
           - `model: optional string or null`
 
-            要查找响应的模型名称。这是用于选择响应的查询参数。
+            要为其查找响应的模型名称。这是一个用于选择响应的查询参数。
 
           - `reasoning_effort: optional ReasoningEffort or null`
 
-            约束推理模型的推理工作量。目前支持的
-            值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-            降低推理工作量可以加快响应速度并减少响应中
-            用于推理的令牌数。并非所有推理模型都支持每个
+            约束推理模型在推理上的投入程度。当前支持
+            的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+            降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+            消耗。并非所有推理模型都支持每个
             值。请参阅
             [推理指南](https://platform.openai.com/docs/guides/reasoning)
-            了解各模型的特定支持。
+            了解特定模型的支持情况。
 
           - `temperature: optional number or null`
 
-            采样温度。这是用于选择响应的查询参数。
+            采样温度。这是一个用于选择响应的查询参数。
 
           - `tools: optional array of string or null`
 
-            工具名称列表。这是用于选择响应的查询参数。
+            工具名称列表。这是一个用于选择响应的查询参数。
 
           - `top_p: optional number or null`
 
-            核采样参数。这是用于选择响应的查询参数。
+            核采样参数。这是一个用于选择响应的查询参数。
 
           - `users: optional array of string or null`
 
-            用户标识符列表。这是用于选择响应的查询参数。
+            用户标识符列表。这是一个用于选择响应的查询参数。
 
       - `type: "responses"`
 
@@ -21075,13 +21066,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-        用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+        在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
         - `InputMessagesTemplate object { template, type }`
 
           - `template: array of object { content, role }  or object { content, role, type }`
 
-            构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+            构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
             - `ChatMessage object { content, role }`
 
@@ -21095,31 +21086,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `EvalMessageObject object { content, role, type }`
 
-              输入给模型的消息，其角色指示指令遵循
-              层级。以 `developer` 或 `system` 角色给出的指令
-              优先于以 `user` 角色给出的指令。具有
-              `assistant` 角色的消息被认为是由模型在之前的
-              交互中生成的。
+              输入到模型的消息，其角色指示指令的
+              层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+              角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+              `assistant` 消息。
+              互动。
 
               - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -21129,21 +21120,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `InputImage object { image_url, type, detail }`
 
-                  用于 EvalItem 内容数组中的图像输入块。
+                  在 EvalItem 内容数组中使用的图片输入块。
 
                   - `image_url: string`
 
-                    图像输入的 URL。
+                    图片输入的 URL。
 
                   - `type: "input_image"`
 
-                    图像输入的类型。始终为 `input_image`.
+                    图片输入的类型。始终为 `input_image`.
 
                     - `"input_image"`
 
                   - `detail: optional string`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
@@ -21151,12 +21142,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                  输入列表，每个输入可以是输入文本、输出文本、输入
-                  图像或输入音频对象。
+                  输入列表，其中每个输入可以是输入文本、输出文本、输入
+                  图片或输入音频对象。
 
               - `role: "user" or "assistant" or "system" or "developer"`
 
-                消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                消息输入的角色。可选值为 `user`, `assistant`, `system`、或
                 `developer`.
 
                 - `"user"`
@@ -21183,7 +21174,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `item_reference: string`
 
-            对 `item` 命名空间。即“item.name”
+            命名空间中的变量引用。例如“ `item` 命名空间。例如，“item.name”
 
           - `type: "item_reference"`
 
@@ -21193,7 +21184,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `model: optional string`
 
-        用于生成补全的模型名称（例如 "o3-mini"）。
+        用于生成补全的模型名称（例如 “o3-mini”）。
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
@@ -21203,64 +21194,64 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `reasoning_effort: optional ReasoningEffort or null`
 
-          约束推理模型的推理工作量。目前支持的
-          值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-          降低推理工作量可以加快响应速度并减少响应中
-          用于推理的令牌数。并非所有推理模型都支持每个
+          约束推理模型在推理上的投入程度。当前支持
+          的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+          降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+          消耗。并非所有推理模型都支持每个
           值。请参阅
           [推理指南](https://platform.openai.com/docs/guides/reasoning)
-          了解各模型的特定支持。
+          了解特定模型的支持情况。
 
         - `seed: optional number`
 
-          用于在采样时初始化随机性的种子值。
+          用于在采样过程中初始化随机性的种子值。
 
         - `temperature: optional number`
 
-          更高的温度会增加输出的随机性。
+          较高的 temperature 会增加输出的随机性。
 
         - `text: optional object { format }`
 
-          模型文本响应的配置选项。可以是纯
-          文本或结构化 JSON 数据。了解更多：
+          来自模型的文本响应的配置选项。可以是纯
+          文本或结构化 JSON 数据。了解更多信息：
 
           - [文本输入和输出](/docs/guides/text)
           - [结构化输出](/docs/guides/structured-outputs)
 
           - `format: optional ResponseFormatTextConfig`
 
-            指定模型必须输出的格式的对象。
+            指定模型必须输出格式的对象。
 
-            配置 `{ "type": "json_schema" }` 可启用结构化输出，
-            这确保模型将匹配你提供的 JSON 模式。更多信息请参阅
+            配置 `{ "type": "json_schema" }` 启用结构化输出，
+            可确保模型匹配你提供的 JSON schema。详情请参阅
             [结构化输出指南](/docs/guides/structured-outputs).
 
             默认格式为 `{ "type": "text" }` ，无其他选项。
 
-            **不建议用于 gpt-4o 及更新的模型：**
+            **不推荐用于 gpt-4o 及更新模型：**
 
             设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-            确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-            。
+            确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+            使用。
 
             - `ResponseFormatText object { type }`
 
-              默认响应格式，用于生成文本响应。
+              默认响应格式。用于生成文本响应。
 
             - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
-              JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-              了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+              JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+              详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
               - `name: string`
 
-                响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-                下划线和破折号，最大长度为 64。
+                响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+                下划线和短横线，最大长度为 64。
 
               - `schema: map[unknown]`
 
-                响应格式的架构，以 JSON Schema 对象描述。
-                了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+                响应格式对应的 schema，以 JSON Schema 对象形式描述。
+                了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
               - `type: "json_schema"`
 
@@ -21270,42 +21261,42 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `description: optional string`
 
-                响应格式用途的描述，模型使用它来
-                决定如何以该格式进行响应。
+                对响应格式用途的描述，供模型用来
+                决定如何按该格式进行响应。
 
               - `strict: optional boolean or null`
 
-                是否在生成输出时启用严格的架构遵循。
-                如果设置为 true，模型将始终遵循定义的精确架构
-                中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-                `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+                是否在生成输出时启用严格的 schema 遵循。
+                若设置为 true，模型将始终遵循在
+                中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+                `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
                 指南](/docs/guides/structured-outputs).
 
             - `ResponseFormatJSONObject object { type }`
 
-              JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-              使用 `json_schema` 建议用于支持它的模型。请注意，
-              模型在没有系统或用户消息指示它的情况下不会生成 JSON
-              去这样做。
+              JSON 对象响应格式。生成 JSON 响应的旧方法。
+              对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+              模型将不会生成 JSON
+              。
 
         - `tools: optional array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-          模型在生成响应时可能调用的工具数组。你
-          可以通过设置 `tool_choice` 参数来指定使用哪个工具。
+          模型在生成响应时可以调用的工具数组。你可以
+          通过设置 `tool_choice` 参数来指定要使用的工具。
 
-          你可以提供给模型的工具分为两类：
+          你可以向模型提供的两类工具包括：
 
-          - **内置工具**：由 OpenAI 提供的工具，用于扩展
-            模型的能力，例如 [网页搜索](/docs/guides/tools-web-search)
-            或 [文件搜索](/docs/guides/tools-file-search)。了解更多关于
+          - **内置工具**: 由 OpenAI 提供的工具，用于扩展模型的
+            能力，例如 [网页搜索](/docs/guides/tools-web-search)
+            或 [文件搜索](/docs/guides/tools-file-search)。详细了解
             [内置工具](/docs/guides/tools).
-          - **函数调用（自定义工具）**：由你定义的函数，
-            使模型能够调用你自己的代码。了解更多关于
+          - **函数调用（自定义工具）**: 由你定义的函数，
+            使模型能够调用你自己的代码。详细了解
             [函数调用](/docs/guides/function-calling).
 
           - `Function object { name, parameters, strict, 5 more }`
 
-            在你自己的代码中定义一个模型可以选择调用的函数。了解更多关于 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+            定义你自己代码中的一个函数，模型可以选择调用它。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
 
             - `name: string`
 
@@ -21313,11 +21304,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `parameters: map[unknown] or null`
 
-              描述函数参数的 JSON schema 对象。
+              描述该函数参数的 JSON schema 对象。
 
             - `strict: boolean or null`
 
-              是否对此函数工具强制执行严格的参数验证。
+              是否对此函数工具强制执行严格的参数校验。
 
             - `type: "function"`
 
@@ -21335,54 +21326,54 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `defer_loading: optional boolean`
 
-              此函数是否延迟并通过工具搜索加载。
+              此函数是否被延迟加载并通过 tool search 加载。
 
             - `description: optional string or null`
 
-              函数的描述。模型用它来决定是否调用该函数。
+              函数的描述。由模型用于决定是否调用该函数。
 
             - `output_schema: optional map[unknown] or null`
 
-              描述此函数字符串输出中编码的 JSON 值的 JSON schema 对象。
+              描述该函数在字符串输出中所编码 JSON 值的 JSON schema 对象。
 
           - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-            一种从上传文件中搜索相关内容的工具。了解更多关于 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+            用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 工具](https://platform.openai.com/docs/guides/tools-file-search).
 
             - `type: "file_search"`
 
-              文件搜索工具的类型。始终为 `file_search`.
+              文件搜索 工具的类型。始终为 `file_search`.
 
               - `"file_search"`
 
             - `vector_store_ids: array of string`
 
-              要搜索的向量存储的 ID。
+              要搜索的向量存储库 ID。
 
             - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-              要应用的筛选器。
+              要应用的筛选条件。
 
               - `ComparisonFilter object { key, type, value }`
 
-                用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+                用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
                 - `key: string`
 
-                  要与值进行比较的键。
+                  要与该值进行比较的键。
 
                 - `type: "eq" or "ne" or "gt" or 5 more`
 
                   指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-                  - `eq`：等于
-                  - `ne`：不等于
-                  - `gt`：大于
-                  - `gte`：大于或等于
-                  - `lt`：小于
-                  - `lte`：小于或等于
-                  - `in`：在…中
-                  - `nin`：不在…中
+                  - `eq`: 等于
+                  - `ne`: 不等于
+                  - `gt`: 大于
+                  - `gte`: 大于或等于
+                  - `lt`: 小于
+                  - `lte`: 小于或等于
+                  - `in`: 包含于
+                  - `nin`: 不包含于
 
                   - `"eq"`
 
@@ -21402,7 +21393,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `value: string or number or boolean or array of string or number`
 
-                  要与属性键比较的值；支持字符串、数字或布尔类型。
+                  用于与属性键进行比较的值；支持字符串、数字或布尔类型。
 
                   - `string`
 
@@ -21418,15 +21409,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `CompoundFilter object { filters, type }`
 
-                使用以下方式组合多个过滤器： `and` 或 `or`.
+                使用以下方式组合多个筛选条件 `and` 或 `or`.
 
                 - `filters: array of ComparisonFilter or unknown`
 
-                  要组合的过滤器数组。项目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+                  要组合的筛选条件数组。项可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
                   - `ComparisonFilter object { key, type, value }`
 
-                    用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+                    用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
                   - `unknown`
 
@@ -21440,27 +21431,27 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `max_num_results: optional number`
 
-              要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+              返回的最大结果数。该数值应介于 1 到 50 之间（含端点）。
 
             - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
-              搜索的排名选项。
+              搜索的排序选项。
 
               - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-                启用混合搜索时，控制倒数排名融合如何平衡语义嵌入匹配与稀疏关键词匹配的权重。
+                在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
                 - `embedding_weight: number`
 
-                  嵌入在倒数排名融合中的权重。
+                  倒数排名融合中嵌入的权重。
 
                 - `text_weight: number`
 
-                  文本在倒数排名融合中的权重。
+                  倒数排名融合中文本的权重。
 
               - `ranker: optional "auto" or "default-2024-11-15"`
 
-                用于文件搜索的排名器。
+                用于文件搜索的排序器。
 
                 - `"auto"`
 
@@ -21468,29 +21459,29 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `score_threshold: optional number`
 
-                文件搜索的分数阈值，为 0 到 1 之间的数字。接近 1 的数字将尝试仅返回最相关的结果，但可能返回更少的结果。
+                文件搜索的分数阈值，取值介于 0 到 1 之间。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
 
           - `Computer object { type }`
 
-            控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+            用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
             - `type: "computer"`
 
-              计算机工具的类型。始终为 `computer`.
+              computer 工具的类型。始终是 `computer`.
 
               - `"computer"`
 
           - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-            控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+            用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
             - `display_height: number`
 
-              计算机显示屏的高度。
+              计算机显示器的高度。
 
             - `display_width: number`
 
-              计算机显示屏的宽度。
+              计算机显示器的宽度。
 
             - `environment: "windows" or "mac" or "linux" or 2 more`
 
@@ -21508,18 +21499,18 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "computer_use_preview"`
 
-              计算机使用工具的类型。始终为 `computer_use_preview`.
+              computer use 工具的类型。始终是 `computer_use_preview`.
 
               - `"computer_use_preview"`
 
           - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-            搜索互联网以获取与提示相关的来源。了解更多关于
-            [网页搜索工具](/docs/guides/tools-web-search).
+            在互联网上搜索与提示相关的来源。详细了解
+            [网页搜索 tool](/docs/guides/tools-web-search).
 
             - `type: "web_search" or "web_search_2025_08_26"`
 
-              网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+              网页搜索 工具的类型。其一为 `web_search` 或 `web_search_2025_08_26`.
 
               - `"web_search"`
 
@@ -21527,22 +21518,22 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `external_web_access: optional boolean`
 
-              允许网页搜索实时访问互联网。省略时默认为 true。为 false 时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+              允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索 工具将以离线/仅缓存模式运行，并且不会获取新的外部内容。
 
             - `filters: optional object { allowed_domains }  or null`
 
-              搜索的过滤器。
+              搜索的筛选条件。
 
               - `allowed_domains: optional array of string or null`
 
-                搜索允许的域。如果未提供，则允许所有域。
-                也允许所提供域的子域。
+                搜索允许的域名。如果未提供，则允许所有域名。
+                所提供域名的子域名也被允许。
 
                 示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
             - `search_context_size: optional "low" or "medium" or "high"`
 
-              关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+              搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
               - `"low"`
 
@@ -21564,7 +21555,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `region: optional string or null`
 
-                用户的地区的自由文本输入，例如 `California`.
+                用户所在地区的自由文本输入，例如 `California`.
 
               - `timezone: optional string or null`
 
@@ -21572,14 +21563,14 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `type: optional "approximate"`
 
-                位置近似的类型。始终为 `approximate`.
+                位置近似值的类型。始终为 `approximate`.
 
                 - `"approximate"`
 
           - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-            通过远程 Model Context Protocol 向模型提供额外工具的访问权限
-            （MCP）服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+            通过远程 Model Context Protocol
+            （MCP）服务器让模型访问更多工具。 [详细了解 MCP](/docs/guides/tools-remote-mcp).
 
             - `server_label: string`
 
@@ -21601,48 +21592,48 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
 
-              允许的工具名称列表或过滤器对象。
+              允许使用的工具名称列表或筛选对象。
 
               - `McpAllowedTools = array of string`
 
-                允许的工具名称的字符串数组
+                允许使用的工具名称字符串数组
 
               - `McpToolFilter object { read_only, tool_names }`
 
-                用于指定允许哪些工具的过滤器对象。
+                用于指定允许使用哪些工具的筛选对象。
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  它将匹配此过滤器。
+                  指示工具是否会修改数据或仅为只读。如果某个
+                  MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  标注，则会匹配此筛选器。
 
                 - `tool_names: optional array of string`
 
-                  允许的工具名称列表。
+                  允许使用的工具名称列表。
 
             - `authorization: optional string`
 
-              可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-              使用自定义 MCP 服务器 URL 或服务连接器。您的应用程序
-              必须处理 OAuth 授权流程，并在此处提供令牌。
+              可用于远程 MCP 服务器的 OAuth 访问令牌，可配合
+              自定义 MCP 服务器 URL 或服务连接器一起使用。你的应用
+              必须处理 OAuth 授权流程并在此处提供令牌。
 
             - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-              服务连接器的标识符，例如 ChatGPT 中可用的那些。其中一个
-              `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解更多
-              关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+              服务连接器的标识符，例如 ChatGPT 中提供的那些。值为以下之一
+              `server_url`, `connector_id`、或 `tunnel_id` 必须提供。了解更多
+              关于服务连接器的信息 [请参考此处](/docs/guides/tools-remote-mcp#connectors).
 
-              目前支持的 `connector_id` 值为：
+              当前支持的 `connector_id` 值包括：
 
-              - Dropbox： `connector_dropbox`
-              - Gmail： `connector_gmail`
-              - Google Calendar： `connector_googlecalendar`
-              - Google Drive： `connector_googledrive`
-              - Microsoft Teams： `connector_microsoftteams`
-              - Outlook Calendar： `connector_outlookcalendar`
-              - Outlook Email： `connector_outlookemail`
-              - SharePoint： `connector_sharepoint`
+              - Dropbox: `connector_dropbox`
+              - Gmail: `connector_gmail`
+              - Google Calendar: `connector_googlecalendar`
+              - Google Drive: `connector_googledrive`
+              - Microsoft Teams: `connector_microsoftteams`
+              - Outlook Calendar: `connector_outlookcalendar`
+              - Outlook Email: `connector_outlookemail`
+              - SharePoint: `connector_sharepoint`
 
               - `"connector_dropbox"`
 
@@ -21662,12 +21653,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `defer_loading: optional boolean`
 
-              此 MCP 工具是否被推迟并通过工具搜索发现。
+              该 MCP 工具是否被延迟，并通过工具搜索被发现。
 
             - `headers: optional map[string] or null`
 
-              发送到 MCP 服务器的可选 HTTP 头。用于认证
-              或其他目的。
+              发送到 MCP 服务器的可选 HTTP 标头。用于身份验证
+              或其他用途。
 
             - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
@@ -21676,41 +21667,41 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
               - `McpToolApprovalFilter object { always, never }`
 
                 指定 MCP 服务器中哪些工具需要审批。可以是
-                `always`, `never`，或与工具关联的筛选器对象
-                需要审批的。
+                `always`, `never`，或与工具关联的过滤器对象
+                需要审批的工具。
 
                 - `always: optional object { read_only, tool_names }`
 
-                  用于指定允许哪些工具的过滤器对象。
+                  用于指定允许使用哪些工具的筛选对象。
 
                   - `read_only: optional boolean`
 
-                    指示工具是否修改数据或为只读。如果
-                    MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                    它将匹配此过滤器。
+                    指示工具是否会修改数据或仅为只读。如果某个
+                    MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                    标注，则会匹配此筛选器。
 
                   - `tool_names: optional array of string`
 
-                    允许的工具名称列表。
+                    允许使用的工具名称列表。
 
                 - `never: optional object { read_only, tool_names }`
 
-                  用于指定允许哪些工具的过滤器对象。
+                  用于指定允许使用哪些工具的筛选对象。
 
                   - `read_only: optional boolean`
 
-                    指示工具是否修改数据或为只读。如果
-                    MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                    它将匹配此过滤器。
+                    指示工具是否会修改数据或仅为只读。如果某个
+                    MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                    标注，则会匹配此筛选器。
 
                   - `tool_names: optional array of string`
 
-                    允许的工具名称列表。
+                    允许使用的工具名称列表。
 
               - `McpToolApprovalSetting = "always" or "never"`
 
-                为所有工具指定单一审批策略。可选值为 `always` 或
-                `never`。当设置为 `always`，时，所有工具都需要审批。当
+                为所有工具指定一个统一的审批策略。可选值为 `always` 或
+                `never`。之一。当设置为 `always`，时，所有工具都需要审批。当设置为
                 设置为 `never`，时，所有工具都不需要审批。
 
                 - `"always"`
@@ -21723,23 +21714,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `server_url: optional string`
 
-              MCP 服务器的 URL。必须是 `server_url`, `connector_id`，或
-              `tunnel_id` 中的一项。
+              MCP 服务器的 URL。 `server_url`, `connector_id`、或
+              `tunnel_id` 必须提供其中之一。
 
             - `tunnel_id: optional string`
 
-              要使用的 Secure MCP Tunnel ID，而非直接服务器 URL。必须是
-              `server_url`, `connector_id`，或 `tunnel_id` 中的一项。
+              用于替代直接服务器 URL 的 Secure MCP Tunnel ID。
+              `server_url`, `connector_id`、或 `tunnel_id` 必须提供其中之一。
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
-            一种运行 Python 代码以帮助生成提示响应的工具。
+            用于运行 Python 代码以辅助生成对提示词回复的工具。
 
             - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-              代码解释器容器。可以是容器 ID 或一个对象，该对象
-              指定上传的文件 ID 以供你的代码使用，以及一个
-              可选 `memory_limit` 设置。
+              代码解释器容器。可以是容器 ID，也可以是一个指定了供代码使用的已上传文件 ID 的对象，以及
+              ，该对象同时包含一个
+              可选的 `memory_limit` 设置。
 
               - `string`
 
@@ -21747,17 +21738,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-                代码解释器容器的配置。可选地指定要运行代码的文件的 ID。
+                代码解释器容器的配置。可指定运行代码所需文件的 ID。
 
                 - `type: "auto"`
 
-                  始终 `auto`.
+                  Always `auto`.
 
                   - `"auto"`
 
                 - `file_ids: optional array of string`
 
-                  可选的已上传文件列表，供你的代码使用。
+                  提供给代码使用的已上传文件的可选列表。
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -21779,7 +21770,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `type: "disabled"`
 
-                      禁用出站网络访问。始终 `disabled`.
+                      禁用出站网络访问。始终为 `disabled`.
 
                       - `"disabled"`
 
@@ -21787,33 +21778,33 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `allowed_domains: array of string`
 
-                      当类型为 `allowlist`.
+                      当 type 为 `allowlist`.
 
                     - `type: "allowlist"`
 
-                      仅允许对指定域名的出站网络访问。始终 `allowlist`.
+                      仅允许向指定域发出站网络访问。始终为 `allowlist`.
 
                       - `"allowlist"`
 
                     - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                      可选，针对允许列表域名的域范围密钥。
+                      可选的、限定域的密钥，用于允许列表中的域。
 
                       - `domain: string`
 
-                        与该密钥关联的域名。
+                        与该密钥关联的域。
 
                       - `name: string`
 
-                        要为该域名注入的密钥名称。
+                        要为该域注入的密钥名称。
 
                       - `value: string`
 
-                        要为该域名注入的密钥值。
+                        要为该域注入的密钥值。
 
             - `type: "code_interpreter"`
 
-              代码解释器工具的类型。始终 `code_interpreter`.
+              代码解释器工具的类型。始终为 `code_interpreter`.
 
               - `"code_interpreter"`
 
@@ -21829,7 +21820,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "programmatic_tool_calling"`
 
-              工具的类型。始终 `programmatic_tool_calling`.
+              工具的类型。始终为 `programmatic_tool_calling`.
 
               - `"programmatic_tool_calling"`
 
@@ -21839,13 +21830,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "image_generation"`
 
-              图像生成工具的类型。始终 `image_generation`.
+              图像生成工具的类型。始终为 `image_generation`.
 
               - `"image_generation"`
 
             - `action: optional "generate" or "edit" or "auto"`
 
-              是否生成新图像或编辑现有图像。默认： `auto`.
+              是生成新图像还是编辑现有图像。默认值： `auto`.
 
               - `"generate"`
 
@@ -21855,11 +21846,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              设置生成图像的背景。可选值之一： `transparent`,
-              `opaque`，或 `auto`。透明背景可用于
+              设置生成图像的背景。可选值为 `transparent`,
+              `opaque`、或 `auto`。透明背景适用于
               支持的 GPT 图像模型。对于 `gpt-image-2` 和
-              `gpt-image-2-2026-04-21`，此支持处于预览阶段。当使用
-              `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认： `auto`.
+              `gpt-image-2-2026-04-21`，该支持处于预览阶段。使用
+              `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
               - `"transparent"`
 
@@ -21869,7 +21860,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              控制模型在匹配输入图像的样式和特征（尤其是面部特征）方面投入的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
+              控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所需的投入程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。之一。默认为 `low`.
 
               - `"high"`
 
@@ -21877,31 +21868,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `input_image_mask: optional object { file_id, image_url }`
 
-              用于修复的可选掩码。包含 `image_url`
+              用于修复的可选遮罩。包含 `image_url`
               （字符串，可选）和 `file_id` （字符串，可选）。
 
               - `file_id: optional string`
 
-                掩码图像的文件ID。
+                遮罩图像的文件 ID。
 
               - `image_url: optional string`
 
-                Base64编码的掩码图像。
+                Base64 编码的遮罩图像。
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              要使用的图像生成模型。其中一个为 `gpt-image-1`,
+              要使用的图像生成模型。可选值为 `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+              `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
               `gpt-image-1`.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-                要使用的图像生成模型。其中一个为 `gpt-image-1`,
+                要使用的图像生成模型。可选值为 `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+                `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -21916,7 +21907,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `moderation: optional "auto" or "low"`
 
-              生成图像的审核级别。默认值： `auto`.
+              生成图像的内容审核级别。默认值： `auto`.
 
               - `"auto"`
 
@@ -21928,8 +21919,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `output_format: optional "png" or "webp" or "jpeg"`
 
-              生成图像的输出格式。其中一个为 `png`, `webp`，或
-              `jpeg`。默认： `png`.
+              生成图像的输出格式。可选值为 `png`, `webp`、或
+              `jpeg`。默认值： `png`.
 
               - `"png"`
 
@@ -21939,12 +21930,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `partial_images: optional number`
 
-              流式模式下生成的部分图像数量，范围从0（默认值）到3。
+              在流式模式下要生成的中间图像数量，范围为 0（默认值）到 3。
 
             - `quality: optional "low" or "medium" or "high" or "auto"`
 
-              生成图像的质量。其中一个为 `low`, `medium`, `high`,
-              或 `auto`。默认： `auto`.
+              生成图像的质量。可选值为 `low`, `medium`, `high`,
+              或 `auto`。默认值： `auto`.
 
               - `"low"`
 
@@ -21956,13 +21947,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+                生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -21974,7 +21965,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `LocalShell object { type }`
 
-            一种允许模型在本地环境中执行 shell 命令的工具。
+            允许模型在本地环境中执行 shell 命令的工具。
 
             - `type: "local_shell"`
 
@@ -21984,7 +21975,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `Shell object { type, allowed_callers, environment }`
 
-            一种允许模型执行 shell 命令的工具。
+            允许模型执行 shell 命令的工具。
 
             - `type: "shell"`
 
@@ -22006,13 +21997,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `type: "container_auto"`
 
-                  自动为此请求创建容器
+                  自动为本次请求创建一个容器
 
                   - `"container_auto"`
 
                 - `file_ids: optional array of string`
 
-                  可选的已上传文件列表，供你的代码使用。
+                  提供给代码使用的已上传文件的可选列表。
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -22036,7 +22027,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `skills: optional array of SkillReference or InlineSkill`
 
-                  可选的技能列表，通过 ID 或内联数据引用。
+                  通过 id 引用或内联数据的可选技能列表。
 
                   - `SkillReference object { skill_id, type, version }`
 
@@ -22086,7 +22077,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `type: "inline"`
 
-                      为此请求定义内联技能。
+                      为本次请求定义一个内联技能。
 
                       - `"inline"`
 
@@ -22100,7 +22091,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `skills: optional array of LocalSkill`
 
-                  可选技能列表。
+                  可选的技能列表。
 
                   - `description: string`
 
@@ -22112,7 +22103,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `path: string`
 
-                    包含技能的目录路径。
+                    包含该技能的目录路径。
 
               - `ContainerReference object { container_id, type }`
 
@@ -22128,7 +22119,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `Custom object { name, type, allowed_callers, 3 more }`
 
-            一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+            使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -22136,7 +22127,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "custom"`
 
-              自定义工具的类型。始终 `custom`.
+              自定义工具的类型。始终为 `custom`.
 
               - `"custom"`
 
@@ -22150,7 +22141,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `defer_loading: optional boolean`
 
-              是否应延迟此工具并通过工具搜索发现。
+              该工具是否应被延迟，并通过工具搜索发现。
 
             - `description: optional string`
 
@@ -22162,11 +22153,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `Text object { type }`
 
-                无约束的自由形式文本。
+                无约束的自由格式文本。
 
                 - `type: "text"`
 
-                  无约束文本格式。始终 `text`.
+                  无约束文本格式。始终为 `text`.
 
                   - `"text"`
 
@@ -22180,7 +22171,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `syntax: "lark" or "regex"`
 
-                  语法定义的语法。之一 `lark` 或 `regex`.
+                  语法定义的语法格式。可选值为 `lark` 或 `regex`.
 
                   - `"lark"`
 
@@ -22188,21 +22179,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `type: "grammar"`
 
-                  语法格式。始终 `grammar`.
+                  语法格式。始终为 `grammar`.
 
                   - `"grammar"`
 
           - `Namespace object { description, name, tools, type }`
 
-            将函数/自定义工具分组到共享命名空间下。
+            在共享命名空间下对函数/自定义工具进行分组。
 
             - `description: string`
 
-              显示给模型的命名空间描述。
+              展示给模型的命名空间描述。
 
             - `name: string`
 
-              工具调用中使用的命名空间名称（例如， `crm`).
+              在工具调用中使用的命名空间名称（例如， `crm`).
 
             - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
@@ -22226,23 +22217,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `defer_loading: optional boolean`
 
-                  此函数是否应被延迟并通过工具搜索发现。
+                  是否应推迟此函数并通过工具搜索发现它。
 
                 - `description: optional string or null`
 
                 - `output_schema: optional map[unknown] or null`
 
-                  描述此函数工具字符串输出中 JSON 值的 JSON Schema。这不描述内容数组输出。
+                  描述此函数工具字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content 数组输出。
 
                 - `parameters: optional unknown or null`
 
                 - `strict: optional boolean or null`
 
-                  是否强制进行严格的参数验证。如果省略，Responses 会在 schema 兼容时尝试使用严格验证，否则回退到非严格验证。
+                  是否强制执行严格的参数校验。如果省略，Responses 会在 schema 兼容时尝试使用严格校验，否则回退到非严格校验。
 
               - `Custom object { name, type, allowed_callers, 3 more }`
 
-                一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+                使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
                 - `name: string`
 
@@ -22250,7 +22241,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `type: "custom"`
 
-                  自定义工具的类型。始终 `custom`.
+                  自定义工具的类型。始终为 `custom`.
 
                   - `"custom"`
 
@@ -22264,7 +22255,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `defer_loading: optional boolean`
 
-                  是否应延迟此工具并通过工具搜索发现。
+                  该工具是否应被延迟，并通过工具搜索发现。
 
                 - `description: optional string`
 
@@ -22276,27 +22267,27 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "namespace"`
 
-              工具的类型。始终 `namespace`.
+              工具的类型。始终为 `namespace`.
 
               - `"namespace"`
 
           - `ToolSearch object { type, description, execution, parameters }`
 
-            用于延迟工具的托管或 BYOT 工具搜索配置。
+            针对延迟工具的托管或 BYOT 工具搜索配置。
 
             - `type: "tool_search"`
 
-              工具的类型。始终 `tool_search`.
+              工具的类型。始终为 `tool_search`.
 
               - `"tool_search"`
 
             - `description: optional string or null`
 
-              为客户端执行的工具搜索工具向模型显示的描述。
+              向模型展示的客户端执行工具搜索工具的描述。
 
             - `execution: optional "server" or "client"`
 
-              工具搜索是由服务器还是客户端执行。
+              工具搜索是由服务端执行还是由客户端执行。
 
               - `"server"`
 
@@ -22304,15 +22295,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `parameters: optional unknown or null`
 
-              客户端执行的工具搜索工具的参数 schema。
+              客户端执行工具搜索工具的参数 schema。
 
           - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-            此工具在网页上搜索相关内容以用于响应。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+            此工具会在网页上搜索相关结果以用于回复。详细了解 [网页搜索 tool](https://platform.openai.com/docs/guides/tools-web-search).
 
             - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-              网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+              网页搜索 工具的类型。其一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
               - `"web_search_preview"`
 
@@ -22326,7 +22317,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `search_context_size: optional "low" or "medium" or "high"`
 
-              关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+              搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
               - `"low"`
 
@@ -22336,11 +22327,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              用户的位置。
+              用户所在的位置。
 
               - `type: "approximate"`
 
-                位置近似的类型。始终为 `approximate`.
+                位置近似值的类型。始终为 `approximate`.
 
                 - `"approximate"`
 
@@ -22354,7 +22345,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `region: optional string or null`
 
-                用户的地区的自由文本输入，例如 `California`.
+                用户所在地区的自由文本输入，例如 `California`.
 
               - `timezone: optional string or null`
 
@@ -22362,11 +22353,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `ApplyPatch object { type, allowed_callers }`
 
-            允许助手使用统一差异创建、删除或更新文件。
+            允许助手使用 unified diff 创建、删除或更新文件。
 
             - `type: "apply_patch"`
 
-              工具的类型。始终 `apply_patch`.
+              工具的类型。始终为 `apply_patch`.
 
               - `"apply_patch"`
 
@@ -22380,11 +22371,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `top_p: optional number`
 
-          用于核采样的温度替代参数；1.0 包含所有标记。
+          作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
   - `error: EvalAPIError`
 
-    表示 Eval API 错误响应的对象。
+    表示来自 Eval API 错误响应的对象。
 
     - `code: string`
 
@@ -22396,20 +22387,20 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `eval_id: string`
 
-    相关评估的标识符。
+    关联评估的标识符。
 
   - `metadata: Metadata or null`
 
-    一组 16 个键值对，可附加到对象上。这可以
-    用于以结构化格式存储有关对象的额外信息，
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
     并通过 API 或仪表板查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串，
+    键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
   - `model: string`
 
-    被评估的模型（如果适用）。
+    被评估的模型（如适用）。
 
   - `name: string`
 
@@ -22417,21 +22408,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `object: "eval.run"`
 
-    对象的类型。始终为 "eval.run"。
+    对象类型，始终为 "eval.run"。
 
     - `"eval.run"`
 
   - `per_model_usage: array of object { cached_tokens, completion_tokens, invocation_count, 3 more }`
 
-    评估运行期间每个模型的使用统计。
+    评估运行期间每个模型的使用统计信息。
 
     - `cached_tokens: number`
 
-      从缓存中检索到的令牌数。
+      从缓存中检索到的 token 数量。
 
     - `completion_tokens: number`
 
-      生成的完成令牌数。
+      生成的 completion token 数量。
 
     - `invocation_count: number`
 
@@ -22443,31 +22434,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `prompt_tokens: number`
 
-      使用的提示令牌数。
+      使用的 prompt token 数量。
 
     - `total_tokens: number`
 
-      使用的令牌总数。
+      使用的 token 总数。
 
   - `per_testing_criteria_results: array of object { failed, passed, testing_criteria }`
 
-    评估运行期间应用的每项测试标准的结果。
+    评估运行期间应用的每个测试条件的测试结果。
 
     - `failed: number`
 
-      此标准失败的测试数量。
+      此条件下未通过的测试数。
 
     - `passed: number`
 
-      此标准通过的测试数量。
+      此条件下通过的测试数。
 
     - `testing_criteria: string`
 
-      测试标准的说明。
+      测试条件的描述。
 
   - `report_url: string`
 
-    UI 仪表板上呈现的评估运行报告的 URL。
+    在 UI 仪表板上指向已渲染评估运行报告的 URL。
 
   - `result_counts: object { errored, failed, passed, total }`
 
@@ -22475,11 +22466,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `errored: number`
 
-      导致错误的输出项数量。
+      出现错误的输出项数量。
 
     - `failed: number`
 
-      未能通过评估的输出项数量。
+      未通过评估的输出项数量。
 
     - `passed: number`
 
@@ -22493,31 +22484,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     评估运行的状态。
 
-### 运行检索响应
+### Run Retrieve Response
 
 - `RunRetrieveResponse object { id, created_at, data_source, 11 more }`
 
-  表示一次评估运行的架构。
+  表示评估运行结果的架构。
 
   - `id: string`
 
-    评估运行的唯一标识符。
+    评估运行（evaluation run）的唯一标识符。
 
   - `created_at: number`
 
-    评估运行创建时的 Unix 时间戳（秒）。
+    评估运行创建时的 Unix 时间戳（以秒为单位）。
 
   - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or object { source, type, input_messages, 2 more }`
 
-    有关运行数据源的信息。
+    关于该运行数据源的信息。
 
     - `CreateEvalJSONLRunDataSource object { source, type }`
 
-      一个 JsonlRunDataSource 对象，指定一个 JSONL 文件，该文件与评估
+      一个 JsonlRunDataSource 对象，用于指定与该评估匹配的 JSONL 文件
 
       - `source: object { content, type }  or object { id, type }`
 
-        决定什么填充 `item` 数据源中的命名空间。
+        决定数据源中如何填充 `item` 命名空间。
 
         - `EvalJSONLFileContentSource object { content, type }`
 
@@ -22531,7 +22522,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_content"`
 
-            jsonl 源的类型。始终为 `file_content`.
+            jsonl 数据源的类型。始终为 `file_content`.
 
             - `"file_content"`
 
@@ -22543,23 +22534,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_id"`
 
-            jsonl 源的类型。始终为 `file_id`.
+            jsonl 数据源的类型。始终为 `file_id`.
 
             - `"file_id"`
 
       - `type: "jsonl"`
 
-        数据源的类型。始终是 `jsonl`.
+        数据源的类型。始终为 `jsonl`.
 
         - `"jsonl"`
 
     - `CreateEvalCompletionsRunDataSource object { source, type, input_messages, 2 more }`
 
-      描述模型采样配置的 CompletionsRunDataSource 对象。
+      一个 CompletionsRunDataSource 对象，用于描述模型采样配置。
 
       - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 3 more }`
 
-        决定什么填充 `item` 此运行数据源中的命名空间。
+        决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
         - `EvalJSONLFileContentSource object { content, type }`
 
@@ -22573,7 +22564,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_content"`
 
-            jsonl 源的类型。始终为 `file_content`.
+            jsonl 数据源的类型。始终为 `file_content`.
 
             - `"file_content"`
 
@@ -22585,44 +22576,44 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_id"`
 
-            jsonl 源的类型。始终为 `file_id`.
+            jsonl 数据源的类型。始终为 `file_id`.
 
             - `"file_id"`
 
         - `StoredCompletionsRunDataSource object { type, created_after, created_before, 3 more }`
 
-          描述一组过滤器的 StoredCompletionsRunDataSource 配置
+          一个 StoredCompletionsRunDataSource 配置，用于描述一组筛选条件
 
           - `type: "stored_completions"`
 
-            源的类型。始终为 `stored_completions`.
+            数据源的类型。始终为 `stored_completions`.
 
             - `"stored_completions"`
 
           - `created_after: optional number or null`
 
-            可选的 Unix 时间戳，用于过滤在此时间之后创建的项。
+            一个可选的 Unix 时间戳，用于筛选在此时间之后创建的项。
 
           - `created_before: optional number or null`
 
-            可选的 Unix 时间戳，用于过滤在此时间之前创建的项。
+            一个可选的 Unix 时间戳，用于筛选在此时间之前创建的项。
 
           - `limit: optional number or null`
 
-            可选的最大返回项数。
+            一个可选的返回项的最大数量。
 
           - `metadata: optional Metadata or null`
 
-            一组 16 个键值对，可附加到对象上。这可以
-            用于以结构化格式存储有关对象的额外信息，
+            可附加到对象的 16 组键值对。这可以
+            用于以结构化格式存储有关对象的附加信息，
             并通过 API 或仪表板查询对象。
 
-            键是字符串，最大长度为 64 个字符。值是字符串，
+            键为字符串，最大长度为 64 个字符。值为字符串，
             最大长度为 512 个字符。
 
           - `model: optional string or null`
 
-            可选的模型过滤条件（例如，'gpt-4o'）。
+            一个可选的用于筛选的模型（例如 'gpt-5.6-sol'）。
 
       - `type: "completions"`
 
@@ -22632,43 +22623,43 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-        用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+        在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
         - `TemplateInputMessages object { template, type }`
 
           - `template: array of EasyInputMessage or object { content, role, type }`
 
-            构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+            构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
             - `EasyInputMessage object { content, role, phase, type }`
 
-              输入给模型的消息，其角色指示指令遵循
-              层级。以 `developer` 或 `system` 角色给出的指令
-              优先于以 `user` 角色给出的指令。具有
-              `assistant` 角色的消息被认为是由模型在之前的
-              交互中生成的。
+              输入到模型的消息，其角色指示指令的
+              层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+              角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+              `assistant` 消息。
+              互动。
 
               - `content: string or ResponseInputMessageContentList`
 
                 发送给模型的文本、图像或音频输入，用于生成响应。
-                也可以包含先前的助手响应。
+                也可以包含之前的助手响应。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputMessageContentList = array of ResponseInputContent`
 
-                  发送给模型的一个或多个输入项的列表，包含不同类型的内容
-                  。
+                  发送给模型的一个或多个输入项的列表，其中包含不同的内容
+                  类型。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                     - `text: string`
 
-                      模型的文本输入。
+                      发送给模型的文本输入。
 
                     - `type: "input_text"`
 
@@ -22678,7 +22669,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `prompt_cache_breakpoint: optional object { mode }`
 
-                      标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                       - `mode: "explicit"`
 
@@ -22692,7 +22683,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `detail: ImageDetail`
 
-                      发送给模型的图像的细节级别。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+                      发送到模型的图片的细节级别。可选值为 `high`, `low`, `auto`、或 `original`。之一。默认为 `auto`.
 
                       - `"low"`
 
@@ -22714,11 +22705,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `image_url: optional string or null`
 
-                      要发送给模型的图像的 URL。完全限定的 URL 或数据 URL 中的 base64 编码图像。
+                      要发送给模型的图像的 URL。可以是完整的 URL，也可以是 base64 编码的 data URL 图像。
 
                     - `prompt_cache_breakpoint: optional object { mode }`
 
-                      标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                       - `mode: "explicit"`
 
@@ -22738,7 +22729,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `detail: optional "auto" or "low" or "high"`
 
-                      要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入令牌的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+                      要发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
                       - `"auto"`
 
@@ -22748,7 +22739,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `file_data: optional string`
 
-                      要发送给模型的文件的内容。
+                      要发送给模型的文件内容。
 
                     - `file_id: optional string or null`
 
@@ -22764,7 +22755,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `prompt_cache_breakpoint: optional object { mode }`
 
-                      标记可复用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会向上取整到 token 块。
 
                       - `mode: "explicit"`
 
@@ -22774,7 +22765,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `role: "user" or "assistant" or "system" or "developer"`
 
-                消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                消息输入的角色。可选值为 `user`, `assistant`, `system`、或
                 `developer`.
 
                 - `"user"`
@@ -22787,9 +22778,9 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `phase: optional "commentary" or "final_answer" or null`
 
-                将 `assistant` 消息标记为中间评论（`commentary`) 或最终答案 (`final_answer`).
-                对于像 `gpt-5.3-codex` 及更新的模型，发送后续请求时，请保留并重新发送
-                阶段到所有助手消息中——省略该阶段可能会降低性能。不用于用户消息。
+                将 `assistant` 消息标记为中间补充说明（`commentary`) 或最终答案（`final_answer`).
+                对于类似 `gpt-5.3-codex` 及更高版本，发送后续请求时，请在所有助手消息上保留并重新发送
+                阶段，遗漏会降低性能。不用于用户消息。
 
                 - `"commentary"`
 
@@ -22803,31 +22794,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `EvalMessageObject object { content, role, type }`
 
-              输入给模型的消息，其角色指示指令遵循
-              层级。以 `developer` 或 `system` 角色给出的指令
-              优先于以 `user` 角色给出的指令。具有
-              `assistant` 角色的消息被认为是由模型在之前的
-              交互中生成的。
+              输入到模型的消息，其角色指示指令的
+              层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+              角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+              `assistant` 消息。
+              互动。
 
               - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -22837,21 +22828,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `InputImage object { image_url, type, detail }`
 
-                  用于 EvalItem 内容数组中的图像输入块。
+                  在 EvalItem 内容数组中使用的图片输入块。
 
                   - `image_url: string`
 
-                    图像输入的 URL。
+                    图片输入的 URL。
 
                   - `type: "input_image"`
 
-                    图像输入的类型。始终为 `input_image`.
+                    图片输入的类型。始终为 `input_image`.
 
                     - `"input_image"`
 
                   - `detail: optional string`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
@@ -22861,11 +22852,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `data: string`
 
-                      Base64 编码的音频数据。
+                      经过 Base64 编码的音频数据。
 
                     - `format: "mp3" or "wav"`
 
-                      音频数据的格式。目前支持的格式为 `mp3` 和
+                      音频数据的格式。当前支持的格式有 `mp3` 和
                       `wav`.
 
                       - `"mp3"`
@@ -22880,24 +22871,24 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                  输入列表，每个输入可以是输入文本、输出文本、输入
-                  图像或输入音频对象。
+                  输入列表，其中每个输入可以是输入文本、输出文本、输入
+                  图片或输入音频对象。
 
                   - `TextInput = string`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    发送给模型的文本输入。
 
                   - `OutputText object { text, type }`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                     - `text: string`
 
-                      模型的文本输出。
+                      来自模型的文本输出。
 
                     - `type: "output_text"`
 
@@ -22907,21 +22898,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `InputImage object { image_url, type, detail }`
 
-                    用于 EvalItem 内容数组中的图像输入块。
+                    在 EvalItem 内容数组中使用的图片输入块。
 
                     - `image_url: string`
 
-                      图像输入的 URL。
+                      图片输入的 URL。
 
                     - `type: "input_image"`
 
-                      图像输入的类型。始终为 `input_image`.
+                      图片输入的类型。始终为 `input_image`.
 
                       - `"input_image"`
 
                     - `detail: optional string`
 
-                      发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                      发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                   - `ResponseInputAudio object { input_audio, type }`
 
@@ -22929,7 +22920,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `role: "user" or "assistant" or "system" or "developer"`
 
-                消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                消息输入的角色。可选值为 `user`, `assistant`, `system`、或
                 `developer`.
 
                 - `"user"`
@@ -22956,7 +22947,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `item_reference: string`
 
-            对 `item` 命名空间中变量的引用。例如，"item.input_trajectory"
+            命名空间中的变量引用。例如“ `item` .item.input_trajectory”
 
           - `type: "item_reference"`
 
@@ -22966,7 +22957,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `model: optional string`
 
-        用于生成补全的模型名称（例如 "o3-mini"）。
+        用于生成补全的模型名称（例如 “o3-mini”）。
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
@@ -22976,13 +22967,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `reasoning_effort: optional ReasoningEffort or null`
 
-          约束推理模型的推理工作量。目前支持的
-          值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-          降低推理工作量可以加快响应速度并减少响应中
-          用于推理的令牌数。并非所有推理模型都支持每个
+          约束推理模型在推理上的投入程度。当前支持
+          的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+          降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+          消耗。并非所有推理模型都支持每个
           值。请参阅
           [推理指南](https://platform.openai.com/docs/guides/reasoning)
-          了解各模型的特定支持。
+          了解特定模型的支持情况。
 
           - `"none"`
 
@@ -23000,20 +22991,20 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `response_format: optional ResponseFormatText or ResponseFormatJSONSchema or ResponseFormatJSONObject`
 
-          指定模型必须输出的格式的对象。
+          指定模型必须输出格式的对象。
 
-          设置为 `{ "type": "json_schema", "json_schema": {...} }` 启用
-          结构化输出，确保模型匹配你提供的 JSON
-          架构。更多信息请参阅 [Structured Outputs
+          设置为 `{ "type": "json_schema", "json_schema": {...} }` 会启用
+          Structured Outputs，用于确保模型匹配你提供的 JSON
+          schema。详细了解请参阅 [Structured Outputs
           指南](/docs/guides/structured-outputs).
 
           设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-          确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-          。
+          确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+          使用。
 
           - `ResponseFormatText object { type }`
 
-            默认响应格式，用于生成文本响应。
+            默认响应格式。用于生成文本响应。
 
             - `type: "text"`
 
@@ -23023,34 +23014,34 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `ResponseFormatJSONSchema object { json_schema, type }`
 
-            JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-            了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+            JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+            详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
             - `json_schema: object { name, description, schema, strict }`
 
-              结构化输出配置选项，包括 JSON Schema。
+              Structured Outputs 配置选项，包括 JSON Schema。
 
               - `name: string`
 
-                响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-                下划线和破折号，最大长度为 64。
+                响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+                下划线和短横线，最大长度为 64。
 
               - `description: optional string`
 
-                响应格式用途的描述，模型使用它来
-                决定如何以该格式进行响应。
+                对响应格式用途的描述，供模型用来
+                决定如何按该格式进行响应。
 
               - `schema: optional map[unknown]`
 
-                响应格式的架构，以 JSON Schema 对象描述。
-                了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+                响应格式对应的 schema，以 JSON Schema 对象形式描述。
+                了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
               - `strict: optional boolean or null`
 
-                是否在生成输出时启用严格的架构遵循。
-                如果设置为 true，模型将始终遵循定义的精确架构
-                中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-                `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+                是否在生成输出时启用严格的 schema 遵循。
+                若设置为 true，模型将始终遵循在
+                中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+                `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
                 指南](/docs/guides/structured-outputs).
 
             - `type: "json_schema"`
@@ -23061,10 +23052,10 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `ResponseFormatJSONObject object { type }`
 
-            JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-            使用 `json_schema` 建议用于支持它的模型。请注意，
-            模型在没有系统或用户消息指示它的情况下不会生成 JSON
-            去这样做。
+            JSON 对象响应格式。生成 JSON 响应的旧方法。
+            对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+            模型将不会生成 JSON
+            。
 
             - `type: "json_object"`
 
@@ -23074,53 +23065,53 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `seed: optional number`
 
-          用于在采样时初始化随机性的种子值。
+          用于在采样过程中初始化随机性的种子值。
 
         - `temperature: optional number`
 
-          更高的温度会增加输出的随机性。
+          较高的 temperature 会增加输出的随机性。
 
         - `tools: optional array of ChatCompletionFunctionTool`
 
-          模型可能调用的工具列表。目前，仅支持函数作为工具。使用此选项提供模型可能生成 JSON 输入的函数列表。最多支持 128 个函数。
+          模型可以调用的工具列表。目前，作为工具仅支持函数。使用此项提供模型可以为其生成 JSON 输入的函数列表。最多支持 128 个函数。
 
           - `function: FunctionDefinition`
 
             - `name: string`
 
-              要调用的函数名称。必须是 a-z、A-Z、0-9，或包含下划线和破折号，最大长度为 64。
+              要调用的函数的名称。必须为 a-z、A-Z、0-9 或包含下划线和短划线，最大长度为 64。
 
             - `description: optional string`
 
-              函数功能的描述，模型用它来决定何时以及如何调用该函数。
+              对函数功能的描述，供模型选择何时以及如何调用该函数时使用。
 
             - `parameters: optional FunctionParameters`
 
-              函数接受的参数，描述为 JSON Schema 对象。参见 [指南](/docs/guides/function-calling) 获取示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) 获取有关格式的文档。
+              函数接受的参数，使用 JSON Schema 对象进行描述。请参阅 [指南](/docs/guides/function-calling) 中的示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) ，了解相关格式的文档。
 
-              省略 `parameters` 定义了一个具有空参数列表的函数。
+              省略 `parameters` 将定义一个具有空参数列表的函数。
 
             - `strict: optional boolean or null`
 
-              是否在生成函数调用时启用严格模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的子集，当 `strict` 为 `true`。在 [函数调用指南](/docs/guides/function-calling).
+              在生成函数调用时是否启用严格的模式遵循。如果设置为 true，模型将遵循 `parameters` 字段。仅支持 JSON Schema 的一个子集，当 `strict` 是 `true`。在以下位置详细了解结构化输出 [函数调用指南](/docs/guides/function-calling).
 
           - `type: "function"`
 
-            中了解更多关于结构化输出的信息。工具的类型。目前仅支持 `function` 。
+            工具的类型。目前，仅支持 `function` 是受支持的。
 
             - `"function"`
 
         - `top_p: optional number`
 
-          用于核采样的温度替代参数；1.0 包含所有标记。
+          作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
     - `ResponsesRunDataSource object { source, type, input_messages, 2 more }`
 
-      描述模型采样配置的 ResponsesRunDataSource 对象。
+      一个 ResponsesRunDataSource 对象，用于描述模型采样配置。
 
       - `source: object { content, type }  or object { id, type }  or object { type, created_after, created_before, 8 more }`
 
-        决定什么填充 `item` 此运行数据源中的命名空间。
+        决定数据源中如何填充 `item` 此运行数据源中的命名空间。
 
         - `EvalJSONLFileContentSource object { content, type }`
 
@@ -23134,7 +23125,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_content"`
 
-            jsonl 源的类型。始终为 `file_content`.
+            jsonl 数据源的类型。始终为 `file_content`.
 
             - `"file_content"`
 
@@ -23146,13 +23137,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `type: "file_id"`
 
-            jsonl 源的类型。始终为 `file_id`.
+            jsonl 数据源的类型。始终为 `file_id`.
 
             - `"file_id"`
 
         - `EvalResponsesSource object { type, created_after, created_before, 8 more }`
 
-          描述运行数据源配置的 EvalResponsesSource 对象。
+          一个 EvalResponsesSource 对象，用于描述运行数据源配置。
 
           - `type: "responses"`
 
@@ -23162,49 +23153,49 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `created_after: optional number or null`
 
-            仅包含在此时间戳之后（含）创建的项。这是用于选择响应的查询参数。
+            仅包含在此时间戳之后（包含）创建的项目。这是一个用于选择响应的查询参数。
 
           - `created_before: optional number or null`
 
-            仅包含在此时间戳之前（含）创建的项。这是用于选择响应的查询参数。
+            仅包含在此时间戳之前（包含）创建的项目。这是一个用于选择响应的查询参数。
 
           - `instructions_search: optional string or null`
 
-            用于搜索“instructions”字段的可选字符串。这是用于选择响应的查询参数。
+            用于搜索 'instructions' 字段的可选字符串。这是一个用于选择响应的查询参数。
 
           - `metadata: optional unknown or null`
 
-            响应的元数据过滤器。这是用于选择响应的查询参数。
+            响应的元数据过滤器。这是一个用于选择响应的查询参数。
 
           - `model: optional string or null`
 
-            要查找响应的模型名称。这是用于选择响应的查询参数。
+            要为其查找响应的模型名称。这是一个用于选择响应的查询参数。
 
           - `reasoning_effort: optional ReasoningEffort or null`
 
-            约束推理模型的推理工作量。目前支持的
-            值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-            降低推理工作量可以加快响应速度并减少响应中
-            用于推理的令牌数。并非所有推理模型都支持每个
+            约束推理模型在推理上的投入程度。当前支持
+            的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+            降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+            消耗。并非所有推理模型都支持每个
             值。请参阅
             [推理指南](https://platform.openai.com/docs/guides/reasoning)
-            了解各模型的特定支持。
+            了解特定模型的支持情况。
 
           - `temperature: optional number or null`
 
-            采样温度。这是用于选择响应的查询参数。
+            采样温度。这是一个用于选择响应的查询参数。
 
           - `tools: optional array of string or null`
 
-            工具名称列表。这是用于选择响应的查询参数。
+            工具名称列表。这是一个用于选择响应的查询参数。
 
           - `top_p: optional number or null`
 
-            核采样参数。这是用于选择响应的查询参数。
+            核采样参数。这是一个用于选择响应的查询参数。
 
           - `users: optional array of string or null`
 
-            用户标识符列表。这是用于选择响应的查询参数。
+            用户标识符列表。这是一个用于选择响应的查询参数。
 
       - `type: "responses"`
 
@@ -23214,13 +23205,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `input_messages: optional object { template, type }  or object { item_reference, type }`
 
-        用于从模型采样时。决定传入模型的消息结构。可以是预构建轨迹的引用（即， `item.input_trajectory`），或是包含变量引用的模板，这些变量引用指向 `item` 命名空间。
+        在对模型进行采样时使用。决定传入模型的消息结构。可以是对预置轨迹的引用（即， `item.input_trajectory`），也可以是带有对以下项变量引用的模板： `item` namespace.
 
         - `InputMessagesTemplate object { template, type }`
 
           - `template: array of object { content, role }  or object { content, role, type }`
 
-            构成提示或上下文的聊天消息列表。可能包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
+            构成提示或上下文的聊天消息列表。可以包含对 `item` 命名空间的变量引用，例如 {{item.name}}。
 
             - `ChatMessage object { content, role }`
 
@@ -23234,31 +23225,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `EvalMessageObject object { content, role, type }`
 
-              输入给模型的消息，其角色指示指令遵循
-              层级。以 `developer` 或 `system` 角色给出的指令
-              优先于以 `user` 角色给出的指令。具有
-              `assistant` 角色的消息被认为是由模型在之前的
-              交互中生成的。
+              输入到模型的消息，其角色指示指令的
+              层级关系。使用 `developer` 或 `system` 角色给出的指令优先于使用
+              角色给出的指令。使用 `user` 角色的消息被假定为先前由模型生成的
+              `assistant` 消息。
+              互动。
 
               - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项目或项目数组。
+                模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发送给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -23268,21 +23259,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `InputImage object { image_url, type, detail }`
 
-                  用于 EvalItem 内容数组中的图像输入块。
+                  在 EvalItem 内容数组中使用的图片输入块。
 
                   - `image_url: string`
 
-                    图像输入的 URL。
+                    图片输入的 URL。
 
                   - `type: "input_image"`
 
-                    图像输入的类型。始终为 `input_image`.
+                    图片输入的类型。始终为 `input_image`.
 
                     - `"input_image"`
 
                   - `detail: optional string`
 
-                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送到模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
@@ -23290,12 +23281,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                  输入列表，每个输入可以是输入文本、输出文本、输入
-                  图像或输入音频对象。
+                  输入列表，其中每个输入可以是输入文本、输出文本、输入
+                  图片或输入音频对象。
 
               - `role: "user" or "assistant" or "system" or "developer"`
 
-                消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                消息输入的角色。可选值为 `user`, `assistant`, `system`、或
                 `developer`.
 
                 - `"user"`
@@ -23322,7 +23313,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `item_reference: string`
 
-            对 `item` 命名空间。即“item.name”
+            命名空间中的变量引用。例如“ `item` 命名空间。例如，“item.name”
 
           - `type: "item_reference"`
 
@@ -23332,7 +23323,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `model: optional string`
 
-        用于生成补全的模型名称（例如 "o3-mini"）。
+        用于生成补全的模型名称（例如 “o3-mini”）。
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
@@ -23342,64 +23333,64 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `reasoning_effort: optional ReasoningEffort or null`
 
-          约束推理模型的推理工作量。目前支持的
-          值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-          降低推理工作量可以加快响应速度并减少响应中
-          用于推理的令牌数。并非所有推理模型都支持每个
+          约束推理模型在推理上的投入程度。当前支持
+          的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+          降低推理投入程度可以加快响应速度，并减少响应中用于推理的令牌
+          消耗。并非所有推理模型都支持每个
           值。请参阅
           [推理指南](https://platform.openai.com/docs/guides/reasoning)
-          了解各模型的特定支持。
+          了解特定模型的支持情况。
 
         - `seed: optional number`
 
-          用于在采样时初始化随机性的种子值。
+          用于在采样过程中初始化随机性的种子值。
 
         - `temperature: optional number`
 
-          更高的温度会增加输出的随机性。
+          较高的 temperature 会增加输出的随机性。
 
         - `text: optional object { format }`
 
-          模型文本响应的配置选项。可以是纯
-          文本或结构化 JSON 数据。了解更多：
+          来自模型的文本响应的配置选项。可以是纯
+          文本或结构化 JSON 数据。了解更多信息：
 
           - [文本输入和输出](/docs/guides/text)
           - [结构化输出](/docs/guides/structured-outputs)
 
           - `format: optional ResponseFormatTextConfig`
 
-            指定模型必须输出的格式的对象。
+            指定模型必须输出格式的对象。
 
-            配置 `{ "type": "json_schema" }` 可启用结构化输出，
-            这确保模型将匹配你提供的 JSON 模式。更多信息请参阅
+            配置 `{ "type": "json_schema" }` 启用结构化输出，
+            可确保模型匹配你提供的 JSON schema。详情请参阅
             [结构化输出指南](/docs/guides/structured-outputs).
 
             默认格式为 `{ "type": "text" }` ，无其他选项。
 
-            **不建议用于 gpt-4o 及更新的模型：**
+            **不推荐用于 gpt-4o 及更新模型：**
 
             设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，该模式
-            确保模型生成的消是有效的 JSON。对于支持它的模型，建议使用 `json_schema`
-            。
+            确保模型生成的消息是合法的 JSON。如果模型支持，建议优先 `json_schema`
+            使用。
 
             - `ResponseFormatText object { type }`
 
-              默认响应格式，用于生成文本响应。
+              默认响应格式。用于生成文本响应。
 
             - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
-              JSON Schema 响应格式，用于生成结构化的 JSON 响应。
-              了解更多关于 [Structured Outputs](/docs/guides/structured-outputs).
+              JSON Schema 响应格式。用于生成结构化的 JSON 响应。
+              详细了解 [Structured Outputs](/docs/guides/structured-outputs).
 
               - `name: string`
 
-                响应格式的名称。必须是 a-z、A-Z、0-9，或包含
-                下划线和破折号，最大长度为 64。
+                响应格式的名称。必须为 a-z、A-Z、0-9，或者包含
+                下划线和短横线，最大长度为 64。
 
               - `schema: map[unknown]`
 
-                响应格式的架构，以 JSON Schema 对象描述。
-                了解如何构建 JSON 模式 [此处](https://json-schema.org/).
+                响应格式对应的 schema，以 JSON Schema 对象形式描述。
+                了解如何构建 JSON 架构 [请参考此处](https://json-schema.org/).
 
               - `type: "json_schema"`
 
@@ -23409,42 +23400,42 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `description: optional string`
 
-                响应格式用途的描述，模型使用它来
-                决定如何以该格式进行响应。
+                对响应格式用途的描述，供模型用来
+                决定如何按该格式进行响应。
 
               - `strict: optional boolean or null`
 
-                是否在生成输出时启用严格的架构遵循。
-                如果设置为 true，模型将始终遵循定义的精确架构
-                中的 `schema` 字段。仅支持 JSON Schema 的子集，当
-                `strict` 为 `true`。要了解更多，请阅读 [Structured Outputs
+                是否在生成输出时启用严格的 schema 遵循。
+                若设置为 true，模型将始终遵循在
+                中定义的精确 schema `schema` 字段。仅支持 JSON Schema 的一个子集，当
+                `strict` 是 `true`。要了解更多信息，请参阅 [Structured Outputs
                 指南](/docs/guides/structured-outputs).
 
             - `ResponseFormatJSONObject object { type }`
 
-              JSON 对象响应格式。一种生成 JSON 响应的较旧方法。
-              使用 `json_schema` 建议用于支持它的模型。请注意，
-              模型在没有系统或用户消息指示它的情况下不会生成 JSON
-              去这样做。
+              JSON 对象响应格式。生成 JSON 响应的旧方法。
+              对于支持的模型，推荐使用 `json_schema` 。请注意，如果没有系统或用户消息指示，
+              模型将不会生成 JSON
+              。
 
         - `tools: optional array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-          模型在生成响应时可能调用的工具数组。你
-          可以通过设置 `tool_choice` 参数来指定使用哪个工具。
+          模型在生成响应时可以调用的工具数组。你可以
+          通过设置 `tool_choice` 参数来指定要使用的工具。
 
-          你可以提供给模型的工具分为两类：
+          你可以向模型提供的两类工具包括：
 
-          - **内置工具**：由 OpenAI 提供的工具，用于扩展
-            模型的能力，例如 [网页搜索](/docs/guides/tools-web-search)
-            或 [文件搜索](/docs/guides/tools-file-search)。了解更多关于
+          - **内置工具**: 由 OpenAI 提供的工具，用于扩展模型的
+            能力，例如 [网页搜索](/docs/guides/tools-web-search)
+            或 [文件搜索](/docs/guides/tools-file-search)。详细了解
             [内置工具](/docs/guides/tools).
-          - **函数调用（自定义工具）**：由你定义的函数，
-            使模型能够调用你自己的代码。了解更多关于
+          - **函数调用（自定义工具）**: 由你定义的函数，
+            使模型能够调用你自己的代码。详细了解
             [函数调用](/docs/guides/function-calling).
 
           - `Function object { name, parameters, strict, 5 more }`
 
-            在你自己的代码中定义一个模型可以选择调用的函数。了解更多关于 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+            定义你自己代码中的一个函数，模型可以选择调用它。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
 
             - `name: string`
 
@@ -23452,11 +23443,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `parameters: map[unknown] or null`
 
-              描述函数参数的 JSON schema 对象。
+              描述该函数参数的 JSON schema 对象。
 
             - `strict: boolean or null`
 
-              是否对此函数工具强制执行严格的参数验证。
+              是否对此函数工具强制执行严格的参数校验。
 
             - `type: "function"`
 
@@ -23474,54 +23465,54 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `defer_loading: optional boolean`
 
-              此函数是否延迟并通过工具搜索加载。
+              此函数是否被延迟加载并通过 tool search 加载。
 
             - `description: optional string or null`
 
-              函数的描述。模型用它来决定是否调用该函数。
+              函数的描述。由模型用于决定是否调用该函数。
 
             - `output_schema: optional map[unknown] or null`
 
-              描述此函数字符串输出中编码的 JSON 值的 JSON schema 对象。
+              描述该函数在字符串输出中所编码 JSON 值的 JSON schema 对象。
 
           - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-            一种从上传文件中搜索相关内容的工具。了解更多关于 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+            用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 工具](https://platform.openai.com/docs/guides/tools-file-search).
 
             - `type: "file_search"`
 
-              文件搜索工具的类型。始终为 `file_search`.
+              文件搜索 工具的类型。始终为 `file_search`.
 
               - `"file_search"`
 
             - `vector_store_ids: array of string`
 
-              要搜索的向量存储的 ID。
+              要搜索的向量存储库 ID。
 
             - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-              要应用的筛选器。
+              要应用的筛选条件。
 
               - `ComparisonFilter object { key, type, value }`
 
-                用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+                用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
                 - `key: string`
 
-                  要与值进行比较的键。
+                  要与该值进行比较的键。
 
                 - `type: "eq" or "ne" or "gt" or 5 more`
 
                   指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-                  - `eq`：等于
-                  - `ne`：不等于
-                  - `gt`：大于
-                  - `gte`：大于或等于
-                  - `lt`：小于
-                  - `lte`：小于或等于
-                  - `in`：在…中
-                  - `nin`：不在…中
+                  - `eq`: 等于
+                  - `ne`: 不等于
+                  - `gt`: 大于
+                  - `gte`: 大于或等于
+                  - `lt`: 小于
+                  - `lte`: 小于或等于
+                  - `in`: 包含于
+                  - `nin`: 不包含于
 
                   - `"eq"`
 
@@ -23541,7 +23532,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `value: string or number or boolean or array of string or number`
 
-                  要与属性键比较的值；支持字符串、数字或布尔类型。
+                  用于与属性键进行比较的值；支持字符串、数字或布尔类型。
 
                   - `string`
 
@@ -23557,15 +23548,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `CompoundFilter object { filters, type }`
 
-                使用以下方式组合多个过滤器： `and` 或 `or`.
+                使用以下方式组合多个筛选条件 `and` 或 `or`.
 
                 - `filters: array of ComparisonFilter or unknown`
 
-                  要组合的过滤器数组。项目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+                  要组合的筛选条件数组。项可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
                   - `ComparisonFilter object { key, type, value }`
 
-                    用于使用定义的比较操作将指定的属性键与给定值进行比较的筛选器。
+                    用于将指定的属性键与给定值按定义的比较操作进行比较的筛选条件。
 
                   - `unknown`
 
@@ -23579,27 +23570,27 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `max_num_results: optional number`
 
-              要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+              返回的最大结果数。该数值应介于 1 到 50 之间（含端点）。
 
             - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
-              搜索的排名选项。
+              搜索的排序选项。
 
               - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-                启用混合搜索时，控制倒数排名融合如何平衡语义嵌入匹配与稀疏关键词匹配的权重。
+                在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
                 - `embedding_weight: number`
 
-                  嵌入在倒数排名融合中的权重。
+                  倒数排名融合中嵌入的权重。
 
                 - `text_weight: number`
 
-                  文本在倒数排名融合中的权重。
+                  倒数排名融合中文本的权重。
 
               - `ranker: optional "auto" or "default-2024-11-15"`
 
-                用于文件搜索的排名器。
+                用于文件搜索的排序器。
 
                 - `"auto"`
 
@@ -23607,29 +23598,29 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `score_threshold: optional number`
 
-                文件搜索的分数阈值，为 0 到 1 之间的数字。接近 1 的数字将尝试仅返回最相关的结果，但可能返回更少的结果。
+                文件搜索的分数阈值，取值介于 0 到 1 之间。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
 
           - `Computer object { type }`
 
-            控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+            用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
             - `type: "computer"`
 
-              计算机工具的类型。始终为 `computer`.
+              computer 工具的类型。始终是 `computer`.
 
               - `"computer"`
 
           - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-            控制虚拟计算机的工具。了解更多关于 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
+            用于控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
 
             - `display_height: number`
 
-              计算机显示屏的高度。
+              计算机显示器的高度。
 
             - `display_width: number`
 
-              计算机显示屏的宽度。
+              计算机显示器的宽度。
 
             - `environment: "windows" or "mac" or "linux" or 2 more`
 
@@ -23647,18 +23638,18 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "computer_use_preview"`
 
-              计算机使用工具的类型。始终为 `computer_use_preview`.
+              computer use 工具的类型。始终是 `computer_use_preview`.
 
               - `"computer_use_preview"`
 
           - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-            搜索互联网以获取与提示相关的来源。了解更多关于
-            [网页搜索工具](/docs/guides/tools-web-search).
+            在互联网上搜索与提示相关的来源。详细了解
+            [网页搜索 tool](/docs/guides/tools-web-search).
 
             - `type: "web_search" or "web_search_2025_08_26"`
 
-              网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+              网页搜索 工具的类型。其一为 `web_search` 或 `web_search_2025_08_26`.
 
               - `"web_search"`
 
@@ -23666,22 +23657,22 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `external_web_access: optional boolean`
 
-              允许网页搜索实时访问互联网。省略时默认为 true。为 false 时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+              允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索 工具将以离线/仅缓存模式运行，并且不会获取新的外部内容。
 
             - `filters: optional object { allowed_domains }  or null`
 
-              搜索的过滤器。
+              搜索的筛选条件。
 
               - `allowed_domains: optional array of string or null`
 
-                搜索允许的域。如果未提供，则允许所有域。
-                也允许所提供域的子域。
+                搜索允许的域名。如果未提供，则允许所有域名。
+                所提供域名的子域名也被允许。
 
                 示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
             - `search_context_size: optional "low" or "medium" or "high"`
 
-              关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+              搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
               - `"low"`
 
@@ -23703,7 +23694,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `region: optional string or null`
 
-                用户的地区的自由文本输入，例如 `California`.
+                用户所在地区的自由文本输入，例如 `California`.
 
               - `timezone: optional string or null`
 
@@ -23711,14 +23702,14 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `type: optional "approximate"`
 
-                位置近似的类型。始终为 `approximate`.
+                位置近似值的类型。始终为 `approximate`.
 
                 - `"approximate"`
 
           - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-            通过远程 Model Context Protocol 向模型提供额外工具的访问权限
-            （MCP）服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+            通过远程 Model Context Protocol
+            （MCP）服务器让模型访问更多工具。 [详细了解 MCP](/docs/guides/tools-remote-mcp).
 
             - `server_label: string`
 
@@ -23740,48 +23731,48 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
 
-              允许的工具名称列表或过滤器对象。
+              允许使用的工具名称列表或筛选对象。
 
               - `McpAllowedTools = array of string`
 
-                允许的工具名称的字符串数组
+                允许使用的工具名称字符串数组
 
               - `McpToolFilter object { read_only, tool_names }`
 
-                用于指定允许哪些工具的过滤器对象。
+                用于指定允许使用哪些工具的筛选对象。
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  它将匹配此过滤器。
+                  指示工具是否会修改数据或仅为只读。如果某个
+                  MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  标注，则会匹配此筛选器。
 
                 - `tool_names: optional array of string`
 
-                  允许的工具名称列表。
+                  允许使用的工具名称列表。
 
             - `authorization: optional string`
 
-              可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-              使用自定义 MCP 服务器 URL 或服务连接器。您的应用程序
-              必须处理 OAuth 授权流程，并在此处提供令牌。
+              可用于远程 MCP 服务器的 OAuth 访问令牌，可配合
+              自定义 MCP 服务器 URL 或服务连接器一起使用。你的应用
+              必须处理 OAuth 授权流程并在此处提供令牌。
 
             - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-              服务连接器的标识符，例如 ChatGPT 中可用的那些。其中一个
-              `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解更多
-              关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+              服务连接器的标识符，例如 ChatGPT 中提供的那些。值为以下之一
+              `server_url`, `connector_id`、或 `tunnel_id` 必须提供。了解更多
+              关于服务连接器的信息 [请参考此处](/docs/guides/tools-remote-mcp#connectors).
 
-              目前支持的 `connector_id` 值为：
+              当前支持的 `connector_id` 值包括：
 
-              - Dropbox： `connector_dropbox`
-              - Gmail： `connector_gmail`
-              - Google Calendar： `connector_googlecalendar`
-              - Google Drive： `connector_googledrive`
-              - Microsoft Teams： `connector_microsoftteams`
-              - Outlook Calendar： `connector_outlookcalendar`
-              - Outlook Email： `connector_outlookemail`
-              - SharePoint： `connector_sharepoint`
+              - Dropbox: `connector_dropbox`
+              - Gmail: `connector_gmail`
+              - Google Calendar: `connector_googlecalendar`
+              - Google Drive: `connector_googledrive`
+              - Microsoft Teams: `connector_microsoftteams`
+              - Outlook Calendar: `connector_outlookcalendar`
+              - Outlook Email: `connector_outlookemail`
+              - SharePoint: `connector_sharepoint`
 
               - `"connector_dropbox"`
 
@@ -23801,12 +23792,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `defer_loading: optional boolean`
 
-              此 MCP 工具是否被推迟并通过工具搜索发现。
+              该 MCP 工具是否被延迟，并通过工具搜索被发现。
 
             - `headers: optional map[string] or null`
 
-              发送到 MCP 服务器的可选 HTTP 头。用于认证
-              或其他目的。
+              发送到 MCP 服务器的可选 HTTP 标头。用于身份验证
+              或其他用途。
 
             - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
@@ -23815,41 +23806,41 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
               - `McpToolApprovalFilter object { always, never }`
 
                 指定 MCP 服务器中哪些工具需要审批。可以是
-                `always`, `never`，或与工具关联的筛选器对象
-                需要审批的。
+                `always`, `never`，或与工具关联的过滤器对象
+                需要审批的工具。
 
                 - `always: optional object { read_only, tool_names }`
 
-                  用于指定允许哪些工具的过滤器对象。
+                  用于指定允许使用哪些工具的筛选对象。
 
                   - `read_only: optional boolean`
 
-                    指示工具是否修改数据或为只读。如果
-                    MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                    它将匹配此过滤器。
+                    指示工具是否会修改数据或仅为只读。如果某个
+                    MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                    标注，则会匹配此筛选器。
 
                   - `tool_names: optional array of string`
 
-                    允许的工具名称列表。
+                    允许使用的工具名称列表。
 
                 - `never: optional object { read_only, tool_names }`
 
-                  用于指定允许哪些工具的过滤器对象。
+                  用于指定允许使用哪些工具的筛选对象。
 
                   - `read_only: optional boolean`
 
-                    指示工具是否修改数据或为只读。如果
-                    MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                    它将匹配此过滤器。
+                    指示工具是否会修改数据或仅为只读。如果某个
+                    MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                    标注，则会匹配此筛选器。
 
                   - `tool_names: optional array of string`
 
-                    允许的工具名称列表。
+                    允许使用的工具名称列表。
 
               - `McpToolApprovalSetting = "always" or "never"`
 
-                为所有工具指定单一审批策略。可选值为 `always` 或
-                `never`。当设置为 `always`，时，所有工具都需要审批。当
+                为所有工具指定一个统一的审批策略。可选值为 `always` 或
+                `never`。之一。当设置为 `always`，时，所有工具都需要审批。当设置为
                 设置为 `never`，时，所有工具都不需要审批。
 
                 - `"always"`
@@ -23862,23 +23853,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `server_url: optional string`
 
-              MCP 服务器的 URL。必须是 `server_url`, `connector_id`，或
-              `tunnel_id` 中的一项。
+              MCP 服务器的 URL。 `server_url`, `connector_id`、或
+              `tunnel_id` 必须提供其中之一。
 
             - `tunnel_id: optional string`
 
-              要使用的 Secure MCP Tunnel ID，而非直接服务器 URL。必须是
-              `server_url`, `connector_id`，或 `tunnel_id` 中的一项。
+              用于替代直接服务器 URL 的 Secure MCP Tunnel ID。
+              `server_url`, `connector_id`、或 `tunnel_id` 必须提供其中之一。
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
-            一种运行 Python 代码以帮助生成提示响应的工具。
+            用于运行 Python 代码以辅助生成对提示词回复的工具。
 
             - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-              代码解释器容器。可以是容器 ID 或一个对象，该对象
-              指定上传的文件 ID 以供你的代码使用，以及一个
-              可选 `memory_limit` 设置。
+              代码解释器容器。可以是容器 ID，也可以是一个指定了供代码使用的已上传文件 ID 的对象，以及
+              ，该对象同时包含一个
+              可选的 `memory_limit` 设置。
 
               - `string`
 
@@ -23886,17 +23877,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-                代码解释器容器的配置。可选地指定要运行代码的文件的 ID。
+                代码解释器容器的配置。可指定运行代码所需文件的 ID。
 
                 - `type: "auto"`
 
-                  始终 `auto`.
+                  Always `auto`.
 
                   - `"auto"`
 
                 - `file_ids: optional array of string`
 
-                  可选的已上传文件列表，供你的代码使用。
+                  提供给代码使用的已上传文件的可选列表。
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -23918,7 +23909,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `type: "disabled"`
 
-                      禁用出站网络访问。始终 `disabled`.
+                      禁用出站网络访问。始终为 `disabled`.
 
                       - `"disabled"`
 
@@ -23926,33 +23917,33 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `allowed_domains: array of string`
 
-                      当类型为 `allowlist`.
+                      当 type 为 `allowlist`.
 
                     - `type: "allowlist"`
 
-                      仅允许对指定域名的出站网络访问。始终 `allowlist`.
+                      仅允许向指定域发出站网络访问。始终为 `allowlist`.
 
                       - `"allowlist"`
 
                     - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                      可选，针对允许列表域名的域范围密钥。
+                      可选的、限定域的密钥，用于允许列表中的域。
 
                       - `domain: string`
 
-                        与该密钥关联的域名。
+                        与该密钥关联的域。
 
                       - `name: string`
 
-                        要为该域名注入的密钥名称。
+                        要为该域注入的密钥名称。
 
                       - `value: string`
 
-                        要为该域名注入的密钥值。
+                        要为该域注入的密钥值。
 
             - `type: "code_interpreter"`
 
-              代码解释器工具的类型。始终 `code_interpreter`.
+              代码解释器工具的类型。始终为 `code_interpreter`.
 
               - `"code_interpreter"`
 
@@ -23968,7 +23959,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "programmatic_tool_calling"`
 
-              工具的类型。始终 `programmatic_tool_calling`.
+              工具的类型。始终为 `programmatic_tool_calling`.
 
               - `"programmatic_tool_calling"`
 
@@ -23978,13 +23969,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "image_generation"`
 
-              图像生成工具的类型。始终 `image_generation`.
+              图像生成工具的类型。始终为 `image_generation`.
 
               - `"image_generation"`
 
             - `action: optional "generate" or "edit" or "auto"`
 
-              是否生成新图像或编辑现有图像。默认： `auto`.
+              是生成新图像还是编辑现有图像。默认值： `auto`.
 
               - `"generate"`
 
@@ -23994,11 +23985,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              设置生成图像的背景。可选值之一： `transparent`,
-              `opaque`，或 `auto`。透明背景可用于
+              设置生成图像的背景。可选值为 `transparent`,
+              `opaque`、或 `auto`。透明背景适用于
               支持的 GPT 图像模型。对于 `gpt-image-2` 和
-              `gpt-image-2-2026-04-21`，此支持处于预览阶段。当使用
-              `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认： `auto`.
+              `gpt-image-2-2026-04-21`，该支持处于预览阶段。使用
+              `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
               - `"transparent"`
 
@@ -24008,7 +23999,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              控制模型在匹配输入图像的样式和特征（尤其是面部特征）方面投入的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
+              控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所需的投入程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。之一。默认为 `low`.
 
               - `"high"`
 
@@ -24016,31 +24007,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `input_image_mask: optional object { file_id, image_url }`
 
-              用于修复的可选掩码。包含 `image_url`
+              用于修复的可选遮罩。包含 `image_url`
               （字符串，可选）和 `file_id` （字符串，可选）。
 
               - `file_id: optional string`
 
-                掩码图像的文件ID。
+                遮罩图像的文件 ID。
 
               - `image_url: optional string`
 
-                Base64编码的掩码图像。
+                Base64 编码的遮罩图像。
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              要使用的图像生成模型。其中一个为 `gpt-image-1`,
+              要使用的图像生成模型。可选值为 `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+              `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
               `gpt-image-1`.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-                要使用的图像生成模型。其中一个为 `gpt-image-1`,
+                要使用的图像生成模型。可选值为 `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认：
+                `gpt-image-2-2026-04-21`、或 `chatgpt-image-latest`。默认值：
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -24055,7 +24046,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `moderation: optional "auto" or "low"`
 
-              生成图像的审核级别。默认值： `auto`.
+              生成图像的内容审核级别。默认值： `auto`.
 
               - `"auto"`
 
@@ -24067,8 +24058,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `output_format: optional "png" or "webp" or "jpeg"`
 
-              生成图像的输出格式。其中一个为 `png`, `webp`，或
-              `jpeg`。默认： `png`.
+              生成图像的输出格式。可选值为 `png`, `webp`、或
+              `jpeg`。默认值： `png`.
 
               - `"png"`
 
@@ -24078,12 +24069,12 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `partial_images: optional number`
 
-              流式模式下生成的部分图像数量，范围从0（默认值）到3。
+              在流式模式下要生成的中间图像数量，范围为 0（默认值）到 3。
 
             - `quality: optional "low" or "medium" or "high" or "auto"`
 
-              生成图像的质量。其中一个为 `low`, `medium`, `high`,
-              或 `auto`。默认： `auto`.
+              生成图像的质量。可选值为 `low`, `medium`, `high`,
+              或 `auto`。默认值： `auto`.
 
               - `"low"`
 
@@ -24095,13 +24086,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率作为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`. 宽度和高度必须都能被16整除，且请求的宽高比必须在1:3到3:1之间。超过的分辨率 `2560x1440` 为实验性的，支持的最大分辨率为 `3840x2160`. 请求的尺寸还必须满足模型当前的像素和边缘限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受GPT图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用其中一个 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用其中一个 `1024x1024`, `1792x1024`，或 `1024x1792`.
+                生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 。宽度和高度都必须能被 16 整除，且所请求的长宽比必须在 1:3 到 3:1 之间。高于 `1536x864`。的分辨率属于实验性质，最高支持的分辨率为 `2560x1440` 。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `3840x2160`。由 GPT 图像模型支持； `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。对于 `dall-e-2`，请使用以下方式之一 `256x256`, `512x512`、或 `1024x1024`。对于 `dall-e-3`，请使用以下方式之一 `1024x1024`, `1792x1024`、或 `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -24113,7 +24104,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `LocalShell object { type }`
 
-            一种允许模型在本地环境中执行 shell 命令的工具。
+            允许模型在本地环境中执行 shell 命令的工具。
 
             - `type: "local_shell"`
 
@@ -24123,7 +24114,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `Shell object { type, allowed_callers, environment }`
 
-            一种允许模型执行 shell 命令的工具。
+            允许模型执行 shell 命令的工具。
 
             - `type: "shell"`
 
@@ -24145,13 +24136,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `type: "container_auto"`
 
-                  自动为此请求创建容器
+                  自动为本次请求创建一个容器
 
                   - `"container_auto"`
 
                 - `file_ids: optional array of string`
 
-                  可选的已上传文件列表，供你的代码使用。
+                  提供给代码使用的已上传文件的可选列表。
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -24175,7 +24166,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `skills: optional array of SkillReference or InlineSkill`
 
-                  可选的技能列表，通过 ID 或内联数据引用。
+                  通过 id 引用或内联数据的可选技能列表。
 
                   - `SkillReference object { skill_id, type, version }`
 
@@ -24225,7 +24216,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     - `type: "inline"`
 
-                      为此请求定义内联技能。
+                      为本次请求定义一个内联技能。
 
                       - `"inline"`
 
@@ -24239,7 +24230,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `skills: optional array of LocalSkill`
 
-                  可选技能列表。
+                  可选的技能列表。
 
                   - `description: string`
 
@@ -24251,7 +24242,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `path: string`
 
-                    包含技能的目录路径。
+                    包含该技能的目录路径。
 
               - `ContainerReference object { container_id, type }`
 
@@ -24267,7 +24258,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `Custom object { name, type, allowed_callers, 3 more }`
 
-            一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+            使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -24275,7 +24266,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "custom"`
 
-              自定义工具的类型。始终 `custom`.
+              自定义工具的类型。始终为 `custom`.
 
               - `"custom"`
 
@@ -24289,7 +24280,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `defer_loading: optional boolean`
 
-              是否应延迟此工具并通过工具搜索发现。
+              该工具是否应被延迟，并通过工具搜索发现。
 
             - `description: optional string`
 
@@ -24301,11 +24292,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `Text object { type }`
 
-                无约束的自由形式文本。
+                无约束的自由格式文本。
 
                 - `type: "text"`
 
-                  无约束文本格式。始终 `text`.
+                  无约束文本格式。始终为 `text`.
 
                   - `"text"`
 
@@ -24319,7 +24310,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `syntax: "lark" or "regex"`
 
-                  语法定义的语法。之一 `lark` 或 `regex`.
+                  语法定义的语法格式。可选值为 `lark` 或 `regex`.
 
                   - `"lark"`
 
@@ -24327,21 +24318,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `type: "grammar"`
 
-                  语法格式。始终 `grammar`.
+                  语法格式。始终为 `grammar`.
 
                   - `"grammar"`
 
           - `Namespace object { description, name, tools, type }`
 
-            将函数/自定义工具分组到共享命名空间下。
+            在共享命名空间下对函数/自定义工具进行分组。
 
             - `description: string`
 
-              显示给模型的命名空间描述。
+              展示给模型的命名空间描述。
 
             - `name: string`
 
-              工具调用中使用的命名空间名称（例如， `crm`).
+              在工具调用中使用的命名空间名称（例如， `crm`).
 
             - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
@@ -24365,23 +24356,23 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `defer_loading: optional boolean`
 
-                  此函数是否应被延迟并通过工具搜索发现。
+                  是否应推迟此函数并通过工具搜索发现它。
 
                 - `description: optional string or null`
 
                 - `output_schema: optional map[unknown] or null`
 
-                  描述此函数工具字符串输出中 JSON 值的 JSON Schema。这不描述内容数组输出。
+                  描述此函数工具字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content 数组输出。
 
                 - `parameters: optional unknown or null`
 
                 - `strict: optional boolean or null`
 
-                  是否强制进行严格的参数验证。如果省略，Responses 会在 schema 兼容时尝试使用严格验证，否则回退到非严格验证。
+                  是否强制执行严格的参数校验。如果省略，Responses 会在 schema 兼容时尝试使用严格校验，否则回退到非严格校验。
 
               - `Custom object { name, type, allowed_callers, 3 more }`
 
-                一种自定义工具，使用指定格式处理输入。了解更多   [自定义工具](/docs/guides/function-calling#custom-tools)
+                使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](/docs/guides/function-calling#custom-tools)
 
                 - `name: string`
 
@@ -24389,7 +24380,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `type: "custom"`
 
-                  自定义工具的类型。始终 `custom`.
+                  自定义工具的类型。始终为 `custom`.
 
                   - `"custom"`
 
@@ -24403,7 +24394,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `defer_loading: optional boolean`
 
-                  是否应延迟此工具并通过工具搜索发现。
+                  该工具是否应被延迟，并通过工具搜索发现。
 
                 - `description: optional string`
 
@@ -24415,27 +24406,27 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `type: "namespace"`
 
-              工具的类型。始终 `namespace`.
+              工具的类型。始终为 `namespace`.
 
               - `"namespace"`
 
           - `ToolSearch object { type, description, execution, parameters }`
 
-            用于延迟工具的托管或 BYOT 工具搜索配置。
+            针对延迟工具的托管或 BYOT 工具搜索配置。
 
             - `type: "tool_search"`
 
-              工具的类型。始终 `tool_search`.
+              工具的类型。始终为 `tool_search`.
 
               - `"tool_search"`
 
             - `description: optional string or null`
 
-              为客户端执行的工具搜索工具向模型显示的描述。
+              向模型展示的客户端执行工具搜索工具的描述。
 
             - `execution: optional "server" or "client"`
 
-              工具搜索是由服务器还是客户端执行。
+              工具搜索是由服务端执行还是由客户端执行。
 
               - `"server"`
 
@@ -24443,15 +24434,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `parameters: optional unknown or null`
 
-              客户端执行的工具搜索工具的参数 schema。
+              客户端执行工具搜索工具的参数 schema。
 
           - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-            此工具在网页上搜索相关内容以用于响应。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+            此工具会在网页上搜索相关结果以用于回复。详细了解 [网页搜索 tool](https://platform.openai.com/docs/guides/tools-web-search).
 
             - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-              网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+              网页搜索 工具的类型。其一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
               - `"web_search_preview"`
 
@@ -24465,7 +24456,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `search_context_size: optional "low" or "medium" or "high"`
 
-              关于搜索使用的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+              搜索使用的上下文窗口空间的高级指引。其一为 `low`, `medium`、或 `high`. `medium` 为默认值。
 
               - `"low"`
 
@@ -24475,11 +24466,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              用户的位置。
+              用户所在的位置。
 
               - `type: "approximate"`
 
-                位置近似的类型。始终为 `approximate`.
+                位置近似值的类型。始终为 `approximate`.
 
                 - `"approximate"`
 
@@ -24493,7 +24484,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `region: optional string or null`
 
-                用户的地区的自由文本输入，例如 `California`.
+                用户所在地区的自由文本输入，例如 `California`.
 
               - `timezone: optional string or null`
 
@@ -24501,11 +24492,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `ApplyPatch object { type, allowed_callers }`
 
-            允许助手使用统一差异创建、删除或更新文件。
+            允许助手使用 unified diff 创建、删除或更新文件。
 
             - `type: "apply_patch"`
 
-              工具的类型。始终 `apply_patch`.
+              工具的类型。始终为 `apply_patch`.
 
               - `"apply_patch"`
 
@@ -24519,11 +24510,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `top_p: optional number`
 
-          用于核采样的温度替代参数；1.0 包含所有标记。
+          作为温度参数的替代方案，用于核采样；1.0 表示包含所有 token。
 
   - `error: EvalAPIError`
 
-    表示 Eval API 错误响应的对象。
+    表示来自 Eval API 错误响应的对象。
 
     - `code: string`
 
@@ -24535,20 +24526,20 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `eval_id: string`
 
-    相关评估的标识符。
+    关联评估的标识符。
 
   - `metadata: Metadata or null`
 
-    一组 16 个键值对，可附加到对象上。这可以
-    用于以结构化格式存储有关对象的额外信息，
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
     并通过 API 或仪表板查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串，
+    键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
   - `model: string`
 
-    被评估的模型（如果适用）。
+    被评估的模型（如适用）。
 
   - `name: string`
 
@@ -24556,21 +24547,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `object: "eval.run"`
 
-    对象的类型。始终为 "eval.run"。
+    对象类型，始终为 "eval.run"。
 
     - `"eval.run"`
 
   - `per_model_usage: array of object { cached_tokens, completion_tokens, invocation_count, 3 more }`
 
-    评估运行期间每个模型的使用统计。
+    评估运行期间每个模型的使用统计信息。
 
     - `cached_tokens: number`
 
-      从缓存中检索到的令牌数。
+      从缓存中检索到的 token 数量。
 
     - `completion_tokens: number`
 
-      生成的完成令牌数。
+      生成的 completion token 数量。
 
     - `invocation_count: number`
 
@@ -24582,31 +24573,31 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `prompt_tokens: number`
 
-      使用的提示令牌数。
+      使用的 prompt token 数量。
 
     - `total_tokens: number`
 
-      使用的令牌总数。
+      使用的 token 总数。
 
   - `per_testing_criteria_results: array of object { failed, passed, testing_criteria }`
 
-    评估运行期间应用的每项测试标准的结果。
+    评估运行期间应用的每个测试条件的测试结果。
 
     - `failed: number`
 
-      此标准失败的测试数量。
+      此条件下未通过的测试数。
 
     - `passed: number`
 
-      此标准通过的测试数量。
+      此条件下通过的测试数。
 
     - `testing_criteria: string`
 
-      测试标准的说明。
+      测试条件的描述。
 
   - `report_url: string`
 
-    UI 仪表板上呈现的评估运行报告的 URL。
+    在 UI 仪表板上指向已渲染评估运行报告的 URL。
 
   - `result_counts: object { errored, failed, passed, total }`
 
@@ -24614,11 +24605,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `errored: number`
 
-      导致错误的输出项数量。
+      出现错误的输出项数量。
 
     - `failed: number`
 
-      未能通过评估的输出项数量。
+      未通过评估的输出项数量。
 
     - `passed: number`
 
@@ -24632,9 +24623,9 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     评估运行的状态。
 
-# 输出项
+# Output Items
 
-## 获取评估运行输出项
+## Get eval run output items
 
 **get** `/evals/{eval_id}/runs/{run_id}/output_items`
 
@@ -24650,7 +24641,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
 - `after: optional string`
 
-  上一次分页请求中最后一个输出项的标识符。
+  上一次分页请求中最后一条输出项的标识符。
 
 - `limit: optional number`
 
@@ -24658,7 +24649,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
 - `order: optional "asc" or "desc"`
 
-  按时间戳对输出项进行排序的顺序。使用 `asc` 表示升序或 `desc` 表示降序。默认为 `asc`.
+  按时间戳排序输出项的顺序。使用 `asc` 表示升序，或 `desc` 表示降序。默认为 `asc`.
 
   - `"asc"`
 
@@ -24666,18 +24657,18 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
 - `status: optional "fail" or "pass"`
 
-  按状态筛选输出项。使用 `failed` 筛选失败输出
-  项，或 `pass` 筛选通过的输出项。
+  按状态筛选输出项。使用 `failed` 可筛选失败的输出
+  项，或 `pass` 可筛选通过的输出项。
 
   - `"fail"`
 
   - `"pass"`
 
-### 返回
+### Returns
 
 - `data: array of object { id, created_at, datasource_item, 7 more }`
 
-  评估运行输出项对象的数组。
+  eval 运行输出项对象的数组。
 
   - `id: string`
 
@@ -24685,7 +24676,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `created_at: number`
 
-    评估运行创建时的 Unix 时间戳（秒）。
+    评估运行创建时的 Unix 时间戳（以秒为单位）。
 
   - `datasource_item: map[unknown]`
 
@@ -24701,13 +24692,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `object: "eval.run.output_item"`
 
-    对象的类型。始终为 "eval.run.output_item"。
+    对象的类型，始终为 "eval.run.output_item"。
 
     - `"eval.run.output_item"`
 
   - `results: array of object { name, passed, score, 2 more }`
 
-    此输出项的评分器结果列表。
+    该输出项的评分器结果列表。
 
     - `name: string`
 
@@ -24715,15 +24706,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `passed: boolean`
 
-      评分器是否认为输出通过。
+      评分器是否将该输出视为通过。
 
     - `score: number`
 
-      评分器产生的数字分数。
+      评分器生成的数值分数。
 
     - `sample: optional map[unknown] or null`
 
-      评分器产生的可选样本或中间数据。
+      评分器生成的可选样本或中间数据。
 
     - `type: optional string`
 
@@ -24739,7 +24730,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `error: EvalAPIError`
 
-      表示 Eval API 错误响应的对象。
+      表示来自 Eval API 错误响应的对象。
 
       - `code: string`
 
@@ -24755,7 +24746,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `input: array of object { content, role }`
 
-      输入消息的数组。
+      输入消息数组。
 
       - `content: string`
 
@@ -24767,7 +24758,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `max_completion_tokens: number`
 
-      完成允许的 token 最大数量。
+      补全允许的最大 token 数。
 
     - `model: string`
 
@@ -24775,7 +24766,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `output: array of object { content, role }`
 
-      输出消息的数组。
+      输出消息数组。
 
       - `content: optional string`
 
@@ -24791,7 +24782,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `temperature: number`
 
-      使用的采样温度。
+      所使用的采样温度。
 
     - `top_p: number`
 
@@ -24803,19 +24794,19 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `cached_tokens: number`
 
-        从缓存中检索到的令牌数。
+        从缓存中检索到的 token 数量。
 
       - `completion_tokens: number`
 
-        生成的完成令牌数。
+        生成的 completion token 数量。
 
       - `prompt_tokens: number`
 
-        使用的提示令牌数。
+        使用的 prompt token 数量。
 
       - `total_tokens: number`
 
-        使用的令牌总数。
+        使用的 token 总数。
 
   - `status: string`
 
@@ -24823,15 +24814,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
 - `first_id: string`
 
-  数据数组中第一个评估运行输出项的标识符。
+  data 数组中第一个 eval run 输出项的标识符。
 
 - `has_more: boolean`
 
-  指示是否还有更多评估运行输出项可用。
+  指示是否还有更多 eval run 输出项可用。
 
 - `last_id: string`
 
-  数据数组中最后一个评估运行输出项的标识符。
+  data 数组中最后一个 eval run 输出项的标识符。
 
 - `object: "list"`
 
@@ -24973,7 +24964,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
           }
         ],
         "finish_reason": "stop",
-        "model": "gpt-4o-mini-2024-07-18",
+        "model": "gpt-5.6-sol",
         "usage": {
           "total_tokens": 325,
           "completion_tokens": 2,
@@ -24998,7 +24989,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
 **get** `/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}`
 
-按 ID 获取评估运行输出项。
+通过 ID 获取评估运行输出项。
 
 ### 路径参数
 
@@ -25008,7 +24999,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
 - `output_item_id: string`
 
-### 返回
+### Returns
 
 - `id: string`
 
@@ -25016,7 +25007,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
 - `created_at: number`
 
-  评估运行创建时的 Unix 时间戳（秒）。
+  评估运行创建时的 Unix 时间戳（以秒为单位）。
 
 - `datasource_item: map[unknown]`
 
@@ -25032,13 +25023,13 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
 - `object: "eval.run.output_item"`
 
-  对象的类型。始终为 "eval.run.output_item"。
+  对象的类型，始终为 "eval.run.output_item"。
 
   - `"eval.run.output_item"`
 
 - `results: array of object { name, passed, score, 2 more }`
 
-  此输出项的评分器结果列表。
+  该输出项的评分器结果列表。
 
   - `name: string`
 
@@ -25046,15 +25037,15 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
   - `passed: boolean`
 
-    评分器是否认为输出通过。
+    评分器是否将该输出视为通过。
 
   - `score: number`
 
-    评分器产生的数字分数。
+    评分器生成的数值分数。
 
   - `sample: optional map[unknown] or null`
 
-    评分器产生的可选样本或中间数据。
+    评分器生成的可选样本或中间数据。
 
   - `type: optional string`
 
@@ -25070,7 +25061,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
   - `error: EvalAPIError`
 
-    表示 Eval API 错误响应的对象。
+    表示来自 Eval API 错误响应的对象。
 
     - `code: string`
 
@@ -25086,7 +25077,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
   - `input: array of object { content, role }`
 
-    输入消息的数组。
+    输入消息数组。
 
     - `content: string`
 
@@ -25098,7 +25089,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
   - `max_completion_tokens: number`
 
-    完成允许的 token 最大数量。
+    补全允许的最大 token 数。
 
   - `model: string`
 
@@ -25106,7 +25097,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
   - `output: array of object { content, role }`
 
-    输出消息的数组。
+    输出消息数组。
 
     - `content: optional string`
 
@@ -25122,7 +25113,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
   - `temperature: number`
 
-    使用的采样温度。
+    所使用的采样温度。
 
   - `top_p: number`
 
@@ -25134,19 +25125,19 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
 
     - `cached_tokens: number`
 
-      从缓存中检索到的令牌数。
+      从缓存中检索到的 token 数量。
 
     - `completion_tokens: number`
 
-      生成的完成令牌数。
+      生成的 completion token 数量。
 
     - `prompt_tokens: number`
 
-      使用的提示令牌数。
+      使用的 prompt token 数量。
 
     - `total_tokens: number`
 
-      使用的令牌总数。
+      使用的 token 总数。
 
 - `status: string`
 
@@ -25275,7 +25266,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
       }
     ],
     "finish_reason": "stop",
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "usage": {
       "total_tokens": 325,
       "completion_tokens": 2,
@@ -25291,13 +25282,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 }
 ```
 
-## 域类型
+## 域名类型
 
 ### 输出项列表响应
 
 - `OutputItemListResponse object { id, created_at, datasource_item, 7 more }`
 
-  表示评估运行输出项的模式。
+  表示评估运行输出项的架构。
 
   - `id: string`
 
@@ -25305,7 +25296,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `created_at: number`
 
-    评估运行创建时的 Unix 时间戳（秒）。
+    评估运行创建时的 Unix 时间戳（以秒为单位）。
 
   - `datasource_item: map[unknown]`
 
@@ -25321,13 +25312,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `object: "eval.run.output_item"`
 
-    对象的类型。始终为 "eval.run.output_item"。
+    对象的类型，始终为 "eval.run.output_item"。
 
     - `"eval.run.output_item"`
 
   - `results: array of object { name, passed, score, 2 more }`
 
-    此输出项的评分器结果列表。
+    该输出项的评分器结果列表。
 
     - `name: string`
 
@@ -25335,15 +25326,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `passed: boolean`
 
-      评分器是否认为输出通过。
+      评分器是否将该输出视为通过。
 
     - `score: number`
 
-      评分器产生的数字分数。
+      评分器生成的数值分数。
 
     - `sample: optional map[unknown] or null`
 
-      评分器产生的可选样本或中间数据。
+      评分器生成的可选样本或中间数据。
 
     - `type: optional string`
 
@@ -25359,7 +25350,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `error: EvalAPIError`
 
-      表示 Eval API 错误响应的对象。
+      表示来自 Eval API 错误响应的对象。
 
       - `code: string`
 
@@ -25375,7 +25366,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `input: array of object { content, role }`
 
-      输入消息的数组。
+      输入消息数组。
 
       - `content: string`
 
@@ -25387,7 +25378,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `max_completion_tokens: number`
 
-      完成允许的 token 最大数量。
+      补全允许的最大 token 数。
 
     - `model: string`
 
@@ -25395,7 +25386,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `output: array of object { content, role }`
 
-      输出消息的数组。
+      输出消息数组。
 
       - `content: optional string`
 
@@ -25411,7 +25402,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `temperature: number`
 
-      使用的采样温度。
+      所使用的采样温度。
 
     - `top_p: number`
 
@@ -25423,29 +25414,29 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `cached_tokens: number`
 
-        从缓存中检索到的令牌数。
+        从缓存中检索到的 token 数量。
 
       - `completion_tokens: number`
 
-        生成的完成令牌数。
+        生成的 completion token 数量。
 
       - `prompt_tokens: number`
 
-        使用的提示令牌数。
+        使用的 prompt token 数量。
 
       - `total_tokens: number`
 
-        使用的令牌总数。
+        使用的 token 总数。
 
   - `status: string`
 
     评估运行的状态。
 
-### 输出项检索响应
+### Output Item Retrieve Response
 
 - `OutputItemRetrieveResponse object { id, created_at, datasource_item, 7 more }`
 
-  表示评估运行输出项的模式。
+  表示评估运行输出项的架构。
 
   - `id: string`
 
@@ -25453,7 +25444,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `created_at: number`
 
-    评估运行创建时的 Unix 时间戳（秒）。
+    评估运行创建时的 Unix 时间戳（以秒为单位）。
 
   - `datasource_item: map[unknown]`
 
@@ -25469,13 +25460,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `object: "eval.run.output_item"`
 
-    对象的类型。始终为 "eval.run.output_item"。
+    对象的类型，始终为 "eval.run.output_item"。
 
     - `"eval.run.output_item"`
 
   - `results: array of object { name, passed, score, 2 more }`
 
-    此输出项的评分器结果列表。
+    该输出项的评分器结果列表。
 
     - `name: string`
 
@@ -25483,15 +25474,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `passed: boolean`
 
-      评分器是否认为输出通过。
+      评分器是否将该输出视为通过。
 
     - `score: number`
 
-      评分器产生的数字分数。
+      评分器生成的数值分数。
 
     - `sample: optional map[unknown] or null`
 
-      评分器产生的可选样本或中间数据。
+      评分器生成的可选样本或中间数据。
 
     - `type: optional string`
 
@@ -25507,7 +25498,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `error: EvalAPIError`
 
-      表示 Eval API 错误响应的对象。
+      表示来自 Eval API 错误响应的对象。
 
       - `code: string`
 
@@ -25523,7 +25514,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `input: array of object { content, role }`
 
-      输入消息的数组。
+      输入消息数组。
 
       - `content: string`
 
@@ -25535,7 +25526,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `max_completion_tokens: number`
 
-      完成允许的 token 最大数量。
+      补全允许的最大 token 数。
 
     - `model: string`
 
@@ -25543,7 +25534,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `output: array of object { content, role }`
 
-      输出消息的数组。
+      输出消息数组。
 
       - `content: optional string`
 
@@ -25559,7 +25550,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     - `temperature: number`
 
-      使用的采样温度。
+      所使用的采样温度。
 
     - `top_p: number`
 
@@ -25571,19 +25562,19 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `cached_tokens: number`
 
-        从缓存中检索到的令牌数。
+        从缓存中检索到的 token 数量。
 
       - `completion_tokens: number`
 
-        生成的完成令牌数。
+        生成的 completion token 数量。
 
       - `prompt_tokens: number`
 
-        使用的提示令牌数。
+        使用的 prompt token 数量。
 
       - `total_tokens: number`
 
-        使用的令牌总数。
+        使用的 token 总数。
 
   - `status: string`
 

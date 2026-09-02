@@ -1,10 +1,10 @@
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。通过在页面 URL 末尾追加 `.md` 可获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取对应文档页面的 Markdown 版本。
 
-## Retrieve model
+## 检索模型
 
 **get** `/models/{model}`
 
-获取模型实例，并提供该模型的基本信息，例如所有者和权限配置。
+获取一个模型实例，并提供该模型的基本信息，例如所有者和权限设置。
 
 ### 路径参数
 
@@ -14,7 +14,7 @@
 
 - `Model object { id, created, object, 2 more }`
 
-  描述可与 API 配合使用的 OpenAI 模型产品。
+  描述可与 API 一起使用的 OpenAI 模型产品。
 
   - `id: string`
 
@@ -60,7 +60,7 @@ curl https://api.openai.com/v1/models/$MODEL \
 ### 示例
 
 ```http
-curl https://api.openai.com/v1/models/VAR_chat_model_id \
+curl https://api.openai.com/v1/models/gpt-5.6-sol \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
@@ -68,7 +68,7 @@ curl https://api.openai.com/v1/models/VAR_chat_model_id \
 
 ```json
 {
-  "id": "VAR_chat_model_id",
+  "id": "gpt-5.6-sol",
   "object": "model",
   "created": 1686935002,
   "owned_by": "openai",
