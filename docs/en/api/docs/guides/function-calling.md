@@ -298,7 +298,8 @@ func main() {
 		if err := json.Unmarshal([]byte(call.Arguments), &arguments); err != nil {
 			panic(err)
 		}
-		functionOutput = responses.ResponseInputItemParamOfFunctionCallOutput(call.CallID, getHoroscope(arguments.Sign))
+		functionOutput = responses.ResponseInputItemParamOfFunctionCallOutput(getHoroscope(arguments.Sign))
+		functionOutput.OfFunctionCallOutput.CallID = openai.String(call.CallID)
 	}
 	if functionOutput.OfFunctionCallOutput == nil {
 		panic("the model did not call get_horoscope")
@@ -680,7 +681,9 @@ for _, output := range response.Output {
 	if err != nil {
 		panic(err)
 	}
-	input = append(input, responses.ResponseInputItemParamOfFunctionCallOutput(toolCall.CallID, result))
+	toolOutput := responses.ResponseInputItemParamOfFunctionCallOutput(result)
+	toolOutput.OfFunctionCallOutput.CallID = openai.String(toolCall.CallID)
+	input = append(input, toolOutput)
 }
 ```
 

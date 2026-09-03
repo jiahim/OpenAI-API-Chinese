@@ -1,0 +1,176 @@
+{
+  "id": "2026-09-01T19-15-22-000Z",
+  "generatedAt": "2026-09-01T19:15:22Z",
+  "added": [],
+  "modified": [
+    {
+      "path": "docs/en/api/docs/guides/your-data.md",
+      "route": "/api/docs/guides/your-data",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/your-data.md",
+      "title": "Data controls in the OpenAI platform"
+    },
+    {
+      "path": "docs/en/api/docs/libraries.md",
+      "route": "/api/docs/libraries",
+      "sourceUrl": "https://developers.openai.com/api/docs/libraries.md",
+      "title": "SDKs and CLI"
+    },
+    {
+      "path": "docs/en/api/docs/quickstart.md",
+      "route": "/api/docs/quickstart",
+      "sourceUrl": "https://developers.openai.com/api/docs/quickstart.md",
+      "title": "Developer quickstart"
+    },
+    {
+      "path": "docs/en/api/reference/resources/batches.md",
+      "route": "/api/reference/resources/batches",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/batches.md",
+      "title": "Batches"
+    },
+    {
+      "path": "docs/en/api/reference/resources/batches/methods/cancel.md",
+      "route": "/api/reference/resources/batches/methods/cancel",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/batches/methods/cancel.md",
+      "title": "Batches — Cancel"
+    },
+    {
+      "path": "docs/en/api/reference/resources/batches/methods/create.md",
+      "route": "/api/reference/resources/batches/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/batches/methods/create.md",
+      "title": "Batches — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/batches/methods/list.md",
+      "route": "/api/reference/resources/batches/methods/list",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/batches/methods/list.md",
+      "title": "Batches — List"
+    },
+    {
+      "path": "docs/en/api/reference/resources/batches/methods/retrieve.md",
+      "route": "/api/reference/resources/batches/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/batches/methods/retrieve.md",
+      "title": "Batches — Retrieve"
+    },
+    {
+      "path": "docs/en/api/reference/resources/beta/subresources/responses/streaming-events.md",
+      "route": "/api/reference/resources/beta/subresources/responses/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/responses/streaming-events.md",
+      "title": "Beta Responses streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/beta/subresources/responses/websocket-events.md",
+      "route": "/api/reference/resources/beta/subresources/responses/websocket-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/responses/websocket-events.md",
+      "title": "Beta Responses WebSocket events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/chat.md",
+      "route": "/api/reference/resources/chat",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/chat.md",
+      "title": "Chat"
+    },
+    {
+      "path": "docs/en/api/reference/resources/chat/subresources/completions/methods/retrieve.md",
+      "route": "/api/reference/resources/chat/subresources/completions/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/retrieve.md",
+      "title": "Chat Completions — Retrieve"
+    },
+    {
+      "path": "docs/en/api/reference/resources/chat/subresources/completions/streaming-events.md",
+      "route": "/api/reference/resources/chat/subresources/completions/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/chat/subresources/completions/streaming-events.md",
+      "title": "Chat Completions streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/completions.md",
+      "route": "/api/reference/resources/completions",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/completions.md",
+      "title": "Completions"
+    },
+    {
+      "path": "docs/en/api/reference/resources/completions/methods/create.md",
+      "route": "/api/reference/resources/completions/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/completions/methods/create.md",
+      "title": "Completions — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/evals.md",
+      "route": "/api/reference/resources/evals",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/evals.md",
+      "title": "Evals"
+    },
+    {
+      "path": "docs/en/api/reference/resources/evals/subresources/runs/methods/cancel.md",
+      "route": "/api/reference/resources/evals/subresources/runs/methods/cancel",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/evals/subresources/runs/methods/cancel.md",
+      "title": "Evals Runs — Cancel"
+    },
+    {
+      "path": "docs/en/api/reference/resources/fine_tuning.md",
+      "route": "/api/reference/resources/fine_tuning",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/fine_tuning.md",
+      "title": "Fine Tuning"
+    },
+    {
+      "path": "docs/en/api/reference/resources/models.md",
+      "route": "/api/reference/resources/models",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/models.md",
+      "title": "Models"
+    },
+    {
+      "path": "docs/en/api/reference/resources/models/methods/retrieve.md",
+      "route": "/api/reference/resources/models/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/models/methods/retrieve.md",
+      "title": "Models — Retrieve"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses.md",
+      "route": "/api/reference/resources/responses",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses.md",
+      "title": "Responses"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/cancel.md",
+      "route": "/api/reference/resources/responses/methods/cancel",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/cancel.md",
+      "title": "Responses — Cancel"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/compact.md",
+      "route": "/api/reference/resources/responses/methods/compact",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/compact.md",
+      "title": "Responses — Compact"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/create.md",
+      "route": "/api/reference/resources/responses/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/create.md",
+      "title": "Responses — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/retrieve.md",
+      "route": "/api/reference/resources/responses/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/retrieve.md",
+      "title": "Responses — Retrieve"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/streaming-events.md",
+      "route": "/api/reference/resources/responses/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/streaming-events.md",
+      "title": "Responses streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/subresources/input_tokens.md",
+      "route": "/api/reference/resources/responses/subresources/input_tokens",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/subresources/input_tokens.md",
+      "title": "Responses Input Tokens"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/websocket-events.md",
+      "route": "/api/reference/resources/responses/websocket-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/websocket-events.md",
+      "title": "Responses WebSocket events"
+    }
+  ],
+  "removed": []
+}

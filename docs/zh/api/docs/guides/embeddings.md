@@ -1,27 +1,27 @@
 # 向量嵌入
 
-> 如需查看完整文档索引，请参见 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取该页面的 Markdown 版本。
 
 ## 什么是嵌入？
 
 OpenAI 的文本嵌入用于衡量文本字符串之间的相关性。嵌入通常用于：
 
-- **搜索** （其中结果按与查询字符串的相关性进行排名）
-- **聚类** （其中文本字符串按相似度分组）
-- **推荐** （其中推荐具有相关文本字符串的项目）
-- **异常检测** （其中识别相关性较低的外围点）
-- **多样性测量** （其中分析相似度分布）
-- **分类** （其中文本字符串按其最相似的标签进行分类）
+- **Search** (结果按与查询字符串的相关性排序)
+- **Clustering** (将文本字符串按相似度分组)
+- **Recommendations** (推荐具有相关文本字符串的条目)
+- **Anomaly detection** (识别相关性较低的异常值)
+- **Diversity measurement** (分析相似度分布)
+- **Classification** (按最相似的标签对文本字符串进行分类)
 
-嵌入是一个浮点数向量（列表）。 [距离](#which-distance-function-should-i-use) 衡量两个向量之间的相关性。小距离表示高相关性，大距离表示低相关性。
+嵌入（embedding）是由浮点数组成的向量（即列表）。两个向量之间的 [距离](#which-distance-function-should-i-use) 用于衡量它们之间的相关程度：距离越小，相关性越高；距离越大，相关性越低。
 
-访问我们的 [定价页面](https://openai.com/api/pricing/) 了解嵌入定价。请求根据 [令牌](https://platform.openai.com/tokenizer) 在 [输入](https://developers.openai.com/api/reference/resources/embeddings/methods/create#embeddings/create-input).
+请访问我们的 [定价页面](https://openai.com/api/pricing/) 以了解嵌入的计费方式。请求费用根据 [tokens](https://platform.openai.com/tokenizer) 中 [输入](https://developers.openai.com/api/reference/resources/embeddings/methods/create#embeddings/create-input).
 
 ## 如何获取嵌入
 
-要获取嵌入，请将你的文本字符串发送到 [embeddings API 端点](https://developers.openai.com/api/reference/resources/embeddings) ，同时附带嵌入模型名称（例如。， `text-embedding-3-small`):
+要获取 embedding，请将你的文本字符串发送到 [embeddings API 端点](https://developers.openai.com/api/reference/resources/embeddings) ，并附上 embedding 模型名称（例如。， `text-embedding-3-small`):
 
-示例：获取嵌入
+示例：获取 embeddings
 
 ```javascript
 import OpenAI from "openai";
@@ -92,6 +92,20 @@ var embedding =
 System.out.println(embedding.data().get(0).embedding());
 ```
 
+```csharp
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+OpenAIEmbedding embedding = await client.GenerateEmbeddingAsync(
+    "The food was delicious and the waiter was friendly."
+);
+
+Console.WriteLine($"Dimensions: {embedding.ToFloats().Length}");
+```
+
 ```ruby
 require "openai"
 
@@ -116,7 +130,7 @@ curl https://api.openai.com/v1/embeddings \
 ```
 
 
-响应包含嵌入向量（浮点数列表）以及一些附加元数据。你可以提取嵌入向量，将其保存在向量数据库中，并用于许多不同的用例。
+响应中包含 embedding 向量（浮点数列表）以及一些额外的元数据。你可以将 embedding 向量提取出来，存入向量数据库，并用于许多不同的应用场景。
 
 ```json
 {
@@ -139,27 +153,27 @@ curl https://api.openai.com/v1/embeddings \
 }
 ```
 
-默认情况下，嵌入向量的长度为 `1536` 对于 `text-embedding-3-small` 或 `3072` 对于 `text-embedding-3-large`。要在不损失其概念表示属性的情况下减小嵌入的维度，请传入 [dimensions 参数](https://developers.openai.com/api/reference/resources/embeddings/methods/create#embeddings-create-dimensions)。更多关于嵌入维度的详细信息，请参阅 [嵌入用例部分](#use-cases).
+默认情况下，embedding 向量的长度为 `1536` （ `text-embedding-3-small` 或 `3072` （ `text-embedding-3-large`）。如果希望在保留其概念表示能力的前提下降低 embedding 的维度，请传入 [dimensions 参数](https://developers.openai.com/api/reference/resources/embeddings/methods/create#embeddings-create-dimensions)。有关 embedding 维度的更多详情，请参阅 [embedding 使用场景章节](#use-cases).
 
-## 嵌入模型
+## Embedding models
 
-OpenAI 提供两个强大的第三代嵌入模型（以模型 ID 中的 `-3` 表示）。请阅读嵌入 v3 [公告博客文章](https://openai.com/blog/new-embedding-models-and-api-updates) 以了解更多详情。
+OpenAI 提供了两款强大的第三代嵌入模型（在模型 ID 中以 `-3` 表示）。阅读 embedding v3 [公告博客文章](https://openai.com/blog/new-embedding-models-and-api-updates) 以了解更多详情。
 
-使用按输入 token 计费。以下是每 1 美元可处理的文本页数示例（假设每页约 800 个 token）：
+按输入 token 计费。以下为每美元可处理的文本页数示例（假设每页约 800 个 token）：
 
-| 模型                  | ~每美元页数 | 性能评价 [MTEB](https://github.com/embeddings-benchmark/mteb) 评估 | 最大输入 |
+| Model                  | ~ 每美元可处理页数 | 在以下基准上的性能 [MTEB](https://github.com/embeddings-benchmark/mteb) 评估 | 最大输入 |
 | ---------------------- | ------------------ | ------------------------------------------------------------------------ | --------- |
 | text-embedding-3-small | 62,500             | 62.3%                                                                    | 8192      |
 | text-embedding-3-large | 9,615              | 64.6%                                                                    | 8192      |
 | text-embedding-ada-002 | 12,500             | 61.0%                                                                    | 8192      |
 
-## 使用场景
+## 用例
 
-下面我们展示一些有代表性的用例，使用 [Amazon 美食评论数据集](https://www.kaggle.com/snap/amazon-fine-food-reviews).
+下面我们将展示一些典型的用例，使用的是 [Amazon fine-food reviews 数据集](https://www.kaggle.com/snap/amazon-fine-food-reviews).
 
 ### 获取嵌入
 
-该数据集包含截至 2012 年 10 月 Amazon 用户留下的 568,454 条食品评论。我们使用其中最新的 1,000 条评论子集作为示例。这些评论为英文，倾向于正面或负面。每条评论都有一个 `ProductId`, `UserId`, `Score`、评论标题（`Summary`）和评论正文（`Text`）。例如：
+该数据集共包含截至 2012 年 10 月由 Amazon 用户留下的 568,454 条食品评论。我们使用其中最近的 1000 条评论的子集进行示例说明。这些评论均为英文，且倾向于正面或负面评价。每条评论都有一个 `ProductId`, `UserId`, `Score`、评论标题（`Summary`）以及评论正文（`Text`）。例如：
 
 
 
@@ -172,11 +186,35 @@ OpenAI 提供两个强大的第三代嵌入模型（以模型 ID 中的 `-3` 表
 
 
 
-下面，我们将点评摘要和点评文本合并为单一的合并文本。模型对这一合并文本进行编码，并输出一个单一的向量嵌入。
+下面，我们将评论摘要和评论文本合并为一个合并后的文本。模型对该合并文本进行编码，并输出一个向量嵌入。
 
 
 
 Get_embeddings_from_dataset.ipynb
+```javascript
+import { mkdir, writeFile } from "node:fs/promises";
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const reviews = ["A rich cup of coffee.", "A bright herbal tea."];
+
+const response = await client.embeddings.create({
+  model: "text-embedding-3-small",
+  input: reviews.map((review) => review.replaceAll("\n", " ")),
+});
+
+const csvField = (value) => `"${value.replaceAll('"', '""')}"`;
+const rows = response.data.map(({ embedding }, index) =>
+  [csvField(reviews[index]), csvField(JSON.stringify(embedding))].join(",")
+);
+
+await mkdir("output", { recursive: true });
+await writeFile(
+  "output/embedded_1k_reviews.csv",
+  ["combined,ada_embedding", ...rows].join("\n") + "\n"
+);
+```
+
 ```python
 from openai import OpenAI
 
@@ -230,8 +268,30 @@ try (var writer = Files.newBufferedWriter(output)) {
 System.out.println(output);
 ```
 
+```ruby
+require "fileutils"
+require "json"
+require "openai"
 
-要从已保存的文件加载数据，可以运行以下命令：
+client = OpenAI::Client.new
+reviews = ["A rich cup of coffee.", "A bright herbal tea."]
+
+response = client.embeddings.create(
+  model: "text-embedding-3-small",
+  input: reviews.map { |review| review.tr("\n", " ") }
+)
+
+csv_field = ->(value) { %("#{value.gsub('"', '""')}") }
+rows = response.data.map.with_index do |embedding, index|
+  [csv_field.call(reviews.fetch(index)), csv_field.call(JSON.generate(embedding.embedding))].join(",")
+end
+
+FileUtils.mkdir_p("output")
+File.write("output/embedded_1k_reviews.csv", (["combined,ada_embedding"] + rows).join("\n") + "\n")
+```
+
+
+若要从已保存的文件加载数据，你可以运行以下代码：
 
 ```python
 import pandas as pd
@@ -241,13 +301,37 @@ df["ada_embedding"] = df.ada_embedding.apply(eval).apply(np.array)
 ```
 
 
-降低嵌入维度
 
-使用更大的嵌入（例如，将其存储在向量存储中以供检索）通常比使用较小的嵌入成本更高，并且消耗更多的计算资源、内存和存储空间。
 
-我们的两个新嵌入模型都经过训练，采用了 [一种技术](https://arxiv.org/abs/2205.13147) ，该技术允许开发者在嵌入的使用性能与成本之间进行权衡。具体来说，开发者可以通过传入 [`dimensions` API 参数来缩短嵌入（即从序列末尾删除一些数字），而不会使嵌入失去其表示概念的特性。](https://developers.openai.com/api/reference/resources/embeddings/methods/create#embeddings-create-dimensions)。例如，在 MTEB 基准测试上，一个 `text-embedding-3-large` 嵌入可以缩短到 256 的大小，同时仍优于未缩短的 `text-embedding-ada-002` 大小为 1536 的嵌入。你可以通过我们的 [embeddings v3 发布博客文章](https://openai.com/blog/new-embedding-models-and-api-updates#:~:text=Native%20support%20for%20shortening%20embeddings).
+#### Reducing embedding dimensions
 
-一般来说，使用 `dimensions` 参数创建嵌入是推荐的方法。在某些情况下，你可能需要在生成嵌入后更改其维度。当你手动更改维度时，需要确保按照下面所示对嵌入的维度进行归一化。
+
+
+使用更大的 embedding，例如将其存储在向量库中以供检索，通常会比使用更小的 embedding 花费更多成本，并消耗更多算力、内存和存储。
+
+我们两款新的 embedding 模型都采用了 [一种技术进行训练](https://arxiv.org/abs/2205.13147) ，该技术允许开发者在使用 embedding 时权衡性能和成本。具体而言，开发者可以通过传入 dimensions 参数缩短 embedding（例如从末尾删除一些数值），而 embedding 仍保留其概念表示特性。 [`dimensions` API 参数](https://developers.openai.com/api/reference/resources/embeddings/methods/create#embeddings-create-dimensions)。例如，在 MTEB 基准上，一个 `text-embedding-3-large` 维度的 embedding 可以被缩短到 256 维，同时性能仍然优于未缩短的 `text-embedding-ada-002` 维 embedding（尺寸为 1536）。你可以阅读我们的 [embeddings v3 发布博客文章](https://openai.com/blog/new-embedding-models-and-api-updates#:~:text=Native%20support%20for%20shortening%20embeddings).
+
+，了解更改维度如何影响性能的更多信息。一般而言，在创建 embedding 时使用 dimensions `dimensions` 参数是推荐的做法。在某些情况下，你可能需要在生成 embedding 之后更改其维度。手动更改维度时，必须确保按如下所示对 embedding 的各维度进行归一化。
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+
+const response = await client.embeddings.create({
+  model: "text-embedding-3-small",
+  input: "Testing 123",
+  encoding_format: "float",
+});
+
+const shortened = response.data[0].embedding.slice(0, 256);
+const magnitude = Math.hypot(...shortened);
+const normalized = shortened.map((value) =>
+  magnitude === 0 ? 0 : value / magnitude
+);
+
+console.log(normalized);
+```
 
 ```python
 from openai import OpenAI
@@ -303,17 +387,94 @@ List<Float> shortened = embedding.data().get(0).embedding().subList(0, 256);
 System.out.println(normalizeL2(shortened));
 ```
 
+```csharp
+using OpenAI.Embeddings;
 
-动态更改维度可实现非常灵活的用途。例如，当使用仅支持最大 1024 维嵌入的向量数据存储时，开发者现在仍可以使用我们最好的嵌入模型 `text-embedding-3-large` ，并为 `dimensions` API 参数指定一个 1024 的值，这将把嵌入从 3072 维缩短，以牺牲一定精度为代价换取更小的向量大小。
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
 
-使用基于嵌入的搜索进行问答
+OpenAIEmbedding embedding = await client.GenerateEmbeddingAsync("Testing 123");
+
+float[] shortened = embedding.ToFloats().Span[..256].ToArray();
+double magnitude = Math.Sqrt(shortened.Sum(value => value * value));
+float[] normalized =
+    magnitude == 0
+        ? shortened
+        : shortened.Select(value => (float)(value / magnitude)).ToArray();
+
+Console.WriteLine($"Dimensions: {normalized.Length}");
+Console.WriteLine($"First value: {normalized[0]:F6}");
+Console.WriteLine(
+    $"L2 norm: {Math.Sqrt(normalized.Sum(value => value * value)):F3}"
+);
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.embeddings.create(
+  model: "text-embedding-3-small",
+  input: "Testing 123",
+  encoding_format: :float
+)
+
+shortened = response.data.fetch(0).embedding.first(256)
+magnitude = Math.sqrt(shortened.sum { |value| value**2 })
+normalized = shortened.map { |value| magnitude.zero? ? 0 : value / magnitude }
+
+puts(normalized)
+```
+
+
+动态更改维度可带来非常灵活的使用方式。例如，当使用的向量数据库仅支持最长 1024 维的 embedding 时，开发者现在仍然可以使用我们最好的 embedding 模型 `text-embedding-3-large` ，并为 dimensions 指定 1024 值， `dimensions` API 参数，这将 embedding 从 3072 维缩短下来，以牺牲部分精度换取更小的向量尺寸。
+
+
+
+
+
+
+
+#### 使用基于嵌入的搜索进行问答
+
+
 
 
 
   
 
 Question_answering_using_embeddings.ipynb
- 在许多常见场景中，模型并未在包含关键事实和信息的训练数据上进行训练，而你可能希望在生成用户查询响应时让这些信息可访问。如下所示，解决这一问题的一种方法是将额外信息放入模型的上下文窗口中。这在许多用例中有效，但会导致更高的令牌成本。在本笔记本中，我们探讨了这种方法与基于嵌入的搜索之间的权衡。
+ 在许多常见情况下，模型并未在包含你想要在生成用户查询响应时可供访问的关键事实和信息的训练数据上进行训练。如以下示例所示，一种解决方案是将额外信息放入模型的上下文窗口中。这种方法在许多用例中有效，但会导致更高的 token 成本。在本 notebook 中，我们将探讨这种方法与基于 embeddings 的搜索之间的权衡。
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const article =
+  "At the 2022 Winter Olympics, Great Britain won women's curling and Sweden won men's curling.";
+const question = `Use the article below to answer the question. If the answer cannot be found, say "I don't know."
+
+Article:
+${article}
+
+Question: Which athletes won the gold medal in curling at the 2022 Winter Olympics?`;
+
+const response = await client.chat.completions.create({
+  model: "gpt-4.1-mini",
+  messages: [
+    {
+      role: "system",
+      content: "You answer questions about the 2022 Winter Olympics.",
+    },
+    { role: "user", content: question },
+  ],
+  temperature: 0,
+});
+
+console.log(response.choices[0].message.content);
+```
 
 ```python
 query = f"""Use the below article on the 2022 Winter Olympics to answer the subsequent question. If the answer cannot be found, write "I don't know."
@@ -367,15 +528,87 @@ client.chat().completions().create(params).choices().stream()
     .forEach(System.out::println);
 ```
 
+```ruby
+require "openai"
 
-使用嵌入进行文本搜索
+client = OpenAI::Client.new
+article = "At the 2022 Winter Olympics, Great Britain won women's curling and Sweden won men's curling."
+question = <<~QUESTION
+  Use the article below to answer the question. If the answer cannot be found, say "I don't know."
+
+  Article:
+  #{article}
+
+  Question: Which athletes won the gold medal in curling at the 2022 Winter Olympics?
+QUESTION
+
+response = client.chat.completions.create(
+  model: "gpt-4.1-mini",
+  messages: [
+    {
+      role: :system,
+      content: "You answer questions about the 2022 Winter Olympics."
+    },
+    {role: :user, content: question}
+  ],
+  temperature: 0
+)
+
+puts(response.choices.fetch(0).message.content)
+```
+
+
+
+
+
+
+
+
+#### 使用嵌入进行文本搜索
+
+
 
 
 
   
 
 Semantic_text_search_using_embeddings.ipynb
- 为了检索最相关的文档，我们使用查询嵌入向量与每个文档之间的余弦相似度，并返回得分最高的文档。
+ 为了检索最相关的文档，我们计算查询与每个文档的嵌入向量之间的余弦相似度，并返回得分最高的文档。
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const reviews = [
+  "A rich cup of coffee.",
+  "Smooth beans in tomato sauce.",
+  "Dark chocolate with orange.",
+];
+
+const { data } = await client.embeddings.create({
+  model: "text-embedding-3-small",
+  input: [...reviews, "delicious beans"],
+});
+
+const query = data.at(-1).embedding;
+const similarity = (embedding) => {
+  const dotProduct = embedding.reduce(
+    (total, value, index) => total + value * query[index],
+    0
+  );
+  return dotProduct / (Math.hypot(...embedding) * Math.hypot(...query));
+};
+
+const results = reviews
+  .map((review, index) => ({
+    review,
+    score: similarity(data[index].embedding),
+  }))
+  .sort((left, right) => right.score - left.score)
+  .slice(0, 3);
+
+console.log(results);
+```
 
 ```python
 def search_reviews(df, product_description, n=3, pprint=True):
@@ -436,17 +669,91 @@ IntStream.range(0, reviews.size())
     .forEach(System.out::println);
 ```
 
+```ruby
+require "openai"
 
-使用嵌入进行代码搜索
+client = OpenAI::Client.new
+reviews = [
+  "A rich cup of coffee.",
+  "Smooth beans in tomato sauce.",
+  "Dark chocolate with orange."
+]
+
+response = client.embeddings.create(
+  model: "text-embedding-3-small",
+  input: reviews + ["delicious beans"]
+)
+
+query = response.data.fetch(-1).embedding
+similarity = lambda do |embedding|
+  dot_product = embedding.zip(query).sum { |value, query_value| value * query_value }
+  magnitude = Math.sqrt(embedding.sum { |value| value**2 })
+  query_magnitude = Math.sqrt(query.sum { |value| value**2 })
+  dot_product / (magnitude * query_magnitude)
+end
+
+results = reviews.map.with_index do |review, index|
+  {
+    review: review,
+    score: similarity.call(response.data.fetch(index).embedding)
+  }
+end.sort_by { |result| -result.fetch(:score) }.first(3)
+
+puts(results)
+```
+
+
+
+
+
+
+
+
+#### 使用嵌入进行代码搜索
+
+
 
 
 
   
 
 Code_search.ipynb
- 代码搜索的工作原理与基于嵌入的文本搜索类似。我们提供了一种方法，从给定仓库中的所有 Python 文件中提取 Python 函数。然后每个函数由 `text-embedding-3-small` 模型。
+ 代码搜索的工作方式与基于嵌入的文本搜索类似。我们提供一种方法，可以从给定仓库中的所有 Python 文件中提取 Python 函数。然后每个函数都会被该 model 索引。 `text-embedding-3-small` model。
 
-进行索引。为了执行代码搜索，我们使用同一模型以自然语言嵌入查询。然后我们计算生成的查询嵌入与每个函数嵌入之间的余弦相似度。余弦相似度最高的结果最为相关。
+为了执行代码搜索，我们使用同一个 model 将自然语言形式的查询进行嵌入。然后我们计算所得查询嵌入与各个函数嵌入之间的余弦相似度。余弦相似度最高的结果最为相关。
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const functions = [
+  "function add(a, b) { return a + b; }",
+  "function complete(prompt) { return prompt; }",
+];
+
+const { data } = await client.embeddings.create({
+  model: "text-embedding-3-small",
+  input: [...functions, "Completions API tests"],
+});
+
+const query = data.at(-1).embedding;
+const similarity = (embedding) => {
+  const dotProduct = embedding.reduce(
+    (total, value, index) => total + value * query[index],
+    0
+  );
+  return dotProduct / (Math.hypot(...embedding) * Math.hypot(...query));
+};
+
+const results = functions
+  .map((source, index) => ({
+    source,
+    score: similarity(data[index].embedding),
+  }))
+  .sort((left, right) => right.score - left.score);
+
+console.log(results);
+```
 
 ```python
 df["code_embedding"] = df["code"].apply(
@@ -508,17 +815,88 @@ IntStream.range(0, functions.size())
     .forEach(System.out::println);
 ```
 
+```ruby
+require "openai"
 
-使用嵌入进行推荐
+client = OpenAI::Client.new
+functions = [
+  "function add(a, b) { return a + b; }",
+  "function complete(prompt) { return prompt; }"
+]
+
+response = client.embeddings.create(
+  model: "text-embedding-3-small",
+  input: functions + ["Completions API tests"]
+)
+
+query = response.data.fetch(-1).embedding
+similarity = lambda do |embedding|
+  dot_product = embedding.zip(query).sum { |value, query_value| value * query_value }
+  magnitude = Math.sqrt(embedding.sum { |value| value**2 })
+  query_magnitude = Math.sqrt(query.sum { |value| value**2 })
+  dot_product / (magnitude * query_magnitude)
+end
+
+results = functions.map.with_index do |source, index|
+  {
+    source: source,
+    score: similarity.call(response.data.fetch(index).embedding)
+  }
+end.sort_by { |result| -result.fetch(:score) }
+
+puts(results)
+```
+
+
+
+
+
+
+
+
+#### 使用 embeddings 进行推荐
+
+
 
 
 
   
 
 Recommendation_using_embeddings.ipynb
- 由于嵌入向量之间距离越短表示相似度越高，嵌入可用于推荐。
+ 由于嵌入向量之间距离越短代表相似度越高，因此嵌入可用于推荐。
 
-下面，我们展示一个基本的推荐器。它接收一个字符串列表和一个“源”字符串，计算它们的嵌入，然后返回这些字符串的排序，从最相似到最不相似排列。作为一个具体示例，下方链接的笔记本将此函数的一个版本应用于 [AG news dataset](http://groups.di.unipi.it/~gulli/AG_corpus_of_news_articles.html) （抽样到 2,000 篇新闻文章描述），以返回与任何给定源文章最相似的 5 篇文章。
+下面我们演示一个基础的推荐器。它接收一个字符串列表和一个“源”字符串，计算它们的嵌入，然后返回按相似度从高到低排序的字符串排名。作为具体示例，下面链接的 notebook 将此函数的一个版本应用于 [AG 新闻数据集](http://groups.di.unipi.it/~gulli/AG_corpus_of_news_articles.html) （采样至 2,000 条新闻文章描述），以返回与任意给定源文章最相似的前 5 篇文章。
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const strings = [
+  "A cheetah is a fast land animal.",
+  "A peregrine falcon is a fast bird.",
+  "A tortoise moves slowly.",
+];
+
+const { data } = await client.embeddings.create({
+  model: "text-embedding-3-small",
+  input: strings,
+});
+
+const query = data[0].embedding;
+const recommendations = data
+  .map(({ embedding }, index) => {
+    const dotProduct = embedding.reduce(
+      (total, value, dimension) => total + value * query[dimension],
+      0
+    );
+    const similarity =
+      dotProduct / (Math.hypot(...embedding) * Math.hypot(...query));
+    return { index, text: strings[index], similarity };
+  })
+  .sort((left, right) => right.similarity - left.similarity);
+
+console.log(recommendations);
+```
 
 ```python
 def recommendations_from_strings(
@@ -593,25 +971,67 @@ var nearestNeighbors =
 System.out.println(nearestNeighbors);
 ```
 
+```ruby
+require "openai"
 
-二维数据可视化
+client = OpenAI::Client.new
+strings = [
+  "A cheetah is a fast land animal.",
+  "A peregrine falcon is a fast bird.",
+  "A tortoise moves slowly."
+]
+
+response = client.embeddings.create(
+  model: "text-embedding-3-small",
+  input: strings
+)
+
+query = response.data.fetch(0).embedding
+similarity = lambda do |embedding|
+  dot_product = embedding.zip(query).sum { |value, query_value| value * query_value }
+  magnitude = Math.sqrt(embedding.sum { |value| value**2 })
+  query_magnitude = Math.sqrt(query.sum { |value| value**2 })
+  dot_product / (magnitude * query_magnitude)
+end
+
+recommendations = response.data.map.with_index do |embedding, index|
+  {
+    index: index,
+    text: strings.fetch(index),
+    similarity: similarity.call(embedding.embedding)
+  }
+end.sort_by { |recommendation| -recommendation.fetch(:similarity) }
+
+puts(recommendations)
+```
+
+
+
+
+
+
+
+
+#### 二维数据可视化
+
+
 
 
 
   
 
 Visualizing_embeddings_in_2D.ipynb
- 嵌入的大小随底层模型的复杂性而变化。为了可视化这些高维数据，我们使用 t-SNE 算法将数据转换为二维。
+ embeddings 的大小会随底层模型的复杂度而变化。为了对高维数据进行可视化，我们使用 t-SNE 算法将数据转换为二维。
 
-我们根据评论者给出的星级评分对各个评论进行着色：
+我们根据评论者给出的星级评分对每条评论进行着色：
 
 - 1 星：红色
 - 2 星：深橙色
-- 3 星：金色
-- 4 星：绿松石色
+- 3 星：金黄色
+- 4 星：青绿色
 - 5 星：深绿色
 
-可视化似乎产生了大约 3 个聚类，其中一个聚类主要是负面评论。
+该可视化似乎大致生成了 3 个聚类，其中一个主要包含负面评价。
 
 ```python
 import numpy as np
@@ -640,18 +1060,26 @@ plt.title("Amazon ratings visualized in language using t-SNE")
 ```
 
 
-将嵌入作为机器学习算法的文本特征编码器
+
+
+
+
+
+
+#### 将 Embedding 用作机器学习算法的文本特征编码器
+
+
 
 
 
   
 
 Regression_using_embeddings.ipynb
- 嵌入可用作机器学习模型中通用的自由文本特征编码器。如果相关输入中有部分自由文本，融入嵌入将提升任何机器学习模型的性能。嵌入也可用作 ML 模型中的类别特征编码器。当类别变量的名称有实际意义且数量众多时（如职位名称），这一用途的价值最大。对于此类任务，相似性嵌入通常比搜索嵌入表现更佳。
+ 在机器学习模型中，嵌入可以用作通用的自由文本特征编码器。如果部分相关输入是自由文本，引入嵌入将提升任何机器学习模型的性能。嵌入还可以在机器学习模型中用作类别特征编码器。当类别变量的名称有意义且数量较多（例如职位名称）时，这种做法价值最大。对于此任务，相似度嵌入通常比搜索嵌入表现更好。
 
-我们观察到，嵌入表示通常信息非常丰富且密集。例如，即使使用 SVD 或 PCA 将输入维度降低 10%，通常也会导致特定任务的下游性能变差。
+我们观察到，嵌入表示通常非常丰富且信息密集。例如，即使使用 SVD 或 PCA 将输入维度降低 10%，通常也会导致特定任务的下游性能下降。
 
-此代码将数据划分为训练集和测试集，供以下两个用例使用，即回归和分类。
+此代码将数据拆分为训练集和测试集，供以下两个用例（即回归和分类）使用。
 
 ```python
 from sklearn.model_selection import train_test_split
@@ -662,11 +1090,11 @@ X_train, X_test, y_train, y_test = train_test_split(
 ```
 
 
-#### 使用嵌入特征的回归
+#### 使用嵌入特征进行回归
 
-嵌入提供了一种优雅的方式来预测数值。在这个例子中，我们根据评论者的评论文本来预测其星级评分。由于嵌入中包含的语义信息丰富，即使评论数量很少，预测效果也相当不错。
+Embedding 是一种预测数值的优雅方式。在本示例中，我们根据评论的文本来预测评价者的星级评分。由于 Embedding 中蕴含的语义信息非常丰富，即使评论数量很少，预测效果也相当不错。
 
-我们假设评分是1到5之间的连续变量，并允许算法预测任意浮点值。机器学习算法最小化预测值与真实评分之间的距离，平均绝对误差为0.39，这意味着平均预测偏离不到半颗星。
+我们假设评分是介于 1 到 5 之间的连续变量，并允许算法预测任意浮点值。该机器学习算法会最小化预测值与真实评分之间的距离，最终达到 0.39 的平均绝对误差，这意味着平均而言预测偏差不到半颗星。
 
 ```python
 from sklearn.ensemble import RandomForestRegressor
@@ -677,16 +1105,24 @@ preds = rfr.predict(X_test)
 ```
 
 
-使用嵌入特征进行分类
+
+
+
+
+
+
+#### 使用嵌入特征进行分类
+
+
 
 
 
   
 
 Classification_using_embeddings.ipynb
- 这次，我们不是让算法预测1到5之间的任意值，而是尝试将评论的精确星级分类到5个桶中，范围从1星到5星。
+ 这一次，我们不再让算法预测 1 到 5 之间的任意值，而是尝试将评论的精确星级分类到 5 个桶中，范围从 1 星到 5 星。
 
-训练后，模型对1星和5星评论的预测效果远好于更细致的评论（2-4星），这很可能是由于更极端的情感表达。
+训练完成后，模型对 1 星和 5 星评论的预测效果远好于更细微的评论（2-4 星），这可能是因为极端情感的表述更为明显。
 
 ```python
 from sklearn.ensemble import RandomForestClassifier
@@ -698,14 +1134,46 @@ preds = clf.predict(X_test)
 ```
 
 
-零样本分类
+
+
+
+
+
+
+#### 零样本分类
+
+
 
 
 
   
 
 Zero-shot_classification_with_embeddings.ipynb
- 我们可以使用嵌入进行零样本分类，无需任何带标签的训练数据。对于每个类别，我们嵌入类别名称或类别的简短描述。为了以零样本方式对新文本进行分类，我们将其嵌入与所有类别嵌入进行比较，并预测相似度最高的类别。
+ 我们可以在没有任何标注训练数据的情况下，使用嵌入进行零样本分类。对于每个类别，我们会嵌入该类别的名称或简短描述。要以零样本方式对新的文本进行分类时，我们会将其嵌入与所有类别的嵌入进行比较，并预测相似度最高的类别。
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const labels = ["negative", "positive"];
+
+const { data } = await client.embeddings.create({
+  model: "text-embedding-3-small",
+  input: [...labels, "The coffee arrived quickly and tastes great."],
+});
+
+const review = data.at(-1).embedding;
+const similarity = (embedding) => {
+  const dotProduct = embedding.reduce(
+    (total, value, index) => total + value * review[index],
+    0
+  );
+  return dotProduct / (Math.hypot(...embedding) * Math.hypot(...review));
+};
+
+const [negative, positive] = data.map(({ embedding }) => similarity(embedding));
+console.log(positive > negative ? "positive" : "negative");
+```
 
 ```python
 df = df[df.Score != 3]
@@ -750,17 +1218,50 @@ double positive = cosineSimilarity(review, embeddings.get(1).embedding());
 System.out.println(positive > negative ? "positive" : "negative");
 ```
 
+```ruby
+require "openai"
 
-获取用户和产品嵌入以进行冷启动推荐
+client = OpenAI::Client.new
+labels = ["negative", "positive"]
+
+response = client.embeddings.create(
+  model: "text-embedding-3-small",
+  input: labels + ["The coffee arrived quickly and tastes great."]
+)
+
+review = response.data.fetch(-1).embedding
+similarity = lambda do |embedding|
+  dot_product = embedding.zip(review).sum { |value, review_value| value * review_value }
+  magnitude = Math.sqrt(embedding.sum { |value| value**2 })
+  review_magnitude = Math.sqrt(review.sum { |value| value**2 })
+  dot_product / (magnitude * review_magnitude)
+end
+
+negative, positive = response.data.first(2).map do |embedding|
+  similarity.call(embedding.embedding)
+end
+puts((positive > negative) ? "positive" : "negative")
+```
+
+
+
+
+
+
+
+
+#### 获取用于冷启动推荐的用户与商品嵌入
+
+
 
 
 
   
 
 User_and_product_embeddings.ipynb
- 我们可以通过对用户的所有评论取平均来获得用户嵌入。类似地，我们可以通过对该产品的所有评论取平均来获得产品嵌入。为了展示这种方法的实用性，我们使用了5万条评论的子集，以覆盖每个用户和每个产品的更多评论。
+ 我们可以通过对用户的所有评论取平均来得到该用户的 embedding。类似地，我们可以通过对某个产品的所有评论取平均来得到该产品的 embedding。为了展示这种方法的实用性，我们使用了 5 万条评论的子集，以便覆盖每位用户和每个产品的更多评论。
 
-我们在一个单独的测试集上评估这些嵌入的有效性，绘制用户和产品嵌入的相似度与评分的关系。有趣的是，基于这种方法，即使在用户收到产品之前，我们也能比随机更好地预测他们是否会喜欢该产品。
+我们在单独的测试集上评估这些 embedding 的实用性，将用户 embedding 和产品 embedding 的相似度绘制为评分的函数。有趣的是，基于这种方法，甚至在用户收到产品之前，我们就能比随机猜测更准确地预测他们是否会喜欢该产品。
 
 ```python
 user_embeddings = df.groupby("UserId").ada_embedding.apply(np.mean)
@@ -768,16 +1269,24 @@ prod_embeddings = df.groupby("ProductId").ada_embedding.apply(np.mean)
 ```
 
 
-聚类
+
+
+
+
+
+
+#### Clustering
+
+
 
 
 
   
 
 Clustering.ipynb
- 聚类是理解大量文本数据的一种方式。嵌入对此任务很有用，因为它们提供了每个文本的语义上有意义的向量表示。因此，以无监督的方式，聚类将揭示数据集中隐藏的分组。
+ 聚类是处理大规模文本数据的一种方式。向量嵌入很适合这项任务，因为它们能为每段文本提供语义上有意义的向量表示。因此，聚类能够以无监督的方式发现我们数据集中隐藏的分组。
 
-在这个例子中，我们发现了四个不同的簇：一个关注狗粮，一个关注负面评论，还有两个关注正面评论。
+在示例中，我们发现了四个不同的聚类：一个聚焦于狗粮，一个聚焦于负面评论，另外两个聚焦于正面评论。
 
 ```python
 import numpy as np
@@ -792,11 +1301,15 @@ df["Cluster"] = kmeans.labels_
 ```
 
 
-## 常见问题
 
-### 在嵌入字符串之前，我如何判断它包含多少个令牌？
 
-在 Python 中，你可以使用 OpenAI 的分词器将字符串拆分为令牌 [`tiktoken`](https://github.com/openai/tiktoken).
+
+
+## FAQ
+
+### 如何在嵌入字符串之前判断它包含多少个 token？
+
+在 Python 中，你可以使用 OpenAI 的分词器将字符串拆分为 token [`tiktoken`](https://github.com/openai/tiktoken).
 
 示例代码：
 
@@ -815,27 +1328,27 @@ num_tokens_from_string("tiktoken is great!", "cl100k_base")
 ```
 
 
-对于第三代嵌入模型，如 `text-embedding-3-small`，请使用 `cl100k_base` 编码。
+对于第三代 embedding 模型（例如 `text-embedding-3-small`），请使用 `cl100k_base` 编码。
 
-更多详细信息和示例代码请参阅 OpenAI Cookbook 指南 [如何使用 tiktoken 计数令牌](https://developers.openai.com/cookbook/examples/how_to_count_tokens_with_tiktoken).
+更多详情和示例代码请参阅 OpenAI Cookbook 指南 [如何使用 tiktoken 计算 token 数](https://developers.openai.com/cookbook/examples/how_to_count_tokens_with_tiktoken).
 
 ### 如何快速检索 K 个最近的嵌入向量？
 
-为了快速搜索大量向量，我们建议使用向量数据库。你可以在我们的 Cookbook 中找到使用向量数据库和 OpenAI API 的示例 [中](https://developers.openai.com/cookbook/examples/vector_databases/readme) 在 GitHub 上。
+如需在大量向量中快速检索，推荐使用向量数据库。你可以在 Cookbook 中找到结合向量数据库与 OpenAI API 的示例 [我们的 Cookbook](https://developers.openai.com/cookbook/examples/vector_databases/readme) 在 GitHub 上。
 
 ### 我应该使用哪种距离函数？
 
 我们推荐 [余弦相似度](https://en.wikipedia.org/wiki/Cosine_similarity)。距离函数的选择通常影响不大。
 
-OpenAI 嵌入已归一化至长度为 1，这意味着：
+OpenAI embeddings are normalized to length 1, which means that:
 
-- 余弦相似度可以仅通过点积计算，速度稍快一些
-- 余弦相似度和欧氏距离将产生相同的排名结果
+- 余弦相似度可以通过仅使用点积来略微加快计算速度
+- 余弦相似度和欧氏距离将产生完全相同的排序结果
 
-### 我可以在线分享我的嵌入吗？
+### 我可以在网上分享我的 embeddings 吗？
 
-是的，客户拥有其输入和输出自我们模型的数据，包括嵌入的情况。你负责确保你输入到我们 API 的内容不违反任何适用法律或我们的 [使用条款](https://openai.com/policies/terms-of-use).
+是的，客户拥有我们模型输入和输出的所有权，包括嵌入的情况。你需要确保你输入到我们 API 的内容不违反任何适用法律或我们的 [使用条款](https://openai.com/policies/terms-of-use).
 
-### V3 嵌入模型是否了解近期事件？
+### V3 embedding 模型是否了解近期发生的事件？
 
-不， `text-embedding-3-large` 和 `text-embedding-3-small` 模型缺少对 2021 年 9 月之后发生事件的了解。对于文本生成模型来说，这通常不会造成多大的限制，但在某些边缘情况下，它可能会降低性能。
+不， `text-embedding-3-large` 和 `text-embedding-3-small` 模型缺乏对 2021 年 9 月之后发生的事件的了解。这通常不像对文本生成模型那样构成很大的限制，但在某些边缘情况下可能会降低性能。

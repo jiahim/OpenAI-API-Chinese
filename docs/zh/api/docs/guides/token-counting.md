@@ -1,29 +1,29 @@
-# 统计令牌数
+# 计算 token
 
-> 有关完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-令牌计数可让你在向模型发送请求之前，确定该请求将使用多少个输入令牌。可用于：
+Token counting 允许你在向模型发送请求之前确定该请求将使用多少输入令牌。用于：
 
 - **优化提示词** 以适配上下文限制
-- **估算成本** 在发起API调用前
-- **路由请求** 基于大小（例如，将较小的提示词路由到较快的模型）
-- **避免意外** 对于图像和文件——不再基于字符进行估算
+- **估算成本** 在进行 API 调用之前
+- **路由请求** 依据大小路由（例如，将较小的提示词路由到更快的模型）
+- **避免意外情况** 处理图像和文件时——不再依赖基于字符数的估算
 
-该 [输入令牌计数端点](https://developers.openai.com/api/reference/python/resources/responses/subresources/input_tokens/methods/count) 接受与 [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create)。相同的输入格式。传递文本、消息、图像、文件、工具或对话——API 会返回模型将接收到的精确数量。
+该 [输入令牌计数端点](https://developers.openai.com/api/reference/python/resources/responses/subresources/input_tokens/methods/count) 接受与 [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create)。相同的输入格式。传入文本、消息、图像、文件、工具或对话——API 会返回模型将接收到的确切令牌数量。
 
-该数量包括用于表示请求结构的格式令牌，如消息角色和边界。这些令牌可能不会出现在你本地进行分词处理的文本或字段中。
+该计数包括用于表示请求结构的格式化令牌，例如消息角色和边界。这些令牌可能不会出现在你在本地进行分词的文本或字段中。
 
-## 为何使用令牌计数API？
+## 为什么要使用 token 计数 API？
 
-像 tiktoken 这样的本地分词器 [tiktoken](https://github.com/openai/tiktoken) 适用于纯文本，但存在一定限制：
+类似 [tiktoken](https://github.com/openai/tiktoken) 的分词器适用于纯文本，但它们存在一些限制：
 
-- **图像和文件** 不受支持——像 `characters / 4` 这样的估算不准确
-- **工具和模式** 会增加难以在本地计算的令牌数
-- **模型特定行为** 可能改变令牌化（例如，推理、缓存）
+- **图片和文件** 不被支持——像这样的估算 `characters / 4` 是不准确的
+- **工具和架构** 添加的 token 难以在本地精确计数
+- **特定模型的行为** 会改变分词方式（例如推理、缓存）
 
-令牌计数 API 处理所有这些情况。使用你本会发送的相同请求负载 `responses.create` ，即可获得准确计数。然后将结果用于你的消息验证或成本估算流程。
+令牌计数 API 会处理所有这些情况。请使用与你要发送的相同的载荷 `responses.create` 从而得到准确的计数。然后将该结果接入你的消息校验或成本估算流程。
 
-## 统计基础消息中的 token 数
+## 计算基础消息中的 token 数
 
 简单文本输入
 
@@ -125,7 +125,7 @@ openai responses:input-tokens count \
 ```
 
 
-## 统计对话中的 token 数量
+## 统计对话中的 token 数
 
 多轮对话
 
@@ -276,9 +276,9 @@ YAML
 ```
 
 
-## 使用指令统计 token 数
+## 使用指令统计 token
 
-带系统指令的输入
+使用系统指令进行输入
 
 ```javascript
 import OpenAI from "openai";
@@ -387,11 +387,11 @@ YAML
 ```
 
 
-## 使用图像统计令牌数
+## 计算包含图片的 tokens 数量
 
-图像根据大小和细节级别消耗令牌。令牌计数 API 返回精确计数，无需猜测。
+图像会根据大小和细节级别消耗 token。token 计数 API 会返回精确数量——无需猜测。
 
-带图像的输入
+附带图像的输入
 
 ```javascript
 import OpenAI from "openai";
@@ -565,13 +565,13 @@ YAML
 ```
 
 
-你可以使用 `file_id` （来自 [文件 API](https://developers.openai.com/api/reference/resources/files)）或 `image_url` （一个 URL 或 base64 数据 URL）。请参阅 [图像与视觉](https://developers.openai.com/api/docs/guides/images-vision) 了解详情。
+你可以使用 `file_id` (来自 [Files API](https://developers.openai.com/api/reference/resources/files)) 或 `image_url` (URL 或 base64 data URL)。详见 [图像与视觉](https://developers.openai.com/api/docs/guides/images-vision) 。
 
-## 使用工具计算 token 数
+## 使用工具统计 token 数量
 
-工具定义（函数架构、MCP 服务器等）会向上下文中添加令牌。请将它们与你的输入一起计算：
+工具定义（函数 schema、MCP 服务器等）会增加上下文的 token。请将它们与你的输入一起统计：
 
-带函数工具的输入
+包含函数工具的输入
 
 ```javascript
 import OpenAI from "openai";
@@ -767,24 +767,24 @@ YAML
 ```
 
 
-## 使用文件计算令牌数
+## 使用文件统计 token 数
 
-[文件输入](https://developers.openai.com/api/docs/guides/file-inputs)——目前支持 PDF——。传入 `file_id`, `file_url`，或 `file_data` 正如你为 `responses.create`。令牌计数反映模型处理的完整输入。
+[文件输入](https://developers.openai.com/api/docs/guides/file-inputs)——目前支持 PDF。传入 `file_id`, `file_url`，或者 `file_data` 的方式与 `responses.create`。相同。Token 数量反映了模型完整处理后的输入。
 
 ## 了解输出 token 数量
 
-报告的输出 token 用量包括模型生成的所有 token，而不仅仅是响应中可见的文本。Responses API 将此总数报告为 `output_tokens`，而 Chat Completions API 则将其报告为 `completion_tokens`.
+报告的输出 token 使用量包含模型生成的所有 token，而不仅仅是响应中可见的文本。Responses API 将该总量报告为 `output_tokens`，而 Chat Completions API 将其报告为 `completion_tokens`.
 
-某些模型（包括 GPT-5 模型）会生成用于格式化或分隔响应通道、工具调用和其他消息结构的 token。这些格式化 token 不会出现在消息内容或 `logprobs`，中，也不一定在用量中单独列出。因此，报告的输出或完成 token 计数可能高于可见 token 的数量或包含在 `logprobs`，中的 token 数量，即使报告的 `reasoning_tokens` 值为 `0`.
+某些模型（包括 GPT-5 模型）会生成用于格式化或分隔响应通道、工具调用以及其他消息结构的 token。这些格式化 token 不会出现在消息内容中，也不会出现在 `logprobs`，中，并且未必在使用量数据中单独列出。因此，报告的输出或 completion token 计数可能高于可见 token 数或包含在 `logprobs`，中的 token 数，即使报告的 `reasoning_tokens` 值为 `0`.
 
-该 `max_output_tokens` 和 `max_completion_tokens` 参数限制了模型生成的所有 token，包括不可见的 token。不可见 token 的数量因模型和响应形态而异，因此不要假设报告用量与可见输出之间存在固定的差异。当你需要特定数量的可见输出时，请在这些限制中留出余量。
+该 `max_output_tokens` 和 `max_completion_tokens` 参数会限制模型生成的所有 token，包括不可见的 token。不可见 token 的数量因模型和响应形态而异，因此不要假设报告的使用量与可见输出之间存在固定的差异。当你需要特定数量的可见输出时，请在这些限制中预留余量。
 
 ## API 参考
 
-有关完整参数和响应结构，请参阅 [计算输入令牌 API 参考](https://developers.openai.com/api/reference/python/resources/responses/subresources/input_tokens/methods/count)。端点为：
+有关完整参数和响应格式，请参阅 [Count input tokens API 参考](https://developers.openai.com/api/reference/python/resources/responses/subresources/input_tokens/methods/count)。该端点为：
 
 ```
 POST /v1/responses/input_tokens
 ```
 
-响应包括 `input_tokens` （整数）和 `object: "response.input_tokens"`.
+响应包含 `input_tokens` （整数）和 `object: "response.input_tokens"`.

@@ -1,6 +1,6 @@
-# 容器
+# Containers
 
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取 Markdown 版本的文档页面。
 
 ## 创建容器
 
@@ -8,7 +8,7 @@
 
 创建容器
 
-### 请求体参数
+### Body 参数
 
 - `name: string`
 
@@ -16,11 +16,11 @@
 
 - `expires_after: optional object { anchor, minutes }`
 
-  相对于“锚点”时间的容器过期时间（秒）。
+  相对“anchor”时间的容器过期时间（以秒为单位）。
 
   - `anchor: "last_active_at"`
 
-    过期时间的时间锚点。目前仅支持“last_active_at”。
+    过期时间的时间锚点。目前仅支持 'last_active_at'。
 
     - `"last_active_at"`
 
@@ -32,7 +32,7 @@
 
 - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
-  容器的可选内存限制。默认为“1g”。
+  容器的可选内存限制。默认为 "1g"。
 
   - `"1g"`
 
@@ -58,7 +58,7 @@
 
     - `allowed_domains: array of string`
 
-      当类型为时的允许域列表 `allowlist`.
+      当 type 为 `allowlist`.
 
     - `type: "allowlist"`
 
@@ -68,23 +68,23 @@
 
     - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-      用于允许列表域的可选域范围密钥。
+      针对白名单域的可选域范围密钥。
 
       - `domain: string`
 
-        与密钥关联的域。
+        与该密钥关联的域。
 
       - `name: string`
 
-        要为域注入的密钥名称。
+        为该域注入的密钥名称。
 
       - `value: string`
 
-        要为域注入的密钥值。
+        为该域注入的密钥值。
 
 - `skills: optional array of SkillReference or InlineSkill`
 
-  按 ID 或内联数据引用的可选技能列表。
+  通过 ID 引用或内联数据的可选技能列表。
 
   - `SkillReference object { skill_id, type, version }`
 
@@ -94,13 +94,13 @@
 
     - `type: "skill_reference"`
 
-      引用使用 /v1/skills 端点创建的技能。
+      引用通过 /v1/skills 端点创建的技能。
 
       - `"skill_reference"`
 
     - `version: optional string`
 
-      可选的技能版本。使用正整数或“latest”。省略时使用默认值。
+      可选的技能版本。使用正整数或 'latest'。省略以使用默认值。
 
   - `InlineSkill object { description, name, source, type }`
 
@@ -118,7 +118,7 @@
 
       - `data: string`
 
-        Base64 编码的技能 zip 包。
+        经过 Base64 编码的技能 zip 包。
 
       - `media_type: "application/zip"`
 
@@ -128,17 +128,17 @@
 
       - `type: "base64"`
 
-        内联技能来源的类型。必须为 `base64`.
+        内联技能源的类型。必须为 `base64`.
 
         - `"base64"`
 
     - `type: "inline"`
 
-      定义此请求的内联技能。
+      为本次请求定义一个内联技能。
 
       - `"inline"`
 
-### 返回
+### Returns
 
 - `id: string`
 
@@ -158,13 +158,13 @@
 
 - `status: string`
 
-  容器的状态（例如，active、deleted）。
+  容器的状态（例如 active、deleted）。
 
 - `expires_after: optional object { anchor, minutes }`
 
-  容器将在此时间段后过期。
-  锚点是过期时间的参考点。
-  分钟数是指锚点之后、容器过期之前的分钟数。
+  容器在此时间周期后将过期。
+  anchor 是过期时间的参考点。
+  minutes 是 anchor 之后到容器过期之前的分钟数。
 
   - `anchor: optional "last_active_at"`
 
@@ -174,11 +174,11 @@
 
   - `minutes: optional number`
 
-    锚点之后、容器过期之前的分钟数。
+    anchor 之后到容器过期之前的分钟数。
 
 - `last_active_at: optional number`
 
-  容器最后一次活动时的 Unix 时间戳（以秒为单位）。
+  容器最近一次活跃时的 Unix 时间戳（以秒为单位）。
 
 - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
@@ -206,7 +206,7 @@
 
   - `allowed_domains: optional array of string`
 
-    允许的出站域名，当 `type` 为 `allowlist`.
+    当 network_policy.mode 为 `type` 时允许的出站域名 `allowlist`.
 
 ### 示例
 
@@ -294,9 +294,9 @@ curl https://api.openai.com/v1/containers \
 
 ## 删除容器
 
-**删除** `/containers/{container_id}`
+**delete** `/containers/{container_id}`
 
-删除容器
+Delete Container
 
 ### 路径参数
 
@@ -337,11 +337,11 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 - `after: optional string`
 
-  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起一个列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的后续调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页的光标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的后续调用可以包含 after=obj_foo 以获取列表的下一页。
 
 - `limit: optional number`
 
-  返回对象数量的限制。限制范围在 1 到 100 之间，默认值为 20。
+  要返回的对象数量上限。限制范围为 1 到 100，默认为 20。
 
 - `name: optional string`
 
@@ -349,13 +349,13 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 - `order: optional "asc" or "desc"`
 
-  按对象的 `created_at` 时间戳排序。 `asc` 用于升序， `desc` 用于降序。
+  按对象的 `created_at` 时间戳排序。 `asc` 表示升序， `desc` 表示降序。
 
   - `"asc"`
 
   - `"desc"`
 
-### 返回
+### Returns
 
 - `data: array of object { id, created_at, name, 6 more }`
 
@@ -379,13 +379,13 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
   - `status: string`
 
-    容器的状态（例如，active、deleted）。
+    容器的状态（例如 active、deleted）。
 
   - `expires_after: optional object { anchor, minutes }`
 
-    容器将在此时间段后过期。
-    锚点是过期时间的参考点。
-    分钟数是指锚点之后、容器过期之前的分钟数。
+    容器在此时间周期后将过期。
+    anchor 是过期时间的参考点。
+    minutes 是 anchor 之后到容器过期之前的分钟数。
 
     - `anchor: optional "last_active_at"`
 
@@ -395,11 +395,11 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
     - `minutes: optional number`
 
-      锚点之后、容器过期之前的分钟数。
+      anchor 之后到容器过期之前的分钟数。
 
   - `last_active_at: optional number`
 
-    容器最后一次活动时的 Unix 时间戳（以秒为单位）。
+    容器最近一次活跃时的 Unix 时间戳（以秒为单位）。
 
   - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
@@ -427,7 +427,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
     - `allowed_domains: optional array of string`
 
-      允许的出站域名，当 `type` 为 `allowlist`.
+      当 network_policy.mode 为 `type` 时允许的出站域名 `allowlist`.
 
 - `first_id: string`
 
@@ -435,7 +435,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 - `has_more: boolean`
 
-  是否还有更多可用容器。
+  是否还有更多容器可用。
 
 - `last_id: string`
 
@@ -443,7 +443,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 - `object: "list"`
 
-  返回对象的类型，必须为 'list'。
+  返回的对象类型，必须为 'list'。
 
   - `"list"`
 
@@ -523,13 +523,13 @@ curl https://api.openai.com/v1/containers \
 
 **get** `/containers/{container_id}`
 
-检索容器
+Retrieve Container
 
 ### 路径参数
 
 - `container_id: string`
 
-### 返回
+### Returns
 
 - `id: string`
 
@@ -549,13 +549,13 @@ curl https://api.openai.com/v1/containers \
 
 - `status: string`
 
-  容器的状态（例如，active、deleted）。
+  容器的状态（例如 active、deleted）。
 
 - `expires_after: optional object { anchor, minutes }`
 
-  容器将在此时间段后过期。
-  锚点是过期时间的参考点。
-  分钟数是指锚点之后、容器过期之前的分钟数。
+  容器在此时间周期后将过期。
+  anchor 是过期时间的参考点。
+  minutes 是 anchor 之后到容器过期之前的分钟数。
 
   - `anchor: optional "last_active_at"`
 
@@ -565,11 +565,11 @@ curl https://api.openai.com/v1/containers \
 
   - `minutes: optional number`
 
-    锚点之后、容器过期之前的分钟数。
+    anchor 之后到容器过期之前的分钟数。
 
 - `last_active_at: optional number`
 
-  容器最后一次活动时的 Unix 时间戳（以秒为单位）。
+  容器最近一次活跃时的 Unix 时间戳（以秒为单位）。
 
 - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
@@ -597,7 +597,7 @@ curl https://api.openai.com/v1/containers \
 
   - `allowed_domains: optional array of string`
 
-    允许的出站域名，当 `type` 为 `allowlist`.
+    当 network_policy.mode 为 `type` 时允许的出站域名 `allowlist`.
 
 ### 示例
 
@@ -655,9 +655,9 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 }
 ```
 
-## 域类型
+## Domain Types
 
-### 容器创建响应
+### Container Create Response
 
 - `ContainerCreateResponse object { id, created_at, name, 6 more }`
 
@@ -679,13 +679,13 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
   - `status: string`
 
-    容器的状态（例如，active、deleted）。
+    容器的状态（例如 active、deleted）。
 
   - `expires_after: optional object { anchor, minutes }`
 
-    容器将在此时间段后过期。
-    锚点是过期时间的参考点。
-    分钟数是指锚点之后、容器过期之前的分钟数。
+    容器在此时间周期后将过期。
+    anchor 是过期时间的参考点。
+    minutes 是 anchor 之后到容器过期之前的分钟数。
 
     - `anchor: optional "last_active_at"`
 
@@ -695,11 +695,11 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
     - `minutes: optional number`
 
-      锚点之后、容器过期之前的分钟数。
+      anchor 之后到容器过期之前的分钟数。
 
   - `last_active_at: optional number`
 
-    容器最后一次活动时的 Unix 时间戳（以秒为单位）。
+    容器最近一次活跃时的 Unix 时间戳（以秒为单位）。
 
   - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
@@ -727,9 +727,9 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
     - `allowed_domains: optional array of string`
 
-      允许的出站域名，当 `type` 为 `allowlist`.
+      当 network_policy.mode 为 `type` 时允许的出站域名 `allowlist`.
 
-### 容器列表响应
+### Container List Response
 
 - `ContainerListResponse object { id, created_at, name, 6 more }`
 
@@ -751,13 +751,13 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
   - `status: string`
 
-    容器的状态（例如，active、deleted）。
+    容器的状态（例如 active、deleted）。
 
   - `expires_after: optional object { anchor, minutes }`
 
-    容器将在此时间段后过期。
-    锚点是过期时间的参考点。
-    分钟数是指锚点之后、容器过期之前的分钟数。
+    容器在此时间周期后将过期。
+    anchor 是过期时间的参考点。
+    minutes 是 anchor 之后到容器过期之前的分钟数。
 
     - `anchor: optional "last_active_at"`
 
@@ -767,11 +767,11 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
     - `minutes: optional number`
 
-      锚点之后、容器过期之前的分钟数。
+      anchor 之后到容器过期之前的分钟数。
 
   - `last_active_at: optional number`
 
-    容器最后一次活动时的 Unix 时间戳（以秒为单位）。
+    容器最近一次活跃时的 Unix 时间戳（以秒为单位）。
 
   - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
@@ -799,9 +799,9 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
     - `allowed_domains: optional array of string`
 
-      允许的出站域名，当 `type` 为 `allowlist`.
+      当 network_policy.mode 为 `type` 时允许的出站域名 `allowlist`.
 
-### 容器检索响应
+### Container Retrieve Response
 
 - `ContainerRetrieveResponse object { id, created_at, name, 6 more }`
 
@@ -823,13 +823,13 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
   - `status: string`
 
-    容器的状态（例如，active、deleted）。
+    容器的状态（例如 active、deleted）。
 
   - `expires_after: optional object { anchor, minutes }`
 
-    容器将在此时间段后过期。
-    锚点是过期时间的参考点。
-    分钟数是指锚点之后、容器过期之前的分钟数。
+    容器在此时间周期后将过期。
+    anchor 是过期时间的参考点。
+    minutes 是 anchor 之后到容器过期之前的分钟数。
 
     - `anchor: optional "last_active_at"`
 
@@ -839,11 +839,11 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
     - `minutes: optional number`
 
-      锚点之后、容器过期之前的分钟数。
+      anchor 之后到容器过期之前的分钟数。
 
   - `last_active_at: optional number`
 
-    容器最后一次活动时的 Unix 时间戳（以秒为单位）。
+    容器最近一次活跃时的 Unix 时间戳（以秒为单位）。
 
   - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
@@ -871,33 +871,33 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
     - `allowed_domains: optional array of string`
 
-      允许的出站域名，当 `type` 为 `allowlist`.
+      当 network_policy.mode 为 `type` 时允许的出站域名 `allowlist`.
 
-# 文件
+# Files
 
-## 创建容器文件
+## Create container file
 
 **post** `/containers/{container_id}/files`
 
 创建容器文件
 
-你可以发送包含原始文件内容的 multipart/form-data 请求，也可以发送包含文件 ID 的 JSON 请求。
+你可以发送包含原始文件内容的 multipart/form-data 请求，或发送包含文件 ID 的 JSON 请求。
 
 ### 路径参数
 
 - `container_id: string`
 
-### 请求体参数
+### Body 参数
 
 - `file: optional string`
 
-  要上传的 File 对象（而非文件名）。
+  要上传的 File 对象（非文件名）。
 
 - `file_id: optional string`
 
   要创建的文件的名称。
 
-### 返回
+### Returns
 
 - `id: string`
 
@@ -974,7 +974,7 @@ curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e0
 
 ## 删除容器文件
 
-**删除** `/containers/{container_id}/files/{file_id}`
+**delete** `/containers/{container_id}/files/{file_id}`
 
 删除容器文件
 
@@ -1013,7 +1013,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 **get** `/containers/{container_id}/files`
 
-列出容器文件
+列出 Container 文件
 
 ### 路径参数
 
@@ -1023,21 +1023,21 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 - `after: optional string`
 
-  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起一个列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的后续调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页的光标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的后续调用可以包含 after=obj_foo 以获取列表的下一页。
 
 - `limit: optional number`
 
-  返回对象数量的限制。限制范围在 1 到 100 之间，默认值为 20。
+  要返回的对象数量上限。限制范围为 1 到 100，默认为 20。
 
 - `order: optional "asc" or "desc"`
 
-  按对象的 `created_at` 时间戳排序。 `asc` 用于升序， `desc` 用于降序。
+  按对象的 `created_at` 时间戳排序。 `asc` 表示升序， `desc` 表示降序。
 
   - `"asc"`
 
   - `"desc"`
 
-### 返回
+### Returns
 
 - `data: array of object { id, bytes, container_id, 4 more }`
 
@@ -1077,7 +1077,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 - `has_more: boolean`
 
-  是否还有更多可用文件。
+  是否有更多文件可用。
 
 - `last_id: string`
 
@@ -1085,7 +1085,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 - `object: "list"`
 
-  返回对象的类型，必须为 'list'。
+  返回的对象类型，必须为 'list'。
 
   - `"list"`
 
@@ -1159,7 +1159,7 @@ curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e0
 
 - `file_id: string`
 
-### 返回
+### Returns
 
 - `id: string`
 
@@ -1231,7 +1231,7 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 }
 ```
 
-## 域类型
+## Domain Types
 
 ### 文件创建响应
 
@@ -1335,7 +1335,7 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
 **get** `/containers/{container_id}/files/{file_id}/content`
 
-检索容器文件内容
+Retrieve Container File Content
 
 ### 路径参数
 

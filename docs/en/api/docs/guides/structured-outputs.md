@@ -3470,6 +3470,53 @@ try (StreamResponse<ResponseStreamEvent> stream = client.responses().createStrea
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+entities_schema = {
+  type: :object,
+  properties: {
+    attributes: {type: :array, items: {type: :string}},
+    colors: {type: :array, items: {type: :string}},
+    animals: {type: :array, items: {type: :string}}
+  },
+  required: %w[attributes colors animals],
+  additionalProperties: false
+}
+
+stream = client.responses.stream(
+  model: "gpt-5.6",
+  input: [
+    {role: :system, content: "Extract entities from the input text."},
+    {
+      role: :user,
+      content: "The quick brown fox jumps over the lazy dog with piercing blue eyes."
+    }
+  ],
+  text: {
+    format: {
+      type: :json_schema,
+      name: "entities",
+      strict: true,
+      schema: entities_schema
+    }
+  }
+)
+
+stream.each do |event|
+  case event
+  when OpenAI::Models::Responses::ResponseRefusalDeltaEvent,
+       OpenAI::Models::Responses::ResponseTextDeltaEvent
+    print(event.delta)
+  when OpenAI::Models::Responses::ResponseErrorEvent
+    warn(event.message)
+  when OpenAI::Models::Responses::ResponseCompletedEvent
+    puts("\nCompleted")
+  end
+end
+```
+
 
 
 ## Supported schemas

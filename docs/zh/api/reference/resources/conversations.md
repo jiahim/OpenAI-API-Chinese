@@ -1,48 +1,48 @@
 # 对话
 
-> 完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整的文档索引请参见 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 创建对话
 
 **post** `/conversations`
 
-创建对话。
+创建一个对话。
 
-### 请求体参数
+### Body Parameters
 
 - `items: optional array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 29 more or null`
 
-  要包含在对话上下文中的初始内容。你每次最多可以添加 20 个内容项。
+  包含在对话上下文中的初始项目。你可以一次添加最多 20 个项目。
 
   - `EasyInputMessage object { content, role, phase, type }`
 
-    输入给模型的消息，其角色表明指令遵循
-    层级。使用 `developer` 或 `system` 角色给出的指令
-    优先于使用 `user` 角色给出的指令。带有
-    `assistant` 角色的消息被假定为模型在之前的
-    交互中生成的。
+    发送给模型的消息输入，其角色表示遵循指令
+    层级结构。使用 `developer` 或 `system` 角色给出的
+    指令优先于使用 `user` 角色给出的指令。使用
+    `assistant` 角色的消息被视为模型在先前交互中生成的消息
+    。
 
     - `content: string or ResponseInputMessageContentList`
 
-      输入给模型的文本、图像或音频输入，用于生成响应。
+      提供给模型的文本、图像或音频输入，用于生成响应。
       也可以包含之前的助手响应。
 
       - `TextInput = string`
 
-        输入给模型的文本输入。
+        提供给模型的文本输入。
 
       - `ResponseInputMessageContentList = array of ResponseInputContent`
 
-        一个或多个输入项目的列表，输入给模型，包含不同的内容
+        提供给模型的一个或多个输入项目的列表，其中包含不同的内容
         类型。
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          输入给模型的文本输入。
+          提供给模型的文本输入。
 
           - `text: string`
 
-            输入给模型的文本输入。
+            提供给模型的文本输入。
 
           - `type: "input_text"`
 
@@ -52,7 +52,7 @@
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -62,11 +62,11 @@
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+          提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
           - `detail: ImageDetail`
 
-            要发送给模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+            发送到模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
             - `"low"`
 
@@ -84,15 +84,15 @@
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            要发送到模型的文件的 ID。
 
           - `image_url: optional string or null`
 
-            要发送给模型的图像的 URL。可以是完全限定的 URL，或 data URL 中 base64 编码的图像。
+            要发送到模型的图像的 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图像。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -102,7 +102,7 @@
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-          输入给模型的文件。
+          模型的文件输入。
 
           - `type: "input_file"`
 
@@ -112,7 +112,7 @@
 
           - `detail: optional "auto" or "low" or "high"`
 
-            要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+            要发送到模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 的使用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
             - `"auto"`
 
@@ -122,23 +122,23 @@
 
           - `file_data: optional string`
 
-            要发送给模型的文件内容。
+            要发送到模型的文件内容。
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            要发送到模型的文件的 ID。
 
           - `file_url: optional string`
 
-            要发送给模型的文件的 URL。
+            要发送到模型的文件的 URL。
 
           - `filename: optional string`
 
-            要发送给模型的文件的名称。
+            要发送到模型的文件的名称。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -161,9 +161,9 @@
 
     - `phase: optional "commentary" or "final_answer" or null`
 
-      将 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`).
-      对于类似 `gpt-5.3-codex` 及后续请求中，请保留并重新发送
-      所有助手消息的阶段——省略它可能会降低性能。不适用于用户消息。
+      将 `assistant` 消息标记为中间说明（`commentary`）或最终答案（`final_answer`).
+      对于类似 `gpt-5.3-codex` 及之后的内容，发送后续请求时，请保留并重新发送
+      阶段，作用于所有 assistant 消息——丢弃它可能会降低性能。不用于 user 消息。
 
       - `"commentary"`
 
@@ -171,19 +171,19 @@
 
     - `type: optional "message"`
 
-      消息输入的类型。始终 `message`.
+      消息输入的类型。始终为 `message`.
 
       - `"message"`
 
   - `Message object { content, role, status, type }`
 
-    输入给模型的消息，其角色表明指令遵循
-    层级。使用 `developer` 或 `system` 角色给出的指令
-    优先于使用 `user` 角色。
+    发送给模型的消息输入，其角色表示遵循指令
+    层级结构。使用 `developer` 或 `system` 角色给出的
+    指令优先于使用 `user` role。
 
     - `content: ResponseInputMessageContentList`
 
-      一个或多个输入项目的列表，输入给模型，包含不同的内容
+      提供给模型的一个或多个输入项目的列表，其中包含不同的内容
       类型。
 
     - `role: "user" or "system" or "developer"`
@@ -198,8 +198,8 @@
 
     - `status: optional "in_progress" or "completed" or "incomplete"`
 
-      项目的状态。以下之一 `in_progress`, `completed`，或
-      `incomplete`。当项目通过 API 返回时填充。
+      item 的状态。取值为 `in_progress`, `completed`，或
+      `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -215,7 +215,7 @@
 
   - `ResponseOutputMessage object { id, content, role, 3 more }`
 
-    来自模型的输出消息。
+    模型生成的输出消息。
 
     - `id: string`
 
@@ -227,7 +227,7 @@
 
       - `ResponseOutputText object { annotations, logprobs, text, type }`
 
-        来自模型的文本输出。
+        模型生成的文本输出。
 
         - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
 
@@ -251,35 +251,35 @@
 
             - `type: "file_citation"`
 
-              文件引用的类型。始终 `file_citation`.
+              文件引用的类型。始终为 `file_citation`.
 
               - `"file_citation"`
 
           - `URLCitation object { end_index, start_index, title, 2 more }`
 
-            用于生成模型响应的网络资源的引用。
+            用于生成模型回复的网页资源的引用。
 
             - `end_index: number`
 
-              消息中 URL 引用的最后一个字符的索引。
+              消息中 URL 引用末尾字符的索引。
 
             - `start_index: number`
 
-              消息中 URL 引用的第一个字符的索引。
+              消息中 URL 引用起始字符的索引。
 
             - `title: string`
 
-              网络资源的标题。
+              网页资源的标题。
 
             - `type: "url_citation"`
 
-              URL 引用的类型。始终 `url_citation`.
+              URL 引用的类型。始终为 `url_citation`.
 
               - `"url_citation"`
 
             - `url: string`
 
-              网络资源的 URL。
+              网页资源的 URL。
 
           - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
@@ -299,7 +299,7 @@
 
             - `filename: string`
 
-              被引用的容器文件的文件名。
+              所引用的容器文件的文件名。
 
             - `start_index: number`
 
@@ -307,13 +307,13 @@
 
             - `type: "container_file_citation"`
 
-              容器文件引用的类型。始终 `container_file_citation`.
+              容器文件引用的类型。始终为 `container_file_citation`.
 
               - `"container_file_citation"`
 
           - `FilePath object { file_id, index, type }`
 
-            文件路径。
+            文件的路径。
 
             - `file_id: string`
 
@@ -325,7 +325,7 @@
 
             - `type: "file_path"`
 
-              文件路径的类型。始终 `file_path`.
+              文件路径的类型。始终为 `file_path`.
 
               - `"file_path"`
 
@@ -347,38 +347,38 @@
 
         - `text: string`
 
-          模型的文本输出。
+          模型输出的文本。
 
         - `type: "output_text"`
 
-          输出文本的类型。始终 `output_text`.
+          输出文本的类型。始终为 `output_text`.
 
           - `"output_text"`
 
       - `ResponseOutputRefusal object { refusal, type }`
 
-        模型的拒绝。
+        模型生成的拒绝回复。
 
         - `refusal: string`
 
-          模型的拒绝解释。
+          模型生成的拒绝解释。
 
         - `type: "refusal"`
 
-          拒绝的类型。始终 `refusal`.
+          拒绝回复的类型。始终为 `refusal`.
 
           - `"refusal"`
 
     - `role: "assistant"`
 
-      输出消息的角色。始终 `assistant`.
+      输出消息的角色。始终为 `assistant`.
 
       - `"assistant"`
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      消息输入的状态。其中之一 `in_progress`, `completed`，或
-      `incomplete`。当输入项通过 API 返回时填充。
+      消息输入的状态。取值为以下之一 `in_progress`, `completed`，或
+      `incomplete`。当通过 API 返回输入项时填充。
 
       - `"in_progress"`
 
@@ -388,15 +388,15 @@
 
     - `type: "message"`
 
-      输出消息的类型。始终 `message`.
+      输出消息的类型。始终为 `message`.
 
       - `"message"`
 
     - `phase: optional "commentary" or "final_answer" or null`
 
-      将 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`).
-      对于类似 `gpt-5.3-codex` 及后续请求中，请保留并重新发送
-      所有助手消息的阶段——省略它可能会降低性能。不适用于用户消息。
+      将 `assistant` 消息标记为中间说明（`commentary`）或最终答案（`final_answer`).
+      对于类似 `gpt-5.3-codex` 及之后的内容，发送后续请求时，请保留并重新发送
+      阶段，作用于所有 assistant 消息——丢弃它可能会降低性能。不用于 user 消息。
 
       - `"commentary"`
 
@@ -404,20 +404,20 @@
 
   - `FileSearchCall object { id, queries, status, 2 more }`
 
-    文件搜索工具调用的结果。参见
-    [文件搜索指南](/docs/guides/tools-file-search) 了解更多信息。
+    文件搜索 工具调用的结果。参见
+    [文件搜索 指南](/docs/guides/tools-file-search) 了解更多信息。
 
     - `id: string`
 
-      文件搜索工具调用的唯一 ID。
+      文件搜索 工具调用的唯一 ID。
 
     - `queries: array of string`
 
-      用于搜索文件的查询。
+      用于搜索文件的查询语句。
 
     - `status: "in_progress" or "searching" or "completed" or 2 more`
 
-      文件搜索工具调用的状态。其中之一为 `in_progress`,
+      文件搜索 工具调用的状态，取值为 `in_progress`,
       `searching`, `incomplete` 或 `failed`,
 
       - `"in_progress"`
@@ -432,21 +432,21 @@
 
     - `type: "file_search_call"`
 
-      文件搜索工具调用的类型。始终为 `file_search_call`.
+      文件搜索 工具调用的类型，始终为 `file_search_call`.
 
       - `"file_search_call"`
 
     - `results: optional array of object { attributes, file_id, filename, 2 more }  or null`
 
-      文件搜索工具调用的结果。
+      文件搜索 工具调用的结果。
 
       - `attributes: optional map[string or number or boolean] or null`
 
-        可附加到对象的一组 16 个键值对。这可用于以结构化
-        格式存储有关对象的额外信息，并通过 API 或仪表盘查询对象。键是字符串
-        ，最大长度为 64 个字符。值是字符串，最大
-        长度为 512 个字符、布尔值或数字。
-        文件的唯一 ID。
+        可附加到对象的 16 组键值对。可用于
+        以结构化格式存储对象的附加信息，并通过
+        API 或控制台查询对象。键为字符串，
+        最大长度为 64 个字符；值为字符串（最大
+        长度 512 个字符）、布尔值或数字。
 
         - `string`
 
@@ -456,24 +456,24 @@
 
       - `file_id: optional string`
 
-        文件的名称。
+        文件的唯一 ID。
 
       - `filename: optional string`
 
-        文件的相关性得分——介于 0 和 1 之间的值。
+        文件的名称。
 
       - `score: optional number`
 
-        从文件中检索到的文本。
+        文件的相关性分数，取值范围为 0 到 1。
 
       - `text: optional string`
 
-        对计算机使用工具的工具调用。参见
+        从文件中检索到的文本。
 
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
-    计算机使用指南
-    [计算机调用调用的唯一 ID。](/docs/guides/tools-computer-use) 了解更多信息。
+    对计算机使用工具的工具调用。参见
+    [计算机使用指南](/docs/guides/tools-computer-use) 了解更多信息。
 
     - `id: string`
 
@@ -481,11 +481,11 @@
 
     - `call_id: string`
 
-      用于在响应工具调用时提供输出的标识符。
+      在向工具调用返回输出时使用的标识符。
 
     - `pending_safety_checks: array of object { id, code, message }`
 
-      计算机调用的待处理安全检查。
+      该计算机调用的待处理安全检查。
 
       - `id: string`
 
@@ -501,8 +501,8 @@
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      条目的状态。其一为 `in_progress`, `completed`，或
-      `incomplete`。当项目通过 API 返回时填充。
+      该条目的状态。可选值为 `in_progress`, `completed`，或
+      `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -512,21 +512,21 @@
 
     - `type: "computer_call"`
 
-      计算机调用的类型。始终为 `computer_call`.
+      该计算机调用的类型。始终为 `computer_call`.
 
       - `"computer_call"`
 
     - `action: optional ComputerAction`
 
-      单击操作。
+      一次点击操作。
 
       - `Click object { button, type, x, 2 more }`
 
-        单击操作。
+        一次点击操作。
 
         - `button: "left" or "right" or "wheel" or 2 more`
 
-          指示单击期间按下了哪个鼠标按钮。其一为 `left`, `right`, `wheel`, `back`，或 `forward`.
+          表示点击时按下的鼠标按键。可选值为 `left`, `right`, `wheel`, `back`，或 `forward`.
 
           - `"left"`
 
@@ -540,29 +540,29 @@
 
         - `type: "click"`
 
-          指定事件类型。对于单击操作，此属性始终为 `click`.
+          指定事件类型。对于点击操作，此属性始终为 `click`.
 
           - `"click"`
 
         - `x: number`
 
-          发生单击的 x 坐标。
+          点击发生位置的 x 坐标。
 
         - `y: number`
 
-          发生单击的 y 坐标。
+          点击发生位置的 y 坐标。
 
         - `keys: optional array of string or null`
 
-          单击时正在按住的按键。
+          点击时按住的按键。
 
       - `DoubleClick object { keys, type, x, y }`
 
-        双击操作。
+        一次双击操作。
 
         - `keys: array of string or null`
 
-          双击时正在按住的按键。
+          双击时按住的按键。
 
         - `type: "double_click"`
 
@@ -572,19 +572,19 @@
 
         - `x: number`
 
-          发生双击的 x 坐标。
+          双击发生位置的 x 坐标。
 
         - `y: number`
 
-          发生双击的 y 坐标。
+          双击发生位置的 y 坐标。
 
       - `Drag object { path, type, keys }`
 
-        拖动操作。
+        一次拖动操作。
 
         - `path: array of object { x, y }`
 
-          表示拖动操作路径的坐标数组。坐标将以对象数组的形式出现，例如
+          表示拖动操作路径的坐标数组。坐标将以对象数组的形式呈现，例如
 
           ```
           [
@@ -603,17 +603,17 @@
 
         - `type: "drag"`
 
-          指定事件类型。对于拖拽操作，此属性始终设置为 `drag`.
+          指定事件类型。对于拖动操作，此属性始终设置为 `drag`.
 
           - `"drag"`
 
         - `keys: optional array of string or null`
 
-          拖拽鼠标时按住的按键。
+          拖动鼠标时按住的按键。
 
       - `Keypress object { keys, type }`
 
-        模型希望执行的一系列按键操作。
+        模型希望执行的一组按键操作。
 
         - `keys: array of string`
 
@@ -637,11 +637,11 @@
 
         - `x: number`
 
-          要移动到的 x 坐标。
+          要移至的 x 坐标。
 
         - `y: number`
 
-          要移动到的 y 坐标。
+          要移至的 y 坐标。
 
         - `keys: optional array of string or null`
 
@@ -677,11 +677,11 @@
 
         - `x: number`
 
-          发生滚动的 x 坐标。
+          发生滚动处的 x 坐标。
 
         - `y: number`
 
-          发生滚动的 y 坐标。
+          发生滚动处的 y 坐标。
 
         - `keys: optional array of string or null`
 
@@ -697,40 +697,40 @@
 
         - `type: "type"`
 
-          指定事件类型。对于类型操作，此属性始终设置为 `type`.
+          指定事件类型。对于 type 操作，此属性始终设置为 `type`.
 
           - `"type"`
 
       - `Wait object { type }`
 
-        等待操作。
+        wait 操作。
 
         - `type: "wait"`
 
-          指定事件类型。对于等待操作，此属性始终设置为 `wait`.
+          指定事件类型。对于 wait 操作，此属性始终设置为 `wait`.
 
           - `"wait"`
 
     - `actions: optional ComputerActionList`
 
-      展平的批量操作，用于 `computer_use`。每个操作包含一个
-      `type` 判别器和操作特定字段。
+      已展平的批量操作，用于 `computer_use`。每个操作都包含一个
+      `type` 鉴别字段以及操作特有的字段。
 
       - `Click object { button, type, x, 2 more }`
 
-        单击操作。
+        一次点击操作。
 
       - `DoubleClick object { keys, type, x, y }`
 
-        双击操作。
+        一次双击操作。
 
       - `Drag object { path, type, keys }`
 
-        拖动操作。
+        一次拖动操作。
 
       - `Keypress object { keys, type }`
 
-        模型希望执行的一系列按键操作。
+        模型希望执行的一组按键操作。
 
       - `Move object { type, x, y, keys }`
 
@@ -750,7 +750,7 @@
 
       - `Wait object { type }`
 
-        等待操作。
+        wait 操作。
 
   - `ComputerCallOutput object { call_id, output, type, 3 more }`
 
@@ -758,7 +758,7 @@
 
     - `call_id: string`
 
-      产生输出的计算机工具调用的 ID。
+      产生该输出的计算机工具调用的 ID。
 
     - `output: ResponseComputerToolCallOutputScreenshot`
 
@@ -773,7 +773,7 @@
 
       - `file_id: optional string`
 
-        包含截图的已上传文件的标识符。
+        包含截图的上传文件的标识符。
 
       - `image_url: optional string`
 
@@ -781,7 +781,7 @@
 
     - `type: "computer_call_output"`
 
-      计算机工具调用输出的类型。始终为 `computer_call_output`.
+      计算机工具调用输出的类型，始终为 `computer_call_output`.
 
       - `"computer_call_output"`
 
@@ -791,7 +791,7 @@
 
     - `acknowledged_safety_checks: optional array of object { id, code, message }  or null`
 
-      开发者已确认的由 API 报告的安全检查。
+      由开发者确认的 API 所报告的安全检查。
 
       - `id: string`
 
@@ -807,7 +807,7 @@
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-      消息输入的状态。其中之一 `in_progress`, `completed`，或 `incomplete`。当输入项通过 API 返回时填充。
+      消息输入的状态。取值为以下之一 `in_progress`, `completed`，或 `incomplete`。当通过 API 返回输入项时填充。
 
       - `"in_progress"`
 
@@ -817,21 +817,21 @@
 
   - `WebSearchCall object { id, action, status, type }`
 
-    网页搜索工具调用的结果。请参阅
+    网页搜索 工具调用的结果。请参阅
     [网页搜索指南](/docs/guides/tools-web-search) 了解更多信息。
 
     - `id: string`
 
-      网页搜索工具调用的唯一 ID。
+      该 网页搜索工具调用的唯一 ID。
 
     - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
-      一个对象，描述此次网页搜索调用中采取的具体操作。
-      包含模型如何使用网络（search、open_page、find_in_page）的详细信息。
+      描述此次 网页搜索调用中所执行的具体操作的对象。
+      包含模型如何使用网页的详细信息（search、open_page、find_in_page）。
 
       - `Search object { type, queries, query, sources }`
 
-        操作类型 "search"——执行网页搜索查询。
+        操作类型 "search" - 执行一次 网页搜索查询。
 
         - `type: "search"`
 
@@ -863,7 +863,7 @@
 
       - `OpenPage object { type, url }`
 
-        操作类型 "open_page"——打开搜索结果中的特定 URL。
+        操作类型 "open_page" - 打开搜索结果中的特定 URL。
 
         - `type: "open_page"`
 
@@ -877,11 +877,11 @@
 
       - `FindInPage object { pattern, type, url }`
 
-        操作类型 "find_in_page"：在已加载的页面中搜索模式。
+        操作类型 "find_in_page"：在已加载的页面中搜索某个模式。
 
         - `pattern: string`
 
-          要在页面内搜索的模式或文本。
+          要在页面中搜索的模式或文本。
 
         - `type: "find_in_page"`
 
@@ -891,11 +891,11 @@
 
         - `url: string`
 
-          搜索该模式的页面的 URL。
+          被搜索该模式的页面 URL。
 
     - `status: "in_progress" or "searching" or "completed" or "failed"`
 
-      网页搜索工具调用的状态。
+      该 网页搜索工具调用的状态。
 
       - `"in_progress"`
 
@@ -907,13 +907,13 @@
 
     - `type: "web_search_call"`
 
-      网页搜索工具调用的类型。始终为 `web_search_call`.
+      该 网页搜索工具调用的类型。始终为 `web_search_call`.
 
       - `"web_search_call"`
 
   - `FunctionCall object { arguments, call_id, name, 5 more }`
 
-    运行函数的工具调用。请参阅
+    用于运行函数的工具调用。请参阅
     [函数调用指南](/docs/guides/function-calling) 了解更多信息。
 
     - `arguments: string`
@@ -922,11 +922,11 @@
 
     - `call_id: string`
 
-      模型生成的函数工具调用的唯一 ID。
+      由模型生成的函数工具调用的唯一 ID。
 
     - `name: string`
 
-      要运行的函数的名称。
+      要运行的函数名称。
 
     - `type: "function_call"`
 
@@ -964,8 +964,8 @@
 
     - `status: optional "in_progress" or "completed" or "incomplete"`
 
-      条目的状态。其一为 `in_progress`, `completed`，或
-      `incomplete`。当项目通过 API 返回时填充。
+      该条目的状态。可选值为 `in_progress`, `completed`，或
+      `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -987,15 +987,15 @@
 
       - `array of ResponseInputTextContent or ResponseInputImageContent or ResponseInputFileContent`
 
-        函数工具调用的内容输出数组（文本、图像、文件）。
+        函数工具调用的内容输出（文本、图像、文件）数组。
 
         - `ResponseInputTextContent object { text, type, prompt_cache_breakpoint }`
 
-          输入给模型的文本输入。
+          提供给模型的文本输入。
 
           - `text: string`
 
-            输入给模型的文本输入。
+            提供给模型的文本输入。
 
           - `type: "input_text"`
 
@@ -1005,7 +1005,7 @@
 
           - `prompt_cache_breakpoint: optional object { mode }  or null`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -1015,7 +1015,7 @@
 
         - `ResponseInputImageContent object { type, detail, file_id, 2 more }`
 
-          输入给模型的图像输入。了解 [图像输入](/docs/guides/vision)
+          提供给模型的图像输入。了解 [image inputs](/docs/guides/vision)
 
           - `type: "input_image"`
 
@@ -1025,19 +1025,19 @@
 
           - `detail: optional ImageDetail or null`
 
-            要发送给模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+            发送到模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            要发送到模型的文件的 ID。
 
           - `image_url: optional string or null`
 
-            要发送给模型的图像的 URL。可以是完全限定的 URL，或 data URL 中 base64 编码的图像。
+            要发送到模型的图像的 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图像。
 
           - `prompt_cache_breakpoint: optional object { mode }  or null`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -1047,7 +1047,7 @@
 
         - `ResponseInputFileContent object { type, detail, file_data, 4 more }`
 
-          输入给模型的文件。
+          模型的文件输入。
 
           - `type: "input_file"`
 
@@ -1057,7 +1057,7 @@
 
           - `detail: optional "auto" or "low" or "high"`
 
-            要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+            要发送到模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 的使用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
             - `"auto"`
 
@@ -1071,19 +1071,19 @@
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            要发送到模型的文件的 ID。
 
           - `file_url: optional string or null`
 
-            要发送给模型的文件的 URL。
+            要发送到模型的文件的 URL。
 
           - `filename: optional string or null`
 
-            要发送给模型的文件的名称。
+            要发送到模型的文件的名称。
 
           - `prompt_cache_breakpoint: optional object { mode }  or null`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -1099,11 +1099,11 @@
 
     - `id: optional string or null`
 
-      函数工具调用输出的唯一 ID。当此项目通过 API 返回时填充。
+      函数工具调用输出的唯一 ID。当此项通过 API 返回时填充。
 
     - `call_id: optional string or null`
 
-      模型生成的函数工具调用的唯一 ID。
+      由模型生成的函数工具调用的唯一 ID。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -1113,7 +1113,7 @@
 
         - `type: "direct"`
 
-          调用者类型。始终为 `direct`.
+          调用方类型。始终为 `direct`.
 
           - `"direct"`
 
@@ -1125,21 +1125,21 @@
 
         - `type: "program"`
 
-          调用者类型。始终为 `program`.
+          调用方类型。始终为 `program`.
 
           - `"program"`
 
     - `name: optional string or null`
 
-      产生输出的工具的名称。
+      产生该输出的工具名称。
 
     - `namespace: optional string or null`
 
-      产生输出的工具的命名空间。
+      产生该输出的工具的命名空间。
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-      条目的状态。其一为 `in_progress`, `completed`，或 `incomplete`。当项目通过 API 返回时填充。
+      该条目的状态。可选值为 `in_progress`, `completed`，或 `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -1155,7 +1155,7 @@
 
     - `type: "tool_search_call"`
 
-      项目类型。始终为 `tool_search_call`.
+      项的类型。始终为 `tool_search_call`.
 
       - `"tool_search_call"`
 
@@ -1169,7 +1169,7 @@
 
     - `execution: optional "server" or "client"`
 
-      工具搜索是由服务端还是客户端执行的。
+      工具搜索是由服务端还是由客户端执行的。
 
       - `"server"`
 
@@ -1193,29 +1193,29 @@
 
       - `Function object { name, parameters, strict, 5 more }`
 
-        定义你自己代码中模型可以选择调用的函数。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+        定义你自己代码中的某个函数，供模型选择调用。详细了解 [function calling](https://platform.openai.com/docs/guides/function-calling).
 
         - `name: string`
 
-          要调用的函数的名称。
+          要调用的函数名称。
 
         - `parameters: map[unknown] or null`
 
-          描述函数参数的 JSON schema 对象。
+          描述该函数参数的 JSON schema 对象。
 
         - `strict: boolean or null`
 
-          是否对此函数工具强制执行严格的参数验证。
+          是否为该函数工具启用严格的参数校验。
 
         - `type: "function"`
 
-          函数工具的类型。始终为 `function`.
+          该函数工具的类型。始终为 `function`.
 
           - `"function"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -1223,19 +1223,19 @@
 
         - `defer_loading: optional boolean`
 
-          此函数是否延迟并通过工具搜索加载。
+          该函数是否为延迟加载，并通过工具搜索加载。
 
         - `description: optional string or null`
 
-          函数的描述。模型据此确定是否调用该函数。
+          该函数的描述。模型据此决定是否调用该函数。
 
         - `output_schema: optional map[unknown] or null`
 
-          描述此函数的字符串输出中编码的 JSON 值的 JSON schema 对象。
+          描述该函数在字符串输出中编码的 JSON 值的 JSON schema 对象。
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        一种从上传文件中搜索相关内容工具。详细了解 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+        一个用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 tool](https://platform.openai.com/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -1253,24 +1253,24 @@
 
           - `ComparisonFilter object { key, type, value }`
 
-            用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+            用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
             - `key: string`
 
-              要与该值进行比较的键。
+              要与值进行比较的键。
 
             - `type: "eq" or "ne" or "gt" or 5 more`
 
               指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-              - `eq`：等于
-              - `ne`：不等于
-              - `gt`：大于
-              - `gte`：大于或等于
-              - `lt`：小于
-              - `lte`：小于或等于
-              - `in`：包含
-              - `nin`：不包含
+              - `eq`: 等于
+              - `ne`: 不等于
+              - `gt`: 大于
+              - `gte`: 大于或等于
+              - `lt`: 小于
+              - `lte`: 小于或等于
+              - `in`: 包含于
+              - `nin`: 不包含于
 
               - `"eq"`
 
@@ -1306,15 +1306,15 @@
 
           - `CompoundFilter object { filters, type }`
 
-            使用以下方式组合多个筛选器 `and` 或 `or`.
+            使用以下方式组合多个过滤器 `and` 或 `or`.
 
             - `filters: array of ComparisonFilter or unknown`
 
-              要组合的筛选器数组。项目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+              要组合的过滤器数组。条目可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
               - `ComparisonFilter object { key, type, value }`
 
-                用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+                用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
               - `unknown`
 
@@ -1328,7 +1328,7 @@
 
         - `max_num_results: optional number`
 
-          要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+          返回结果的最大数量。此数量应介于 1 到 50 之间（含两端）。
 
         - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -1336,19 +1336,19 @@
 
           - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-            启用混合搜索时，控制倒数排名融合如何在语义嵌入匹配与稀疏关键词匹配之间取得平衡的权重。
+            在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
             - `embedding_weight: number`
 
-              嵌入在倒数排名融合中的权重。
+              在倒数排名融合中嵌入的权重。
 
             - `text_weight: number`
 
-              文本在倒数排名融合中的权重。
+              在倒数排名融合中文本的权重。
 
           - `ranker: optional "auto" or "default-2024-11-15"`
 
-            用于文件搜索的排序器。
+            用于 文件搜索 的排序器。
 
             - `"auto"`
 
@@ -1356,11 +1356,11 @@
 
           - `score_threshold: optional number`
 
-            文件搜索的分数阈值，为0到1之间的数字。数字越接近1，将尝试仅返回最相关的结果，但可能返回较少的結果。
+            文件搜索 的分数阈值，取值范围为 0 到 1 之间。数值越接近 1，越会尝试只返回最相关的结果，但返回的结果数量可能会减少。
 
       - `Computer object { type }`
 
-        一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -1370,19 +1370,19 @@
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
-          计算机显示器的宽度。
+          计算机显示屏的高度。
 
         - `display_width: number`
 
-          计算机显示器的宽度。
+          计算机显示屏的宽度。
 
         - `environment: "windows" or "mac" or "linux" or 2 more`
 
-          要控制的计算机环境的类型。
+          要控制的计算机环境类型。
 
           - `"windows"`
 
@@ -1402,12 +1402,12 @@
 
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-        搜索互联网以获取与提示相关的来源。了解更多关于
+        在互联网上搜索与提示相关的来源。详细了解
         [网页搜索工具](/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
-          网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+          网页搜索工具的类型，取值之一为 `web_search` 或 `web_search_2025_08_26`.
 
           - `"web_search"`
 
@@ -1415,22 +1415,22 @@
 
         - `external_web_access: optional boolean`
 
-          允许网页搜索实时访问互联网。省略时默认为true。为false时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+          允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
         - `filters: optional object { allowed_domains }  or null`
 
-          搜索的过滤器。
+          搜索的筛选条件。
 
           - `allowed_domains: optional array of string or null`
 
-            搜索允许的域名。如果未提供，则允许所有域名。
-            所提供域名的子域名也允许。
+            允许进行搜索的域名。如果未提供，则允许所有域名。
+            同时也允许所提供域名的子域名。
 
             示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
           - `"low"`
 
@@ -1444,15 +1444,15 @@
 
           - `city: optional string or null`
 
-            用户的城市的自由文本输入，例如 `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+            两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户的地区的自由文本输入，例如 `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
@@ -1460,14 +1460,14 @@
 
           - `type: optional "approximate"`
 
-            位置近似的类型。始终 `approximate`.
+            位置近似的类型。始终为 `approximate`.
 
             - `"approximate"`
 
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-        通过远程 Model Context Protocol 让模型访问额外工具
-        (MCP) 服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+        通过远程 Model Context Protocol
+        （MCP）服务器为模型提供对其他工具的访问权限。 [了解更多关于 MCP 的信息](/docs/guides/tools-remote-mcp).
 
         - `server_label: string`
 
@@ -1475,13 +1475,13 @@
 
         - `type: "mcp"`
 
-          MCP 工具的类型。始终 `mcp`.
+          MCP 工具的类型。始终为 `mcp`.
 
           - `"mcp"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -1493,7 +1493,7 @@
 
           - `McpAllowedTools = array of string`
 
-            允许工具名称的字符串数组
+            允许的工具名称组成的字符串数组
 
           - `McpToolFilter object { read_only, tool_names }`
 
@@ -1501,9 +1501,9 @@
 
             - `read_only: optional boolean`
 
-              指示工具是否修改数据或为只读。如果
-              MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-              ，它将匹配此过滤器。
+              指示工具是否修改数据或是否为只读。如果某个
+              MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+              ，它将匹配此过滤条件。
 
             - `tool_names: optional array of string`
 
@@ -1511,26 +1511,26 @@
 
         - `authorization: optional string`
 
-          可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-          与自定义 MCP 服务器 URL 或服务连接器配合使用。你的应用程序
-          必须处理 OAuth 授权流程并在此处提供令牌。
+          可用于远程 MCP 服务器的 OAuth 访问令牌，可搭配自定义 MCP 服务器 URL 或服务连接器使用。你的应用
+          必须处理 OAuth 授权流程，并在此处提供该令牌。
+          必须处理 OAuth 授权流程，并在此处提供该令牌。
 
         - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-          服务连接器的标识符，类似于 ChatGPT 中可用的那些。必须提供以下之一：
-          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中之一。了解更多
-          关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+          服务连接器的标识符，例如 ChatGPT 中提供的连接器之一。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解关于服务连接器
+          的更多信息 [请参阅此处](/docs/guides/tools-remote-mcp#connectors).
 
-          当前支持的值 `connector_id` 包括：
+          当前支持 `connector_id` 的值为：
 
-          - Dropbox： `connector_dropbox`
-          - Gmail： `connector_gmail`
-          - Google Calendar： `connector_googlecalendar`
-          - Google Drive： `connector_googledrive`
-          - Microsoft Teams： `connector_microsoftteams`
-          - Outlook Calendar： `connector_outlookcalendar`
-          - Outlook Email： `connector_outlookemail`
-          - SharePoint： `connector_sharepoint`
+          - Dropbox: `connector_dropbox`
+          - Gmail: `connector_gmail`
+          - Google Calendar: `connector_googlecalendar`
+          - Google Drive: `connector_googledrive`
+          - Microsoft Teams: `connector_microsoftteams`
+          - Outlook Calendar: `connector_outlookcalendar`
+          - Outlook Email: `connector_outlookemail`
+          - SharePoint: `connector_sharepoint`
 
           - `"connector_dropbox"`
 
@@ -1550,11 +1550,11 @@
 
         - `defer_loading: optional boolean`
 
-          此 MCP 工具是否被延迟并通过工具搜索发现。
+          此 MCP 工具是否被延迟，并通过工具搜索发现。
 
         - `headers: optional map[string] or null`
 
-          发送到 MCP 服务器的可选 HTTP 头。用于身份验证
+          发送到 MCP 服务器的可选 HTTP 请求头。用于身份验证
           或其他用途。
 
         - `require_approval: optional object { always, never }  or "always" or "never" or null`
@@ -1564,8 +1564,8 @@
           - `McpToolApprovalFilter object { always, never }`
 
             指定 MCP 服务器的哪些工具需要审批。可以是
-            `always`, `never`，或一个与需要审批的工具关联的过滤器对象
-            。
+            `always`, `never`，或与工具关联的过滤对象
+            ，这些工具需要审批。
 
             - `always: optional object { read_only, tool_names }`
 
@@ -1573,9 +1573,9 @@
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -1587,9 +1587,9 @@
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -1597,8 +1597,8 @@
 
           - `McpToolApprovalSetting = "always" or "never"`
 
-            为所有工具指定单一审批策略。可以是 `always` 或
-            `never`。之一。当设置为 `always`，时，所有工具都需要审批。当
+            为所有工具指定统一的审批策略。可选值为 `always` 或
+            `never`。当设置为 `always`，时，所有工具都需要审批。当
             设置为 `never`，时，所有工具都不需要审批。
 
             - `"always"`
@@ -1611,22 +1611,22 @@
 
         - `server_url: optional string`
 
-          MCP 服务器的 URL。必须提供 `server_url`, `connector_id`，或
-          `tunnel_id` 之一。
+          MCP 服务器的 URL。 `server_url`, `connector_id`，或
+          `tunnel_id` 必须提供其中一个。
 
         - `tunnel_id: optional string`
 
-          用于替代直接服务器 URL 的安全 MCP 隧道 ID。必须提供
-          `server_url`, `connector_id`，或 `tunnel_id` 之一。
+          用于替代直接服务器 URL 的安全 MCP 隧道 ID。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中一个。
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
-        一个运行 Python 代码以帮助生成提示响应的工具。
+        运行 Python 代码以帮助生成对提示词响应的工具。
 
         - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-          代码解释器容器。可以是容器 ID，或一个对象，其中
-          指定了上传的文件 ID 以供你的代码使用，以及
+          代码解释器容器。可以是容器 ID，也可以是指定可供代码使用的已上传文件 ID 的对象，以及一个
+          指定可供你的代码使用的已上传文件 ID，以及一个
           可选的 `memory_limit` 设置。
 
           - `string`
@@ -1635,17 +1635,17 @@
 
           - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器的配置。可选择指定要在其上运行代码的文件 ID。
+            代码解释器容器的配置。可选择指定要对其运行代码的文件 ID。
 
             - `type: "auto"`
 
-              始终 `auto`.
+              始终为 `auto`.
 
               - `"auto"`
 
             - `file_ids: optional array of string`
 
-              一个可选的已上传文件列表，供你的代码使用。
+              一个可选的、供代码使用的已上传文件列表。
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -1667,7 +1667,7 @@
 
                 - `type: "disabled"`
 
-                  禁用出站网络访问。始终 `disabled`.
+                  禁用出站网络访问。始终为 `disabled`.
 
                   - `"disabled"`
 
@@ -1675,39 +1675,39 @@
 
                 - `allowed_domains: array of string`
 
-                  当类型为以下值时，允许的域名列表： `allowlist`.
+                  当类型为 `allowlist`.
 
                 - `type: "allowlist"`
 
-                  仅允许对指定域名的出站网络访问。始终 `allowlist`.
+                  时，仅允许向指定域发出出站网络访问。始终为 `allowlist`.
 
                   - `"allowlist"`
 
                 - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                  可选，针对允许列表中域名的域级密钥。
+                  用于允许列表中域的可选、按域隔离的密钥。
 
                   - `domain: string`
 
-                    与密钥关联的域名。
+                    与该密钥关联的域。
 
                   - `name: string`
 
-                    要为该域名注入的密钥名称。
+                    要为该域注入的密钥名称。
 
                   - `value: string`
 
-                    要为该域名注入的密钥值。
+                    要为该域注入的密钥值。
 
         - `type: "code_interpreter"`
 
-          代码解释器工具的类型。始终 `code_interpreter`.
+          代码解释器工具的类型。始终为 `code_interpreter`.
 
           - `"code_interpreter"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -1717,7 +1717,7 @@
 
         - `type: "programmatic_tool_calling"`
 
-          工具的类型。始终 `programmatic_tool_calling`.
+          工具的类型。始终为 `programmatic_tool_calling`.
 
           - `"programmatic_tool_calling"`
 
@@ -1727,13 +1727,13 @@
 
         - `type: "image_generation"`
 
-          图像生成工具的类型。始终 `image_generation`.
+          图像生成工具的类型。始终为 `image_generation`.
 
           - `"image_generation"`
 
         - `action: optional "generate" or "edit" or "auto"`
 
-          是否生成新图像或编辑现有图像。默认值： `auto`.
+          是生成新图像还是编辑现有图像。默认值： `auto`.
 
           - `"generate"`
 
@@ -1743,11 +1743,11 @@
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          设置生成图像的背景。可选值之一： `transparent`,
-          `opaque`，或 `auto`。透明背景可用于
-          支持的 GPT 图像模型。对于 `gpt-image-2` 以及
-          `gpt-image-2-2026-04-21`，此支持目前处于预览阶段。使用
-          `transparent`，时，请将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
+          设置生成图像的背景。取值之一 `transparent`,
+          `opaque`，或 `auto`。透明背景适用于受支持的
+          GPT Image 模型。对于 `gpt-image-2` 和
+          `gpt-image-2-2026-04-21`，该支持目前处于预览阶段。使用
+          `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
           - `"transparent"`
 
@@ -1757,7 +1757,7 @@
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          控制模型在匹配输入图像的风格和特征（尤其是面部特征）上投入的努力程度。此参数仅支持 `gpt-image-1` 以及 `gpt-image-1.5` 及更高版本模型，不支持 `gpt-image-1-mini`。支持 `high` 以及 `low`。默认为 `low`.
+          控制模型在匹配输入图像风格和特征（尤其是面部特征）时所付出的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
 
           - `"high"`
 
@@ -1765,7 +1765,7 @@
 
         - `input_image_mask: optional object { file_id, image_url }`
 
-          用于修复的可选遮罩。包含 `image_url`
+          用于局部重绘的可选遮罩。包含 `image_url`
           （字符串，可选）和 `file_id` （字符串，可选）。
 
           - `file_id: optional string`
@@ -1778,7 +1778,7 @@
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-          要使用的图像生成模型。可选值之一 `gpt-image-1`,
+          要使用的图像生成模型。可选值为 `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
           `gpt-image-1`.
@@ -1787,7 +1787,7 @@
 
           - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。可选值之一 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
@@ -1804,7 +1804,7 @@
 
         - `moderation: optional "auto" or "low"`
 
-          生成图像的审核级别。默认值： `auto`.
+          生成图像的内容审核级别。默认值： `auto`.
 
           - `"auto"`
 
@@ -1816,7 +1816,7 @@
 
         - `output_format: optional "png" or "webp" or "jpeg"`
 
-          生成图像的输出格式。可选值之一 `png`, `webp`，或
+          生成图像的输出格式。可选值为 `png`, `webp`，或
           `jpeg`。默认值： `png`.
 
           - `"png"`
@@ -1827,11 +1827,11 @@
 
         - `partial_images: optional number`
 
-          流式模式下生成的部分图像数量，范围从 0（默认值）到 3。
+          在流式模式下生成的部分图像数量，取值范围为 0（默认值）到 3。
 
         - `quality: optional "low" or "medium" or "high" or "auto"`
 
-          生成图像的质量。可选值之一 `low`, `medium`, `high`,
+          生成图像的质量。可选值为 `low`, `medium`, `high`,
           或 `auto`。默认值： `auto`.
 
           - `"low"`
@@ -1844,13 +1844,13 @@
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+          生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `"1024x1024"`
 
@@ -1862,27 +1862,27 @@
 
       - `LocalShell object { type }`
 
-        一种允许模型在本地环境中执行 shell 命令的工具。
+        允许模型在本地环境中执行 shell 命令的工具。
 
         - `type: "local_shell"`
 
-          本地 shell 工具的类型。始终为 `local_shell`.
+          本地 shell 工具的类型，始终为 `local_shell`.
 
           - `"local_shell"`
 
       - `Shell object { type, allowed_callers, environment }`
 
-        一种允许模型执行 shell 命令的工具。
+        允许模型执行 shell 命令的工具。
 
         - `type: "shell"`
 
-          shell 工具的类型。始终为 `shell`.
+          shell 工具的类型，始终为 `shell`.
 
           - `"shell"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -1894,13 +1894,13 @@
 
             - `type: "container_auto"`
 
-              自动为此请求创建容器
+              为本次请求自动创建一个容器
 
               - `"container_auto"`
 
             - `file_ids: optional array of string`
 
-              一个可选的已上传文件列表，供你的代码使用。
+              一个可选的、供代码使用的已上传文件列表。
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -1924,13 +1924,13 @@
 
             - `skills: optional array of SkillReference or InlineSkill`
 
-              可选技能列表，通过 ID 或内联数据引用。
+              通过 id 或内联数据引用的可选技能列表。
 
               - `SkillReference object { skill_id, type, version }`
 
                 - `skill_id: string`
 
-                  被引用技能的 ID。
+                  所引用技能的 ID。
 
                 - `type: "skill_reference"`
 
@@ -1940,7 +1940,7 @@
 
                 - `version: optional string`
 
-                  可选技能版本。使用正整数或 'latest'。省略则使用默认值。
+                  可选的技能版本。使用正整数或 'latest'。省略则使用默认值。
 
               - `InlineSkill object { description, name, source, type }`
 
@@ -1950,7 +1950,7 @@
 
                 - `name: string`
 
-                  该技能的名称。
+                  技能的名称。
 
                 - `source: InlineSkillSource`
 
@@ -1974,7 +1974,7 @@
 
                 - `type: "inline"`
 
-                  为此请求定义一个内联技能。
+                  为本次请求定义一个内联技能。
 
                   - `"inline"`
 
@@ -1988,7 +1988,7 @@
 
             - `skills: optional array of LocalSkill`
 
-              可选技能列表。
+              可选的技能列表。
 
               - `description: string`
 
@@ -1996,11 +1996,11 @@
 
               - `name: string`
 
-                该技能的名称。
+                技能的名称。
 
               - `path: string`
 
-                包含该技能的目录路径。
+                指向包含该技能的目录的路径。
 
           - `ContainerReference object { container_id, type }`
 
@@ -2016,7 +2016,7 @@
 
       - `Custom object { name, type, allowed_callers, 3 more }`
 
-        一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+        使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -2030,7 +2030,7 @@
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -2038,7 +2038,7 @@
 
         - `defer_loading: optional boolean`
 
-          是否应延迟此工具并通过工具搜索发现。
+          是否应延迟此工具并通过工具搜索发现它。
 
         - `description: optional string`
 
@@ -2046,11 +2046,11 @@
 
         - `format: optional CustomToolInputFormat`
 
-          自定义工具的输入格式。默认为无约束文本。
+          自定义工具的输入格式。默认是无约束文本。
 
           - `Text object { type }`
 
-            无约束的自由格式文本。
+            无约束的自由形式文本。
 
             - `type: "text"`
 
@@ -2060,15 +2060,15 @@
 
           - `Grammar object { definition, syntax, type }`
 
-            由用户定义的文法。
+            由用户定义的语法。
 
             - `definition: string`
 
-              文法定义。
+              语法定义。
 
             - `syntax: "lark" or "regex"`
 
-              文法定义的语法。其中之一为 `lark` 或 `regex`.
+              语法定义的语法。可选值为 `lark` 或 `regex`.
 
               - `"lark"`
 
@@ -2076,25 +2076,25 @@
 
             - `type: "grammar"`
 
-              文法格式。始终 `grammar`.
+              语法格式。始终为 `grammar`.
 
               - `"grammar"`
 
       - `Namespace object { description, name, tools, type }`
 
-        将函数/自定义工具分组到共享命名空间下。
+        在共享命名空间下对 function/custom 工具进行分组。
 
         - `description: string`
 
-          显示给模型的命名空间描述。
+          展示给模型的命名空间描述。
 
         - `name: string`
 
-          工具调用中使用的命名空间名称（例如， `crm`).
+          在工具调用中使用的命名空间名称（例如， `crm`).
 
         - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
-          此命名空间内可用的函数/自定义工具。
+          该命名空间内可用的 function/custom 工具。
 
           - `Function object { name, type, allowed_callers, 5 more }`
 
@@ -2106,7 +2106,7 @@
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-              工具调用上下文。
+              该工具的调用上下文。
 
               - `"direct"`
 
@@ -2114,23 +2114,23 @@
 
             - `defer_loading: optional boolean`
 
-              此函数是否应延迟并通过工具搜索发现。
+              是否应延迟此函数并通过工具搜索发现。
 
             - `description: optional string or null`
 
             - `output_schema: optional map[unknown] or null`
 
-              描述此函数工具字符串输出中编码的 JSON 值的 JSON Schema。这不描述内容数组输出。
+              用于描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content-array 输出。
 
             - `parameters: optional unknown or null`
 
             - `strict: optional boolean or null`
 
-              是否强制进行严格的参数验证。如果省略，当 schema 兼容时，Responses 会尝试使用严格验证，否则回退到非严格验证。
+              是否强制执行严格的参数校验。如果省略，Responses 会尝试在 schema 兼容时使用严格校验，否则回退到非严格校验。
 
           - `Custom object { name, type, allowed_callers, 3 more }`
 
-            一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+            使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -2144,7 +2144,7 @@
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-              工具调用上下文。
+              该工具的调用上下文。
 
               - `"direct"`
 
@@ -2152,7 +2152,7 @@
 
             - `defer_loading: optional boolean`
 
-              是否应延迟此工具并通过工具搜索发现。
+              是否应延迟此工具并通过工具搜索发现它。
 
             - `description: optional string`
 
@@ -2160,27 +2160,27 @@
 
             - `format: optional CustomToolInputFormat`
 
-              自定义工具的输入格式。默认为无约束文本。
+              自定义工具的输入格式。默认是无约束文本。
 
         - `type: "namespace"`
 
-          工具的类型。始终 `namespace`.
+          工具的类型。始终为 `namespace`.
 
           - `"namespace"`
 
       - `ToolSearch object { type, description, execution, parameters }`
 
-        延迟工具的托管或 BYOT 工具搜索配置。
+        用于延迟工具的托管或 BYOT 工具搜索配置。
 
         - `type: "tool_search"`
 
-          工具的类型。始终 `tool_search`.
+          工具的类型。始终为 `tool_search`.
 
           - `"tool_search"`
 
         - `description: optional string or null`
 
-          显示给模型的客户端执行工具搜索工具的描述。
+          展示给模型的客户端执行的工具搜索工具的描述。
 
         - `execution: optional "server" or "client"`
 
@@ -2192,15 +2192,15 @@
 
         - `parameters: optional unknown or null`
 
-          客户端执行工具搜索工具的参数 schema。
+          客户端执行的工具搜索工具的参数 schema。
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        此工具搜索网页以获取用于响应的相关结果。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+        此工具会在网络上搜索相关结果以用于回复中。详细了解 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-          网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+          网页搜索工具的类型，取值之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
           - `"web_search_preview"`
 
@@ -2214,7 +2214,7 @@
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
           - `"low"`
 
@@ -2224,25 +2224,25 @@
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          用户的位置。
+          用户所在的位置。
 
           - `type: "approximate"`
 
-            位置近似的类型。始终 `approximate`.
+            位置近似的类型。始终为 `approximate`.
 
             - `"approximate"`
 
           - `city: optional string or null`
 
-            用户的城市的自由文本输入，例如 `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+            两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户的地区的自由文本输入，例如 `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
@@ -2250,17 +2250,17 @@
 
       - `ApplyPatch object { type, allowed_callers }`
 
-        允许助手使用统一差异创建、删除或更新文件。
+        允许助手使用 unified diff 创建、删除或更新文件。
 
         - `type: "apply_patch"`
 
-          工具的类型。始终 `apply_patch`.
+          工具的类型。始终为 `apply_patch`.
 
           - `"apply_patch"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -2268,7 +2268,7 @@
 
     - `type: "tool_search_output"`
 
-      项目类型。始终为 `tool_search_output`.
+      项的类型。始终为 `tool_search_output`.
 
       - `"tool_search_output"`
 
@@ -2282,7 +2282,7 @@
 
     - `execution: optional "server" or "client"`
 
-      工具搜索是由服务端还是客户端执行的。
+      工具搜索是由服务端还是由客户端执行的。
 
       - `"server"`
 
@@ -2302,39 +2302,39 @@
 
     - `role: "developer"`
 
-      提供附加工具的角色。仅 `developer` 受支持。
+      提供这些附加工具的角色。仅支持 `developer` 。
 
       - `"developer"`
 
     - `tools: array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-      在此项目时可用的附加工具列表。
+      在此条目中可用的附加工具列表。
 
       - `Function object { name, parameters, strict, 5 more }`
 
-        定义你自己代码中模型可以选择调用的函数。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+        定义你自己代码中的某个函数，供模型选择调用。详细了解 [function calling](https://platform.openai.com/docs/guides/function-calling).
 
         - `name: string`
 
-          要调用的函数的名称。
+          要调用的函数名称。
 
         - `parameters: map[unknown] or null`
 
-          描述函数参数的 JSON schema 对象。
+          描述该函数参数的 JSON schema 对象。
 
         - `strict: boolean or null`
 
-          是否对此函数工具强制执行严格的参数验证。
+          是否为该函数工具启用严格的参数校验。
 
         - `type: "function"`
 
-          函数工具的类型。始终为 `function`.
+          该函数工具的类型。始终为 `function`.
 
           - `"function"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -2342,19 +2342,19 @@
 
         - `defer_loading: optional boolean`
 
-          此函数是否延迟并通过工具搜索加载。
+          该函数是否为延迟加载，并通过工具搜索加载。
 
         - `description: optional string or null`
 
-          函数的描述。模型据此确定是否调用该函数。
+          该函数的描述。模型据此决定是否调用该函数。
 
         - `output_schema: optional map[unknown] or null`
 
-          描述此函数的字符串输出中编码的 JSON 值的 JSON schema 对象。
+          描述该函数在字符串输出中编码的 JSON 值的 JSON schema 对象。
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        一种从上传文件中搜索相关内容工具。详细了解 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+        一个用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 tool](https://platform.openai.com/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -2372,15 +2372,15 @@
 
           - `ComparisonFilter object { key, type, value }`
 
-            用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+            用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
           - `CompoundFilter object { filters, type }`
 
-            使用以下方式组合多个筛选器 `and` 或 `or`.
+            使用以下方式组合多个过滤器 `and` 或 `or`.
 
         - `max_num_results: optional number`
 
-          要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+          返回结果的最大数量。此数量应介于 1 到 50 之间（含两端）。
 
         - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -2388,19 +2388,19 @@
 
           - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-            启用混合搜索时，控制倒数排名融合如何在语义嵌入匹配与稀疏关键词匹配之间取得平衡的权重。
+            在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
             - `embedding_weight: number`
 
-              嵌入在倒数排名融合中的权重。
+              在倒数排名融合中嵌入的权重。
 
             - `text_weight: number`
 
-              文本在倒数排名融合中的权重。
+              在倒数排名融合中文本的权重。
 
           - `ranker: optional "auto" or "default-2024-11-15"`
 
-            用于文件搜索的排序器。
+            用于 文件搜索 的排序器。
 
             - `"auto"`
 
@@ -2408,11 +2408,11 @@
 
           - `score_threshold: optional number`
 
-            文件搜索的分数阈值，为0到1之间的数字。数字越接近1，将尝试仅返回最相关的结果，但可能返回较少的結果。
+            文件搜索 的分数阈值，取值范围为 0 到 1 之间。数值越接近 1，越会尝试只返回最相关的结果，但返回的结果数量可能会减少。
 
       - `Computer object { type }`
 
-        一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -2422,19 +2422,19 @@
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
-          计算机显示器的宽度。
+          计算机显示屏的高度。
 
         - `display_width: number`
 
-          计算机显示器的宽度。
+          计算机显示屏的宽度。
 
         - `environment: "windows" or "mac" or "linux" or 2 more`
 
-          要控制的计算机环境的类型。
+          要控制的计算机环境类型。
 
           - `"windows"`
 
@@ -2454,12 +2454,12 @@
 
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-        搜索互联网以获取与提示相关的来源。了解更多关于
+        在互联网上搜索与提示相关的来源。详细了解
         [网页搜索工具](/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
-          网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+          网页搜索工具的类型，取值之一为 `web_search` 或 `web_search_2025_08_26`.
 
           - `"web_search"`
 
@@ -2467,22 +2467,22 @@
 
         - `external_web_access: optional boolean`
 
-          允许网页搜索实时访问互联网。省略时默认为true。为false时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+          允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
         - `filters: optional object { allowed_domains }  or null`
 
-          搜索的过滤器。
+          搜索的筛选条件。
 
           - `allowed_domains: optional array of string or null`
 
-            搜索允许的域名。如果未提供，则允许所有域名。
-            所提供域名的子域名也允许。
+            允许进行搜索的域名。如果未提供，则允许所有域名。
+            同时也允许所提供域名的子域名。
 
             示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
           - `"low"`
 
@@ -2496,15 +2496,15 @@
 
           - `city: optional string or null`
 
-            用户的城市的自由文本输入，例如 `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+            两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户的地区的自由文本输入，例如 `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
@@ -2512,14 +2512,14 @@
 
           - `type: optional "approximate"`
 
-            位置近似的类型。始终 `approximate`.
+            位置近似的类型。始终为 `approximate`.
 
             - `"approximate"`
 
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-        通过远程 Model Context Protocol 让模型访问额外工具
-        (MCP) 服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+        通过远程 Model Context Protocol
+        （MCP）服务器为模型提供对其他工具的访问权限。 [了解更多关于 MCP 的信息](/docs/guides/tools-remote-mcp).
 
         - `server_label: string`
 
@@ -2527,13 +2527,13 @@
 
         - `type: "mcp"`
 
-          MCP 工具的类型。始终 `mcp`.
+          MCP 工具的类型。始终为 `mcp`.
 
           - `"mcp"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -2545,7 +2545,7 @@
 
           - `McpAllowedTools = array of string`
 
-            允许工具名称的字符串数组
+            允许的工具名称组成的字符串数组
 
           - `McpToolFilter object { read_only, tool_names }`
 
@@ -2553,9 +2553,9 @@
 
             - `read_only: optional boolean`
 
-              指示工具是否修改数据或为只读。如果
-              MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-              ，它将匹配此过滤器。
+              指示工具是否修改数据或是否为只读。如果某个
+              MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+              ，它将匹配此过滤条件。
 
             - `tool_names: optional array of string`
 
@@ -2563,26 +2563,26 @@
 
         - `authorization: optional string`
 
-          可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-          与自定义 MCP 服务器 URL 或服务连接器配合使用。你的应用程序
-          必须处理 OAuth 授权流程并在此处提供令牌。
+          可用于远程 MCP 服务器的 OAuth 访问令牌，可搭配自定义 MCP 服务器 URL 或服务连接器使用。你的应用
+          必须处理 OAuth 授权流程，并在此处提供该令牌。
+          必须处理 OAuth 授权流程，并在此处提供该令牌。
 
         - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-          服务连接器的标识符，类似于 ChatGPT 中可用的那些。必须提供以下之一：
-          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中之一。了解更多
-          关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+          服务连接器的标识符，例如 ChatGPT 中提供的连接器之一。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解关于服务连接器
+          的更多信息 [请参阅此处](/docs/guides/tools-remote-mcp#connectors).
 
-          当前支持的值 `connector_id` 包括：
+          当前支持 `connector_id` 的值为：
 
-          - Dropbox： `connector_dropbox`
-          - Gmail： `connector_gmail`
-          - Google Calendar： `connector_googlecalendar`
-          - Google Drive： `connector_googledrive`
-          - Microsoft Teams： `connector_microsoftteams`
-          - Outlook Calendar： `connector_outlookcalendar`
-          - Outlook Email： `connector_outlookemail`
-          - SharePoint： `connector_sharepoint`
+          - Dropbox: `connector_dropbox`
+          - Gmail: `connector_gmail`
+          - Google Calendar: `connector_googlecalendar`
+          - Google Drive: `connector_googledrive`
+          - Microsoft Teams: `connector_microsoftteams`
+          - Outlook Calendar: `connector_outlookcalendar`
+          - Outlook Email: `connector_outlookemail`
+          - SharePoint: `connector_sharepoint`
 
           - `"connector_dropbox"`
 
@@ -2602,11 +2602,11 @@
 
         - `defer_loading: optional boolean`
 
-          此 MCP 工具是否被延迟并通过工具搜索发现。
+          此 MCP 工具是否被延迟，并通过工具搜索发现。
 
         - `headers: optional map[string] or null`
 
-          发送到 MCP 服务器的可选 HTTP 头。用于身份验证
+          发送到 MCP 服务器的可选 HTTP 请求头。用于身份验证
           或其他用途。
 
         - `require_approval: optional object { always, never }  or "always" or "never" or null`
@@ -2616,8 +2616,8 @@
           - `McpToolApprovalFilter object { always, never }`
 
             指定 MCP 服务器的哪些工具需要审批。可以是
-            `always`, `never`，或一个与需要审批的工具关联的过滤器对象
-            。
+            `always`, `never`，或与工具关联的过滤对象
+            ，这些工具需要审批。
 
             - `always: optional object { read_only, tool_names }`
 
@@ -2625,9 +2625,9 @@
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -2639,9 +2639,9 @@
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -2649,8 +2649,8 @@
 
           - `McpToolApprovalSetting = "always" or "never"`
 
-            为所有工具指定单一审批策略。可以是 `always` 或
-            `never`。之一。当设置为 `always`，时，所有工具都需要审批。当
+            为所有工具指定统一的审批策略。可选值为 `always` 或
+            `never`。当设置为 `always`，时，所有工具都需要审批。当
             设置为 `never`，时，所有工具都不需要审批。
 
             - `"always"`
@@ -2663,22 +2663,22 @@
 
         - `server_url: optional string`
 
-          MCP 服务器的 URL。必须提供 `server_url`, `connector_id`，或
-          `tunnel_id` 之一。
+          MCP 服务器的 URL。 `server_url`, `connector_id`，或
+          `tunnel_id` 必须提供其中一个。
 
         - `tunnel_id: optional string`
 
-          用于替代直接服务器 URL 的安全 MCP 隧道 ID。必须提供
-          `server_url`, `connector_id`，或 `tunnel_id` 之一。
+          用于替代直接服务器 URL 的安全 MCP 隧道 ID。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中一个。
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
-        一个运行 Python 代码以帮助生成提示响应的工具。
+        运行 Python 代码以帮助生成对提示词响应的工具。
 
         - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-          代码解释器容器。可以是容器 ID，或一个对象，其中
-          指定了上传的文件 ID 以供你的代码使用，以及
+          代码解释器容器。可以是容器 ID，也可以是指定可供代码使用的已上传文件 ID 的对象，以及一个
+          指定可供你的代码使用的已上传文件 ID，以及一个
           可选的 `memory_limit` 设置。
 
           - `string`
@@ -2687,17 +2687,17 @@
 
           - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器的配置。可选择指定要在其上运行代码的文件 ID。
+            代码解释器容器的配置。可选择指定要对其运行代码的文件 ID。
 
             - `type: "auto"`
 
-              始终 `auto`.
+              始终为 `auto`.
 
               - `"auto"`
 
             - `file_ids: optional array of string`
 
-              一个可选的已上传文件列表，供你的代码使用。
+              一个可选的、供代码使用的已上传文件列表。
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -2721,13 +2721,13 @@
 
         - `type: "code_interpreter"`
 
-          代码解释器工具的类型。始终 `code_interpreter`.
+          代码解释器工具的类型。始终为 `code_interpreter`.
 
           - `"code_interpreter"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -2737,7 +2737,7 @@
 
         - `type: "programmatic_tool_calling"`
 
-          工具的类型。始终 `programmatic_tool_calling`.
+          工具的类型。始终为 `programmatic_tool_calling`.
 
           - `"programmatic_tool_calling"`
 
@@ -2747,13 +2747,13 @@
 
         - `type: "image_generation"`
 
-          图像生成工具的类型。始终 `image_generation`.
+          图像生成工具的类型。始终为 `image_generation`.
 
           - `"image_generation"`
 
         - `action: optional "generate" or "edit" or "auto"`
 
-          是否生成新图像或编辑现有图像。默认值： `auto`.
+          是生成新图像还是编辑现有图像。默认值： `auto`.
 
           - `"generate"`
 
@@ -2763,11 +2763,11 @@
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          设置生成图像的背景。可选值之一： `transparent`,
-          `opaque`，或 `auto`。透明背景可用于
-          支持的 GPT 图像模型。对于 `gpt-image-2` 以及
-          `gpt-image-2-2026-04-21`，此支持目前处于预览阶段。使用
-          `transparent`，时，请将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
+          设置生成图像的背景。取值之一 `transparent`,
+          `opaque`，或 `auto`。透明背景适用于受支持的
+          GPT Image 模型。对于 `gpt-image-2` 和
+          `gpt-image-2-2026-04-21`，该支持目前处于预览阶段。使用
+          `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
           - `"transparent"`
 
@@ -2777,7 +2777,7 @@
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          控制模型在匹配输入图像的风格和特征（尤其是面部特征）上投入的努力程度。此参数仅支持 `gpt-image-1` 以及 `gpt-image-1.5` 及更高版本模型，不支持 `gpt-image-1-mini`。支持 `high` 以及 `low`。默认为 `low`.
+          控制模型在匹配输入图像风格和特征（尤其是面部特征）时所付出的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
 
           - `"high"`
 
@@ -2785,7 +2785,7 @@
 
         - `input_image_mask: optional object { file_id, image_url }`
 
-          用于修复的可选遮罩。包含 `image_url`
+          用于局部重绘的可选遮罩。包含 `image_url`
           （字符串，可选）和 `file_id` （字符串，可选）。
 
           - `file_id: optional string`
@@ -2798,7 +2798,7 @@
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-          要使用的图像生成模型。可选值之一 `gpt-image-1`,
+          要使用的图像生成模型。可选值为 `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
           `gpt-image-1`.
@@ -2807,7 +2807,7 @@
 
           - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。可选值之一 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
@@ -2824,7 +2824,7 @@
 
         - `moderation: optional "auto" or "low"`
 
-          生成图像的审核级别。默认值： `auto`.
+          生成图像的内容审核级别。默认值： `auto`.
 
           - `"auto"`
 
@@ -2836,7 +2836,7 @@
 
         - `output_format: optional "png" or "webp" or "jpeg"`
 
-          生成图像的输出格式。可选值之一 `png`, `webp`，或
+          生成图像的输出格式。可选值为 `png`, `webp`，或
           `jpeg`。默认值： `png`.
 
           - `"png"`
@@ -2847,11 +2847,11 @@
 
         - `partial_images: optional number`
 
-          流式模式下生成的部分图像数量，范围从 0（默认值）到 3。
+          在流式模式下生成的部分图像数量，取值范围为 0（默认值）到 3。
 
         - `quality: optional "low" or "medium" or "high" or "auto"`
 
-          生成图像的质量。可选值之一 `low`, `medium`, `high`,
+          生成图像的质量。可选值为 `low`, `medium`, `high`,
           或 `auto`。默认值： `auto`.
 
           - `"low"`
@@ -2864,13 +2864,13 @@
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+          生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `"1024x1024"`
 
@@ -2882,27 +2882,27 @@
 
       - `LocalShell object { type }`
 
-        一种允许模型在本地环境中执行 shell 命令的工具。
+        允许模型在本地环境中执行 shell 命令的工具。
 
         - `type: "local_shell"`
 
-          本地 shell 工具的类型。始终为 `local_shell`.
+          本地 shell 工具的类型，始终为 `local_shell`.
 
           - `"local_shell"`
 
       - `Shell object { type, allowed_callers, environment }`
 
-        一种允许模型执行 shell 命令的工具。
+        允许模型执行 shell 命令的工具。
 
         - `type: "shell"`
 
-          shell 工具的类型。始终为 `shell`.
+          shell 工具的类型，始终为 `shell`.
 
           - `"shell"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -2918,7 +2918,7 @@
 
       - `Custom object { name, type, allowed_callers, 3 more }`
 
-        一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+        使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -2932,7 +2932,7 @@
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -2940,7 +2940,7 @@
 
         - `defer_loading: optional boolean`
 
-          是否应延迟此工具并通过工具搜索发现。
+          是否应延迟此工具并通过工具搜索发现它。
 
         - `description: optional string`
 
@@ -2948,23 +2948,23 @@
 
         - `format: optional CustomToolInputFormat`
 
-          自定义工具的输入格式。默认为无约束文本。
+          自定义工具的输入格式。默认是无约束文本。
 
       - `Namespace object { description, name, tools, type }`
 
-        将函数/自定义工具分组到共享命名空间下。
+        在共享命名空间下对 function/custom 工具进行分组。
 
         - `description: string`
 
-          显示给模型的命名空间描述。
+          展示给模型的命名空间描述。
 
         - `name: string`
 
-          工具调用中使用的命名空间名称（例如， `crm`).
+          在工具调用中使用的命名空间名称（例如， `crm`).
 
         - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
-          此命名空间内可用的函数/自定义工具。
+          该命名空间内可用的 function/custom 工具。
 
           - `Function object { name, type, allowed_callers, 5 more }`
 
@@ -2976,7 +2976,7 @@
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-              工具调用上下文。
+              该工具的调用上下文。
 
               - `"direct"`
 
@@ -2984,23 +2984,23 @@
 
             - `defer_loading: optional boolean`
 
-              此函数是否应延迟并通过工具搜索发现。
+              是否应延迟此函数并通过工具搜索发现。
 
             - `description: optional string or null`
 
             - `output_schema: optional map[unknown] or null`
 
-              描述此函数工具字符串输出中编码的 JSON 值的 JSON Schema。这不描述内容数组输出。
+              用于描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content-array 输出。
 
             - `parameters: optional unknown or null`
 
             - `strict: optional boolean or null`
 
-              是否强制进行严格的参数验证。如果省略，当 schema 兼容时，Responses 会尝试使用严格验证，否则回退到非严格验证。
+              是否强制执行严格的参数校验。如果省略，Responses 会尝试在 schema 兼容时使用严格校验，否则回退到非严格校验。
 
           - `Custom object { name, type, allowed_callers, 3 more }`
 
-            一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+            使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -3014,7 +3014,7 @@
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-              工具调用上下文。
+              该工具的调用上下文。
 
               - `"direct"`
 
@@ -3022,7 +3022,7 @@
 
             - `defer_loading: optional boolean`
 
-              是否应延迟此工具并通过工具搜索发现。
+              是否应延迟此工具并通过工具搜索发现它。
 
             - `description: optional string`
 
@@ -3030,27 +3030,27 @@
 
             - `format: optional CustomToolInputFormat`
 
-              自定义工具的输入格式。默认为无约束文本。
+              自定义工具的输入格式。默认是无约束文本。
 
         - `type: "namespace"`
 
-          工具的类型。始终 `namespace`.
+          工具的类型。始终为 `namespace`.
 
           - `"namespace"`
 
       - `ToolSearch object { type, description, execution, parameters }`
 
-        延迟工具的托管或 BYOT 工具搜索配置。
+        用于延迟工具的托管或 BYOT 工具搜索配置。
 
         - `type: "tool_search"`
 
-          工具的类型。始终 `tool_search`.
+          工具的类型。始终为 `tool_search`.
 
           - `"tool_search"`
 
         - `description: optional string or null`
 
-          显示给模型的客户端执行工具搜索工具的描述。
+          展示给模型的客户端执行的工具搜索工具的描述。
 
         - `execution: optional "server" or "client"`
 
@@ -3062,15 +3062,15 @@
 
         - `parameters: optional unknown or null`
 
-          客户端执行工具搜索工具的参数 schema。
+          客户端执行的工具搜索工具的参数 schema。
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        此工具搜索网页以获取用于响应的相关结果。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+        此工具会在网络上搜索相关结果以用于回复中。详细了解 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-          网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+          网页搜索工具的类型，取值之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
           - `"web_search_preview"`
 
@@ -3084,7 +3084,7 @@
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
           - `"low"`
 
@@ -3094,25 +3094,25 @@
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          用户的位置。
+          用户所在的位置。
 
           - `type: "approximate"`
 
-            位置近似的类型。始终 `approximate`.
+            位置近似的类型。始终为 `approximate`.
 
             - `"approximate"`
 
           - `city: optional string or null`
 
-            用户的城市的自由文本输入，例如 `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+            两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户的地区的自由文本输入，例如 `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
@@ -3120,17 +3120,17 @@
 
       - `ApplyPatch object { type, allowed_callers }`
 
-        允许助手使用统一差异创建、删除或更新文件。
+        允许助手使用 unified diff 创建、删除或更新文件。
 
         - `type: "apply_patch"`
 
-          工具的类型。始终 `apply_patch`.
+          工具的类型。始终为 `apply_patch`.
 
           - `"apply_patch"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -3138,19 +3138,19 @@
 
     - `type: "additional_tools"`
 
-      项目类型。始终为 `additional_tools`.
+      项的类型。始终为 `additional_tools`.
 
       - `"additional_tools"`
 
     - `id: optional string or null`
 
-      此附加工具项目的唯一 ID。
+      此附加工具条目的唯一 ID。
 
   - `Reasoning object { id, summary, type, 3 more }`
 
-    推理模型在生成
-    响应时所用思维链的描述。请务必将这些项目包含在你的 `input` 对 Responses API 的
-    后续对话轮次中，如果你正在手动
+    对推理模型在生成响应时所使用的思维链的描述。如果你是手动
+    管理上下文，请务必在后续对话轮次中将这些项包含在 `input` 对 Responses API 的
+    请求中。
     [管理上下文](/docs/guides/conversation-state).
 
     - `id: string`
@@ -3163,7 +3163,7 @@
 
       - `text: string`
 
-        模型到目前为止的推理输出摘要。
+        到目前为止模型推理输出的摘要。
 
       - `type: "summary_text"`
 
@@ -3193,20 +3193,20 @@
 
     - `encrypted_content: optional string or null`
 
-      推理项目的加密内容。默认情况下，此字段由
-      返回的推理项目填充，适用于 `POST /v1/responses` 和 WebSocket
-      `response.create` 请求。
+      推理条目的加密内容。默认情况下，对于通过
+      和 WebSocket `POST /v1/responses` 请求返回的推理条目，
+      `response.create` 会填充该字段。
 
-      流式传输时，请使用已完成的推理项及其
-      `encrypted_content` 从 `response.output_item.done` 事件中
-      的后续请求。该 `encrypted_content` 中
-      `response.output_item.added` 可能不完整。这在
-      特别重要，当 `store` 是 `false` 或使用零数据保留时。
+      流式传输时，使用已完成的推理项及其
+      `encrypted_content` 来自 `response.output_item.done` 事件中的
+      字段，并在后续请求中传递。 `encrypted_content` 在
+      `response.output_item.added` 中可能不完整。这一点尤其
+      重要，当你 `store` 为 `false` 时，或使用 Zero Data Retention 时。
 
     - `status: optional "in_progress" or "completed" or "incomplete"`
 
-      条目的状态。其一为 `in_progress`, `completed`，或
-      `incomplete`。当项目通过 API 返回时填充。
+      该条目的状态。可选值为 `in_progress`, `completed`，或
+      `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -3216,7 +3216,7 @@
 
   - `Compaction object { encrypted_content, type, id }`
 
-    由该工具生成的压缩项 [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+    由 [`v1/responses/compact` API](/docs/api-reference/responses/compact).
 
     - `encrypted_content: string`
 
@@ -3224,13 +3224,13 @@
 
     - `type: "compaction"`
 
-      项目的类型。始终为 `compaction`.
+      项的类型。始终为 `compaction`.
 
       - `"compaction"`
 
     - `id: optional string or null`
 
-      压缩项目的 ID。
+      压缩项的 ID。
 
   - `ImageGenerationCall object { id, result, status, type }`
 
@@ -3272,7 +3272,7 @@
 
     - `code: string or null`
 
-      要运行的代码，如果不可用则为 null。
+      要运行的代码，若不可用则为 null。
 
     - `container_id: string`
 
@@ -3281,7 +3281,7 @@
     - `outputs: array of object { logs, type }  or object { type, url }  or null`
 
       代码解释器生成的输出，例如日志或图像。
-      如果没有可用的输出，则可以为 null。
+      若没有可用输出，可能为 null。
 
       - `Logs object { logs, type }`
 
@@ -3299,7 +3299,7 @@
 
       - `Image object { type, url }`
 
-        代码解释器的图像输出。
+        代码解释器输出的图像。
 
         - `type: "image"`
 
@@ -3309,7 +3309,7 @@
 
         - `url: string`
 
-          代码解释器图像输出的 URL。
+          代码解释器输出图像的 URL。
 
     - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -3341,7 +3341,7 @@
 
     - `action: object { command, env, type, 3 more }`
 
-      在服务器上执行 shell 命令。
+      在服务端执行 shell 命令。
 
       - `command: array of string`
 
@@ -3363,7 +3363,7 @@
 
       - `user: optional string or null`
 
-        运行命令的可选用户。
+        运行命令所使用的可选用户。
 
       - `working_directory: optional string or null`
 
@@ -3371,11 +3371,11 @@
 
     - `call_id: string`
 
-      模型生成的本地 shell 工具调用的唯一 ID。
+      模型生成的本机 shell 工具调用的唯一 ID。
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      本地 shell 调用的状态。
+      本机 shell 调用的状态。
 
       - `"in_progress"`
 
@@ -3385,31 +3385,31 @@
 
     - `type: "local_shell_call"`
 
-      本地 shell 调用的类型。始终为 `local_shell_call`.
+      本机 shell 调用的类型。始终为 `local_shell_call`.
 
       - `"local_shell_call"`
 
   - `LocalShellCallOutput object { id, output, type, status }`
 
-    本地 shell 工具调用的输出。
+    本机 shell 工具调用的输出。
 
     - `id: string`
 
-      模型生成的本地 shell 工具调用的唯一 ID。
+      模型生成的本机 shell 工具调用的唯一 ID。
 
     - `output: string`
 
-      本地 shell 工具调用输出的 JSON 字符串。
+      本机 shell 工具调用输出的 JSON 字符串。
 
     - `type: "local_shell_call_output"`
 
-      本地 shell 工具调用输出的类型。始终为 `local_shell_call_output`.
+      本机 shell 工具调用输出的类型。始终为 `local_shell_call_output`.
 
       - `"local_shell_call_output"`
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-      条目的状态。其一为 `in_progress`, `completed`，或 `incomplete`.
+      该条目的状态。可选值为 `in_progress`, `completed`，或 `incomplete`.
 
       - `"in_progress"`
 
@@ -3419,23 +3419,23 @@
 
   - `ShellCall object { action, call_id, type, 4 more }`
 
-    表示执行一个或多个 shell 命令请求的工具。
+    表示执行一条或多条 shell 命令请求的工具。
 
     - `action: object { commands, max_output_length, timeout_ms }`
 
-      描述如何运行工具调用的 shell 命令和限制。
+      描述如何运行该工具调用的 shell 命令和限制。
 
       - `commands: array of string`
 
-        供执行环境运行的按顺序排列的 shell 命令。
+        执行环境要运行的有序 shell 命令。
 
       - `max_output_length: optional number or null`
 
-        从合并的 stdout 和 stderr 输出中捕获的最大 UTF-8 字符数。
+        从合并后的 stdout 和 stderr 输出中捕获的最大 UTF-8 字符数。
 
       - `timeout_ms: optional number or null`
 
-        允许 shell 命令运行的最大墙钟时间（毫秒）。
+        允许 shell 命令运行的 최대挂钟时间（毫秒）。Maximum wall-clock time in milliseconds to allow the shell commands to run.
 
     - `call_id: string`
 
@@ -3443,13 +3443,13 @@
 
     - `type: "shell_call"`
 
-      项目的类型。始终为 `shell_call`.
+      项的类型。始终为 `shell_call`.
 
       - `"shell_call"`
 
     - `id: optional string or null`
 
-      shell 工具调用的唯一 ID。当此项目通过 API 返回时填充。
+      shell 工具调用的唯一 ID。通过 API 返回此条目时填充。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -3459,7 +3459,7 @@
 
         - `type: "direct"`
 
-          调用者类型。始终为 `direct`.
+          调用方类型。始终为 `direct`.
 
           - `"direct"`
 
@@ -3471,7 +3471,7 @@
 
         - `type: "program"`
 
-          调用者类型。始终为 `program`.
+          调用方类型。始终为 `program`.
 
           - `"program"`
 
@@ -3485,7 +3485,7 @@
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-      shell 调用的状态。其中一种为 `in_progress`, `completed`，或 `incomplete`.
+      shell 调用的状态。取值之一： `in_progress`, `completed`，或 `incomplete`.
 
       - `"in_progress"`
 
@@ -3495,7 +3495,7 @@
 
   - `ShellCallOutput object { call_id, output, type, 4 more }`
 
-    shell 工具调用发出的流式输出项目。
+    shell 工具调用发出的流式输出项。
 
     - `call_id: string`
 
@@ -3521,11 +3521,11 @@
 
         - `Exit object { exit_code, type }`
 
-          表示 shell 命令已完成并返回了退出码。
+          表示 shell 命令已执行完成并返回了退出码。
 
           - `exit_code: number`
 
-            由 shell 进程返回的退出码。
+            shell 进程返回的退出码。
 
           - `type: "exit"`
 
@@ -3535,21 +3535,21 @@
 
       - `stderr: string`
 
-        捕获的 shell 调用 stderr 输出。
+        shell 调用的捕获 stderr 输出。
 
       - `stdout: string`
 
-        捕获的 shell 调用 stdout 输出。
+        shell 调用的捕获 stdout 输出。
 
     - `type: "shell_call_output"`
 
-      项目的类型。始终为 `shell_call_output`.
+      项的类型。始终为 `shell_call_output`.
 
       - `"shell_call_output"`
 
     - `id: optional string or null`
 
-      shell 工具调用输出的唯一 ID。当此项目通过 API 返回时填充。
+      shell 工具调用输出的唯一 ID。通过 API 返回此条目时填充。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -3559,7 +3559,7 @@
 
         - `type: "direct"`
 
-          调用者类型。始终为 `direct`.
+          调用方类型。始终为 `direct`.
 
           - `"direct"`
 
@@ -3571,13 +3571,13 @@
 
         - `type: "program"`
 
-          调用者类型。始终为 `program`.
+          调用方类型。始终为 `program`.
 
           - `"program"`
 
     - `max_output_length: optional number or null`
 
-      为此 shell 调用的组合输出捕获的最大 UTF-8 字符数。
+      此次 shell 调用合并输出所捕获的最大 UTF-8 字符数。
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -3595,7 +3595,7 @@
 
     - `call_id: string`
 
-      由模型生成的 apply_patch 工具调用的唯一 ID。
+      模型生成的 apply patch 工具调用的唯一 ID。
 
     - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
 
@@ -3611,11 +3611,11 @@
 
         - `path: string`
 
-          要创建的文件相对于工作区根目录的路径。
+          相对于工作区根目录的要创建文件的路径。
 
         - `type: "create_file"`
 
-          操作类型。始终 `create_file`.
+          操作类型。始终为 `create_file`.
 
           - `"create_file"`
 
@@ -3625,11 +3625,11 @@
 
         - `path: string`
 
-          要删除的文件相对于工作区根目录的路径。
+          相对于工作区根目录的要删除文件的路径。
 
         - `type: "delete_file"`
 
-          操作类型。始终 `delete_file`.
+          操作类型。始终为 `delete_file`.
 
           - `"delete_file"`
 
@@ -3639,21 +3639,21 @@
 
         - `diff: string`
 
-          要应用到现有文件的统一 diff 内容。
+          应用于现有文件的统一 diff 内容。
 
         - `path: string`
 
-          要更新的文件相对于工作区根目录的路径。
+          相对于工作区根目录的要更新文件的路径。
 
         - `type: "update_file"`
 
-          操作类型。始终 `update_file`.
+          操作类型。始终为 `update_file`.
 
           - `"update_file"`
 
     - `status: "in_progress" or "completed"`
 
-      apply_patch 工具调用的状态。之一 `in_progress` 或 `completed`.
+      apply patch 工具调用的状态。取值为 `in_progress` 或 `completed`.
 
       - `"in_progress"`
 
@@ -3661,13 +3661,13 @@
 
     - `type: "apply_patch_call"`
 
-      项目的类型。始终为 `apply_patch_call`.
+      项的类型。始终为 `apply_patch_call`.
 
       - `"apply_patch_call"`
 
     - `id: optional string or null`
 
-      API 返回此项目时填充的 apply patch 工具调用的唯一 ID。
+      apply patch 工具调用的唯一 ID。当通过 API 返回此 item 时填充。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -3677,7 +3677,7 @@
 
         - `type: "direct"`
 
-          调用者类型。始终为 `direct`.
+          调用方类型。始终为 `direct`.
 
           - `"direct"`
 
@@ -3689,7 +3689,7 @@
 
         - `type: "program"`
 
-          调用者类型。始终为 `program`.
+          调用方类型。始终为 `program`.
 
           - `"program"`
 
@@ -3699,11 +3699,11 @@
 
     - `call_id: string`
 
-      由模型生成的 apply_patch 工具调用的唯一 ID。
+      模型生成的 apply patch 工具调用的唯一 ID。
 
     - `status: "completed" or "failed"`
 
-      apply patch 工具调用输出的状态。可选值之一： `completed` 或 `failed`.
+      apply patch 工具调用输出的状态。取值之一为 `completed` 或 `failed`.
 
       - `"completed"`
 
@@ -3711,13 +3711,13 @@
 
     - `type: "apply_patch_call_output"`
 
-      项目的类型。始终为 `apply_patch_call_output`.
+      项的类型。始终为 `apply_patch_call_output`.
 
       - `"apply_patch_call_output"`
 
     - `id: optional string or null`
 
-      API 返回此项目时填充的 apply patch 工具调用输出的唯一 ID。
+      apply patch 工具调用输出的唯一 ID。当通过 API 返回此 item 时填充。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -3727,7 +3727,7 @@
 
         - `type: "direct"`
 
-          调用者类型。始终为 `direct`.
+          调用方类型。始终为 `direct`.
 
           - `"direct"`
 
@@ -3739,13 +3739,13 @@
 
         - `type: "program"`
 
-          调用者类型。始终为 `program`.
+          调用方类型。始终为 `program`.
 
           - `"program"`
 
     - `output: optional string or null`
 
-      来自 apply patch 工具的可选人类可读日志文本（例如，补丁结果或错误）。
+      apply patch 工具的可读日志文本（例如补丁结果或错误）。
 
   - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -3753,7 +3753,7 @@
 
     - `id: string`
 
-      列表的唯一 ID。
+      此列表的唯一 ID。
 
     - `server_label: string`
 
@@ -3765,7 +3765,7 @@
 
       - `input_schema: unknown`
 
-        描述工具输入的 JSON schema。
+        描述该工具输入的 JSON schema。
 
       - `name: string`
 
@@ -3773,7 +3773,7 @@
 
       - `annotations: optional unknown or null`
 
-        关于工具的附加注释。
+        关于该工具的附加注释。
 
       - `description: optional string or null`
 
@@ -3781,7 +3781,7 @@
 
     - `type: "mcp_list_tools"`
 
-      项目的类型。始终为 `mcp_list_tools`.
+      项的类型。始终为 `mcp_list_tools`.
 
       - `"mcp_list_tools"`
 
@@ -3791,11 +3791,11 @@
 
   - `McpApprovalRequest object { id, arguments, name, 2 more }`
 
-    请求人工批准工具调用的请求。
+    对工具调用的人工审批请求。
 
     - `id: string`
 
-      批准请求的唯一 ID。
+      审批请求的唯一 ID。
 
     - `arguments: string`
 
@@ -3811,25 +3811,25 @@
 
     - `type: "mcp_approval_request"`
 
-      项目的类型。始终为 `mcp_approval_request`.
+      项的类型。始终为 `mcp_approval_request`.
 
       - `"mcp_approval_request"`
 
   - `McpApprovalResponse object { approval_request_id, approve, type, 2 more }`
 
-    对 MCP 批准请求的响应。
+    对 MCP 审批请求的响应。
 
     - `approval_request_id: string`
 
-      正在回答的审批请求的 ID。
+      正在回复的审批请求的 ID。
 
     - `approve: boolean`
 
-      该请求是否已获批准。
+      请求是否已批准。
 
     - `type: "mcp_approval_response"`
 
-      项目的类型。始终为 `mcp_approval_response`.
+      项的类型。始终为 `mcp_approval_response`.
 
       - `"mcp_approval_response"`
 
@@ -3839,23 +3839,23 @@
 
     - `reason: optional string or null`
 
-      该决定的可选原因。
+      可选的决策原因。
 
   - `McpCall object { id, arguments, name, 6 more }`
 
-    在 MCP 服务器上对工具的一次调用。
+    对 MCP 服务器上某个工具的调用。
 
     - `id: string`
 
-      工具调用的唯一 ID。
+      该工具调用的唯一 ID。
 
     - `arguments: string`
 
-      传递给工具的参数的 JSON 字符串。
+      传递给该工具的参数的 JSON 字符串。
 
     - `name: string`
 
-      所运行的工具的名称。
+      已运行工具的名称。
 
     - `server_label: string`
 
@@ -3863,18 +3863,18 @@
 
     - `type: "mcp_call"`
 
-      项目的类型。始终为 `mcp_call`.
+      项的类型。始终为 `mcp_call`.
 
       - `"mcp_call"`
 
     - `approval_request_id: optional string or null`
 
       MCP 工具调用审批请求的唯一标识符。
-      在后续 `mcp_approval_response` 输入中包含此值，以批准或拒绝对应的工具调用。
+      在后续的 `mcp_approval_response` 输入中包含该值，以批准或拒绝相应的工具调用。
 
     - `error: optional McpToolCallError or null`
 
-      工具调用产生的错误（如有）。
+      工具调用的错误（如果有）。
 
       - `McpProtocolError object { code, message, type }`
 
@@ -3910,7 +3910,7 @@
 
     - `status: optional "in_progress" or "completed" or "incomplete" or 2 more`
 
-      工具调用的状态。取值为 `in_progress`, `completed`, `incomplete`, `calling`，或 `failed`.
+      工具调用的状态，取值为 `in_progress`, `completed`, `incomplete`, `calling`，或 `failed`.
 
       - `"in_progress"`
 
@@ -3924,7 +3924,7 @@
 
   - `CustomToolCallOutput object { call_id, output, type, 2 more }`
 
-    来自你的代码的自定义工具调用的输出，正在发送回模型。
+    来自你代码的自定义工具调用输出，正被发回给模型。
 
     - `call_id: string`
 
@@ -3932,12 +3932,12 @@
 
     - `output: string or array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
-      由你的代码生成的自定义工具调用的输出。
+      由你代码生成的自定义工具调用的输出。
       可以是字符串或输出内容列表。
 
       - `StringOutput = string`
 
-        自定义工具调用的输出字符串。
+        自定义工具调用输出的字符串。
 
       - `OutputContentList = array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
@@ -3945,15 +3945,15 @@
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          输入给模型的文本输入。
+          提供给模型的文本输入。
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+          提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-          输入给模型的文件。
+          模型的文件输入。
 
     - `type: "custom_tool_call_output"`
 
@@ -3963,7 +3963,7 @@
 
     - `id: optional string`
 
-      自定义工具调用输出在 OpenAI 平台中的唯一 ID。
+      该自定义工具调用输出在 OpenAI 平台中的唯一 ID。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -3973,7 +3973,7 @@
 
         - `type: "direct"`
 
-          调用者类型。始终为 `direct`.
+          调用方类型。始终为 `direct`.
 
           - `"direct"`
 
@@ -3985,13 +3985,13 @@
 
         - `type: "program"`
 
-          调用者类型。始终为 `program`.
+          调用方类型。始终为 `program`.
 
           - `"program"`
 
   - `CustomToolCall object { call_id, input, name, 4 more }`
 
-    由模型创建的自定义工具调用。
+    模型对自定义工具的调用。
 
     - `call_id: string`
 
@@ -4013,7 +4013,7 @@
 
     - `id: optional string`
 
-      自定义工具调用在 OpenAI 平台中的唯一 ID。
+      该自定义工具调用在 OpenAI 平台中的唯一 ID。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -4039,27 +4039,31 @@
 
       被调用的自定义工具的命名空间。
 
-  - `CompactionTrigger object { type }`
+  - `CompactionTrigger object { type, id }`
 
     压缩当前上下文。必须是最后一个输入项。
 
     - `type: "compaction_trigger"`
 
-      项目的类型。始终为 `compaction_trigger`.
+      项的类型。始终为 `compaction_trigger`.
 
       - `"compaction_trigger"`
 
+    - `id: optional string or null`
+
+      此压缩触发器的唯一 ID。
+
   - `ItemReference object { id, type }`
 
-    用于引用某个项的内部标识符。
+    用于引用某个条目的内部标识符。
 
     - `id: string`
 
-      要引用的项的 ID。
+      要引用的条目 ID。
 
     - `type: optional "item_reference" or null`
 
-      要引用的项的类型。始终为 `item_reference`.
+      要引用的条目类型。始终为 `item_reference`.
 
       - `"item_reference"`
 
@@ -4067,23 +4071,23 @@
 
     - `id: string`
 
-      此程序项的唯一 ID。
+      此程序条目的唯一 ID。
 
     - `call_id: string`
 
-      程序项的稳定调用 ID。
+      程序条目的稳定调用 ID。
 
     - `code: string`
 
-      由编程式工具调用执行的 JavaScript 源代码。
+      由程序化工具调用执行的 JavaScript 源码。
 
     - `fingerprint: string`
 
-      不透明的程序重放指纹，必须往返传输。
+      必须往返透传的不透明程序重放指纹。
 
     - `type: "program"`
 
-      项目类型。始终为 `program`.
+      项的类型。始终为 `program`.
 
       - `"program"`
 
@@ -4091,7 +4095,7 @@
 
     - `id: string`
 
-      此程序输出项的唯一 ID。
+      此程序输出条目的唯一 ID。
 
     - `call_id: string`
 
@@ -4111,20 +4115,20 @@
 
     - `type: "program_output"`
 
-      项目类型。始终为 `program_output`.
+      项的类型。始终为 `program_output`.
 
       - `"program_output"`
 
 - `metadata: optional Metadata or null`
 
-  可附加到对象的一组 16 个键值对。这可用于以结构化
-  格式存储有关对象的额外信息，并通过 API 或仪表盘查询对象。键是字符串
-  格式，以及通过 API 或仪表板查询对象。
+  可附加到对象的 16 组键值对。可用于
+  以结构化格式存储对象的附加信息，并通过
+  格式，并通过 API 或仪表板查询对象。
 
-  键是字符串，最大长度为 64 个字符。值是字符串
-  ，最大长度为 512 个字符。
+  键为字符串，最长 64 个字符。值为字符串
+  最长 512 个字符。
 
-### 返回
+### Returns
 
 - `Conversation object { id, created_at, metadata, object }`
 
@@ -4134,11 +4138,11 @@
 
   - `created_at: number`
 
-    对话的创建时间，以 Unix 纪元以来的秒数衡量。
+    对话创建的时间，以自 Unix 纪元以来的秒数衡量。
 
   - `metadata: unknown`
 
-    附加到对象的一组 16 个键值对。这可用于以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
+    可附加到对象的 16 个键值对集合。这可用于以结构化格式存储有关对象的附加信息，并通过API或控制面板查询对象。
     键是字符串，最大长度为 64 个字符。值是字符串，最大长度为 512 个字符。
 
   - `object: "conversation"`
@@ -4195,17 +4199,17 @@ curl https://api.openai.com/v1/conversations \
 }
 ```
 
-## 删除对话
+## 删除会话
 
 **删除** `/conversations/{conversation_id}`
 
-删除对话。对话中的条目不会被删除。
+删除一段对话。对话中的条目不会被删除。
 
 ### 路径参数
 
 - `conversation_id: string`
 
-### 返回
+### Returns
 
 - `ConversationDeletedResource object { id, deleted, object }`
 
@@ -4252,17 +4256,17 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123 \
 }
 ```
 
-## 检索会话
+## 检索对话
 
 **get** `/conversations/{conversation_id}`
 
-获取会话
+获取一个对话
 
 ### 路径参数
 
 - `conversation_id: string`
 
-### 返回
+### Returns
 
 - `Conversation object { id, created_at, metadata, object }`
 
@@ -4272,11 +4276,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123 \
 
   - `created_at: number`
 
-    对话的创建时间，以 Unix 纪元以来的秒数衡量。
+    对话创建的时间，以自 Unix 纪元以来的秒数衡量。
 
   - `metadata: unknown`
 
-    附加到对象的一组 16 个键值对。这可用于以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
+    可附加到对象的 16 个键值对集合。这可用于以结构化格式存储有关对象的附加信息，并通过API或控制面板查询对象。
     键是字符串，最大长度为 64 个字符。值是字符串，最大长度为 512 个字符。
 
   - `object: "conversation"`
@@ -4321,7 +4325,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 }
 ```
 
-## 更新对话
+## 更新会话
 
 **post** `/conversations/{conversation_id}`
 
@@ -4331,18 +4335,18 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
 - `conversation_id: string`
 
-### 请求体参数
+### Body Parameters
 
 - `metadata: Metadata or null`
 
-  可附加到对象的一组 16 个键值对。这可用于以结构化
-  格式存储有关对象的额外信息，并通过 API 或仪表盘查询对象。键是字符串
-  格式，以及通过 API 或仪表板查询对象。
+  可附加到对象的 16 组键值对。可用于
+  以结构化格式存储对象的附加信息，并通过
+  格式，并通过 API 或仪表板查询对象。
 
-  键是字符串，最大长度为 64 个字符。值是字符串
-  ，最大长度为 512 个字符。
+  键为字符串，最长 64 个字符。值为字符串
+  最长 512 个字符。
 
-### 返回
+### Returns
 
 - `Conversation object { id, created_at, metadata, object }`
 
@@ -4352,11 +4356,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `created_at: number`
 
-    对话的创建时间，以 Unix 纪元以来的秒数衡量。
+    对话创建的时间，以自 Unix 纪元以来的秒数衡量。
 
   - `metadata: unknown`
 
-    附加到对象的一组 16 个键值对。这可用于以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
+    可附加到对象的 16 个键值对集合。这可用于以结构化格式存储有关对象的附加信息，并通过API或控制面板查询对象。
     键是字符串，最大长度为 64 个字符。值是字符串，最大长度为 512 个字符。
 
   - `object: "conversation"`
@@ -4411,17 +4415,17 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 }
 ```
 
-## 域类型
+## Domain Types
 
 ### 计算机截图内容
 
 - `ComputerScreenshotContent object { detail, file_id, image_url, 2 more }`
 
-  电脑界面的截图。
+  计算机的屏幕截图。
 
   - `detail: ImageDetail`
 
-    要发送给模型的截图图像的详细程度。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+    发送给模型的屏幕截图图像的细节级别。可选值为以下之一 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
     - `"low"`
 
@@ -4433,7 +4437,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `file_id: string or null`
 
-    包含截图的已上传文件的标识符。
+    包含截图的上传文件的标识符。
 
   - `image_url: string or null`
 
@@ -4441,13 +4445,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `type: "computer_screenshot"`
 
-    指定事件类型。对于电脑界面截图，此属性始终设置为 `computer_screenshot`.
+    指定事件类型。对于计算机屏幕截图，此属性始终设置为 `computer_screenshot`.
 
     - `"computer_screenshot"`
 
   - `prompt_cache_breakpoint: optional object { mode }`
 
-    标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+    标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
     - `mode: "explicit"`
 
@@ -4455,7 +4459,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `"explicit"`
 
-### 会话
+### 对话
 
 - `Conversation object { id, created_at, metadata, object }`
 
@@ -4465,11 +4469,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `created_at: number`
 
-    对话的创建时间，以 Unix 纪元以来的秒数衡量。
+    对话创建的时间，以自 Unix 纪元以来的秒数衡量。
 
   - `metadata: unknown`
 
-    附加到对象的一组 16 个键值对。这可用于以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
+    可附加到对象的 16 个键值对集合。这可用于以结构化格式存储有关对象的附加信息，并通过API或控制面板查询对象。
     键是字符串，最大长度为 64 个字符。值是字符串，最大长度为 512 个字符。
 
   - `object: "conversation"`
@@ -4506,23 +4510,23 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
 - `Message object { id, content, role, 3 more }`
 
-  与模型之间发送的消息。
+  发送给模型或来自模型的一条消息。
 
   - `id: string`
 
-    消息的唯一 ID。
+    该消息的唯一 ID。
 
   - `content: array of ResponseInputText or ResponseOutputText or TextContent or 6 more`
 
-    消息的内容
+    该消息的内容
 
     - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-      输入给模型的文本输入。
+      提供给模型的文本输入。
 
       - `text: string`
 
-        输入给模型的文本输入。
+        提供给模型的文本输入。
 
       - `type: "input_text"`
 
@@ -4532,7 +4536,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `prompt_cache_breakpoint: optional object { mode }`
 
-        标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+        标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
         - `mode: "explicit"`
 
@@ -4542,7 +4546,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `ResponseOutputText object { annotations, logprobs, text, type }`
 
-      来自模型的文本输出。
+      模型生成的文本输出。
 
       - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
 
@@ -4566,35 +4570,35 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "file_citation"`
 
-            文件引用的类型。始终 `file_citation`.
+            文件引用的类型。始终为 `file_citation`.
 
             - `"file_citation"`
 
         - `URLCitation object { end_index, start_index, title, 2 more }`
 
-          用于生成模型响应的网络资源的引用。
+          用于生成模型回复的网页资源的引用。
 
           - `end_index: number`
 
-            消息中 URL 引用的最后一个字符的索引。
+            消息中 URL 引用末尾字符的索引。
 
           - `start_index: number`
 
-            消息中 URL 引用的第一个字符的索引。
+            消息中 URL 引用起始字符的索引。
 
           - `title: string`
 
-            网络资源的标题。
+            网页资源的标题。
 
           - `type: "url_citation"`
 
-            URL 引用的类型。始终 `url_citation`.
+            URL 引用的类型。始终为 `url_citation`.
 
             - `"url_citation"`
 
           - `url: string`
 
-            网络资源的 URL。
+            网页资源的 URL。
 
         - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
@@ -4614,7 +4618,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `filename: string`
 
-            被引用的容器文件的文件名。
+            所引用的容器文件的文件名。
 
           - `start_index: number`
 
@@ -4622,13 +4626,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "container_file_citation"`
 
-            容器文件引用的类型。始终 `container_file_citation`.
+            容器文件引用的类型。始终为 `container_file_citation`.
 
             - `"container_file_citation"`
 
         - `FilePath object { file_id, index, type }`
 
-          文件路径。
+          文件的路径。
 
           - `file_id: string`
 
@@ -4640,7 +4644,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "file_path"`
 
-            文件路径的类型。始终 `file_path`.
+            文件路径的类型。始终为 `file_path`.
 
             - `"file_path"`
 
@@ -4662,11 +4666,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `text: string`
 
-        模型的文本输出。
+        模型输出的文本。
 
       - `type: "output_text"`
 
-        输出文本的类型。始终 `output_text`.
+        输出文本的类型。始终为 `output_text`.
 
         - `"output_text"`
 
@@ -4682,11 +4686,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `SummaryTextContent object { text, type }`
 
-      模型的摘要文本。
+      来自模型的摘要文本。
 
       - `text: string`
 
-        模型到目前为止的推理输出摘要。
+        到目前为止模型推理输出的摘要。
 
       - `type: "summary_text"`
 
@@ -4696,7 +4700,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `ReasoningText object { text, type }`
 
-      模型的推理文本。
+      来自模型的推理文本。
 
       - `text: string`
 
@@ -4710,25 +4714,25 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `ResponseOutputRefusal object { refusal, type }`
 
-      模型的拒绝。
+      模型生成的拒绝回复。
 
       - `refusal: string`
 
-        模型的拒绝解释。
+        模型生成的拒绝解释。
 
       - `type: "refusal"`
 
-        拒绝的类型。始终 `refusal`.
+        拒绝回复的类型。始终为 `refusal`.
 
         - `"refusal"`
 
     - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-      输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+      提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
       - `detail: ImageDetail`
 
-        要发送给模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+        发送到模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
         - `"low"`
 
@@ -4746,15 +4750,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `file_id: optional string or null`
 
-        要发送给模型的文件的 ID。
+        要发送到模型的文件的 ID。
 
       - `image_url: optional string or null`
 
-        要发送给模型的图像的 URL。可以是完全限定的 URL，或 data URL 中 base64 编码的图像。
+        要发送到模型的图像的 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图像。
 
       - `prompt_cache_breakpoint: optional object { mode }`
 
-        标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+        标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
         - `mode: "explicit"`
 
@@ -4764,15 +4768,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `ComputerScreenshotContent object { detail, file_id, image_url, 2 more }`
 
-      电脑界面的截图。
+      计算机的屏幕截图。
 
       - `detail: ImageDetail`
 
-        要发送给模型的截图图像的详细程度。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+        发送给模型的屏幕截图图像的细节级别。可选值为以下之一 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
       - `file_id: string or null`
 
-        包含截图的已上传文件的标识符。
+        包含截图的上传文件的标识符。
 
       - `image_url: string or null`
 
@@ -4780,13 +4784,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `type: "computer_screenshot"`
 
-        指定事件类型。对于电脑界面截图，此属性始终设置为 `computer_screenshot`.
+        指定事件类型。对于计算机屏幕截图，此属性始终设置为 `computer_screenshot`.
 
         - `"computer_screenshot"`
 
       - `prompt_cache_breakpoint: optional object { mode }`
 
-        标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+        标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
         - `mode: "explicit"`
 
@@ -4796,7 +4800,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-      输入给模型的文件。
+      模型的文件输入。
 
       - `type: "input_file"`
 
@@ -4806,7 +4810,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `detail: optional "auto" or "low" or "high"`
 
-        要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+        要发送到模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 的使用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
         - `"auto"`
 
@@ -4816,23 +4820,23 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `file_data: optional string`
 
-        要发送给模型的文件内容。
+        要发送到模型的文件内容。
 
       - `file_id: optional string or null`
 
-        要发送给模型的文件的 ID。
+        要发送到模型的文件的 ID。
 
       - `file_url: optional string`
 
-        要发送给模型的文件的 URL。
+        要发送到模型的文件的 URL。
 
       - `filename: optional string`
 
-        要发送给模型的文件的名称。
+        要发送到模型的文件的名称。
 
       - `prompt_cache_breakpoint: optional object { mode }`
 
-        标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+        标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
         - `mode: "explicit"`
 
@@ -4842,7 +4846,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `role: "unknown" or "user" or "assistant" or 5 more`
 
-    消息的角色。以下之一： `unknown`, `user`, `assistant`, `system`, `critic`, `discriminator`, `developer`，或 `tool`.
+    消息的角色。可选值为 `unknown`, `user`, `assistant`, `system`, `critic`, `discriminator`, `developer`，或 `tool`.
 
     - `"unknown"`
 
@@ -4862,7 +4866,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `status: "in_progress" or "completed" or "incomplete"`
 
-    项目的状态。以下之一 `in_progress`, `completed`，或 `incomplete`。当项目通过 API 返回时填充。
+    item 的状态。取值为 `in_progress`, `completed`，或 `incomplete`。在通过 API 返回 item 时填充。
 
     - `"in_progress"`
 
@@ -4878,7 +4882,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `phase: optional "commentary" or "final_answer" or null`
 
-    将 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`）。对于类似 `gpt-5.3-codex` 及更高版本的模型，在发送后续请求时，保留并重新发送所有助手消息中的阶段信息——省略它可能会降低性能。不用于用户消息。
+    将 `assistant` 消息标记为中间说明（`commentary`）或最终答案（`final_answer`)。对于 `gpt-5.3-codex` 及更高版本的模型，在发送后续请求时，请在所有助手消息上保留并重新发送 phase——丢弃它可能会降低性能。不用于用户消息。
 
     - `"commentary"`
 
@@ -4888,11 +4892,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
 - `SummaryTextContent object { text, type }`
 
-  模型的摘要文本。
+  来自模型的摘要文本。
 
   - `text: string`
 
-    模型到目前为止的推理输出摘要。
+    到目前为止模型推理输出的摘要。
 
   - `type: "summary_text"`
 
@@ -4912,13 +4916,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `"text"`
 
-# 项目
+# 条目
 
-## 创建项目
+## 创建条目
 
 **post** `/conversations/{conversation_id}/items`
 
-在具有给定 ID 的对话中创建条目。
+在指定 ID 的会话中创建条目。
 
 ### 路径参数
 
@@ -4928,8 +4932,8 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
 - `include: optional array of ResponseIncludable`
 
-  要在响应中包含的其他字段。请参阅 `include`
-  参数以了解 [上面列出的 Conversation 项目](/docs/api-reference/conversations/list-items#conversations_list_items-include) 了解更多信息。
+  响应中要包含的额外字段。参见 `include`
+  参数，了解如何 [列出上方的 Conversation 项](/docs/api-reference/conversations/list-items#conversations_list_items-include) 了解更多信息。
 
   - `"file_search_call.results"`
 
@@ -4947,41 +4951,41 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `"message.output_text.logprobs"`
 
-### 请求体参数
+### Body Parameters
 
 - `items: array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 29 more`
 
-  要添加到对话中的项目。每次最多可以添加 20 个项目。
+  要添加到对话中的项。每次最多可添加 20 项。
 
   - `EasyInputMessage object { content, role, phase, type }`
 
-    输入给模型的消息，其角色表明指令遵循
-    层级。使用 `developer` 或 `system` 角色给出的指令
-    优先于使用 `user` 角色给出的指令。带有
-    `assistant` 角色的消息被假定为模型在之前的
-    交互中生成的。
+    发送给模型的消息输入，其角色表示遵循指令
+    层级结构。使用 `developer` 或 `system` 角色给出的
+    指令优先于使用 `user` 角色给出的指令。使用
+    `assistant` 角色的消息被视为模型在先前交互中生成的消息
+    。
 
     - `content: string or ResponseInputMessageContentList`
 
-      输入给模型的文本、图像或音频输入，用于生成响应。
+      提供给模型的文本、图像或音频输入，用于生成响应。
       也可以包含之前的助手响应。
 
       - `TextInput = string`
 
-        输入给模型的文本输入。
+        提供给模型的文本输入。
 
       - `ResponseInputMessageContentList = array of ResponseInputContent`
 
-        一个或多个输入项目的列表，输入给模型，包含不同的内容
+        提供给模型的一个或多个输入项目的列表，其中包含不同的内容
         类型。
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          输入给模型的文本输入。
+          提供给模型的文本输入。
 
           - `text: string`
 
-            输入给模型的文本输入。
+            提供给模型的文本输入。
 
           - `type: "input_text"`
 
@@ -4991,7 +4995,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -5001,11 +5005,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+          提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
           - `detail: ImageDetail`
 
-            要发送给模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+            发送到模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
             - `"low"`
 
@@ -5023,15 +5027,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            要发送到模型的文件的 ID。
 
           - `image_url: optional string or null`
 
-            要发送给模型的图像的 URL。可以是完全限定的 URL，或 data URL 中 base64 编码的图像。
+            要发送到模型的图像的 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图像。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -5041,7 +5045,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-          输入给模型的文件。
+          模型的文件输入。
 
           - `type: "input_file"`
 
@@ -5051,7 +5055,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `detail: optional "auto" or "low" or "high"`
 
-            要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+            要发送到模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 的使用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
             - `"auto"`
 
@@ -5061,23 +5065,23 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `file_data: optional string`
 
-            要发送给模型的文件内容。
+            要发送到模型的文件内容。
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            要发送到模型的文件的 ID。
 
           - `file_url: optional string`
 
-            要发送给模型的文件的 URL。
+            要发送到模型的文件的 URL。
 
           - `filename: optional string`
 
-            要发送给模型的文件的名称。
+            要发送到模型的文件的名称。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -5100,9 +5104,9 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `phase: optional "commentary" or "final_answer" or null`
 
-      将 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`).
-      对于类似 `gpt-5.3-codex` 及后续请求中，请保留并重新发送
-      所有助手消息的阶段——省略它可能会降低性能。不适用于用户消息。
+      将 `assistant` 消息标记为中间说明（`commentary`）或最终答案（`final_answer`).
+      对于类似 `gpt-5.3-codex` 及之后的内容，发送后续请求时，请保留并重新发送
+      阶段，作用于所有 assistant 消息——丢弃它可能会降低性能。不用于 user 消息。
 
       - `"commentary"`
 
@@ -5110,19 +5114,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: optional "message"`
 
-      消息输入的类型。始终 `message`.
+      消息输入的类型。始终为 `message`.
 
       - `"message"`
 
   - `Message object { content, role, status, type }`
 
-    输入给模型的消息，其角色表明指令遵循
-    层级。使用 `developer` 或 `system` 角色给出的指令
-    优先于使用 `user` 角色。
+    发送给模型的消息输入，其角色表示遵循指令
+    层级结构。使用 `developer` 或 `system` 角色给出的
+    指令优先于使用 `user` role。
 
     - `content: ResponseInputMessageContentList`
 
-      一个或多个输入项目的列表，输入给模型，包含不同的内容
+      提供给模型的一个或多个输入项目的列表，其中包含不同的内容
       类型。
 
     - `role: "user" or "system" or "developer"`
@@ -5137,8 +5141,8 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `status: optional "in_progress" or "completed" or "incomplete"`
 
-      项目的状态。以下之一 `in_progress`, `completed`，或
-      `incomplete`。当项目通过 API 返回时填充。
+      item 的状态。取值为 `in_progress`, `completed`，或
+      `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -5154,7 +5158,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `ResponseOutputMessage object { id, content, role, 3 more }`
 
-    来自模型的输出消息。
+    模型生成的输出消息。
 
     - `id: string`
 
@@ -5166,7 +5170,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `ResponseOutputText object { annotations, logprobs, text, type }`
 
-        来自模型的文本输出。
+        模型生成的文本输出。
 
         - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
 
@@ -5190,35 +5194,35 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `type: "file_citation"`
 
-              文件引用的类型。始终 `file_citation`.
+              文件引用的类型。始终为 `file_citation`.
 
               - `"file_citation"`
 
           - `URLCitation object { end_index, start_index, title, 2 more }`
 
-            用于生成模型响应的网络资源的引用。
+            用于生成模型回复的网页资源的引用。
 
             - `end_index: number`
 
-              消息中 URL 引用的最后一个字符的索引。
+              消息中 URL 引用末尾字符的索引。
 
             - `start_index: number`
 
-              消息中 URL 引用的第一个字符的索引。
+              消息中 URL 引用起始字符的索引。
 
             - `title: string`
 
-              网络资源的标题。
+              网页资源的标题。
 
             - `type: "url_citation"`
 
-              URL 引用的类型。始终 `url_citation`.
+              URL 引用的类型。始终为 `url_citation`.
 
               - `"url_citation"`
 
             - `url: string`
 
-              网络资源的 URL。
+              网页资源的 URL。
 
           - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
@@ -5238,7 +5242,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `filename: string`
 
-              被引用的容器文件的文件名。
+              所引用的容器文件的文件名。
 
             - `start_index: number`
 
@@ -5246,13 +5250,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `type: "container_file_citation"`
 
-              容器文件引用的类型。始终 `container_file_citation`.
+              容器文件引用的类型。始终为 `container_file_citation`.
 
               - `"container_file_citation"`
 
           - `FilePath object { file_id, index, type }`
 
-            文件路径。
+            文件的路径。
 
             - `file_id: string`
 
@@ -5264,7 +5268,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `type: "file_path"`
 
-              文件路径的类型。始终 `file_path`.
+              文件路径的类型。始终为 `file_path`.
 
               - `"file_path"`
 
@@ -5286,38 +5290,38 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `text: string`
 
-          模型的文本输出。
+          模型输出的文本。
 
         - `type: "output_text"`
 
-          输出文本的类型。始终 `output_text`.
+          输出文本的类型。始终为 `output_text`.
 
           - `"output_text"`
 
       - `ResponseOutputRefusal object { refusal, type }`
 
-        模型的拒绝。
+        模型生成的拒绝回复。
 
         - `refusal: string`
 
-          模型的拒绝解释。
+          模型生成的拒绝解释。
 
         - `type: "refusal"`
 
-          拒绝的类型。始终 `refusal`.
+          拒绝回复的类型。始终为 `refusal`.
 
           - `"refusal"`
 
     - `role: "assistant"`
 
-      输出消息的角色。始终 `assistant`.
+      输出消息的角色。始终为 `assistant`.
 
       - `"assistant"`
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      消息输入的状态。其中之一 `in_progress`, `completed`，或
-      `incomplete`。当输入项通过 API 返回时填充。
+      消息输入的状态。取值为以下之一 `in_progress`, `completed`，或
+      `incomplete`。当通过 API 返回输入项时填充。
 
       - `"in_progress"`
 
@@ -5327,15 +5331,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: "message"`
 
-      输出消息的类型。始终 `message`.
+      输出消息的类型。始终为 `message`.
 
       - `"message"`
 
     - `phase: optional "commentary" or "final_answer" or null`
 
-      将 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`).
-      对于类似 `gpt-5.3-codex` 及后续请求中，请保留并重新发送
-      所有助手消息的阶段——省略它可能会降低性能。不适用于用户消息。
+      将 `assistant` 消息标记为中间说明（`commentary`）或最终答案（`final_answer`).
+      对于类似 `gpt-5.3-codex` 及之后的内容，发送后续请求时，请保留并重新发送
+      阶段，作用于所有 assistant 消息——丢弃它可能会降低性能。不用于 user 消息。
 
       - `"commentary"`
 
@@ -5343,20 +5347,20 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `FileSearchCall object { id, queries, status, 2 more }`
 
-    文件搜索工具调用的结果。参见
-    [文件搜索指南](/docs/guides/tools-file-search) 了解更多信息。
+    文件搜索 工具调用的结果。参见
+    [文件搜索 指南](/docs/guides/tools-file-search) 了解更多信息。
 
     - `id: string`
 
-      文件搜索工具调用的唯一 ID。
+      文件搜索 工具调用的唯一 ID。
 
     - `queries: array of string`
 
-      用于搜索文件的查询。
+      用于搜索文件的查询语句。
 
     - `status: "in_progress" or "searching" or "completed" or 2 more`
 
-      文件搜索工具调用的状态。其中之一为 `in_progress`,
+      文件搜索 工具调用的状态，取值为 `in_progress`,
       `searching`, `incomplete` 或 `failed`,
 
       - `"in_progress"`
@@ -5371,21 +5375,21 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: "file_search_call"`
 
-      文件搜索工具调用的类型。始终为 `file_search_call`.
+      文件搜索 工具调用的类型，始终为 `file_search_call`.
 
       - `"file_search_call"`
 
     - `results: optional array of object { attributes, file_id, filename, 2 more }  or null`
 
-      文件搜索工具调用的结果。
+      文件搜索 工具调用的结果。
 
       - `attributes: optional map[string or number or boolean] or null`
 
-        可附加到对象的一组 16 个键值对。这可用于以结构化
-        格式存储有关对象的额外信息，并通过 API 或仪表盘查询对象。键是字符串
-        ，最大长度为 64 个字符。值是字符串，最大
-        长度为 512 个字符、布尔值或数字。
-        文件的唯一 ID。
+        可附加到对象的 16 组键值对。可用于
+        以结构化格式存储对象的附加信息，并通过
+        API 或控制台查询对象。键为字符串，
+        最大长度为 64 个字符；值为字符串（最大
+        长度 512 个字符）、布尔值或数字。
 
         - `string`
 
@@ -5395,24 +5399,24 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `file_id: optional string`
 
-        文件的名称。
+        文件的唯一 ID。
 
       - `filename: optional string`
 
-        文件的相关性得分——介于 0 和 1 之间的值。
+        文件的名称。
 
       - `score: optional number`
 
-        从文件中检索到的文本。
+        文件的相关性分数，取值范围为 0 到 1。
 
       - `text: optional string`
 
-        对计算机使用工具的工具调用。参见
+        从文件中检索到的文本。
 
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
-    计算机使用指南
-    [计算机调用调用的唯一 ID。](/docs/guides/tools-computer-use) 了解更多信息。
+    对计算机使用工具的工具调用。参见
+    [计算机使用指南](/docs/guides/tools-computer-use) 了解更多信息。
 
     - `id: string`
 
@@ -5420,11 +5424,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `call_id: string`
 
-      用于在响应工具调用时提供输出的标识符。
+      在向工具调用返回输出时使用的标识符。
 
     - `pending_safety_checks: array of object { id, code, message }`
 
-      计算机调用的待处理安全检查。
+      该计算机调用的待处理安全检查。
 
       - `id: string`
 
@@ -5440,8 +5444,8 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      条目的状态。其一为 `in_progress`, `completed`，或
-      `incomplete`。当项目通过 API 返回时填充。
+      该条目的状态。可选值为 `in_progress`, `completed`，或
+      `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -5451,21 +5455,21 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: "computer_call"`
 
-      计算机调用的类型。始终为 `computer_call`.
+      该计算机调用的类型。始终为 `computer_call`.
 
       - `"computer_call"`
 
     - `action: optional ComputerAction`
 
-      单击操作。
+      一次点击操作。
 
       - `Click object { button, type, x, 2 more }`
 
-        单击操作。
+        一次点击操作。
 
         - `button: "left" or "right" or "wheel" or 2 more`
 
-          指示单击期间按下了哪个鼠标按钮。其一为 `left`, `right`, `wheel`, `back`，或 `forward`.
+          表示点击时按下的鼠标按键。可选值为 `left`, `right`, `wheel`, `back`，或 `forward`.
 
           - `"left"`
 
@@ -5479,29 +5483,29 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "click"`
 
-          指定事件类型。对于单击操作，此属性始终为 `click`.
+          指定事件类型。对于点击操作，此属性始终为 `click`.
 
           - `"click"`
 
         - `x: number`
 
-          发生单击的 x 坐标。
+          点击发生位置的 x 坐标。
 
         - `y: number`
 
-          发生单击的 y 坐标。
+          点击发生位置的 y 坐标。
 
         - `keys: optional array of string or null`
 
-          单击时正在按住的按键。
+          点击时按住的按键。
 
       - `DoubleClick object { keys, type, x, y }`
 
-        双击操作。
+        一次双击操作。
 
         - `keys: array of string or null`
 
-          双击时正在按住的按键。
+          双击时按住的按键。
 
         - `type: "double_click"`
 
@@ -5511,19 +5515,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `x: number`
 
-          发生双击的 x 坐标。
+          双击发生位置的 x 坐标。
 
         - `y: number`
 
-          发生双击的 y 坐标。
+          双击发生位置的 y 坐标。
 
       - `Drag object { path, type, keys }`
 
-        拖动操作。
+        一次拖动操作。
 
         - `path: array of object { x, y }`
 
-          表示拖动操作路径的坐标数组。坐标将以对象数组的形式出现，例如
+          表示拖动操作路径的坐标数组。坐标将以对象数组的形式呈现，例如
 
           ```
           [
@@ -5542,17 +5546,17 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "drag"`
 
-          指定事件类型。对于拖拽操作，此属性始终设置为 `drag`.
+          指定事件类型。对于拖动操作，此属性始终设置为 `drag`.
 
           - `"drag"`
 
         - `keys: optional array of string or null`
 
-          拖拽鼠标时按住的按键。
+          拖动鼠标时按住的按键。
 
       - `Keypress object { keys, type }`
 
-        模型希望执行的一系列按键操作。
+        模型希望执行的一组按键操作。
 
         - `keys: array of string`
 
@@ -5576,11 +5580,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `x: number`
 
-          要移动到的 x 坐标。
+          要移至的 x 坐标。
 
         - `y: number`
 
-          要移动到的 y 坐标。
+          要移至的 y 坐标。
 
         - `keys: optional array of string or null`
 
@@ -5616,11 +5620,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `x: number`
 
-          发生滚动的 x 坐标。
+          发生滚动处的 x 坐标。
 
         - `y: number`
 
-          发生滚动的 y 坐标。
+          发生滚动处的 y 坐标。
 
         - `keys: optional array of string or null`
 
@@ -5636,40 +5640,40 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "type"`
 
-          指定事件类型。对于类型操作，此属性始终设置为 `type`.
+          指定事件类型。对于 type 操作，此属性始终设置为 `type`.
 
           - `"type"`
 
       - `Wait object { type }`
 
-        等待操作。
+        wait 操作。
 
         - `type: "wait"`
 
-          指定事件类型。对于等待操作，此属性始终设置为 `wait`.
+          指定事件类型。对于 wait 操作，此属性始终设置为 `wait`.
 
           - `"wait"`
 
     - `actions: optional ComputerActionList`
 
-      展平的批量操作，用于 `computer_use`。每个操作包含一个
-      `type` 判别器和操作特定字段。
+      已展平的批量操作，用于 `computer_use`。每个操作都包含一个
+      `type` 鉴别字段以及操作特有的字段。
 
       - `Click object { button, type, x, 2 more }`
 
-        单击操作。
+        一次点击操作。
 
       - `DoubleClick object { keys, type, x, y }`
 
-        双击操作。
+        一次双击操作。
 
       - `Drag object { path, type, keys }`
 
-        拖动操作。
+        一次拖动操作。
 
       - `Keypress object { keys, type }`
 
-        模型希望执行的一系列按键操作。
+        模型希望执行的一组按键操作。
 
       - `Move object { type, x, y, keys }`
 
@@ -5689,7 +5693,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `Wait object { type }`
 
-        等待操作。
+        wait 操作。
 
   - `ComputerCallOutput object { call_id, output, type, 3 more }`
 
@@ -5697,7 +5701,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `call_id: string`
 
-      产生输出的计算机工具调用的 ID。
+      产生该输出的计算机工具调用的 ID。
 
     - `output: ResponseComputerToolCallOutputScreenshot`
 
@@ -5712,7 +5716,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `file_id: optional string`
 
-        包含截图的已上传文件的标识符。
+        包含截图的上传文件的标识符。
 
       - `image_url: optional string`
 
@@ -5720,7 +5724,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: "computer_call_output"`
 
-      计算机工具调用输出的类型。始终为 `computer_call_output`.
+      计算机工具调用输出的类型，始终为 `computer_call_output`.
 
       - `"computer_call_output"`
 
@@ -5730,7 +5734,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `acknowledged_safety_checks: optional array of object { id, code, message }  or null`
 
-      开发者已确认的由 API 报告的安全检查。
+      由开发者确认的 API 所报告的安全检查。
 
       - `id: string`
 
@@ -5746,7 +5750,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-      消息输入的状态。其中之一 `in_progress`, `completed`，或 `incomplete`。当输入项通过 API 返回时填充。
+      消息输入的状态。取值为以下之一 `in_progress`, `completed`，或 `incomplete`。当通过 API 返回输入项时填充。
 
       - `"in_progress"`
 
@@ -5756,21 +5760,21 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `WebSearchCall object { id, action, status, type }`
 
-    网页搜索工具调用的结果。请参阅
+    网页搜索 工具调用的结果。请参阅
     [网页搜索指南](/docs/guides/tools-web-search) 了解更多信息。
 
     - `id: string`
 
-      网页搜索工具调用的唯一 ID。
+      该 网页搜索工具调用的唯一 ID。
 
     - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
-      一个对象，描述此次网页搜索调用中采取的具体操作。
-      包含模型如何使用网络（search、open_page、find_in_page）的详细信息。
+      描述此次 网页搜索调用中所执行的具体操作的对象。
+      包含模型如何使用网页的详细信息（search、open_page、find_in_page）。
 
       - `Search object { type, queries, query, sources }`
 
-        操作类型 "search"——执行网页搜索查询。
+        操作类型 "search" - 执行一次 网页搜索查询。
 
         - `type: "search"`
 
@@ -5802,7 +5806,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `OpenPage object { type, url }`
 
-        操作类型 "open_page"——打开搜索结果中的特定 URL。
+        操作类型 "open_page" - 打开搜索结果中的特定 URL。
 
         - `type: "open_page"`
 
@@ -5816,11 +5820,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `FindInPage object { pattern, type, url }`
 
-        操作类型 "find_in_page"：在已加载的页面中搜索模式。
+        操作类型 "find_in_page"：在已加载的页面中搜索某个模式。
 
         - `pattern: string`
 
-          要在页面内搜索的模式或文本。
+          要在页面中搜索的模式或文本。
 
         - `type: "find_in_page"`
 
@@ -5830,11 +5834,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `url: string`
 
-          搜索该模式的页面的 URL。
+          被搜索该模式的页面 URL。
 
     - `status: "in_progress" or "searching" or "completed" or "failed"`
 
-      网页搜索工具调用的状态。
+      该 网页搜索工具调用的状态。
 
       - `"in_progress"`
 
@@ -5846,13 +5850,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: "web_search_call"`
 
-      网页搜索工具调用的类型。始终为 `web_search_call`.
+      该 网页搜索工具调用的类型。始终为 `web_search_call`.
 
       - `"web_search_call"`
 
   - `FunctionCall object { arguments, call_id, name, 5 more }`
 
-    运行函数的工具调用。请参阅
+    用于运行函数的工具调用。请参阅
     [函数调用指南](/docs/guides/function-calling) 了解更多信息。
 
     - `arguments: string`
@@ -5861,11 +5865,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `call_id: string`
 
-      模型生成的函数工具调用的唯一 ID。
+      由模型生成的函数工具调用的唯一 ID。
 
     - `name: string`
 
-      要运行的函数的名称。
+      要运行的函数名称。
 
     - `type: "function_call"`
 
@@ -5903,8 +5907,8 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `status: optional "in_progress" or "completed" or "incomplete"`
 
-      条目的状态。其一为 `in_progress`, `completed`，或
-      `incomplete`。当项目通过 API 返回时填充。
+      该条目的状态。可选值为 `in_progress`, `completed`，或
+      `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -5926,15 +5930,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `array of ResponseInputTextContent or ResponseInputImageContent or ResponseInputFileContent`
 
-        函数工具调用的内容输出数组（文本、图像、文件）。
+        函数工具调用的内容输出（文本、图像、文件）数组。
 
         - `ResponseInputTextContent object { text, type, prompt_cache_breakpoint }`
 
-          输入给模型的文本输入。
+          提供给模型的文本输入。
 
           - `text: string`
 
-            输入给模型的文本输入。
+            提供给模型的文本输入。
 
           - `type: "input_text"`
 
@@ -5944,7 +5948,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `prompt_cache_breakpoint: optional object { mode }  or null`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -5954,7 +5958,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `ResponseInputImageContent object { type, detail, file_id, 2 more }`
 
-          输入给模型的图像输入。了解 [图像输入](/docs/guides/vision)
+          提供给模型的图像输入。了解 [image inputs](/docs/guides/vision)
 
           - `type: "input_image"`
 
@@ -5964,19 +5968,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `detail: optional ImageDetail or null`
 
-            要发送给模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+            发送到模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            要发送到模型的文件的 ID。
 
           - `image_url: optional string or null`
 
-            要发送给模型的图像的 URL。可以是完全限定的 URL，或 data URL 中 base64 编码的图像。
+            要发送到模型的图像的 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图像。
 
           - `prompt_cache_breakpoint: optional object { mode }  or null`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -5986,7 +5990,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `ResponseInputFileContent object { type, detail, file_data, 4 more }`
 
-          输入给模型的文件。
+          模型的文件输入。
 
           - `type: "input_file"`
 
@@ -5996,7 +6000,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `detail: optional "auto" or "low" or "high"`
 
-            要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+            要发送到模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 的使用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
             - `"auto"`
 
@@ -6010,19 +6014,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            要发送到模型的文件的 ID。
 
           - `file_url: optional string or null`
 
-            要发送给模型的文件的 URL。
+            要发送到模型的文件的 URL。
 
           - `filename: optional string or null`
 
-            要发送给模型的文件的名称。
+            要发送到模型的文件的名称。
 
           - `prompt_cache_breakpoint: optional object { mode }  or null`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -6038,11 +6042,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `id: optional string or null`
 
-      函数工具调用输出的唯一 ID。当此项目通过 API 返回时填充。
+      函数工具调用输出的唯一 ID。当此项通过 API 返回时填充。
 
     - `call_id: optional string or null`
 
-      模型生成的函数工具调用的唯一 ID。
+      由模型生成的函数工具调用的唯一 ID。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -6052,7 +6056,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "direct"`
 
-          调用者类型。始终为 `direct`.
+          调用方类型。始终为 `direct`.
 
           - `"direct"`
 
@@ -6064,21 +6068,21 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "program"`
 
-          调用者类型。始终为 `program`.
+          调用方类型。始终为 `program`.
 
           - `"program"`
 
     - `name: optional string or null`
 
-      产生输出的工具的名称。
+      产生该输出的工具名称。
 
     - `namespace: optional string or null`
 
-      产生输出的工具的命名空间。
+      产生该输出的工具的命名空间。
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-      条目的状态。其一为 `in_progress`, `completed`，或 `incomplete`。当项目通过 API 返回时填充。
+      该条目的状态。可选值为 `in_progress`, `completed`，或 `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -6094,7 +6098,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: "tool_search_call"`
 
-      项目类型。始终为 `tool_search_call`.
+      项的类型。始终为 `tool_search_call`.
 
       - `"tool_search_call"`
 
@@ -6108,7 +6112,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `execution: optional "server" or "client"`
 
-      工具搜索是由服务端还是客户端执行的。
+      工具搜索是由服务端还是由客户端执行的。
 
       - `"server"`
 
@@ -6132,29 +6136,29 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `Function object { name, parameters, strict, 5 more }`
 
-        定义你自己代码中模型可以选择调用的函数。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+        定义你自己代码中的某个函数，供模型选择调用。详细了解 [function calling](https://platform.openai.com/docs/guides/function-calling).
 
         - `name: string`
 
-          要调用的函数的名称。
+          要调用的函数名称。
 
         - `parameters: map[unknown] or null`
 
-          描述函数参数的 JSON schema 对象。
+          描述该函数参数的 JSON schema 对象。
 
         - `strict: boolean or null`
 
-          是否对此函数工具强制执行严格的参数验证。
+          是否为该函数工具启用严格的参数校验。
 
         - `type: "function"`
 
-          函数工具的类型。始终为 `function`.
+          该函数工具的类型。始终为 `function`.
 
           - `"function"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -6162,19 +6166,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `defer_loading: optional boolean`
 
-          此函数是否延迟并通过工具搜索加载。
+          该函数是否为延迟加载，并通过工具搜索加载。
 
         - `description: optional string or null`
 
-          函数的描述。模型据此确定是否调用该函数。
+          该函数的描述。模型据此决定是否调用该函数。
 
         - `output_schema: optional map[unknown] or null`
 
-          描述此函数的字符串输出中编码的 JSON 值的 JSON schema 对象。
+          描述该函数在字符串输出中编码的 JSON 值的 JSON schema 对象。
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        一种从上传文件中搜索相关内容工具。详细了解 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+        一个用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 tool](https://platform.openai.com/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -6192,24 +6196,24 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `ComparisonFilter object { key, type, value }`
 
-            用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+            用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
             - `key: string`
 
-              要与该值进行比较的键。
+              要与值进行比较的键。
 
             - `type: "eq" or "ne" or "gt" or 5 more`
 
               指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-              - `eq`：等于
-              - `ne`：不等于
-              - `gt`：大于
-              - `gte`：大于或等于
-              - `lt`：小于
-              - `lte`：小于或等于
-              - `in`：包含
-              - `nin`：不包含
+              - `eq`: 等于
+              - `ne`: 不等于
+              - `gt`: 大于
+              - `gte`: 大于或等于
+              - `lt`: 小于
+              - `lte`: 小于或等于
+              - `in`: 包含于
+              - `nin`: 不包含于
 
               - `"eq"`
 
@@ -6245,15 +6249,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `CompoundFilter object { filters, type }`
 
-            使用以下方式组合多个筛选器 `and` 或 `or`.
+            使用以下方式组合多个过滤器 `and` 或 `or`.
 
             - `filters: array of ComparisonFilter or unknown`
 
-              要组合的筛选器数组。项目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+              要组合的过滤器数组。条目可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
               - `ComparisonFilter object { key, type, value }`
 
-                用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+                用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
               - `unknown`
 
@@ -6267,7 +6271,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `max_num_results: optional number`
 
-          要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+          返回结果的最大数量。此数量应介于 1 到 50 之间（含两端）。
 
         - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -6275,19 +6279,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-            启用混合搜索时，控制倒数排名融合如何在语义嵌入匹配与稀疏关键词匹配之间取得平衡的权重。
+            在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
             - `embedding_weight: number`
 
-              嵌入在倒数排名融合中的权重。
+              在倒数排名融合中嵌入的权重。
 
             - `text_weight: number`
 
-              文本在倒数排名融合中的权重。
+              在倒数排名融合中文本的权重。
 
           - `ranker: optional "auto" or "default-2024-11-15"`
 
-            用于文件搜索的排序器。
+            用于 文件搜索 的排序器。
 
             - `"auto"`
 
@@ -6295,11 +6299,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `score_threshold: optional number`
 
-            文件搜索的分数阈值，为0到1之间的数字。数字越接近1，将尝试仅返回最相关的结果，但可能返回较少的結果。
+            文件搜索 的分数阈值，取值范围为 0 到 1 之间。数值越接近 1，越会尝试只返回最相关的结果，但返回的结果数量可能会减少。
 
       - `Computer object { type }`
 
-        一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -6309,19 +6313,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
-          计算机显示器的宽度。
+          计算机显示屏的高度。
 
         - `display_width: number`
 
-          计算机显示器的宽度。
+          计算机显示屏的宽度。
 
         - `environment: "windows" or "mac" or "linux" or 2 more`
 
-          要控制的计算机环境的类型。
+          要控制的计算机环境类型。
 
           - `"windows"`
 
@@ -6341,12 +6345,12 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-        搜索互联网以获取与提示相关的来源。了解更多关于
+        在互联网上搜索与提示相关的来源。详细了解
         [网页搜索工具](/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
-          网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+          网页搜索工具的类型，取值之一为 `web_search` 或 `web_search_2025_08_26`.
 
           - `"web_search"`
 
@@ -6354,22 +6358,22 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `external_web_access: optional boolean`
 
-          允许网页搜索实时访问互联网。省略时默认为true。为false时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+          允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
         - `filters: optional object { allowed_domains }  or null`
 
-          搜索的过滤器。
+          搜索的筛选条件。
 
           - `allowed_domains: optional array of string or null`
 
-            搜索允许的域名。如果未提供，则允许所有域名。
-            所提供域名的子域名也允许。
+            允许进行搜索的域名。如果未提供，则允许所有域名。
+            同时也允许所提供域名的子域名。
 
             示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
           - `"low"`
 
@@ -6383,15 +6387,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `city: optional string or null`
 
-            用户的城市的自由文本输入，例如 `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+            两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户的地区的自由文本输入，例如 `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
@@ -6399,14 +6403,14 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: optional "approximate"`
 
-            位置近似的类型。始终 `approximate`.
+            位置近似的类型。始终为 `approximate`.
 
             - `"approximate"`
 
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-        通过远程 Model Context Protocol 让模型访问额外工具
-        (MCP) 服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+        通过远程 Model Context Protocol
+        （MCP）服务器为模型提供对其他工具的访问权限。 [了解更多关于 MCP 的信息](/docs/guides/tools-remote-mcp).
 
         - `server_label: string`
 
@@ -6414,13 +6418,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "mcp"`
 
-          MCP 工具的类型。始终 `mcp`.
+          MCP 工具的类型。始终为 `mcp`.
 
           - `"mcp"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -6432,7 +6436,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `McpAllowedTools = array of string`
 
-            允许工具名称的字符串数组
+            允许的工具名称组成的字符串数组
 
           - `McpToolFilter object { read_only, tool_names }`
 
@@ -6440,9 +6444,9 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `read_only: optional boolean`
 
-              指示工具是否修改数据或为只读。如果
-              MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-              ，它将匹配此过滤器。
+              指示工具是否修改数据或是否为只读。如果某个
+              MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+              ，它将匹配此过滤条件。
 
             - `tool_names: optional array of string`
 
@@ -6450,26 +6454,26 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `authorization: optional string`
 
-          可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-          与自定义 MCP 服务器 URL 或服务连接器配合使用。你的应用程序
-          必须处理 OAuth 授权流程并在此处提供令牌。
+          可用于远程 MCP 服务器的 OAuth 访问令牌，可搭配自定义 MCP 服务器 URL 或服务连接器使用。你的应用
+          必须处理 OAuth 授权流程，并在此处提供该令牌。
+          必须处理 OAuth 授权流程，并在此处提供该令牌。
 
         - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-          服务连接器的标识符，类似于 ChatGPT 中可用的那些。必须提供以下之一：
-          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中之一。了解更多
-          关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+          服务连接器的标识符，例如 ChatGPT 中提供的连接器之一。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解关于服务连接器
+          的更多信息 [请参阅此处](/docs/guides/tools-remote-mcp#connectors).
 
-          当前支持的值 `connector_id` 包括：
+          当前支持 `connector_id` 的值为：
 
-          - Dropbox： `connector_dropbox`
-          - Gmail： `connector_gmail`
-          - Google Calendar： `connector_googlecalendar`
-          - Google Drive： `connector_googledrive`
-          - Microsoft Teams： `connector_microsoftteams`
-          - Outlook Calendar： `connector_outlookcalendar`
-          - Outlook Email： `connector_outlookemail`
-          - SharePoint： `connector_sharepoint`
+          - Dropbox: `connector_dropbox`
+          - Gmail: `connector_gmail`
+          - Google Calendar: `connector_googlecalendar`
+          - Google Drive: `connector_googledrive`
+          - Microsoft Teams: `connector_microsoftteams`
+          - Outlook Calendar: `connector_outlookcalendar`
+          - Outlook Email: `connector_outlookemail`
+          - SharePoint: `connector_sharepoint`
 
           - `"connector_dropbox"`
 
@@ -6489,11 +6493,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `defer_loading: optional boolean`
 
-          此 MCP 工具是否被延迟并通过工具搜索发现。
+          此 MCP 工具是否被延迟，并通过工具搜索发现。
 
         - `headers: optional map[string] or null`
 
-          发送到 MCP 服务器的可选 HTTP 头。用于身份验证
+          发送到 MCP 服务器的可选 HTTP 请求头。用于身份验证
           或其他用途。
 
         - `require_approval: optional object { always, never }  or "always" or "never" or null`
@@ -6503,8 +6507,8 @@ curl https://api.openai.com/v1/conversations/conv_123 \
           - `McpToolApprovalFilter object { always, never }`
 
             指定 MCP 服务器的哪些工具需要审批。可以是
-            `always`, `never`，或一个与需要审批的工具关联的过滤器对象
-            。
+            `always`, `never`，或与工具关联的过滤对象
+            ，这些工具需要审批。
 
             - `always: optional object { read_only, tool_names }`
 
@@ -6512,9 +6516,9 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -6526,9 +6530,9 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -6536,8 +6540,8 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `McpToolApprovalSetting = "always" or "never"`
 
-            为所有工具指定单一审批策略。可以是 `always` 或
-            `never`。之一。当设置为 `always`，时，所有工具都需要审批。当
+            为所有工具指定统一的审批策略。可选值为 `always` 或
+            `never`。当设置为 `always`，时，所有工具都需要审批。当
             设置为 `never`，时，所有工具都不需要审批。
 
             - `"always"`
@@ -6550,22 +6554,22 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `server_url: optional string`
 
-          MCP 服务器的 URL。必须提供 `server_url`, `connector_id`，或
-          `tunnel_id` 之一。
+          MCP 服务器的 URL。 `server_url`, `connector_id`，或
+          `tunnel_id` 必须提供其中一个。
 
         - `tunnel_id: optional string`
 
-          用于替代直接服务器 URL 的安全 MCP 隧道 ID。必须提供
-          `server_url`, `connector_id`，或 `tunnel_id` 之一。
+          用于替代直接服务器 URL 的安全 MCP 隧道 ID。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中一个。
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
-        一个运行 Python 代码以帮助生成提示响应的工具。
+        运行 Python 代码以帮助生成对提示词响应的工具。
 
         - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-          代码解释器容器。可以是容器 ID，或一个对象，其中
-          指定了上传的文件 ID 以供你的代码使用，以及
+          代码解释器容器。可以是容器 ID，也可以是指定可供代码使用的已上传文件 ID 的对象，以及一个
+          指定可供你的代码使用的已上传文件 ID，以及一个
           可选的 `memory_limit` 设置。
 
           - `string`
@@ -6574,17 +6578,17 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器的配置。可选择指定要在其上运行代码的文件 ID。
+            代码解释器容器的配置。可选择指定要对其运行代码的文件 ID。
 
             - `type: "auto"`
 
-              始终 `auto`.
+              始终为 `auto`.
 
               - `"auto"`
 
             - `file_ids: optional array of string`
 
-              一个可选的已上传文件列表，供你的代码使用。
+              一个可选的、供代码使用的已上传文件列表。
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -6606,7 +6610,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
                 - `type: "disabled"`
 
-                  禁用出站网络访问。始终 `disabled`.
+                  禁用出站网络访问。始终为 `disabled`.
 
                   - `"disabled"`
 
@@ -6614,39 +6618,39 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
                 - `allowed_domains: array of string`
 
-                  当类型为以下值时，允许的域名列表： `allowlist`.
+                  当类型为 `allowlist`.
 
                 - `type: "allowlist"`
 
-                  仅允许对指定域名的出站网络访问。始终 `allowlist`.
+                  时，仅允许向指定域发出出站网络访问。始终为 `allowlist`.
 
                   - `"allowlist"`
 
                 - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                  可选，针对允许列表中域名的域级密钥。
+                  用于允许列表中域的可选、按域隔离的密钥。
 
                   - `domain: string`
 
-                    与密钥关联的域名。
+                    与该密钥关联的域。
 
                   - `name: string`
 
-                    要为该域名注入的密钥名称。
+                    要为该域注入的密钥名称。
 
                   - `value: string`
 
-                    要为该域名注入的密钥值。
+                    要为该域注入的密钥值。
 
         - `type: "code_interpreter"`
 
-          代码解释器工具的类型。始终 `code_interpreter`.
+          代码解释器工具的类型。始终为 `code_interpreter`.
 
           - `"code_interpreter"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -6656,7 +6660,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "programmatic_tool_calling"`
 
-          工具的类型。始终 `programmatic_tool_calling`.
+          工具的类型。始终为 `programmatic_tool_calling`.
 
           - `"programmatic_tool_calling"`
 
@@ -6666,13 +6670,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "image_generation"`
 
-          图像生成工具的类型。始终 `image_generation`.
+          图像生成工具的类型。始终为 `image_generation`.
 
           - `"image_generation"`
 
         - `action: optional "generate" or "edit" or "auto"`
 
-          是否生成新图像或编辑现有图像。默认值： `auto`.
+          是生成新图像还是编辑现有图像。默认值： `auto`.
 
           - `"generate"`
 
@@ -6682,11 +6686,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          设置生成图像的背景。可选值之一： `transparent`,
-          `opaque`，或 `auto`。透明背景可用于
-          支持的 GPT 图像模型。对于 `gpt-image-2` 以及
-          `gpt-image-2-2026-04-21`，此支持目前处于预览阶段。使用
-          `transparent`，时，请将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
+          设置生成图像的背景。取值之一 `transparent`,
+          `opaque`，或 `auto`。透明背景适用于受支持的
+          GPT Image 模型。对于 `gpt-image-2` 和
+          `gpt-image-2-2026-04-21`，该支持目前处于预览阶段。使用
+          `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
           - `"transparent"`
 
@@ -6696,7 +6700,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          控制模型在匹配输入图像的风格和特征（尤其是面部特征）上投入的努力程度。此参数仅支持 `gpt-image-1` 以及 `gpt-image-1.5` 及更高版本模型，不支持 `gpt-image-1-mini`。支持 `high` 以及 `low`。默认为 `low`.
+          控制模型在匹配输入图像风格和特征（尤其是面部特征）时所付出的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
 
           - `"high"`
 
@@ -6704,7 +6708,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `input_image_mask: optional object { file_id, image_url }`
 
-          用于修复的可选遮罩。包含 `image_url`
+          用于局部重绘的可选遮罩。包含 `image_url`
           （字符串，可选）和 `file_id` （字符串，可选）。
 
           - `file_id: optional string`
@@ -6717,7 +6721,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-          要使用的图像生成模型。可选值之一 `gpt-image-1`,
+          要使用的图像生成模型。可选值为 `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
           `gpt-image-1`.
@@ -6726,7 +6730,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。可选值之一 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
@@ -6743,7 +6747,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `moderation: optional "auto" or "low"`
 
-          生成图像的审核级别。默认值： `auto`.
+          生成图像的内容审核级别。默认值： `auto`.
 
           - `"auto"`
 
@@ -6755,7 +6759,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `output_format: optional "png" or "webp" or "jpeg"`
 
-          生成图像的输出格式。可选值之一 `png`, `webp`，或
+          生成图像的输出格式。可选值为 `png`, `webp`，或
           `jpeg`。默认值： `png`.
 
           - `"png"`
@@ -6766,11 +6770,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `partial_images: optional number`
 
-          流式模式下生成的部分图像数量，范围从 0（默认值）到 3。
+          在流式模式下生成的部分图像数量，取值范围为 0（默认值）到 3。
 
         - `quality: optional "low" or "medium" or "high" or "auto"`
 
-          生成图像的质量。可选值之一 `low`, `medium`, `high`,
+          生成图像的质量。可选值为 `low`, `medium`, `high`,
           或 `auto`。默认值： `auto`.
 
           - `"low"`
@@ -6783,13 +6787,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+          生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `"1024x1024"`
 
@@ -6801,27 +6805,27 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `LocalShell object { type }`
 
-        一种允许模型在本地环境中执行 shell 命令的工具。
+        允许模型在本地环境中执行 shell 命令的工具。
 
         - `type: "local_shell"`
 
-          本地 shell 工具的类型。始终为 `local_shell`.
+          本地 shell 工具的类型，始终为 `local_shell`.
 
           - `"local_shell"`
 
       - `Shell object { type, allowed_callers, environment }`
 
-        一种允许模型执行 shell 命令的工具。
+        允许模型执行 shell 命令的工具。
 
         - `type: "shell"`
 
-          shell 工具的类型。始终为 `shell`.
+          shell 工具的类型，始终为 `shell`.
 
           - `"shell"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -6833,13 +6837,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `type: "container_auto"`
 
-              自动为此请求创建容器
+              为本次请求自动创建一个容器
 
               - `"container_auto"`
 
             - `file_ids: optional array of string`
 
-              一个可选的已上传文件列表，供你的代码使用。
+              一个可选的、供代码使用的已上传文件列表。
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -6863,13 +6867,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `skills: optional array of SkillReference or InlineSkill`
 
-              可选技能列表，通过 ID 或内联数据引用。
+              通过 id 或内联数据引用的可选技能列表。
 
               - `SkillReference object { skill_id, type, version }`
 
                 - `skill_id: string`
 
-                  被引用技能的 ID。
+                  所引用技能的 ID。
 
                 - `type: "skill_reference"`
 
@@ -6879,7 +6883,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
                 - `version: optional string`
 
-                  可选技能版本。使用正整数或 'latest'。省略则使用默认值。
+                  可选的技能版本。使用正整数或 'latest'。省略则使用默认值。
 
               - `InlineSkill object { description, name, source, type }`
 
@@ -6889,7 +6893,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
                 - `name: string`
 
-                  该技能的名称。
+                  技能的名称。
 
                 - `source: InlineSkillSource`
 
@@ -6913,7 +6917,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
                 - `type: "inline"`
 
-                  为此请求定义一个内联技能。
+                  为本次请求定义一个内联技能。
 
                   - `"inline"`
 
@@ -6927,7 +6931,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `skills: optional array of LocalSkill`
 
-              可选技能列表。
+              可选的技能列表。
 
               - `description: string`
 
@@ -6935,11 +6939,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `name: string`
 
-                该技能的名称。
+                技能的名称。
 
               - `path: string`
 
-                包含该技能的目录路径。
+                指向包含该技能的目录的路径。
 
           - `ContainerReference object { container_id, type }`
 
@@ -6955,7 +6959,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `Custom object { name, type, allowed_callers, 3 more }`
 
-        一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+        使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -6969,7 +6973,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -6977,7 +6981,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `defer_loading: optional boolean`
 
-          是否应延迟此工具并通过工具搜索发现。
+          是否应延迟此工具并通过工具搜索发现它。
 
         - `description: optional string`
 
@@ -6985,11 +6989,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `format: optional CustomToolInputFormat`
 
-          自定义工具的输入格式。默认为无约束文本。
+          自定义工具的输入格式。默认是无约束文本。
 
           - `Text object { type }`
 
-            无约束的自由格式文本。
+            无约束的自由形式文本。
 
             - `type: "text"`
 
@@ -6999,15 +7003,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `Grammar object { definition, syntax, type }`
 
-            由用户定义的文法。
+            由用户定义的语法。
 
             - `definition: string`
 
-              文法定义。
+              语法定义。
 
             - `syntax: "lark" or "regex"`
 
-              文法定义的语法。其中之一为 `lark` 或 `regex`.
+              语法定义的语法。可选值为 `lark` 或 `regex`.
 
               - `"lark"`
 
@@ -7015,25 +7019,25 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `type: "grammar"`
 
-              文法格式。始终 `grammar`.
+              语法格式。始终为 `grammar`.
 
               - `"grammar"`
 
       - `Namespace object { description, name, tools, type }`
 
-        将函数/自定义工具分组到共享命名空间下。
+        在共享命名空间下对 function/custom 工具进行分组。
 
         - `description: string`
 
-          显示给模型的命名空间描述。
+          展示给模型的命名空间描述。
 
         - `name: string`
 
-          工具调用中使用的命名空间名称（例如， `crm`).
+          在工具调用中使用的命名空间名称（例如， `crm`).
 
         - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
-          此命名空间内可用的函数/自定义工具。
+          该命名空间内可用的 function/custom 工具。
 
           - `Function object { name, type, allowed_callers, 5 more }`
 
@@ -7045,7 +7049,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-              工具调用上下文。
+              该工具的调用上下文。
 
               - `"direct"`
 
@@ -7053,23 +7057,23 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `defer_loading: optional boolean`
 
-              此函数是否应延迟并通过工具搜索发现。
+              是否应延迟此函数并通过工具搜索发现。
 
             - `description: optional string or null`
 
             - `output_schema: optional map[unknown] or null`
 
-              描述此函数工具字符串输出中编码的 JSON 值的 JSON Schema。这不描述内容数组输出。
+              用于描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content-array 输出。
 
             - `parameters: optional unknown or null`
 
             - `strict: optional boolean or null`
 
-              是否强制进行严格的参数验证。如果省略，当 schema 兼容时，Responses 会尝试使用严格验证，否则回退到非严格验证。
+              是否强制执行严格的参数校验。如果省略，Responses 会尝试在 schema 兼容时使用严格校验，否则回退到非严格校验。
 
           - `Custom object { name, type, allowed_callers, 3 more }`
 
-            一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+            使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -7083,7 +7087,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-              工具调用上下文。
+              该工具的调用上下文。
 
               - `"direct"`
 
@@ -7091,7 +7095,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `defer_loading: optional boolean`
 
-              是否应延迟此工具并通过工具搜索发现。
+              是否应延迟此工具并通过工具搜索发现它。
 
             - `description: optional string`
 
@@ -7099,27 +7103,27 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `format: optional CustomToolInputFormat`
 
-              自定义工具的输入格式。默认为无约束文本。
+              自定义工具的输入格式。默认是无约束文本。
 
         - `type: "namespace"`
 
-          工具的类型。始终 `namespace`.
+          工具的类型。始终为 `namespace`.
 
           - `"namespace"`
 
       - `ToolSearch object { type, description, execution, parameters }`
 
-        延迟工具的托管或 BYOT 工具搜索配置。
+        用于延迟工具的托管或 BYOT 工具搜索配置。
 
         - `type: "tool_search"`
 
-          工具的类型。始终 `tool_search`.
+          工具的类型。始终为 `tool_search`.
 
           - `"tool_search"`
 
         - `description: optional string or null`
 
-          显示给模型的客户端执行工具搜索工具的描述。
+          展示给模型的客户端执行的工具搜索工具的描述。
 
         - `execution: optional "server" or "client"`
 
@@ -7131,15 +7135,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `parameters: optional unknown or null`
 
-          客户端执行工具搜索工具的参数 schema。
+          客户端执行的工具搜索工具的参数 schema。
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        此工具搜索网页以获取用于响应的相关结果。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+        此工具会在网络上搜索相关结果以用于回复中。详细了解 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-          网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+          网页搜索工具的类型，取值之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
           - `"web_search_preview"`
 
@@ -7153,7 +7157,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
           - `"low"`
 
@@ -7163,25 +7167,25 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          用户的位置。
+          用户所在的位置。
 
           - `type: "approximate"`
 
-            位置近似的类型。始终 `approximate`.
+            位置近似的类型。始终为 `approximate`.
 
             - `"approximate"`
 
           - `city: optional string or null`
 
-            用户的城市的自由文本输入，例如 `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+            两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户的地区的自由文本输入，例如 `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
@@ -7189,17 +7193,17 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `ApplyPatch object { type, allowed_callers }`
 
-        允许助手使用统一差异创建、删除或更新文件。
+        允许助手使用 unified diff 创建、删除或更新文件。
 
         - `type: "apply_patch"`
 
-          工具的类型。始终 `apply_patch`.
+          工具的类型。始终为 `apply_patch`.
 
           - `"apply_patch"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -7207,7 +7211,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: "tool_search_output"`
 
-      项目类型。始终为 `tool_search_output`.
+      项的类型。始终为 `tool_search_output`.
 
       - `"tool_search_output"`
 
@@ -7221,7 +7225,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `execution: optional "server" or "client"`
 
-      工具搜索是由服务端还是客户端执行的。
+      工具搜索是由服务端还是由客户端执行的。
 
       - `"server"`
 
@@ -7241,39 +7245,39 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `role: "developer"`
 
-      提供附加工具的角色。仅 `developer` 受支持。
+      提供这些附加工具的角色。仅支持 `developer` 。
 
       - `"developer"`
 
     - `tools: array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-      在此项目时可用的附加工具列表。
+      在此条目中可用的附加工具列表。
 
       - `Function object { name, parameters, strict, 5 more }`
 
-        定义你自己代码中模型可以选择调用的函数。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+        定义你自己代码中的某个函数，供模型选择调用。详细了解 [function calling](https://platform.openai.com/docs/guides/function-calling).
 
         - `name: string`
 
-          要调用的函数的名称。
+          要调用的函数名称。
 
         - `parameters: map[unknown] or null`
 
-          描述函数参数的 JSON schema 对象。
+          描述该函数参数的 JSON schema 对象。
 
         - `strict: boolean or null`
 
-          是否对此函数工具强制执行严格的参数验证。
+          是否为该函数工具启用严格的参数校验。
 
         - `type: "function"`
 
-          函数工具的类型。始终为 `function`.
+          该函数工具的类型。始终为 `function`.
 
           - `"function"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -7281,19 +7285,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `defer_loading: optional boolean`
 
-          此函数是否延迟并通过工具搜索加载。
+          该函数是否为延迟加载，并通过工具搜索加载。
 
         - `description: optional string or null`
 
-          函数的描述。模型据此确定是否调用该函数。
+          该函数的描述。模型据此决定是否调用该函数。
 
         - `output_schema: optional map[unknown] or null`
 
-          描述此函数的字符串输出中编码的 JSON 值的 JSON schema 对象。
+          描述该函数在字符串输出中编码的 JSON 值的 JSON schema 对象。
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        一种从上传文件中搜索相关内容工具。详细了解 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+        一个用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 tool](https://platform.openai.com/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -7311,15 +7315,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `ComparisonFilter object { key, type, value }`
 
-            用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+            用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
           - `CompoundFilter object { filters, type }`
 
-            使用以下方式组合多个筛选器 `and` 或 `or`.
+            使用以下方式组合多个过滤器 `and` 或 `or`.
 
         - `max_num_results: optional number`
 
-          要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+          返回结果的最大数量。此数量应介于 1 到 50 之间（含两端）。
 
         - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -7327,19 +7331,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-            启用混合搜索时，控制倒数排名融合如何在语义嵌入匹配与稀疏关键词匹配之间取得平衡的权重。
+            在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
             - `embedding_weight: number`
 
-              嵌入在倒数排名融合中的权重。
+              在倒数排名融合中嵌入的权重。
 
             - `text_weight: number`
 
-              文本在倒数排名融合中的权重。
+              在倒数排名融合中文本的权重。
 
           - `ranker: optional "auto" or "default-2024-11-15"`
 
-            用于文件搜索的排序器。
+            用于 文件搜索 的排序器。
 
             - `"auto"`
 
@@ -7347,11 +7351,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `score_threshold: optional number`
 
-            文件搜索的分数阈值，为0到1之间的数字。数字越接近1，将尝试仅返回最相关的结果，但可能返回较少的結果。
+            文件搜索 的分数阈值，取值范围为 0 到 1 之间。数值越接近 1，越会尝试只返回最相关的结果，但返回的结果数量可能会减少。
 
       - `Computer object { type }`
 
-        一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -7361,19 +7365,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
-          计算机显示器的宽度。
+          计算机显示屏的高度。
 
         - `display_width: number`
 
-          计算机显示器的宽度。
+          计算机显示屏的宽度。
 
         - `environment: "windows" or "mac" or "linux" or 2 more`
 
-          要控制的计算机环境的类型。
+          要控制的计算机环境类型。
 
           - `"windows"`
 
@@ -7393,12 +7397,12 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-        搜索互联网以获取与提示相关的来源。了解更多关于
+        在互联网上搜索与提示相关的来源。详细了解
         [网页搜索工具](/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
-          网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+          网页搜索工具的类型，取值之一为 `web_search` 或 `web_search_2025_08_26`.
 
           - `"web_search"`
 
@@ -7406,22 +7410,22 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `external_web_access: optional boolean`
 
-          允许网页搜索实时访问互联网。省略时默认为true。为false时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+          允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
         - `filters: optional object { allowed_domains }  or null`
 
-          搜索的过滤器。
+          搜索的筛选条件。
 
           - `allowed_domains: optional array of string or null`
 
-            搜索允许的域名。如果未提供，则允许所有域名。
-            所提供域名的子域名也允许。
+            允许进行搜索的域名。如果未提供，则允许所有域名。
+            同时也允许所提供域名的子域名。
 
             示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
           - `"low"`
 
@@ -7435,15 +7439,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `city: optional string or null`
 
-            用户的城市的自由文本输入，例如 `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+            两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户的地区的自由文本输入，例如 `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
@@ -7451,14 +7455,14 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: optional "approximate"`
 
-            位置近似的类型。始终 `approximate`.
+            位置近似的类型。始终为 `approximate`.
 
             - `"approximate"`
 
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-        通过远程 Model Context Protocol 让模型访问额外工具
-        (MCP) 服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+        通过远程 Model Context Protocol
+        （MCP）服务器为模型提供对其他工具的访问权限。 [了解更多关于 MCP 的信息](/docs/guides/tools-remote-mcp).
 
         - `server_label: string`
 
@@ -7466,13 +7470,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "mcp"`
 
-          MCP 工具的类型。始终 `mcp`.
+          MCP 工具的类型。始终为 `mcp`.
 
           - `"mcp"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -7484,7 +7488,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `McpAllowedTools = array of string`
 
-            允许工具名称的字符串数组
+            允许的工具名称组成的字符串数组
 
           - `McpToolFilter object { read_only, tool_names }`
 
@@ -7492,9 +7496,9 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `read_only: optional boolean`
 
-              指示工具是否修改数据或为只读。如果
-              MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-              ，它将匹配此过滤器。
+              指示工具是否修改数据或是否为只读。如果某个
+              MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+              ，它将匹配此过滤条件。
 
             - `tool_names: optional array of string`
 
@@ -7502,26 +7506,26 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `authorization: optional string`
 
-          可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-          与自定义 MCP 服务器 URL 或服务连接器配合使用。你的应用程序
-          必须处理 OAuth 授权流程并在此处提供令牌。
+          可用于远程 MCP 服务器的 OAuth 访问令牌，可搭配自定义 MCP 服务器 URL 或服务连接器使用。你的应用
+          必须处理 OAuth 授权流程，并在此处提供该令牌。
+          必须处理 OAuth 授权流程，并在此处提供该令牌。
 
         - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-          服务连接器的标识符，类似于 ChatGPT 中可用的那些。必须提供以下之一：
-          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中之一。了解更多
-          关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+          服务连接器的标识符，例如 ChatGPT 中提供的连接器之一。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解关于服务连接器
+          的更多信息 [请参阅此处](/docs/guides/tools-remote-mcp#connectors).
 
-          当前支持的值 `connector_id` 包括：
+          当前支持 `connector_id` 的值为：
 
-          - Dropbox： `connector_dropbox`
-          - Gmail： `connector_gmail`
-          - Google Calendar： `connector_googlecalendar`
-          - Google Drive： `connector_googledrive`
-          - Microsoft Teams： `connector_microsoftteams`
-          - Outlook Calendar： `connector_outlookcalendar`
-          - Outlook Email： `connector_outlookemail`
-          - SharePoint： `connector_sharepoint`
+          - Dropbox: `connector_dropbox`
+          - Gmail: `connector_gmail`
+          - Google Calendar: `connector_googlecalendar`
+          - Google Drive: `connector_googledrive`
+          - Microsoft Teams: `connector_microsoftteams`
+          - Outlook Calendar: `connector_outlookcalendar`
+          - Outlook Email: `connector_outlookemail`
+          - SharePoint: `connector_sharepoint`
 
           - `"connector_dropbox"`
 
@@ -7541,11 +7545,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `defer_loading: optional boolean`
 
-          此 MCP 工具是否被延迟并通过工具搜索发现。
+          此 MCP 工具是否被延迟，并通过工具搜索发现。
 
         - `headers: optional map[string] or null`
 
-          发送到 MCP 服务器的可选 HTTP 头。用于身份验证
+          发送到 MCP 服务器的可选 HTTP 请求头。用于身份验证
           或其他用途。
 
         - `require_approval: optional object { always, never }  or "always" or "never" or null`
@@ -7555,8 +7559,8 @@ curl https://api.openai.com/v1/conversations/conv_123 \
           - `McpToolApprovalFilter object { always, never }`
 
             指定 MCP 服务器的哪些工具需要审批。可以是
-            `always`, `never`，或一个与需要审批的工具关联的过滤器对象
-            。
+            `always`, `never`，或与工具关联的过滤对象
+            ，这些工具需要审批。
 
             - `always: optional object { read_only, tool_names }`
 
@@ -7564,9 +7568,9 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -7578,9 +7582,9 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -7588,8 +7592,8 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `McpToolApprovalSetting = "always" or "never"`
 
-            为所有工具指定单一审批策略。可以是 `always` 或
-            `never`。之一。当设置为 `always`，时，所有工具都需要审批。当
+            为所有工具指定统一的审批策略。可选值为 `always` 或
+            `never`。当设置为 `always`，时，所有工具都需要审批。当
             设置为 `never`，时，所有工具都不需要审批。
 
             - `"always"`
@@ -7602,22 +7606,22 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `server_url: optional string`
 
-          MCP 服务器的 URL。必须提供 `server_url`, `connector_id`，或
-          `tunnel_id` 之一。
+          MCP 服务器的 URL。 `server_url`, `connector_id`，或
+          `tunnel_id` 必须提供其中一个。
 
         - `tunnel_id: optional string`
 
-          用于替代直接服务器 URL 的安全 MCP 隧道 ID。必须提供
-          `server_url`, `connector_id`，或 `tunnel_id` 之一。
+          用于替代直接服务器 URL 的安全 MCP 隧道 ID。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中一个。
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
-        一个运行 Python 代码以帮助生成提示响应的工具。
+        运行 Python 代码以帮助生成对提示词响应的工具。
 
         - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-          代码解释器容器。可以是容器 ID，或一个对象，其中
-          指定了上传的文件 ID 以供你的代码使用，以及
+          代码解释器容器。可以是容器 ID，也可以是指定可供代码使用的已上传文件 ID 的对象，以及一个
+          指定可供你的代码使用的已上传文件 ID，以及一个
           可选的 `memory_limit` 设置。
 
           - `string`
@@ -7626,17 +7630,17 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器的配置。可选择指定要在其上运行代码的文件 ID。
+            代码解释器容器的配置。可选择指定要对其运行代码的文件 ID。
 
             - `type: "auto"`
 
-              始终 `auto`.
+              始终为 `auto`.
 
               - `"auto"`
 
             - `file_ids: optional array of string`
 
-              一个可选的已上传文件列表，供你的代码使用。
+              一个可选的、供代码使用的已上传文件列表。
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -7660,13 +7664,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "code_interpreter"`
 
-          代码解释器工具的类型。始终 `code_interpreter`.
+          代码解释器工具的类型。始终为 `code_interpreter`.
 
           - `"code_interpreter"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -7676,7 +7680,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "programmatic_tool_calling"`
 
-          工具的类型。始终 `programmatic_tool_calling`.
+          工具的类型。始终为 `programmatic_tool_calling`.
 
           - `"programmatic_tool_calling"`
 
@@ -7686,13 +7690,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "image_generation"`
 
-          图像生成工具的类型。始终 `image_generation`.
+          图像生成工具的类型。始终为 `image_generation`.
 
           - `"image_generation"`
 
         - `action: optional "generate" or "edit" or "auto"`
 
-          是否生成新图像或编辑现有图像。默认值： `auto`.
+          是生成新图像还是编辑现有图像。默认值： `auto`.
 
           - `"generate"`
 
@@ -7702,11 +7706,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          设置生成图像的背景。可选值之一： `transparent`,
-          `opaque`，或 `auto`。透明背景可用于
-          支持的 GPT 图像模型。对于 `gpt-image-2` 以及
-          `gpt-image-2-2026-04-21`，此支持目前处于预览阶段。使用
-          `transparent`，时，请将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
+          设置生成图像的背景。取值之一 `transparent`,
+          `opaque`，或 `auto`。透明背景适用于受支持的
+          GPT Image 模型。对于 `gpt-image-2` 和
+          `gpt-image-2-2026-04-21`，该支持目前处于预览阶段。使用
+          `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
           - `"transparent"`
 
@@ -7716,7 +7720,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          控制模型在匹配输入图像的风格和特征（尤其是面部特征）上投入的努力程度。此参数仅支持 `gpt-image-1` 以及 `gpt-image-1.5` 及更高版本模型，不支持 `gpt-image-1-mini`。支持 `high` 以及 `low`。默认为 `low`.
+          控制模型在匹配输入图像风格和特征（尤其是面部特征）时所付出的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
 
           - `"high"`
 
@@ -7724,7 +7728,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `input_image_mask: optional object { file_id, image_url }`
 
-          用于修复的可选遮罩。包含 `image_url`
+          用于局部重绘的可选遮罩。包含 `image_url`
           （字符串，可选）和 `file_id` （字符串，可选）。
 
           - `file_id: optional string`
@@ -7737,7 +7741,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-          要使用的图像生成模型。可选值之一 `gpt-image-1`,
+          要使用的图像生成模型。可选值为 `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
           `gpt-image-1`.
@@ -7746,7 +7750,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。可选值之一 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
@@ -7763,7 +7767,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `moderation: optional "auto" or "low"`
 
-          生成图像的审核级别。默认值： `auto`.
+          生成图像的内容审核级别。默认值： `auto`.
 
           - `"auto"`
 
@@ -7775,7 +7779,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `output_format: optional "png" or "webp" or "jpeg"`
 
-          生成图像的输出格式。可选值之一 `png`, `webp`，或
+          生成图像的输出格式。可选值为 `png`, `webp`，或
           `jpeg`。默认值： `png`.
 
           - `"png"`
@@ -7786,11 +7790,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `partial_images: optional number`
 
-          流式模式下生成的部分图像数量，范围从 0（默认值）到 3。
+          在流式模式下生成的部分图像数量，取值范围为 0（默认值）到 3。
 
         - `quality: optional "low" or "medium" or "high" or "auto"`
 
-          生成图像的质量。可选值之一 `low`, `medium`, `high`,
+          生成图像的质量。可选值为 `low`, `medium`, `high`,
           或 `auto`。默认值： `auto`.
 
           - `"low"`
@@ -7803,13 +7807,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+          生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `"1024x1024"`
 
@@ -7821,27 +7825,27 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `LocalShell object { type }`
 
-        一种允许模型在本地环境中执行 shell 命令的工具。
+        允许模型在本地环境中执行 shell 命令的工具。
 
         - `type: "local_shell"`
 
-          本地 shell 工具的类型。始终为 `local_shell`.
+          本地 shell 工具的类型，始终为 `local_shell`.
 
           - `"local_shell"`
 
       - `Shell object { type, allowed_callers, environment }`
 
-        一种允许模型执行 shell 命令的工具。
+        允许模型执行 shell 命令的工具。
 
         - `type: "shell"`
 
-          shell 工具的类型。始终为 `shell`.
+          shell 工具的类型，始终为 `shell`.
 
           - `"shell"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -7857,7 +7861,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `Custom object { name, type, allowed_callers, 3 more }`
 
-        一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+        使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -7871,7 +7875,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -7879,7 +7883,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `defer_loading: optional boolean`
 
-          是否应延迟此工具并通过工具搜索发现。
+          是否应延迟此工具并通过工具搜索发现它。
 
         - `description: optional string`
 
@@ -7887,23 +7891,23 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `format: optional CustomToolInputFormat`
 
-          自定义工具的输入格式。默认为无约束文本。
+          自定义工具的输入格式。默认是无约束文本。
 
       - `Namespace object { description, name, tools, type }`
 
-        将函数/自定义工具分组到共享命名空间下。
+        在共享命名空间下对 function/custom 工具进行分组。
 
         - `description: string`
 
-          显示给模型的命名空间描述。
+          展示给模型的命名空间描述。
 
         - `name: string`
 
-          工具调用中使用的命名空间名称（例如， `crm`).
+          在工具调用中使用的命名空间名称（例如， `crm`).
 
         - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
-          此命名空间内可用的函数/自定义工具。
+          该命名空间内可用的 function/custom 工具。
 
           - `Function object { name, type, allowed_callers, 5 more }`
 
@@ -7915,7 +7919,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-              工具调用上下文。
+              该工具的调用上下文。
 
               - `"direct"`
 
@@ -7923,23 +7927,23 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `defer_loading: optional boolean`
 
-              此函数是否应延迟并通过工具搜索发现。
+              是否应延迟此函数并通过工具搜索发现。
 
             - `description: optional string or null`
 
             - `output_schema: optional map[unknown] or null`
 
-              描述此函数工具字符串输出中编码的 JSON 值的 JSON Schema。这不描述内容数组输出。
+              用于描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content-array 输出。
 
             - `parameters: optional unknown or null`
 
             - `strict: optional boolean or null`
 
-              是否强制进行严格的参数验证。如果省略，当 schema 兼容时，Responses 会尝试使用严格验证，否则回退到非严格验证。
+              是否强制执行严格的参数校验。如果省略，Responses 会尝试在 schema 兼容时使用严格校验，否则回退到非严格校验。
 
           - `Custom object { name, type, allowed_callers, 3 more }`
 
-            一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+            使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -7953,7 +7957,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-              工具调用上下文。
+              该工具的调用上下文。
 
               - `"direct"`
 
@@ -7961,7 +7965,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `defer_loading: optional boolean`
 
-              是否应延迟此工具并通过工具搜索发现。
+              是否应延迟此工具并通过工具搜索发现它。
 
             - `description: optional string`
 
@@ -7969,27 +7973,27 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `format: optional CustomToolInputFormat`
 
-              自定义工具的输入格式。默认为无约束文本。
+              自定义工具的输入格式。默认是无约束文本。
 
         - `type: "namespace"`
 
-          工具的类型。始终 `namespace`.
+          工具的类型。始终为 `namespace`.
 
           - `"namespace"`
 
       - `ToolSearch object { type, description, execution, parameters }`
 
-        延迟工具的托管或 BYOT 工具搜索配置。
+        用于延迟工具的托管或 BYOT 工具搜索配置。
 
         - `type: "tool_search"`
 
-          工具的类型。始终 `tool_search`.
+          工具的类型。始终为 `tool_search`.
 
           - `"tool_search"`
 
         - `description: optional string or null`
 
-          显示给模型的客户端执行工具搜索工具的描述。
+          展示给模型的客户端执行的工具搜索工具的描述。
 
         - `execution: optional "server" or "client"`
 
@@ -8001,15 +8005,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `parameters: optional unknown or null`
 
-          客户端执行工具搜索工具的参数 schema。
+          客户端执行的工具搜索工具的参数 schema。
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        此工具搜索网页以获取用于响应的相关结果。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+        此工具会在网络上搜索相关结果以用于回复中。详细了解 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-          网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+          网页搜索工具的类型，取值之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
           - `"web_search_preview"`
 
@@ -8023,7 +8027,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
           - `"low"`
 
@@ -8033,25 +8037,25 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          用户的位置。
+          用户所在的位置。
 
           - `type: "approximate"`
 
-            位置近似的类型。始终 `approximate`.
+            位置近似的类型。始终为 `approximate`.
 
             - `"approximate"`
 
           - `city: optional string or null`
 
-            用户的城市的自由文本输入，例如 `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+            两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户的地区的自由文本输入，例如 `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
@@ -8059,17 +8063,17 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `ApplyPatch object { type, allowed_callers }`
 
-        允许助手使用统一差异创建、删除或更新文件。
+        允许助手使用 unified diff 创建、删除或更新文件。
 
         - `type: "apply_patch"`
 
-          工具的类型。始终 `apply_patch`.
+          工具的类型。始终为 `apply_patch`.
 
           - `"apply_patch"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -8077,19 +8081,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: "additional_tools"`
 
-      项目类型。始终为 `additional_tools`.
+      项的类型。始终为 `additional_tools`.
 
       - `"additional_tools"`
 
     - `id: optional string or null`
 
-      此附加工具项目的唯一 ID。
+      此附加工具条目的唯一 ID。
 
   - `Reasoning object { id, summary, type, 3 more }`
 
-    推理模型在生成
-    响应时所用思维链的描述。请务必将这些项目包含在你的 `input` 对 Responses API 的
-    后续对话轮次中，如果你正在手动
+    对推理模型在生成响应时所使用的思维链的描述。如果你是手动
+    管理上下文，请务必在后续对话轮次中将这些项包含在 `input` 对 Responses API 的
+    请求中。
     [管理上下文](/docs/guides/conversation-state).
 
     - `id: string`
@@ -8102,7 +8106,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `text: string`
 
-        模型到目前为止的推理输出摘要。
+        到目前为止模型推理输出的摘要。
 
       - `type: "summary_text"`
 
@@ -8132,20 +8136,20 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `encrypted_content: optional string or null`
 
-      推理项目的加密内容。默认情况下，此字段由
-      返回的推理项目填充，适用于 `POST /v1/responses` 和 WebSocket
-      `response.create` 请求。
+      推理条目的加密内容。默认情况下，对于通过
+      和 WebSocket `POST /v1/responses` 请求返回的推理条目，
+      `response.create` 会填充该字段。
 
-      流式传输时，请使用已完成的推理项及其
-      `encrypted_content` 从 `response.output_item.done` 事件中
-      的后续请求。该 `encrypted_content` 中
-      `response.output_item.added` 可能不完整。这在
-      特别重要，当 `store` 是 `false` 或使用零数据保留时。
+      流式传输时，使用已完成的推理项及其
+      `encrypted_content` 来自 `response.output_item.done` 事件中的
+      字段，并在后续请求中传递。 `encrypted_content` 在
+      `response.output_item.added` 中可能不完整。这一点尤其
+      重要，当你 `store` 为 `false` 时，或使用 Zero Data Retention 时。
 
     - `status: optional "in_progress" or "completed" or "incomplete"`
 
-      条目的状态。其一为 `in_progress`, `completed`，或
-      `incomplete`。当项目通过 API 返回时填充。
+      该条目的状态。可选值为 `in_progress`, `completed`，或
+      `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -8155,7 +8159,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `Compaction object { encrypted_content, type, id }`
 
-    由该工具生成的压缩项 [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+    由 [`v1/responses/compact` API](/docs/api-reference/responses/compact).
 
     - `encrypted_content: string`
 
@@ -8163,13 +8167,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: "compaction"`
 
-      项目的类型。始终为 `compaction`.
+      项的类型。始终为 `compaction`.
 
       - `"compaction"`
 
     - `id: optional string or null`
 
-      压缩项目的 ID。
+      压缩项的 ID。
 
   - `ImageGenerationCall object { id, result, status, type }`
 
@@ -8211,7 +8215,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `code: string or null`
 
-      要运行的代码，如果不可用则为 null。
+      要运行的代码，若不可用则为 null。
 
     - `container_id: string`
 
@@ -8220,7 +8224,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
     - `outputs: array of object { logs, type }  or object { type, url }  or null`
 
       代码解释器生成的输出，例如日志或图像。
-      如果没有可用的输出，则可以为 null。
+      若没有可用输出，可能为 null。
 
       - `Logs object { logs, type }`
 
@@ -8238,7 +8242,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `Image object { type, url }`
 
-        代码解释器的图像输出。
+        代码解释器输出的图像。
 
         - `type: "image"`
 
@@ -8248,7 +8252,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `url: string`
 
-          代码解释器图像输出的 URL。
+          代码解释器输出图像的 URL。
 
     - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -8280,7 +8284,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `action: object { command, env, type, 3 more }`
 
-      在服务器上执行 shell 命令。
+      在服务端执行 shell 命令。
 
       - `command: array of string`
 
@@ -8302,7 +8306,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `user: optional string or null`
 
-        运行命令的可选用户。
+        运行命令所使用的可选用户。
 
       - `working_directory: optional string or null`
 
@@ -8310,11 +8314,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `call_id: string`
 
-      模型生成的本地 shell 工具调用的唯一 ID。
+      模型生成的本机 shell 工具调用的唯一 ID。
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      本地 shell 调用的状态。
+      本机 shell 调用的状态。
 
       - `"in_progress"`
 
@@ -8324,31 +8328,31 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: "local_shell_call"`
 
-      本地 shell 调用的类型。始终为 `local_shell_call`.
+      本机 shell 调用的类型。始终为 `local_shell_call`.
 
       - `"local_shell_call"`
 
   - `LocalShellCallOutput object { id, output, type, status }`
 
-    本地 shell 工具调用的输出。
+    本机 shell 工具调用的输出。
 
     - `id: string`
 
-      模型生成的本地 shell 工具调用的唯一 ID。
+      模型生成的本机 shell 工具调用的唯一 ID。
 
     - `output: string`
 
-      本地 shell 工具调用输出的 JSON 字符串。
+      本机 shell 工具调用输出的 JSON 字符串。
 
     - `type: "local_shell_call_output"`
 
-      本地 shell 工具调用输出的类型。始终为 `local_shell_call_output`.
+      本机 shell 工具调用输出的类型。始终为 `local_shell_call_output`.
 
       - `"local_shell_call_output"`
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-      条目的状态。其一为 `in_progress`, `completed`，或 `incomplete`.
+      该条目的状态。可选值为 `in_progress`, `completed`，或 `incomplete`.
 
       - `"in_progress"`
 
@@ -8358,23 +8362,23 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `ShellCall object { action, call_id, type, 4 more }`
 
-    表示执行一个或多个 shell 命令请求的工具。
+    表示执行一条或多条 shell 命令请求的工具。
 
     - `action: object { commands, max_output_length, timeout_ms }`
 
-      描述如何运行工具调用的 shell 命令和限制。
+      描述如何运行该工具调用的 shell 命令和限制。
 
       - `commands: array of string`
 
-        供执行环境运行的按顺序排列的 shell 命令。
+        执行环境要运行的有序 shell 命令。
 
       - `max_output_length: optional number or null`
 
-        从合并的 stdout 和 stderr 输出中捕获的最大 UTF-8 字符数。
+        从合并后的 stdout 和 stderr 输出中捕获的最大 UTF-8 字符数。
 
       - `timeout_ms: optional number or null`
 
-        允许 shell 命令运行的最大墙钟时间（毫秒）。
+        允许 shell 命令运行的 최대挂钟时间（毫秒）。Maximum wall-clock time in milliseconds to allow the shell commands to run.
 
     - `call_id: string`
 
@@ -8382,13 +8386,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: "shell_call"`
 
-      项目的类型。始终为 `shell_call`.
+      项的类型。始终为 `shell_call`.
 
       - `"shell_call"`
 
     - `id: optional string or null`
 
-      shell 工具调用的唯一 ID。当此项目通过 API 返回时填充。
+      shell 工具调用的唯一 ID。通过 API 返回此条目时填充。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -8398,7 +8402,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "direct"`
 
-          调用者类型。始终为 `direct`.
+          调用方类型。始终为 `direct`.
 
           - `"direct"`
 
@@ -8410,7 +8414,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "program"`
 
-          调用者类型。始终为 `program`.
+          调用方类型。始终为 `program`.
 
           - `"program"`
 
@@ -8424,7 +8428,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-      shell 调用的状态。其中一种为 `in_progress`, `completed`，或 `incomplete`.
+      shell 调用的状态。取值之一： `in_progress`, `completed`，或 `incomplete`.
 
       - `"in_progress"`
 
@@ -8434,7 +8438,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `ShellCallOutput object { call_id, output, type, 4 more }`
 
-    shell 工具调用发出的流式输出项目。
+    shell 工具调用发出的流式输出项。
 
     - `call_id: string`
 
@@ -8460,11 +8464,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `Exit object { exit_code, type }`
 
-          表示 shell 命令已完成并返回了退出码。
+          表示 shell 命令已执行完成并返回了退出码。
 
           - `exit_code: number`
 
-            由 shell 进程返回的退出码。
+            shell 进程返回的退出码。
 
           - `type: "exit"`
 
@@ -8474,21 +8478,21 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `stderr: string`
 
-        捕获的 shell 调用 stderr 输出。
+        shell 调用的捕获 stderr 输出。
 
       - `stdout: string`
 
-        捕获的 shell 调用 stdout 输出。
+        shell 调用的捕获 stdout 输出。
 
     - `type: "shell_call_output"`
 
-      项目的类型。始终为 `shell_call_output`.
+      项的类型。始终为 `shell_call_output`.
 
       - `"shell_call_output"`
 
     - `id: optional string or null`
 
-      shell 工具调用输出的唯一 ID。当此项目通过 API 返回时填充。
+      shell 工具调用输出的唯一 ID。通过 API 返回此条目时填充。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -8498,7 +8502,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "direct"`
 
-          调用者类型。始终为 `direct`.
+          调用方类型。始终为 `direct`.
 
           - `"direct"`
 
@@ -8510,13 +8514,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "program"`
 
-          调用者类型。始终为 `program`.
+          调用方类型。始终为 `program`.
 
           - `"program"`
 
     - `max_output_length: optional number or null`
 
-      为此 shell 调用的组合输出捕获的最大 UTF-8 字符数。
+      此次 shell 调用合并输出所捕获的最大 UTF-8 字符数。
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -8534,7 +8538,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `call_id: string`
 
-      由模型生成的 apply_patch 工具调用的唯一 ID。
+      模型生成的 apply patch 工具调用的唯一 ID。
 
     - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
 
@@ -8550,11 +8554,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `path: string`
 
-          要创建的文件相对于工作区根目录的路径。
+          相对于工作区根目录的要创建文件的路径。
 
         - `type: "create_file"`
 
-          操作类型。始终 `create_file`.
+          操作类型。始终为 `create_file`.
 
           - `"create_file"`
 
@@ -8564,11 +8568,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `path: string`
 
-          要删除的文件相对于工作区根目录的路径。
+          相对于工作区根目录的要删除文件的路径。
 
         - `type: "delete_file"`
 
-          操作类型。始终 `delete_file`.
+          操作类型。始终为 `delete_file`.
 
           - `"delete_file"`
 
@@ -8578,21 +8582,21 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `diff: string`
 
-          要应用到现有文件的统一 diff 内容。
+          应用于现有文件的统一 diff 内容。
 
         - `path: string`
 
-          要更新的文件相对于工作区根目录的路径。
+          相对于工作区根目录的要更新文件的路径。
 
         - `type: "update_file"`
 
-          操作类型。始终 `update_file`.
+          操作类型。始终为 `update_file`.
 
           - `"update_file"`
 
     - `status: "in_progress" or "completed"`
 
-      apply_patch 工具调用的状态。之一 `in_progress` 或 `completed`.
+      apply patch 工具调用的状态。取值为 `in_progress` 或 `completed`.
 
       - `"in_progress"`
 
@@ -8600,13 +8604,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: "apply_patch_call"`
 
-      项目的类型。始终为 `apply_patch_call`.
+      项的类型。始终为 `apply_patch_call`.
 
       - `"apply_patch_call"`
 
     - `id: optional string or null`
 
-      API 返回此项目时填充的 apply patch 工具调用的唯一 ID。
+      apply patch 工具调用的唯一 ID。当通过 API 返回此 item 时填充。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -8616,7 +8620,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "direct"`
 
-          调用者类型。始终为 `direct`.
+          调用方类型。始终为 `direct`.
 
           - `"direct"`
 
@@ -8628,7 +8632,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "program"`
 
-          调用者类型。始终为 `program`.
+          调用方类型。始终为 `program`.
 
           - `"program"`
 
@@ -8638,11 +8642,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `call_id: string`
 
-      由模型生成的 apply_patch 工具调用的唯一 ID。
+      模型生成的 apply patch 工具调用的唯一 ID。
 
     - `status: "completed" or "failed"`
 
-      apply patch 工具调用输出的状态。可选值之一： `completed` 或 `failed`.
+      apply patch 工具调用输出的状态。取值之一为 `completed` 或 `failed`.
 
       - `"completed"`
 
@@ -8650,13 +8654,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: "apply_patch_call_output"`
 
-      项目的类型。始终为 `apply_patch_call_output`.
+      项的类型。始终为 `apply_patch_call_output`.
 
       - `"apply_patch_call_output"`
 
     - `id: optional string or null`
 
-      API 返回此项目时填充的 apply patch 工具调用输出的唯一 ID。
+      apply patch 工具调用输出的唯一 ID。当通过 API 返回此 item 时填充。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -8666,7 +8670,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "direct"`
 
-          调用者类型。始终为 `direct`.
+          调用方类型。始终为 `direct`.
 
           - `"direct"`
 
@@ -8678,13 +8682,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "program"`
 
-          调用者类型。始终为 `program`.
+          调用方类型。始终为 `program`.
 
           - `"program"`
 
     - `output: optional string or null`
 
-      来自 apply patch 工具的可选人类可读日志文本（例如，补丁结果或错误）。
+      apply patch 工具的可读日志文本（例如补丁结果或错误）。
 
   - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -8692,7 +8696,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `id: string`
 
-      列表的唯一 ID。
+      此列表的唯一 ID。
 
     - `server_label: string`
 
@@ -8704,7 +8708,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `input_schema: unknown`
 
-        描述工具输入的 JSON schema。
+        描述该工具输入的 JSON schema。
 
       - `name: string`
 
@@ -8712,7 +8716,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `annotations: optional unknown or null`
 
-        关于工具的附加注释。
+        关于该工具的附加注释。
 
       - `description: optional string or null`
 
@@ -8720,7 +8724,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: "mcp_list_tools"`
 
-      项目的类型。始终为 `mcp_list_tools`.
+      项的类型。始终为 `mcp_list_tools`.
 
       - `"mcp_list_tools"`
 
@@ -8730,11 +8734,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `McpApprovalRequest object { id, arguments, name, 2 more }`
 
-    请求人工批准工具调用的请求。
+    对工具调用的人工审批请求。
 
     - `id: string`
 
-      批准请求的唯一 ID。
+      审批请求的唯一 ID。
 
     - `arguments: string`
 
@@ -8750,25 +8754,25 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: "mcp_approval_request"`
 
-      项目的类型。始终为 `mcp_approval_request`.
+      项的类型。始终为 `mcp_approval_request`.
 
       - `"mcp_approval_request"`
 
   - `McpApprovalResponse object { approval_request_id, approve, type, 2 more }`
 
-    对 MCP 批准请求的响应。
+    对 MCP 审批请求的响应。
 
     - `approval_request_id: string`
 
-      正在回答的审批请求的 ID。
+      正在回复的审批请求的 ID。
 
     - `approve: boolean`
 
-      该请求是否已获批准。
+      请求是否已批准。
 
     - `type: "mcp_approval_response"`
 
-      项目的类型。始终为 `mcp_approval_response`.
+      项的类型。始终为 `mcp_approval_response`.
 
       - `"mcp_approval_response"`
 
@@ -8778,23 +8782,23 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `reason: optional string or null`
 
-      该决定的可选原因。
+      可选的决策原因。
 
   - `McpCall object { id, arguments, name, 6 more }`
 
-    在 MCP 服务器上对工具的一次调用。
+    对 MCP 服务器上某个工具的调用。
 
     - `id: string`
 
-      工具调用的唯一 ID。
+      该工具调用的唯一 ID。
 
     - `arguments: string`
 
-      传递给工具的参数的 JSON 字符串。
+      传递给该工具的参数的 JSON 字符串。
 
     - `name: string`
 
-      所运行的工具的名称。
+      已运行工具的名称。
 
     - `server_label: string`
 
@@ -8802,18 +8806,18 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: "mcp_call"`
 
-      项目的类型。始终为 `mcp_call`.
+      项的类型。始终为 `mcp_call`.
 
       - `"mcp_call"`
 
     - `approval_request_id: optional string or null`
 
       MCP 工具调用审批请求的唯一标识符。
-      在后续 `mcp_approval_response` 输入中包含此值，以批准或拒绝对应的工具调用。
+      在后续的 `mcp_approval_response` 输入中包含该值，以批准或拒绝相应的工具调用。
 
     - `error: optional McpToolCallError or null`
 
-      工具调用产生的错误（如有）。
+      工具调用的错误（如果有）。
 
       - `McpProtocolError object { code, message, type }`
 
@@ -8849,7 +8853,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `status: optional "in_progress" or "completed" or "incomplete" or 2 more`
 
-      工具调用的状态。取值为 `in_progress`, `completed`, `incomplete`, `calling`，或 `failed`.
+      工具调用的状态，取值为 `in_progress`, `completed`, `incomplete`, `calling`，或 `failed`.
 
       - `"in_progress"`
 
@@ -8863,7 +8867,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `CustomToolCallOutput object { call_id, output, type, 2 more }`
 
-    来自你的代码的自定义工具调用的输出，正在发送回模型。
+    来自你代码的自定义工具调用输出，正被发回给模型。
 
     - `call_id: string`
 
@@ -8871,12 +8875,12 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `output: string or array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
-      由你的代码生成的自定义工具调用的输出。
+      由你代码生成的自定义工具调用的输出。
       可以是字符串或输出内容列表。
 
       - `StringOutput = string`
 
-        自定义工具调用的输出字符串。
+        自定义工具调用输出的字符串。
 
       - `OutputContentList = array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
@@ -8884,15 +8888,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          输入给模型的文本输入。
+          提供给模型的文本输入。
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+          提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-          输入给模型的文件。
+          模型的文件输入。
 
     - `type: "custom_tool_call_output"`
 
@@ -8902,7 +8906,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `id: optional string`
 
-      自定义工具调用输出在 OpenAI 平台中的唯一 ID。
+      该自定义工具调用输出在 OpenAI 平台中的唯一 ID。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -8912,7 +8916,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "direct"`
 
-          调用者类型。始终为 `direct`.
+          调用方类型。始终为 `direct`.
 
           - `"direct"`
 
@@ -8924,13 +8928,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `type: "program"`
 
-          调用者类型。始终为 `program`.
+          调用方类型。始终为 `program`.
 
           - `"program"`
 
   - `CustomToolCall object { call_id, input, name, 4 more }`
 
-    由模型创建的自定义工具调用。
+    模型对自定义工具的调用。
 
     - `call_id: string`
 
@@ -8952,7 +8956,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `id: optional string`
 
-      自定义工具调用在 OpenAI 平台中的唯一 ID。
+      该自定义工具调用在 OpenAI 平台中的唯一 ID。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -8978,27 +8982,31 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       被调用的自定义工具的命名空间。
 
-  - `CompactionTrigger object { type }`
+  - `CompactionTrigger object { type, id }`
 
     压缩当前上下文。必须是最后一个输入项。
 
     - `type: "compaction_trigger"`
 
-      项目的类型。始终为 `compaction_trigger`.
+      项的类型。始终为 `compaction_trigger`.
 
       - `"compaction_trigger"`
 
+    - `id: optional string or null`
+
+      此压缩触发器的唯一 ID。
+
   - `ItemReference object { id, type }`
 
-    用于引用某个项的内部标识符。
+    用于引用某个条目的内部标识符。
 
     - `id: string`
 
-      要引用的项的 ID。
+      要引用的条目 ID。
 
     - `type: optional "item_reference" or null`
 
-      要引用的项的类型。始终为 `item_reference`.
+      要引用的条目类型。始终为 `item_reference`.
 
       - `"item_reference"`
 
@@ -9006,23 +9014,23 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `id: string`
 
-      此程序项的唯一 ID。
+      此程序条目的唯一 ID。
 
     - `call_id: string`
 
-      程序项的稳定调用 ID。
+      程序条目的稳定调用 ID。
 
     - `code: string`
 
-      由编程式工具调用执行的 JavaScript 源代码。
+      由程序化工具调用执行的 JavaScript 源码。
 
     - `fingerprint: string`
 
-      不透明的程序重放指纹，必须往返传输。
+      必须往返透传的不透明程序重放指纹。
 
     - `type: "program"`
 
-      项目类型。始终为 `program`.
+      项的类型。始终为 `program`.
 
       - `"program"`
 
@@ -9030,7 +9038,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `id: string`
 
-      此程序输出项的唯一 ID。
+      此程序输出条目的唯一 ID。
 
     - `call_id: string`
 
@@ -9050,39 +9058,39 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `type: "program_output"`
 
-      项目类型。始终为 `program_output`.
+      项的类型。始终为 `program_output`.
 
       - `"program_output"`
 
-### 返回
+### Returns
 
 - `ConversationItemList object { data, first_id, has_more, 2 more }`
 
-  一个 Conversation 项目列表。
+  Conversation 项的列表。
 
   - `data: array of ConversationItem`
 
-    一个对话项目列表。
+    对话项的列表。
 
     - `Message object { id, content, role, 3 more }`
 
-      与模型之间发送的消息。
+      发送给模型或来自模型的一条消息。
 
       - `id: string`
 
-        消息的唯一 ID。
+        该消息的唯一 ID。
 
       - `content: array of ResponseInputText or ResponseOutputText or TextContent or 6 more`
 
-        消息的内容
+        该消息的内容
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          输入给模型的文本输入。
+          提供给模型的文本输入。
 
           - `text: string`
 
-            输入给模型的文本输入。
+            提供给模型的文本输入。
 
           - `type: "input_text"`
 
@@ -9092,7 +9100,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -9102,7 +9110,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `ResponseOutputText object { annotations, logprobs, text, type }`
 
-          来自模型的文本输出。
+          模型生成的文本输出。
 
           - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
 
@@ -9126,35 +9134,35 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `type: "file_citation"`
 
-                文件引用的类型。始终 `file_citation`.
+                文件引用的类型。始终为 `file_citation`.
 
                 - `"file_citation"`
 
             - `URLCitation object { end_index, start_index, title, 2 more }`
 
-              用于生成模型响应的网络资源的引用。
+              用于生成模型回复的网页资源的引用。
 
               - `end_index: number`
 
-                消息中 URL 引用的最后一个字符的索引。
+                消息中 URL 引用末尾字符的索引。
 
               - `start_index: number`
 
-                消息中 URL 引用的第一个字符的索引。
+                消息中 URL 引用起始字符的索引。
 
               - `title: string`
 
-                网络资源的标题。
+                网页资源的标题。
 
               - `type: "url_citation"`
 
-                URL 引用的类型。始终 `url_citation`.
+                URL 引用的类型。始终为 `url_citation`.
 
                 - `"url_citation"`
 
               - `url: string`
 
-                网络资源的 URL。
+                网页资源的 URL。
 
             - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
@@ -9174,7 +9182,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `filename: string`
 
-                被引用的容器文件的文件名。
+                所引用的容器文件的文件名。
 
               - `start_index: number`
 
@@ -9182,13 +9190,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `type: "container_file_citation"`
 
-                容器文件引用的类型。始终 `container_file_citation`.
+                容器文件引用的类型。始终为 `container_file_citation`.
 
                 - `"container_file_citation"`
 
             - `FilePath object { file_id, index, type }`
 
-              文件路径。
+              文件的路径。
 
               - `file_id: string`
 
@@ -9200,7 +9208,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `type: "file_path"`
 
-                文件路径的类型。始终 `file_path`.
+                文件路径的类型。始终为 `file_path`.
 
                 - `"file_path"`
 
@@ -9222,11 +9230,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `text: string`
 
-            模型的文本输出。
+            模型输出的文本。
 
           - `type: "output_text"`
 
-            输出文本的类型。始终 `output_text`.
+            输出文本的类型。始终为 `output_text`.
 
             - `"output_text"`
 
@@ -9242,11 +9250,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `SummaryTextContent object { text, type }`
 
-          模型的摘要文本。
+          来自模型的摘要文本。
 
           - `text: string`
 
-            模型到目前为止的推理输出摘要。
+            到目前为止模型推理输出的摘要。
 
           - `type: "summary_text"`
 
@@ -9256,7 +9264,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `ReasoningText object { text, type }`
 
-          模型的推理文本。
+          来自模型的推理文本。
 
           - `text: string`
 
@@ -9270,25 +9278,25 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `ResponseOutputRefusal object { refusal, type }`
 
-          模型的拒绝。
+          模型生成的拒绝回复。
 
           - `refusal: string`
 
-            模型的拒绝解释。
+            模型生成的拒绝解释。
 
           - `type: "refusal"`
 
-            拒绝的类型。始终 `refusal`.
+            拒绝回复的类型。始终为 `refusal`.
 
             - `"refusal"`
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+          提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
           - `detail: ImageDetail`
 
-            要发送给模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+            发送到模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
             - `"low"`
 
@@ -9306,15 +9314,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            要发送到模型的文件的 ID。
 
           - `image_url: optional string or null`
 
-            要发送给模型的图像的 URL。可以是完全限定的 URL，或 data URL 中 base64 编码的图像。
+            要发送到模型的图像的 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图像。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -9324,15 +9332,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `ComputerScreenshotContent object { detail, file_id, image_url, 2 more }`
 
-          电脑界面的截图。
+          计算机的屏幕截图。
 
           - `detail: ImageDetail`
 
-            要发送给模型的截图图像的详细程度。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+            发送给模型的屏幕截图图像的细节级别。可选值为以下之一 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
           - `file_id: string or null`
 
-            包含截图的已上传文件的标识符。
+            包含截图的上传文件的标识符。
 
           - `image_url: string or null`
 
@@ -9340,13 +9348,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "computer_screenshot"`
 
-            指定事件类型。对于电脑界面截图，此属性始终设置为 `computer_screenshot`.
+            指定事件类型。对于计算机屏幕截图，此属性始终设置为 `computer_screenshot`.
 
             - `"computer_screenshot"`
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -9356,7 +9364,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-          输入给模型的文件。
+          模型的文件输入。
 
           - `type: "input_file"`
 
@@ -9366,7 +9374,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `detail: optional "auto" or "low" or "high"`
 
-            要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+            要发送到模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 的使用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
             - `"auto"`
 
@@ -9376,23 +9384,23 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `file_data: optional string`
 
-            要发送给模型的文件内容。
+            要发送到模型的文件内容。
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            要发送到模型的文件的 ID。
 
           - `file_url: optional string`
 
-            要发送给模型的文件的 URL。
+            要发送到模型的文件的 URL。
 
           - `filename: optional string`
 
-            要发送给模型的文件的名称。
+            要发送到模型的文件的名称。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -9402,7 +9410,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `role: "unknown" or "user" or "assistant" or 5 more`
 
-        消息的角色。以下之一： `unknown`, `user`, `assistant`, `system`, `critic`, `discriminator`, `developer`，或 `tool`.
+        消息的角色。可选值为 `unknown`, `user`, `assistant`, `system`, `critic`, `discriminator`, `developer`，或 `tool`.
 
         - `"unknown"`
 
@@ -9422,7 +9430,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        项目的状态。以下之一 `in_progress`, `completed`，或 `incomplete`。当项目通过 API 返回时填充。
+        item 的状态。取值为 `in_progress`, `completed`，或 `incomplete`。在通过 API 返回 item 时填充。
 
         - `"in_progress"`
 
@@ -9438,7 +9446,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `phase: optional "commentary" or "final_answer" or null`
 
-        将 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`）。对于类似 `gpt-5.3-codex` 及更高版本的模型，在发送后续请求时，保留并重新发送所有助手消息中的阶段信息——省略它可能会降低性能。不用于用户消息。
+        将 `assistant` 消息标记为中间说明（`commentary`）或最终答案（`final_answer`)。对于 `gpt-5.3-codex` 及更高版本的模型，在发送后续请求时，请在所有助手消息上保留并重新发送 phase——丢弃它可能会降低性能。不用于用户消息。
 
         - `"commentary"`
 
@@ -9456,16 +9464,16 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `call_id: string`
 
-        模型生成的函数工具调用的唯一 ID。
+        由模型生成的函数工具调用的唯一 ID。
 
       - `name: string`
 
-        要运行的函数的名称。
+        要运行的函数名称。
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。其一为 `in_progress`, `completed`，或
-        `incomplete`。当项目通过 API 返回时填充。
+        该条目的状态。可选值为 `in_progress`, `completed`，或
+        `incomplete`。在通过 API 返回 item 时填充。
 
         - `"in_progress"`
 
@@ -9501,7 +9509,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
       - `namespace: optional string`
 
@@ -9515,7 +9523,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `output: string or array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
-        你的代码生成的函数调用的输出。
+        由你的代码生成的函数调用所产生的输出。
         可以是字符串或输出内容列表。
 
         - `StringOutput = string`
@@ -9528,20 +9536,20 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            输入给模型的文本输入。
+            提供给模型的文本输入。
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+            提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-            输入给模型的文件。
+            模型的文件输入。
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。其一为 `in_progress`, `completed`，或
-        `incomplete`。当项目通过 API 返回时填充。
+        该条目的状态。可选值为 `in_progress`, `completed`，或
+        `incomplete`。在通过 API 返回 item 时填充。
 
         - `"in_progress"`
 
@@ -9557,7 +9565,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `call_id: optional string`
 
-        模型生成的函数工具调用的唯一 ID。
+        由模型生成的函数工具调用的唯一 ID。
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -9567,7 +9575,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "direct"`
 
-            调用者类型。始终为 `direct`.
+            调用方类型。始终为 `direct`.
 
             - `"direct"`
 
@@ -9579,38 +9587,38 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "program"`
 
-            调用者类型。始终为 `program`.
+            调用方类型。始终为 `program`.
 
             - `"program"`
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
       - `name: optional string`
 
-        产生输出的工具的名称。
+        产生该输出的工具名称。
 
       - `namespace: optional string`
 
-        产生输出的工具的命名空间。
+        产生该输出的工具的命名空间。
 
     - `FileSearchCall object { id, queries, status, 2 more }`
 
-      文件搜索工具调用的结果。参见
-      [文件搜索指南](/docs/guides/tools-file-search) 了解更多信息。
+      文件搜索 工具调用的结果。参见
+      [文件搜索 指南](/docs/guides/tools-file-search) 了解更多信息。
 
       - `id: string`
 
-        文件搜索工具调用的唯一 ID。
+        文件搜索 工具调用的唯一 ID。
 
       - `queries: array of string`
 
-        用于搜索文件的查询。
+        用于搜索文件的查询语句。
 
       - `status: "in_progress" or "searching" or "completed" or 2 more`
 
-        文件搜索工具调用的状态。其中之一为 `in_progress`,
+        文件搜索 工具调用的状态，取值为 `in_progress`,
         `searching`, `incomplete` 或 `failed`,
 
         - `"in_progress"`
@@ -9625,21 +9633,21 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `type: "file_search_call"`
 
-        文件搜索工具调用的类型。始终为 `file_search_call`.
+        文件搜索 工具调用的类型，始终为 `file_search_call`.
 
         - `"file_search_call"`
 
       - `results: optional array of object { attributes, file_id, filename, 2 more }  or null`
 
-        文件搜索工具调用的结果。
+        文件搜索 工具调用的结果。
 
         - `attributes: optional map[string or number or boolean] or null`
 
-          可附加到对象的一组 16 个键值对。这可用于以结构化
-          格式存储有关对象的额外信息，并通过 API 或仪表盘查询对象。键是字符串
-          ，最大长度为 64 个字符。值是字符串，最大
-          长度为 512 个字符、布尔值或数字。
-          文件的唯一 ID。
+          可附加到对象的 16 组键值对。可用于
+          以结构化格式存储对象的附加信息，并通过
+          API 或控制台查询对象。键为字符串，
+          最大长度为 64 个字符；值为字符串（最大
+          长度 512 个字符）、布尔值或数字。
 
           - `string`
 
@@ -9649,37 +9657,37 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `file_id: optional string`
 
-          文件的名称。
+          文件的唯一 ID。
 
         - `filename: optional string`
 
-          文件的相关性得分——介于 0 和 1 之间的值。
+          文件的名称。
 
         - `score: optional number`
 
-          从文件中检索到的文本。
+          文件的相关性分数，取值范围为 0 到 1。
 
         - `text: optional string`
 
-          对计算机使用工具的工具调用。参见
+          从文件中检索到的文本。
 
     - `WebSearchCall object { id, action, status, type }`
 
-      网页搜索工具调用的结果。请参阅
+      网页搜索 工具调用的结果。请参阅
       [网页搜索指南](/docs/guides/tools-web-search) 了解更多信息。
 
       - `id: string`
 
-        网页搜索工具调用的唯一 ID。
+        该 网页搜索工具调用的唯一 ID。
 
       - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
-        一个对象，描述此次网页搜索调用中采取的具体操作。
-        包含模型如何使用网络（search、open_page、find_in_page）的详细信息。
+        描述此次 网页搜索调用中所执行的具体操作的对象。
+        包含模型如何使用网页的详细信息（search、open_page、find_in_page）。
 
         - `Search object { type, queries, query, sources }`
 
-          操作类型 "search"——执行网页搜索查询。
+          操作类型 "search" - 执行一次 网页搜索查询。
 
           - `type: "search"`
 
@@ -9711,7 +9719,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `OpenPage object { type, url }`
 
-          操作类型 "open_page"——打开搜索结果中的特定 URL。
+          操作类型 "open_page" - 打开搜索结果中的特定 URL。
 
           - `type: "open_page"`
 
@@ -9725,11 +9733,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `FindInPage object { pattern, type, url }`
 
-          操作类型 "find_in_page"：在已加载的页面中搜索模式。
+          操作类型 "find_in_page"：在已加载的页面中搜索某个模式。
 
           - `pattern: string`
 
-            要在页面内搜索的模式或文本。
+            要在页面中搜索的模式或文本。
 
           - `type: "find_in_page"`
 
@@ -9739,11 +9747,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `url: string`
 
-            搜索该模式的页面的 URL。
+            被搜索该模式的页面 URL。
 
       - `status: "in_progress" or "searching" or "completed" or "failed"`
 
-        网页搜索工具调用的状态。
+        该 网页搜索工具调用的状态。
 
         - `"in_progress"`
 
@@ -9755,7 +9763,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `type: "web_search_call"`
 
-        网页搜索工具调用的类型。始终为 `web_search_call`.
+        该 网页搜索工具调用的类型。始终为 `web_search_call`.
 
         - `"web_search_call"`
 
@@ -9791,8 +9799,8 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
-      计算机使用指南
-      [计算机调用调用的唯一 ID。](/docs/guides/tools-computer-use) 了解更多信息。
+      对计算机使用工具的工具调用。参见
+      [计算机使用指南](/docs/guides/tools-computer-use) 了解更多信息。
 
       - `id: string`
 
@@ -9800,11 +9808,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `call_id: string`
 
-        用于在响应工具调用时提供输出的标识符。
+        在向工具调用返回输出时使用的标识符。
 
       - `pending_safety_checks: array of object { id, code, message }`
 
-        计算机调用的待处理安全检查。
+        该计算机调用的待处理安全检查。
 
         - `id: string`
 
@@ -9820,8 +9828,8 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。其一为 `in_progress`, `completed`，或
-        `incomplete`。当项目通过 API 返回时填充。
+        该条目的状态。可选值为 `in_progress`, `completed`，或
+        `incomplete`。在通过 API 返回 item 时填充。
 
         - `"in_progress"`
 
@@ -9831,21 +9839,21 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `type: "computer_call"`
 
-        计算机调用的类型。始终为 `computer_call`.
+        该计算机调用的类型。始终为 `computer_call`.
 
         - `"computer_call"`
 
       - `action: optional ComputerAction`
 
-        单击操作。
+        一次点击操作。
 
         - `Click object { button, type, x, 2 more }`
 
-          单击操作。
+          一次点击操作。
 
           - `button: "left" or "right" or "wheel" or 2 more`
 
-            指示单击期间按下了哪个鼠标按钮。其一为 `left`, `right`, `wheel`, `back`，或 `forward`.
+            表示点击时按下的鼠标按键。可选值为 `left`, `right`, `wheel`, `back`，或 `forward`.
 
             - `"left"`
 
@@ -9859,29 +9867,29 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "click"`
 
-            指定事件类型。对于单击操作，此属性始终为 `click`.
+            指定事件类型。对于点击操作，此属性始终为 `click`.
 
             - `"click"`
 
           - `x: number`
 
-            发生单击的 x 坐标。
+            点击发生位置的 x 坐标。
 
           - `y: number`
 
-            发生单击的 y 坐标。
+            点击发生位置的 y 坐标。
 
           - `keys: optional array of string or null`
 
-            单击时正在按住的按键。
+            点击时按住的按键。
 
         - `DoubleClick object { keys, type, x, y }`
 
-          双击操作。
+          一次双击操作。
 
           - `keys: array of string or null`
 
-            双击时正在按住的按键。
+            双击时按住的按键。
 
           - `type: "double_click"`
 
@@ -9891,19 +9899,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `x: number`
 
-            发生双击的 x 坐标。
+            双击发生位置的 x 坐标。
 
           - `y: number`
 
-            发生双击的 y 坐标。
+            双击发生位置的 y 坐标。
 
         - `Drag object { path, type, keys }`
 
-          拖动操作。
+          一次拖动操作。
 
           - `path: array of object { x, y }`
 
-            表示拖动操作路径的坐标数组。坐标将以对象数组的形式出现，例如
+            表示拖动操作路径的坐标数组。坐标将以对象数组的形式呈现，例如
 
             ```
             [
@@ -9922,17 +9930,17 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "drag"`
 
-            指定事件类型。对于拖拽操作，此属性始终设置为 `drag`.
+            指定事件类型。对于拖动操作，此属性始终设置为 `drag`.
 
             - `"drag"`
 
           - `keys: optional array of string or null`
 
-            拖拽鼠标时按住的按键。
+            拖动鼠标时按住的按键。
 
         - `Keypress object { keys, type }`
 
-          模型希望执行的一系列按键操作。
+          模型希望执行的一组按键操作。
 
           - `keys: array of string`
 
@@ -9956,11 +9964,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `x: number`
 
-            要移动到的 x 坐标。
+            要移至的 x 坐标。
 
           - `y: number`
 
-            要移动到的 y 坐标。
+            要移至的 y 坐标。
 
           - `keys: optional array of string or null`
 
@@ -9996,11 +10004,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `x: number`
 
-            发生滚动的 x 坐标。
+            发生滚动处的 x 坐标。
 
           - `y: number`
 
-            发生滚动的 y 坐标。
+            发生滚动处的 y 坐标。
 
           - `keys: optional array of string or null`
 
@@ -10016,40 +10024,40 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "type"`
 
-            指定事件类型。对于类型操作，此属性始终设置为 `type`.
+            指定事件类型。对于 type 操作，此属性始终设置为 `type`.
 
             - `"type"`
 
         - `Wait object { type }`
 
-          等待操作。
+          wait 操作。
 
           - `type: "wait"`
 
-            指定事件类型。对于等待操作，此属性始终设置为 `wait`.
+            指定事件类型。对于 wait 操作，此属性始终设置为 `wait`.
 
             - `"wait"`
 
       - `actions: optional ComputerActionList`
 
-        展平的批量操作，用于 `computer_use`。每个操作包含一个
-        `type` 判别器和操作特定字段。
+        已展平的批量操作，用于 `computer_use`。每个操作都包含一个
+        `type` 鉴别字段以及操作特有的字段。
 
         - `Click object { button, type, x, 2 more }`
 
-          单击操作。
+          一次点击操作。
 
         - `DoubleClick object { keys, type, x, y }`
 
-          双击操作。
+          一次双击操作。
 
         - `Drag object { path, type, keys }`
 
-          拖动操作。
+          一次拖动操作。
 
         - `Keypress object { keys, type }`
 
-          模型希望执行的一系列按键操作。
+          模型希望执行的一组按键操作。
 
         - `Move object { type, x, y, keys }`
 
@@ -10069,7 +10077,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `Wait object { type }`
 
-          等待操作。
+          wait 操作。
 
     - `ComputerCallOutput object { id, call_id, output, 4 more }`
 
@@ -10079,7 +10087,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `call_id: string`
 
-        产生输出的计算机工具调用的 ID。
+        产生该输出的计算机工具调用的 ID。
 
       - `output: ResponseComputerToolCallOutputScreenshot`
 
@@ -10094,7 +10102,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `file_id: optional string`
 
-          包含截图的已上传文件的标识符。
+          包含截图的上传文件的标识符。
 
         - `image_url: optional string`
 
@@ -10102,8 +10110,8 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `status: "completed" or "incomplete" or "failed" or "in_progress"`
 
-        消息输入的状态。其中之一 `in_progress`, `completed`，或
-        `incomplete`。当输入项通过 API 返回时填充。
+        消息输入的状态。取值为以下之一 `in_progress`, `completed`，或
+        `incomplete`。当通过 API 返回输入项时填充。
 
         - `"completed"`
 
@@ -10115,13 +10123,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `type: "computer_call_output"`
 
-        计算机工具调用输出的类型。始终为 `computer_call_output`.
+        计算机工具调用输出的类型，始终为 `computer_call_output`.
 
         - `"computer_call_output"`
 
       - `acknowledged_safety_checks: optional array of object { id, code, message }`
 
-        API报告并已由
+        由 API 报告并已由
         开发者确认的安全检查。
 
         - `id: string`
@@ -10138,13 +10146,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
     - `ToolSearchCall object { id, arguments, call_id, 4 more }`
 
       - `id: string`
 
-        工具搜索调用项目的唯一 ID。
+        工具搜索调用项的唯一 ID。
 
       - `arguments: unknown`
 
@@ -10156,7 +10164,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `execution: "server" or "client"`
 
-        工具搜索是由服务端还是客户端执行的。
+        工具搜索是由服务端还是由客户端执行的。
 
         - `"server"`
 
@@ -10164,7 +10172,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        记录的工具搜索调用项目的状态。
+        已记录的工具搜索调用项的状态。
 
         - `"in_progress"`
 
@@ -10174,19 +10182,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `type: "tool_search_call"`
 
-        项目的类型。始终为 `tool_search_call`.
+        项的类型。始终为 `tool_search_call`.
 
         - `"tool_search_call"`
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
     - `ToolSearchOutput object { id, call_id, execution, 4 more }`
 
       - `id: string`
 
-        工具搜索输出项目的唯一 ID。
+        工具搜索输出项的唯一 ID。
 
       - `call_id: string or null`
 
@@ -10194,7 +10202,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `execution: "server" or "client"`
 
-        工具搜索是由服务端还是客户端执行的。
+        工具搜索是由服务端还是由客户端执行的。
 
         - `"server"`
 
@@ -10202,7 +10210,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        记录的工具搜索输出项目的状态。
+        已记录的工具搜索输出项的状态。
 
         - `"in_progress"`
 
@@ -10216,29 +10224,29 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `Function object { name, parameters, strict, 5 more }`
 
-          定义你自己代码中模型可以选择调用的函数。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+          定义你自己代码中的某个函数，供模型选择调用。详细了解 [function calling](https://platform.openai.com/docs/guides/function-calling).
 
           - `name: string`
 
-            要调用的函数的名称。
+            要调用的函数名称。
 
           - `parameters: map[unknown] or null`
 
-            描述函数参数的 JSON schema 对象。
+            描述该函数参数的 JSON schema 对象。
 
           - `strict: boolean or null`
 
-            是否对此函数工具强制执行严格的参数验证。
+            是否为该函数工具启用严格的参数校验。
 
           - `type: "function"`
 
-            函数工具的类型。始终为 `function`.
+            该函数工具的类型。始终为 `function`.
 
             - `"function"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -10246,19 +10254,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `defer_loading: optional boolean`
 
-            此函数是否延迟并通过工具搜索加载。
+            该函数是否为延迟加载，并通过工具搜索加载。
 
           - `description: optional string or null`
 
-            函数的描述。模型据此确定是否调用该函数。
+            该函数的描述。模型据此决定是否调用该函数。
 
           - `output_schema: optional map[unknown] or null`
 
-            描述此函数的字符串输出中编码的 JSON 值的 JSON schema 对象。
+            描述该函数在字符串输出中编码的 JSON 值的 JSON schema 对象。
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          一种从上传文件中搜索相关内容工具。详细了解 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+          一个用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 tool](https://platform.openai.com/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -10276,24 +10284,24 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `ComparisonFilter object { key, type, value }`
 
-              用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+              用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
               - `key: string`
 
-                要与该值进行比较的键。
+                要与值进行比较的键。
 
               - `type: "eq" or "ne" or "gt" or 5 more`
 
                 指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-                - `eq`：等于
-                - `ne`：不等于
-                - `gt`：大于
-                - `gte`：大于或等于
-                - `lt`：小于
-                - `lte`：小于或等于
-                - `in`：包含
-                - `nin`：不包含
+                - `eq`: 等于
+                - `ne`: 不等于
+                - `gt`: 大于
+                - `gte`: 大于或等于
+                - `lt`: 小于
+                - `lte`: 小于或等于
+                - `in`: 包含于
+                - `nin`: 不包含于
 
                 - `"eq"`
 
@@ -10329,15 +10337,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `CompoundFilter object { filters, type }`
 
-              使用以下方式组合多个筛选器 `and` 或 `or`.
+              使用以下方式组合多个过滤器 `and` 或 `or`.
 
               - `filters: array of ComparisonFilter or unknown`
 
-                要组合的筛选器数组。项目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+                要组合的过滤器数组。条目可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
                 - `ComparisonFilter object { key, type, value }`
 
-                  用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+                  用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
                 - `unknown`
 
@@ -10351,7 +10359,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `max_num_results: optional number`
 
-            要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+            返回结果的最大数量。此数量应介于 1 到 50 之间（含两端）。
 
           - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -10359,19 +10367,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-              启用混合搜索时，控制倒数排名融合如何在语义嵌入匹配与稀疏关键词匹配之间取得平衡的权重。
+              在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
               - `embedding_weight: number`
 
-                嵌入在倒数排名融合中的权重。
+                在倒数排名融合中嵌入的权重。
 
               - `text_weight: number`
 
-                文本在倒数排名融合中的权重。
+                在倒数排名融合中文本的权重。
 
             - `ranker: optional "auto" or "default-2024-11-15"`
 
-              用于文件搜索的排序器。
+              用于 文件搜索 的排序器。
 
               - `"auto"`
 
@@ -10379,11 +10387,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `score_threshold: optional number`
 
-              文件搜索的分数阈值，为0到1之间的数字。数字越接近1，将尝试仅返回最相关的结果，但可能返回较少的結果。
+              文件搜索 的分数阈值，取值范围为 0 到 1 之间。数值越接近 1，越会尝试只返回最相关的结果，但返回的结果数量可能会减少。
 
         - `Computer object { type }`
 
-          一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -10393,19 +10401,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
-            计算机显示器的宽度。
+            计算机显示屏的高度。
 
           - `display_width: number`
 
-            计算机显示器的宽度。
+            计算机显示屏的宽度。
 
           - `environment: "windows" or "mac" or "linux" or 2 more`
 
-            要控制的计算机环境的类型。
+            要控制的计算机环境类型。
 
             - `"windows"`
 
@@ -10425,12 +10433,12 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-          搜索互联网以获取与提示相关的来源。了解更多关于
+          在互联网上搜索与提示相关的来源。详细了解
           [网页搜索工具](/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
-            网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+            网页搜索工具的类型，取值之一为 `web_search` 或 `web_search_2025_08_26`.
 
             - `"web_search"`
 
@@ -10438,22 +10446,22 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `external_web_access: optional boolean`
 
-            允许网页搜索实时访问互联网。省略时默认为true。为false时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+            允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
           - `filters: optional object { allowed_domains }  or null`
 
-            搜索的过滤器。
+            搜索的筛选条件。
 
             - `allowed_domains: optional array of string or null`
 
-              搜索允许的域名。如果未提供，则允许所有域名。
-              所提供域名的子域名也允许。
+              允许进行搜索的域名。如果未提供，则允许所有域名。
+              同时也允许所提供域名的子域名。
 
               示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -10467,15 +10475,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `city: optional string or null`
 
-              用户的城市的自由文本输入，例如 `San Francisco`.
+              用户所在城市的自由文本输入，例如 `San Francisco`.
 
             - `country: optional string or null`
 
-              用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -10483,14 +10491,14 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `type: optional "approximate"`
 
-              位置近似的类型。始终 `approximate`.
+              位置近似的类型。始终为 `approximate`.
 
               - `"approximate"`
 
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-          通过远程 Model Context Protocol 让模型访问额外工具
-          (MCP) 服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+          通过远程 Model Context Protocol
+          （MCP）服务器为模型提供对其他工具的访问权限。 [了解更多关于 MCP 的信息](/docs/guides/tools-remote-mcp).
 
           - `server_label: string`
 
@@ -10498,13 +10506,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "mcp"`
 
-            MCP 工具的类型。始终 `mcp`.
+            MCP 工具的类型。始终为 `mcp`.
 
             - `"mcp"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -10516,7 +10524,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `McpAllowedTools = array of string`
 
-              允许工具名称的字符串数组
+              允许的工具名称组成的字符串数组
 
             - `McpToolFilter object { read_only, tool_names }`
 
@@ -10524,9 +10532,9 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -10534,26 +10542,26 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `authorization: optional string`
 
-            可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-            与自定义 MCP 服务器 URL 或服务连接器配合使用。你的应用程序
-            必须处理 OAuth 授权流程并在此处提供令牌。
+            可用于远程 MCP 服务器的 OAuth 访问令牌，可搭配自定义 MCP 服务器 URL 或服务连接器使用。你的应用
+            必须处理 OAuth 授权流程，并在此处提供该令牌。
+            必须处理 OAuth 授权流程，并在此处提供该令牌。
 
           - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-            服务连接器的标识符，类似于 ChatGPT 中可用的那些。必须提供以下之一：
-            `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中之一。了解更多
-            关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+            服务连接器的标识符，例如 ChatGPT 中提供的连接器之一。
+            `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解关于服务连接器
+            的更多信息 [请参阅此处](/docs/guides/tools-remote-mcp#connectors).
 
-            当前支持的值 `connector_id` 包括：
+            当前支持 `connector_id` 的值为：
 
-            - Dropbox： `connector_dropbox`
-            - Gmail： `connector_gmail`
-            - Google Calendar： `connector_googlecalendar`
-            - Google Drive： `connector_googledrive`
-            - Microsoft Teams： `connector_microsoftteams`
-            - Outlook Calendar： `connector_outlookcalendar`
-            - Outlook Email： `connector_outlookemail`
-            - SharePoint： `connector_sharepoint`
+            - Dropbox: `connector_dropbox`
+            - Gmail: `connector_gmail`
+            - Google Calendar: `connector_googlecalendar`
+            - Google Drive: `connector_googledrive`
+            - Microsoft Teams: `connector_microsoftteams`
+            - Outlook Calendar: `connector_outlookcalendar`
+            - Outlook Email: `connector_outlookemail`
+            - SharePoint: `connector_sharepoint`
 
             - `"connector_dropbox"`
 
@@ -10573,11 +10581,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `defer_loading: optional boolean`
 
-            此 MCP 工具是否被延迟并通过工具搜索发现。
+            此 MCP 工具是否被延迟，并通过工具搜索发现。
 
           - `headers: optional map[string] or null`
 
-            发送到 MCP 服务器的可选 HTTP 头。用于身份验证
+            发送到 MCP 服务器的可选 HTTP 请求头。用于身份验证
             或其他用途。
 
           - `require_approval: optional object { always, never }  or "always" or "never" or null`
@@ -10587,8 +10595,8 @@ curl https://api.openai.com/v1/conversations/conv_123 \
             - `McpToolApprovalFilter object { always, never }`
 
               指定 MCP 服务器的哪些工具需要审批。可以是
-              `always`, `never`，或一个与需要审批的工具关联的过滤器对象
-              。
+              `always`, `never`，或与工具关联的过滤对象
+              ，这些工具需要审批。
 
               - `always: optional object { read_only, tool_names }`
 
@@ -10596,9 +10604,9 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  指示工具是否修改数据或是否为只读。如果某个
+                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  ，它将匹配此过滤条件。
 
                 - `tool_names: optional array of string`
 
@@ -10610,9 +10618,9 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  指示工具是否修改数据或是否为只读。如果某个
+                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  ，它将匹配此过滤条件。
 
                 - `tool_names: optional array of string`
 
@@ -10620,8 +10628,8 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `McpToolApprovalSetting = "always" or "never"`
 
-              为所有工具指定单一审批策略。可以是 `always` 或
-              `never`。之一。当设置为 `always`，时，所有工具都需要审批。当
+              为所有工具指定统一的审批策略。可选值为 `always` 或
+              `never`。当设置为 `always`，时，所有工具都需要审批。当
               设置为 `never`，时，所有工具都不需要审批。
 
               - `"always"`
@@ -10634,22 +10642,22 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `server_url: optional string`
 
-            MCP 服务器的 URL。必须提供 `server_url`, `connector_id`，或
-            `tunnel_id` 之一。
+            MCP 服务器的 URL。 `server_url`, `connector_id`，或
+            `tunnel_id` 必须提供其中一个。
 
           - `tunnel_id: optional string`
 
-            用于替代直接服务器 URL 的安全 MCP 隧道 ID。必须提供
-            `server_url`, `connector_id`，或 `tunnel_id` 之一。
+            用于替代直接服务器 URL 的安全 MCP 隧道 ID。
+            `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中一个。
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
-          一个运行 Python 代码以帮助生成提示响应的工具。
+          运行 Python 代码以帮助生成对提示词响应的工具。
 
           - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器。可以是容器 ID，或一个对象，其中
-            指定了上传的文件 ID 以供你的代码使用，以及
+            代码解释器容器。可以是容器 ID，也可以是指定可供代码使用的已上传文件 ID 的对象，以及一个
+            指定可供你的代码使用的已上传文件 ID，以及一个
             可选的 `memory_limit` 设置。
 
             - `string`
@@ -10658,17 +10666,17 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-              代码解释器容器的配置。可选择指定要在其上运行代码的文件 ID。
+              代码解释器容器的配置。可选择指定要对其运行代码的文件 ID。
 
               - `type: "auto"`
 
-                始终 `auto`.
+                始终为 `auto`.
 
                 - `"auto"`
 
               - `file_ids: optional array of string`
 
-                一个可选的已上传文件列表，供你的代码使用。
+                一个可选的、供代码使用的已上传文件列表。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -10690,7 +10698,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
                   - `type: "disabled"`
 
-                    禁用出站网络访问。始终 `disabled`.
+                    禁用出站网络访问。始终为 `disabled`.
 
                     - `"disabled"`
 
@@ -10698,39 +10706,39 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
                   - `allowed_domains: array of string`
 
-                    当类型为以下值时，允许的域名列表： `allowlist`.
+                    当类型为 `allowlist`.
 
                   - `type: "allowlist"`
 
-                    仅允许对指定域名的出站网络访问。始终 `allowlist`.
+                    时，仅允许向指定域发出出站网络访问。始终为 `allowlist`.
 
                     - `"allowlist"`
 
                   - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                    可选，针对允许列表中域名的域级密钥。
+                    用于允许列表中域的可选、按域隔离的密钥。
 
                     - `domain: string`
 
-                      与密钥关联的域名。
+                      与该密钥关联的域。
 
                     - `name: string`
 
-                      要为该域名注入的密钥名称。
+                      要为该域注入的密钥名称。
 
                     - `value: string`
 
-                      要为该域名注入的密钥值。
+                      要为该域注入的密钥值。
 
           - `type: "code_interpreter"`
 
-            代码解释器工具的类型。始终 `code_interpreter`.
+            代码解释器工具的类型。始终为 `code_interpreter`.
 
             - `"code_interpreter"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -10740,7 +10748,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "programmatic_tool_calling"`
 
-            工具的类型。始终 `programmatic_tool_calling`.
+            工具的类型。始终为 `programmatic_tool_calling`.
 
             - `"programmatic_tool_calling"`
 
@@ -10750,13 +10758,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "image_generation"`
 
-            图像生成工具的类型。始终 `image_generation`.
+            图像生成工具的类型。始终为 `image_generation`.
 
             - `"image_generation"`
 
           - `action: optional "generate" or "edit" or "auto"`
 
-            是否生成新图像或编辑现有图像。默认值： `auto`.
+            是生成新图像还是编辑现有图像。默认值： `auto`.
 
             - `"generate"`
 
@@ -10766,11 +10774,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            设置生成图像的背景。可选值之一： `transparent`,
-            `opaque`，或 `auto`。透明背景可用于
-            支持的 GPT 图像模型。对于 `gpt-image-2` 以及
-            `gpt-image-2-2026-04-21`，此支持目前处于预览阶段。使用
-            `transparent`，时，请将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
+            设置生成图像的背景。取值之一 `transparent`,
+            `opaque`，或 `auto`。透明背景适用于受支持的
+            GPT Image 模型。对于 `gpt-image-2` 和
+            `gpt-image-2-2026-04-21`，该支持目前处于预览阶段。使用
+            `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
             - `"transparent"`
 
@@ -10780,7 +10788,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            控制模型在匹配输入图像的风格和特征（尤其是面部特征）上投入的努力程度。此参数仅支持 `gpt-image-1` 以及 `gpt-image-1.5` 及更高版本模型，不支持 `gpt-image-1-mini`。支持 `high` 以及 `low`。默认为 `low`.
+            控制模型在匹配输入图像风格和特征（尤其是面部特征）时所付出的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
 
             - `"high"`
 
@@ -10788,7 +10796,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `input_image_mask: optional object { file_id, image_url }`
 
-            用于修复的可选遮罩。包含 `image_url`
+            用于局部重绘的可选遮罩。包含 `image_url`
             （字符串，可选）和 `file_id` （字符串，可选）。
 
             - `file_id: optional string`
@@ -10801,7 +10809,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。可选值之一 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
@@ -10810,7 +10818,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              要使用的图像生成模型。可选值之一 `gpt-image-1`,
+              要使用的图像生成模型。可选值为 `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
               `gpt-image-1`.
@@ -10827,7 +10835,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `moderation: optional "auto" or "low"`
 
-            生成图像的审核级别。默认值： `auto`.
+            生成图像的内容审核级别。默认值： `auto`.
 
             - `"auto"`
 
@@ -10839,7 +10847,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `output_format: optional "png" or "webp" or "jpeg"`
 
-            生成图像的输出格式。可选值之一 `png`, `webp`，或
+            生成图像的输出格式。可选值为 `png`, `webp`，或
             `jpeg`。默认值： `png`.
 
             - `"png"`
@@ -10850,11 +10858,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `partial_images: optional number`
 
-            流式模式下生成的部分图像数量，范围从 0（默认值）到 3。
+            在流式模式下生成的部分图像数量，取值范围为 0（默认值）到 3。
 
           - `quality: optional "low" or "medium" or "high" or "auto"`
 
-            生成图像的质量。可选值之一 `low`, `medium`, `high`,
+            生成图像的质量。可选值为 `low`, `medium`, `high`,
             或 `auto`。默认值： `auto`.
 
             - `"low"`
@@ -10867,13 +10875,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
               - `"1024x1024"`
 
@@ -10885,27 +10893,27 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `LocalShell object { type }`
 
-          一种允许模型在本地环境中执行 shell 命令的工具。
+          允许模型在本地环境中执行 shell 命令的工具。
 
           - `type: "local_shell"`
 
-            本地 shell 工具的类型。始终为 `local_shell`.
+            本地 shell 工具的类型，始终为 `local_shell`.
 
             - `"local_shell"`
 
         - `Shell object { type, allowed_callers, environment }`
 
-          一种允许模型执行 shell 命令的工具。
+          允许模型执行 shell 命令的工具。
 
           - `type: "shell"`
 
-            shell 工具的类型。始终为 `shell`.
+            shell 工具的类型，始终为 `shell`.
 
             - `"shell"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -10917,13 +10925,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `type: "container_auto"`
 
-                自动为此请求创建容器
+                为本次请求自动创建一个容器
 
                 - `"container_auto"`
 
               - `file_ids: optional array of string`
 
-                一个可选的已上传文件列表，供你的代码使用。
+                一个可选的、供代码使用的已上传文件列表。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -10947,13 +10955,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `skills: optional array of SkillReference or InlineSkill`
 
-                可选技能列表，通过 ID 或内联数据引用。
+                通过 id 或内联数据引用的可选技能列表。
 
                 - `SkillReference object { skill_id, type, version }`
 
                   - `skill_id: string`
 
-                    被引用技能的 ID。
+                    所引用技能的 ID。
 
                   - `type: "skill_reference"`
 
@@ -10963,7 +10971,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
                   - `version: optional string`
 
-                    可选技能版本。使用正整数或 'latest'。省略则使用默认值。
+                    可选的技能版本。使用正整数或 'latest'。省略则使用默认值。
 
                 - `InlineSkill object { description, name, source, type }`
 
@@ -10973,7 +10981,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
                   - `name: string`
 
-                    该技能的名称。
+                    技能的名称。
 
                   - `source: InlineSkillSource`
 
@@ -10997,7 +11005,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
                   - `type: "inline"`
 
-                    为此请求定义一个内联技能。
+                    为本次请求定义一个内联技能。
 
                     - `"inline"`
 
@@ -11011,7 +11019,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `skills: optional array of LocalSkill`
 
-                可选技能列表。
+                可选的技能列表。
 
                 - `description: string`
 
@@ -11019,11 +11027,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
                 - `name: string`
 
-                  该技能的名称。
+                  技能的名称。
 
                 - `path: string`
 
-                  包含该技能的目录路径。
+                  指向包含该技能的目录的路径。
 
             - `ContainerReference object { container_id, type }`
 
@@ -11039,7 +11047,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `Custom object { name, type, allowed_callers, 3 more }`
 
-          一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+          使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -11053,7 +11061,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -11061,7 +11069,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `defer_loading: optional boolean`
 
-            是否应延迟此工具并通过工具搜索发现。
+            是否应延迟此工具并通过工具搜索发现它。
 
           - `description: optional string`
 
@@ -11069,11 +11077,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `format: optional CustomToolInputFormat`
 
-            自定义工具的输入格式。默认为无约束文本。
+            自定义工具的输入格式。默认是无约束文本。
 
             - `Text object { type }`
 
-              无约束的自由格式文本。
+              无约束的自由形式文本。
 
               - `type: "text"`
 
@@ -11083,15 +11091,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `Grammar object { definition, syntax, type }`
 
-              由用户定义的文法。
+              由用户定义的语法。
 
               - `definition: string`
 
-                文法定义。
+                语法定义。
 
               - `syntax: "lark" or "regex"`
 
-                文法定义的语法。其中之一为 `lark` 或 `regex`.
+                语法定义的语法。可选值为 `lark` 或 `regex`.
 
                 - `"lark"`
 
@@ -11099,25 +11107,25 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `type: "grammar"`
 
-                文法格式。始终 `grammar`.
+                语法格式。始终为 `grammar`.
 
                 - `"grammar"`
 
         - `Namespace object { description, name, tools, type }`
 
-          将函数/自定义工具分组到共享命名空间下。
+          在共享命名空间下对 function/custom 工具进行分组。
 
           - `description: string`
 
-            显示给模型的命名空间描述。
+            展示给模型的命名空间描述。
 
           - `name: string`
 
-            工具调用中使用的命名空间名称（例如， `crm`).
+            在工具调用中使用的命名空间名称（例如， `crm`).
 
           - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
-            此命名空间内可用的函数/自定义工具。
+            该命名空间内可用的 function/custom 工具。
 
             - `Function object { name, type, allowed_callers, 5 more }`
 
@@ -11129,7 +11137,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-                工具调用上下文。
+                该工具的调用上下文。
 
                 - `"direct"`
 
@@ -11137,23 +11145,23 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `defer_loading: optional boolean`
 
-                此函数是否应延迟并通过工具搜索发现。
+                是否应延迟此函数并通过工具搜索发现。
 
               - `description: optional string or null`
 
               - `output_schema: optional map[unknown] or null`
 
-                描述此函数工具字符串输出中编码的 JSON 值的 JSON Schema。这不描述内容数组输出。
+                用于描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content-array 输出。
 
               - `parameters: optional unknown or null`
 
               - `strict: optional boolean or null`
 
-                是否强制进行严格的参数验证。如果省略，当 schema 兼容时，Responses 会尝试使用严格验证，否则回退到非严格验证。
+                是否强制执行严格的参数校验。如果省略，Responses 会尝试在 schema 兼容时使用严格校验，否则回退到非严格校验。
 
             - `Custom object { name, type, allowed_callers, 3 more }`
 
-              一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+              使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -11167,7 +11175,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-                工具调用上下文。
+                该工具的调用上下文。
 
                 - `"direct"`
 
@@ -11175,7 +11183,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `defer_loading: optional boolean`
 
-                是否应延迟此工具并通过工具搜索发现。
+                是否应延迟此工具并通过工具搜索发现它。
 
               - `description: optional string`
 
@@ -11183,27 +11191,27 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `format: optional CustomToolInputFormat`
 
-                自定义工具的输入格式。默认为无约束文本。
+                自定义工具的输入格式。默认是无约束文本。
 
           - `type: "namespace"`
 
-            工具的类型。始终 `namespace`.
+            工具的类型。始终为 `namespace`.
 
             - `"namespace"`
 
         - `ToolSearch object { type, description, execution, parameters }`
 
-          延迟工具的托管或 BYOT 工具搜索配置。
+          用于延迟工具的托管或 BYOT 工具搜索配置。
 
           - `type: "tool_search"`
 
-            工具的类型。始终 `tool_search`.
+            工具的类型。始终为 `tool_search`.
 
             - `"tool_search"`
 
           - `description: optional string or null`
 
-            显示给模型的客户端执行工具搜索工具的描述。
+            展示给模型的客户端执行的工具搜索工具的描述。
 
           - `execution: optional "server" or "client"`
 
@@ -11215,15 +11223,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `parameters: optional unknown or null`
 
-            客户端执行工具搜索工具的参数 schema。
+            客户端执行的工具搜索工具的参数 schema。
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          此工具搜索网页以获取用于响应的相关结果。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+          此工具会在网络上搜索相关结果以用于回复中。详细了解 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-            网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+            网页搜索工具的类型，取值之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
             - `"web_search_preview"`
 
@@ -11237,7 +11245,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -11247,25 +11255,25 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            用户的位置。
+            用户所在的位置。
 
             - `type: "approximate"`
 
-              位置近似的类型。始终 `approximate`.
+              位置近似的类型。始终为 `approximate`.
 
               - `"approximate"`
 
             - `city: optional string or null`
 
-              用户的城市的自由文本输入，例如 `San Francisco`.
+              用户所在城市的自由文本输入，例如 `San Francisco`.
 
             - `country: optional string or null`
 
-              用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -11273,17 +11281,17 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `ApplyPatch object { type, allowed_callers }`
 
-          允许助手使用统一差异创建、删除或更新文件。
+          允许助手使用 unified diff 创建、删除或更新文件。
 
           - `type: "apply_patch"`
 
-            工具的类型。始终 `apply_patch`.
+            工具的类型。始终为 `apply_patch`.
 
             - `"apply_patch"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -11291,19 +11299,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `type: "tool_search_output"`
 
-        项目的类型。始终为 `tool_search_output`.
+        项的类型。始终为 `tool_search_output`.
 
         - `"tool_search_output"`
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
     - `AdditionalTools object { id, role, tools, type }`
 
       - `id: string`
 
-        附加工具条目的唯一 ID。
+        该附加工具条目的唯一 ID。
 
       - `role: "unknown" or "user" or "assistant" or 5 more`
 
@@ -11327,33 +11335,33 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `tools: array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-        此条目中可用的附加工具定义。
+        在该条目处可用的附加工具定义。
 
         - `Function object { name, parameters, strict, 5 more }`
 
-          定义你自己代码中模型可以选择调用的函数。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+          定义你自己代码中的某个函数，供模型选择调用。详细了解 [function calling](https://platform.openai.com/docs/guides/function-calling).
 
           - `name: string`
 
-            要调用的函数的名称。
+            要调用的函数名称。
 
           - `parameters: map[unknown] or null`
 
-            描述函数参数的 JSON schema 对象。
+            描述该函数参数的 JSON schema 对象。
 
           - `strict: boolean or null`
 
-            是否对此函数工具强制执行严格的参数验证。
+            是否为该函数工具启用严格的参数校验。
 
           - `type: "function"`
 
-            函数工具的类型。始终为 `function`.
+            该函数工具的类型。始终为 `function`.
 
             - `"function"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -11361,19 +11369,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `defer_loading: optional boolean`
 
-            此函数是否延迟并通过工具搜索加载。
+            该函数是否为延迟加载，并通过工具搜索加载。
 
           - `description: optional string or null`
 
-            函数的描述。模型据此确定是否调用该函数。
+            该函数的描述。模型据此决定是否调用该函数。
 
           - `output_schema: optional map[unknown] or null`
 
-            描述此函数的字符串输出中编码的 JSON 值的 JSON schema 对象。
+            描述该函数在字符串输出中编码的 JSON 值的 JSON schema 对象。
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          一种从上传文件中搜索相关内容工具。详细了解 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+          一个用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 tool](https://platform.openai.com/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -11391,15 +11399,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `ComparisonFilter object { key, type, value }`
 
-              用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+              用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
             - `CompoundFilter object { filters, type }`
 
-              使用以下方式组合多个筛选器 `and` 或 `or`.
+              使用以下方式组合多个过滤器 `and` 或 `or`.
 
           - `max_num_results: optional number`
 
-            要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+            返回结果的最大数量。此数量应介于 1 到 50 之间（含两端）。
 
           - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -11407,19 +11415,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-              启用混合搜索时，控制倒数排名融合如何在语义嵌入匹配与稀疏关键词匹配之间取得平衡的权重。
+              在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
               - `embedding_weight: number`
 
-                嵌入在倒数排名融合中的权重。
+                在倒数排名融合中嵌入的权重。
 
               - `text_weight: number`
 
-                文本在倒数排名融合中的权重。
+                在倒数排名融合中文本的权重。
 
             - `ranker: optional "auto" or "default-2024-11-15"`
 
-              用于文件搜索的排序器。
+              用于 文件搜索 的排序器。
 
               - `"auto"`
 
@@ -11427,11 +11435,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `score_threshold: optional number`
 
-              文件搜索的分数阈值，为0到1之间的数字。数字越接近1，将尝试仅返回最相关的结果，但可能返回较少的結果。
+              文件搜索 的分数阈值，取值范围为 0 到 1 之间。数值越接近 1，越会尝试只返回最相关的结果，但返回的结果数量可能会减少。
 
         - `Computer object { type }`
 
-          一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -11441,19 +11449,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
-            计算机显示器的宽度。
+            计算机显示屏的高度。
 
           - `display_width: number`
 
-            计算机显示器的宽度。
+            计算机显示屏的宽度。
 
           - `environment: "windows" or "mac" or "linux" or 2 more`
 
-            要控制的计算机环境的类型。
+            要控制的计算机环境类型。
 
             - `"windows"`
 
@@ -11473,12 +11481,12 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-          搜索互联网以获取与提示相关的来源。了解更多关于
+          在互联网上搜索与提示相关的来源。详细了解
           [网页搜索工具](/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
-            网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+            网页搜索工具的类型，取值之一为 `web_search` 或 `web_search_2025_08_26`.
 
             - `"web_search"`
 
@@ -11486,22 +11494,22 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `external_web_access: optional boolean`
 
-            允许网页搜索实时访问互联网。省略时默认为true。为false时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+            允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
           - `filters: optional object { allowed_domains }  or null`
 
-            搜索的过滤器。
+            搜索的筛选条件。
 
             - `allowed_domains: optional array of string or null`
 
-              搜索允许的域名。如果未提供，则允许所有域名。
-              所提供域名的子域名也允许。
+              允许进行搜索的域名。如果未提供，则允许所有域名。
+              同时也允许所提供域名的子域名。
 
               示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -11515,15 +11523,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `city: optional string or null`
 
-              用户的城市的自由文本输入，例如 `San Francisco`.
+              用户所在城市的自由文本输入，例如 `San Francisco`.
 
             - `country: optional string or null`
 
-              用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -11531,14 +11539,14 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `type: optional "approximate"`
 
-              位置近似的类型。始终 `approximate`.
+              位置近似的类型。始终为 `approximate`.
 
               - `"approximate"`
 
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-          通过远程 Model Context Protocol 让模型访问额外工具
-          (MCP) 服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+          通过远程 Model Context Protocol
+          （MCP）服务器为模型提供对其他工具的访问权限。 [了解更多关于 MCP 的信息](/docs/guides/tools-remote-mcp).
 
           - `server_label: string`
 
@@ -11546,13 +11554,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "mcp"`
 
-            MCP 工具的类型。始终 `mcp`.
+            MCP 工具的类型。始终为 `mcp`.
 
             - `"mcp"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -11564,7 +11572,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `McpAllowedTools = array of string`
 
-              允许工具名称的字符串数组
+              允许的工具名称组成的字符串数组
 
             - `McpToolFilter object { read_only, tool_names }`
 
@@ -11572,9 +11580,9 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -11582,26 +11590,26 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `authorization: optional string`
 
-            可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-            与自定义 MCP 服务器 URL 或服务连接器配合使用。你的应用程序
-            必须处理 OAuth 授权流程并在此处提供令牌。
+            可用于远程 MCP 服务器的 OAuth 访问令牌，可搭配自定义 MCP 服务器 URL 或服务连接器使用。你的应用
+            必须处理 OAuth 授权流程，并在此处提供该令牌。
+            必须处理 OAuth 授权流程，并在此处提供该令牌。
 
           - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-            服务连接器的标识符，类似于 ChatGPT 中可用的那些。必须提供以下之一：
-            `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中之一。了解更多
-            关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+            服务连接器的标识符，例如 ChatGPT 中提供的连接器之一。
+            `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解关于服务连接器
+            的更多信息 [请参阅此处](/docs/guides/tools-remote-mcp#connectors).
 
-            当前支持的值 `connector_id` 包括：
+            当前支持 `connector_id` 的值为：
 
-            - Dropbox： `connector_dropbox`
-            - Gmail： `connector_gmail`
-            - Google Calendar： `connector_googlecalendar`
-            - Google Drive： `connector_googledrive`
-            - Microsoft Teams： `connector_microsoftteams`
-            - Outlook Calendar： `connector_outlookcalendar`
-            - Outlook Email： `connector_outlookemail`
-            - SharePoint： `connector_sharepoint`
+            - Dropbox: `connector_dropbox`
+            - Gmail: `connector_gmail`
+            - Google Calendar: `connector_googlecalendar`
+            - Google Drive: `connector_googledrive`
+            - Microsoft Teams: `connector_microsoftteams`
+            - Outlook Calendar: `connector_outlookcalendar`
+            - Outlook Email: `connector_outlookemail`
+            - SharePoint: `connector_sharepoint`
 
             - `"connector_dropbox"`
 
@@ -11621,11 +11629,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `defer_loading: optional boolean`
 
-            此 MCP 工具是否被延迟并通过工具搜索发现。
+            此 MCP 工具是否被延迟，并通过工具搜索发现。
 
           - `headers: optional map[string] or null`
 
-            发送到 MCP 服务器的可选 HTTP 头。用于身份验证
+            发送到 MCP 服务器的可选 HTTP 请求头。用于身份验证
             或其他用途。
 
           - `require_approval: optional object { always, never }  or "always" or "never" or null`
@@ -11635,8 +11643,8 @@ curl https://api.openai.com/v1/conversations/conv_123 \
             - `McpToolApprovalFilter object { always, never }`
 
               指定 MCP 服务器的哪些工具需要审批。可以是
-              `always`, `never`，或一个与需要审批的工具关联的过滤器对象
-              。
+              `always`, `never`，或与工具关联的过滤对象
+              ，这些工具需要审批。
 
               - `always: optional object { read_only, tool_names }`
 
@@ -11644,9 +11652,9 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  指示工具是否修改数据或是否为只读。如果某个
+                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  ，它将匹配此过滤条件。
 
                 - `tool_names: optional array of string`
 
@@ -11658,9 +11666,9 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  指示工具是否修改数据或是否为只读。如果某个
+                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  ，它将匹配此过滤条件。
 
                 - `tool_names: optional array of string`
 
@@ -11668,8 +11676,8 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `McpToolApprovalSetting = "always" or "never"`
 
-              为所有工具指定单一审批策略。可以是 `always` 或
-              `never`。之一。当设置为 `always`，时，所有工具都需要审批。当
+              为所有工具指定统一的审批策略。可选值为 `always` 或
+              `never`。当设置为 `always`，时，所有工具都需要审批。当
               设置为 `never`，时，所有工具都不需要审批。
 
               - `"always"`
@@ -11682,22 +11690,22 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `server_url: optional string`
 
-            MCP 服务器的 URL。必须提供 `server_url`, `connector_id`，或
-            `tunnel_id` 之一。
+            MCP 服务器的 URL。 `server_url`, `connector_id`，或
+            `tunnel_id` 必须提供其中一个。
 
           - `tunnel_id: optional string`
 
-            用于替代直接服务器 URL 的安全 MCP 隧道 ID。必须提供
-            `server_url`, `connector_id`，或 `tunnel_id` 之一。
+            用于替代直接服务器 URL 的安全 MCP 隧道 ID。
+            `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中一个。
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
-          一个运行 Python 代码以帮助生成提示响应的工具。
+          运行 Python 代码以帮助生成对提示词响应的工具。
 
           - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器。可以是容器 ID，或一个对象，其中
-            指定了上传的文件 ID 以供你的代码使用，以及
+            代码解释器容器。可以是容器 ID，也可以是指定可供代码使用的已上传文件 ID 的对象，以及一个
+            指定可供你的代码使用的已上传文件 ID，以及一个
             可选的 `memory_limit` 设置。
 
             - `string`
@@ -11706,17 +11714,17 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-              代码解释器容器的配置。可选择指定要在其上运行代码的文件 ID。
+              代码解释器容器的配置。可选择指定要对其运行代码的文件 ID。
 
               - `type: "auto"`
 
-                始终 `auto`.
+                始终为 `auto`.
 
                 - `"auto"`
 
               - `file_ids: optional array of string`
 
-                一个可选的已上传文件列表，供你的代码使用。
+                一个可选的、供代码使用的已上传文件列表。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -11740,13 +11748,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "code_interpreter"`
 
-            代码解释器工具的类型。始终 `code_interpreter`.
+            代码解释器工具的类型。始终为 `code_interpreter`.
 
             - `"code_interpreter"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -11756,7 +11764,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "programmatic_tool_calling"`
 
-            工具的类型。始终 `programmatic_tool_calling`.
+            工具的类型。始终为 `programmatic_tool_calling`.
 
             - `"programmatic_tool_calling"`
 
@@ -11766,13 +11774,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "image_generation"`
 
-            图像生成工具的类型。始终 `image_generation`.
+            图像生成工具的类型。始终为 `image_generation`.
 
             - `"image_generation"`
 
           - `action: optional "generate" or "edit" or "auto"`
 
-            是否生成新图像或编辑现有图像。默认值： `auto`.
+            是生成新图像还是编辑现有图像。默认值： `auto`.
 
             - `"generate"`
 
@@ -11782,11 +11790,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            设置生成图像的背景。可选值之一： `transparent`,
-            `opaque`，或 `auto`。透明背景可用于
-            支持的 GPT 图像模型。对于 `gpt-image-2` 以及
-            `gpt-image-2-2026-04-21`，此支持目前处于预览阶段。使用
-            `transparent`，时，请将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
+            设置生成图像的背景。取值之一 `transparent`,
+            `opaque`，或 `auto`。透明背景适用于受支持的
+            GPT Image 模型。对于 `gpt-image-2` 和
+            `gpt-image-2-2026-04-21`，该支持目前处于预览阶段。使用
+            `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
             - `"transparent"`
 
@@ -11796,7 +11804,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            控制模型在匹配输入图像的风格和特征（尤其是面部特征）上投入的努力程度。此参数仅支持 `gpt-image-1` 以及 `gpt-image-1.5` 及更高版本模型，不支持 `gpt-image-1-mini`。支持 `high` 以及 `low`。默认为 `low`.
+            控制模型在匹配输入图像风格和特征（尤其是面部特征）时所付出的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
 
             - `"high"`
 
@@ -11804,7 +11812,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `input_image_mask: optional object { file_id, image_url }`
 
-            用于修复的可选遮罩。包含 `image_url`
+            用于局部重绘的可选遮罩。包含 `image_url`
             （字符串，可选）和 `file_id` （字符串，可选）。
 
             - `file_id: optional string`
@@ -11817,7 +11825,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。可选值之一 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
@@ -11826,7 +11834,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              要使用的图像生成模型。可选值之一 `gpt-image-1`,
+              要使用的图像生成模型。可选值为 `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
               `gpt-image-1`.
@@ -11843,7 +11851,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `moderation: optional "auto" or "low"`
 
-            生成图像的审核级别。默认值： `auto`.
+            生成图像的内容审核级别。默认值： `auto`.
 
             - `"auto"`
 
@@ -11855,7 +11863,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `output_format: optional "png" or "webp" or "jpeg"`
 
-            生成图像的输出格式。可选值之一 `png`, `webp`，或
+            生成图像的输出格式。可选值为 `png`, `webp`，或
             `jpeg`。默认值： `png`.
 
             - `"png"`
@@ -11866,11 +11874,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `partial_images: optional number`
 
-            流式模式下生成的部分图像数量，范围从 0（默认值）到 3。
+            在流式模式下生成的部分图像数量，取值范围为 0（默认值）到 3。
 
           - `quality: optional "low" or "medium" or "high" or "auto"`
 
-            生成图像的质量。可选值之一 `low`, `medium`, `high`,
+            生成图像的质量。可选值为 `low`, `medium`, `high`,
             或 `auto`。默认值： `auto`.
 
             - `"low"`
@@ -11883,13 +11891,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
               - `"1024x1024"`
 
@@ -11901,27 +11909,27 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `LocalShell object { type }`
 
-          一种允许模型在本地环境中执行 shell 命令的工具。
+          允许模型在本地环境中执行 shell 命令的工具。
 
           - `type: "local_shell"`
 
-            本地 shell 工具的类型。始终为 `local_shell`.
+            本地 shell 工具的类型，始终为 `local_shell`.
 
             - `"local_shell"`
 
         - `Shell object { type, allowed_callers, environment }`
 
-          一种允许模型执行 shell 命令的工具。
+          允许模型执行 shell 命令的工具。
 
           - `type: "shell"`
 
-            shell 工具的类型。始终为 `shell`.
+            shell 工具的类型，始终为 `shell`.
 
             - `"shell"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -11937,7 +11945,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `Custom object { name, type, allowed_callers, 3 more }`
 
-          一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+          使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -11951,7 +11959,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -11959,7 +11967,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `defer_loading: optional boolean`
 
-            是否应延迟此工具并通过工具搜索发现。
+            是否应延迟此工具并通过工具搜索发现它。
 
           - `description: optional string`
 
@@ -11967,23 +11975,23 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `format: optional CustomToolInputFormat`
 
-            自定义工具的输入格式。默认为无约束文本。
+            自定义工具的输入格式。默认是无约束文本。
 
         - `Namespace object { description, name, tools, type }`
 
-          将函数/自定义工具分组到共享命名空间下。
+          在共享命名空间下对 function/custom 工具进行分组。
 
           - `description: string`
 
-            显示给模型的命名空间描述。
+            展示给模型的命名空间描述。
 
           - `name: string`
 
-            工具调用中使用的命名空间名称（例如， `crm`).
+            在工具调用中使用的命名空间名称（例如， `crm`).
 
           - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
-            此命名空间内可用的函数/自定义工具。
+            该命名空间内可用的 function/custom 工具。
 
             - `Function object { name, type, allowed_callers, 5 more }`
 
@@ -11995,7 +12003,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-                工具调用上下文。
+                该工具的调用上下文。
 
                 - `"direct"`
 
@@ -12003,23 +12011,23 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `defer_loading: optional boolean`
 
-                此函数是否应延迟并通过工具搜索发现。
+                是否应延迟此函数并通过工具搜索发现。
 
               - `description: optional string or null`
 
               - `output_schema: optional map[unknown] or null`
 
-                描述此函数工具字符串输出中编码的 JSON 值的 JSON Schema。这不描述内容数组输出。
+                用于描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content-array 输出。
 
               - `parameters: optional unknown or null`
 
               - `strict: optional boolean or null`
 
-                是否强制进行严格的参数验证。如果省略，当 schema 兼容时，Responses 会尝试使用严格验证，否则回退到非严格验证。
+                是否强制执行严格的参数校验。如果省略，Responses 会尝试在 schema 兼容时使用严格校验，否则回退到非严格校验。
 
             - `Custom object { name, type, allowed_callers, 3 more }`
 
-              一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+              使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -12033,7 +12041,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-                工具调用上下文。
+                该工具的调用上下文。
 
                 - `"direct"`
 
@@ -12041,7 +12049,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `defer_loading: optional boolean`
 
-                是否应延迟此工具并通过工具搜索发现。
+                是否应延迟此工具并通过工具搜索发现它。
 
               - `description: optional string`
 
@@ -12049,27 +12057,27 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
               - `format: optional CustomToolInputFormat`
 
-                自定义工具的输入格式。默认为无约束文本。
+                自定义工具的输入格式。默认是无约束文本。
 
           - `type: "namespace"`
 
-            工具的类型。始终 `namespace`.
+            工具的类型。始终为 `namespace`.
 
             - `"namespace"`
 
         - `ToolSearch object { type, description, execution, parameters }`
 
-          延迟工具的托管或 BYOT 工具搜索配置。
+          用于延迟工具的托管或 BYOT 工具搜索配置。
 
           - `type: "tool_search"`
 
-            工具的类型。始终 `tool_search`.
+            工具的类型。始终为 `tool_search`.
 
             - `"tool_search"`
 
           - `description: optional string or null`
 
-            显示给模型的客户端执行工具搜索工具的描述。
+            展示给模型的客户端执行的工具搜索工具的描述。
 
           - `execution: optional "server" or "client"`
 
@@ -12081,15 +12089,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `parameters: optional unknown or null`
 
-            客户端执行工具搜索工具的参数 schema。
+            客户端执行的工具搜索工具的参数 schema。
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          此工具搜索网页以获取用于响应的相关结果。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+          此工具会在网络上搜索相关结果以用于回复中。详细了解 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-            网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+            网页搜索工具的类型，取值之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
             - `"web_search_preview"`
 
@@ -12103,7 +12111,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -12113,25 +12121,25 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            用户的位置。
+            用户所在的位置。
 
             - `type: "approximate"`
 
-              位置近似的类型。始终 `approximate`.
+              位置近似的类型。始终为 `approximate`.
 
               - `"approximate"`
 
             - `city: optional string or null`
 
-              用户的城市的自由文本输入，例如 `San Francisco`.
+              用户所在城市的自由文本输入，例如 `San Francisco`.
 
             - `country: optional string or null`
 
-              用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -12139,17 +12147,17 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `ApplyPatch object { type, allowed_callers }`
 
-          允许助手使用统一差异创建、删除或更新文件。
+          允许助手使用 unified diff 创建、删除或更新文件。
 
           - `type: "apply_patch"`
 
-            工具的类型。始终 `apply_patch`.
+            工具的类型。始终为 `apply_patch`.
 
             - `"apply_patch"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -12157,15 +12165,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `type: "additional_tools"`
 
-        项目的类型。始终为 `additional_tools`.
+        项的类型。始终为 `additional_tools`.
 
         - `"additional_tools"`
 
     - `Reasoning object { id, summary, type, 3 more }`
 
-      推理模型在生成
-      响应时所用思维链的描述。请务必将这些项目包含在你的 `input` 对 Responses API 的
-      后续对话轮次中，如果你正在手动
+      对推理模型在生成响应时所使用的思维链的描述。如果你是手动
+      管理上下文，请务必在后续对话轮次中将这些项包含在 `input` 对 Responses API 的
+      请求中。
       [管理上下文](/docs/guides/conversation-state).
 
       - `id: string`
@@ -12178,7 +12186,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `text: string`
 
-          模型到目前为止的推理输出摘要。
+          到目前为止模型推理输出的摘要。
 
         - `type: "summary_text"`
 
@@ -12206,20 +12214,20 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `encrypted_content: optional string or null`
 
-        推理项目的加密内容。默认情况下，此字段由
-        返回的推理项目填充，适用于 `POST /v1/responses` 和 WebSocket
-        `response.create` 请求。
+        推理条目的加密内容。默认情况下，对于通过
+        和 WebSocket `POST /v1/responses` 请求返回的推理条目，
+        `response.create` 会填充该字段。
 
-        流式传输时，请使用已完成的推理项及其
-        `encrypted_content` 从 `response.output_item.done` 事件中
-        的后续请求。该 `encrypted_content` 中
-        `response.output_item.added` 可能不完整。这在
-        特别重要，当 `store` 是 `false` 或使用零数据保留时。
+        流式传输时，使用已完成的推理项及其
+        `encrypted_content` 来自 `response.output_item.done` 事件中的
+        字段，并在后续请求中传递。 `encrypted_content` 在
+        `response.output_item.added` 中可能不完整。这一点尤其
+        重要，当你 `store` 为 `false` 时，或使用 Zero Data Retention 时。
 
       - `status: optional "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。其一为 `in_progress`, `completed`，或
-        `incomplete`。当项目通过 API 返回时填充。
+        该条目的状态。可选值为 `in_progress`, `completed`，或
+        `incomplete`。在通过 API 返回 item 时填充。
 
         - `"in_progress"`
 
@@ -12235,19 +12243,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `call_id: string`
 
-        程序项的稳定调用 ID。
+        程序条目的稳定调用 ID。
 
       - `code: string`
 
-        由编程式工具调用执行的 JavaScript 源代码。
+        由程序化工具调用执行的 JavaScript 源码。
 
       - `fingerprint: string`
 
-        不透明的程序重放指纹，必须往返传输。
+        必须往返透传的不透明程序重放指纹。
 
       - `type: "program"`
 
-        项目的类型。始终为 `program`.
+        项的类型。始终为 `program`.
 
         - `"program"`
 
@@ -12275,13 +12283,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `type: "program_output"`
 
-        项目的类型。始终为 `program_output`.
+        项的类型。始终为 `program_output`.
 
         - `"program_output"`
 
     - `Compaction object { id, encrypted_content, type, created_by }`
 
-      由该工具生成的压缩项 [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+      由 [`v1/responses/compact` API](/docs/api-reference/responses/compact).
 
       - `id: string`
 
@@ -12289,17 +12297,17 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `encrypted_content: string`
 
-        压缩产生的加密内容。
+        由压缩生成的加密内容。
 
       - `type: "compaction"`
 
-        项目的类型。始终为 `compaction`.
+        项的类型。始终为 `compaction`.
 
         - `"compaction"`
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
     - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -12311,7 +12319,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `code: string or null`
 
-        要运行的代码，如果不可用则为 null。
+        要运行的代码，若不可用则为 null。
 
       - `container_id: string`
 
@@ -12320,7 +12328,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
       - `outputs: array of object { logs, type }  or object { type, url }  or null`
 
         代码解释器生成的输出，例如日志或图像。
-        如果没有可用的输出，则可以为 null。
+        若没有可用输出，可能为 null。
 
         - `Logs object { logs, type }`
 
@@ -12338,7 +12346,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `Image object { type, url }`
 
-          代码解释器的图像输出。
+          代码解释器输出的图像。
 
           - `type: "image"`
 
@@ -12348,7 +12356,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `url: string`
 
-            代码解释器图像输出的 URL。
+            代码解释器输出图像的 URL。
 
       - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -12380,7 +12388,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `action: object { command, env, type, 3 more }`
 
-        在服务器上执行 shell 命令。
+        在服务端执行 shell 命令。
 
         - `command: array of string`
 
@@ -12402,7 +12410,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `user: optional string or null`
 
-          运行命令的可选用户。
+          运行命令所使用的可选用户。
 
         - `working_directory: optional string or null`
 
@@ -12410,11 +12418,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `call_id: string`
 
-        模型生成的本地 shell 工具调用的唯一 ID。
+        模型生成的本机 shell 工具调用的唯一 ID。
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        本地 shell 调用的状态。
+        本机 shell 调用的状态。
 
         - `"in_progress"`
 
@@ -12424,31 +12432,31 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `type: "local_shell_call"`
 
-        本地 shell 调用的类型。始终为 `local_shell_call`.
+        本机 shell 调用的类型。始终为 `local_shell_call`.
 
         - `"local_shell_call"`
 
     - `LocalShellCallOutput object { id, output, type, status }`
 
-      本地 shell 工具调用的输出。
+      本机 shell 工具调用的输出。
 
       - `id: string`
 
-        模型生成的本地 shell 工具调用的唯一 ID。
+        模型生成的本机 shell 工具调用的唯一 ID。
 
       - `output: string`
 
-        本地 shell 工具调用输出的 JSON 字符串。
+        本机 shell 工具调用输出的 JSON 字符串。
 
       - `type: "local_shell_call_output"`
 
-        本地 shell 工具调用输出的类型。始终为 `local_shell_call_output`.
+        本机 shell 工具调用输出的类型。始终为 `local_shell_call_output`.
 
         - `"local_shell_call_output"`
 
       - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-        条目的状态。其一为 `in_progress`, `completed`，或 `incomplete`.
+        该条目的状态。可选值为 `in_progress`, `completed`，或 `incomplete`.
 
         - `"in_progress"`
 
@@ -12458,25 +12466,25 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `ShellCall object { id, action, call_id, 5 more }`
 
-      在受管环境中执行一个或多个 shell 命令的工具调用。
+      在托管环境中执行一条或多条 shell 命令的工具调用。
 
       - `id: string`
 
-        shell 工具调用的唯一 ID。当此项目通过 API 返回时填充。
+        shell 工具调用的唯一 ID。通过 API 返回此条目时填充。
 
       - `action: object { commands, max_output_length, timeout_ms }`
 
-        描述如何运行工具调用的 shell 命令和限制。
+        描述如何运行该工具调用的 shell 命令和限制。
 
         - `commands: array of string`
 
         - `max_output_length: number or null`
 
-          可选，每个命令返回的最大字符数。
+          可选的每个命令返回的最大字符数。
 
         - `timeout_ms: number or null`
 
-          可选，命令的超时时间（毫秒）。
+          可选的命令超时时间（毫秒）。
 
       - `call_id: string`
 
@@ -12510,7 +12518,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        shell 调用的状态。其中一种为 `in_progress`, `completed`，或 `incomplete`.
+        shell 调用的状态。取值之一： `in_progress`, `completed`，或 `incomplete`.
 
         - `"in_progress"`
 
@@ -12520,7 +12528,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `type: "shell_call"`
 
-        项目的类型。始终为 `shell_call`.
+        项的类型。始终为 `shell_call`.
 
         - `"shell_call"`
 
@@ -12546,15 +12554,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `created_by: optional string`
 
-        创建此工具调用的实体的 ID。
+        创建此工具调用的实体 ID。
 
     - `ShellCallOutput object { id, call_id, max_output_length, 5 more }`
 
-      发出的 shell 工具调用的输出。
+      已发出的 shell 工具调用的输出。
 
       - `id: string`
 
-        shell 调用输出的唯一 ID。当此条目通过 API 返回时填充。
+        shell 调用输出的唯一 ID。当通过 API 返回此条目时会填充该字段。
 
       - `call_id: string`
 
@@ -12562,7 +12570,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `max_output_length: number or null`
 
-        shell 命令输出的最大长度。由模型生成，应与原始输出一起传回。
+        shell 命令输出的最大长度。该值由模型生成，并应与原始输出一起传回。
 
       - `output: array of object { outcome, stderr, stdout, created_by }`
 
@@ -12570,7 +12578,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `outcome: object { type }  or object { exit_code, type }`
 
-          表示 shell 调用输出块的退出结果（含退出码）或超时结果。
+          表示 shell 调用输出块的结果是退出结果（带有退出码）还是超时结果。
 
           - `Timeout object { type }`
 
@@ -12584,11 +12592,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `Exit object { exit_code, type }`
 
-            表示 shell 命令已完成并返回了退出码。
+            表示 shell 命令已执行完成并返回了退出码。
 
             - `exit_code: number`
 
-              Shell 进程的退出代码。
+              shell 进程的退出码。
 
             - `type: "exit"`
 
@@ -12606,11 +12614,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `created_by: optional string`
 
-          创建该项目的执行者的标识符。
+          创建该项的执行者的标识符。
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        Shell 调用输出的状态。取值为 `in_progress`, `completed`，或 `incomplete`.
+        shell 调用输出的状态。取值为 `in_progress`, `completed`，或 `incomplete`.
 
         - `"in_progress"`
 
@@ -12620,7 +12628,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `type: "shell_call_output"`
 
-        Shell 调用输出的类型。始终为 `shell_call_output`.
+        shell 调用输出的类型。始终为 `shell_call_output`.
 
         - `"shell_call_output"`
 
@@ -12646,19 +12654,19 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
     - `ApplyPatchCall object { id, call_id, operation, 4 more }`
 
-      一种通过创建、删除或更新文件来应用文件差异的工具调用。
+      通过创建、删除或更新文件来应用文件差异的工具调用。
 
       - `id: string`
 
-        API 返回此项目时填充的 apply patch 工具调用的唯一 ID。
+        apply patch 工具调用的唯一 ID。当通过 API 返回此 item 时填充。
 
       - `call_id: string`
 
-        由模型生成的 apply_patch 工具调用的唯一 ID。
+        模型生成的 apply patch 工具调用的唯一 ID。
 
       - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
 
@@ -12678,7 +12686,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "create_file"`
 
-            使用提供的差异创建新文件。
+            使用提供的差异创建一个新文件。
 
             - `"create_file"`
 
@@ -12692,7 +12700,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "delete_file"`
 
-            删除指定文件。
+            删除指定的文件。
 
             - `"delete_file"`
 
@@ -12716,7 +12724,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `status: "in_progress" or "completed"`
 
-        apply_patch 工具调用的状态。之一 `in_progress` 或 `completed`.
+        apply patch 工具调用的状态。取值为 `in_progress` 或 `completed`.
 
         - `"in_progress"`
 
@@ -12724,7 +12732,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `type: "apply_patch_call"`
 
-        项目的类型。始终为 `apply_patch_call`.
+        项的类型。始终为 `apply_patch_call`.
 
         - `"apply_patch_call"`
 
@@ -12750,7 +12758,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `created_by: optional string`
 
-        创建此工具调用的实体的 ID。
+        创建此工具调用的实体 ID。
 
     - `ApplyPatchCallOutput object { id, call_id, status, 4 more }`
 
@@ -12758,15 +12766,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `id: string`
 
-        API 返回此项目时填充的 apply patch 工具调用输出的唯一 ID。
+        apply patch 工具调用输出的唯一 ID。当通过 API 返回此 item 时填充。
 
       - `call_id: string`
 
-        由模型生成的 apply_patch 工具调用的唯一 ID。
+        模型生成的 apply patch 工具调用的唯一 ID。
 
       - `status: "completed" or "failed"`
 
-        apply patch 工具调用输出的状态。可选值之一： `completed` 或 `failed`.
+        apply patch 工具调用输出的状态。取值之一为 `completed` 或 `failed`.
 
         - `"completed"`
 
@@ -12774,7 +12782,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `type: "apply_patch_call_output"`
 
-        项目的类型。始终为 `apply_patch_call_output`.
+        项的类型。始终为 `apply_patch_call_output`.
 
         - `"apply_patch_call_output"`
 
@@ -12800,11 +12808,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `created_by: optional string`
 
-        创建此工具调用输出的实体的 ID。
+        创建此工具调用输出的实体 ID。
 
       - `output: optional string or null`
 
-        apply patch 工具返回的可选文本输出。
+        由 apply patch 工具返回的可选文本输出。
 
     - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -12812,7 +12820,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `id: string`
 
-        列表的唯一 ID。
+        此列表的唯一 ID。
 
       - `server_label: string`
 
@@ -12824,7 +12832,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `input_schema: unknown`
 
-          描述工具输入的 JSON schema。
+          描述该工具输入的 JSON schema。
 
         - `name: string`
 
@@ -12832,7 +12840,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `annotations: optional unknown or null`
 
-          关于工具的附加注释。
+          关于该工具的附加注释。
 
         - `description: optional string or null`
 
@@ -12840,7 +12848,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `type: "mcp_list_tools"`
 
-        项目的类型。始终为 `mcp_list_tools`.
+        项的类型。始终为 `mcp_list_tools`.
 
         - `"mcp_list_tools"`
 
@@ -12850,11 +12858,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `McpApprovalRequest object { id, arguments, name, 2 more }`
 
-      请求人工批准工具调用的请求。
+      对工具调用的人工审批请求。
 
       - `id: string`
 
-        批准请求的唯一 ID。
+        审批请求的唯一 ID。
 
       - `arguments: string`
 
@@ -12870,13 +12878,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `type: "mcp_approval_request"`
 
-        项目的类型。始终为 `mcp_approval_request`.
+        项的类型。始终为 `mcp_approval_request`.
 
         - `"mcp_approval_request"`
 
     - `McpApprovalResponse object { id, approval_request_id, approve, 2 more }`
 
-      对 MCP 批准请求的响应。
+      对 MCP 审批请求的响应。
 
       - `id: string`
 
@@ -12884,37 +12892,37 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `approval_request_id: string`
 
-        正在回答的审批请求的 ID。
+        正在回复的审批请求的 ID。
 
       - `approve: boolean`
 
-        该请求是否已获批准。
+        请求是否已批准。
 
       - `type: "mcp_approval_response"`
 
-        项目的类型。始终为 `mcp_approval_response`.
+        项的类型。始终为 `mcp_approval_response`.
 
         - `"mcp_approval_response"`
 
       - `reason: optional string or null`
 
-        该决定的可选原因。
+        可选的决策原因。
 
     - `McpCall object { id, arguments, name, 6 more }`
 
-      在 MCP 服务器上对工具的一次调用。
+      对 MCP 服务器上某个工具的调用。
 
       - `id: string`
 
-        工具调用的唯一 ID。
+        该工具调用的唯一 ID。
 
       - `arguments: string`
 
-        传递给工具的参数的 JSON 字符串。
+        传递给该工具的参数的 JSON 字符串。
 
       - `name: string`
 
-        所运行的工具的名称。
+        已运行工具的名称。
 
       - `server_label: string`
 
@@ -12922,18 +12930,18 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `type: "mcp_call"`
 
-        项目的类型。始终为 `mcp_call`.
+        项的类型。始终为 `mcp_call`.
 
         - `"mcp_call"`
 
       - `approval_request_id: optional string or null`
 
         MCP 工具调用审批请求的唯一标识符。
-        在后续 `mcp_approval_response` 输入中包含此值，以批准或拒绝对应的工具调用。
+        在后续的 `mcp_approval_response` 输入中包含该值，以批准或拒绝相应的工具调用。
 
       - `error: optional McpToolCallError or null`
 
-        工具调用产生的错误（如有）。
+        工具调用的错误（如果有）。
 
         - `McpProtocolError object { code, message, type }`
 
@@ -12969,7 +12977,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `status: optional "in_progress" or "completed" or "incomplete" or 2 more`
 
-        工具调用的状态。取值为 `in_progress`, `completed`, `incomplete`, `calling`，或 `failed`.
+        工具调用的状态，取值为 `in_progress`, `completed`, `incomplete`, `calling`，或 `failed`.
 
         - `"in_progress"`
 
@@ -12983,7 +12991,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `CustomToolCall object { call_id, input, name, 4 more }`
 
-      由模型创建的自定义工具调用。
+      模型对自定义工具的调用。
 
       - `call_id: string`
 
@@ -13005,7 +13013,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `id: optional string`
 
-        自定义工具调用在 OpenAI 平台中的唯一 ID。
+        该自定义工具调用在 OpenAI 平台中的唯一 ID。
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -13033,7 +13041,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `CustomToolCallOutput object { call_id, output, type, 2 more }`
 
-      来自你的代码的自定义工具调用的输出，正在发送回模型。
+      来自你代码的自定义工具调用输出，正被发回给模型。
 
       - `call_id: string`
 
@@ -13041,12 +13049,12 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `output: string or array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
-        由你的代码生成的自定义工具调用的输出。
+        由你代码生成的自定义工具调用的输出。
         可以是字符串或输出内容列表。
 
         - `StringOutput = string`
 
-          自定义工具调用的输出字符串。
+          自定义工具调用输出的字符串。
 
         - `OutputContentList = array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
@@ -13054,15 +13062,15 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            输入给模型的文本输入。
+            提供给模型的文本输入。
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+            提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-            输入给模型的文件。
+            模型的文件输入。
 
       - `type: "custom_tool_call_output"`
 
@@ -13072,7 +13080,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `id: optional string`
 
-        自定义工具调用输出在 OpenAI 平台中的唯一 ID。
+        该自定义工具调用输出在 OpenAI 平台中的唯一 ID。
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -13082,7 +13090,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "direct"`
 
-            调用者类型。始终为 `direct`.
+            调用方类型。始终为 `direct`.
 
             - `"direct"`
 
@@ -13094,25 +13102,25 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           - `type: "program"`
 
-            调用者类型。始终为 `program`.
+            调用方类型。始终为 `program`.
 
             - `"program"`
 
   - `first_id: string`
 
-    列表中第一项项目的 ID。
+    列表中第一项的 ID。
 
   - `has_more: boolean`
 
-    是否还有更多可用项目。
+    是否还有更多可用项。
 
   - `last_id: string`
 
-    列表中最后一项项目的 ID。
+    列表中最后一项的 ID。
 
   - `object: "list"`
 
-    返回的对象类型，必须为 `list`.
+    返回对象的类型，必须为 `list`.
 
     - `"list"`
 
@@ -13219,11 +13227,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items \
 }
 ```
 
-## 删除一项
+## 删除某个条目
 
 **删除** `/conversations/{conversation_id}/items/{item_id}`
 
-使用给定的 ID 从会话中删除一个项目。
+根据指定的 ID 从会话中删除一个条目。
 
 ### 路径参数
 
@@ -13231,7 +13239,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items \
 
 - `item_id: string`
 
-### 返回
+### Returns
 
 - `Conversation object { id, created_at, metadata, object }`
 
@@ -13241,11 +13249,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items \
 
   - `created_at: number`
 
-    对话的创建时间，以 Unix 纪元以来的秒数衡量。
+    对话创建的时间，以自 Unix 纪元以来的秒数衡量。
 
   - `metadata: unknown`
 
-    附加到对象的一组 16 个键值对。这可用于以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
+    可附加到对象的 16 个键值对集合。这可用于以结构化格式存储有关对象的附加信息，并通过API或控制面板查询对象。
     键是字符串，最大长度为 64 个字符。值是字符串，最大长度为 512 个字符。
 
   - `object: "conversation"`
@@ -13291,11 +13299,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 }
 ```
 
-## 列表项
+## List items
 
 **get** `/conversations/{conversation_id}/items`
 
-列出具有给定 ID 的对话中的所有项目。
+列出具有指定 ID 的对话中的所有条目。
 
 ### 路径参数
 
@@ -13305,19 +13313,19 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
 - `after: optional string`
 
-  一个项目 ID，用于列出其后的项目，在分页中使用。
+  用于分页时列出位于该 item ID 之后的项目。
 
 - `include: optional array of ResponseIncludable`
 
-  指定在模型响应中要包含的额外输出数据。当前支持的值有：
+  指定要在模型响应中包含的额外输出数据。目前支持的值包括：
 
-  - `web_search_call.action.sources`: 包含 网页搜索 工具调用的来源。
-  - `code_interpreter_call.outputs`: 包含代码解释器工具调用项中 Python 代码执行的输出。
-  - `computer_call_output.output.image_url`: 包含计算机调用输出中的图像 URL。
-  - `file_search_call.results`: 包含 文件搜索 工具调用的搜索结果。
-  - `message.input_image.image_url`: 包含输入消息中的图像 URL。
-  - `message.output_text.logprobs`: 包含助手消息中的 logprobs。
-  - `reasoning.encrypted_content`: 在推理项的输出中包含加密版本的推理令牌。这使得在使用 Responses API 无状态时（例如当 `store` 参数设置为 `false`，或组织已加入零数据保留计划时），推理项可以用于多轮对话。
+  - `web_search_call.action.sources`：包含 网页搜索 工具调用的来源。
+  - `code_interpreter_call.outputs`：在代码解释器工具调用项中包含 Python 代码执行的输出。
+  - `computer_call_output.output.image_url`：包含来自计算机调用输出的图片 URL。
+  - `file_search_call.results`：包含 文件搜索 工具调用的搜索结果。
+  - `message.input_image.image_url`：包含来自输入消息的图片 URL。
+  - `message.output_text.logprobs`：在助手消息中包含 logprobs。
+  - `reasoning.encrypted_content`：在推理项输出中包含加密版本的推理 token。这使得在使用 Responses API 进行无状态多轮对话时可以使用推理项（例如当 `store` 参数设置为 `false`，时，或者当组织加入了零数据保留计划时）。
 
   - `"file_search_call.results"`
 
@@ -13337,49 +13345,49 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
 - `limit: optional number`
 
-  返回对象数量的限制。限制范围在
-  1 到 100 之间，默认值为 20。
+  限制要返回的对象数量。限制范围介于
+  1 到 100 之间，默认为 20。
 
 - `order: optional "asc" or "desc"`
 
-  返回输入项的顺序。默认是 `desc`.
+  返回输入项的顺序。默认值为 `desc`.
 
-  - `asc`: 按升序返回输入项。
-  - `desc`: 按降序返回输入项。
+  - `asc`：按升序返回输入项。
+  - `desc`：按降序返回输入项。
 
   - `"asc"`
 
   - `"desc"`
 
-### 返回
+### Returns
 
 - `ConversationItemList object { data, first_id, has_more, 2 more }`
 
-  一个 Conversation 项目列表。
+  Conversation 项的列表。
 
   - `data: array of ConversationItem`
 
-    一个对话项目列表。
+    对话项的列表。
 
     - `Message object { id, content, role, 3 more }`
 
-      与模型之间发送的消息。
+      发送给模型或来自模型的一条消息。
 
       - `id: string`
 
-        消息的唯一 ID。
+        该消息的唯一 ID。
 
       - `content: array of ResponseInputText or ResponseOutputText or TextContent or 6 more`
 
-        消息的内容
+        该消息的内容
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          输入给模型的文本输入。
+          提供给模型的文本输入。
 
           - `text: string`
 
-            输入给模型的文本输入。
+            提供给模型的文本输入。
 
           - `type: "input_text"`
 
@@ -13389,7 +13397,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -13399,7 +13407,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ResponseOutputText object { annotations, logprobs, text, type }`
 
-          来自模型的文本输出。
+          模型生成的文本输出。
 
           - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
 
@@ -13423,35 +13431,35 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `type: "file_citation"`
 
-                文件引用的类型。始终 `file_citation`.
+                文件引用的类型。始终为 `file_citation`.
 
                 - `"file_citation"`
 
             - `URLCitation object { end_index, start_index, title, 2 more }`
 
-              用于生成模型响应的网络资源的引用。
+              用于生成模型回复的网页资源的引用。
 
               - `end_index: number`
 
-                消息中 URL 引用的最后一个字符的索引。
+                消息中 URL 引用末尾字符的索引。
 
               - `start_index: number`
 
-                消息中 URL 引用的第一个字符的索引。
+                消息中 URL 引用起始字符的索引。
 
               - `title: string`
 
-                网络资源的标题。
+                网页资源的标题。
 
               - `type: "url_citation"`
 
-                URL 引用的类型。始终 `url_citation`.
+                URL 引用的类型。始终为 `url_citation`.
 
                 - `"url_citation"`
 
               - `url: string`
 
-                网络资源的 URL。
+                网页资源的 URL。
 
             - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
@@ -13471,7 +13479,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `filename: string`
 
-                被引用的容器文件的文件名。
+                所引用的容器文件的文件名。
 
               - `start_index: number`
 
@@ -13479,13 +13487,13 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `type: "container_file_citation"`
 
-                容器文件引用的类型。始终 `container_file_citation`.
+                容器文件引用的类型。始终为 `container_file_citation`.
 
                 - `"container_file_citation"`
 
             - `FilePath object { file_id, index, type }`
 
-              文件路径。
+              文件的路径。
 
               - `file_id: string`
 
@@ -13497,7 +13505,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `type: "file_path"`
 
-                文件路径的类型。始终 `file_path`.
+                文件路径的类型。始终为 `file_path`.
 
                 - `"file_path"`
 
@@ -13519,11 +13527,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `text: string`
 
-            模型的文本输出。
+            模型输出的文本。
 
           - `type: "output_text"`
 
-            输出文本的类型。始终 `output_text`.
+            输出文本的类型。始终为 `output_text`.
 
             - `"output_text"`
 
@@ -13539,11 +13547,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `SummaryTextContent object { text, type }`
 
-          模型的摘要文本。
+          来自模型的摘要文本。
 
           - `text: string`
 
-            模型到目前为止的推理输出摘要。
+            到目前为止模型推理输出的摘要。
 
           - `type: "summary_text"`
 
@@ -13553,7 +13561,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ReasoningText object { text, type }`
 
-          模型的推理文本。
+          来自模型的推理文本。
 
           - `text: string`
 
@@ -13567,25 +13575,25 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ResponseOutputRefusal object { refusal, type }`
 
-          模型的拒绝。
+          模型生成的拒绝回复。
 
           - `refusal: string`
 
-            模型的拒绝解释。
+            模型生成的拒绝解释。
 
           - `type: "refusal"`
 
-            拒绝的类型。始终 `refusal`.
+            拒绝回复的类型。始终为 `refusal`.
 
             - `"refusal"`
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+          提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
           - `detail: ImageDetail`
 
-            要发送给模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+            发送到模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
             - `"low"`
 
@@ -13603,15 +13611,15 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            要发送到模型的文件的 ID。
 
           - `image_url: optional string or null`
 
-            要发送给模型的图像的 URL。可以是完全限定的 URL，或 data URL 中 base64 编码的图像。
+            要发送到模型的图像的 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图像。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -13621,15 +13629,15 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ComputerScreenshotContent object { detail, file_id, image_url, 2 more }`
 
-          电脑界面的截图。
+          计算机的屏幕截图。
 
           - `detail: ImageDetail`
 
-            要发送给模型的截图图像的详细程度。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+            发送给模型的屏幕截图图像的细节级别。可选值为以下之一 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
           - `file_id: string or null`
 
-            包含截图的已上传文件的标识符。
+            包含截图的上传文件的标识符。
 
           - `image_url: string or null`
 
@@ -13637,13 +13645,13 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "computer_screenshot"`
 
-            指定事件类型。对于电脑界面截图，此属性始终设置为 `computer_screenshot`.
+            指定事件类型。对于计算机屏幕截图，此属性始终设置为 `computer_screenshot`.
 
             - `"computer_screenshot"`
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -13653,7 +13661,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-          输入给模型的文件。
+          模型的文件输入。
 
           - `type: "input_file"`
 
@@ -13663,7 +13671,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `detail: optional "auto" or "low" or "high"`
 
-            要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+            要发送到模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 的使用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
             - `"auto"`
 
@@ -13673,23 +13681,23 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `file_data: optional string`
 
-            要发送给模型的文件内容。
+            要发送到模型的文件内容。
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            要发送到模型的文件的 ID。
 
           - `file_url: optional string`
 
-            要发送给模型的文件的 URL。
+            要发送到模型的文件的 URL。
 
           - `filename: optional string`
 
-            要发送给模型的文件的名称。
+            要发送到模型的文件的名称。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -13699,7 +13707,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `role: "unknown" or "user" or "assistant" or 5 more`
 
-        消息的角色。以下之一： `unknown`, `user`, `assistant`, `system`, `critic`, `discriminator`, `developer`，或 `tool`.
+        消息的角色。可选值为 `unknown`, `user`, `assistant`, `system`, `critic`, `discriminator`, `developer`，或 `tool`.
 
         - `"unknown"`
 
@@ -13719,7 +13727,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        项目的状态。以下之一 `in_progress`, `completed`，或 `incomplete`。当项目通过 API 返回时填充。
+        item 的状态。取值为 `in_progress`, `completed`，或 `incomplete`。在通过 API 返回 item 时填充。
 
         - `"in_progress"`
 
@@ -13735,7 +13743,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `phase: optional "commentary" or "final_answer" or null`
 
-        将 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`）。对于类似 `gpt-5.3-codex` 及更高版本的模型，在发送后续请求时，保留并重新发送所有助手消息中的阶段信息——省略它可能会降低性能。不用于用户消息。
+        将 `assistant` 消息标记为中间说明（`commentary`）或最终答案（`final_answer`)。对于 `gpt-5.3-codex` 及更高版本的模型，在发送后续请求时，请在所有助手消息上保留并重新发送 phase——丢弃它可能会降低性能。不用于用户消息。
 
         - `"commentary"`
 
@@ -13753,16 +13761,16 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `call_id: string`
 
-        模型生成的函数工具调用的唯一 ID。
+        由模型生成的函数工具调用的唯一 ID。
 
       - `name: string`
 
-        要运行的函数的名称。
+        要运行的函数名称。
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。其一为 `in_progress`, `completed`，或
-        `incomplete`。当项目通过 API 返回时填充。
+        该条目的状态。可选值为 `in_progress`, `completed`，或
+        `incomplete`。在通过 API 返回 item 时填充。
 
         - `"in_progress"`
 
@@ -13798,7 +13806,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
       - `namespace: optional string`
 
@@ -13812,7 +13820,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `output: string or array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
-        你的代码生成的函数调用的输出。
+        由你的代码生成的函数调用所产生的输出。
         可以是字符串或输出内容列表。
 
         - `StringOutput = string`
@@ -13825,20 +13833,20 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            输入给模型的文本输入。
+            提供给模型的文本输入。
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+            提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-            输入给模型的文件。
+            模型的文件输入。
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。其一为 `in_progress`, `completed`，或
-        `incomplete`。当项目通过 API 返回时填充。
+        该条目的状态。可选值为 `in_progress`, `completed`，或
+        `incomplete`。在通过 API 返回 item 时填充。
 
         - `"in_progress"`
 
@@ -13854,7 +13862,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `call_id: optional string`
 
-        模型生成的函数工具调用的唯一 ID。
+        由模型生成的函数工具调用的唯一 ID。
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -13864,7 +13872,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "direct"`
 
-            调用者类型。始终为 `direct`.
+            调用方类型。始终为 `direct`.
 
             - `"direct"`
 
@@ -13876,38 +13884,38 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "program"`
 
-            调用者类型。始终为 `program`.
+            调用方类型。始终为 `program`.
 
             - `"program"`
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
       - `name: optional string`
 
-        产生输出的工具的名称。
+        产生该输出的工具名称。
 
       - `namespace: optional string`
 
-        产生输出的工具的命名空间。
+        产生该输出的工具的命名空间。
 
     - `FileSearchCall object { id, queries, status, 2 more }`
 
-      文件搜索工具调用的结果。参见
-      [文件搜索指南](/docs/guides/tools-file-search) 了解更多信息。
+      文件搜索 工具调用的结果。参见
+      [文件搜索 指南](/docs/guides/tools-file-search) 了解更多信息。
 
       - `id: string`
 
-        文件搜索工具调用的唯一 ID。
+        文件搜索 工具调用的唯一 ID。
 
       - `queries: array of string`
 
-        用于搜索文件的查询。
+        用于搜索文件的查询语句。
 
       - `status: "in_progress" or "searching" or "completed" or 2 more`
 
-        文件搜索工具调用的状态。其中之一为 `in_progress`,
+        文件搜索 工具调用的状态，取值为 `in_progress`,
         `searching`, `incomplete` 或 `failed`,
 
         - `"in_progress"`
@@ -13922,21 +13930,21 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "file_search_call"`
 
-        文件搜索工具调用的类型。始终为 `file_search_call`.
+        文件搜索 工具调用的类型，始终为 `file_search_call`.
 
         - `"file_search_call"`
 
       - `results: optional array of object { attributes, file_id, filename, 2 more }  or null`
 
-        文件搜索工具调用的结果。
+        文件搜索 工具调用的结果。
 
         - `attributes: optional map[string or number or boolean] or null`
 
-          可附加到对象的一组 16 个键值对。这可用于以结构化
-          格式存储有关对象的额外信息，并通过 API 或仪表盘查询对象。键是字符串
-          ，最大长度为 64 个字符。值是字符串，最大
-          长度为 512 个字符、布尔值或数字。
-          文件的唯一 ID。
+          可附加到对象的 16 组键值对。可用于
+          以结构化格式存储对象的附加信息，并通过
+          API 或控制台查询对象。键为字符串，
+          最大长度为 64 个字符；值为字符串（最大
+          长度 512 个字符）、布尔值或数字。
 
           - `string`
 
@@ -13946,37 +13954,37 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `file_id: optional string`
 
-          文件的名称。
+          文件的唯一 ID。
 
         - `filename: optional string`
 
-          文件的相关性得分——介于 0 和 1 之间的值。
+          文件的名称。
 
         - `score: optional number`
 
-          从文件中检索到的文本。
+          文件的相关性分数，取值范围为 0 到 1。
 
         - `text: optional string`
 
-          对计算机使用工具的工具调用。参见
+          从文件中检索到的文本。
 
     - `WebSearchCall object { id, action, status, type }`
 
-      网页搜索工具调用的结果。请参阅
+      网页搜索 工具调用的结果。请参阅
       [网页搜索指南](/docs/guides/tools-web-search) 了解更多信息。
 
       - `id: string`
 
-        网页搜索工具调用的唯一 ID。
+        该 网页搜索工具调用的唯一 ID。
 
       - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
-        一个对象，描述此次网页搜索调用中采取的具体操作。
-        包含模型如何使用网络（search、open_page、find_in_page）的详细信息。
+        描述此次 网页搜索调用中所执行的具体操作的对象。
+        包含模型如何使用网页的详细信息（search、open_page、find_in_page）。
 
         - `Search object { type, queries, query, sources }`
 
-          操作类型 "search"——执行网页搜索查询。
+          操作类型 "search" - 执行一次 网页搜索查询。
 
           - `type: "search"`
 
@@ -14008,7 +14016,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `OpenPage object { type, url }`
 
-          操作类型 "open_page"——打开搜索结果中的特定 URL。
+          操作类型 "open_page" - 打开搜索结果中的特定 URL。
 
           - `type: "open_page"`
 
@@ -14022,11 +14030,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `FindInPage object { pattern, type, url }`
 
-          操作类型 "find_in_page"：在已加载的页面中搜索模式。
+          操作类型 "find_in_page"：在已加载的页面中搜索某个模式。
 
           - `pattern: string`
 
-            要在页面内搜索的模式或文本。
+            要在页面中搜索的模式或文本。
 
           - `type: "find_in_page"`
 
@@ -14036,11 +14044,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `url: string`
 
-            搜索该模式的页面的 URL。
+            被搜索该模式的页面 URL。
 
       - `status: "in_progress" or "searching" or "completed" or "failed"`
 
-        网页搜索工具调用的状态。
+        该 网页搜索工具调用的状态。
 
         - `"in_progress"`
 
@@ -14052,7 +14060,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "web_search_call"`
 
-        网页搜索工具调用的类型。始终为 `web_search_call`.
+        该 网页搜索工具调用的类型。始终为 `web_search_call`.
 
         - `"web_search_call"`
 
@@ -14088,8 +14096,8 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
-      计算机使用指南
-      [计算机调用调用的唯一 ID。](/docs/guides/tools-computer-use) 了解更多信息。
+      对计算机使用工具的工具调用。参见
+      [计算机使用指南](/docs/guides/tools-computer-use) 了解更多信息。
 
       - `id: string`
 
@@ -14097,11 +14105,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `call_id: string`
 
-        用于在响应工具调用时提供输出的标识符。
+        在向工具调用返回输出时使用的标识符。
 
       - `pending_safety_checks: array of object { id, code, message }`
 
-        计算机调用的待处理安全检查。
+        该计算机调用的待处理安全检查。
 
         - `id: string`
 
@@ -14117,8 +14125,8 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。其一为 `in_progress`, `completed`，或
-        `incomplete`。当项目通过 API 返回时填充。
+        该条目的状态。可选值为 `in_progress`, `completed`，或
+        `incomplete`。在通过 API 返回 item 时填充。
 
         - `"in_progress"`
 
@@ -14128,21 +14136,21 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "computer_call"`
 
-        计算机调用的类型。始终为 `computer_call`.
+        该计算机调用的类型。始终为 `computer_call`.
 
         - `"computer_call"`
 
       - `action: optional ComputerAction`
 
-        单击操作。
+        一次点击操作。
 
         - `Click object { button, type, x, 2 more }`
 
-          单击操作。
+          一次点击操作。
 
           - `button: "left" or "right" or "wheel" or 2 more`
 
-            指示单击期间按下了哪个鼠标按钮。其一为 `left`, `right`, `wheel`, `back`，或 `forward`.
+            表示点击时按下的鼠标按键。可选值为 `left`, `right`, `wheel`, `back`，或 `forward`.
 
             - `"left"`
 
@@ -14156,29 +14164,29 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "click"`
 
-            指定事件类型。对于单击操作，此属性始终为 `click`.
+            指定事件类型。对于点击操作，此属性始终为 `click`.
 
             - `"click"`
 
           - `x: number`
 
-            发生单击的 x 坐标。
+            点击发生位置的 x 坐标。
 
           - `y: number`
 
-            发生单击的 y 坐标。
+            点击发生位置的 y 坐标。
 
           - `keys: optional array of string or null`
 
-            单击时正在按住的按键。
+            点击时按住的按键。
 
         - `DoubleClick object { keys, type, x, y }`
 
-          双击操作。
+          一次双击操作。
 
           - `keys: array of string or null`
 
-            双击时正在按住的按键。
+            双击时按住的按键。
 
           - `type: "double_click"`
 
@@ -14188,19 +14196,19 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `x: number`
 
-            发生双击的 x 坐标。
+            双击发生位置的 x 坐标。
 
           - `y: number`
 
-            发生双击的 y 坐标。
+            双击发生位置的 y 坐标。
 
         - `Drag object { path, type, keys }`
 
-          拖动操作。
+          一次拖动操作。
 
           - `path: array of object { x, y }`
 
-            表示拖动操作路径的坐标数组。坐标将以对象数组的形式出现，例如
+            表示拖动操作路径的坐标数组。坐标将以对象数组的形式呈现，例如
 
             ```
             [
@@ -14219,17 +14227,17 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "drag"`
 
-            指定事件类型。对于拖拽操作，此属性始终设置为 `drag`.
+            指定事件类型。对于拖动操作，此属性始终设置为 `drag`.
 
             - `"drag"`
 
           - `keys: optional array of string or null`
 
-            拖拽鼠标时按住的按键。
+            拖动鼠标时按住的按键。
 
         - `Keypress object { keys, type }`
 
-          模型希望执行的一系列按键操作。
+          模型希望执行的一组按键操作。
 
           - `keys: array of string`
 
@@ -14253,11 +14261,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `x: number`
 
-            要移动到的 x 坐标。
+            要移至的 x 坐标。
 
           - `y: number`
 
-            要移动到的 y 坐标。
+            要移至的 y 坐标。
 
           - `keys: optional array of string or null`
 
@@ -14293,11 +14301,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `x: number`
 
-            发生滚动的 x 坐标。
+            发生滚动处的 x 坐标。
 
           - `y: number`
 
-            发生滚动的 y 坐标。
+            发生滚动处的 y 坐标。
 
           - `keys: optional array of string or null`
 
@@ -14313,40 +14321,40 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "type"`
 
-            指定事件类型。对于类型操作，此属性始终设置为 `type`.
+            指定事件类型。对于 type 操作，此属性始终设置为 `type`.
 
             - `"type"`
 
         - `Wait object { type }`
 
-          等待操作。
+          wait 操作。
 
           - `type: "wait"`
 
-            指定事件类型。对于等待操作，此属性始终设置为 `wait`.
+            指定事件类型。对于 wait 操作，此属性始终设置为 `wait`.
 
             - `"wait"`
 
       - `actions: optional ComputerActionList`
 
-        展平的批量操作，用于 `computer_use`。每个操作包含一个
-        `type` 判别器和操作特定字段。
+        已展平的批量操作，用于 `computer_use`。每个操作都包含一个
+        `type` 鉴别字段以及操作特有的字段。
 
         - `Click object { button, type, x, 2 more }`
 
-          单击操作。
+          一次点击操作。
 
         - `DoubleClick object { keys, type, x, y }`
 
-          双击操作。
+          一次双击操作。
 
         - `Drag object { path, type, keys }`
 
-          拖动操作。
+          一次拖动操作。
 
         - `Keypress object { keys, type }`
 
-          模型希望执行的一系列按键操作。
+          模型希望执行的一组按键操作。
 
         - `Move object { type, x, y, keys }`
 
@@ -14366,7 +14374,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Wait object { type }`
 
-          等待操作。
+          wait 操作。
 
     - `ComputerCallOutput object { id, call_id, output, 4 more }`
 
@@ -14376,7 +14384,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `call_id: string`
 
-        产生输出的计算机工具调用的 ID。
+        产生该输出的计算机工具调用的 ID。
 
       - `output: ResponseComputerToolCallOutputScreenshot`
 
@@ -14391,7 +14399,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `file_id: optional string`
 
-          包含截图的已上传文件的标识符。
+          包含截图的上传文件的标识符。
 
         - `image_url: optional string`
 
@@ -14399,8 +14407,8 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `status: "completed" or "incomplete" or "failed" or "in_progress"`
 
-        消息输入的状态。其中之一 `in_progress`, `completed`，或
-        `incomplete`。当输入项通过 API 返回时填充。
+        消息输入的状态。取值为以下之一 `in_progress`, `completed`，或
+        `incomplete`。当通过 API 返回输入项时填充。
 
         - `"completed"`
 
@@ -14412,13 +14420,13 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "computer_call_output"`
 
-        计算机工具调用输出的类型。始终为 `computer_call_output`.
+        计算机工具调用输出的类型，始终为 `computer_call_output`.
 
         - `"computer_call_output"`
 
       - `acknowledged_safety_checks: optional array of object { id, code, message }`
 
-        API报告并已由
+        由 API 报告并已由
         开发者确认的安全检查。
 
         - `id: string`
@@ -14435,13 +14443,13 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
     - `ToolSearchCall object { id, arguments, call_id, 4 more }`
 
       - `id: string`
 
-        工具搜索调用项目的唯一 ID。
+        工具搜索调用项的唯一 ID。
 
       - `arguments: unknown`
 
@@ -14453,7 +14461,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `execution: "server" or "client"`
 
-        工具搜索是由服务端还是客户端执行的。
+        工具搜索是由服务端还是由客户端执行的。
 
         - `"server"`
 
@@ -14461,7 +14469,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        记录的工具搜索调用项目的状态。
+        已记录的工具搜索调用项的状态。
 
         - `"in_progress"`
 
@@ -14471,19 +14479,19 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "tool_search_call"`
 
-        项目的类型。始终为 `tool_search_call`.
+        项的类型。始终为 `tool_search_call`.
 
         - `"tool_search_call"`
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
     - `ToolSearchOutput object { id, call_id, execution, 4 more }`
 
       - `id: string`
 
-        工具搜索输出项目的唯一 ID。
+        工具搜索输出项的唯一 ID。
 
       - `call_id: string or null`
 
@@ -14491,7 +14499,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `execution: "server" or "client"`
 
-        工具搜索是由服务端还是客户端执行的。
+        工具搜索是由服务端还是由客户端执行的。
 
         - `"server"`
 
@@ -14499,7 +14507,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        记录的工具搜索输出项目的状态。
+        已记录的工具搜索输出项的状态。
 
         - `"in_progress"`
 
@@ -14513,29 +14521,29 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Function object { name, parameters, strict, 5 more }`
 
-          定义你自己代码中模型可以选择调用的函数。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+          定义你自己代码中的某个函数，供模型选择调用。详细了解 [function calling](https://platform.openai.com/docs/guides/function-calling).
 
           - `name: string`
 
-            要调用的函数的名称。
+            要调用的函数名称。
 
           - `parameters: map[unknown] or null`
 
-            描述函数参数的 JSON schema 对象。
+            描述该函数参数的 JSON schema 对象。
 
           - `strict: boolean or null`
 
-            是否对此函数工具强制执行严格的参数验证。
+            是否为该函数工具启用严格的参数校验。
 
           - `type: "function"`
 
-            函数工具的类型。始终为 `function`.
+            该函数工具的类型。始终为 `function`.
 
             - `"function"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -14543,19 +14551,19 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `defer_loading: optional boolean`
 
-            此函数是否延迟并通过工具搜索加载。
+            该函数是否为延迟加载，并通过工具搜索加载。
 
           - `description: optional string or null`
 
-            函数的描述。模型据此确定是否调用该函数。
+            该函数的描述。模型据此决定是否调用该函数。
 
           - `output_schema: optional map[unknown] or null`
 
-            描述此函数的字符串输出中编码的 JSON 值的 JSON schema 对象。
+            描述该函数在字符串输出中编码的 JSON 值的 JSON schema 对象。
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          一种从上传文件中搜索相关内容工具。详细了解 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+          一个用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 tool](https://platform.openai.com/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -14573,24 +14581,24 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `ComparisonFilter object { key, type, value }`
 
-              用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+              用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
               - `key: string`
 
-                要与该值进行比较的键。
+                要与值进行比较的键。
 
               - `type: "eq" or "ne" or "gt" or 5 more`
 
                 指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-                - `eq`：等于
-                - `ne`：不等于
-                - `gt`：大于
-                - `gte`：大于或等于
-                - `lt`：小于
-                - `lte`：小于或等于
-                - `in`：包含
-                - `nin`：不包含
+                - `eq`: 等于
+                - `ne`: 不等于
+                - `gt`: 大于
+                - `gte`: 大于或等于
+                - `lt`: 小于
+                - `lte`: 小于或等于
+                - `in`: 包含于
+                - `nin`: 不包含于
 
                 - `"eq"`
 
@@ -14626,15 +14634,15 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `CompoundFilter object { filters, type }`
 
-              使用以下方式组合多个筛选器 `and` 或 `or`.
+              使用以下方式组合多个过滤器 `and` 或 `or`.
 
               - `filters: array of ComparisonFilter or unknown`
 
-                要组合的筛选器数组。项目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+                要组合的过滤器数组。条目可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
                 - `ComparisonFilter object { key, type, value }`
 
-                  用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+                  用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
                 - `unknown`
 
@@ -14648,7 +14656,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `max_num_results: optional number`
 
-            要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+            返回结果的最大数量。此数量应介于 1 到 50 之间（含两端）。
 
           - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -14656,19 +14664,19 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-              启用混合搜索时，控制倒数排名融合如何在语义嵌入匹配与稀疏关键词匹配之间取得平衡的权重。
+              在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
               - `embedding_weight: number`
 
-                嵌入在倒数排名融合中的权重。
+                在倒数排名融合中嵌入的权重。
 
               - `text_weight: number`
 
-                文本在倒数排名融合中的权重。
+                在倒数排名融合中文本的权重。
 
             - `ranker: optional "auto" or "default-2024-11-15"`
 
-              用于文件搜索的排序器。
+              用于 文件搜索 的排序器。
 
               - `"auto"`
 
@@ -14676,11 +14684,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `score_threshold: optional number`
 
-              文件搜索的分数阈值，为0到1之间的数字。数字越接近1，将尝试仅返回最相关的结果，但可能返回较少的結果。
+              文件搜索 的分数阈值，取值范围为 0 到 1 之间。数值越接近 1，越会尝试只返回最相关的结果，但返回的结果数量可能会减少。
 
         - `Computer object { type }`
 
-          一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -14690,19 +14698,19 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
-            计算机显示器的宽度。
+            计算机显示屏的高度。
 
           - `display_width: number`
 
-            计算机显示器的宽度。
+            计算机显示屏的宽度。
 
           - `environment: "windows" or "mac" or "linux" or 2 more`
 
-            要控制的计算机环境的类型。
+            要控制的计算机环境类型。
 
             - `"windows"`
 
@@ -14722,12 +14730,12 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-          搜索互联网以获取与提示相关的来源。了解更多关于
+          在互联网上搜索与提示相关的来源。详细了解
           [网页搜索工具](/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
-            网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+            网页搜索工具的类型，取值之一为 `web_search` 或 `web_search_2025_08_26`.
 
             - `"web_search"`
 
@@ -14735,22 +14743,22 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `external_web_access: optional boolean`
 
-            允许网页搜索实时访问互联网。省略时默认为true。为false时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+            允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
           - `filters: optional object { allowed_domains }  or null`
 
-            搜索的过滤器。
+            搜索的筛选条件。
 
             - `allowed_domains: optional array of string or null`
 
-              搜索允许的域名。如果未提供，则允许所有域名。
-              所提供域名的子域名也允许。
+              允许进行搜索的域名。如果未提供，则允许所有域名。
+              同时也允许所提供域名的子域名。
 
               示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -14764,15 +14772,15 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `city: optional string or null`
 
-              用户的城市的自由文本输入，例如 `San Francisco`.
+              用户所在城市的自由文本输入，例如 `San Francisco`.
 
             - `country: optional string or null`
 
-              用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -14780,14 +14788,14 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `type: optional "approximate"`
 
-              位置近似的类型。始终 `approximate`.
+              位置近似的类型。始终为 `approximate`.
 
               - `"approximate"`
 
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-          通过远程 Model Context Protocol 让模型访问额外工具
-          (MCP) 服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+          通过远程 Model Context Protocol
+          （MCP）服务器为模型提供对其他工具的访问权限。 [了解更多关于 MCP 的信息](/docs/guides/tools-remote-mcp).
 
           - `server_label: string`
 
@@ -14795,13 +14803,13 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "mcp"`
 
-            MCP 工具的类型。始终 `mcp`.
+            MCP 工具的类型。始终为 `mcp`.
 
             - `"mcp"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -14813,7 +14821,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `McpAllowedTools = array of string`
 
-              允许工具名称的字符串数组
+              允许的工具名称组成的字符串数组
 
             - `McpToolFilter object { read_only, tool_names }`
 
@@ -14821,9 +14829,9 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -14831,26 +14839,26 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `authorization: optional string`
 
-            可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-            与自定义 MCP 服务器 URL 或服务连接器配合使用。你的应用程序
-            必须处理 OAuth 授权流程并在此处提供令牌。
+            可用于远程 MCP 服务器的 OAuth 访问令牌，可搭配自定义 MCP 服务器 URL 或服务连接器使用。你的应用
+            必须处理 OAuth 授权流程，并在此处提供该令牌。
+            必须处理 OAuth 授权流程，并在此处提供该令牌。
 
           - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-            服务连接器的标识符，类似于 ChatGPT 中可用的那些。必须提供以下之一：
-            `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中之一。了解更多
-            关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+            服务连接器的标识符，例如 ChatGPT 中提供的连接器之一。
+            `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解关于服务连接器
+            的更多信息 [请参阅此处](/docs/guides/tools-remote-mcp#connectors).
 
-            当前支持的值 `connector_id` 包括：
+            当前支持 `connector_id` 的值为：
 
-            - Dropbox： `connector_dropbox`
-            - Gmail： `connector_gmail`
-            - Google Calendar： `connector_googlecalendar`
-            - Google Drive： `connector_googledrive`
-            - Microsoft Teams： `connector_microsoftteams`
-            - Outlook Calendar： `connector_outlookcalendar`
-            - Outlook Email： `connector_outlookemail`
-            - SharePoint： `connector_sharepoint`
+            - Dropbox: `connector_dropbox`
+            - Gmail: `connector_gmail`
+            - Google Calendar: `connector_googlecalendar`
+            - Google Drive: `connector_googledrive`
+            - Microsoft Teams: `connector_microsoftteams`
+            - Outlook Calendar: `connector_outlookcalendar`
+            - Outlook Email: `connector_outlookemail`
+            - SharePoint: `connector_sharepoint`
 
             - `"connector_dropbox"`
 
@@ -14870,11 +14878,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `defer_loading: optional boolean`
 
-            此 MCP 工具是否被延迟并通过工具搜索发现。
+            此 MCP 工具是否被延迟，并通过工具搜索发现。
 
           - `headers: optional map[string] or null`
 
-            发送到 MCP 服务器的可选 HTTP 头。用于身份验证
+            发送到 MCP 服务器的可选 HTTP 请求头。用于身份验证
             或其他用途。
 
           - `require_approval: optional object { always, never }  or "always" or "never" or null`
@@ -14884,8 +14892,8 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
             - `McpToolApprovalFilter object { always, never }`
 
               指定 MCP 服务器的哪些工具需要审批。可以是
-              `always`, `never`，或一个与需要审批的工具关联的过滤器对象
-              。
+              `always`, `never`，或与工具关联的过滤对象
+              ，这些工具需要审批。
 
               - `always: optional object { read_only, tool_names }`
 
@@ -14893,9 +14901,9 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  指示工具是否修改数据或是否为只读。如果某个
+                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  ，它将匹配此过滤条件。
 
                 - `tool_names: optional array of string`
 
@@ -14907,9 +14915,9 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  指示工具是否修改数据或是否为只读。如果某个
+                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  ，它将匹配此过滤条件。
 
                 - `tool_names: optional array of string`
 
@@ -14917,8 +14925,8 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `McpToolApprovalSetting = "always" or "never"`
 
-              为所有工具指定单一审批策略。可以是 `always` 或
-              `never`。之一。当设置为 `always`，时，所有工具都需要审批。当
+              为所有工具指定统一的审批策略。可选值为 `always` 或
+              `never`。当设置为 `always`，时，所有工具都需要审批。当
               设置为 `never`，时，所有工具都不需要审批。
 
               - `"always"`
@@ -14931,22 +14939,22 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `server_url: optional string`
 
-            MCP 服务器的 URL。必须提供 `server_url`, `connector_id`，或
-            `tunnel_id` 之一。
+            MCP 服务器的 URL。 `server_url`, `connector_id`，或
+            `tunnel_id` 必须提供其中一个。
 
           - `tunnel_id: optional string`
 
-            用于替代直接服务器 URL 的安全 MCP 隧道 ID。必须提供
-            `server_url`, `connector_id`，或 `tunnel_id` 之一。
+            用于替代直接服务器 URL 的安全 MCP 隧道 ID。
+            `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中一个。
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
-          一个运行 Python 代码以帮助生成提示响应的工具。
+          运行 Python 代码以帮助生成对提示词响应的工具。
 
           - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器。可以是容器 ID，或一个对象，其中
-            指定了上传的文件 ID 以供你的代码使用，以及
+            代码解释器容器。可以是容器 ID，也可以是指定可供代码使用的已上传文件 ID 的对象，以及一个
+            指定可供你的代码使用的已上传文件 ID，以及一个
             可选的 `memory_limit` 设置。
 
             - `string`
@@ -14955,17 +14963,17 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-              代码解释器容器的配置。可选择指定要在其上运行代码的文件 ID。
+              代码解释器容器的配置。可选择指定要对其运行代码的文件 ID。
 
               - `type: "auto"`
 
-                始终 `auto`.
+                始终为 `auto`.
 
                 - `"auto"`
 
               - `file_ids: optional array of string`
 
-                一个可选的已上传文件列表，供你的代码使用。
+                一个可选的、供代码使用的已上传文件列表。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -14987,7 +14995,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                   - `type: "disabled"`
 
-                    禁用出站网络访问。始终 `disabled`.
+                    禁用出站网络访问。始终为 `disabled`.
 
                     - `"disabled"`
 
@@ -14995,39 +15003,39 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                   - `allowed_domains: array of string`
 
-                    当类型为以下值时，允许的域名列表： `allowlist`.
+                    当类型为 `allowlist`.
 
                   - `type: "allowlist"`
 
-                    仅允许对指定域名的出站网络访问。始终 `allowlist`.
+                    时，仅允许向指定域发出出站网络访问。始终为 `allowlist`.
 
                     - `"allowlist"`
 
                   - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                    可选，针对允许列表中域名的域级密钥。
+                    用于允许列表中域的可选、按域隔离的密钥。
 
                     - `domain: string`
 
-                      与密钥关联的域名。
+                      与该密钥关联的域。
 
                     - `name: string`
 
-                      要为该域名注入的密钥名称。
+                      要为该域注入的密钥名称。
 
                     - `value: string`
 
-                      要为该域名注入的密钥值。
+                      要为该域注入的密钥值。
 
           - `type: "code_interpreter"`
 
-            代码解释器工具的类型。始终 `code_interpreter`.
+            代码解释器工具的类型。始终为 `code_interpreter`.
 
             - `"code_interpreter"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -15037,7 +15045,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "programmatic_tool_calling"`
 
-            工具的类型。始终 `programmatic_tool_calling`.
+            工具的类型。始终为 `programmatic_tool_calling`.
 
             - `"programmatic_tool_calling"`
 
@@ -15047,13 +15055,13 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "image_generation"`
 
-            图像生成工具的类型。始终 `image_generation`.
+            图像生成工具的类型。始终为 `image_generation`.
 
             - `"image_generation"`
 
           - `action: optional "generate" or "edit" or "auto"`
 
-            是否生成新图像或编辑现有图像。默认值： `auto`.
+            是生成新图像还是编辑现有图像。默认值： `auto`.
 
             - `"generate"`
 
@@ -15063,11 +15071,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            设置生成图像的背景。可选值之一： `transparent`,
-            `opaque`，或 `auto`。透明背景可用于
-            支持的 GPT 图像模型。对于 `gpt-image-2` 以及
-            `gpt-image-2-2026-04-21`，此支持目前处于预览阶段。使用
-            `transparent`，时，请将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
+            设置生成图像的背景。取值之一 `transparent`,
+            `opaque`，或 `auto`。透明背景适用于受支持的
+            GPT Image 模型。对于 `gpt-image-2` 和
+            `gpt-image-2-2026-04-21`，该支持目前处于预览阶段。使用
+            `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
             - `"transparent"`
 
@@ -15077,7 +15085,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            控制模型在匹配输入图像的风格和特征（尤其是面部特征）上投入的努力程度。此参数仅支持 `gpt-image-1` 以及 `gpt-image-1.5` 及更高版本模型，不支持 `gpt-image-1-mini`。支持 `high` 以及 `low`。默认为 `low`.
+            控制模型在匹配输入图像风格和特征（尤其是面部特征）时所付出的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
 
             - `"high"`
 
@@ -15085,7 +15093,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `input_image_mask: optional object { file_id, image_url }`
 
-            用于修复的可选遮罩。包含 `image_url`
+            用于局部重绘的可选遮罩。包含 `image_url`
             （字符串，可选）和 `file_id` （字符串，可选）。
 
             - `file_id: optional string`
@@ -15098,7 +15106,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。可选值之一 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
@@ -15107,7 +15115,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              要使用的图像生成模型。可选值之一 `gpt-image-1`,
+              要使用的图像生成模型。可选值为 `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
               `gpt-image-1`.
@@ -15124,7 +15132,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `moderation: optional "auto" or "low"`
 
-            生成图像的审核级别。默认值： `auto`.
+            生成图像的内容审核级别。默认值： `auto`.
 
             - `"auto"`
 
@@ -15136,7 +15144,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `output_format: optional "png" or "webp" or "jpeg"`
 
-            生成图像的输出格式。可选值之一 `png`, `webp`，或
+            生成图像的输出格式。可选值为 `png`, `webp`，或
             `jpeg`。默认值： `png`.
 
             - `"png"`
@@ -15147,11 +15155,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `partial_images: optional number`
 
-            流式模式下生成的部分图像数量，范围从 0（默认值）到 3。
+            在流式模式下生成的部分图像数量，取值范围为 0（默认值）到 3。
 
           - `quality: optional "low" or "medium" or "high" or "auto"`
 
-            生成图像的质量。可选值之一 `low`, `medium`, `high`,
+            生成图像的质量。可选值为 `low`, `medium`, `high`,
             或 `auto`。默认值： `auto`.
 
             - `"low"`
@@ -15164,13 +15172,13 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
               - `"1024x1024"`
 
@@ -15182,27 +15190,27 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `LocalShell object { type }`
 
-          一种允许模型在本地环境中执行 shell 命令的工具。
+          允许模型在本地环境中执行 shell 命令的工具。
 
           - `type: "local_shell"`
 
-            本地 shell 工具的类型。始终为 `local_shell`.
+            本地 shell 工具的类型，始终为 `local_shell`.
 
             - `"local_shell"`
 
         - `Shell object { type, allowed_callers, environment }`
 
-          一种允许模型执行 shell 命令的工具。
+          允许模型执行 shell 命令的工具。
 
           - `type: "shell"`
 
-            shell 工具的类型。始终为 `shell`.
+            shell 工具的类型，始终为 `shell`.
 
             - `"shell"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -15214,13 +15222,13 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `type: "container_auto"`
 
-                自动为此请求创建容器
+                为本次请求自动创建一个容器
 
                 - `"container_auto"`
 
               - `file_ids: optional array of string`
 
-                一个可选的已上传文件列表，供你的代码使用。
+                一个可选的、供代码使用的已上传文件列表。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -15244,13 +15252,13 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `skills: optional array of SkillReference or InlineSkill`
 
-                可选技能列表，通过 ID 或内联数据引用。
+                通过 id 或内联数据引用的可选技能列表。
 
                 - `SkillReference object { skill_id, type, version }`
 
                   - `skill_id: string`
 
-                    被引用技能的 ID。
+                    所引用技能的 ID。
 
                   - `type: "skill_reference"`
 
@@ -15260,7 +15268,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                   - `version: optional string`
 
-                    可选技能版本。使用正整数或 'latest'。省略则使用默认值。
+                    可选的技能版本。使用正整数或 'latest'。省略则使用默认值。
 
                 - `InlineSkill object { description, name, source, type }`
 
@@ -15270,7 +15278,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                   - `name: string`
 
-                    该技能的名称。
+                    技能的名称。
 
                   - `source: InlineSkillSource`
 
@@ -15294,7 +15302,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                   - `type: "inline"`
 
-                    为此请求定义一个内联技能。
+                    为本次请求定义一个内联技能。
 
                     - `"inline"`
 
@@ -15308,7 +15316,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `skills: optional array of LocalSkill`
 
-                可选技能列表。
+                可选的技能列表。
 
                 - `description: string`
 
@@ -15316,11 +15324,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `name: string`
 
-                  该技能的名称。
+                  技能的名称。
 
                 - `path: string`
 
-                  包含该技能的目录路径。
+                  指向包含该技能的目录的路径。
 
             - `ContainerReference object { container_id, type }`
 
@@ -15336,7 +15344,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Custom object { name, type, allowed_callers, 3 more }`
 
-          一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+          使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -15350,7 +15358,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -15358,7 +15366,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `defer_loading: optional boolean`
 
-            是否应延迟此工具并通过工具搜索发现。
+            是否应延迟此工具并通过工具搜索发现它。
 
           - `description: optional string`
 
@@ -15366,11 +15374,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `format: optional CustomToolInputFormat`
 
-            自定义工具的输入格式。默认为无约束文本。
+            自定义工具的输入格式。默认是无约束文本。
 
             - `Text object { type }`
 
-              无约束的自由格式文本。
+              无约束的自由形式文本。
 
               - `type: "text"`
 
@@ -15380,15 +15388,15 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `Grammar object { definition, syntax, type }`
 
-              由用户定义的文法。
+              由用户定义的语法。
 
               - `definition: string`
 
-                文法定义。
+                语法定义。
 
               - `syntax: "lark" or "regex"`
 
-                文法定义的语法。其中之一为 `lark` 或 `regex`.
+                语法定义的语法。可选值为 `lark` 或 `regex`.
 
                 - `"lark"`
 
@@ -15396,25 +15404,25 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `type: "grammar"`
 
-                文法格式。始终 `grammar`.
+                语法格式。始终为 `grammar`.
 
                 - `"grammar"`
 
         - `Namespace object { description, name, tools, type }`
 
-          将函数/自定义工具分组到共享命名空间下。
+          在共享命名空间下对 function/custom 工具进行分组。
 
           - `description: string`
 
-            显示给模型的命名空间描述。
+            展示给模型的命名空间描述。
 
           - `name: string`
 
-            工具调用中使用的命名空间名称（例如， `crm`).
+            在工具调用中使用的命名空间名称（例如， `crm`).
 
           - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
-            此命名空间内可用的函数/自定义工具。
+            该命名空间内可用的 function/custom 工具。
 
             - `Function object { name, type, allowed_callers, 5 more }`
 
@@ -15426,7 +15434,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-                工具调用上下文。
+                该工具的调用上下文。
 
                 - `"direct"`
 
@@ -15434,23 +15442,23 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `defer_loading: optional boolean`
 
-                此函数是否应延迟并通过工具搜索发现。
+                是否应延迟此函数并通过工具搜索发现。
 
               - `description: optional string or null`
 
               - `output_schema: optional map[unknown] or null`
 
-                描述此函数工具字符串输出中编码的 JSON 值的 JSON Schema。这不描述内容数组输出。
+                用于描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content-array 输出。
 
               - `parameters: optional unknown or null`
 
               - `strict: optional boolean or null`
 
-                是否强制进行严格的参数验证。如果省略，当 schema 兼容时，Responses 会尝试使用严格验证，否则回退到非严格验证。
+                是否强制执行严格的参数校验。如果省略，Responses 会尝试在 schema 兼容时使用严格校验，否则回退到非严格校验。
 
             - `Custom object { name, type, allowed_callers, 3 more }`
 
-              一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+              使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -15464,7 +15472,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-                工具调用上下文。
+                该工具的调用上下文。
 
                 - `"direct"`
 
@@ -15472,7 +15480,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `defer_loading: optional boolean`
 
-                是否应延迟此工具并通过工具搜索发现。
+                是否应延迟此工具并通过工具搜索发现它。
 
               - `description: optional string`
 
@@ -15480,27 +15488,27 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `format: optional CustomToolInputFormat`
 
-                自定义工具的输入格式。默认为无约束文本。
+                自定义工具的输入格式。默认是无约束文本。
 
           - `type: "namespace"`
 
-            工具的类型。始终 `namespace`.
+            工具的类型。始终为 `namespace`.
 
             - `"namespace"`
 
         - `ToolSearch object { type, description, execution, parameters }`
 
-          延迟工具的托管或 BYOT 工具搜索配置。
+          用于延迟工具的托管或 BYOT 工具搜索配置。
 
           - `type: "tool_search"`
 
-            工具的类型。始终 `tool_search`.
+            工具的类型。始终为 `tool_search`.
 
             - `"tool_search"`
 
           - `description: optional string or null`
 
-            显示给模型的客户端执行工具搜索工具的描述。
+            展示给模型的客户端执行的工具搜索工具的描述。
 
           - `execution: optional "server" or "client"`
 
@@ -15512,15 +15520,15 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `parameters: optional unknown or null`
 
-            客户端执行工具搜索工具的参数 schema。
+            客户端执行的工具搜索工具的参数 schema。
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          此工具搜索网页以获取用于响应的相关结果。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+          此工具会在网络上搜索相关结果以用于回复中。详细了解 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-            网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+            网页搜索工具的类型，取值之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
             - `"web_search_preview"`
 
@@ -15534,7 +15542,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -15544,25 +15552,25 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            用户的位置。
+            用户所在的位置。
 
             - `type: "approximate"`
 
-              位置近似的类型。始终 `approximate`.
+              位置近似的类型。始终为 `approximate`.
 
               - `"approximate"`
 
             - `city: optional string or null`
 
-              用户的城市的自由文本输入，例如 `San Francisco`.
+              用户所在城市的自由文本输入，例如 `San Francisco`.
 
             - `country: optional string or null`
 
-              用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -15570,17 +15578,17 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ApplyPatch object { type, allowed_callers }`
 
-          允许助手使用统一差异创建、删除或更新文件。
+          允许助手使用 unified diff 创建、删除或更新文件。
 
           - `type: "apply_patch"`
 
-            工具的类型。始终 `apply_patch`.
+            工具的类型。始终为 `apply_patch`.
 
             - `"apply_patch"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -15588,19 +15596,19 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "tool_search_output"`
 
-        项目的类型。始终为 `tool_search_output`.
+        项的类型。始终为 `tool_search_output`.
 
         - `"tool_search_output"`
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
     - `AdditionalTools object { id, role, tools, type }`
 
       - `id: string`
 
-        附加工具条目的唯一 ID。
+        该附加工具条目的唯一 ID。
 
       - `role: "unknown" or "user" or "assistant" or 5 more`
 
@@ -15624,33 +15632,33 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `tools: array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-        此条目中可用的附加工具定义。
+        在该条目处可用的附加工具定义。
 
         - `Function object { name, parameters, strict, 5 more }`
 
-          定义你自己代码中模型可以选择调用的函数。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+          定义你自己代码中的某个函数，供模型选择调用。详细了解 [function calling](https://platform.openai.com/docs/guides/function-calling).
 
           - `name: string`
 
-            要调用的函数的名称。
+            要调用的函数名称。
 
           - `parameters: map[unknown] or null`
 
-            描述函数参数的 JSON schema 对象。
+            描述该函数参数的 JSON schema 对象。
 
           - `strict: boolean or null`
 
-            是否对此函数工具强制执行严格的参数验证。
+            是否为该函数工具启用严格的参数校验。
 
           - `type: "function"`
 
-            函数工具的类型。始终为 `function`.
+            该函数工具的类型。始终为 `function`.
 
             - `"function"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -15658,19 +15666,19 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `defer_loading: optional boolean`
 
-            此函数是否延迟并通过工具搜索加载。
+            该函数是否为延迟加载，并通过工具搜索加载。
 
           - `description: optional string or null`
 
-            函数的描述。模型据此确定是否调用该函数。
+            该函数的描述。模型据此决定是否调用该函数。
 
           - `output_schema: optional map[unknown] or null`
 
-            描述此函数的字符串输出中编码的 JSON 值的 JSON schema 对象。
+            描述该函数在字符串输出中编码的 JSON 值的 JSON schema 对象。
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          一种从上传文件中搜索相关内容工具。详细了解 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+          一个用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 tool](https://platform.openai.com/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -15688,15 +15696,15 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `ComparisonFilter object { key, type, value }`
 
-              用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+              用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
             - `CompoundFilter object { filters, type }`
 
-              使用以下方式组合多个筛选器 `and` 或 `or`.
+              使用以下方式组合多个过滤器 `and` 或 `or`.
 
           - `max_num_results: optional number`
 
-            要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+            返回结果的最大数量。此数量应介于 1 到 50 之间（含两端）。
 
           - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -15704,19 +15712,19 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-              启用混合搜索时，控制倒数排名融合如何在语义嵌入匹配与稀疏关键词匹配之间取得平衡的权重。
+              在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
               - `embedding_weight: number`
 
-                嵌入在倒数排名融合中的权重。
+                在倒数排名融合中嵌入的权重。
 
               - `text_weight: number`
 
-                文本在倒数排名融合中的权重。
+                在倒数排名融合中文本的权重。
 
             - `ranker: optional "auto" or "default-2024-11-15"`
 
-              用于文件搜索的排序器。
+              用于 文件搜索 的排序器。
 
               - `"auto"`
 
@@ -15724,11 +15732,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `score_threshold: optional number`
 
-              文件搜索的分数阈值，为0到1之间的数字。数字越接近1，将尝试仅返回最相关的结果，但可能返回较少的結果。
+              文件搜索 的分数阈值，取值范围为 0 到 1 之间。数值越接近 1，越会尝试只返回最相关的结果，但返回的结果数量可能会减少。
 
         - `Computer object { type }`
 
-          一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -15738,19 +15746,19 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
-            计算机显示器的宽度。
+            计算机显示屏的高度。
 
           - `display_width: number`
 
-            计算机显示器的宽度。
+            计算机显示屏的宽度。
 
           - `environment: "windows" or "mac" or "linux" or 2 more`
 
-            要控制的计算机环境的类型。
+            要控制的计算机环境类型。
 
             - `"windows"`
 
@@ -15770,12 +15778,12 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-          搜索互联网以获取与提示相关的来源。了解更多关于
+          在互联网上搜索与提示相关的来源。详细了解
           [网页搜索工具](/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
-            网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+            网页搜索工具的类型，取值之一为 `web_search` 或 `web_search_2025_08_26`.
 
             - `"web_search"`
 
@@ -15783,22 +15791,22 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `external_web_access: optional boolean`
 
-            允许网页搜索实时访问互联网。省略时默认为true。为false时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+            允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
           - `filters: optional object { allowed_domains }  or null`
 
-            搜索的过滤器。
+            搜索的筛选条件。
 
             - `allowed_domains: optional array of string or null`
 
-              搜索允许的域名。如果未提供，则允许所有域名。
-              所提供域名的子域名也允许。
+              允许进行搜索的域名。如果未提供，则允许所有域名。
+              同时也允许所提供域名的子域名。
 
               示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -15812,15 +15820,15 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `city: optional string or null`
 
-              用户的城市的自由文本输入，例如 `San Francisco`.
+              用户所在城市的自由文本输入，例如 `San Francisco`.
 
             - `country: optional string or null`
 
-              用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -15828,14 +15836,14 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `type: optional "approximate"`
 
-              位置近似的类型。始终 `approximate`.
+              位置近似的类型。始终为 `approximate`.
 
               - `"approximate"`
 
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-          通过远程 Model Context Protocol 让模型访问额外工具
-          (MCP) 服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+          通过远程 Model Context Protocol
+          （MCP）服务器为模型提供对其他工具的访问权限。 [了解更多关于 MCP 的信息](/docs/guides/tools-remote-mcp).
 
           - `server_label: string`
 
@@ -15843,13 +15851,13 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "mcp"`
 
-            MCP 工具的类型。始终 `mcp`.
+            MCP 工具的类型。始终为 `mcp`.
 
             - `"mcp"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -15861,7 +15869,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `McpAllowedTools = array of string`
 
-              允许工具名称的字符串数组
+              允许的工具名称组成的字符串数组
 
             - `McpToolFilter object { read_only, tool_names }`
 
@@ -15869,9 +15877,9 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -15879,26 +15887,26 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `authorization: optional string`
 
-            可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-            与自定义 MCP 服务器 URL 或服务连接器配合使用。你的应用程序
-            必须处理 OAuth 授权流程并在此处提供令牌。
+            可用于远程 MCP 服务器的 OAuth 访问令牌，可搭配自定义 MCP 服务器 URL 或服务连接器使用。你的应用
+            必须处理 OAuth 授权流程，并在此处提供该令牌。
+            必须处理 OAuth 授权流程，并在此处提供该令牌。
 
           - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-            服务连接器的标识符，类似于 ChatGPT 中可用的那些。必须提供以下之一：
-            `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中之一。了解更多
-            关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+            服务连接器的标识符，例如 ChatGPT 中提供的连接器之一。
+            `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解关于服务连接器
+            的更多信息 [请参阅此处](/docs/guides/tools-remote-mcp#connectors).
 
-            当前支持的值 `connector_id` 包括：
+            当前支持 `connector_id` 的值为：
 
-            - Dropbox： `connector_dropbox`
-            - Gmail： `connector_gmail`
-            - Google Calendar： `connector_googlecalendar`
-            - Google Drive： `connector_googledrive`
-            - Microsoft Teams： `connector_microsoftteams`
-            - Outlook Calendar： `connector_outlookcalendar`
-            - Outlook Email： `connector_outlookemail`
-            - SharePoint： `connector_sharepoint`
+            - Dropbox: `connector_dropbox`
+            - Gmail: `connector_gmail`
+            - Google Calendar: `connector_googlecalendar`
+            - Google Drive: `connector_googledrive`
+            - Microsoft Teams: `connector_microsoftteams`
+            - Outlook Calendar: `connector_outlookcalendar`
+            - Outlook Email: `connector_outlookemail`
+            - SharePoint: `connector_sharepoint`
 
             - `"connector_dropbox"`
 
@@ -15918,11 +15926,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `defer_loading: optional boolean`
 
-            此 MCP 工具是否被延迟并通过工具搜索发现。
+            此 MCP 工具是否被延迟，并通过工具搜索发现。
 
           - `headers: optional map[string] or null`
 
-            发送到 MCP 服务器的可选 HTTP 头。用于身份验证
+            发送到 MCP 服务器的可选 HTTP 请求头。用于身份验证
             或其他用途。
 
           - `require_approval: optional object { always, never }  or "always" or "never" or null`
@@ -15932,8 +15940,8 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
             - `McpToolApprovalFilter object { always, never }`
 
               指定 MCP 服务器的哪些工具需要审批。可以是
-              `always`, `never`，或一个与需要审批的工具关联的过滤器对象
-              。
+              `always`, `never`，或与工具关联的过滤对象
+              ，这些工具需要审批。
 
               - `always: optional object { read_only, tool_names }`
 
@@ -15941,9 +15949,9 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  指示工具是否修改数据或是否为只读。如果某个
+                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  ，它将匹配此过滤条件。
 
                 - `tool_names: optional array of string`
 
@@ -15955,9 +15963,9 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  指示工具是否修改数据或是否为只读。如果某个
+                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  ，它将匹配此过滤条件。
 
                 - `tool_names: optional array of string`
 
@@ -15965,8 +15973,8 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `McpToolApprovalSetting = "always" or "never"`
 
-              为所有工具指定单一审批策略。可以是 `always` 或
-              `never`。之一。当设置为 `always`，时，所有工具都需要审批。当
+              为所有工具指定统一的审批策略。可选值为 `always` 或
+              `never`。当设置为 `always`，时，所有工具都需要审批。当
               设置为 `never`，时，所有工具都不需要审批。
 
               - `"always"`
@@ -15979,22 +15987,22 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `server_url: optional string`
 
-            MCP 服务器的 URL。必须提供 `server_url`, `connector_id`，或
-            `tunnel_id` 之一。
+            MCP 服务器的 URL。 `server_url`, `connector_id`，或
+            `tunnel_id` 必须提供其中一个。
 
           - `tunnel_id: optional string`
 
-            用于替代直接服务器 URL 的安全 MCP 隧道 ID。必须提供
-            `server_url`, `connector_id`，或 `tunnel_id` 之一。
+            用于替代直接服务器 URL 的安全 MCP 隧道 ID。
+            `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中一个。
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
-          一个运行 Python 代码以帮助生成提示响应的工具。
+          运行 Python 代码以帮助生成对提示词响应的工具。
 
           - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器。可以是容器 ID，或一个对象，其中
-            指定了上传的文件 ID 以供你的代码使用，以及
+            代码解释器容器。可以是容器 ID，也可以是指定可供代码使用的已上传文件 ID 的对象，以及一个
+            指定可供你的代码使用的已上传文件 ID，以及一个
             可选的 `memory_limit` 设置。
 
             - `string`
@@ -16003,17 +16011,17 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-              代码解释器容器的配置。可选择指定要在其上运行代码的文件 ID。
+              代码解释器容器的配置。可选择指定要对其运行代码的文件 ID。
 
               - `type: "auto"`
 
-                始终 `auto`.
+                始终为 `auto`.
 
                 - `"auto"`
 
               - `file_ids: optional array of string`
 
-                一个可选的已上传文件列表，供你的代码使用。
+                一个可选的、供代码使用的已上传文件列表。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -16037,13 +16045,13 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "code_interpreter"`
 
-            代码解释器工具的类型。始终 `code_interpreter`.
+            代码解释器工具的类型。始终为 `code_interpreter`.
 
             - `"code_interpreter"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -16053,7 +16061,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "programmatic_tool_calling"`
 
-            工具的类型。始终 `programmatic_tool_calling`.
+            工具的类型。始终为 `programmatic_tool_calling`.
 
             - `"programmatic_tool_calling"`
 
@@ -16063,13 +16071,13 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "image_generation"`
 
-            图像生成工具的类型。始终 `image_generation`.
+            图像生成工具的类型。始终为 `image_generation`.
 
             - `"image_generation"`
 
           - `action: optional "generate" or "edit" or "auto"`
 
-            是否生成新图像或编辑现有图像。默认值： `auto`.
+            是生成新图像还是编辑现有图像。默认值： `auto`.
 
             - `"generate"`
 
@@ -16079,11 +16087,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            设置生成图像的背景。可选值之一： `transparent`,
-            `opaque`，或 `auto`。透明背景可用于
-            支持的 GPT 图像模型。对于 `gpt-image-2` 以及
-            `gpt-image-2-2026-04-21`，此支持目前处于预览阶段。使用
-            `transparent`，时，请将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
+            设置生成图像的背景。取值之一 `transparent`,
+            `opaque`，或 `auto`。透明背景适用于受支持的
+            GPT Image 模型。对于 `gpt-image-2` 和
+            `gpt-image-2-2026-04-21`，该支持目前处于预览阶段。使用
+            `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
             - `"transparent"`
 
@@ -16093,7 +16101,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            控制模型在匹配输入图像的风格和特征（尤其是面部特征）上投入的努力程度。此参数仅支持 `gpt-image-1` 以及 `gpt-image-1.5` 及更高版本模型，不支持 `gpt-image-1-mini`。支持 `high` 以及 `low`。默认为 `low`.
+            控制模型在匹配输入图像风格和特征（尤其是面部特征）时所付出的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
 
             - `"high"`
 
@@ -16101,7 +16109,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `input_image_mask: optional object { file_id, image_url }`
 
-            用于修复的可选遮罩。包含 `image_url`
+            用于局部重绘的可选遮罩。包含 `image_url`
             （字符串，可选）和 `file_id` （字符串，可选）。
 
             - `file_id: optional string`
@@ -16114,7 +16122,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。可选值之一 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
@@ -16123,7 +16131,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              要使用的图像生成模型。可选值之一 `gpt-image-1`,
+              要使用的图像生成模型。可选值为 `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
               `gpt-image-1`.
@@ -16140,7 +16148,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `moderation: optional "auto" or "low"`
 
-            生成图像的审核级别。默认值： `auto`.
+            生成图像的内容审核级别。默认值： `auto`.
 
             - `"auto"`
 
@@ -16152,7 +16160,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `output_format: optional "png" or "webp" or "jpeg"`
 
-            生成图像的输出格式。可选值之一 `png`, `webp`，或
+            生成图像的输出格式。可选值为 `png`, `webp`，或
             `jpeg`。默认值： `png`.
 
             - `"png"`
@@ -16163,11 +16171,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `partial_images: optional number`
 
-            流式模式下生成的部分图像数量，范围从 0（默认值）到 3。
+            在流式模式下生成的部分图像数量，取值范围为 0（默认值）到 3。
 
           - `quality: optional "low" or "medium" or "high" or "auto"`
 
-            生成图像的质量。可选值之一 `low`, `medium`, `high`,
+            生成图像的质量。可选值为 `low`, `medium`, `high`,
             或 `auto`。默认值： `auto`.
 
             - `"low"`
@@ -16180,13 +16188,13 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
               - `"1024x1024"`
 
@@ -16198,27 +16206,27 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `LocalShell object { type }`
 
-          一种允许模型在本地环境中执行 shell 命令的工具。
+          允许模型在本地环境中执行 shell 命令的工具。
 
           - `type: "local_shell"`
 
-            本地 shell 工具的类型。始终为 `local_shell`.
+            本地 shell 工具的类型，始终为 `local_shell`.
 
             - `"local_shell"`
 
         - `Shell object { type, allowed_callers, environment }`
 
-          一种允许模型执行 shell 命令的工具。
+          允许模型执行 shell 命令的工具。
 
           - `type: "shell"`
 
-            shell 工具的类型。始终为 `shell`.
+            shell 工具的类型，始终为 `shell`.
 
             - `"shell"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -16234,7 +16242,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Custom object { name, type, allowed_callers, 3 more }`
 
-          一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+          使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -16248,7 +16256,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -16256,7 +16264,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `defer_loading: optional boolean`
 
-            是否应延迟此工具并通过工具搜索发现。
+            是否应延迟此工具并通过工具搜索发现它。
 
           - `description: optional string`
 
@@ -16264,23 +16272,23 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `format: optional CustomToolInputFormat`
 
-            自定义工具的输入格式。默认为无约束文本。
+            自定义工具的输入格式。默认是无约束文本。
 
         - `Namespace object { description, name, tools, type }`
 
-          将函数/自定义工具分组到共享命名空间下。
+          在共享命名空间下对 function/custom 工具进行分组。
 
           - `description: string`
 
-            显示给模型的命名空间描述。
+            展示给模型的命名空间描述。
 
           - `name: string`
 
-            工具调用中使用的命名空间名称（例如， `crm`).
+            在工具调用中使用的命名空间名称（例如， `crm`).
 
           - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
-            此命名空间内可用的函数/自定义工具。
+            该命名空间内可用的 function/custom 工具。
 
             - `Function object { name, type, allowed_callers, 5 more }`
 
@@ -16292,7 +16300,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-                工具调用上下文。
+                该工具的调用上下文。
 
                 - `"direct"`
 
@@ -16300,23 +16308,23 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `defer_loading: optional boolean`
 
-                此函数是否应延迟并通过工具搜索发现。
+                是否应延迟此函数并通过工具搜索发现。
 
               - `description: optional string or null`
 
               - `output_schema: optional map[unknown] or null`
 
-                描述此函数工具字符串输出中编码的 JSON 值的 JSON Schema。这不描述内容数组输出。
+                用于描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content-array 输出。
 
               - `parameters: optional unknown or null`
 
               - `strict: optional boolean or null`
 
-                是否强制进行严格的参数验证。如果省略，当 schema 兼容时，Responses 会尝试使用严格验证，否则回退到非严格验证。
+                是否强制执行严格的参数校验。如果省略，Responses 会尝试在 schema 兼容时使用严格校验，否则回退到非严格校验。
 
             - `Custom object { name, type, allowed_callers, 3 more }`
 
-              一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+              使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -16330,7 +16338,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-                工具调用上下文。
+                该工具的调用上下文。
 
                 - `"direct"`
 
@@ -16338,7 +16346,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `defer_loading: optional boolean`
 
-                是否应延迟此工具并通过工具搜索发现。
+                是否应延迟此工具并通过工具搜索发现它。
 
               - `description: optional string`
 
@@ -16346,27 +16354,27 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `format: optional CustomToolInputFormat`
 
-                自定义工具的输入格式。默认为无约束文本。
+                自定义工具的输入格式。默认是无约束文本。
 
           - `type: "namespace"`
 
-            工具的类型。始终 `namespace`.
+            工具的类型。始终为 `namespace`.
 
             - `"namespace"`
 
         - `ToolSearch object { type, description, execution, parameters }`
 
-          延迟工具的托管或 BYOT 工具搜索配置。
+          用于延迟工具的托管或 BYOT 工具搜索配置。
 
           - `type: "tool_search"`
 
-            工具的类型。始终 `tool_search`.
+            工具的类型。始终为 `tool_search`.
 
             - `"tool_search"`
 
           - `description: optional string or null`
 
-            显示给模型的客户端执行工具搜索工具的描述。
+            展示给模型的客户端执行的工具搜索工具的描述。
 
           - `execution: optional "server" or "client"`
 
@@ -16378,15 +16386,15 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `parameters: optional unknown or null`
 
-            客户端执行工具搜索工具的参数 schema。
+            客户端执行的工具搜索工具的参数 schema。
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          此工具搜索网页以获取用于响应的相关结果。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+          此工具会在网络上搜索相关结果以用于回复中。详细了解 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-            网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+            网页搜索工具的类型，取值之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
             - `"web_search_preview"`
 
@@ -16400,7 +16408,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -16410,25 +16418,25 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            用户的位置。
+            用户所在的位置。
 
             - `type: "approximate"`
 
-              位置近似的类型。始终 `approximate`.
+              位置近似的类型。始终为 `approximate`.
 
               - `"approximate"`
 
             - `city: optional string or null`
 
-              用户的城市的自由文本输入，例如 `San Francisco`.
+              用户所在城市的自由文本输入，例如 `San Francisco`.
 
             - `country: optional string or null`
 
-              用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -16436,17 +16444,17 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ApplyPatch object { type, allowed_callers }`
 
-          允许助手使用统一差异创建、删除或更新文件。
+          允许助手使用 unified diff 创建、删除或更新文件。
 
           - `type: "apply_patch"`
 
-            工具的类型。始终 `apply_patch`.
+            工具的类型。始终为 `apply_patch`.
 
             - `"apply_patch"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -16454,15 +16462,15 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "additional_tools"`
 
-        项目的类型。始终为 `additional_tools`.
+        项的类型。始终为 `additional_tools`.
 
         - `"additional_tools"`
 
     - `Reasoning object { id, summary, type, 3 more }`
 
-      推理模型在生成
-      响应时所用思维链的描述。请务必将这些项目包含在你的 `input` 对 Responses API 的
-      后续对话轮次中，如果你正在手动
+      对推理模型在生成响应时所使用的思维链的描述。如果你是手动
+      管理上下文，请务必在后续对话轮次中将这些项包含在 `input` 对 Responses API 的
+      请求中。
       [管理上下文](/docs/guides/conversation-state).
 
       - `id: string`
@@ -16475,7 +16483,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `text: string`
 
-          模型到目前为止的推理输出摘要。
+          到目前为止模型推理输出的摘要。
 
         - `type: "summary_text"`
 
@@ -16503,20 +16511,20 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `encrypted_content: optional string or null`
 
-        推理项目的加密内容。默认情况下，此字段由
-        返回的推理项目填充，适用于 `POST /v1/responses` 和 WebSocket
-        `response.create` 请求。
+        推理条目的加密内容。默认情况下，对于通过
+        和 WebSocket `POST /v1/responses` 请求返回的推理条目，
+        `response.create` 会填充该字段。
 
-        流式传输时，请使用已完成的推理项及其
-        `encrypted_content` 从 `response.output_item.done` 事件中
-        的后续请求。该 `encrypted_content` 中
-        `response.output_item.added` 可能不完整。这在
-        特别重要，当 `store` 是 `false` 或使用零数据保留时。
+        流式传输时，使用已完成的推理项及其
+        `encrypted_content` 来自 `response.output_item.done` 事件中的
+        字段，并在后续请求中传递。 `encrypted_content` 在
+        `response.output_item.added` 中可能不完整。这一点尤其
+        重要，当你 `store` 为 `false` 时，或使用 Zero Data Retention 时。
 
       - `status: optional "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。其一为 `in_progress`, `completed`，或
-        `incomplete`。当项目通过 API 返回时填充。
+        该条目的状态。可选值为 `in_progress`, `completed`，或
+        `incomplete`。在通过 API 返回 item 时填充。
 
         - `"in_progress"`
 
@@ -16532,19 +16540,19 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `call_id: string`
 
-        程序项的稳定调用 ID。
+        程序条目的稳定调用 ID。
 
       - `code: string`
 
-        由编程式工具调用执行的 JavaScript 源代码。
+        由程序化工具调用执行的 JavaScript 源码。
 
       - `fingerprint: string`
 
-        不透明的程序重放指纹，必须往返传输。
+        必须往返透传的不透明程序重放指纹。
 
       - `type: "program"`
 
-        项目的类型。始终为 `program`.
+        项的类型。始终为 `program`.
 
         - `"program"`
 
@@ -16572,13 +16580,13 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "program_output"`
 
-        项目的类型。始终为 `program_output`.
+        项的类型。始终为 `program_output`.
 
         - `"program_output"`
 
     - `Compaction object { id, encrypted_content, type, created_by }`
 
-      由该工具生成的压缩项 [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+      由 [`v1/responses/compact` API](/docs/api-reference/responses/compact).
 
       - `id: string`
 
@@ -16586,17 +16594,17 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `encrypted_content: string`
 
-        压缩产生的加密内容。
+        由压缩生成的加密内容。
 
       - `type: "compaction"`
 
-        项目的类型。始终为 `compaction`.
+        项的类型。始终为 `compaction`.
 
         - `"compaction"`
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
     - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -16608,7 +16616,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `code: string or null`
 
-        要运行的代码，如果不可用则为 null。
+        要运行的代码，若不可用则为 null。
 
       - `container_id: string`
 
@@ -16617,7 +16625,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
       - `outputs: array of object { logs, type }  or object { type, url }  or null`
 
         代码解释器生成的输出，例如日志或图像。
-        如果没有可用的输出，则可以为 null。
+        若没有可用输出，可能为 null。
 
         - `Logs object { logs, type }`
 
@@ -16635,7 +16643,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Image object { type, url }`
 
-          代码解释器的图像输出。
+          代码解释器输出的图像。
 
           - `type: "image"`
 
@@ -16645,7 +16653,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `url: string`
 
-            代码解释器图像输出的 URL。
+            代码解释器输出图像的 URL。
 
       - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -16677,7 +16685,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `action: object { command, env, type, 3 more }`
 
-        在服务器上执行 shell 命令。
+        在服务端执行 shell 命令。
 
         - `command: array of string`
 
@@ -16699,7 +16707,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `user: optional string or null`
 
-          运行命令的可选用户。
+          运行命令所使用的可选用户。
 
         - `working_directory: optional string or null`
 
@@ -16707,11 +16715,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `call_id: string`
 
-        模型生成的本地 shell 工具调用的唯一 ID。
+        模型生成的本机 shell 工具调用的唯一 ID。
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        本地 shell 调用的状态。
+        本机 shell 调用的状态。
 
         - `"in_progress"`
 
@@ -16721,31 +16729,31 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "local_shell_call"`
 
-        本地 shell 调用的类型。始终为 `local_shell_call`.
+        本机 shell 调用的类型。始终为 `local_shell_call`.
 
         - `"local_shell_call"`
 
     - `LocalShellCallOutput object { id, output, type, status }`
 
-      本地 shell 工具调用的输出。
+      本机 shell 工具调用的输出。
 
       - `id: string`
 
-        模型生成的本地 shell 工具调用的唯一 ID。
+        模型生成的本机 shell 工具调用的唯一 ID。
 
       - `output: string`
 
-        本地 shell 工具调用输出的 JSON 字符串。
+        本机 shell 工具调用输出的 JSON 字符串。
 
       - `type: "local_shell_call_output"`
 
-        本地 shell 工具调用输出的类型。始终为 `local_shell_call_output`.
+        本机 shell 工具调用输出的类型。始终为 `local_shell_call_output`.
 
         - `"local_shell_call_output"`
 
       - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-        条目的状态。其一为 `in_progress`, `completed`，或 `incomplete`.
+        该条目的状态。可选值为 `in_progress`, `completed`，或 `incomplete`.
 
         - `"in_progress"`
 
@@ -16755,25 +16763,25 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `ShellCall object { id, action, call_id, 5 more }`
 
-      在受管环境中执行一个或多个 shell 命令的工具调用。
+      在托管环境中执行一条或多条 shell 命令的工具调用。
 
       - `id: string`
 
-        shell 工具调用的唯一 ID。当此项目通过 API 返回时填充。
+        shell 工具调用的唯一 ID。通过 API 返回此条目时填充。
 
       - `action: object { commands, max_output_length, timeout_ms }`
 
-        描述如何运行工具调用的 shell 命令和限制。
+        描述如何运行该工具调用的 shell 命令和限制。
 
         - `commands: array of string`
 
         - `max_output_length: number or null`
 
-          可选，每个命令返回的最大字符数。
+          可选的每个命令返回的最大字符数。
 
         - `timeout_ms: number or null`
 
-          可选，命令的超时时间（毫秒）。
+          可选的命令超时时间（毫秒）。
 
       - `call_id: string`
 
@@ -16807,7 +16815,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        shell 调用的状态。其中一种为 `in_progress`, `completed`，或 `incomplete`.
+        shell 调用的状态。取值之一： `in_progress`, `completed`，或 `incomplete`.
 
         - `"in_progress"`
 
@@ -16817,7 +16825,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "shell_call"`
 
-        项目的类型。始终为 `shell_call`.
+        项的类型。始终为 `shell_call`.
 
         - `"shell_call"`
 
@@ -16843,15 +16851,15 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `created_by: optional string`
 
-        创建此工具调用的实体的 ID。
+        创建此工具调用的实体 ID。
 
     - `ShellCallOutput object { id, call_id, max_output_length, 5 more }`
 
-      发出的 shell 工具调用的输出。
+      已发出的 shell 工具调用的输出。
 
       - `id: string`
 
-        shell 调用输出的唯一 ID。当此条目通过 API 返回时填充。
+        shell 调用输出的唯一 ID。当通过 API 返回此条目时会填充该字段。
 
       - `call_id: string`
 
@@ -16859,7 +16867,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `max_output_length: number or null`
 
-        shell 命令输出的最大长度。由模型生成，应与原始输出一起传回。
+        shell 命令输出的最大长度。该值由模型生成，并应与原始输出一起传回。
 
       - `output: array of object { outcome, stderr, stdout, created_by }`
 
@@ -16867,7 +16875,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `outcome: object { type }  or object { exit_code, type }`
 
-          表示 shell 调用输出块的退出结果（含退出码）或超时结果。
+          表示 shell 调用输出块的结果是退出结果（带有退出码）还是超时结果。
 
           - `Timeout object { type }`
 
@@ -16881,11 +16889,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `Exit object { exit_code, type }`
 
-            表示 shell 命令已完成并返回了退出码。
+            表示 shell 命令已执行完成并返回了退出码。
 
             - `exit_code: number`
 
-              Shell 进程的退出代码。
+              shell 进程的退出码。
 
             - `type: "exit"`
 
@@ -16903,11 +16911,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `created_by: optional string`
 
-          创建该项目的执行者的标识符。
+          创建该项的执行者的标识符。
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        Shell 调用输出的状态。取值为 `in_progress`, `completed`，或 `incomplete`.
+        shell 调用输出的状态。取值为 `in_progress`, `completed`，或 `incomplete`.
 
         - `"in_progress"`
 
@@ -16917,7 +16925,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "shell_call_output"`
 
-        Shell 调用输出的类型。始终为 `shell_call_output`.
+        shell 调用输出的类型。始终为 `shell_call_output`.
 
         - `"shell_call_output"`
 
@@ -16943,19 +16951,19 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
     - `ApplyPatchCall object { id, call_id, operation, 4 more }`
 
-      一种通过创建、删除或更新文件来应用文件差异的工具调用。
+      通过创建、删除或更新文件来应用文件差异的工具调用。
 
       - `id: string`
 
-        API 返回此项目时填充的 apply patch 工具调用的唯一 ID。
+        apply patch 工具调用的唯一 ID。当通过 API 返回此 item 时填充。
 
       - `call_id: string`
 
-        由模型生成的 apply_patch 工具调用的唯一 ID。
+        模型生成的 apply patch 工具调用的唯一 ID。
 
       - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
 
@@ -16975,7 +16983,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "create_file"`
 
-            使用提供的差异创建新文件。
+            使用提供的差异创建一个新文件。
 
             - `"create_file"`
 
@@ -16989,7 +16997,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "delete_file"`
 
-            删除指定文件。
+            删除指定的文件。
 
             - `"delete_file"`
 
@@ -17013,7 +17021,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `status: "in_progress" or "completed"`
 
-        apply_patch 工具调用的状态。之一 `in_progress` 或 `completed`.
+        apply patch 工具调用的状态。取值为 `in_progress` 或 `completed`.
 
         - `"in_progress"`
 
@@ -17021,7 +17029,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "apply_patch_call"`
 
-        项目的类型。始终为 `apply_patch_call`.
+        项的类型。始终为 `apply_patch_call`.
 
         - `"apply_patch_call"`
 
@@ -17047,7 +17055,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `created_by: optional string`
 
-        创建此工具调用的实体的 ID。
+        创建此工具调用的实体 ID。
 
     - `ApplyPatchCallOutput object { id, call_id, status, 4 more }`
 
@@ -17055,15 +17063,15 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `id: string`
 
-        API 返回此项目时填充的 apply patch 工具调用输出的唯一 ID。
+        apply patch 工具调用输出的唯一 ID。当通过 API 返回此 item 时填充。
 
       - `call_id: string`
 
-        由模型生成的 apply_patch 工具调用的唯一 ID。
+        模型生成的 apply patch 工具调用的唯一 ID。
 
       - `status: "completed" or "failed"`
 
-        apply patch 工具调用输出的状态。可选值之一： `completed` 或 `failed`.
+        apply patch 工具调用输出的状态。取值之一为 `completed` 或 `failed`.
 
         - `"completed"`
 
@@ -17071,7 +17079,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "apply_patch_call_output"`
 
-        项目的类型。始终为 `apply_patch_call_output`.
+        项的类型。始终为 `apply_patch_call_output`.
 
         - `"apply_patch_call_output"`
 
@@ -17097,11 +17105,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `created_by: optional string`
 
-        创建此工具调用输出的实体的 ID。
+        创建此工具调用输出的实体 ID。
 
       - `output: optional string or null`
 
-        apply patch 工具返回的可选文本输出。
+        由 apply patch 工具返回的可选文本输出。
 
     - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -17109,7 +17117,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `id: string`
 
-        列表的唯一 ID。
+        此列表的唯一 ID。
 
       - `server_label: string`
 
@@ -17121,7 +17129,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `input_schema: unknown`
 
-          描述工具输入的 JSON schema。
+          描述该工具输入的 JSON schema。
 
         - `name: string`
 
@@ -17129,7 +17137,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `annotations: optional unknown or null`
 
-          关于工具的附加注释。
+          关于该工具的附加注释。
 
         - `description: optional string or null`
 
@@ -17137,7 +17145,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "mcp_list_tools"`
 
-        项目的类型。始终为 `mcp_list_tools`.
+        项的类型。始终为 `mcp_list_tools`.
 
         - `"mcp_list_tools"`
 
@@ -17147,11 +17155,11 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `McpApprovalRequest object { id, arguments, name, 2 more }`
 
-      请求人工批准工具调用的请求。
+      对工具调用的人工审批请求。
 
       - `id: string`
 
-        批准请求的唯一 ID。
+        审批请求的唯一 ID。
 
       - `arguments: string`
 
@@ -17167,13 +17175,13 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "mcp_approval_request"`
 
-        项目的类型。始终为 `mcp_approval_request`.
+        项的类型。始终为 `mcp_approval_request`.
 
         - `"mcp_approval_request"`
 
     - `McpApprovalResponse object { id, approval_request_id, approve, 2 more }`
 
-      对 MCP 批准请求的响应。
+      对 MCP 审批请求的响应。
 
       - `id: string`
 
@@ -17181,37 +17189,37 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `approval_request_id: string`
 
-        正在回答的审批请求的 ID。
+        正在回复的审批请求的 ID。
 
       - `approve: boolean`
 
-        该请求是否已获批准。
+        请求是否已批准。
 
       - `type: "mcp_approval_response"`
 
-        项目的类型。始终为 `mcp_approval_response`.
+        项的类型。始终为 `mcp_approval_response`.
 
         - `"mcp_approval_response"`
 
       - `reason: optional string or null`
 
-        该决定的可选原因。
+        可选的决策原因。
 
     - `McpCall object { id, arguments, name, 6 more }`
 
-      在 MCP 服务器上对工具的一次调用。
+      对 MCP 服务器上某个工具的调用。
 
       - `id: string`
 
-        工具调用的唯一 ID。
+        该工具调用的唯一 ID。
 
       - `arguments: string`
 
-        传递给工具的参数的 JSON 字符串。
+        传递给该工具的参数的 JSON 字符串。
 
       - `name: string`
 
-        所运行的工具的名称。
+        已运行工具的名称。
 
       - `server_label: string`
 
@@ -17219,18 +17227,18 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "mcp_call"`
 
-        项目的类型。始终为 `mcp_call`.
+        项的类型。始终为 `mcp_call`.
 
         - `"mcp_call"`
 
       - `approval_request_id: optional string or null`
 
         MCP 工具调用审批请求的唯一标识符。
-        在后续 `mcp_approval_response` 输入中包含此值，以批准或拒绝对应的工具调用。
+        在后续的 `mcp_approval_response` 输入中包含该值，以批准或拒绝相应的工具调用。
 
       - `error: optional McpToolCallError or null`
 
-        工具调用产生的错误（如有）。
+        工具调用的错误（如果有）。
 
         - `McpProtocolError object { code, message, type }`
 
@@ -17266,7 +17274,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `status: optional "in_progress" or "completed" or "incomplete" or 2 more`
 
-        工具调用的状态。取值为 `in_progress`, `completed`, `incomplete`, `calling`，或 `failed`.
+        工具调用的状态，取值为 `in_progress`, `completed`, `incomplete`, `calling`，或 `failed`.
 
         - `"in_progress"`
 
@@ -17280,7 +17288,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `CustomToolCall object { call_id, input, name, 4 more }`
 
-      由模型创建的自定义工具调用。
+      模型对自定义工具的调用。
 
       - `call_id: string`
 
@@ -17302,7 +17310,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `id: optional string`
 
-        自定义工具调用在 OpenAI 平台中的唯一 ID。
+        该自定义工具调用在 OpenAI 平台中的唯一 ID。
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -17330,7 +17338,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `CustomToolCallOutput object { call_id, output, type, 2 more }`
 
-      来自你的代码的自定义工具调用的输出，正在发送回模型。
+      来自你代码的自定义工具调用输出，正被发回给模型。
 
       - `call_id: string`
 
@@ -17338,12 +17346,12 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `output: string or array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
-        由你的代码生成的自定义工具调用的输出。
+        由你代码生成的自定义工具调用的输出。
         可以是字符串或输出内容列表。
 
         - `StringOutput = string`
 
-          自定义工具调用的输出字符串。
+          自定义工具调用输出的字符串。
 
         - `OutputContentList = array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
@@ -17351,15 +17359,15 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            输入给模型的文本输入。
+            提供给模型的文本输入。
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+            提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-            输入给模型的文件。
+            模型的文件输入。
 
       - `type: "custom_tool_call_output"`
 
@@ -17369,7 +17377,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `id: optional string`
 
-        自定义工具调用输出在 OpenAI 平台中的唯一 ID。
+        该自定义工具调用输出在 OpenAI 平台中的唯一 ID。
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -17379,7 +17387,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "direct"`
 
-            调用者类型。始终为 `direct`.
+            调用方类型。始终为 `direct`.
 
             - `"direct"`
 
@@ -17391,25 +17399,25 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "program"`
 
-            调用者类型。始终为 `program`.
+            调用方类型。始终为 `program`.
 
             - `"program"`
 
   - `first_id: string`
 
-    列表中第一项项目的 ID。
+    列表中第一项的 ID。
 
   - `has_more: boolean`
 
-    是否还有更多可用项目。
+    是否还有更多可用项。
 
   - `last_id: string`
 
-    列表中最后一项项目的 ID。
+    列表中最后一项的 ID。
 
   - `object: "list"`
 
-    返回的对象类型，必须为 `list`.
+    返回对象的类型，必须为 `list`.
 
     - `"list"`
 
@@ -17478,11 +17486,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 }
 ```
 
-## 检索一个条目
+## Retrieve an item
 
 **get** `/conversations/{conversation_id}/items/{item_id}`
 
-使用给定 ID 从会话中获取单个项目。
+使用给定的 ID 从对话中获取单个条目。
 
 ### 路径参数
 
@@ -17494,8 +17502,8 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
 - `include: optional array of ResponseIncludable`
 
-  要在响应中包含的其他字段。请参阅 `include`
-  参数以了解 [上面列出的 Conversation 项目](/docs/api-reference/conversations/list-items#conversations_list_items-include) 了解更多信息。
+  响应中要包含的额外字段。参见 `include`
+  参数，了解如何 [列出上方的 Conversation 项](/docs/api-reference/conversations/list-items#conversations_list_items-include) 了解更多信息。
 
   - `"file_search_call.results"`
 
@@ -17513,31 +17521,31 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
   - `"message.output_text.logprobs"`
 
-### 返回
+### Returns
 
 - `ConversationItem = Message or object { id, arguments, call_id, 6 more }  or object { id, output, status, 6 more }  or 25 more`
 
-  对话中的单个项目。可能的类型集合与 `output` 的 [Response 对象](/docs/api-reference/responses/object#responses/object-output).
+  对话中的单个条目。可能使用的类型集合与 `output` Response 对象 [Response 对象](/docs/api-reference/responses/object#responses/object-output).
 
   - `Message object { id, content, role, 3 more }`
 
-    与模型之间发送的消息。
+    发送给模型或来自模型的一条消息。
 
     - `id: string`
 
-      消息的唯一 ID。
+      该消息的唯一 ID。
 
     - `content: array of ResponseInputText or ResponseOutputText or TextContent or 6 more`
 
-      消息的内容
+      该消息的内容
 
       - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-        输入给模型的文本输入。
+        提供给模型的文本输入。
 
         - `text: string`
 
-          输入给模型的文本输入。
+          提供给模型的文本输入。
 
         - `type: "input_text"`
 
@@ -17547,7 +17555,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+          标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
           - `mode: "explicit"`
 
@@ -17557,7 +17565,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `ResponseOutputText object { annotations, logprobs, text, type }`
 
-        来自模型的文本输出。
+        模型生成的文本输出。
 
         - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
 
@@ -17581,35 +17589,35 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `type: "file_citation"`
 
-              文件引用的类型。始终 `file_citation`.
+              文件引用的类型。始终为 `file_citation`.
 
               - `"file_citation"`
 
           - `URLCitation object { end_index, start_index, title, 2 more }`
 
-            用于生成模型响应的网络资源的引用。
+            用于生成模型回复的网页资源的引用。
 
             - `end_index: number`
 
-              消息中 URL 引用的最后一个字符的索引。
+              消息中 URL 引用末尾字符的索引。
 
             - `start_index: number`
 
-              消息中 URL 引用的第一个字符的索引。
+              消息中 URL 引用起始字符的索引。
 
             - `title: string`
 
-              网络资源的标题。
+              网页资源的标题。
 
             - `type: "url_citation"`
 
-              URL 引用的类型。始终 `url_citation`.
+              URL 引用的类型。始终为 `url_citation`.
 
               - `"url_citation"`
 
             - `url: string`
 
-              网络资源的 URL。
+              网页资源的 URL。
 
           - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
@@ -17629,7 +17637,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `filename: string`
 
-              被引用的容器文件的文件名。
+              所引用的容器文件的文件名。
 
             - `start_index: number`
 
@@ -17637,13 +17645,13 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `type: "container_file_citation"`
 
-              容器文件引用的类型。始终 `container_file_citation`.
+              容器文件引用的类型。始终为 `container_file_citation`.
 
               - `"container_file_citation"`
 
           - `FilePath object { file_id, index, type }`
 
-            文件路径。
+            文件的路径。
 
             - `file_id: string`
 
@@ -17655,7 +17663,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `type: "file_path"`
 
-              文件路径的类型。始终 `file_path`.
+              文件路径的类型。始终为 `file_path`.
 
               - `"file_path"`
 
@@ -17677,11 +17685,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `text: string`
 
-          模型的文本输出。
+          模型输出的文本。
 
         - `type: "output_text"`
 
-          输出文本的类型。始终 `output_text`.
+          输出文本的类型。始终为 `output_text`.
 
           - `"output_text"`
 
@@ -17697,11 +17705,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `SummaryTextContent object { text, type }`
 
-        模型的摘要文本。
+        来自模型的摘要文本。
 
         - `text: string`
 
-          模型到目前为止的推理输出摘要。
+          到目前为止模型推理输出的摘要。
 
         - `type: "summary_text"`
 
@@ -17711,7 +17719,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `ReasoningText object { text, type }`
 
-        模型的推理文本。
+        来自模型的推理文本。
 
         - `text: string`
 
@@ -17725,25 +17733,25 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `ResponseOutputRefusal object { refusal, type }`
 
-        模型的拒绝。
+        模型生成的拒绝回复。
 
         - `refusal: string`
 
-          模型的拒绝解释。
+          模型生成的拒绝解释。
 
         - `type: "refusal"`
 
-          拒绝的类型。始终 `refusal`.
+          拒绝回复的类型。始终为 `refusal`.
 
           - `"refusal"`
 
       - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-        输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+        提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
         - `detail: ImageDetail`
 
-          要发送给模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+          发送到模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
           - `"low"`
 
@@ -17761,15 +17769,15 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `file_id: optional string or null`
 
-          要发送给模型的文件的 ID。
+          要发送到模型的文件的 ID。
 
         - `image_url: optional string or null`
 
-          要发送给模型的图像的 URL。可以是完全限定的 URL，或 data URL 中 base64 编码的图像。
+          要发送到模型的图像的 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图像。
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+          标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
           - `mode: "explicit"`
 
@@ -17779,15 +17787,15 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `ComputerScreenshotContent object { detail, file_id, image_url, 2 more }`
 
-        电脑界面的截图。
+        计算机的屏幕截图。
 
         - `detail: ImageDetail`
 
-          要发送给模型的截图图像的详细程度。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+          发送给模型的屏幕截图图像的细节级别。可选值为以下之一 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
         - `file_id: string or null`
 
-          包含截图的已上传文件的标识符。
+          包含截图的上传文件的标识符。
 
         - `image_url: string or null`
 
@@ -17795,13 +17803,13 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `type: "computer_screenshot"`
 
-          指定事件类型。对于电脑界面截图，此属性始终设置为 `computer_screenshot`.
+          指定事件类型。对于计算机屏幕截图，此属性始终设置为 `computer_screenshot`.
 
           - `"computer_screenshot"`
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+          标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
           - `mode: "explicit"`
 
@@ -17811,7 +17819,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-        输入给模型的文件。
+        模型的文件输入。
 
         - `type: "input_file"`
 
@@ -17821,7 +17829,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `detail: optional "auto" or "low" or "high"`
 
-          要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+          要发送到模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 的使用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
           - `"auto"`
 
@@ -17831,23 +17839,23 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `file_data: optional string`
 
-          要发送给模型的文件内容。
+          要发送到模型的文件内容。
 
         - `file_id: optional string or null`
 
-          要发送给模型的文件的 ID。
+          要发送到模型的文件的 ID。
 
         - `file_url: optional string`
 
-          要发送给模型的文件的 URL。
+          要发送到模型的文件的 URL。
 
         - `filename: optional string`
 
-          要发送给模型的文件的名称。
+          要发送到模型的文件的名称。
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+          标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
           - `mode: "explicit"`
 
@@ -17857,7 +17865,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `role: "unknown" or "user" or "assistant" or 5 more`
 
-      消息的角色。以下之一： `unknown`, `user`, `assistant`, `system`, `critic`, `discriminator`, `developer`，或 `tool`.
+      消息的角色。可选值为 `unknown`, `user`, `assistant`, `system`, `critic`, `discriminator`, `developer`，或 `tool`.
 
       - `"unknown"`
 
@@ -17877,7 +17885,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      项目的状态。以下之一 `in_progress`, `completed`，或 `incomplete`。当项目通过 API 返回时填充。
+      item 的状态。取值为 `in_progress`, `completed`，或 `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -17893,7 +17901,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `phase: optional "commentary" or "final_answer" or null`
 
-      将 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`）。对于类似 `gpt-5.3-codex` 及更高版本的模型，在发送后续请求时，保留并重新发送所有助手消息中的阶段信息——省略它可能会降低性能。不用于用户消息。
+      将 `assistant` 消息标记为中间说明（`commentary`）或最终答案（`final_answer`)。对于 `gpt-5.3-codex` 及更高版本的模型，在发送后续请求时，请在所有助手消息上保留并重新发送 phase——丢弃它可能会降低性能。不用于用户消息。
 
       - `"commentary"`
 
@@ -17911,16 +17919,16 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `call_id: string`
 
-      模型生成的函数工具调用的唯一 ID。
+      由模型生成的函数工具调用的唯一 ID。
 
     - `name: string`
 
-      要运行的函数的名称。
+      要运行的函数名称。
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      条目的状态。其一为 `in_progress`, `completed`，或
-      `incomplete`。当项目通过 API 返回时填充。
+      该条目的状态。可选值为 `in_progress`, `completed`，或
+      `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -17956,7 +17964,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `created_by: optional string`
 
-      创建该项目的执行者的标识符。
+      创建该项的执行者的标识符。
 
     - `namespace: optional string`
 
@@ -17970,7 +17978,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `output: string or array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
-      你的代码生成的函数调用的输出。
+      由你的代码生成的函数调用所产生的输出。
       可以是字符串或输出内容列表。
 
       - `StringOutput = string`
@@ -17983,20 +17991,20 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          输入给模型的文本输入。
+          提供给模型的文本输入。
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+          提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-          输入给模型的文件。
+          模型的文件输入。
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      条目的状态。其一为 `in_progress`, `completed`，或
-      `incomplete`。当项目通过 API 返回时填充。
+      该条目的状态。可选值为 `in_progress`, `completed`，或
+      `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -18012,7 +18020,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `call_id: optional string`
 
-      模型生成的函数工具调用的唯一 ID。
+      由模型生成的函数工具调用的唯一 ID。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -18022,7 +18030,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `type: "direct"`
 
-          调用者类型。始终为 `direct`.
+          调用方类型。始终为 `direct`.
 
           - `"direct"`
 
@@ -18034,38 +18042,38 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `type: "program"`
 
-          调用者类型。始终为 `program`.
+          调用方类型。始终为 `program`.
 
           - `"program"`
 
     - `created_by: optional string`
 
-      创建该项目的执行者的标识符。
+      创建该项的执行者的标识符。
 
     - `name: optional string`
 
-      产生输出的工具的名称。
+      产生该输出的工具名称。
 
     - `namespace: optional string`
 
-      产生输出的工具的命名空间。
+      产生该输出的工具的命名空间。
 
   - `FileSearchCall object { id, queries, status, 2 more }`
 
-    文件搜索工具调用的结果。参见
-    [文件搜索指南](/docs/guides/tools-file-search) 了解更多信息。
+    文件搜索 工具调用的结果。参见
+    [文件搜索 指南](/docs/guides/tools-file-search) 了解更多信息。
 
     - `id: string`
 
-      文件搜索工具调用的唯一 ID。
+      文件搜索 工具调用的唯一 ID。
 
     - `queries: array of string`
 
-      用于搜索文件的查询。
+      用于搜索文件的查询语句。
 
     - `status: "in_progress" or "searching" or "completed" or 2 more`
 
-      文件搜索工具调用的状态。其中之一为 `in_progress`,
+      文件搜索 工具调用的状态，取值为 `in_progress`,
       `searching`, `incomplete` 或 `failed`,
 
       - `"in_progress"`
@@ -18080,21 +18088,21 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `type: "file_search_call"`
 
-      文件搜索工具调用的类型。始终为 `file_search_call`.
+      文件搜索 工具调用的类型，始终为 `file_search_call`.
 
       - `"file_search_call"`
 
     - `results: optional array of object { attributes, file_id, filename, 2 more }  or null`
 
-      文件搜索工具调用的结果。
+      文件搜索 工具调用的结果。
 
       - `attributes: optional map[string or number or boolean] or null`
 
-        可附加到对象的一组 16 个键值对。这可用于以结构化
-        格式存储有关对象的额外信息，并通过 API 或仪表盘查询对象。键是字符串
-        ，最大长度为 64 个字符。值是字符串，最大
-        长度为 512 个字符、布尔值或数字。
-        文件的唯一 ID。
+        可附加到对象的 16 组键值对。可用于
+        以结构化格式存储对象的附加信息，并通过
+        API 或控制台查询对象。键为字符串，
+        最大长度为 64 个字符；值为字符串（最大
+        长度 512 个字符）、布尔值或数字。
 
         - `string`
 
@@ -18104,37 +18112,37 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `file_id: optional string`
 
-        文件的名称。
+        文件的唯一 ID。
 
       - `filename: optional string`
 
-        文件的相关性得分——介于 0 和 1 之间的值。
+        文件的名称。
 
       - `score: optional number`
 
-        从文件中检索到的文本。
+        文件的相关性分数，取值范围为 0 到 1。
 
       - `text: optional string`
 
-        对计算机使用工具的工具调用。参见
+        从文件中检索到的文本。
 
   - `WebSearchCall object { id, action, status, type }`
 
-    网页搜索工具调用的结果。请参阅
+    网页搜索 工具调用的结果。请参阅
     [网页搜索指南](/docs/guides/tools-web-search) 了解更多信息。
 
     - `id: string`
 
-      网页搜索工具调用的唯一 ID。
+      该 网页搜索工具调用的唯一 ID。
 
     - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
-      一个对象，描述此次网页搜索调用中采取的具体操作。
-      包含模型如何使用网络（search、open_page、find_in_page）的详细信息。
+      描述此次 网页搜索调用中所执行的具体操作的对象。
+      包含模型如何使用网页的详细信息（search、open_page、find_in_page）。
 
       - `Search object { type, queries, query, sources }`
 
-        操作类型 "search"——执行网页搜索查询。
+        操作类型 "search" - 执行一次 网页搜索查询。
 
         - `type: "search"`
 
@@ -18166,7 +18174,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `OpenPage object { type, url }`
 
-        操作类型 "open_page"——打开搜索结果中的特定 URL。
+        操作类型 "open_page" - 打开搜索结果中的特定 URL。
 
         - `type: "open_page"`
 
@@ -18180,11 +18188,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `FindInPage object { pattern, type, url }`
 
-        操作类型 "find_in_page"：在已加载的页面中搜索模式。
+        操作类型 "find_in_page"：在已加载的页面中搜索某个模式。
 
         - `pattern: string`
 
-          要在页面内搜索的模式或文本。
+          要在页面中搜索的模式或文本。
 
         - `type: "find_in_page"`
 
@@ -18194,11 +18202,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `url: string`
 
-          搜索该模式的页面的 URL。
+          被搜索该模式的页面 URL。
 
     - `status: "in_progress" or "searching" or "completed" or "failed"`
 
-      网页搜索工具调用的状态。
+      该 网页搜索工具调用的状态。
 
       - `"in_progress"`
 
@@ -18210,7 +18218,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `type: "web_search_call"`
 
-      网页搜索工具调用的类型。始终为 `web_search_call`.
+      该 网页搜索工具调用的类型。始终为 `web_search_call`.
 
       - `"web_search_call"`
 
@@ -18246,8 +18254,8 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
-    计算机使用指南
-    [计算机调用调用的唯一 ID。](/docs/guides/tools-computer-use) 了解更多信息。
+    对计算机使用工具的工具调用。参见
+    [计算机使用指南](/docs/guides/tools-computer-use) 了解更多信息。
 
     - `id: string`
 
@@ -18255,11 +18263,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `call_id: string`
 
-      用于在响应工具调用时提供输出的标识符。
+      在向工具调用返回输出时使用的标识符。
 
     - `pending_safety_checks: array of object { id, code, message }`
 
-      计算机调用的待处理安全检查。
+      该计算机调用的待处理安全检查。
 
       - `id: string`
 
@@ -18275,8 +18283,8 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      条目的状态。其一为 `in_progress`, `completed`，或
-      `incomplete`。当项目通过 API 返回时填充。
+      该条目的状态。可选值为 `in_progress`, `completed`，或
+      `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -18286,21 +18294,21 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `type: "computer_call"`
 
-      计算机调用的类型。始终为 `computer_call`.
+      该计算机调用的类型。始终为 `computer_call`.
 
       - `"computer_call"`
 
     - `action: optional ComputerAction`
 
-      单击操作。
+      一次点击操作。
 
       - `Click object { button, type, x, 2 more }`
 
-        单击操作。
+        一次点击操作。
 
         - `button: "left" or "right" or "wheel" or 2 more`
 
-          指示单击期间按下了哪个鼠标按钮。其一为 `left`, `right`, `wheel`, `back`，或 `forward`.
+          表示点击时按下的鼠标按键。可选值为 `left`, `right`, `wheel`, `back`，或 `forward`.
 
           - `"left"`
 
@@ -18314,29 +18322,29 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `type: "click"`
 
-          指定事件类型。对于单击操作，此属性始终为 `click`.
+          指定事件类型。对于点击操作，此属性始终为 `click`.
 
           - `"click"`
 
         - `x: number`
 
-          发生单击的 x 坐标。
+          点击发生位置的 x 坐标。
 
         - `y: number`
 
-          发生单击的 y 坐标。
+          点击发生位置的 y 坐标。
 
         - `keys: optional array of string or null`
 
-          单击时正在按住的按键。
+          点击时按住的按键。
 
       - `DoubleClick object { keys, type, x, y }`
 
-        双击操作。
+        一次双击操作。
 
         - `keys: array of string or null`
 
-          双击时正在按住的按键。
+          双击时按住的按键。
 
         - `type: "double_click"`
 
@@ -18346,19 +18354,19 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `x: number`
 
-          发生双击的 x 坐标。
+          双击发生位置的 x 坐标。
 
         - `y: number`
 
-          发生双击的 y 坐标。
+          双击发生位置的 y 坐标。
 
       - `Drag object { path, type, keys }`
 
-        拖动操作。
+        一次拖动操作。
 
         - `path: array of object { x, y }`
 
-          表示拖动操作路径的坐标数组。坐标将以对象数组的形式出现，例如
+          表示拖动操作路径的坐标数组。坐标将以对象数组的形式呈现，例如
 
           ```
           [
@@ -18377,17 +18385,17 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `type: "drag"`
 
-          指定事件类型。对于拖拽操作，此属性始终设置为 `drag`.
+          指定事件类型。对于拖动操作，此属性始终设置为 `drag`.
 
           - `"drag"`
 
         - `keys: optional array of string or null`
 
-          拖拽鼠标时按住的按键。
+          拖动鼠标时按住的按键。
 
       - `Keypress object { keys, type }`
 
-        模型希望执行的一系列按键操作。
+        模型希望执行的一组按键操作。
 
         - `keys: array of string`
 
@@ -18411,11 +18419,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `x: number`
 
-          要移动到的 x 坐标。
+          要移至的 x 坐标。
 
         - `y: number`
 
-          要移动到的 y 坐标。
+          要移至的 y 坐标。
 
         - `keys: optional array of string or null`
 
@@ -18451,11 +18459,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `x: number`
 
-          发生滚动的 x 坐标。
+          发生滚动处的 x 坐标。
 
         - `y: number`
 
-          发生滚动的 y 坐标。
+          发生滚动处的 y 坐标。
 
         - `keys: optional array of string or null`
 
@@ -18471,40 +18479,40 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `type: "type"`
 
-          指定事件类型。对于类型操作，此属性始终设置为 `type`.
+          指定事件类型。对于 type 操作，此属性始终设置为 `type`.
 
           - `"type"`
 
       - `Wait object { type }`
 
-        等待操作。
+        wait 操作。
 
         - `type: "wait"`
 
-          指定事件类型。对于等待操作，此属性始终设置为 `wait`.
+          指定事件类型。对于 wait 操作，此属性始终设置为 `wait`.
 
           - `"wait"`
 
     - `actions: optional ComputerActionList`
 
-      展平的批量操作，用于 `computer_use`。每个操作包含一个
-      `type` 判别器和操作特定字段。
+      已展平的批量操作，用于 `computer_use`。每个操作都包含一个
+      `type` 鉴别字段以及操作特有的字段。
 
       - `Click object { button, type, x, 2 more }`
 
-        单击操作。
+        一次点击操作。
 
       - `DoubleClick object { keys, type, x, y }`
 
-        双击操作。
+        一次双击操作。
 
       - `Drag object { path, type, keys }`
 
-        拖动操作。
+        一次拖动操作。
 
       - `Keypress object { keys, type }`
 
-        模型希望执行的一系列按键操作。
+        模型希望执行的一组按键操作。
 
       - `Move object { type, x, y, keys }`
 
@@ -18524,7 +18532,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `Wait object { type }`
 
-        等待操作。
+        wait 操作。
 
   - `ComputerCallOutput object { id, call_id, output, 4 more }`
 
@@ -18534,7 +18542,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `call_id: string`
 
-      产生输出的计算机工具调用的 ID。
+      产生该输出的计算机工具调用的 ID。
 
     - `output: ResponseComputerToolCallOutputScreenshot`
 
@@ -18549,7 +18557,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `file_id: optional string`
 
-        包含截图的已上传文件的标识符。
+        包含截图的上传文件的标识符。
 
       - `image_url: optional string`
 
@@ -18557,8 +18565,8 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `status: "completed" or "incomplete" or "failed" or "in_progress"`
 
-      消息输入的状态。其中之一 `in_progress`, `completed`，或
-      `incomplete`。当输入项通过 API 返回时填充。
+      消息输入的状态。取值为以下之一 `in_progress`, `completed`，或
+      `incomplete`。当通过 API 返回输入项时填充。
 
       - `"completed"`
 
@@ -18570,13 +18578,13 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `type: "computer_call_output"`
 
-      计算机工具调用输出的类型。始终为 `computer_call_output`.
+      计算机工具调用输出的类型，始终为 `computer_call_output`.
 
       - `"computer_call_output"`
 
     - `acknowledged_safety_checks: optional array of object { id, code, message }`
 
-      API报告并已由
+      由 API 报告并已由
       开发者确认的安全检查。
 
       - `id: string`
@@ -18593,13 +18601,13 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `created_by: optional string`
 
-      创建该项目的执行者的标识符。
+      创建该项的执行者的标识符。
 
   - `ToolSearchCall object { id, arguments, call_id, 4 more }`
 
     - `id: string`
 
-      工具搜索调用项目的唯一 ID。
+      工具搜索调用项的唯一 ID。
 
     - `arguments: unknown`
 
@@ -18611,7 +18619,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `execution: "server" or "client"`
 
-      工具搜索是由服务端还是客户端执行的。
+      工具搜索是由服务端还是由客户端执行的。
 
       - `"server"`
 
@@ -18619,7 +18627,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      记录的工具搜索调用项目的状态。
+      已记录的工具搜索调用项的状态。
 
       - `"in_progress"`
 
@@ -18629,19 +18637,19 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `type: "tool_search_call"`
 
-      项目的类型。始终为 `tool_search_call`.
+      项的类型。始终为 `tool_search_call`.
 
       - `"tool_search_call"`
 
     - `created_by: optional string`
 
-      创建该项目的执行者的标识符。
+      创建该项的执行者的标识符。
 
   - `ToolSearchOutput object { id, call_id, execution, 4 more }`
 
     - `id: string`
 
-      工具搜索输出项目的唯一 ID。
+      工具搜索输出项的唯一 ID。
 
     - `call_id: string or null`
 
@@ -18649,7 +18657,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `execution: "server" or "client"`
 
-      工具搜索是由服务端还是客户端执行的。
+      工具搜索是由服务端还是由客户端执行的。
 
       - `"server"`
 
@@ -18657,7 +18665,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      记录的工具搜索输出项目的状态。
+      已记录的工具搜索输出项的状态。
 
       - `"in_progress"`
 
@@ -18671,29 +18679,29 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `Function object { name, parameters, strict, 5 more }`
 
-        定义你自己代码中模型可以选择调用的函数。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+        定义你自己代码中的某个函数，供模型选择调用。详细了解 [function calling](https://platform.openai.com/docs/guides/function-calling).
 
         - `name: string`
 
-          要调用的函数的名称。
+          要调用的函数名称。
 
         - `parameters: map[unknown] or null`
 
-          描述函数参数的 JSON schema 对象。
+          描述该函数参数的 JSON schema 对象。
 
         - `strict: boolean or null`
 
-          是否对此函数工具强制执行严格的参数验证。
+          是否为该函数工具启用严格的参数校验。
 
         - `type: "function"`
 
-          函数工具的类型。始终为 `function`.
+          该函数工具的类型。始终为 `function`.
 
           - `"function"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -18701,19 +18709,19 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `defer_loading: optional boolean`
 
-          此函数是否延迟并通过工具搜索加载。
+          该函数是否为延迟加载，并通过工具搜索加载。
 
         - `description: optional string or null`
 
-          函数的描述。模型据此确定是否调用该函数。
+          该函数的描述。模型据此决定是否调用该函数。
 
         - `output_schema: optional map[unknown] or null`
 
-          描述此函数的字符串输出中编码的 JSON 值的 JSON schema 对象。
+          描述该函数在字符串输出中编码的 JSON 值的 JSON schema 对象。
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        一种从上传文件中搜索相关内容工具。详细了解 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+        一个用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 tool](https://platform.openai.com/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -18731,24 +18739,24 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `ComparisonFilter object { key, type, value }`
 
-            用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+            用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
             - `key: string`
 
-              要与该值进行比较的键。
+              要与值进行比较的键。
 
             - `type: "eq" or "ne" or "gt" or 5 more`
 
               指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-              - `eq`：等于
-              - `ne`：不等于
-              - `gt`：大于
-              - `gte`：大于或等于
-              - `lt`：小于
-              - `lte`：小于或等于
-              - `in`：包含
-              - `nin`：不包含
+              - `eq`: 等于
+              - `ne`: 不等于
+              - `gt`: 大于
+              - `gte`: 大于或等于
+              - `lt`: 小于
+              - `lte`: 小于或等于
+              - `in`: 包含于
+              - `nin`: 不包含于
 
               - `"eq"`
 
@@ -18784,15 +18792,15 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `CompoundFilter object { filters, type }`
 
-            使用以下方式组合多个筛选器 `and` 或 `or`.
+            使用以下方式组合多个过滤器 `and` 或 `or`.
 
             - `filters: array of ComparisonFilter or unknown`
 
-              要组合的筛选器数组。项目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+              要组合的过滤器数组。条目可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
               - `ComparisonFilter object { key, type, value }`
 
-                用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+                用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
               - `unknown`
 
@@ -18806,7 +18814,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `max_num_results: optional number`
 
-          要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+          返回结果的最大数量。此数量应介于 1 到 50 之间（含两端）。
 
         - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -18814,19 +18822,19 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-            启用混合搜索时，控制倒数排名融合如何在语义嵌入匹配与稀疏关键词匹配之间取得平衡的权重。
+            在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
             - `embedding_weight: number`
 
-              嵌入在倒数排名融合中的权重。
+              在倒数排名融合中嵌入的权重。
 
             - `text_weight: number`
 
-              文本在倒数排名融合中的权重。
+              在倒数排名融合中文本的权重。
 
           - `ranker: optional "auto" or "default-2024-11-15"`
 
-            用于文件搜索的排序器。
+            用于 文件搜索 的排序器。
 
             - `"auto"`
 
@@ -18834,11 +18842,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `score_threshold: optional number`
 
-            文件搜索的分数阈值，为0到1之间的数字。数字越接近1，将尝试仅返回最相关的结果，但可能返回较少的結果。
+            文件搜索 的分数阈值，取值范围为 0 到 1 之间。数值越接近 1，越会尝试只返回最相关的结果，但返回的结果数量可能会减少。
 
       - `Computer object { type }`
 
-        一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -18848,19 +18856,19 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
-          计算机显示器的宽度。
+          计算机显示屏的高度。
 
         - `display_width: number`
 
-          计算机显示器的宽度。
+          计算机显示屏的宽度。
 
         - `environment: "windows" or "mac" or "linux" or 2 more`
 
-          要控制的计算机环境的类型。
+          要控制的计算机环境类型。
 
           - `"windows"`
 
@@ -18880,12 +18888,12 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-        搜索互联网以获取与提示相关的来源。了解更多关于
+        在互联网上搜索与提示相关的来源。详细了解
         [网页搜索工具](/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
-          网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+          网页搜索工具的类型，取值之一为 `web_search` 或 `web_search_2025_08_26`.
 
           - `"web_search"`
 
@@ -18893,22 +18901,22 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `external_web_access: optional boolean`
 
-          允许网页搜索实时访问互联网。省略时默认为true。为false时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+          允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
         - `filters: optional object { allowed_domains }  or null`
 
-          搜索的过滤器。
+          搜索的筛选条件。
 
           - `allowed_domains: optional array of string or null`
 
-            搜索允许的域名。如果未提供，则允许所有域名。
-            所提供域名的子域名也允许。
+            允许进行搜索的域名。如果未提供，则允许所有域名。
+            同时也允许所提供域名的子域名。
 
             示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
           - `"low"`
 
@@ -18922,15 +18930,15 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `city: optional string or null`
 
-            用户的城市的自由文本输入，例如 `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+            两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户的地区的自由文本输入，例如 `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
@@ -18938,14 +18946,14 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `type: optional "approximate"`
 
-            位置近似的类型。始终 `approximate`.
+            位置近似的类型。始终为 `approximate`.
 
             - `"approximate"`
 
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-        通过远程 Model Context Protocol 让模型访问额外工具
-        (MCP) 服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+        通过远程 Model Context Protocol
+        （MCP）服务器为模型提供对其他工具的访问权限。 [了解更多关于 MCP 的信息](/docs/guides/tools-remote-mcp).
 
         - `server_label: string`
 
@@ -18953,13 +18961,13 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `type: "mcp"`
 
-          MCP 工具的类型。始终 `mcp`.
+          MCP 工具的类型。始终为 `mcp`.
 
           - `"mcp"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -18971,7 +18979,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `McpAllowedTools = array of string`
 
-            允许工具名称的字符串数组
+            允许的工具名称组成的字符串数组
 
           - `McpToolFilter object { read_only, tool_names }`
 
@@ -18979,9 +18987,9 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `read_only: optional boolean`
 
-              指示工具是否修改数据或为只读。如果
-              MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-              ，它将匹配此过滤器。
+              指示工具是否修改数据或是否为只读。如果某个
+              MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+              ，它将匹配此过滤条件。
 
             - `tool_names: optional array of string`
 
@@ -18989,26 +18997,26 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `authorization: optional string`
 
-          可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-          与自定义 MCP 服务器 URL 或服务连接器配合使用。你的应用程序
-          必须处理 OAuth 授权流程并在此处提供令牌。
+          可用于远程 MCP 服务器的 OAuth 访问令牌，可搭配自定义 MCP 服务器 URL 或服务连接器使用。你的应用
+          必须处理 OAuth 授权流程，并在此处提供该令牌。
+          必须处理 OAuth 授权流程，并在此处提供该令牌。
 
         - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-          服务连接器的标识符，类似于 ChatGPT 中可用的那些。必须提供以下之一：
-          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中之一。了解更多
-          关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+          服务连接器的标识符，例如 ChatGPT 中提供的连接器之一。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解关于服务连接器
+          的更多信息 [请参阅此处](/docs/guides/tools-remote-mcp#connectors).
 
-          当前支持的值 `connector_id` 包括：
+          当前支持 `connector_id` 的值为：
 
-          - Dropbox： `connector_dropbox`
-          - Gmail： `connector_gmail`
-          - Google Calendar： `connector_googlecalendar`
-          - Google Drive： `connector_googledrive`
-          - Microsoft Teams： `connector_microsoftteams`
-          - Outlook Calendar： `connector_outlookcalendar`
-          - Outlook Email： `connector_outlookemail`
-          - SharePoint： `connector_sharepoint`
+          - Dropbox: `connector_dropbox`
+          - Gmail: `connector_gmail`
+          - Google Calendar: `connector_googlecalendar`
+          - Google Drive: `connector_googledrive`
+          - Microsoft Teams: `connector_microsoftteams`
+          - Outlook Calendar: `connector_outlookcalendar`
+          - Outlook Email: `connector_outlookemail`
+          - SharePoint: `connector_sharepoint`
 
           - `"connector_dropbox"`
 
@@ -19028,11 +19036,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `defer_loading: optional boolean`
 
-          此 MCP 工具是否被延迟并通过工具搜索发现。
+          此 MCP 工具是否被延迟，并通过工具搜索发现。
 
         - `headers: optional map[string] or null`
 
-          发送到 MCP 服务器的可选 HTTP 头。用于身份验证
+          发送到 MCP 服务器的可选 HTTP 请求头。用于身份验证
           或其他用途。
 
         - `require_approval: optional object { always, never }  or "always" or "never" or null`
@@ -19042,8 +19050,8 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
           - `McpToolApprovalFilter object { always, never }`
 
             指定 MCP 服务器的哪些工具需要审批。可以是
-            `always`, `never`，或一个与需要审批的工具关联的过滤器对象
-            。
+            `always`, `never`，或与工具关联的过滤对象
+            ，这些工具需要审批。
 
             - `always: optional object { read_only, tool_names }`
 
@@ -19051,9 +19059,9 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -19065,9 +19073,9 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -19075,8 +19083,8 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `McpToolApprovalSetting = "always" or "never"`
 
-            为所有工具指定单一审批策略。可以是 `always` 或
-            `never`。之一。当设置为 `always`，时，所有工具都需要审批。当
+            为所有工具指定统一的审批策略。可选值为 `always` 或
+            `never`。当设置为 `always`，时，所有工具都需要审批。当
             设置为 `never`，时，所有工具都不需要审批。
 
             - `"always"`
@@ -19089,22 +19097,22 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `server_url: optional string`
 
-          MCP 服务器的 URL。必须提供 `server_url`, `connector_id`，或
-          `tunnel_id` 之一。
+          MCP 服务器的 URL。 `server_url`, `connector_id`，或
+          `tunnel_id` 必须提供其中一个。
 
         - `tunnel_id: optional string`
 
-          用于替代直接服务器 URL 的安全 MCP 隧道 ID。必须提供
-          `server_url`, `connector_id`，或 `tunnel_id` 之一。
+          用于替代直接服务器 URL 的安全 MCP 隧道 ID。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中一个。
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
-        一个运行 Python 代码以帮助生成提示响应的工具。
+        运行 Python 代码以帮助生成对提示词响应的工具。
 
         - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-          代码解释器容器。可以是容器 ID，或一个对象，其中
-          指定了上传的文件 ID 以供你的代码使用，以及
+          代码解释器容器。可以是容器 ID，也可以是指定可供代码使用的已上传文件 ID 的对象，以及一个
+          指定可供你的代码使用的已上传文件 ID，以及一个
           可选的 `memory_limit` 设置。
 
           - `string`
@@ -19113,17 +19121,17 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器的配置。可选择指定要在其上运行代码的文件 ID。
+            代码解释器容器的配置。可选择指定要对其运行代码的文件 ID。
 
             - `type: "auto"`
 
-              始终 `auto`.
+              始终为 `auto`.
 
               - `"auto"`
 
             - `file_ids: optional array of string`
 
-              一个可选的已上传文件列表，供你的代码使用。
+              一个可选的、供代码使用的已上传文件列表。
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -19145,7 +19153,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
                 - `type: "disabled"`
 
-                  禁用出站网络访问。始终 `disabled`.
+                  禁用出站网络访问。始终为 `disabled`.
 
                   - `"disabled"`
 
@@ -19153,39 +19161,39 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
                 - `allowed_domains: array of string`
 
-                  当类型为以下值时，允许的域名列表： `allowlist`.
+                  当类型为 `allowlist`.
 
                 - `type: "allowlist"`
 
-                  仅允许对指定域名的出站网络访问。始终 `allowlist`.
+                  时，仅允许向指定域发出出站网络访问。始终为 `allowlist`.
 
                   - `"allowlist"`
 
                 - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                  可选，针对允许列表中域名的域级密钥。
+                  用于允许列表中域的可选、按域隔离的密钥。
 
                   - `domain: string`
 
-                    与密钥关联的域名。
+                    与该密钥关联的域。
 
                   - `name: string`
 
-                    要为该域名注入的密钥名称。
+                    要为该域注入的密钥名称。
 
                   - `value: string`
 
-                    要为该域名注入的密钥值。
+                    要为该域注入的密钥值。
 
         - `type: "code_interpreter"`
 
-          代码解释器工具的类型。始终 `code_interpreter`.
+          代码解释器工具的类型。始终为 `code_interpreter`.
 
           - `"code_interpreter"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -19195,7 +19203,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `type: "programmatic_tool_calling"`
 
-          工具的类型。始终 `programmatic_tool_calling`.
+          工具的类型。始终为 `programmatic_tool_calling`.
 
           - `"programmatic_tool_calling"`
 
@@ -19205,13 +19213,13 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `type: "image_generation"`
 
-          图像生成工具的类型。始终 `image_generation`.
+          图像生成工具的类型。始终为 `image_generation`.
 
           - `"image_generation"`
 
         - `action: optional "generate" or "edit" or "auto"`
 
-          是否生成新图像或编辑现有图像。默认值： `auto`.
+          是生成新图像还是编辑现有图像。默认值： `auto`.
 
           - `"generate"`
 
@@ -19221,11 +19229,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          设置生成图像的背景。可选值之一： `transparent`,
-          `opaque`，或 `auto`。透明背景可用于
-          支持的 GPT 图像模型。对于 `gpt-image-2` 以及
-          `gpt-image-2-2026-04-21`，此支持目前处于预览阶段。使用
-          `transparent`，时，请将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
+          设置生成图像的背景。取值之一 `transparent`,
+          `opaque`，或 `auto`。透明背景适用于受支持的
+          GPT Image 模型。对于 `gpt-image-2` 和
+          `gpt-image-2-2026-04-21`，该支持目前处于预览阶段。使用
+          `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
           - `"transparent"`
 
@@ -19235,7 +19243,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          控制模型在匹配输入图像的风格和特征（尤其是面部特征）上投入的努力程度。此参数仅支持 `gpt-image-1` 以及 `gpt-image-1.5` 及更高版本模型，不支持 `gpt-image-1-mini`。支持 `high` 以及 `low`。默认为 `low`.
+          控制模型在匹配输入图像风格和特征（尤其是面部特征）时所付出的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
 
           - `"high"`
 
@@ -19243,7 +19251,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `input_image_mask: optional object { file_id, image_url }`
 
-          用于修复的可选遮罩。包含 `image_url`
+          用于局部重绘的可选遮罩。包含 `image_url`
           （字符串，可选）和 `file_id` （字符串，可选）。
 
           - `file_id: optional string`
@@ -19256,7 +19264,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-          要使用的图像生成模型。可选值之一 `gpt-image-1`,
+          要使用的图像生成模型。可选值为 `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
           `gpt-image-1`.
@@ -19265,7 +19273,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。可选值之一 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
@@ -19282,7 +19290,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `moderation: optional "auto" or "low"`
 
-          生成图像的审核级别。默认值： `auto`.
+          生成图像的内容审核级别。默认值： `auto`.
 
           - `"auto"`
 
@@ -19294,7 +19302,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `output_format: optional "png" or "webp" or "jpeg"`
 
-          生成图像的输出格式。可选值之一 `png`, `webp`，或
+          生成图像的输出格式。可选值为 `png`, `webp`，或
           `jpeg`。默认值： `png`.
 
           - `"png"`
@@ -19305,11 +19313,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `partial_images: optional number`
 
-          流式模式下生成的部分图像数量，范围从 0（默认值）到 3。
+          在流式模式下生成的部分图像数量，取值范围为 0（默认值）到 3。
 
         - `quality: optional "low" or "medium" or "high" or "auto"`
 
-          生成图像的质量。可选值之一 `low`, `medium`, `high`,
+          生成图像的质量。可选值为 `low`, `medium`, `high`,
           或 `auto`。默认值： `auto`.
 
           - `"low"`
@@ -19322,13 +19330,13 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+          生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `"1024x1024"`
 
@@ -19340,27 +19348,27 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `LocalShell object { type }`
 
-        一种允许模型在本地环境中执行 shell 命令的工具。
+        允许模型在本地环境中执行 shell 命令的工具。
 
         - `type: "local_shell"`
 
-          本地 shell 工具的类型。始终为 `local_shell`.
+          本地 shell 工具的类型，始终为 `local_shell`.
 
           - `"local_shell"`
 
       - `Shell object { type, allowed_callers, environment }`
 
-        一种允许模型执行 shell 命令的工具。
+        允许模型执行 shell 命令的工具。
 
         - `type: "shell"`
 
-          shell 工具的类型。始终为 `shell`.
+          shell 工具的类型，始终为 `shell`.
 
           - `"shell"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -19372,13 +19380,13 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `type: "container_auto"`
 
-              自动为此请求创建容器
+              为本次请求自动创建一个容器
 
               - `"container_auto"`
 
             - `file_ids: optional array of string`
 
-              一个可选的已上传文件列表，供你的代码使用。
+              一个可选的、供代码使用的已上传文件列表。
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -19402,13 +19410,13 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `skills: optional array of SkillReference or InlineSkill`
 
-              可选技能列表，通过 ID 或内联数据引用。
+              通过 id 或内联数据引用的可选技能列表。
 
               - `SkillReference object { skill_id, type, version }`
 
                 - `skill_id: string`
 
-                  被引用技能的 ID。
+                  所引用技能的 ID。
 
                 - `type: "skill_reference"`
 
@@ -19418,7 +19426,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
                 - `version: optional string`
 
-                  可选技能版本。使用正整数或 'latest'。省略则使用默认值。
+                  可选的技能版本。使用正整数或 'latest'。省略则使用默认值。
 
               - `InlineSkill object { description, name, source, type }`
 
@@ -19428,7 +19436,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
                 - `name: string`
 
-                  该技能的名称。
+                  技能的名称。
 
                 - `source: InlineSkillSource`
 
@@ -19452,7 +19460,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
                 - `type: "inline"`
 
-                  为此请求定义一个内联技能。
+                  为本次请求定义一个内联技能。
 
                   - `"inline"`
 
@@ -19466,7 +19474,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `skills: optional array of LocalSkill`
 
-              可选技能列表。
+              可选的技能列表。
 
               - `description: string`
 
@@ -19474,11 +19482,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
               - `name: string`
 
-                该技能的名称。
+                技能的名称。
 
               - `path: string`
 
-                包含该技能的目录路径。
+                指向包含该技能的目录的路径。
 
           - `ContainerReference object { container_id, type }`
 
@@ -19494,7 +19502,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `Custom object { name, type, allowed_callers, 3 more }`
 
-        一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+        使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -19508,7 +19516,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -19516,7 +19524,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `defer_loading: optional boolean`
 
-          是否应延迟此工具并通过工具搜索发现。
+          是否应延迟此工具并通过工具搜索发现它。
 
         - `description: optional string`
 
@@ -19524,11 +19532,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `format: optional CustomToolInputFormat`
 
-          自定义工具的输入格式。默认为无约束文本。
+          自定义工具的输入格式。默认是无约束文本。
 
           - `Text object { type }`
 
-            无约束的自由格式文本。
+            无约束的自由形式文本。
 
             - `type: "text"`
 
@@ -19538,15 +19546,15 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `Grammar object { definition, syntax, type }`
 
-            由用户定义的文法。
+            由用户定义的语法。
 
             - `definition: string`
 
-              文法定义。
+              语法定义。
 
             - `syntax: "lark" or "regex"`
 
-              文法定义的语法。其中之一为 `lark` 或 `regex`.
+              语法定义的语法。可选值为 `lark` 或 `regex`.
 
               - `"lark"`
 
@@ -19554,25 +19562,25 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `type: "grammar"`
 
-              文法格式。始终 `grammar`.
+              语法格式。始终为 `grammar`.
 
               - `"grammar"`
 
       - `Namespace object { description, name, tools, type }`
 
-        将函数/自定义工具分组到共享命名空间下。
+        在共享命名空间下对 function/custom 工具进行分组。
 
         - `description: string`
 
-          显示给模型的命名空间描述。
+          展示给模型的命名空间描述。
 
         - `name: string`
 
-          工具调用中使用的命名空间名称（例如， `crm`).
+          在工具调用中使用的命名空间名称（例如， `crm`).
 
         - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
-          此命名空间内可用的函数/自定义工具。
+          该命名空间内可用的 function/custom 工具。
 
           - `Function object { name, type, allowed_callers, 5 more }`
 
@@ -19584,7 +19592,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-              工具调用上下文。
+              该工具的调用上下文。
 
               - `"direct"`
 
@@ -19592,23 +19600,23 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `defer_loading: optional boolean`
 
-              此函数是否应延迟并通过工具搜索发现。
+              是否应延迟此函数并通过工具搜索发现。
 
             - `description: optional string or null`
 
             - `output_schema: optional map[unknown] or null`
 
-              描述此函数工具字符串输出中编码的 JSON 值的 JSON Schema。这不描述内容数组输出。
+              用于描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content-array 输出。
 
             - `parameters: optional unknown or null`
 
             - `strict: optional boolean or null`
 
-              是否强制进行严格的参数验证。如果省略，当 schema 兼容时，Responses 会尝试使用严格验证，否则回退到非严格验证。
+              是否强制执行严格的参数校验。如果省略，Responses 会尝试在 schema 兼容时使用严格校验，否则回退到非严格校验。
 
           - `Custom object { name, type, allowed_callers, 3 more }`
 
-            一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+            使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -19622,7 +19630,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-              工具调用上下文。
+              该工具的调用上下文。
 
               - `"direct"`
 
@@ -19630,7 +19638,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `defer_loading: optional boolean`
 
-              是否应延迟此工具并通过工具搜索发现。
+              是否应延迟此工具并通过工具搜索发现它。
 
             - `description: optional string`
 
@@ -19638,27 +19646,27 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `format: optional CustomToolInputFormat`
 
-              自定义工具的输入格式。默认为无约束文本。
+              自定义工具的输入格式。默认是无约束文本。
 
         - `type: "namespace"`
 
-          工具的类型。始终 `namespace`.
+          工具的类型。始终为 `namespace`.
 
           - `"namespace"`
 
       - `ToolSearch object { type, description, execution, parameters }`
 
-        延迟工具的托管或 BYOT 工具搜索配置。
+        用于延迟工具的托管或 BYOT 工具搜索配置。
 
         - `type: "tool_search"`
 
-          工具的类型。始终 `tool_search`.
+          工具的类型。始终为 `tool_search`.
 
           - `"tool_search"`
 
         - `description: optional string or null`
 
-          显示给模型的客户端执行工具搜索工具的描述。
+          展示给模型的客户端执行的工具搜索工具的描述。
 
         - `execution: optional "server" or "client"`
 
@@ -19670,15 +19678,15 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `parameters: optional unknown or null`
 
-          客户端执行工具搜索工具的参数 schema。
+          客户端执行的工具搜索工具的参数 schema。
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        此工具搜索网页以获取用于响应的相关结果。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+        此工具会在网络上搜索相关结果以用于回复中。详细了解 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-          网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+          网页搜索工具的类型，取值之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
           - `"web_search_preview"`
 
@@ -19692,7 +19700,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
           - `"low"`
 
@@ -19702,25 +19710,25 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          用户的位置。
+          用户所在的位置。
 
           - `type: "approximate"`
 
-            位置近似的类型。始终 `approximate`.
+            位置近似的类型。始终为 `approximate`.
 
             - `"approximate"`
 
           - `city: optional string or null`
 
-            用户的城市的自由文本输入，例如 `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+            两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户的地区的自由文本输入，例如 `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
@@ -19728,17 +19736,17 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `ApplyPatch object { type, allowed_callers }`
 
-        允许助手使用统一差异创建、删除或更新文件。
+        允许助手使用 unified diff 创建、删除或更新文件。
 
         - `type: "apply_patch"`
 
-          工具的类型。始终 `apply_patch`.
+          工具的类型。始终为 `apply_patch`.
 
           - `"apply_patch"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -19746,19 +19754,19 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `type: "tool_search_output"`
 
-      项目的类型。始终为 `tool_search_output`.
+      项的类型。始终为 `tool_search_output`.
 
       - `"tool_search_output"`
 
     - `created_by: optional string`
 
-      创建该项目的执行者的标识符。
+      创建该项的执行者的标识符。
 
   - `AdditionalTools object { id, role, tools, type }`
 
     - `id: string`
 
-      附加工具条目的唯一 ID。
+      该附加工具条目的唯一 ID。
 
     - `role: "unknown" or "user" or "assistant" or 5 more`
 
@@ -19782,33 +19790,33 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `tools: array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-      此条目中可用的附加工具定义。
+      在该条目处可用的附加工具定义。
 
       - `Function object { name, parameters, strict, 5 more }`
 
-        定义你自己代码中模型可以选择调用的函数。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+        定义你自己代码中的某个函数，供模型选择调用。详细了解 [function calling](https://platform.openai.com/docs/guides/function-calling).
 
         - `name: string`
 
-          要调用的函数的名称。
+          要调用的函数名称。
 
         - `parameters: map[unknown] or null`
 
-          描述函数参数的 JSON schema 对象。
+          描述该函数参数的 JSON schema 对象。
 
         - `strict: boolean or null`
 
-          是否对此函数工具强制执行严格的参数验证。
+          是否为该函数工具启用严格的参数校验。
 
         - `type: "function"`
 
-          函数工具的类型。始终为 `function`.
+          该函数工具的类型。始终为 `function`.
 
           - `"function"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -19816,19 +19824,19 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `defer_loading: optional boolean`
 
-          此函数是否延迟并通过工具搜索加载。
+          该函数是否为延迟加载，并通过工具搜索加载。
 
         - `description: optional string or null`
 
-          函数的描述。模型据此确定是否调用该函数。
+          该函数的描述。模型据此决定是否调用该函数。
 
         - `output_schema: optional map[unknown] or null`
 
-          描述此函数的字符串输出中编码的 JSON 值的 JSON schema 对象。
+          描述该函数在字符串输出中编码的 JSON 值的 JSON schema 对象。
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        一种从上传文件中搜索相关内容工具。详细了解 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+        一个用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 tool](https://platform.openai.com/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -19846,15 +19854,15 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `ComparisonFilter object { key, type, value }`
 
-            用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+            用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
           - `CompoundFilter object { filters, type }`
 
-            使用以下方式组合多个筛选器 `and` 或 `or`.
+            使用以下方式组合多个过滤器 `and` 或 `or`.
 
         - `max_num_results: optional number`
 
-          要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+          返回结果的最大数量。此数量应介于 1 到 50 之间（含两端）。
 
         - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -19862,19 +19870,19 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-            启用混合搜索时，控制倒数排名融合如何在语义嵌入匹配与稀疏关键词匹配之间取得平衡的权重。
+            在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
             - `embedding_weight: number`
 
-              嵌入在倒数排名融合中的权重。
+              在倒数排名融合中嵌入的权重。
 
             - `text_weight: number`
 
-              文本在倒数排名融合中的权重。
+              在倒数排名融合中文本的权重。
 
           - `ranker: optional "auto" or "default-2024-11-15"`
 
-            用于文件搜索的排序器。
+            用于 文件搜索 的排序器。
 
             - `"auto"`
 
@@ -19882,11 +19890,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `score_threshold: optional number`
 
-            文件搜索的分数阈值，为0到1之间的数字。数字越接近1，将尝试仅返回最相关的结果，但可能返回较少的結果。
+            文件搜索 的分数阈值，取值范围为 0 到 1 之间。数值越接近 1，越会尝试只返回最相关的结果，但返回的结果数量可能会减少。
 
       - `Computer object { type }`
 
-        一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -19896,19 +19904,19 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
-          计算机显示器的宽度。
+          计算机显示屏的高度。
 
         - `display_width: number`
 
-          计算机显示器的宽度。
+          计算机显示屏的宽度。
 
         - `environment: "windows" or "mac" or "linux" or 2 more`
 
-          要控制的计算机环境的类型。
+          要控制的计算机环境类型。
 
           - `"windows"`
 
@@ -19928,12 +19936,12 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-        搜索互联网以获取与提示相关的来源。了解更多关于
+        在互联网上搜索与提示相关的来源。详细了解
         [网页搜索工具](/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
-          网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+          网页搜索工具的类型，取值之一为 `web_search` 或 `web_search_2025_08_26`.
 
           - `"web_search"`
 
@@ -19941,22 +19949,22 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `external_web_access: optional boolean`
 
-          允许网页搜索实时访问互联网。省略时默认为true。为false时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+          允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
         - `filters: optional object { allowed_domains }  or null`
 
-          搜索的过滤器。
+          搜索的筛选条件。
 
           - `allowed_domains: optional array of string or null`
 
-            搜索允许的域名。如果未提供，则允许所有域名。
-            所提供域名的子域名也允许。
+            允许进行搜索的域名。如果未提供，则允许所有域名。
+            同时也允许所提供域名的子域名。
 
             示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
           - `"low"`
 
@@ -19970,15 +19978,15 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `city: optional string or null`
 
-            用户的城市的自由文本输入，例如 `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+            两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户的地区的自由文本输入，例如 `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
@@ -19986,14 +19994,14 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `type: optional "approximate"`
 
-            位置近似的类型。始终 `approximate`.
+            位置近似的类型。始终为 `approximate`.
 
             - `"approximate"`
 
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-        通过远程 Model Context Protocol 让模型访问额外工具
-        (MCP) 服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+        通过远程 Model Context Protocol
+        （MCP）服务器为模型提供对其他工具的访问权限。 [了解更多关于 MCP 的信息](/docs/guides/tools-remote-mcp).
 
         - `server_label: string`
 
@@ -20001,13 +20009,13 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `type: "mcp"`
 
-          MCP 工具的类型。始终 `mcp`.
+          MCP 工具的类型。始终为 `mcp`.
 
           - `"mcp"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -20019,7 +20027,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `McpAllowedTools = array of string`
 
-            允许工具名称的字符串数组
+            允许的工具名称组成的字符串数组
 
           - `McpToolFilter object { read_only, tool_names }`
 
@@ -20027,9 +20035,9 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `read_only: optional boolean`
 
-              指示工具是否修改数据或为只读。如果
-              MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-              ，它将匹配此过滤器。
+              指示工具是否修改数据或是否为只读。如果某个
+              MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+              ，它将匹配此过滤条件。
 
             - `tool_names: optional array of string`
 
@@ -20037,26 +20045,26 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `authorization: optional string`
 
-          可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-          与自定义 MCP 服务器 URL 或服务连接器配合使用。你的应用程序
-          必须处理 OAuth 授权流程并在此处提供令牌。
+          可用于远程 MCP 服务器的 OAuth 访问令牌，可搭配自定义 MCP 服务器 URL 或服务连接器使用。你的应用
+          必须处理 OAuth 授权流程，并在此处提供该令牌。
+          必须处理 OAuth 授权流程，并在此处提供该令牌。
 
         - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-          服务连接器的标识符，类似于 ChatGPT 中可用的那些。必须提供以下之一：
-          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中之一。了解更多
-          关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+          服务连接器的标识符，例如 ChatGPT 中提供的连接器之一。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解关于服务连接器
+          的更多信息 [请参阅此处](/docs/guides/tools-remote-mcp#connectors).
 
-          当前支持的值 `connector_id` 包括：
+          当前支持 `connector_id` 的值为：
 
-          - Dropbox： `connector_dropbox`
-          - Gmail： `connector_gmail`
-          - Google Calendar： `connector_googlecalendar`
-          - Google Drive： `connector_googledrive`
-          - Microsoft Teams： `connector_microsoftteams`
-          - Outlook Calendar： `connector_outlookcalendar`
-          - Outlook Email： `connector_outlookemail`
-          - SharePoint： `connector_sharepoint`
+          - Dropbox: `connector_dropbox`
+          - Gmail: `connector_gmail`
+          - Google Calendar: `connector_googlecalendar`
+          - Google Drive: `connector_googledrive`
+          - Microsoft Teams: `connector_microsoftteams`
+          - Outlook Calendar: `connector_outlookcalendar`
+          - Outlook Email: `connector_outlookemail`
+          - SharePoint: `connector_sharepoint`
 
           - `"connector_dropbox"`
 
@@ -20076,11 +20084,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `defer_loading: optional boolean`
 
-          此 MCP 工具是否被延迟并通过工具搜索发现。
+          此 MCP 工具是否被延迟，并通过工具搜索发现。
 
         - `headers: optional map[string] or null`
 
-          发送到 MCP 服务器的可选 HTTP 头。用于身份验证
+          发送到 MCP 服务器的可选 HTTP 请求头。用于身份验证
           或其他用途。
 
         - `require_approval: optional object { always, never }  or "always" or "never" or null`
@@ -20090,8 +20098,8 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
           - `McpToolApprovalFilter object { always, never }`
 
             指定 MCP 服务器的哪些工具需要审批。可以是
-            `always`, `never`，或一个与需要审批的工具关联的过滤器对象
-            。
+            `always`, `never`，或与工具关联的过滤对象
+            ，这些工具需要审批。
 
             - `always: optional object { read_only, tool_names }`
 
@@ -20099,9 +20107,9 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -20113,9 +20121,9 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -20123,8 +20131,8 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `McpToolApprovalSetting = "always" or "never"`
 
-            为所有工具指定单一审批策略。可以是 `always` 或
-            `never`。之一。当设置为 `always`，时，所有工具都需要审批。当
+            为所有工具指定统一的审批策略。可选值为 `always` 或
+            `never`。当设置为 `always`，时，所有工具都需要审批。当
             设置为 `never`，时，所有工具都不需要审批。
 
             - `"always"`
@@ -20137,22 +20145,22 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `server_url: optional string`
 
-          MCP 服务器的 URL。必须提供 `server_url`, `connector_id`，或
-          `tunnel_id` 之一。
+          MCP 服务器的 URL。 `server_url`, `connector_id`，或
+          `tunnel_id` 必须提供其中一个。
 
         - `tunnel_id: optional string`
 
-          用于替代直接服务器 URL 的安全 MCP 隧道 ID。必须提供
-          `server_url`, `connector_id`，或 `tunnel_id` 之一。
+          用于替代直接服务器 URL 的安全 MCP 隧道 ID。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中一个。
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
-        一个运行 Python 代码以帮助生成提示响应的工具。
+        运行 Python 代码以帮助生成对提示词响应的工具。
 
         - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-          代码解释器容器。可以是容器 ID，或一个对象，其中
-          指定了上传的文件 ID 以供你的代码使用，以及
+          代码解释器容器。可以是容器 ID，也可以是指定可供代码使用的已上传文件 ID 的对象，以及一个
+          指定可供你的代码使用的已上传文件 ID，以及一个
           可选的 `memory_limit` 设置。
 
           - `string`
@@ -20161,17 +20169,17 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器的配置。可选择指定要在其上运行代码的文件 ID。
+            代码解释器容器的配置。可选择指定要对其运行代码的文件 ID。
 
             - `type: "auto"`
 
-              始终 `auto`.
+              始终为 `auto`.
 
               - `"auto"`
 
             - `file_ids: optional array of string`
 
-              一个可选的已上传文件列表，供你的代码使用。
+              一个可选的、供代码使用的已上传文件列表。
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -20195,13 +20203,13 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `type: "code_interpreter"`
 
-          代码解释器工具的类型。始终 `code_interpreter`.
+          代码解释器工具的类型。始终为 `code_interpreter`.
 
           - `"code_interpreter"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -20211,7 +20219,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `type: "programmatic_tool_calling"`
 
-          工具的类型。始终 `programmatic_tool_calling`.
+          工具的类型。始终为 `programmatic_tool_calling`.
 
           - `"programmatic_tool_calling"`
 
@@ -20221,13 +20229,13 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `type: "image_generation"`
 
-          图像生成工具的类型。始终 `image_generation`.
+          图像生成工具的类型。始终为 `image_generation`.
 
           - `"image_generation"`
 
         - `action: optional "generate" or "edit" or "auto"`
 
-          是否生成新图像或编辑现有图像。默认值： `auto`.
+          是生成新图像还是编辑现有图像。默认值： `auto`.
 
           - `"generate"`
 
@@ -20237,11 +20245,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          设置生成图像的背景。可选值之一： `transparent`,
-          `opaque`，或 `auto`。透明背景可用于
-          支持的 GPT 图像模型。对于 `gpt-image-2` 以及
-          `gpt-image-2-2026-04-21`，此支持目前处于预览阶段。使用
-          `transparent`，时，请将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
+          设置生成图像的背景。取值之一 `transparent`,
+          `opaque`，或 `auto`。透明背景适用于受支持的
+          GPT Image 模型。对于 `gpt-image-2` 和
+          `gpt-image-2-2026-04-21`，该支持目前处于预览阶段。使用
+          `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
           - `"transparent"`
 
@@ -20251,7 +20259,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          控制模型在匹配输入图像的风格和特征（尤其是面部特征）上投入的努力程度。此参数仅支持 `gpt-image-1` 以及 `gpt-image-1.5` 及更高版本模型，不支持 `gpt-image-1-mini`。支持 `high` 以及 `low`。默认为 `low`.
+          控制模型在匹配输入图像风格和特征（尤其是面部特征）时所付出的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
 
           - `"high"`
 
@@ -20259,7 +20267,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `input_image_mask: optional object { file_id, image_url }`
 
-          用于修复的可选遮罩。包含 `image_url`
+          用于局部重绘的可选遮罩。包含 `image_url`
           （字符串，可选）和 `file_id` （字符串，可选）。
 
           - `file_id: optional string`
@@ -20272,7 +20280,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-          要使用的图像生成模型。可选值之一 `gpt-image-1`,
+          要使用的图像生成模型。可选值为 `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
           `gpt-image-1`.
@@ -20281,7 +20289,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
           - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。可选值之一 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
@@ -20298,7 +20306,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `moderation: optional "auto" or "low"`
 
-          生成图像的审核级别。默认值： `auto`.
+          生成图像的内容审核级别。默认值： `auto`.
 
           - `"auto"`
 
@@ -20310,7 +20318,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `output_format: optional "png" or "webp" or "jpeg"`
 
-          生成图像的输出格式。可选值之一 `png`, `webp`，或
+          生成图像的输出格式。可选值为 `png`, `webp`，或
           `jpeg`。默认值： `png`.
 
           - `"png"`
@@ -20321,11 +20329,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `partial_images: optional number`
 
-          流式模式下生成的部分图像数量，范围从 0（默认值）到 3。
+          在流式模式下生成的部分图像数量，取值范围为 0（默认值）到 3。
 
         - `quality: optional "low" or "medium" or "high" or "auto"`
 
-          生成图像的质量。可选值之一 `low`, `medium`, `high`,
+          生成图像的质量。可选值为 `low`, `medium`, `high`,
           或 `auto`。默认值： `auto`.
 
           - `"low"`
@@ -20338,13 +20346,13 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+          生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `"1024x1024"`
 
@@ -20356,27 +20364,27 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `LocalShell object { type }`
 
-        一种允许模型在本地环境中执行 shell 命令的工具。
+        允许模型在本地环境中执行 shell 命令的工具。
 
         - `type: "local_shell"`
 
-          本地 shell 工具的类型。始终为 `local_shell`.
+          本地 shell 工具的类型，始终为 `local_shell`.
 
           - `"local_shell"`
 
       - `Shell object { type, allowed_callers, environment }`
 
-        一种允许模型执行 shell 命令的工具。
+        允许模型执行 shell 命令的工具。
 
         - `type: "shell"`
 
-          shell 工具的类型。始终为 `shell`.
+          shell 工具的类型，始终为 `shell`.
 
           - `"shell"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -20392,7 +20400,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `Custom object { name, type, allowed_callers, 3 more }`
 
-        一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+        使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -20406,7 +20414,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -20414,7 +20422,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `defer_loading: optional boolean`
 
-          是否应延迟此工具并通过工具搜索发现。
+          是否应延迟此工具并通过工具搜索发现它。
 
         - `description: optional string`
 
@@ -20422,23 +20430,23 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `format: optional CustomToolInputFormat`
 
-          自定义工具的输入格式。默认为无约束文本。
+          自定义工具的输入格式。默认是无约束文本。
 
       - `Namespace object { description, name, tools, type }`
 
-        将函数/自定义工具分组到共享命名空间下。
+        在共享命名空间下对 function/custom 工具进行分组。
 
         - `description: string`
 
-          显示给模型的命名空间描述。
+          展示给模型的命名空间描述。
 
         - `name: string`
 
-          工具调用中使用的命名空间名称（例如， `crm`).
+          在工具调用中使用的命名空间名称（例如， `crm`).
 
         - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
-          此命名空间内可用的函数/自定义工具。
+          该命名空间内可用的 function/custom 工具。
 
           - `Function object { name, type, allowed_callers, 5 more }`
 
@@ -20450,7 +20458,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-              工具调用上下文。
+              该工具的调用上下文。
 
               - `"direct"`
 
@@ -20458,23 +20466,23 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `defer_loading: optional boolean`
 
-              此函数是否应延迟并通过工具搜索发现。
+              是否应延迟此函数并通过工具搜索发现。
 
             - `description: optional string or null`
 
             - `output_schema: optional map[unknown] or null`
 
-              描述此函数工具字符串输出中编码的 JSON 值的 JSON Schema。这不描述内容数组输出。
+              用于描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content-array 输出。
 
             - `parameters: optional unknown or null`
 
             - `strict: optional boolean or null`
 
-              是否强制进行严格的参数验证。如果省略，当 schema 兼容时，Responses 会尝试使用严格验证，否则回退到非严格验证。
+              是否强制执行严格的参数校验。如果省略，Responses 会尝试在 schema 兼容时使用严格校验，否则回退到非严格校验。
 
           - `Custom object { name, type, allowed_callers, 3 more }`
 
-            一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+            使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -20488,7 +20496,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-              工具调用上下文。
+              该工具的调用上下文。
 
               - `"direct"`
 
@@ -20496,7 +20504,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `defer_loading: optional boolean`
 
-              是否应延迟此工具并通过工具搜索发现。
+              是否应延迟此工具并通过工具搜索发现它。
 
             - `description: optional string`
 
@@ -20504,27 +20512,27 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
             - `format: optional CustomToolInputFormat`
 
-              自定义工具的输入格式。默认为无约束文本。
+              自定义工具的输入格式。默认是无约束文本。
 
         - `type: "namespace"`
 
-          工具的类型。始终 `namespace`.
+          工具的类型。始终为 `namespace`.
 
           - `"namespace"`
 
       - `ToolSearch object { type, description, execution, parameters }`
 
-        延迟工具的托管或 BYOT 工具搜索配置。
+        用于延迟工具的托管或 BYOT 工具搜索配置。
 
         - `type: "tool_search"`
 
-          工具的类型。始终 `tool_search`.
+          工具的类型。始终为 `tool_search`.
 
           - `"tool_search"`
 
         - `description: optional string or null`
 
-          显示给模型的客户端执行工具搜索工具的描述。
+          展示给模型的客户端执行的工具搜索工具的描述。
 
         - `execution: optional "server" or "client"`
 
@@ -20536,15 +20544,15 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `parameters: optional unknown or null`
 
-          客户端执行工具搜索工具的参数 schema。
+          客户端执行的工具搜索工具的参数 schema。
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        此工具搜索网页以获取用于响应的相关结果。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+        此工具会在网络上搜索相关结果以用于回复中。详细了解 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-          网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+          网页搜索工具的类型，取值之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
           - `"web_search_preview"`
 
@@ -20558,7 +20566,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
           - `"low"`
 
@@ -20568,25 +20576,25 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          用户的位置。
+          用户所在的位置。
 
           - `type: "approximate"`
 
-            位置近似的类型。始终 `approximate`.
+            位置近似的类型。始终为 `approximate`.
 
             - `"approximate"`
 
           - `city: optional string or null`
 
-            用户的城市的自由文本输入，例如 `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+            两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户的地区的自由文本输入，例如 `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
@@ -20594,17 +20602,17 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `ApplyPatch object { type, allowed_callers }`
 
-        允许助手使用统一差异创建、删除或更新文件。
+        允许助手使用 unified diff 创建、删除或更新文件。
 
         - `type: "apply_patch"`
 
-          工具的类型。始终 `apply_patch`.
+          工具的类型。始终为 `apply_patch`.
 
           - `"apply_patch"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -20612,15 +20620,15 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `type: "additional_tools"`
 
-      项目的类型。始终为 `additional_tools`.
+      项的类型。始终为 `additional_tools`.
 
       - `"additional_tools"`
 
   - `Reasoning object { id, summary, type, 3 more }`
 
-    推理模型在生成
-    响应时所用思维链的描述。请务必将这些项目包含在你的 `input` 对 Responses API 的
-    后续对话轮次中，如果你正在手动
+    对推理模型在生成响应时所使用的思维链的描述。如果你是手动
+    管理上下文，请务必在后续对话轮次中将这些项包含在 `input` 对 Responses API 的
+    请求中。
     [管理上下文](/docs/guides/conversation-state).
 
     - `id: string`
@@ -20633,7 +20641,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `text: string`
 
-        模型到目前为止的推理输出摘要。
+        到目前为止模型推理输出的摘要。
 
       - `type: "summary_text"`
 
@@ -20661,20 +20669,20 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `encrypted_content: optional string or null`
 
-      推理项目的加密内容。默认情况下，此字段由
-      返回的推理项目填充，适用于 `POST /v1/responses` 和 WebSocket
-      `response.create` 请求。
+      推理条目的加密内容。默认情况下，对于通过
+      和 WebSocket `POST /v1/responses` 请求返回的推理条目，
+      `response.create` 会填充该字段。
 
-      流式传输时，请使用已完成的推理项及其
-      `encrypted_content` 从 `response.output_item.done` 事件中
-      的后续请求。该 `encrypted_content` 中
-      `response.output_item.added` 可能不完整。这在
-      特别重要，当 `store` 是 `false` 或使用零数据保留时。
+      流式传输时，使用已完成的推理项及其
+      `encrypted_content` 来自 `response.output_item.done` 事件中的
+      字段，并在后续请求中传递。 `encrypted_content` 在
+      `response.output_item.added` 中可能不完整。这一点尤其
+      重要，当你 `store` 为 `false` 时，或使用 Zero Data Retention 时。
 
     - `status: optional "in_progress" or "completed" or "incomplete"`
 
-      条目的状态。其一为 `in_progress`, `completed`，或
-      `incomplete`。当项目通过 API 返回时填充。
+      该条目的状态。可选值为 `in_progress`, `completed`，或
+      `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -20690,19 +20698,19 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `call_id: string`
 
-      程序项的稳定调用 ID。
+      程序条目的稳定调用 ID。
 
     - `code: string`
 
-      由编程式工具调用执行的 JavaScript 源代码。
+      由程序化工具调用执行的 JavaScript 源码。
 
     - `fingerprint: string`
 
-      不透明的程序重放指纹，必须往返传输。
+      必须往返透传的不透明程序重放指纹。
 
     - `type: "program"`
 
-      项目的类型。始终为 `program`.
+      项的类型。始终为 `program`.
 
       - `"program"`
 
@@ -20730,13 +20738,13 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `type: "program_output"`
 
-      项目的类型。始终为 `program_output`.
+      项的类型。始终为 `program_output`.
 
       - `"program_output"`
 
   - `Compaction object { id, encrypted_content, type, created_by }`
 
-    由该工具生成的压缩项 [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+    由 [`v1/responses/compact` API](/docs/api-reference/responses/compact).
 
     - `id: string`
 
@@ -20744,17 +20752,17 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `encrypted_content: string`
 
-      压缩产生的加密内容。
+      由压缩生成的加密内容。
 
     - `type: "compaction"`
 
-      项目的类型。始终为 `compaction`.
+      项的类型。始终为 `compaction`.
 
       - `"compaction"`
 
     - `created_by: optional string`
 
-      创建该项目的执行者的标识符。
+      创建该项的执行者的标识符。
 
   - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -20766,7 +20774,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `code: string or null`
 
-      要运行的代码，如果不可用则为 null。
+      要运行的代码，若不可用则为 null。
 
     - `container_id: string`
 
@@ -20775,7 +20783,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
     - `outputs: array of object { logs, type }  or object { type, url }  or null`
 
       代码解释器生成的输出，例如日志或图像。
-      如果没有可用的输出，则可以为 null。
+      若没有可用输出，可能为 null。
 
       - `Logs object { logs, type }`
 
@@ -20793,7 +20801,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `Image object { type, url }`
 
-        代码解释器的图像输出。
+        代码解释器输出的图像。
 
         - `type: "image"`
 
@@ -20803,7 +20811,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `url: string`
 
-          代码解释器图像输出的 URL。
+          代码解释器输出图像的 URL。
 
     - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -20835,7 +20843,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `action: object { command, env, type, 3 more }`
 
-      在服务器上执行 shell 命令。
+      在服务端执行 shell 命令。
 
       - `command: array of string`
 
@@ -20857,7 +20865,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `user: optional string or null`
 
-        运行命令的可选用户。
+        运行命令所使用的可选用户。
 
       - `working_directory: optional string or null`
 
@@ -20865,11 +20873,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `call_id: string`
 
-      模型生成的本地 shell 工具调用的唯一 ID。
+      模型生成的本机 shell 工具调用的唯一 ID。
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      本地 shell 调用的状态。
+      本机 shell 调用的状态。
 
       - `"in_progress"`
 
@@ -20879,31 +20887,31 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `type: "local_shell_call"`
 
-      本地 shell 调用的类型。始终为 `local_shell_call`.
+      本机 shell 调用的类型。始终为 `local_shell_call`.
 
       - `"local_shell_call"`
 
   - `LocalShellCallOutput object { id, output, type, status }`
 
-    本地 shell 工具调用的输出。
+    本机 shell 工具调用的输出。
 
     - `id: string`
 
-      模型生成的本地 shell 工具调用的唯一 ID。
+      模型生成的本机 shell 工具调用的唯一 ID。
 
     - `output: string`
 
-      本地 shell 工具调用输出的 JSON 字符串。
+      本机 shell 工具调用输出的 JSON 字符串。
 
     - `type: "local_shell_call_output"`
 
-      本地 shell 工具调用输出的类型。始终为 `local_shell_call_output`.
+      本机 shell 工具调用输出的类型。始终为 `local_shell_call_output`.
 
       - `"local_shell_call_output"`
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-      条目的状态。其一为 `in_progress`, `completed`，或 `incomplete`.
+      该条目的状态。可选值为 `in_progress`, `completed`，或 `incomplete`.
 
       - `"in_progress"`
 
@@ -20913,25 +20921,25 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
   - `ShellCall object { id, action, call_id, 5 more }`
 
-    在受管环境中执行一个或多个 shell 命令的工具调用。
+    在托管环境中执行一条或多条 shell 命令的工具调用。
 
     - `id: string`
 
-      shell 工具调用的唯一 ID。当此项目通过 API 返回时填充。
+      shell 工具调用的唯一 ID。通过 API 返回此条目时填充。
 
     - `action: object { commands, max_output_length, timeout_ms }`
 
-      描述如何运行工具调用的 shell 命令和限制。
+      描述如何运行该工具调用的 shell 命令和限制。
 
       - `commands: array of string`
 
       - `max_output_length: number or null`
 
-        可选，每个命令返回的最大字符数。
+        可选的每个命令返回的最大字符数。
 
       - `timeout_ms: number or null`
 
-        可选，命令的超时时间（毫秒）。
+        可选的命令超时时间（毫秒）。
 
     - `call_id: string`
 
@@ -20965,7 +20973,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      shell 调用的状态。其中一种为 `in_progress`, `completed`，或 `incomplete`.
+      shell 调用的状态。取值之一： `in_progress`, `completed`，或 `incomplete`.
 
       - `"in_progress"`
 
@@ -20975,7 +20983,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `type: "shell_call"`
 
-      项目的类型。始终为 `shell_call`.
+      项的类型。始终为 `shell_call`.
 
       - `"shell_call"`
 
@@ -21001,15 +21009,15 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `created_by: optional string`
 
-      创建此工具调用的实体的 ID。
+      创建此工具调用的实体 ID。
 
   - `ShellCallOutput object { id, call_id, max_output_length, 5 more }`
 
-    发出的 shell 工具调用的输出。
+    已发出的 shell 工具调用的输出。
 
     - `id: string`
 
-      shell 调用输出的唯一 ID。当此条目通过 API 返回时填充。
+      shell 调用输出的唯一 ID。当通过 API 返回此条目时会填充该字段。
 
     - `call_id: string`
 
@@ -21017,7 +21025,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `max_output_length: number or null`
 
-      shell 命令输出的最大长度。由模型生成，应与原始输出一起传回。
+      shell 命令输出的最大长度。该值由模型生成，并应与原始输出一起传回。
 
     - `output: array of object { outcome, stderr, stdout, created_by }`
 
@@ -21025,7 +21033,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `outcome: object { type }  or object { exit_code, type }`
 
-        表示 shell 调用输出块的退出结果（含退出码）或超时结果。
+        表示 shell 调用输出块的结果是退出结果（带有退出码）还是超时结果。
 
         - `Timeout object { type }`
 
@@ -21039,11 +21047,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `Exit object { exit_code, type }`
 
-          表示 shell 命令已完成并返回了退出码。
+          表示 shell 命令已执行完成并返回了退出码。
 
           - `exit_code: number`
 
-            Shell 进程的退出代码。
+            shell 进程的退出码。
 
           - `type: "exit"`
 
@@ -21061,11 +21069,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      Shell 调用输出的状态。取值为 `in_progress`, `completed`，或 `incomplete`.
+      shell 调用输出的状态。取值为 `in_progress`, `completed`，或 `incomplete`.
 
       - `"in_progress"`
 
@@ -21075,7 +21083,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `type: "shell_call_output"`
 
-      Shell 调用输出的类型。始终为 `shell_call_output`.
+      shell 调用输出的类型。始终为 `shell_call_output`.
 
       - `"shell_call_output"`
 
@@ -21101,19 +21109,19 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `created_by: optional string`
 
-      创建该项目的执行者的标识符。
+      创建该项的执行者的标识符。
 
   - `ApplyPatchCall object { id, call_id, operation, 4 more }`
 
-    一种通过创建、删除或更新文件来应用文件差异的工具调用。
+    通过创建、删除或更新文件来应用文件差异的工具调用。
 
     - `id: string`
 
-      API 返回此项目时填充的 apply patch 工具调用的唯一 ID。
+      apply patch 工具调用的唯一 ID。当通过 API 返回此 item 时填充。
 
     - `call_id: string`
 
-      由模型生成的 apply_patch 工具调用的唯一 ID。
+      模型生成的 apply patch 工具调用的唯一 ID。
 
     - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
 
@@ -21133,7 +21141,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `type: "create_file"`
 
-          使用提供的差异创建新文件。
+          使用提供的差异创建一个新文件。
 
           - `"create_file"`
 
@@ -21147,7 +21155,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `type: "delete_file"`
 
-          删除指定文件。
+          删除指定的文件。
 
           - `"delete_file"`
 
@@ -21171,7 +21179,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `status: "in_progress" or "completed"`
 
-      apply_patch 工具调用的状态。之一 `in_progress` 或 `completed`.
+      apply patch 工具调用的状态。取值为 `in_progress` 或 `completed`.
 
       - `"in_progress"`
 
@@ -21179,7 +21187,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `type: "apply_patch_call"`
 
-      项目的类型。始终为 `apply_patch_call`.
+      项的类型。始终为 `apply_patch_call`.
 
       - `"apply_patch_call"`
 
@@ -21205,7 +21213,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `created_by: optional string`
 
-      创建此工具调用的实体的 ID。
+      创建此工具调用的实体 ID。
 
   - `ApplyPatchCallOutput object { id, call_id, status, 4 more }`
 
@@ -21213,15 +21221,15 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `id: string`
 
-      API 返回此项目时填充的 apply patch 工具调用输出的唯一 ID。
+      apply patch 工具调用输出的唯一 ID。当通过 API 返回此 item 时填充。
 
     - `call_id: string`
 
-      由模型生成的 apply_patch 工具调用的唯一 ID。
+      模型生成的 apply patch 工具调用的唯一 ID。
 
     - `status: "completed" or "failed"`
 
-      apply patch 工具调用输出的状态。可选值之一： `completed` 或 `failed`.
+      apply patch 工具调用输出的状态。取值之一为 `completed` 或 `failed`.
 
       - `"completed"`
 
@@ -21229,7 +21237,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `type: "apply_patch_call_output"`
 
-      项目的类型。始终为 `apply_patch_call_output`.
+      项的类型。始终为 `apply_patch_call_output`.
 
       - `"apply_patch_call_output"`
 
@@ -21255,11 +21263,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `created_by: optional string`
 
-      创建此工具调用输出的实体的 ID。
+      创建此工具调用输出的实体 ID。
 
     - `output: optional string or null`
 
-      apply patch 工具返回的可选文本输出。
+      由 apply patch 工具返回的可选文本输出。
 
   - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -21267,7 +21275,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `id: string`
 
-      列表的唯一 ID。
+      此列表的唯一 ID。
 
     - `server_label: string`
 
@@ -21279,7 +21287,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `input_schema: unknown`
 
-        描述工具输入的 JSON schema。
+        描述该工具输入的 JSON schema。
 
       - `name: string`
 
@@ -21287,7 +21295,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
       - `annotations: optional unknown or null`
 
-        关于工具的附加注释。
+        关于该工具的附加注释。
 
       - `description: optional string or null`
 
@@ -21295,7 +21303,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `type: "mcp_list_tools"`
 
-      项目的类型。始终为 `mcp_list_tools`.
+      项的类型。始终为 `mcp_list_tools`.
 
       - `"mcp_list_tools"`
 
@@ -21305,11 +21313,11 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
   - `McpApprovalRequest object { id, arguments, name, 2 more }`
 
-    请求人工批准工具调用的请求。
+    对工具调用的人工审批请求。
 
     - `id: string`
 
-      批准请求的唯一 ID。
+      审批请求的唯一 ID。
 
     - `arguments: string`
 
@@ -21325,13 +21333,13 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `type: "mcp_approval_request"`
 
-      项目的类型。始终为 `mcp_approval_request`.
+      项的类型。始终为 `mcp_approval_request`.
 
       - `"mcp_approval_request"`
 
   - `McpApprovalResponse object { id, approval_request_id, approve, 2 more }`
 
-    对 MCP 批准请求的响应。
+    对 MCP 审批请求的响应。
 
     - `id: string`
 
@@ -21339,37 +21347,37 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `approval_request_id: string`
 
-      正在回答的审批请求的 ID。
+      正在回复的审批请求的 ID。
 
     - `approve: boolean`
 
-      该请求是否已获批准。
+      请求是否已批准。
 
     - `type: "mcp_approval_response"`
 
-      项目的类型。始终为 `mcp_approval_response`.
+      项的类型。始终为 `mcp_approval_response`.
 
       - `"mcp_approval_response"`
 
     - `reason: optional string or null`
 
-      该决定的可选原因。
+      可选的决策原因。
 
   - `McpCall object { id, arguments, name, 6 more }`
 
-    在 MCP 服务器上对工具的一次调用。
+    对 MCP 服务器上某个工具的调用。
 
     - `id: string`
 
-      工具调用的唯一 ID。
+      该工具调用的唯一 ID。
 
     - `arguments: string`
 
-      传递给工具的参数的 JSON 字符串。
+      传递给该工具的参数的 JSON 字符串。
 
     - `name: string`
 
-      所运行的工具的名称。
+      已运行工具的名称。
 
     - `server_label: string`
 
@@ -21377,18 +21385,18 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `type: "mcp_call"`
 
-      项目的类型。始终为 `mcp_call`.
+      项的类型。始终为 `mcp_call`.
 
       - `"mcp_call"`
 
     - `approval_request_id: optional string or null`
 
       MCP 工具调用审批请求的唯一标识符。
-      在后续 `mcp_approval_response` 输入中包含此值，以批准或拒绝对应的工具调用。
+      在后续的 `mcp_approval_response` 输入中包含该值，以批准或拒绝相应的工具调用。
 
     - `error: optional McpToolCallError or null`
 
-      工具调用产生的错误（如有）。
+      工具调用的错误（如果有）。
 
       - `McpProtocolError object { code, message, type }`
 
@@ -21424,7 +21432,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `status: optional "in_progress" or "completed" or "incomplete" or 2 more`
 
-      工具调用的状态。取值为 `in_progress`, `completed`, `incomplete`, `calling`，或 `failed`.
+      工具调用的状态，取值为 `in_progress`, `completed`, `incomplete`, `calling`，或 `failed`.
 
       - `"in_progress"`
 
@@ -21438,7 +21446,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
   - `CustomToolCall object { call_id, input, name, 4 more }`
 
-    由模型创建的自定义工具调用。
+    模型对自定义工具的调用。
 
     - `call_id: string`
 
@@ -21460,7 +21468,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `id: optional string`
 
-      自定义工具调用在 OpenAI 平台中的唯一 ID。
+      该自定义工具调用在 OpenAI 平台中的唯一 ID。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -21488,7 +21496,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
   - `CustomToolCallOutput object { call_id, output, type, 2 more }`
 
-    来自你的代码的自定义工具调用的输出，正在发送回模型。
+    来自你代码的自定义工具调用输出，正被发回给模型。
 
     - `call_id: string`
 
@@ -21496,12 +21504,12 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `output: string or array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
-      由你的代码生成的自定义工具调用的输出。
+      由你代码生成的自定义工具调用的输出。
       可以是字符串或输出内容列表。
 
       - `StringOutput = string`
 
-        自定义工具调用的输出字符串。
+        自定义工具调用输出的字符串。
 
       - `OutputContentList = array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
@@ -21509,15 +21517,15 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          输入给模型的文本输入。
+          提供给模型的文本输入。
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+          提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-          输入给模型的文件。
+          模型的文件输入。
 
     - `type: "custom_tool_call_output"`
 
@@ -21527,7 +21535,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
     - `id: optional string`
 
-      自定义工具调用输出在 OpenAI 平台中的唯一 ID。
+      该自定义工具调用输出在 OpenAI 平台中的唯一 ID。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -21537,7 +21545,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `type: "direct"`
 
-          调用者类型。始终为 `direct`.
+          调用方类型。始终为 `direct`.
 
           - `"direct"`
 
@@ -21549,7 +21557,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
 
         - `type: "program"`
 
-          调用者类型。始终为 `program`.
+          调用方类型。始终为 `program`.
 
           - `"program"`
 
@@ -21602,33 +21610,33 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 }
 ```
 
-## 域类型
+## Domain Types
 
-### 对话条目
+### 对话项
 
 - `ConversationItem = Message or object { id, arguments, call_id, 6 more }  or object { id, output, status, 6 more }  or 25 more`
 
-  对话中的单个项目。可能的类型集合与 `output` 的 [Response 对象](/docs/api-reference/responses/object#responses/object-output).
+  对话中的单个条目。可能使用的类型集合与 `output` Response 对象 [Response 对象](/docs/api-reference/responses/object#responses/object-output).
 
   - `Message object { id, content, role, 3 more }`
 
-    与模型之间发送的消息。
+    发送给模型或来自模型的一条消息。
 
     - `id: string`
 
-      消息的唯一 ID。
+      该消息的唯一 ID。
 
     - `content: array of ResponseInputText or ResponseOutputText or TextContent or 6 more`
 
-      消息的内容
+      该消息的内容
 
       - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-        输入给模型的文本输入。
+        提供给模型的文本输入。
 
         - `text: string`
 
-          输入给模型的文本输入。
+          提供给模型的文本输入。
 
         - `type: "input_text"`
 
@@ -21638,7 +21646,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+          标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
           - `mode: "explicit"`
 
@@ -21648,7 +21656,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `ResponseOutputText object { annotations, logprobs, text, type }`
 
-        来自模型的文本输出。
+        模型生成的文本输出。
 
         - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
 
@@ -21672,35 +21680,35 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `type: "file_citation"`
 
-              文件引用的类型。始终 `file_citation`.
+              文件引用的类型。始终为 `file_citation`.
 
               - `"file_citation"`
 
           - `URLCitation object { end_index, start_index, title, 2 more }`
 
-            用于生成模型响应的网络资源的引用。
+            用于生成模型回复的网页资源的引用。
 
             - `end_index: number`
 
-              消息中 URL 引用的最后一个字符的索引。
+              消息中 URL 引用末尾字符的索引。
 
             - `start_index: number`
 
-              消息中 URL 引用的第一个字符的索引。
+              消息中 URL 引用起始字符的索引。
 
             - `title: string`
 
-              网络资源的标题。
+              网页资源的标题。
 
             - `type: "url_citation"`
 
-              URL 引用的类型。始终 `url_citation`.
+              URL 引用的类型。始终为 `url_citation`.
 
               - `"url_citation"`
 
             - `url: string`
 
-              网络资源的 URL。
+              网页资源的 URL。
 
           - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
@@ -21720,7 +21728,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `filename: string`
 
-              被引用的容器文件的文件名。
+              所引用的容器文件的文件名。
 
             - `start_index: number`
 
@@ -21728,13 +21736,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `type: "container_file_citation"`
 
-              容器文件引用的类型。始终 `container_file_citation`.
+              容器文件引用的类型。始终为 `container_file_citation`.
 
               - `"container_file_citation"`
 
           - `FilePath object { file_id, index, type }`
 
-            文件路径。
+            文件的路径。
 
             - `file_id: string`
 
@@ -21746,7 +21754,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `type: "file_path"`
 
-              文件路径的类型。始终 `file_path`.
+              文件路径的类型。始终为 `file_path`.
 
               - `"file_path"`
 
@@ -21768,11 +21776,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `text: string`
 
-          模型的文本输出。
+          模型输出的文本。
 
         - `type: "output_text"`
 
-          输出文本的类型。始终 `output_text`.
+          输出文本的类型。始终为 `output_text`.
 
           - `"output_text"`
 
@@ -21788,11 +21796,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `SummaryTextContent object { text, type }`
 
-        模型的摘要文本。
+        来自模型的摘要文本。
 
         - `text: string`
 
-          模型到目前为止的推理输出摘要。
+          到目前为止模型推理输出的摘要。
 
         - `type: "summary_text"`
 
@@ -21802,7 +21810,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `ReasoningText object { text, type }`
 
-        模型的推理文本。
+        来自模型的推理文本。
 
         - `text: string`
 
@@ -21816,25 +21824,25 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `ResponseOutputRefusal object { refusal, type }`
 
-        模型的拒绝。
+        模型生成的拒绝回复。
 
         - `refusal: string`
 
-          模型的拒绝解释。
+          模型生成的拒绝解释。
 
         - `type: "refusal"`
 
-          拒绝的类型。始终 `refusal`.
+          拒绝回复的类型。始终为 `refusal`.
 
           - `"refusal"`
 
       - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-        输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+        提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
         - `detail: ImageDetail`
 
-          要发送给模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+          发送到模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
           - `"low"`
 
@@ -21852,15 +21860,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `file_id: optional string or null`
 
-          要发送给模型的文件的 ID。
+          要发送到模型的文件的 ID。
 
         - `image_url: optional string or null`
 
-          要发送给模型的图像的 URL。可以是完全限定的 URL，或 data URL 中 base64 编码的图像。
+          要发送到模型的图像的 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图像。
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+          标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
           - `mode: "explicit"`
 
@@ -21870,15 +21878,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `ComputerScreenshotContent object { detail, file_id, image_url, 2 more }`
 
-        电脑界面的截图。
+        计算机的屏幕截图。
 
         - `detail: ImageDetail`
 
-          要发送给模型的截图图像的详细程度。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+          发送给模型的屏幕截图图像的细节级别。可选值为以下之一 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
         - `file_id: string or null`
 
-          包含截图的已上传文件的标识符。
+          包含截图的上传文件的标识符。
 
         - `image_url: string or null`
 
@@ -21886,13 +21894,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `type: "computer_screenshot"`
 
-          指定事件类型。对于电脑界面截图，此属性始终设置为 `computer_screenshot`.
+          指定事件类型。对于计算机屏幕截图，此属性始终设置为 `computer_screenshot`.
 
           - `"computer_screenshot"`
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+          标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
           - `mode: "explicit"`
 
@@ -21902,7 +21910,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-        输入给模型的文件。
+        模型的文件输入。
 
         - `type: "input_file"`
 
@@ -21912,7 +21920,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `detail: optional "auto" or "low" or "high"`
 
-          要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+          要发送到模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 的使用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
           - `"auto"`
 
@@ -21922,23 +21930,23 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `file_data: optional string`
 
-          要发送给模型的文件内容。
+          要发送到模型的文件内容。
 
         - `file_id: optional string or null`
 
-          要发送给模型的文件的 ID。
+          要发送到模型的文件的 ID。
 
         - `file_url: optional string`
 
-          要发送给模型的文件的 URL。
+          要发送到模型的文件的 URL。
 
         - `filename: optional string`
 
-          要发送给模型的文件的名称。
+          要发送到模型的文件的名称。
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+          标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
           - `mode: "explicit"`
 
@@ -21948,7 +21956,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `role: "unknown" or "user" or "assistant" or 5 more`
 
-      消息的角色。以下之一： `unknown`, `user`, `assistant`, `system`, `critic`, `discriminator`, `developer`，或 `tool`.
+      消息的角色。可选值为 `unknown`, `user`, `assistant`, `system`, `critic`, `discriminator`, `developer`，或 `tool`.
 
       - `"unknown"`
 
@@ -21968,7 +21976,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      项目的状态。以下之一 `in_progress`, `completed`，或 `incomplete`。当项目通过 API 返回时填充。
+      item 的状态。取值为 `in_progress`, `completed`，或 `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -21984,7 +21992,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `phase: optional "commentary" or "final_answer" or null`
 
-      将 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`）。对于类似 `gpt-5.3-codex` 及更高版本的模型，在发送后续请求时，保留并重新发送所有助手消息中的阶段信息——省略它可能会降低性能。不用于用户消息。
+      将 `assistant` 消息标记为中间说明（`commentary`）或最终答案（`final_answer`)。对于 `gpt-5.3-codex` 及更高版本的模型，在发送后续请求时，请在所有助手消息上保留并重新发送 phase——丢弃它可能会降低性能。不用于用户消息。
 
       - `"commentary"`
 
@@ -22002,16 +22010,16 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `call_id: string`
 
-      模型生成的函数工具调用的唯一 ID。
+      由模型生成的函数工具调用的唯一 ID。
 
     - `name: string`
 
-      要运行的函数的名称。
+      要运行的函数名称。
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      条目的状态。其一为 `in_progress`, `completed`，或
-      `incomplete`。当项目通过 API 返回时填充。
+      该条目的状态。可选值为 `in_progress`, `completed`，或
+      `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -22047,7 +22055,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `created_by: optional string`
 
-      创建该项目的执行者的标识符。
+      创建该项的执行者的标识符。
 
     - `namespace: optional string`
 
@@ -22061,7 +22069,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `output: string or array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
-      你的代码生成的函数调用的输出。
+      由你的代码生成的函数调用所产生的输出。
       可以是字符串或输出内容列表。
 
       - `StringOutput = string`
@@ -22074,20 +22082,20 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          输入给模型的文本输入。
+          提供给模型的文本输入。
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+          提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-          输入给模型的文件。
+          模型的文件输入。
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      条目的状态。其一为 `in_progress`, `completed`，或
-      `incomplete`。当项目通过 API 返回时填充。
+      该条目的状态。可选值为 `in_progress`, `completed`，或
+      `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -22103,7 +22111,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `call_id: optional string`
 
-      模型生成的函数工具调用的唯一 ID。
+      由模型生成的函数工具调用的唯一 ID。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -22113,7 +22121,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `type: "direct"`
 
-          调用者类型。始终为 `direct`.
+          调用方类型。始终为 `direct`.
 
           - `"direct"`
 
@@ -22125,38 +22133,38 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `type: "program"`
 
-          调用者类型。始终为 `program`.
+          调用方类型。始终为 `program`.
 
           - `"program"`
 
     - `created_by: optional string`
 
-      创建该项目的执行者的标识符。
+      创建该项的执行者的标识符。
 
     - `name: optional string`
 
-      产生输出的工具的名称。
+      产生该输出的工具名称。
 
     - `namespace: optional string`
 
-      产生输出的工具的命名空间。
+      产生该输出的工具的命名空间。
 
   - `FileSearchCall object { id, queries, status, 2 more }`
 
-    文件搜索工具调用的结果。参见
-    [文件搜索指南](/docs/guides/tools-file-search) 了解更多信息。
+    文件搜索 工具调用的结果。参见
+    [文件搜索 指南](/docs/guides/tools-file-search) 了解更多信息。
 
     - `id: string`
 
-      文件搜索工具调用的唯一 ID。
+      文件搜索 工具调用的唯一 ID。
 
     - `queries: array of string`
 
-      用于搜索文件的查询。
+      用于搜索文件的查询语句。
 
     - `status: "in_progress" or "searching" or "completed" or 2 more`
 
-      文件搜索工具调用的状态。其中之一为 `in_progress`,
+      文件搜索 工具调用的状态，取值为 `in_progress`,
       `searching`, `incomplete` 或 `failed`,
 
       - `"in_progress"`
@@ -22171,21 +22179,21 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `type: "file_search_call"`
 
-      文件搜索工具调用的类型。始终为 `file_search_call`.
+      文件搜索 工具调用的类型，始终为 `file_search_call`.
 
       - `"file_search_call"`
 
     - `results: optional array of object { attributes, file_id, filename, 2 more }  or null`
 
-      文件搜索工具调用的结果。
+      文件搜索 工具调用的结果。
 
       - `attributes: optional map[string or number or boolean] or null`
 
-        可附加到对象的一组 16 个键值对。这可用于以结构化
-        格式存储有关对象的额外信息，并通过 API 或仪表盘查询对象。键是字符串
-        ，最大长度为 64 个字符。值是字符串，最大
-        长度为 512 个字符、布尔值或数字。
-        文件的唯一 ID。
+        可附加到对象的 16 组键值对。可用于
+        以结构化格式存储对象的附加信息，并通过
+        API 或控制台查询对象。键为字符串，
+        最大长度为 64 个字符；值为字符串（最大
+        长度 512 个字符）、布尔值或数字。
 
         - `string`
 
@@ -22195,37 +22203,37 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `file_id: optional string`
 
-        文件的名称。
+        文件的唯一 ID。
 
       - `filename: optional string`
 
-        文件的相关性得分——介于 0 和 1 之间的值。
+        文件的名称。
 
       - `score: optional number`
 
-        从文件中检索到的文本。
+        文件的相关性分数，取值范围为 0 到 1。
 
       - `text: optional string`
 
-        对计算机使用工具的工具调用。参见
+        从文件中检索到的文本。
 
   - `WebSearchCall object { id, action, status, type }`
 
-    网页搜索工具调用的结果。请参阅
+    网页搜索 工具调用的结果。请参阅
     [网页搜索指南](/docs/guides/tools-web-search) 了解更多信息。
 
     - `id: string`
 
-      网页搜索工具调用的唯一 ID。
+      该 网页搜索工具调用的唯一 ID。
 
     - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
-      一个对象，描述此次网页搜索调用中采取的具体操作。
-      包含模型如何使用网络（search、open_page、find_in_page）的详细信息。
+      描述此次 网页搜索调用中所执行的具体操作的对象。
+      包含模型如何使用网页的详细信息（search、open_page、find_in_page）。
 
       - `Search object { type, queries, query, sources }`
 
-        操作类型 "search"——执行网页搜索查询。
+        操作类型 "search" - 执行一次 网页搜索查询。
 
         - `type: "search"`
 
@@ -22257,7 +22265,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `OpenPage object { type, url }`
 
-        操作类型 "open_page"——打开搜索结果中的特定 URL。
+        操作类型 "open_page" - 打开搜索结果中的特定 URL。
 
         - `type: "open_page"`
 
@@ -22271,11 +22279,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `FindInPage object { pattern, type, url }`
 
-        操作类型 "find_in_page"：在已加载的页面中搜索模式。
+        操作类型 "find_in_page"：在已加载的页面中搜索某个模式。
 
         - `pattern: string`
 
-          要在页面内搜索的模式或文本。
+          要在页面中搜索的模式或文本。
 
         - `type: "find_in_page"`
 
@@ -22285,11 +22293,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `url: string`
 
-          搜索该模式的页面的 URL。
+          被搜索该模式的页面 URL。
 
     - `status: "in_progress" or "searching" or "completed" or "failed"`
 
-      网页搜索工具调用的状态。
+      该 网页搜索工具调用的状态。
 
       - `"in_progress"`
 
@@ -22301,7 +22309,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `type: "web_search_call"`
 
-      网页搜索工具调用的类型。始终为 `web_search_call`.
+      该 网页搜索工具调用的类型。始终为 `web_search_call`.
 
       - `"web_search_call"`
 
@@ -22337,8 +22345,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
-    计算机使用指南
-    [计算机调用调用的唯一 ID。](/docs/guides/tools-computer-use) 了解更多信息。
+    对计算机使用工具的工具调用。参见
+    [计算机使用指南](/docs/guides/tools-computer-use) 了解更多信息。
 
     - `id: string`
 
@@ -22346,11 +22354,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `call_id: string`
 
-      用于在响应工具调用时提供输出的标识符。
+      在向工具调用返回输出时使用的标识符。
 
     - `pending_safety_checks: array of object { id, code, message }`
 
-      计算机调用的待处理安全检查。
+      该计算机调用的待处理安全检查。
 
       - `id: string`
 
@@ -22366,8 +22374,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      条目的状态。其一为 `in_progress`, `completed`，或
-      `incomplete`。当项目通过 API 返回时填充。
+      该条目的状态。可选值为 `in_progress`, `completed`，或
+      `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -22377,21 +22385,21 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `type: "computer_call"`
 
-      计算机调用的类型。始终为 `computer_call`.
+      该计算机调用的类型。始终为 `computer_call`.
 
       - `"computer_call"`
 
     - `action: optional ComputerAction`
 
-      单击操作。
+      一次点击操作。
 
       - `Click object { button, type, x, 2 more }`
 
-        单击操作。
+        一次点击操作。
 
         - `button: "left" or "right" or "wheel" or 2 more`
 
-          指示单击期间按下了哪个鼠标按钮。其一为 `left`, `right`, `wheel`, `back`，或 `forward`.
+          表示点击时按下的鼠标按键。可选值为 `left`, `right`, `wheel`, `back`，或 `forward`.
 
           - `"left"`
 
@@ -22405,29 +22413,29 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `type: "click"`
 
-          指定事件类型。对于单击操作，此属性始终为 `click`.
+          指定事件类型。对于点击操作，此属性始终为 `click`.
 
           - `"click"`
 
         - `x: number`
 
-          发生单击的 x 坐标。
+          点击发生位置的 x 坐标。
 
         - `y: number`
 
-          发生单击的 y 坐标。
+          点击发生位置的 y 坐标。
 
         - `keys: optional array of string or null`
 
-          单击时正在按住的按键。
+          点击时按住的按键。
 
       - `DoubleClick object { keys, type, x, y }`
 
-        双击操作。
+        一次双击操作。
 
         - `keys: array of string or null`
 
-          双击时正在按住的按键。
+          双击时按住的按键。
 
         - `type: "double_click"`
 
@@ -22437,19 +22445,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `x: number`
 
-          发生双击的 x 坐标。
+          双击发生位置的 x 坐标。
 
         - `y: number`
 
-          发生双击的 y 坐标。
+          双击发生位置的 y 坐标。
 
       - `Drag object { path, type, keys }`
 
-        拖动操作。
+        一次拖动操作。
 
         - `path: array of object { x, y }`
 
-          表示拖动操作路径的坐标数组。坐标将以对象数组的形式出现，例如
+          表示拖动操作路径的坐标数组。坐标将以对象数组的形式呈现，例如
 
           ```
           [
@@ -22468,17 +22476,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `type: "drag"`
 
-          指定事件类型。对于拖拽操作，此属性始终设置为 `drag`.
+          指定事件类型。对于拖动操作，此属性始终设置为 `drag`.
 
           - `"drag"`
 
         - `keys: optional array of string or null`
 
-          拖拽鼠标时按住的按键。
+          拖动鼠标时按住的按键。
 
       - `Keypress object { keys, type }`
 
-        模型希望执行的一系列按键操作。
+        模型希望执行的一组按键操作。
 
         - `keys: array of string`
 
@@ -22502,11 +22510,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `x: number`
 
-          要移动到的 x 坐标。
+          要移至的 x 坐标。
 
         - `y: number`
 
-          要移动到的 y 坐标。
+          要移至的 y 坐标。
 
         - `keys: optional array of string or null`
 
@@ -22542,11 +22550,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `x: number`
 
-          发生滚动的 x 坐标。
+          发生滚动处的 x 坐标。
 
         - `y: number`
 
-          发生滚动的 y 坐标。
+          发生滚动处的 y 坐标。
 
         - `keys: optional array of string or null`
 
@@ -22562,40 +22570,40 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `type: "type"`
 
-          指定事件类型。对于类型操作，此属性始终设置为 `type`.
+          指定事件类型。对于 type 操作，此属性始终设置为 `type`.
 
           - `"type"`
 
       - `Wait object { type }`
 
-        等待操作。
+        wait 操作。
 
         - `type: "wait"`
 
-          指定事件类型。对于等待操作，此属性始终设置为 `wait`.
+          指定事件类型。对于 wait 操作，此属性始终设置为 `wait`.
 
           - `"wait"`
 
     - `actions: optional ComputerActionList`
 
-      展平的批量操作，用于 `computer_use`。每个操作包含一个
-      `type` 判别器和操作特定字段。
+      已展平的批量操作，用于 `computer_use`。每个操作都包含一个
+      `type` 鉴别字段以及操作特有的字段。
 
       - `Click object { button, type, x, 2 more }`
 
-        单击操作。
+        一次点击操作。
 
       - `DoubleClick object { keys, type, x, y }`
 
-        双击操作。
+        一次双击操作。
 
       - `Drag object { path, type, keys }`
 
-        拖动操作。
+        一次拖动操作。
 
       - `Keypress object { keys, type }`
 
-        模型希望执行的一系列按键操作。
+        模型希望执行的一组按键操作。
 
       - `Move object { type, x, y, keys }`
 
@@ -22615,7 +22623,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Wait object { type }`
 
-        等待操作。
+        wait 操作。
 
   - `ComputerCallOutput object { id, call_id, output, 4 more }`
 
@@ -22625,7 +22633,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `call_id: string`
 
-      产生输出的计算机工具调用的 ID。
+      产生该输出的计算机工具调用的 ID。
 
     - `output: ResponseComputerToolCallOutputScreenshot`
 
@@ -22640,7 +22648,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `file_id: optional string`
 
-        包含截图的已上传文件的标识符。
+        包含截图的上传文件的标识符。
 
       - `image_url: optional string`
 
@@ -22648,8 +22656,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `status: "completed" or "incomplete" or "failed" or "in_progress"`
 
-      消息输入的状态。其中之一 `in_progress`, `completed`，或
-      `incomplete`。当输入项通过 API 返回时填充。
+      消息输入的状态。取值为以下之一 `in_progress`, `completed`，或
+      `incomplete`。当通过 API 返回输入项时填充。
 
       - `"completed"`
 
@@ -22661,13 +22669,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `type: "computer_call_output"`
 
-      计算机工具调用输出的类型。始终为 `computer_call_output`.
+      计算机工具调用输出的类型，始终为 `computer_call_output`.
 
       - `"computer_call_output"`
 
     - `acknowledged_safety_checks: optional array of object { id, code, message }`
 
-      API报告并已由
+      由 API 报告并已由
       开发者确认的安全检查。
 
       - `id: string`
@@ -22684,13 +22692,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `created_by: optional string`
 
-      创建该项目的执行者的标识符。
+      创建该项的执行者的标识符。
 
   - `ToolSearchCall object { id, arguments, call_id, 4 more }`
 
     - `id: string`
 
-      工具搜索调用项目的唯一 ID。
+      工具搜索调用项的唯一 ID。
 
     - `arguments: unknown`
 
@@ -22702,7 +22710,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `execution: "server" or "client"`
 
-      工具搜索是由服务端还是客户端执行的。
+      工具搜索是由服务端还是由客户端执行的。
 
       - `"server"`
 
@@ -22710,7 +22718,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      记录的工具搜索调用项目的状态。
+      已记录的工具搜索调用项的状态。
 
       - `"in_progress"`
 
@@ -22720,19 +22728,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `type: "tool_search_call"`
 
-      项目的类型。始终为 `tool_search_call`.
+      项的类型。始终为 `tool_search_call`.
 
       - `"tool_search_call"`
 
     - `created_by: optional string`
 
-      创建该项目的执行者的标识符。
+      创建该项的执行者的标识符。
 
   - `ToolSearchOutput object { id, call_id, execution, 4 more }`
 
     - `id: string`
 
-      工具搜索输出项目的唯一 ID。
+      工具搜索输出项的唯一 ID。
 
     - `call_id: string or null`
 
@@ -22740,7 +22748,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `execution: "server" or "client"`
 
-      工具搜索是由服务端还是客户端执行的。
+      工具搜索是由服务端还是由客户端执行的。
 
       - `"server"`
 
@@ -22748,7 +22756,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      记录的工具搜索输出项目的状态。
+      已记录的工具搜索输出项的状态。
 
       - `"in_progress"`
 
@@ -22762,29 +22770,29 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Function object { name, parameters, strict, 5 more }`
 
-        定义你自己代码中模型可以选择调用的函数。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+        定义你自己代码中的某个函数，供模型选择调用。详细了解 [function calling](https://platform.openai.com/docs/guides/function-calling).
 
         - `name: string`
 
-          要调用的函数的名称。
+          要调用的函数名称。
 
         - `parameters: map[unknown] or null`
 
-          描述函数参数的 JSON schema 对象。
+          描述该函数参数的 JSON schema 对象。
 
         - `strict: boolean or null`
 
-          是否对此函数工具强制执行严格的参数验证。
+          是否为该函数工具启用严格的参数校验。
 
         - `type: "function"`
 
-          函数工具的类型。始终为 `function`.
+          该函数工具的类型。始终为 `function`.
 
           - `"function"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -22792,19 +22800,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `defer_loading: optional boolean`
 
-          此函数是否延迟并通过工具搜索加载。
+          该函数是否为延迟加载，并通过工具搜索加载。
 
         - `description: optional string or null`
 
-          函数的描述。模型据此确定是否调用该函数。
+          该函数的描述。模型据此决定是否调用该函数。
 
         - `output_schema: optional map[unknown] or null`
 
-          描述此函数的字符串输出中编码的 JSON 值的 JSON schema 对象。
+          描述该函数在字符串输出中编码的 JSON 值的 JSON schema 对象。
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        一种从上传文件中搜索相关内容工具。详细了解 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+        一个用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 tool](https://platform.openai.com/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -22822,24 +22830,24 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `ComparisonFilter object { key, type, value }`
 
-            用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+            用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
             - `key: string`
 
-              要与该值进行比较的键。
+              要与值进行比较的键。
 
             - `type: "eq" or "ne" or "gt" or 5 more`
 
               指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-              - `eq`：等于
-              - `ne`：不等于
-              - `gt`：大于
-              - `gte`：大于或等于
-              - `lt`：小于
-              - `lte`：小于或等于
-              - `in`：包含
-              - `nin`：不包含
+              - `eq`: 等于
+              - `ne`: 不等于
+              - `gt`: 大于
+              - `gte`: 大于或等于
+              - `lt`: 小于
+              - `lte`: 小于或等于
+              - `in`: 包含于
+              - `nin`: 不包含于
 
               - `"eq"`
 
@@ -22875,15 +22883,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `CompoundFilter object { filters, type }`
 
-            使用以下方式组合多个筛选器 `and` 或 `or`.
+            使用以下方式组合多个过滤器 `and` 或 `or`.
 
             - `filters: array of ComparisonFilter or unknown`
 
-              要组合的筛选器数组。项目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+              要组合的过滤器数组。条目可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
               - `ComparisonFilter object { key, type, value }`
 
-                用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+                用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
               - `unknown`
 
@@ -22897,7 +22905,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `max_num_results: optional number`
 
-          要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+          返回结果的最大数量。此数量应介于 1 到 50 之间（含两端）。
 
         - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -22905,19 +22913,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-            启用混合搜索时，控制倒数排名融合如何在语义嵌入匹配与稀疏关键词匹配之间取得平衡的权重。
+            在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
             - `embedding_weight: number`
 
-              嵌入在倒数排名融合中的权重。
+              在倒数排名融合中嵌入的权重。
 
             - `text_weight: number`
 
-              文本在倒数排名融合中的权重。
+              在倒数排名融合中文本的权重。
 
           - `ranker: optional "auto" or "default-2024-11-15"`
 
-            用于文件搜索的排序器。
+            用于 文件搜索 的排序器。
 
             - `"auto"`
 
@@ -22925,11 +22933,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `score_threshold: optional number`
 
-            文件搜索的分数阈值，为0到1之间的数字。数字越接近1，将尝试仅返回最相关的结果，但可能返回较少的結果。
+            文件搜索 的分数阈值，取值范围为 0 到 1 之间。数值越接近 1，越会尝试只返回最相关的结果，但返回的结果数量可能会减少。
 
       - `Computer object { type }`
 
-        一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -22939,19 +22947,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
-          计算机显示器的宽度。
+          计算机显示屏的高度。
 
         - `display_width: number`
 
-          计算机显示器的宽度。
+          计算机显示屏的宽度。
 
         - `environment: "windows" or "mac" or "linux" or 2 more`
 
-          要控制的计算机环境的类型。
+          要控制的计算机环境类型。
 
           - `"windows"`
 
@@ -22971,12 +22979,12 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-        搜索互联网以获取与提示相关的来源。了解更多关于
+        在互联网上搜索与提示相关的来源。详细了解
         [网页搜索工具](/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
-          网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+          网页搜索工具的类型，取值之一为 `web_search` 或 `web_search_2025_08_26`.
 
           - `"web_search"`
 
@@ -22984,22 +22992,22 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `external_web_access: optional boolean`
 
-          允许网页搜索实时访问互联网。省略时默认为true。为false时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+          允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
         - `filters: optional object { allowed_domains }  or null`
 
-          搜索的过滤器。
+          搜索的筛选条件。
 
           - `allowed_domains: optional array of string or null`
 
-            搜索允许的域名。如果未提供，则允许所有域名。
-            所提供域名的子域名也允许。
+            允许进行搜索的域名。如果未提供，则允许所有域名。
+            同时也允许所提供域名的子域名。
 
             示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
           - `"low"`
 
@@ -23013,15 +23021,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `city: optional string or null`
 
-            用户的城市的自由文本输入，例如 `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+            两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户的地区的自由文本输入，例如 `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
@@ -23029,14 +23037,14 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: optional "approximate"`
 
-            位置近似的类型。始终 `approximate`.
+            位置近似的类型。始终为 `approximate`.
 
             - `"approximate"`
 
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-        通过远程 Model Context Protocol 让模型访问额外工具
-        (MCP) 服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+        通过远程 Model Context Protocol
+        （MCP）服务器为模型提供对其他工具的访问权限。 [了解更多关于 MCP 的信息](/docs/guides/tools-remote-mcp).
 
         - `server_label: string`
 
@@ -23044,13 +23052,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `type: "mcp"`
 
-          MCP 工具的类型。始终 `mcp`.
+          MCP 工具的类型。始终为 `mcp`.
 
           - `"mcp"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -23062,7 +23070,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `McpAllowedTools = array of string`
 
-            允许工具名称的字符串数组
+            允许的工具名称组成的字符串数组
 
           - `McpToolFilter object { read_only, tool_names }`
 
@@ -23070,9 +23078,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `read_only: optional boolean`
 
-              指示工具是否修改数据或为只读。如果
-              MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-              ，它将匹配此过滤器。
+              指示工具是否修改数据或是否为只读。如果某个
+              MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+              ，它将匹配此过滤条件。
 
             - `tool_names: optional array of string`
 
@@ -23080,26 +23088,26 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `authorization: optional string`
 
-          可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-          与自定义 MCP 服务器 URL 或服务连接器配合使用。你的应用程序
-          必须处理 OAuth 授权流程并在此处提供令牌。
+          可用于远程 MCP 服务器的 OAuth 访问令牌，可搭配自定义 MCP 服务器 URL 或服务连接器使用。你的应用
+          必须处理 OAuth 授权流程，并在此处提供该令牌。
+          必须处理 OAuth 授权流程，并在此处提供该令牌。
 
         - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-          服务连接器的标识符，类似于 ChatGPT 中可用的那些。必须提供以下之一：
-          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中之一。了解更多
-          关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+          服务连接器的标识符，例如 ChatGPT 中提供的连接器之一。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解关于服务连接器
+          的更多信息 [请参阅此处](/docs/guides/tools-remote-mcp#connectors).
 
-          当前支持的值 `connector_id` 包括：
+          当前支持 `connector_id` 的值为：
 
-          - Dropbox： `connector_dropbox`
-          - Gmail： `connector_gmail`
-          - Google Calendar： `connector_googlecalendar`
-          - Google Drive： `connector_googledrive`
-          - Microsoft Teams： `connector_microsoftteams`
-          - Outlook Calendar： `connector_outlookcalendar`
-          - Outlook Email： `connector_outlookemail`
-          - SharePoint： `connector_sharepoint`
+          - Dropbox: `connector_dropbox`
+          - Gmail: `connector_gmail`
+          - Google Calendar: `connector_googlecalendar`
+          - Google Drive: `connector_googledrive`
+          - Microsoft Teams: `connector_microsoftteams`
+          - Outlook Calendar: `connector_outlookcalendar`
+          - Outlook Email: `connector_outlookemail`
+          - SharePoint: `connector_sharepoint`
 
           - `"connector_dropbox"`
 
@@ -23119,11 +23127,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `defer_loading: optional boolean`
 
-          此 MCP 工具是否被延迟并通过工具搜索发现。
+          此 MCP 工具是否被延迟，并通过工具搜索发现。
 
         - `headers: optional map[string] or null`
 
-          发送到 MCP 服务器的可选 HTTP 头。用于身份验证
+          发送到 MCP 服务器的可选 HTTP 请求头。用于身份验证
           或其他用途。
 
         - `require_approval: optional object { always, never }  or "always" or "never" or null`
@@ -23133,8 +23141,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
           - `McpToolApprovalFilter object { always, never }`
 
             指定 MCP 服务器的哪些工具需要审批。可以是
-            `always`, `never`，或一个与需要审批的工具关联的过滤器对象
-            。
+            `always`, `never`，或与工具关联的过滤对象
+            ，这些工具需要审批。
 
             - `always: optional object { read_only, tool_names }`
 
@@ -23142,9 +23150,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -23156,9 +23164,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -23166,8 +23174,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `McpToolApprovalSetting = "always" or "never"`
 
-            为所有工具指定单一审批策略。可以是 `always` 或
-            `never`。之一。当设置为 `always`，时，所有工具都需要审批。当
+            为所有工具指定统一的审批策略。可选值为 `always` 或
+            `never`。当设置为 `always`，时，所有工具都需要审批。当
             设置为 `never`，时，所有工具都不需要审批。
 
             - `"always"`
@@ -23180,22 +23188,22 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `server_url: optional string`
 
-          MCP 服务器的 URL。必须提供 `server_url`, `connector_id`，或
-          `tunnel_id` 之一。
+          MCP 服务器的 URL。 `server_url`, `connector_id`，或
+          `tunnel_id` 必须提供其中一个。
 
         - `tunnel_id: optional string`
 
-          用于替代直接服务器 URL 的安全 MCP 隧道 ID。必须提供
-          `server_url`, `connector_id`，或 `tunnel_id` 之一。
+          用于替代直接服务器 URL 的安全 MCP 隧道 ID。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中一个。
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
-        一个运行 Python 代码以帮助生成提示响应的工具。
+        运行 Python 代码以帮助生成对提示词响应的工具。
 
         - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-          代码解释器容器。可以是容器 ID，或一个对象，其中
-          指定了上传的文件 ID 以供你的代码使用，以及
+          代码解释器容器。可以是容器 ID，也可以是指定可供代码使用的已上传文件 ID 的对象，以及一个
+          指定可供你的代码使用的已上传文件 ID，以及一个
           可选的 `memory_limit` 设置。
 
           - `string`
@@ -23204,17 +23212,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器的配置。可选择指定要在其上运行代码的文件 ID。
+            代码解释器容器的配置。可选择指定要对其运行代码的文件 ID。
 
             - `type: "auto"`
 
-              始终 `auto`.
+              始终为 `auto`.
 
               - `"auto"`
 
             - `file_ids: optional array of string`
 
-              一个可选的已上传文件列表，供你的代码使用。
+              一个可选的、供代码使用的已上传文件列表。
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -23236,7 +23244,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `type: "disabled"`
 
-                  禁用出站网络访问。始终 `disabled`.
+                  禁用出站网络访问。始终为 `disabled`.
 
                   - `"disabled"`
 
@@ -23244,39 +23252,39 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `allowed_domains: array of string`
 
-                  当类型为以下值时，允许的域名列表： `allowlist`.
+                  当类型为 `allowlist`.
 
                 - `type: "allowlist"`
 
-                  仅允许对指定域名的出站网络访问。始终 `allowlist`.
+                  时，仅允许向指定域发出出站网络访问。始终为 `allowlist`.
 
                   - `"allowlist"`
 
                 - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                  可选，针对允许列表中域名的域级密钥。
+                  用于允许列表中域的可选、按域隔离的密钥。
 
                   - `domain: string`
 
-                    与密钥关联的域名。
+                    与该密钥关联的域。
 
                   - `name: string`
 
-                    要为该域名注入的密钥名称。
+                    要为该域注入的密钥名称。
 
                   - `value: string`
 
-                    要为该域名注入的密钥值。
+                    要为该域注入的密钥值。
 
         - `type: "code_interpreter"`
 
-          代码解释器工具的类型。始终 `code_interpreter`.
+          代码解释器工具的类型。始终为 `code_interpreter`.
 
           - `"code_interpreter"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -23286,7 +23294,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `type: "programmatic_tool_calling"`
 
-          工具的类型。始终 `programmatic_tool_calling`.
+          工具的类型。始终为 `programmatic_tool_calling`.
 
           - `"programmatic_tool_calling"`
 
@@ -23296,13 +23304,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `type: "image_generation"`
 
-          图像生成工具的类型。始终 `image_generation`.
+          图像生成工具的类型。始终为 `image_generation`.
 
           - `"image_generation"`
 
         - `action: optional "generate" or "edit" or "auto"`
 
-          是否生成新图像或编辑现有图像。默认值： `auto`.
+          是生成新图像还是编辑现有图像。默认值： `auto`.
 
           - `"generate"`
 
@@ -23312,11 +23320,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          设置生成图像的背景。可选值之一： `transparent`,
-          `opaque`，或 `auto`。透明背景可用于
-          支持的 GPT 图像模型。对于 `gpt-image-2` 以及
-          `gpt-image-2-2026-04-21`，此支持目前处于预览阶段。使用
-          `transparent`，时，请将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
+          设置生成图像的背景。取值之一 `transparent`,
+          `opaque`，或 `auto`。透明背景适用于受支持的
+          GPT Image 模型。对于 `gpt-image-2` 和
+          `gpt-image-2-2026-04-21`，该支持目前处于预览阶段。使用
+          `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
           - `"transparent"`
 
@@ -23326,7 +23334,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          控制模型在匹配输入图像的风格和特征（尤其是面部特征）上投入的努力程度。此参数仅支持 `gpt-image-1` 以及 `gpt-image-1.5` 及更高版本模型，不支持 `gpt-image-1-mini`。支持 `high` 以及 `low`。默认为 `low`.
+          控制模型在匹配输入图像风格和特征（尤其是面部特征）时所付出的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
 
           - `"high"`
 
@@ -23334,7 +23342,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `input_image_mask: optional object { file_id, image_url }`
 
-          用于修复的可选遮罩。包含 `image_url`
+          用于局部重绘的可选遮罩。包含 `image_url`
           （字符串，可选）和 `file_id` （字符串，可选）。
 
           - `file_id: optional string`
@@ -23347,7 +23355,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-          要使用的图像生成模型。可选值之一 `gpt-image-1`,
+          要使用的图像生成模型。可选值为 `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
           `gpt-image-1`.
@@ -23356,7 +23364,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。可选值之一 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
@@ -23373,7 +23381,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `moderation: optional "auto" or "low"`
 
-          生成图像的审核级别。默认值： `auto`.
+          生成图像的内容审核级别。默认值： `auto`.
 
           - `"auto"`
 
@@ -23385,7 +23393,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `output_format: optional "png" or "webp" or "jpeg"`
 
-          生成图像的输出格式。可选值之一 `png`, `webp`，或
+          生成图像的输出格式。可选值为 `png`, `webp`，或
           `jpeg`。默认值： `png`.
 
           - `"png"`
@@ -23396,11 +23404,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `partial_images: optional number`
 
-          流式模式下生成的部分图像数量，范围从 0（默认值）到 3。
+          在流式模式下生成的部分图像数量，取值范围为 0（默认值）到 3。
 
         - `quality: optional "low" or "medium" or "high" or "auto"`
 
-          生成图像的质量。可选值之一 `low`, `medium`, `high`,
+          生成图像的质量。可选值为 `low`, `medium`, `high`,
           或 `auto`。默认值： `auto`.
 
           - `"low"`
@@ -23413,13 +23421,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+          生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `"1024x1024"`
 
@@ -23431,27 +23439,27 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `LocalShell object { type }`
 
-        一种允许模型在本地环境中执行 shell 命令的工具。
+        允许模型在本地环境中执行 shell 命令的工具。
 
         - `type: "local_shell"`
 
-          本地 shell 工具的类型。始终为 `local_shell`.
+          本地 shell 工具的类型，始终为 `local_shell`.
 
           - `"local_shell"`
 
       - `Shell object { type, allowed_callers, environment }`
 
-        一种允许模型执行 shell 命令的工具。
+        允许模型执行 shell 命令的工具。
 
         - `type: "shell"`
 
-          shell 工具的类型。始终为 `shell`.
+          shell 工具的类型，始终为 `shell`.
 
           - `"shell"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -23463,13 +23471,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `type: "container_auto"`
 
-              自动为此请求创建容器
+              为本次请求自动创建一个容器
 
               - `"container_auto"`
 
             - `file_ids: optional array of string`
 
-              一个可选的已上传文件列表，供你的代码使用。
+              一个可选的、供代码使用的已上传文件列表。
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -23493,13 +23501,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `skills: optional array of SkillReference or InlineSkill`
 
-              可选技能列表，通过 ID 或内联数据引用。
+              通过 id 或内联数据引用的可选技能列表。
 
               - `SkillReference object { skill_id, type, version }`
 
                 - `skill_id: string`
 
-                  被引用技能的 ID。
+                  所引用技能的 ID。
 
                 - `type: "skill_reference"`
 
@@ -23509,7 +23517,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `version: optional string`
 
-                  可选技能版本。使用正整数或 'latest'。省略则使用默认值。
+                  可选的技能版本。使用正整数或 'latest'。省略则使用默认值。
 
               - `InlineSkill object { description, name, source, type }`
 
@@ -23519,7 +23527,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `name: string`
 
-                  该技能的名称。
+                  技能的名称。
 
                 - `source: InlineSkillSource`
 
@@ -23543,7 +23551,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `type: "inline"`
 
-                  为此请求定义一个内联技能。
+                  为本次请求定义一个内联技能。
 
                   - `"inline"`
 
@@ -23557,7 +23565,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `skills: optional array of LocalSkill`
 
-              可选技能列表。
+              可选的技能列表。
 
               - `description: string`
 
@@ -23565,11 +23573,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `name: string`
 
-                该技能的名称。
+                技能的名称。
 
               - `path: string`
 
-                包含该技能的目录路径。
+                指向包含该技能的目录的路径。
 
           - `ContainerReference object { container_id, type }`
 
@@ -23585,7 +23593,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Custom object { name, type, allowed_callers, 3 more }`
 
-        一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+        使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -23599,7 +23607,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -23607,7 +23615,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `defer_loading: optional boolean`
 
-          是否应延迟此工具并通过工具搜索发现。
+          是否应延迟此工具并通过工具搜索发现它。
 
         - `description: optional string`
 
@@ -23615,11 +23623,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `format: optional CustomToolInputFormat`
 
-          自定义工具的输入格式。默认为无约束文本。
+          自定义工具的输入格式。默认是无约束文本。
 
           - `Text object { type }`
 
-            无约束的自由格式文本。
+            无约束的自由形式文本。
 
             - `type: "text"`
 
@@ -23629,15 +23637,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `Grammar object { definition, syntax, type }`
 
-            由用户定义的文法。
+            由用户定义的语法。
 
             - `definition: string`
 
-              文法定义。
+              语法定义。
 
             - `syntax: "lark" or "regex"`
 
-              文法定义的语法。其中之一为 `lark` 或 `regex`.
+              语法定义的语法。可选值为 `lark` 或 `regex`.
 
               - `"lark"`
 
@@ -23645,25 +23653,25 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `type: "grammar"`
 
-              文法格式。始终 `grammar`.
+              语法格式。始终为 `grammar`.
 
               - `"grammar"`
 
       - `Namespace object { description, name, tools, type }`
 
-        将函数/自定义工具分组到共享命名空间下。
+        在共享命名空间下对 function/custom 工具进行分组。
 
         - `description: string`
 
-          显示给模型的命名空间描述。
+          展示给模型的命名空间描述。
 
         - `name: string`
 
-          工具调用中使用的命名空间名称（例如， `crm`).
+          在工具调用中使用的命名空间名称（例如， `crm`).
 
         - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
-          此命名空间内可用的函数/自定义工具。
+          该命名空间内可用的 function/custom 工具。
 
           - `Function object { name, type, allowed_callers, 5 more }`
 
@@ -23675,7 +23683,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-              工具调用上下文。
+              该工具的调用上下文。
 
               - `"direct"`
 
@@ -23683,23 +23691,23 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `defer_loading: optional boolean`
 
-              此函数是否应延迟并通过工具搜索发现。
+              是否应延迟此函数并通过工具搜索发现。
 
             - `description: optional string or null`
 
             - `output_schema: optional map[unknown] or null`
 
-              描述此函数工具字符串输出中编码的 JSON 值的 JSON Schema。这不描述内容数组输出。
+              用于描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content-array 输出。
 
             - `parameters: optional unknown or null`
 
             - `strict: optional boolean or null`
 
-              是否强制进行严格的参数验证。如果省略，当 schema 兼容时，Responses 会尝试使用严格验证，否则回退到非严格验证。
+              是否强制执行严格的参数校验。如果省略，Responses 会尝试在 schema 兼容时使用严格校验，否则回退到非严格校验。
 
           - `Custom object { name, type, allowed_callers, 3 more }`
 
-            一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+            使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -23713,7 +23721,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-              工具调用上下文。
+              该工具的调用上下文。
 
               - `"direct"`
 
@@ -23721,7 +23729,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `defer_loading: optional boolean`
 
-              是否应延迟此工具并通过工具搜索发现。
+              是否应延迟此工具并通过工具搜索发现它。
 
             - `description: optional string`
 
@@ -23729,27 +23737,27 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `format: optional CustomToolInputFormat`
 
-              自定义工具的输入格式。默认为无约束文本。
+              自定义工具的输入格式。默认是无约束文本。
 
         - `type: "namespace"`
 
-          工具的类型。始终 `namespace`.
+          工具的类型。始终为 `namespace`.
 
           - `"namespace"`
 
       - `ToolSearch object { type, description, execution, parameters }`
 
-        延迟工具的托管或 BYOT 工具搜索配置。
+        用于延迟工具的托管或 BYOT 工具搜索配置。
 
         - `type: "tool_search"`
 
-          工具的类型。始终 `tool_search`.
+          工具的类型。始终为 `tool_search`.
 
           - `"tool_search"`
 
         - `description: optional string or null`
 
-          显示给模型的客户端执行工具搜索工具的描述。
+          展示给模型的客户端执行的工具搜索工具的描述。
 
         - `execution: optional "server" or "client"`
 
@@ -23761,15 +23769,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `parameters: optional unknown or null`
 
-          客户端执行工具搜索工具的参数 schema。
+          客户端执行的工具搜索工具的参数 schema。
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        此工具搜索网页以获取用于响应的相关结果。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+        此工具会在网络上搜索相关结果以用于回复中。详细了解 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-          网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+          网页搜索工具的类型，取值之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
           - `"web_search_preview"`
 
@@ -23783,7 +23791,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
           - `"low"`
 
@@ -23793,25 +23801,25 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          用户的位置。
+          用户所在的位置。
 
           - `type: "approximate"`
 
-            位置近似的类型。始终 `approximate`.
+            位置近似的类型。始终为 `approximate`.
 
             - `"approximate"`
 
           - `city: optional string or null`
 
-            用户的城市的自由文本输入，例如 `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+            两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户的地区的自由文本输入，例如 `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
@@ -23819,17 +23827,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `ApplyPatch object { type, allowed_callers }`
 
-        允许助手使用统一差异创建、删除或更新文件。
+        允许助手使用 unified diff 创建、删除或更新文件。
 
         - `type: "apply_patch"`
 
-          工具的类型。始终 `apply_patch`.
+          工具的类型。始终为 `apply_patch`.
 
           - `"apply_patch"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -23837,19 +23845,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `type: "tool_search_output"`
 
-      项目的类型。始终为 `tool_search_output`.
+      项的类型。始终为 `tool_search_output`.
 
       - `"tool_search_output"`
 
     - `created_by: optional string`
 
-      创建该项目的执行者的标识符。
+      创建该项的执行者的标识符。
 
   - `AdditionalTools object { id, role, tools, type }`
 
     - `id: string`
 
-      附加工具条目的唯一 ID。
+      该附加工具条目的唯一 ID。
 
     - `role: "unknown" or "user" or "assistant" or 5 more`
 
@@ -23873,33 +23881,33 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `tools: array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-      此条目中可用的附加工具定义。
+      在该条目处可用的附加工具定义。
 
       - `Function object { name, parameters, strict, 5 more }`
 
-        定义你自己代码中模型可以选择调用的函数。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+        定义你自己代码中的某个函数，供模型选择调用。详细了解 [function calling](https://platform.openai.com/docs/guides/function-calling).
 
         - `name: string`
 
-          要调用的函数的名称。
+          要调用的函数名称。
 
         - `parameters: map[unknown] or null`
 
-          描述函数参数的 JSON schema 对象。
+          描述该函数参数的 JSON schema 对象。
 
         - `strict: boolean or null`
 
-          是否对此函数工具强制执行严格的参数验证。
+          是否为该函数工具启用严格的参数校验。
 
         - `type: "function"`
 
-          函数工具的类型。始终为 `function`.
+          该函数工具的类型。始终为 `function`.
 
           - `"function"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -23907,19 +23915,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `defer_loading: optional boolean`
 
-          此函数是否延迟并通过工具搜索加载。
+          该函数是否为延迟加载，并通过工具搜索加载。
 
         - `description: optional string or null`
 
-          函数的描述。模型据此确定是否调用该函数。
+          该函数的描述。模型据此决定是否调用该函数。
 
         - `output_schema: optional map[unknown] or null`
 
-          描述此函数的字符串输出中编码的 JSON 值的 JSON schema 对象。
+          描述该函数在字符串输出中编码的 JSON 值的 JSON schema 对象。
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        一种从上传文件中搜索相关内容工具。详细了解 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+        一个用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 tool](https://platform.openai.com/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -23937,15 +23945,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `ComparisonFilter object { key, type, value }`
 
-            用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+            用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
           - `CompoundFilter object { filters, type }`
 
-            使用以下方式组合多个筛选器 `and` 或 `or`.
+            使用以下方式组合多个过滤器 `and` 或 `or`.
 
         - `max_num_results: optional number`
 
-          要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+          返回结果的最大数量。此数量应介于 1 到 50 之间（含两端）。
 
         - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -23953,19 +23961,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-            启用混合搜索时，控制倒数排名融合如何在语义嵌入匹配与稀疏关键词匹配之间取得平衡的权重。
+            在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
             - `embedding_weight: number`
 
-              嵌入在倒数排名融合中的权重。
+              在倒数排名融合中嵌入的权重。
 
             - `text_weight: number`
 
-              文本在倒数排名融合中的权重。
+              在倒数排名融合中文本的权重。
 
           - `ranker: optional "auto" or "default-2024-11-15"`
 
-            用于文件搜索的排序器。
+            用于 文件搜索 的排序器。
 
             - `"auto"`
 
@@ -23973,11 +23981,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `score_threshold: optional number`
 
-            文件搜索的分数阈值，为0到1之间的数字。数字越接近1，将尝试仅返回最相关的结果，但可能返回较少的結果。
+            文件搜索 的分数阈值，取值范围为 0 到 1 之间。数值越接近 1，越会尝试只返回最相关的结果，但返回的结果数量可能会减少。
 
       - `Computer object { type }`
 
-        一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -23987,19 +23995,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
-          计算机显示器的宽度。
+          计算机显示屏的高度。
 
         - `display_width: number`
 
-          计算机显示器的宽度。
+          计算机显示屏的宽度。
 
         - `environment: "windows" or "mac" or "linux" or 2 more`
 
-          要控制的计算机环境的类型。
+          要控制的计算机环境类型。
 
           - `"windows"`
 
@@ -24019,12 +24027,12 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-        搜索互联网以获取与提示相关的来源。了解更多关于
+        在互联网上搜索与提示相关的来源。详细了解
         [网页搜索工具](/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
-          网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+          网页搜索工具的类型，取值之一为 `web_search` 或 `web_search_2025_08_26`.
 
           - `"web_search"`
 
@@ -24032,22 +24040,22 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `external_web_access: optional boolean`
 
-          允许网页搜索实时访问互联网。省略时默认为true。为false时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+          允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
         - `filters: optional object { allowed_domains }  or null`
 
-          搜索的过滤器。
+          搜索的筛选条件。
 
           - `allowed_domains: optional array of string or null`
 
-            搜索允许的域名。如果未提供，则允许所有域名。
-            所提供域名的子域名也允许。
+            允许进行搜索的域名。如果未提供，则允许所有域名。
+            同时也允许所提供域名的子域名。
 
             示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
           - `"low"`
 
@@ -24061,15 +24069,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `city: optional string or null`
 
-            用户的城市的自由文本输入，例如 `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+            两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户的地区的自由文本输入，例如 `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
@@ -24077,14 +24085,14 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: optional "approximate"`
 
-            位置近似的类型。始终 `approximate`.
+            位置近似的类型。始终为 `approximate`.
 
             - `"approximate"`
 
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-        通过远程 Model Context Protocol 让模型访问额外工具
-        (MCP) 服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+        通过远程 Model Context Protocol
+        （MCP）服务器为模型提供对其他工具的访问权限。 [了解更多关于 MCP 的信息](/docs/guides/tools-remote-mcp).
 
         - `server_label: string`
 
@@ -24092,13 +24100,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `type: "mcp"`
 
-          MCP 工具的类型。始终 `mcp`.
+          MCP 工具的类型。始终为 `mcp`.
 
           - `"mcp"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -24110,7 +24118,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `McpAllowedTools = array of string`
 
-            允许工具名称的字符串数组
+            允许的工具名称组成的字符串数组
 
           - `McpToolFilter object { read_only, tool_names }`
 
@@ -24118,9 +24126,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `read_only: optional boolean`
 
-              指示工具是否修改数据或为只读。如果
-              MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-              ，它将匹配此过滤器。
+              指示工具是否修改数据或是否为只读。如果某个
+              MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+              ，它将匹配此过滤条件。
 
             - `tool_names: optional array of string`
 
@@ -24128,26 +24136,26 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `authorization: optional string`
 
-          可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-          与自定义 MCP 服务器 URL 或服务连接器配合使用。你的应用程序
-          必须处理 OAuth 授权流程并在此处提供令牌。
+          可用于远程 MCP 服务器的 OAuth 访问令牌，可搭配自定义 MCP 服务器 URL 或服务连接器使用。你的应用
+          必须处理 OAuth 授权流程，并在此处提供该令牌。
+          必须处理 OAuth 授权流程，并在此处提供该令牌。
 
         - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-          服务连接器的标识符，类似于 ChatGPT 中可用的那些。必须提供以下之一：
-          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中之一。了解更多
-          关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+          服务连接器的标识符，例如 ChatGPT 中提供的连接器之一。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解关于服务连接器
+          的更多信息 [请参阅此处](/docs/guides/tools-remote-mcp#connectors).
 
-          当前支持的值 `connector_id` 包括：
+          当前支持 `connector_id` 的值为：
 
-          - Dropbox： `connector_dropbox`
-          - Gmail： `connector_gmail`
-          - Google Calendar： `connector_googlecalendar`
-          - Google Drive： `connector_googledrive`
-          - Microsoft Teams： `connector_microsoftteams`
-          - Outlook Calendar： `connector_outlookcalendar`
-          - Outlook Email： `connector_outlookemail`
-          - SharePoint： `connector_sharepoint`
+          - Dropbox: `connector_dropbox`
+          - Gmail: `connector_gmail`
+          - Google Calendar: `connector_googlecalendar`
+          - Google Drive: `connector_googledrive`
+          - Microsoft Teams: `connector_microsoftteams`
+          - Outlook Calendar: `connector_outlookcalendar`
+          - Outlook Email: `connector_outlookemail`
+          - SharePoint: `connector_sharepoint`
 
           - `"connector_dropbox"`
 
@@ -24167,11 +24175,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `defer_loading: optional boolean`
 
-          此 MCP 工具是否被延迟并通过工具搜索发现。
+          此 MCP 工具是否被延迟，并通过工具搜索发现。
 
         - `headers: optional map[string] or null`
 
-          发送到 MCP 服务器的可选 HTTP 头。用于身份验证
+          发送到 MCP 服务器的可选 HTTP 请求头。用于身份验证
           或其他用途。
 
         - `require_approval: optional object { always, never }  or "always" or "never" or null`
@@ -24181,8 +24189,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
           - `McpToolApprovalFilter object { always, never }`
 
             指定 MCP 服务器的哪些工具需要审批。可以是
-            `always`, `never`，或一个与需要审批的工具关联的过滤器对象
-            。
+            `always`, `never`，或与工具关联的过滤对象
+            ，这些工具需要审批。
 
             - `always: optional object { read_only, tool_names }`
 
@@ -24190,9 +24198,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -24204,9 +24212,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -24214,8 +24222,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `McpToolApprovalSetting = "always" or "never"`
 
-            为所有工具指定单一审批策略。可以是 `always` 或
-            `never`。之一。当设置为 `always`，时，所有工具都需要审批。当
+            为所有工具指定统一的审批策略。可选值为 `always` 或
+            `never`。当设置为 `always`，时，所有工具都需要审批。当
             设置为 `never`，时，所有工具都不需要审批。
 
             - `"always"`
@@ -24228,22 +24236,22 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `server_url: optional string`
 
-          MCP 服务器的 URL。必须提供 `server_url`, `connector_id`，或
-          `tunnel_id` 之一。
+          MCP 服务器的 URL。 `server_url`, `connector_id`，或
+          `tunnel_id` 必须提供其中一个。
 
         - `tunnel_id: optional string`
 
-          用于替代直接服务器 URL 的安全 MCP 隧道 ID。必须提供
-          `server_url`, `connector_id`，或 `tunnel_id` 之一。
+          用于替代直接服务器 URL 的安全 MCP 隧道 ID。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中一个。
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
-        一个运行 Python 代码以帮助生成提示响应的工具。
+        运行 Python 代码以帮助生成对提示词响应的工具。
 
         - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-          代码解释器容器。可以是容器 ID，或一个对象，其中
-          指定了上传的文件 ID 以供你的代码使用，以及
+          代码解释器容器。可以是容器 ID，也可以是指定可供代码使用的已上传文件 ID 的对象，以及一个
+          指定可供你的代码使用的已上传文件 ID，以及一个
           可选的 `memory_limit` 设置。
 
           - `string`
@@ -24252,17 +24260,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器的配置。可选择指定要在其上运行代码的文件 ID。
+            代码解释器容器的配置。可选择指定要对其运行代码的文件 ID。
 
             - `type: "auto"`
 
-              始终 `auto`.
+              始终为 `auto`.
 
               - `"auto"`
 
             - `file_ids: optional array of string`
 
-              一个可选的已上传文件列表，供你的代码使用。
+              一个可选的、供代码使用的已上传文件列表。
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -24286,13 +24294,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `type: "code_interpreter"`
 
-          代码解释器工具的类型。始终 `code_interpreter`.
+          代码解释器工具的类型。始终为 `code_interpreter`.
 
           - `"code_interpreter"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -24302,7 +24310,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `type: "programmatic_tool_calling"`
 
-          工具的类型。始终 `programmatic_tool_calling`.
+          工具的类型。始终为 `programmatic_tool_calling`.
 
           - `"programmatic_tool_calling"`
 
@@ -24312,13 +24320,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `type: "image_generation"`
 
-          图像生成工具的类型。始终 `image_generation`.
+          图像生成工具的类型。始终为 `image_generation`.
 
           - `"image_generation"`
 
         - `action: optional "generate" or "edit" or "auto"`
 
-          是否生成新图像或编辑现有图像。默认值： `auto`.
+          是生成新图像还是编辑现有图像。默认值： `auto`.
 
           - `"generate"`
 
@@ -24328,11 +24336,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          设置生成图像的背景。可选值之一： `transparent`,
-          `opaque`，或 `auto`。透明背景可用于
-          支持的 GPT 图像模型。对于 `gpt-image-2` 以及
-          `gpt-image-2-2026-04-21`，此支持目前处于预览阶段。使用
-          `transparent`，时，请将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
+          设置生成图像的背景。取值之一 `transparent`,
+          `opaque`，或 `auto`。透明背景适用于受支持的
+          GPT Image 模型。对于 `gpt-image-2` 和
+          `gpt-image-2-2026-04-21`，该支持目前处于预览阶段。使用
+          `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
           - `"transparent"`
 
@@ -24342,7 +24350,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          控制模型在匹配输入图像的风格和特征（尤其是面部特征）上投入的努力程度。此参数仅支持 `gpt-image-1` 以及 `gpt-image-1.5` 及更高版本模型，不支持 `gpt-image-1-mini`。支持 `high` 以及 `low`。默认为 `low`.
+          控制模型在匹配输入图像风格和特征（尤其是面部特征）时所付出的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
 
           - `"high"`
 
@@ -24350,7 +24358,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `input_image_mask: optional object { file_id, image_url }`
 
-          用于修复的可选遮罩。包含 `image_url`
+          用于局部重绘的可选遮罩。包含 `image_url`
           （字符串，可选）和 `file_id` （字符串，可选）。
 
           - `file_id: optional string`
@@ -24363,7 +24371,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-          要使用的图像生成模型。可选值之一 `gpt-image-1`,
+          要使用的图像生成模型。可选值为 `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
           `gpt-image-1`.
@@ -24372,7 +24380,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。可选值之一 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
@@ -24389,7 +24397,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `moderation: optional "auto" or "low"`
 
-          生成图像的审核级别。默认值： `auto`.
+          生成图像的内容审核级别。默认值： `auto`.
 
           - `"auto"`
 
@@ -24401,7 +24409,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `output_format: optional "png" or "webp" or "jpeg"`
 
-          生成图像的输出格式。可选值之一 `png`, `webp`，或
+          生成图像的输出格式。可选值为 `png`, `webp`，或
           `jpeg`。默认值： `png`.
 
           - `"png"`
@@ -24412,11 +24420,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `partial_images: optional number`
 
-          流式模式下生成的部分图像数量，范围从 0（默认值）到 3。
+          在流式模式下生成的部分图像数量，取值范围为 0（默认值）到 3。
 
         - `quality: optional "low" or "medium" or "high" or "auto"`
 
-          生成图像的质量。可选值之一 `low`, `medium`, `high`,
+          生成图像的质量。可选值为 `low`, `medium`, `high`,
           或 `auto`。默认值： `auto`.
 
           - `"low"`
@@ -24429,13 +24437,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+          生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `"1024x1024"`
 
@@ -24447,27 +24455,27 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `LocalShell object { type }`
 
-        一种允许模型在本地环境中执行 shell 命令的工具。
+        允许模型在本地环境中执行 shell 命令的工具。
 
         - `type: "local_shell"`
 
-          本地 shell 工具的类型。始终为 `local_shell`.
+          本地 shell 工具的类型，始终为 `local_shell`.
 
           - `"local_shell"`
 
       - `Shell object { type, allowed_callers, environment }`
 
-        一种允许模型执行 shell 命令的工具。
+        允许模型执行 shell 命令的工具。
 
         - `type: "shell"`
 
-          shell 工具的类型。始终为 `shell`.
+          shell 工具的类型，始终为 `shell`.
 
           - `"shell"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -24483,7 +24491,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Custom object { name, type, allowed_callers, 3 more }`
 
-        一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+        使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -24497,7 +24505,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -24505,7 +24513,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `defer_loading: optional boolean`
 
-          是否应延迟此工具并通过工具搜索发现。
+          是否应延迟此工具并通过工具搜索发现它。
 
         - `description: optional string`
 
@@ -24513,23 +24521,23 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `format: optional CustomToolInputFormat`
 
-          自定义工具的输入格式。默认为无约束文本。
+          自定义工具的输入格式。默认是无约束文本。
 
       - `Namespace object { description, name, tools, type }`
 
-        将函数/自定义工具分组到共享命名空间下。
+        在共享命名空间下对 function/custom 工具进行分组。
 
         - `description: string`
 
-          显示给模型的命名空间描述。
+          展示给模型的命名空间描述。
 
         - `name: string`
 
-          工具调用中使用的命名空间名称（例如， `crm`).
+          在工具调用中使用的命名空间名称（例如， `crm`).
 
         - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
-          此命名空间内可用的函数/自定义工具。
+          该命名空间内可用的 function/custom 工具。
 
           - `Function object { name, type, allowed_callers, 5 more }`
 
@@ -24541,7 +24549,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-              工具调用上下文。
+              该工具的调用上下文。
 
               - `"direct"`
 
@@ -24549,23 +24557,23 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `defer_loading: optional boolean`
 
-              此函数是否应延迟并通过工具搜索发现。
+              是否应延迟此函数并通过工具搜索发现。
 
             - `description: optional string or null`
 
             - `output_schema: optional map[unknown] or null`
 
-              描述此函数工具字符串输出中编码的 JSON 值的 JSON Schema。这不描述内容数组输出。
+              用于描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content-array 输出。
 
             - `parameters: optional unknown or null`
 
             - `strict: optional boolean or null`
 
-              是否强制进行严格的参数验证。如果省略，当 schema 兼容时，Responses 会尝试使用严格验证，否则回退到非严格验证。
+              是否强制执行严格的参数校验。如果省略，Responses 会尝试在 schema 兼容时使用严格校验，否则回退到非严格校验。
 
           - `Custom object { name, type, allowed_callers, 3 more }`
 
-            一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+            使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -24579,7 +24587,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-              工具调用上下文。
+              该工具的调用上下文。
 
               - `"direct"`
 
@@ -24587,7 +24595,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `defer_loading: optional boolean`
 
-              是否应延迟此工具并通过工具搜索发现。
+              是否应延迟此工具并通过工具搜索发现它。
 
             - `description: optional string`
 
@@ -24595,27 +24603,27 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `format: optional CustomToolInputFormat`
 
-              自定义工具的输入格式。默认为无约束文本。
+              自定义工具的输入格式。默认是无约束文本。
 
         - `type: "namespace"`
 
-          工具的类型。始终 `namespace`.
+          工具的类型。始终为 `namespace`.
 
           - `"namespace"`
 
       - `ToolSearch object { type, description, execution, parameters }`
 
-        延迟工具的托管或 BYOT 工具搜索配置。
+        用于延迟工具的托管或 BYOT 工具搜索配置。
 
         - `type: "tool_search"`
 
-          工具的类型。始终 `tool_search`.
+          工具的类型。始终为 `tool_search`.
 
           - `"tool_search"`
 
         - `description: optional string or null`
 
-          显示给模型的客户端执行工具搜索工具的描述。
+          展示给模型的客户端执行的工具搜索工具的描述。
 
         - `execution: optional "server" or "client"`
 
@@ -24627,15 +24635,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `parameters: optional unknown or null`
 
-          客户端执行工具搜索工具的参数 schema。
+          客户端执行的工具搜索工具的参数 schema。
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        此工具搜索网页以获取用于响应的相关结果。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+        此工具会在网络上搜索相关结果以用于回复中。详细了解 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-          网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+          网页搜索工具的类型，取值之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
           - `"web_search_preview"`
 
@@ -24649,7 +24657,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
           - `"low"`
 
@@ -24659,25 +24667,25 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          用户的位置。
+          用户所在的位置。
 
           - `type: "approximate"`
 
-            位置近似的类型。始终 `approximate`.
+            位置近似的类型。始终为 `approximate`.
 
             - `"approximate"`
 
           - `city: optional string or null`
 
-            用户的城市的自由文本输入，例如 `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+            两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户的地区的自由文本输入，例如 `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
@@ -24685,17 +24693,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `ApplyPatch object { type, allowed_callers }`
 
-        允许助手使用统一差异创建、删除或更新文件。
+        允许助手使用 unified diff 创建、删除或更新文件。
 
         - `type: "apply_patch"`
 
-          工具的类型。始终 `apply_patch`.
+          工具的类型。始终为 `apply_patch`.
 
           - `"apply_patch"`
 
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-          工具调用上下文。
+          该工具的调用上下文。
 
           - `"direct"`
 
@@ -24703,15 +24711,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `type: "additional_tools"`
 
-      项目的类型。始终为 `additional_tools`.
+      项的类型。始终为 `additional_tools`.
 
       - `"additional_tools"`
 
   - `Reasoning object { id, summary, type, 3 more }`
 
-    推理模型在生成
-    响应时所用思维链的描述。请务必将这些项目包含在你的 `input` 对 Responses API 的
-    后续对话轮次中，如果你正在手动
+    对推理模型在生成响应时所使用的思维链的描述。如果你是手动
+    管理上下文，请务必在后续对话轮次中将这些项包含在 `input` 对 Responses API 的
+    请求中。
     [管理上下文](/docs/guides/conversation-state).
 
     - `id: string`
@@ -24724,7 +24732,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `text: string`
 
-        模型到目前为止的推理输出摘要。
+        到目前为止模型推理输出的摘要。
 
       - `type: "summary_text"`
 
@@ -24752,20 +24760,20 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `encrypted_content: optional string or null`
 
-      推理项目的加密内容。默认情况下，此字段由
-      返回的推理项目填充，适用于 `POST /v1/responses` 和 WebSocket
-      `response.create` 请求。
+      推理条目的加密内容。默认情况下，对于通过
+      和 WebSocket `POST /v1/responses` 请求返回的推理条目，
+      `response.create` 会填充该字段。
 
-      流式传输时，请使用已完成的推理项及其
-      `encrypted_content` 从 `response.output_item.done` 事件中
-      的后续请求。该 `encrypted_content` 中
-      `response.output_item.added` 可能不完整。这在
-      特别重要，当 `store` 是 `false` 或使用零数据保留时。
+      流式传输时，使用已完成的推理项及其
+      `encrypted_content` 来自 `response.output_item.done` 事件中的
+      字段，并在后续请求中传递。 `encrypted_content` 在
+      `response.output_item.added` 中可能不完整。这一点尤其
+      重要，当你 `store` 为 `false` 时，或使用 Zero Data Retention 时。
 
     - `status: optional "in_progress" or "completed" or "incomplete"`
 
-      条目的状态。其一为 `in_progress`, `completed`，或
-      `incomplete`。当项目通过 API 返回时填充。
+      该条目的状态。可选值为 `in_progress`, `completed`，或
+      `incomplete`。在通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -24781,19 +24789,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `call_id: string`
 
-      程序项的稳定调用 ID。
+      程序条目的稳定调用 ID。
 
     - `code: string`
 
-      由编程式工具调用执行的 JavaScript 源代码。
+      由程序化工具调用执行的 JavaScript 源码。
 
     - `fingerprint: string`
 
-      不透明的程序重放指纹，必须往返传输。
+      必须往返透传的不透明程序重放指纹。
 
     - `type: "program"`
 
-      项目的类型。始终为 `program`.
+      项的类型。始终为 `program`.
 
       - `"program"`
 
@@ -24821,13 +24829,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `type: "program_output"`
 
-      项目的类型。始终为 `program_output`.
+      项的类型。始终为 `program_output`.
 
       - `"program_output"`
 
   - `Compaction object { id, encrypted_content, type, created_by }`
 
-    由该工具生成的压缩项 [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+    由 [`v1/responses/compact` API](/docs/api-reference/responses/compact).
 
     - `id: string`
 
@@ -24835,17 +24843,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `encrypted_content: string`
 
-      压缩产生的加密内容。
+      由压缩生成的加密内容。
 
     - `type: "compaction"`
 
-      项目的类型。始终为 `compaction`.
+      项的类型。始终为 `compaction`.
 
       - `"compaction"`
 
     - `created_by: optional string`
 
-      创建该项目的执行者的标识符。
+      创建该项的执行者的标识符。
 
   - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -24857,7 +24865,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `code: string or null`
 
-      要运行的代码，如果不可用则为 null。
+      要运行的代码，若不可用则为 null。
 
     - `container_id: string`
 
@@ -24866,7 +24874,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
     - `outputs: array of object { logs, type }  or object { type, url }  or null`
 
       代码解释器生成的输出，例如日志或图像。
-      如果没有可用的输出，则可以为 null。
+      若没有可用输出，可能为 null。
 
       - `Logs object { logs, type }`
 
@@ -24884,7 +24892,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Image object { type, url }`
 
-        代码解释器的图像输出。
+        代码解释器输出的图像。
 
         - `type: "image"`
 
@@ -24894,7 +24902,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `url: string`
 
-          代码解释器图像输出的 URL。
+          代码解释器输出图像的 URL。
 
     - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -24926,7 +24934,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `action: object { command, env, type, 3 more }`
 
-      在服务器上执行 shell 命令。
+      在服务端执行 shell 命令。
 
       - `command: array of string`
 
@@ -24948,7 +24956,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `user: optional string or null`
 
-        运行命令的可选用户。
+        运行命令所使用的可选用户。
 
       - `working_directory: optional string or null`
 
@@ -24956,11 +24964,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `call_id: string`
 
-      模型生成的本地 shell 工具调用的唯一 ID。
+      模型生成的本机 shell 工具调用的唯一 ID。
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      本地 shell 调用的状态。
+      本机 shell 调用的状态。
 
       - `"in_progress"`
 
@@ -24970,31 +24978,31 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `type: "local_shell_call"`
 
-      本地 shell 调用的类型。始终为 `local_shell_call`.
+      本机 shell 调用的类型。始终为 `local_shell_call`.
 
       - `"local_shell_call"`
 
   - `LocalShellCallOutput object { id, output, type, status }`
 
-    本地 shell 工具调用的输出。
+    本机 shell 工具调用的输出。
 
     - `id: string`
 
-      模型生成的本地 shell 工具调用的唯一 ID。
+      模型生成的本机 shell 工具调用的唯一 ID。
 
     - `output: string`
 
-      本地 shell 工具调用输出的 JSON 字符串。
+      本机 shell 工具调用输出的 JSON 字符串。
 
     - `type: "local_shell_call_output"`
 
-      本地 shell 工具调用输出的类型。始终为 `local_shell_call_output`.
+      本机 shell 工具调用输出的类型。始终为 `local_shell_call_output`.
 
       - `"local_shell_call_output"`
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-      条目的状态。其一为 `in_progress`, `completed`，或 `incomplete`.
+      该条目的状态。可选值为 `in_progress`, `completed`，或 `incomplete`.
 
       - `"in_progress"`
 
@@ -25004,25 +25012,25 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
   - `ShellCall object { id, action, call_id, 5 more }`
 
-    在受管环境中执行一个或多个 shell 命令的工具调用。
+    在托管环境中执行一条或多条 shell 命令的工具调用。
 
     - `id: string`
 
-      shell 工具调用的唯一 ID。当此项目通过 API 返回时填充。
+      shell 工具调用的唯一 ID。通过 API 返回此条目时填充。
 
     - `action: object { commands, max_output_length, timeout_ms }`
 
-      描述如何运行工具调用的 shell 命令和限制。
+      描述如何运行该工具调用的 shell 命令和限制。
 
       - `commands: array of string`
 
       - `max_output_length: number or null`
 
-        可选，每个命令返回的最大字符数。
+        可选的每个命令返回的最大字符数。
 
       - `timeout_ms: number or null`
 
-        可选，命令的超时时间（毫秒）。
+        可选的命令超时时间（毫秒）。
 
     - `call_id: string`
 
@@ -25056,7 +25064,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      shell 调用的状态。其中一种为 `in_progress`, `completed`，或 `incomplete`.
+      shell 调用的状态。取值之一： `in_progress`, `completed`，或 `incomplete`.
 
       - `"in_progress"`
 
@@ -25066,7 +25074,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `type: "shell_call"`
 
-      项目的类型。始终为 `shell_call`.
+      项的类型。始终为 `shell_call`.
 
       - `"shell_call"`
 
@@ -25092,15 +25100,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `created_by: optional string`
 
-      创建此工具调用的实体的 ID。
+      创建此工具调用的实体 ID。
 
   - `ShellCallOutput object { id, call_id, max_output_length, 5 more }`
 
-    发出的 shell 工具调用的输出。
+    已发出的 shell 工具调用的输出。
 
     - `id: string`
 
-      shell 调用输出的唯一 ID。当此条目通过 API 返回时填充。
+      shell 调用输出的唯一 ID。当通过 API 返回此条目时会填充该字段。
 
     - `call_id: string`
 
@@ -25108,7 +25116,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `max_output_length: number or null`
 
-      shell 命令输出的最大长度。由模型生成，应与原始输出一起传回。
+      shell 命令输出的最大长度。该值由模型生成，并应与原始输出一起传回。
 
     - `output: array of object { outcome, stderr, stdout, created_by }`
 
@@ -25116,7 +25124,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `outcome: object { type }  or object { exit_code, type }`
 
-        表示 shell 调用输出块的退出结果（含退出码）或超时结果。
+        表示 shell 调用输出块的结果是退出结果（带有退出码）还是超时结果。
 
         - `Timeout object { type }`
 
@@ -25130,11 +25138,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Exit object { exit_code, type }`
 
-          表示 shell 命令已完成并返回了退出码。
+          表示 shell 命令已执行完成并返回了退出码。
 
           - `exit_code: number`
 
-            Shell 进程的退出代码。
+            shell 进程的退出码。
 
           - `type: "exit"`
 
@@ -25152,11 +25160,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      Shell 调用输出的状态。取值为 `in_progress`, `completed`，或 `incomplete`.
+      shell 调用输出的状态。取值为 `in_progress`, `completed`，或 `incomplete`.
 
       - `"in_progress"`
 
@@ -25166,7 +25174,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `type: "shell_call_output"`
 
-      Shell 调用输出的类型。始终为 `shell_call_output`.
+      shell 调用输出的类型。始终为 `shell_call_output`.
 
       - `"shell_call_output"`
 
@@ -25192,19 +25200,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `created_by: optional string`
 
-      创建该项目的执行者的标识符。
+      创建该项的执行者的标识符。
 
   - `ApplyPatchCall object { id, call_id, operation, 4 more }`
 
-    一种通过创建、删除或更新文件来应用文件差异的工具调用。
+    通过创建、删除或更新文件来应用文件差异的工具调用。
 
     - `id: string`
 
-      API 返回此项目时填充的 apply patch 工具调用的唯一 ID。
+      apply patch 工具调用的唯一 ID。当通过 API 返回此 item 时填充。
 
     - `call_id: string`
 
-      由模型生成的 apply_patch 工具调用的唯一 ID。
+      模型生成的 apply patch 工具调用的唯一 ID。
 
     - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
 
@@ -25224,7 +25232,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `type: "create_file"`
 
-          使用提供的差异创建新文件。
+          使用提供的差异创建一个新文件。
 
           - `"create_file"`
 
@@ -25238,7 +25246,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `type: "delete_file"`
 
-          删除指定文件。
+          删除指定的文件。
 
           - `"delete_file"`
 
@@ -25262,7 +25270,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `status: "in_progress" or "completed"`
 
-      apply_patch 工具调用的状态。之一 `in_progress` 或 `completed`.
+      apply patch 工具调用的状态。取值为 `in_progress` 或 `completed`.
 
       - `"in_progress"`
 
@@ -25270,7 +25278,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `type: "apply_patch_call"`
 
-      项目的类型。始终为 `apply_patch_call`.
+      项的类型。始终为 `apply_patch_call`.
 
       - `"apply_patch_call"`
 
@@ -25296,7 +25304,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `created_by: optional string`
 
-      创建此工具调用的实体的 ID。
+      创建此工具调用的实体 ID。
 
   - `ApplyPatchCallOutput object { id, call_id, status, 4 more }`
 
@@ -25304,15 +25312,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `id: string`
 
-      API 返回此项目时填充的 apply patch 工具调用输出的唯一 ID。
+      apply patch 工具调用输出的唯一 ID。当通过 API 返回此 item 时填充。
 
     - `call_id: string`
 
-      由模型生成的 apply_patch 工具调用的唯一 ID。
+      模型生成的 apply patch 工具调用的唯一 ID。
 
     - `status: "completed" or "failed"`
 
-      apply patch 工具调用输出的状态。可选值之一： `completed` 或 `failed`.
+      apply patch 工具调用输出的状态。取值之一为 `completed` 或 `failed`.
 
       - `"completed"`
 
@@ -25320,7 +25328,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `type: "apply_patch_call_output"`
 
-      项目的类型。始终为 `apply_patch_call_output`.
+      项的类型。始终为 `apply_patch_call_output`.
 
       - `"apply_patch_call_output"`
 
@@ -25346,11 +25354,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `created_by: optional string`
 
-      创建此工具调用输出的实体的 ID。
+      创建此工具调用输出的实体 ID。
 
     - `output: optional string or null`
 
-      apply patch 工具返回的可选文本输出。
+      由 apply patch 工具返回的可选文本输出。
 
   - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -25358,7 +25366,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `id: string`
 
-      列表的唯一 ID。
+      此列表的唯一 ID。
 
     - `server_label: string`
 
@@ -25370,7 +25378,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `input_schema: unknown`
 
-        描述工具输入的 JSON schema。
+        描述该工具输入的 JSON schema。
 
       - `name: string`
 
@@ -25378,7 +25386,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `annotations: optional unknown or null`
 
-        关于工具的附加注释。
+        关于该工具的附加注释。
 
       - `description: optional string or null`
 
@@ -25386,7 +25394,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `type: "mcp_list_tools"`
 
-      项目的类型。始终为 `mcp_list_tools`.
+      项的类型。始终为 `mcp_list_tools`.
 
       - `"mcp_list_tools"`
 
@@ -25396,11 +25404,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
   - `McpApprovalRequest object { id, arguments, name, 2 more }`
 
-    请求人工批准工具调用的请求。
+    对工具调用的人工审批请求。
 
     - `id: string`
 
-      批准请求的唯一 ID。
+      审批请求的唯一 ID。
 
     - `arguments: string`
 
@@ -25416,13 +25424,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `type: "mcp_approval_request"`
 
-      项目的类型。始终为 `mcp_approval_request`.
+      项的类型。始终为 `mcp_approval_request`.
 
       - `"mcp_approval_request"`
 
   - `McpApprovalResponse object { id, approval_request_id, approve, 2 more }`
 
-    对 MCP 批准请求的响应。
+    对 MCP 审批请求的响应。
 
     - `id: string`
 
@@ -25430,37 +25438,37 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `approval_request_id: string`
 
-      正在回答的审批请求的 ID。
+      正在回复的审批请求的 ID。
 
     - `approve: boolean`
 
-      该请求是否已获批准。
+      请求是否已批准。
 
     - `type: "mcp_approval_response"`
 
-      项目的类型。始终为 `mcp_approval_response`.
+      项的类型。始终为 `mcp_approval_response`.
 
       - `"mcp_approval_response"`
 
     - `reason: optional string or null`
 
-      该决定的可选原因。
+      可选的决策原因。
 
   - `McpCall object { id, arguments, name, 6 more }`
 
-    在 MCP 服务器上对工具的一次调用。
+    对 MCP 服务器上某个工具的调用。
 
     - `id: string`
 
-      工具调用的唯一 ID。
+      该工具调用的唯一 ID。
 
     - `arguments: string`
 
-      传递给工具的参数的 JSON 字符串。
+      传递给该工具的参数的 JSON 字符串。
 
     - `name: string`
 
-      所运行的工具的名称。
+      已运行工具的名称。
 
     - `server_label: string`
 
@@ -25468,18 +25476,18 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `type: "mcp_call"`
 
-      项目的类型。始终为 `mcp_call`.
+      项的类型。始终为 `mcp_call`.
 
       - `"mcp_call"`
 
     - `approval_request_id: optional string or null`
 
       MCP 工具调用审批请求的唯一标识符。
-      在后续 `mcp_approval_response` 输入中包含此值，以批准或拒绝对应的工具调用。
+      在后续的 `mcp_approval_response` 输入中包含该值，以批准或拒绝相应的工具调用。
 
     - `error: optional McpToolCallError or null`
 
-      工具调用产生的错误（如有）。
+      工具调用的错误（如果有）。
 
       - `McpProtocolError object { code, message, type }`
 
@@ -25515,7 +25523,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `status: optional "in_progress" or "completed" or "incomplete" or 2 more`
 
-      工具调用的状态。取值为 `in_progress`, `completed`, `incomplete`, `calling`，或 `failed`.
+      工具调用的状态，取值为 `in_progress`, `completed`, `incomplete`, `calling`，或 `failed`.
 
       - `"in_progress"`
 
@@ -25529,7 +25537,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
   - `CustomToolCall object { call_id, input, name, 4 more }`
 
-    由模型创建的自定义工具调用。
+    模型对自定义工具的调用。
 
     - `call_id: string`
 
@@ -25551,7 +25559,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `id: optional string`
 
-      自定义工具调用在 OpenAI 平台中的唯一 ID。
+      该自定义工具调用在 OpenAI 平台中的唯一 ID。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -25579,7 +25587,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
   - `CustomToolCallOutput object { call_id, output, type, 2 more }`
 
-    来自你的代码的自定义工具调用的输出，正在发送回模型。
+    来自你代码的自定义工具调用输出，正被发回给模型。
 
     - `call_id: string`
 
@@ -25587,12 +25595,12 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `output: string or array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
-      由你的代码生成的自定义工具调用的输出。
+      由你代码生成的自定义工具调用的输出。
       可以是字符串或输出内容列表。
 
       - `StringOutput = string`
 
-        自定义工具调用的输出字符串。
+        自定义工具调用输出的字符串。
 
       - `OutputContentList = array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
@@ -25600,15 +25608,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          输入给模型的文本输入。
+          提供给模型的文本输入。
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+          提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-          输入给模型的文件。
+          模型的文件输入。
 
     - `type: "custom_tool_call_output"`
 
@@ -25618,7 +25626,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `id: optional string`
 
-      自定义工具调用输出在 OpenAI 平台中的唯一 ID。
+      该自定义工具调用输出在 OpenAI 平台中的唯一 ID。
 
     - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -25628,7 +25636,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `type: "direct"`
 
-          调用者类型。始终为 `direct`.
+          调用方类型。始终为 `direct`.
 
           - `"direct"`
 
@@ -25640,39 +25648,39 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `type: "program"`
 
-          调用者类型。始终为 `program`.
+          调用方类型。始终为 `program`.
 
           - `"program"`
 
-### 对话条目列表
+### 对话项列表
 
 - `ConversationItemList object { data, first_id, has_more, 2 more }`
 
-  一个 Conversation 项目列表。
+  Conversation 项的列表。
 
   - `data: array of ConversationItem`
 
-    一个对话项目列表。
+    对话项的列表。
 
     - `Message object { id, content, role, 3 more }`
 
-      与模型之间发送的消息。
+      发送给模型或来自模型的一条消息。
 
       - `id: string`
 
-        消息的唯一 ID。
+        该消息的唯一 ID。
 
       - `content: array of ResponseInputText or ResponseOutputText or TextContent or 6 more`
 
-        消息的内容
+        该消息的内容
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          输入给模型的文本输入。
+          提供给模型的文本输入。
 
           - `text: string`
 
-            输入给模型的文本输入。
+            提供给模型的文本输入。
 
           - `type: "input_text"`
 
@@ -25682,7 +25690,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -25692,7 +25700,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ResponseOutputText object { annotations, logprobs, text, type }`
 
-          来自模型的文本输出。
+          模型生成的文本输出。
 
           - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
 
@@ -25716,35 +25724,35 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `type: "file_citation"`
 
-                文件引用的类型。始终 `file_citation`.
+                文件引用的类型。始终为 `file_citation`.
 
                 - `"file_citation"`
 
             - `URLCitation object { end_index, start_index, title, 2 more }`
 
-              用于生成模型响应的网络资源的引用。
+              用于生成模型回复的网页资源的引用。
 
               - `end_index: number`
 
-                消息中 URL 引用的最后一个字符的索引。
+                消息中 URL 引用末尾字符的索引。
 
               - `start_index: number`
 
-                消息中 URL 引用的第一个字符的索引。
+                消息中 URL 引用起始字符的索引。
 
               - `title: string`
 
-                网络资源的标题。
+                网页资源的标题。
 
               - `type: "url_citation"`
 
-                URL 引用的类型。始终 `url_citation`.
+                URL 引用的类型。始终为 `url_citation`.
 
                 - `"url_citation"`
 
               - `url: string`
 
-                网络资源的 URL。
+                网页资源的 URL。
 
             - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
@@ -25764,7 +25772,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `filename: string`
 
-                被引用的容器文件的文件名。
+                所引用的容器文件的文件名。
 
               - `start_index: number`
 
@@ -25772,13 +25780,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `type: "container_file_citation"`
 
-                容器文件引用的类型。始终 `container_file_citation`.
+                容器文件引用的类型。始终为 `container_file_citation`.
 
                 - `"container_file_citation"`
 
             - `FilePath object { file_id, index, type }`
 
-              文件路径。
+              文件的路径。
 
               - `file_id: string`
 
@@ -25790,7 +25798,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `type: "file_path"`
 
-                文件路径的类型。始终 `file_path`.
+                文件路径的类型。始终为 `file_path`.
 
                 - `"file_path"`
 
@@ -25812,11 +25820,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `text: string`
 
-            模型的文本输出。
+            模型输出的文本。
 
           - `type: "output_text"`
 
-            输出文本的类型。始终 `output_text`.
+            输出文本的类型。始终为 `output_text`.
 
             - `"output_text"`
 
@@ -25832,11 +25840,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `SummaryTextContent object { text, type }`
 
-          模型的摘要文本。
+          来自模型的摘要文本。
 
           - `text: string`
 
-            模型到目前为止的推理输出摘要。
+            到目前为止模型推理输出的摘要。
 
           - `type: "summary_text"`
 
@@ -25846,7 +25854,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ReasoningText object { text, type }`
 
-          模型的推理文本。
+          来自模型的推理文本。
 
           - `text: string`
 
@@ -25860,25 +25868,25 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ResponseOutputRefusal object { refusal, type }`
 
-          模型的拒绝。
+          模型生成的拒绝回复。
 
           - `refusal: string`
 
-            模型的拒绝解释。
+            模型生成的拒绝解释。
 
           - `type: "refusal"`
 
-            拒绝的类型。始终 `refusal`.
+            拒绝回复的类型。始终为 `refusal`.
 
             - `"refusal"`
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+          提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
           - `detail: ImageDetail`
 
-            要发送给模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+            发送到模型的图像的细节级别。取值之一为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
             - `"low"`
 
@@ -25896,15 +25904,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            要发送到模型的文件的 ID。
 
           - `image_url: optional string or null`
 
-            要发送给模型的图像的 URL。可以是完全限定的 URL，或 data URL 中 base64 编码的图像。
+            要发送到模型的图像的 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图像。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -25914,15 +25922,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ComputerScreenshotContent object { detail, file_id, image_url, 2 more }`
 
-          电脑界面的截图。
+          计算机的屏幕截图。
 
           - `detail: ImageDetail`
 
-            要发送给模型的截图图像的详细程度。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+            发送给模型的屏幕截图图像的细节级别。可选值为以下之一 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
           - `file_id: string or null`
 
-            包含截图的已上传文件的标识符。
+            包含截图的上传文件的标识符。
 
           - `image_url: string or null`
 
@@ -25930,13 +25938,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "computer_screenshot"`
 
-            指定事件类型。对于电脑界面截图，此属性始终设置为 `computer_screenshot`.
+            指定事件类型。对于计算机屏幕截图，此属性始终设置为 `computer_screenshot`.
 
             - `"computer_screenshot"`
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -25946,7 +25954,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-          输入给模型的文件。
+          模型的文件输入。
 
           - `type: "input_file"`
 
@@ -25956,7 +25964,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `detail: optional "auto" or "low" or "high"`
 
-            要发送给模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 的使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+            要发送到模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 的使用量。使用 `low` 可降低渲染成本，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
 
             - `"auto"`
 
@@ -25966,23 +25974,23 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `file_data: optional string`
 
-            要发送给模型的文件内容。
+            要发送到模型的文件内容。
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            要发送到模型的文件的 ID。
 
           - `file_url: optional string`
 
-            要发送给模型的文件的 URL。
+            要发送到模型的文件的 URL。
 
           - `filename: optional string`
 
-            要发送给模型的文件的名称。
+            要发送到模型的文件的名称。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可重用提示前缀的精确结束位置。断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不四舍五入到令牌块。
+            标记可复用提示词前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -25992,7 +26000,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `role: "unknown" or "user" or "assistant" or 5 more`
 
-        消息的角色。以下之一： `unknown`, `user`, `assistant`, `system`, `critic`, `discriminator`, `developer`，或 `tool`.
+        消息的角色。可选值为 `unknown`, `user`, `assistant`, `system`, `critic`, `discriminator`, `developer`，或 `tool`.
 
         - `"unknown"`
 
@@ -26012,7 +26020,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        项目的状态。以下之一 `in_progress`, `completed`，或 `incomplete`。当项目通过 API 返回时填充。
+        item 的状态。取值为 `in_progress`, `completed`，或 `incomplete`。在通过 API 返回 item 时填充。
 
         - `"in_progress"`
 
@@ -26028,7 +26036,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `phase: optional "commentary" or "final_answer" or null`
 
-        将 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`）。对于类似 `gpt-5.3-codex` 及更高版本的模型，在发送后续请求时，保留并重新发送所有助手消息中的阶段信息——省略它可能会降低性能。不用于用户消息。
+        将 `assistant` 消息标记为中间说明（`commentary`）或最终答案（`final_answer`)。对于 `gpt-5.3-codex` 及更高版本的模型，在发送后续请求时，请在所有助手消息上保留并重新发送 phase——丢弃它可能会降低性能。不用于用户消息。
 
         - `"commentary"`
 
@@ -26046,16 +26054,16 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `call_id: string`
 
-        模型生成的函数工具调用的唯一 ID。
+        由模型生成的函数工具调用的唯一 ID。
 
       - `name: string`
 
-        要运行的函数的名称。
+        要运行的函数名称。
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。其一为 `in_progress`, `completed`，或
-        `incomplete`。当项目通过 API 返回时填充。
+        该条目的状态。可选值为 `in_progress`, `completed`，或
+        `incomplete`。在通过 API 返回 item 时填充。
 
         - `"in_progress"`
 
@@ -26091,7 +26099,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
       - `namespace: optional string`
 
@@ -26105,7 +26113,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `output: string or array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
-        你的代码生成的函数调用的输出。
+        由你的代码生成的函数调用所产生的输出。
         可以是字符串或输出内容列表。
 
         - `StringOutput = string`
@@ -26118,20 +26126,20 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            输入给模型的文本输入。
+            提供给模型的文本输入。
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+            提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-            输入给模型的文件。
+            模型的文件输入。
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。其一为 `in_progress`, `completed`，或
-        `incomplete`。当项目通过 API 返回时填充。
+        该条目的状态。可选值为 `in_progress`, `completed`，或
+        `incomplete`。在通过 API 返回 item 时填充。
 
         - `"in_progress"`
 
@@ -26147,7 +26155,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `call_id: optional string`
 
-        模型生成的函数工具调用的唯一 ID。
+        由模型生成的函数工具调用的唯一 ID。
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -26157,7 +26165,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "direct"`
 
-            调用者类型。始终为 `direct`.
+            调用方类型。始终为 `direct`.
 
             - `"direct"`
 
@@ -26169,38 +26177,38 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "program"`
 
-            调用者类型。始终为 `program`.
+            调用方类型。始终为 `program`.
 
             - `"program"`
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
       - `name: optional string`
 
-        产生输出的工具的名称。
+        产生该输出的工具名称。
 
       - `namespace: optional string`
 
-        产生输出的工具的命名空间。
+        产生该输出的工具的命名空间。
 
     - `FileSearchCall object { id, queries, status, 2 more }`
 
-      文件搜索工具调用的结果。参见
-      [文件搜索指南](/docs/guides/tools-file-search) 了解更多信息。
+      文件搜索 工具调用的结果。参见
+      [文件搜索 指南](/docs/guides/tools-file-search) 了解更多信息。
 
       - `id: string`
 
-        文件搜索工具调用的唯一 ID。
+        文件搜索 工具调用的唯一 ID。
 
       - `queries: array of string`
 
-        用于搜索文件的查询。
+        用于搜索文件的查询语句。
 
       - `status: "in_progress" or "searching" or "completed" or 2 more`
 
-        文件搜索工具调用的状态。其中之一为 `in_progress`,
+        文件搜索 工具调用的状态，取值为 `in_progress`,
         `searching`, `incomplete` 或 `failed`,
 
         - `"in_progress"`
@@ -26215,21 +26223,21 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "file_search_call"`
 
-        文件搜索工具调用的类型。始终为 `file_search_call`.
+        文件搜索 工具调用的类型，始终为 `file_search_call`.
 
         - `"file_search_call"`
 
       - `results: optional array of object { attributes, file_id, filename, 2 more }  or null`
 
-        文件搜索工具调用的结果。
+        文件搜索 工具调用的结果。
 
         - `attributes: optional map[string or number or boolean] or null`
 
-          可附加到对象的一组 16 个键值对。这可用于以结构化
-          格式存储有关对象的额外信息，并通过 API 或仪表盘查询对象。键是字符串
-          ，最大长度为 64 个字符。值是字符串，最大
-          长度为 512 个字符、布尔值或数字。
-          文件的唯一 ID。
+          可附加到对象的 16 组键值对。可用于
+          以结构化格式存储对象的附加信息，并通过
+          API 或控制台查询对象。键为字符串，
+          最大长度为 64 个字符；值为字符串（最大
+          长度 512 个字符）、布尔值或数字。
 
           - `string`
 
@@ -26239,37 +26247,37 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `file_id: optional string`
 
-          文件的名称。
+          文件的唯一 ID。
 
         - `filename: optional string`
 
-          文件的相关性得分——介于 0 和 1 之间的值。
+          文件的名称。
 
         - `score: optional number`
 
-          从文件中检索到的文本。
+          文件的相关性分数，取值范围为 0 到 1。
 
         - `text: optional string`
 
-          对计算机使用工具的工具调用。参见
+          从文件中检索到的文本。
 
     - `WebSearchCall object { id, action, status, type }`
 
-      网页搜索工具调用的结果。请参阅
+      网页搜索 工具调用的结果。请参阅
       [网页搜索指南](/docs/guides/tools-web-search) 了解更多信息。
 
       - `id: string`
 
-        网页搜索工具调用的唯一 ID。
+        该 网页搜索工具调用的唯一 ID。
 
       - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
-        一个对象，描述此次网页搜索调用中采取的具体操作。
-        包含模型如何使用网络（search、open_page、find_in_page）的详细信息。
+        描述此次 网页搜索调用中所执行的具体操作的对象。
+        包含模型如何使用网页的详细信息（search、open_page、find_in_page）。
 
         - `Search object { type, queries, query, sources }`
 
-          操作类型 "search"——执行网页搜索查询。
+          操作类型 "search" - 执行一次 网页搜索查询。
 
           - `type: "search"`
 
@@ -26301,7 +26309,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `OpenPage object { type, url }`
 
-          操作类型 "open_page"——打开搜索结果中的特定 URL。
+          操作类型 "open_page" - 打开搜索结果中的特定 URL。
 
           - `type: "open_page"`
 
@@ -26315,11 +26323,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `FindInPage object { pattern, type, url }`
 
-          操作类型 "find_in_page"：在已加载的页面中搜索模式。
+          操作类型 "find_in_page"：在已加载的页面中搜索某个模式。
 
           - `pattern: string`
 
-            要在页面内搜索的模式或文本。
+            要在页面中搜索的模式或文本。
 
           - `type: "find_in_page"`
 
@@ -26329,11 +26337,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `url: string`
 
-            搜索该模式的页面的 URL。
+            被搜索该模式的页面 URL。
 
       - `status: "in_progress" or "searching" or "completed" or "failed"`
 
-        网页搜索工具调用的状态。
+        该 网页搜索工具调用的状态。
 
         - `"in_progress"`
 
@@ -26345,7 +26353,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "web_search_call"`
 
-        网页搜索工具调用的类型。始终为 `web_search_call`.
+        该 网页搜索工具调用的类型。始终为 `web_search_call`.
 
         - `"web_search_call"`
 
@@ -26381,8 +26389,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
-      计算机使用指南
-      [计算机调用调用的唯一 ID。](/docs/guides/tools-computer-use) 了解更多信息。
+      对计算机使用工具的工具调用。参见
+      [计算机使用指南](/docs/guides/tools-computer-use) 了解更多信息。
 
       - `id: string`
 
@@ -26390,11 +26398,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `call_id: string`
 
-        用于在响应工具调用时提供输出的标识符。
+        在向工具调用返回输出时使用的标识符。
 
       - `pending_safety_checks: array of object { id, code, message }`
 
-        计算机调用的待处理安全检查。
+        该计算机调用的待处理安全检查。
 
         - `id: string`
 
@@ -26410,8 +26418,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。其一为 `in_progress`, `completed`，或
-        `incomplete`。当项目通过 API 返回时填充。
+        该条目的状态。可选值为 `in_progress`, `completed`，或
+        `incomplete`。在通过 API 返回 item 时填充。
 
         - `"in_progress"`
 
@@ -26421,21 +26429,21 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "computer_call"`
 
-        计算机调用的类型。始终为 `computer_call`.
+        该计算机调用的类型。始终为 `computer_call`.
 
         - `"computer_call"`
 
       - `action: optional ComputerAction`
 
-        单击操作。
+        一次点击操作。
 
         - `Click object { button, type, x, 2 more }`
 
-          单击操作。
+          一次点击操作。
 
           - `button: "left" or "right" or "wheel" or 2 more`
 
-            指示单击期间按下了哪个鼠标按钮。其一为 `left`, `right`, `wheel`, `back`，或 `forward`.
+            表示点击时按下的鼠标按键。可选值为 `left`, `right`, `wheel`, `back`，或 `forward`.
 
             - `"left"`
 
@@ -26449,29 +26457,29 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "click"`
 
-            指定事件类型。对于单击操作，此属性始终为 `click`.
+            指定事件类型。对于点击操作，此属性始终为 `click`.
 
             - `"click"`
 
           - `x: number`
 
-            发生单击的 x 坐标。
+            点击发生位置的 x 坐标。
 
           - `y: number`
 
-            发生单击的 y 坐标。
+            点击发生位置的 y 坐标。
 
           - `keys: optional array of string or null`
 
-            单击时正在按住的按键。
+            点击时按住的按键。
 
         - `DoubleClick object { keys, type, x, y }`
 
-          双击操作。
+          一次双击操作。
 
           - `keys: array of string or null`
 
-            双击时正在按住的按键。
+            双击时按住的按键。
 
           - `type: "double_click"`
 
@@ -26481,19 +26489,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `x: number`
 
-            发生双击的 x 坐标。
+            双击发生位置的 x 坐标。
 
           - `y: number`
 
-            发生双击的 y 坐标。
+            双击发生位置的 y 坐标。
 
         - `Drag object { path, type, keys }`
 
-          拖动操作。
+          一次拖动操作。
 
           - `path: array of object { x, y }`
 
-            表示拖动操作路径的坐标数组。坐标将以对象数组的形式出现，例如
+            表示拖动操作路径的坐标数组。坐标将以对象数组的形式呈现，例如
 
             ```
             [
@@ -26512,17 +26520,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "drag"`
 
-            指定事件类型。对于拖拽操作，此属性始终设置为 `drag`.
+            指定事件类型。对于拖动操作，此属性始终设置为 `drag`.
 
             - `"drag"`
 
           - `keys: optional array of string or null`
 
-            拖拽鼠标时按住的按键。
+            拖动鼠标时按住的按键。
 
         - `Keypress object { keys, type }`
 
-          模型希望执行的一系列按键操作。
+          模型希望执行的一组按键操作。
 
           - `keys: array of string`
 
@@ -26546,11 +26554,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `x: number`
 
-            要移动到的 x 坐标。
+            要移至的 x 坐标。
 
           - `y: number`
 
-            要移动到的 y 坐标。
+            要移至的 y 坐标。
 
           - `keys: optional array of string or null`
 
@@ -26586,11 +26594,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `x: number`
 
-            发生滚动的 x 坐标。
+            发生滚动处的 x 坐标。
 
           - `y: number`
 
-            发生滚动的 y 坐标。
+            发生滚动处的 y 坐标。
 
           - `keys: optional array of string or null`
 
@@ -26606,40 +26614,40 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "type"`
 
-            指定事件类型。对于类型操作，此属性始终设置为 `type`.
+            指定事件类型。对于 type 操作，此属性始终设置为 `type`.
 
             - `"type"`
 
         - `Wait object { type }`
 
-          等待操作。
+          wait 操作。
 
           - `type: "wait"`
 
-            指定事件类型。对于等待操作，此属性始终设置为 `wait`.
+            指定事件类型。对于 wait 操作，此属性始终设置为 `wait`.
 
             - `"wait"`
 
       - `actions: optional ComputerActionList`
 
-        展平的批量操作，用于 `computer_use`。每个操作包含一个
-        `type` 判别器和操作特定字段。
+        已展平的批量操作，用于 `computer_use`。每个操作都包含一个
+        `type` 鉴别字段以及操作特有的字段。
 
         - `Click object { button, type, x, 2 more }`
 
-          单击操作。
+          一次点击操作。
 
         - `DoubleClick object { keys, type, x, y }`
 
-          双击操作。
+          一次双击操作。
 
         - `Drag object { path, type, keys }`
 
-          拖动操作。
+          一次拖动操作。
 
         - `Keypress object { keys, type }`
 
-          模型希望执行的一系列按键操作。
+          模型希望执行的一组按键操作。
 
         - `Move object { type, x, y, keys }`
 
@@ -26659,7 +26667,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Wait object { type }`
 
-          等待操作。
+          wait 操作。
 
     - `ComputerCallOutput object { id, call_id, output, 4 more }`
 
@@ -26669,7 +26677,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `call_id: string`
 
-        产生输出的计算机工具调用的 ID。
+        产生该输出的计算机工具调用的 ID。
 
       - `output: ResponseComputerToolCallOutputScreenshot`
 
@@ -26684,7 +26692,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `file_id: optional string`
 
-          包含截图的已上传文件的标识符。
+          包含截图的上传文件的标识符。
 
         - `image_url: optional string`
 
@@ -26692,8 +26700,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `status: "completed" or "incomplete" or "failed" or "in_progress"`
 
-        消息输入的状态。其中之一 `in_progress`, `completed`，或
-        `incomplete`。当输入项通过 API 返回时填充。
+        消息输入的状态。取值为以下之一 `in_progress`, `completed`，或
+        `incomplete`。当通过 API 返回输入项时填充。
 
         - `"completed"`
 
@@ -26705,13 +26713,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "computer_call_output"`
 
-        计算机工具调用输出的类型。始终为 `computer_call_output`.
+        计算机工具调用输出的类型，始终为 `computer_call_output`.
 
         - `"computer_call_output"`
 
       - `acknowledged_safety_checks: optional array of object { id, code, message }`
 
-        API报告并已由
+        由 API 报告并已由
         开发者确认的安全检查。
 
         - `id: string`
@@ -26728,13 +26736,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
     - `ToolSearchCall object { id, arguments, call_id, 4 more }`
 
       - `id: string`
 
-        工具搜索调用项目的唯一 ID。
+        工具搜索调用项的唯一 ID。
 
       - `arguments: unknown`
 
@@ -26746,7 +26754,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `execution: "server" or "client"`
 
-        工具搜索是由服务端还是客户端执行的。
+        工具搜索是由服务端还是由客户端执行的。
 
         - `"server"`
 
@@ -26754,7 +26762,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        记录的工具搜索调用项目的状态。
+        已记录的工具搜索调用项的状态。
 
         - `"in_progress"`
 
@@ -26764,19 +26772,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "tool_search_call"`
 
-        项目的类型。始终为 `tool_search_call`.
+        项的类型。始终为 `tool_search_call`.
 
         - `"tool_search_call"`
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
     - `ToolSearchOutput object { id, call_id, execution, 4 more }`
 
       - `id: string`
 
-        工具搜索输出项目的唯一 ID。
+        工具搜索输出项的唯一 ID。
 
       - `call_id: string or null`
 
@@ -26784,7 +26792,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `execution: "server" or "client"`
 
-        工具搜索是由服务端还是客户端执行的。
+        工具搜索是由服务端还是由客户端执行的。
 
         - `"server"`
 
@@ -26792,7 +26800,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        记录的工具搜索输出项目的状态。
+        已记录的工具搜索输出项的状态。
 
         - `"in_progress"`
 
@@ -26806,29 +26814,29 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Function object { name, parameters, strict, 5 more }`
 
-          定义你自己代码中模型可以选择调用的函数。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+          定义你自己代码中的某个函数，供模型选择调用。详细了解 [function calling](https://platform.openai.com/docs/guides/function-calling).
 
           - `name: string`
 
-            要调用的函数的名称。
+            要调用的函数名称。
 
           - `parameters: map[unknown] or null`
 
-            描述函数参数的 JSON schema 对象。
+            描述该函数参数的 JSON schema 对象。
 
           - `strict: boolean or null`
 
-            是否对此函数工具强制执行严格的参数验证。
+            是否为该函数工具启用严格的参数校验。
 
           - `type: "function"`
 
-            函数工具的类型。始终为 `function`.
+            该函数工具的类型。始终为 `function`.
 
             - `"function"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -26836,19 +26844,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `defer_loading: optional boolean`
 
-            此函数是否延迟并通过工具搜索加载。
+            该函数是否为延迟加载，并通过工具搜索加载。
 
           - `description: optional string or null`
 
-            函数的描述。模型据此确定是否调用该函数。
+            该函数的描述。模型据此决定是否调用该函数。
 
           - `output_schema: optional map[unknown] or null`
 
-            描述此函数的字符串输出中编码的 JSON 值的 JSON schema 对象。
+            描述该函数在字符串输出中编码的 JSON 值的 JSON schema 对象。
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          一种从上传文件中搜索相关内容工具。详细了解 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+          一个用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 tool](https://platform.openai.com/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -26866,24 +26874,24 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `ComparisonFilter object { key, type, value }`
 
-              用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+              用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
               - `key: string`
 
-                要与该值进行比较的键。
+                要与值进行比较的键。
 
               - `type: "eq" or "ne" or "gt" or 5 more`
 
                 指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-                - `eq`：等于
-                - `ne`：不等于
-                - `gt`：大于
-                - `gte`：大于或等于
-                - `lt`：小于
-                - `lte`：小于或等于
-                - `in`：包含
-                - `nin`：不包含
+                - `eq`: 等于
+                - `ne`: 不等于
+                - `gt`: 大于
+                - `gte`: 大于或等于
+                - `lt`: 小于
+                - `lte`: 小于或等于
+                - `in`: 包含于
+                - `nin`: 不包含于
 
                 - `"eq"`
 
@@ -26919,15 +26927,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `CompoundFilter object { filters, type }`
 
-              使用以下方式组合多个筛选器 `and` 或 `or`.
+              使用以下方式组合多个过滤器 `and` 或 `or`.
 
               - `filters: array of ComparisonFilter or unknown`
 
-                要组合的筛选器数组。项目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+                要组合的过滤器数组。条目可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
                 - `ComparisonFilter object { key, type, value }`
 
-                  用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+                  用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
                 - `unknown`
 
@@ -26941,7 +26949,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `max_num_results: optional number`
 
-            要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+            返回结果的最大数量。此数量应介于 1 到 50 之间（含两端）。
 
           - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -26949,19 +26957,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-              启用混合搜索时，控制倒数排名融合如何在语义嵌入匹配与稀疏关键词匹配之间取得平衡的权重。
+              在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
               - `embedding_weight: number`
 
-                嵌入在倒数排名融合中的权重。
+                在倒数排名融合中嵌入的权重。
 
               - `text_weight: number`
 
-                文本在倒数排名融合中的权重。
+                在倒数排名融合中文本的权重。
 
             - `ranker: optional "auto" or "default-2024-11-15"`
 
-              用于文件搜索的排序器。
+              用于 文件搜索 的排序器。
 
               - `"auto"`
 
@@ -26969,11 +26977,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `score_threshold: optional number`
 
-              文件搜索的分数阈值，为0到1之间的数字。数字越接近1，将尝试仅返回最相关的结果，但可能返回较少的結果。
+              文件搜索 的分数阈值，取值范围为 0 到 1 之间。数值越接近 1，越会尝试只返回最相关的结果，但返回的结果数量可能会减少。
 
         - `Computer object { type }`
 
-          一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -26983,19 +26991,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
-            计算机显示器的宽度。
+            计算机显示屏的高度。
 
           - `display_width: number`
 
-            计算机显示器的宽度。
+            计算机显示屏的宽度。
 
           - `environment: "windows" or "mac" or "linux" or 2 more`
 
-            要控制的计算机环境的类型。
+            要控制的计算机环境类型。
 
             - `"windows"`
 
@@ -27015,12 +27023,12 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-          搜索互联网以获取与提示相关的来源。了解更多关于
+          在互联网上搜索与提示相关的来源。详细了解
           [网页搜索工具](/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
-            网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+            网页搜索工具的类型，取值之一为 `web_search` 或 `web_search_2025_08_26`.
 
             - `"web_search"`
 
@@ -27028,22 +27036,22 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `external_web_access: optional boolean`
 
-            允许网页搜索实时访问互联网。省略时默认为true。为false时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+            允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
           - `filters: optional object { allowed_domains }  or null`
 
-            搜索的过滤器。
+            搜索的筛选条件。
 
             - `allowed_domains: optional array of string or null`
 
-              搜索允许的域名。如果未提供，则允许所有域名。
-              所提供域名的子域名也允许。
+              允许进行搜索的域名。如果未提供，则允许所有域名。
+              同时也允许所提供域名的子域名。
 
               示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -27057,15 +27065,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `city: optional string or null`
 
-              用户的城市的自由文本输入，例如 `San Francisco`.
+              用户所在城市的自由文本输入，例如 `San Francisco`.
 
             - `country: optional string or null`
 
-              用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -27073,14 +27081,14 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `type: optional "approximate"`
 
-              位置近似的类型。始终 `approximate`.
+              位置近似的类型。始终为 `approximate`.
 
               - `"approximate"`
 
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-          通过远程 Model Context Protocol 让模型访问额外工具
-          (MCP) 服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+          通过远程 Model Context Protocol
+          （MCP）服务器为模型提供对其他工具的访问权限。 [了解更多关于 MCP 的信息](/docs/guides/tools-remote-mcp).
 
           - `server_label: string`
 
@@ -27088,13 +27096,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "mcp"`
 
-            MCP 工具的类型。始终 `mcp`.
+            MCP 工具的类型。始终为 `mcp`.
 
             - `"mcp"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -27106,7 +27114,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `McpAllowedTools = array of string`
 
-              允许工具名称的字符串数组
+              允许的工具名称组成的字符串数组
 
             - `McpToolFilter object { read_only, tool_names }`
 
@@ -27114,9 +27122,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -27124,26 +27132,26 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `authorization: optional string`
 
-            可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-            与自定义 MCP 服务器 URL 或服务连接器配合使用。你的应用程序
-            必须处理 OAuth 授权流程并在此处提供令牌。
+            可用于远程 MCP 服务器的 OAuth 访问令牌，可搭配自定义 MCP 服务器 URL 或服务连接器使用。你的应用
+            必须处理 OAuth 授权流程，并在此处提供该令牌。
+            必须处理 OAuth 授权流程，并在此处提供该令牌。
 
           - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-            服务连接器的标识符，类似于 ChatGPT 中可用的那些。必须提供以下之一：
-            `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中之一。了解更多
-            关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+            服务连接器的标识符，例如 ChatGPT 中提供的连接器之一。
+            `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解关于服务连接器
+            的更多信息 [请参阅此处](/docs/guides/tools-remote-mcp#connectors).
 
-            当前支持的值 `connector_id` 包括：
+            当前支持 `connector_id` 的值为：
 
-            - Dropbox： `connector_dropbox`
-            - Gmail： `connector_gmail`
-            - Google Calendar： `connector_googlecalendar`
-            - Google Drive： `connector_googledrive`
-            - Microsoft Teams： `connector_microsoftteams`
-            - Outlook Calendar： `connector_outlookcalendar`
-            - Outlook Email： `connector_outlookemail`
-            - SharePoint： `connector_sharepoint`
+            - Dropbox: `connector_dropbox`
+            - Gmail: `connector_gmail`
+            - Google Calendar: `connector_googlecalendar`
+            - Google Drive: `connector_googledrive`
+            - Microsoft Teams: `connector_microsoftteams`
+            - Outlook Calendar: `connector_outlookcalendar`
+            - Outlook Email: `connector_outlookemail`
+            - SharePoint: `connector_sharepoint`
 
             - `"connector_dropbox"`
 
@@ -27163,11 +27171,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `defer_loading: optional boolean`
 
-            此 MCP 工具是否被延迟并通过工具搜索发现。
+            此 MCP 工具是否被延迟，并通过工具搜索发现。
 
           - `headers: optional map[string] or null`
 
-            发送到 MCP 服务器的可选 HTTP 头。用于身份验证
+            发送到 MCP 服务器的可选 HTTP 请求头。用于身份验证
             或其他用途。
 
           - `require_approval: optional object { always, never }  or "always" or "never" or null`
@@ -27177,8 +27185,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
             - `McpToolApprovalFilter object { always, never }`
 
               指定 MCP 服务器的哪些工具需要审批。可以是
-              `always`, `never`，或一个与需要审批的工具关联的过滤器对象
-              。
+              `always`, `never`，或与工具关联的过滤对象
+              ，这些工具需要审批。
 
               - `always: optional object { read_only, tool_names }`
 
@@ -27186,9 +27194,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  指示工具是否修改数据或是否为只读。如果某个
+                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  ，它将匹配此过滤条件。
 
                 - `tool_names: optional array of string`
 
@@ -27200,9 +27208,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  指示工具是否修改数据或是否为只读。如果某个
+                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  ，它将匹配此过滤条件。
 
                 - `tool_names: optional array of string`
 
@@ -27210,8 +27218,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `McpToolApprovalSetting = "always" or "never"`
 
-              为所有工具指定单一审批策略。可以是 `always` 或
-              `never`。之一。当设置为 `always`，时，所有工具都需要审批。当
+              为所有工具指定统一的审批策略。可选值为 `always` 或
+              `never`。当设置为 `always`，时，所有工具都需要审批。当
               设置为 `never`，时，所有工具都不需要审批。
 
               - `"always"`
@@ -27224,22 +27232,22 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `server_url: optional string`
 
-            MCP 服务器的 URL。必须提供 `server_url`, `connector_id`，或
-            `tunnel_id` 之一。
+            MCP 服务器的 URL。 `server_url`, `connector_id`，或
+            `tunnel_id` 必须提供其中一个。
 
           - `tunnel_id: optional string`
 
-            用于替代直接服务器 URL 的安全 MCP 隧道 ID。必须提供
-            `server_url`, `connector_id`，或 `tunnel_id` 之一。
+            用于替代直接服务器 URL 的安全 MCP 隧道 ID。
+            `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中一个。
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
-          一个运行 Python 代码以帮助生成提示响应的工具。
+          运行 Python 代码以帮助生成对提示词响应的工具。
 
           - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器。可以是容器 ID，或一个对象，其中
-            指定了上传的文件 ID 以供你的代码使用，以及
+            代码解释器容器。可以是容器 ID，也可以是指定可供代码使用的已上传文件 ID 的对象，以及一个
+            指定可供你的代码使用的已上传文件 ID，以及一个
             可选的 `memory_limit` 设置。
 
             - `string`
@@ -27248,17 +27256,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-              代码解释器容器的配置。可选择指定要在其上运行代码的文件 ID。
+              代码解释器容器的配置。可选择指定要对其运行代码的文件 ID。
 
               - `type: "auto"`
 
-                始终 `auto`.
+                始终为 `auto`.
 
                 - `"auto"`
 
               - `file_ids: optional array of string`
 
-                一个可选的已上传文件列表，供你的代码使用。
+                一个可选的、供代码使用的已上传文件列表。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -27280,7 +27288,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                   - `type: "disabled"`
 
-                    禁用出站网络访问。始终 `disabled`.
+                    禁用出站网络访问。始终为 `disabled`.
 
                     - `"disabled"`
 
@@ -27288,39 +27296,39 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                   - `allowed_domains: array of string`
 
-                    当类型为以下值时，允许的域名列表： `allowlist`.
+                    当类型为 `allowlist`.
 
                   - `type: "allowlist"`
 
-                    仅允许对指定域名的出站网络访问。始终 `allowlist`.
+                    时，仅允许向指定域发出出站网络访问。始终为 `allowlist`.
 
                     - `"allowlist"`
 
                   - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                    可选，针对允许列表中域名的域级密钥。
+                    用于允许列表中域的可选、按域隔离的密钥。
 
                     - `domain: string`
 
-                      与密钥关联的域名。
+                      与该密钥关联的域。
 
                     - `name: string`
 
-                      要为该域名注入的密钥名称。
+                      要为该域注入的密钥名称。
 
                     - `value: string`
 
-                      要为该域名注入的密钥值。
+                      要为该域注入的密钥值。
 
           - `type: "code_interpreter"`
 
-            代码解释器工具的类型。始终 `code_interpreter`.
+            代码解释器工具的类型。始终为 `code_interpreter`.
 
             - `"code_interpreter"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -27330,7 +27338,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "programmatic_tool_calling"`
 
-            工具的类型。始终 `programmatic_tool_calling`.
+            工具的类型。始终为 `programmatic_tool_calling`.
 
             - `"programmatic_tool_calling"`
 
@@ -27340,13 +27348,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "image_generation"`
 
-            图像生成工具的类型。始终 `image_generation`.
+            图像生成工具的类型。始终为 `image_generation`.
 
             - `"image_generation"`
 
           - `action: optional "generate" or "edit" or "auto"`
 
-            是否生成新图像或编辑现有图像。默认值： `auto`.
+            是生成新图像还是编辑现有图像。默认值： `auto`.
 
             - `"generate"`
 
@@ -27356,11 +27364,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            设置生成图像的背景。可选值之一： `transparent`,
-            `opaque`，或 `auto`。透明背景可用于
-            支持的 GPT 图像模型。对于 `gpt-image-2` 以及
-            `gpt-image-2-2026-04-21`，此支持目前处于预览阶段。使用
-            `transparent`，时，请将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
+            设置生成图像的背景。取值之一 `transparent`,
+            `opaque`，或 `auto`。透明背景适用于受支持的
+            GPT Image 模型。对于 `gpt-image-2` 和
+            `gpt-image-2-2026-04-21`，该支持目前处于预览阶段。使用
+            `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
             - `"transparent"`
 
@@ -27370,7 +27378,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            控制模型在匹配输入图像的风格和特征（尤其是面部特征）上投入的努力程度。此参数仅支持 `gpt-image-1` 以及 `gpt-image-1.5` 及更高版本模型，不支持 `gpt-image-1-mini`。支持 `high` 以及 `low`。默认为 `low`.
+            控制模型在匹配输入图像风格和特征（尤其是面部特征）时所付出的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
 
             - `"high"`
 
@@ -27378,7 +27386,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `input_image_mask: optional object { file_id, image_url }`
 
-            用于修复的可选遮罩。包含 `image_url`
+            用于局部重绘的可选遮罩。包含 `image_url`
             （字符串，可选）和 `file_id` （字符串，可选）。
 
             - `file_id: optional string`
@@ -27391,7 +27399,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。可选值之一 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
@@ -27400,7 +27408,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              要使用的图像生成模型。可选值之一 `gpt-image-1`,
+              要使用的图像生成模型。可选值为 `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
               `gpt-image-1`.
@@ -27417,7 +27425,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `moderation: optional "auto" or "low"`
 
-            生成图像的审核级别。默认值： `auto`.
+            生成图像的内容审核级别。默认值： `auto`.
 
             - `"auto"`
 
@@ -27429,7 +27437,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `output_format: optional "png" or "webp" or "jpeg"`
 
-            生成图像的输出格式。可选值之一 `png`, `webp`，或
+            生成图像的输出格式。可选值为 `png`, `webp`，或
             `jpeg`。默认值： `png`.
 
             - `"png"`
@@ -27440,11 +27448,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `partial_images: optional number`
 
-            流式模式下生成的部分图像数量，范围从 0（默认值）到 3。
+            在流式模式下生成的部分图像数量，取值范围为 0（默认值）到 3。
 
           - `quality: optional "low" or "medium" or "high" or "auto"`
 
-            生成图像的质量。可选值之一 `low`, `medium`, `high`,
+            生成图像的质量。可选值为 `low`, `medium`, `high`,
             或 `auto`。默认值： `auto`.
 
             - `"low"`
@@ -27457,13 +27465,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
               - `"1024x1024"`
 
@@ -27475,27 +27483,27 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `LocalShell object { type }`
 
-          一种允许模型在本地环境中执行 shell 命令的工具。
+          允许模型在本地环境中执行 shell 命令的工具。
 
           - `type: "local_shell"`
 
-            本地 shell 工具的类型。始终为 `local_shell`.
+            本地 shell 工具的类型，始终为 `local_shell`.
 
             - `"local_shell"`
 
         - `Shell object { type, allowed_callers, environment }`
 
-          一种允许模型执行 shell 命令的工具。
+          允许模型执行 shell 命令的工具。
 
           - `type: "shell"`
 
-            shell 工具的类型。始终为 `shell`.
+            shell 工具的类型，始终为 `shell`.
 
             - `"shell"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -27507,13 +27515,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `type: "container_auto"`
 
-                自动为此请求创建容器
+                为本次请求自动创建一个容器
 
                 - `"container_auto"`
 
               - `file_ids: optional array of string`
 
-                一个可选的已上传文件列表，供你的代码使用。
+                一个可选的、供代码使用的已上传文件列表。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -27537,13 +27545,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `skills: optional array of SkillReference or InlineSkill`
 
-                可选技能列表，通过 ID 或内联数据引用。
+                通过 id 或内联数据引用的可选技能列表。
 
                 - `SkillReference object { skill_id, type, version }`
 
                   - `skill_id: string`
 
-                    被引用技能的 ID。
+                    所引用技能的 ID。
 
                   - `type: "skill_reference"`
 
@@ -27553,7 +27561,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                   - `version: optional string`
 
-                    可选技能版本。使用正整数或 'latest'。省略则使用默认值。
+                    可选的技能版本。使用正整数或 'latest'。省略则使用默认值。
 
                 - `InlineSkill object { description, name, source, type }`
 
@@ -27563,7 +27571,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                   - `name: string`
 
-                    该技能的名称。
+                    技能的名称。
 
                   - `source: InlineSkillSource`
 
@@ -27587,7 +27595,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                   - `type: "inline"`
 
-                    为此请求定义一个内联技能。
+                    为本次请求定义一个内联技能。
 
                     - `"inline"`
 
@@ -27601,7 +27609,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `skills: optional array of LocalSkill`
 
-                可选技能列表。
+                可选的技能列表。
 
                 - `description: string`
 
@@ -27609,11 +27617,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `name: string`
 
-                  该技能的名称。
+                  技能的名称。
 
                 - `path: string`
 
-                  包含该技能的目录路径。
+                  指向包含该技能的目录的路径。
 
             - `ContainerReference object { container_id, type }`
 
@@ -27629,7 +27637,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Custom object { name, type, allowed_callers, 3 more }`
 
-          一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+          使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -27643,7 +27651,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -27651,7 +27659,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `defer_loading: optional boolean`
 
-            是否应延迟此工具并通过工具搜索发现。
+            是否应延迟此工具并通过工具搜索发现它。
 
           - `description: optional string`
 
@@ -27659,11 +27667,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `format: optional CustomToolInputFormat`
 
-            自定义工具的输入格式。默认为无约束文本。
+            自定义工具的输入格式。默认是无约束文本。
 
             - `Text object { type }`
 
-              无约束的自由格式文本。
+              无约束的自由形式文本。
 
               - `type: "text"`
 
@@ -27673,15 +27681,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `Grammar object { definition, syntax, type }`
 
-              由用户定义的文法。
+              由用户定义的语法。
 
               - `definition: string`
 
-                文法定义。
+                语法定义。
 
               - `syntax: "lark" or "regex"`
 
-                文法定义的语法。其中之一为 `lark` 或 `regex`.
+                语法定义的语法。可选值为 `lark` 或 `regex`.
 
                 - `"lark"`
 
@@ -27689,25 +27697,25 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `type: "grammar"`
 
-                文法格式。始终 `grammar`.
+                语法格式。始终为 `grammar`.
 
                 - `"grammar"`
 
         - `Namespace object { description, name, tools, type }`
 
-          将函数/自定义工具分组到共享命名空间下。
+          在共享命名空间下对 function/custom 工具进行分组。
 
           - `description: string`
 
-            显示给模型的命名空间描述。
+            展示给模型的命名空间描述。
 
           - `name: string`
 
-            工具调用中使用的命名空间名称（例如， `crm`).
+            在工具调用中使用的命名空间名称（例如， `crm`).
 
           - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
-            此命名空间内可用的函数/自定义工具。
+            该命名空间内可用的 function/custom 工具。
 
             - `Function object { name, type, allowed_callers, 5 more }`
 
@@ -27719,7 +27727,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-                工具调用上下文。
+                该工具的调用上下文。
 
                 - `"direct"`
 
@@ -27727,23 +27735,23 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `defer_loading: optional boolean`
 
-                此函数是否应延迟并通过工具搜索发现。
+                是否应延迟此函数并通过工具搜索发现。
 
               - `description: optional string or null`
 
               - `output_schema: optional map[unknown] or null`
 
-                描述此函数工具字符串输出中编码的 JSON 值的 JSON Schema。这不描述内容数组输出。
+                用于描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content-array 输出。
 
               - `parameters: optional unknown or null`
 
               - `strict: optional boolean or null`
 
-                是否强制进行严格的参数验证。如果省略，当 schema 兼容时，Responses 会尝试使用严格验证，否则回退到非严格验证。
+                是否强制执行严格的参数校验。如果省略，Responses 会尝试在 schema 兼容时使用严格校验，否则回退到非严格校验。
 
             - `Custom object { name, type, allowed_callers, 3 more }`
 
-              一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+              使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -27757,7 +27765,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-                工具调用上下文。
+                该工具的调用上下文。
 
                 - `"direct"`
 
@@ -27765,7 +27773,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `defer_loading: optional boolean`
 
-                是否应延迟此工具并通过工具搜索发现。
+                是否应延迟此工具并通过工具搜索发现它。
 
               - `description: optional string`
 
@@ -27773,27 +27781,27 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `format: optional CustomToolInputFormat`
 
-                自定义工具的输入格式。默认为无约束文本。
+                自定义工具的输入格式。默认是无约束文本。
 
           - `type: "namespace"`
 
-            工具的类型。始终 `namespace`.
+            工具的类型。始终为 `namespace`.
 
             - `"namespace"`
 
         - `ToolSearch object { type, description, execution, parameters }`
 
-          延迟工具的托管或 BYOT 工具搜索配置。
+          用于延迟工具的托管或 BYOT 工具搜索配置。
 
           - `type: "tool_search"`
 
-            工具的类型。始终 `tool_search`.
+            工具的类型。始终为 `tool_search`.
 
             - `"tool_search"`
 
           - `description: optional string or null`
 
-            显示给模型的客户端执行工具搜索工具的描述。
+            展示给模型的客户端执行的工具搜索工具的描述。
 
           - `execution: optional "server" or "client"`
 
@@ -27805,15 +27813,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `parameters: optional unknown or null`
 
-            客户端执行工具搜索工具的参数 schema。
+            客户端执行的工具搜索工具的参数 schema。
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          此工具搜索网页以获取用于响应的相关结果。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+          此工具会在网络上搜索相关结果以用于回复中。详细了解 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-            网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+            网页搜索工具的类型，取值之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
             - `"web_search_preview"`
 
@@ -27827,7 +27835,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -27837,25 +27845,25 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            用户的位置。
+            用户所在的位置。
 
             - `type: "approximate"`
 
-              位置近似的类型。始终 `approximate`.
+              位置近似的类型。始终为 `approximate`.
 
               - `"approximate"`
 
             - `city: optional string or null`
 
-              用户的城市的自由文本输入，例如 `San Francisco`.
+              用户所在城市的自由文本输入，例如 `San Francisco`.
 
             - `country: optional string or null`
 
-              用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -27863,17 +27871,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ApplyPatch object { type, allowed_callers }`
 
-          允许助手使用统一差异创建、删除或更新文件。
+          允许助手使用 unified diff 创建、删除或更新文件。
 
           - `type: "apply_patch"`
 
-            工具的类型。始终 `apply_patch`.
+            工具的类型。始终为 `apply_patch`.
 
             - `"apply_patch"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -27881,19 +27889,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "tool_search_output"`
 
-        项目的类型。始终为 `tool_search_output`.
+        项的类型。始终为 `tool_search_output`.
 
         - `"tool_search_output"`
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
     - `AdditionalTools object { id, role, tools, type }`
 
       - `id: string`
 
-        附加工具条目的唯一 ID。
+        该附加工具条目的唯一 ID。
 
       - `role: "unknown" or "user" or "assistant" or 5 more`
 
@@ -27917,33 +27925,33 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `tools: array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-        此条目中可用的附加工具定义。
+        在该条目处可用的附加工具定义。
 
         - `Function object { name, parameters, strict, 5 more }`
 
-          定义你自己代码中模型可以选择调用的函数。详细了解 [函数调用](https://platform.openai.com/docs/guides/function-calling).
+          定义你自己代码中的某个函数，供模型选择调用。详细了解 [function calling](https://platform.openai.com/docs/guides/function-calling).
 
           - `name: string`
 
-            要调用的函数的名称。
+            要调用的函数名称。
 
           - `parameters: map[unknown] or null`
 
-            描述函数参数的 JSON schema 对象。
+            描述该函数参数的 JSON schema 对象。
 
           - `strict: boolean or null`
 
-            是否对此函数工具强制执行严格的参数验证。
+            是否为该函数工具启用严格的参数校验。
 
           - `type: "function"`
 
-            函数工具的类型。始终为 `function`.
+            该函数工具的类型。始终为 `function`.
 
             - `"function"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -27951,19 +27959,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `defer_loading: optional boolean`
 
-            此函数是否延迟并通过工具搜索加载。
+            该函数是否为延迟加载，并通过工具搜索加载。
 
           - `description: optional string or null`
 
-            函数的描述。模型据此确定是否调用该函数。
+            该函数的描述。模型据此决定是否调用该函数。
 
           - `output_schema: optional map[unknown] or null`
 
-            描述此函数的字符串输出中编码的 JSON 值的 JSON schema 对象。
+            描述该函数在字符串输出中编码的 JSON 值的 JSON schema 对象。
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          一种从上传文件中搜索相关内容工具。详细了解 [文件搜索工具](https://platform.openai.com/docs/guides/tools-file-search).
+          一个用于从已上传文件中搜索相关内容的工具。详细了解 [文件搜索 tool](https://platform.openai.com/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -27981,15 +27989,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `ComparisonFilter object { key, type, value }`
 
-              用于使用定义的比较操作将指定属性键与给定值进行比较的筛选器。
+              用于通过定义的比较运算将指定的属性键与给定值进行比较的过滤器。
 
             - `CompoundFilter object { filters, type }`
 
-              使用以下方式组合多个筛选器 `and` 或 `or`.
+              使用以下方式组合多个过滤器 `and` 或 `or`.
 
           - `max_num_results: optional number`
 
-            要返回的最大结果数。此数字应在 1 到 50 之间（含 1 和 50）。
+            返回结果的最大数量。此数量应介于 1 到 50 之间（含两端）。
 
           - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -27997,19 +28005,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-              启用混合搜索时，控制倒数排名融合如何在语义嵌入匹配与稀疏关键词匹配之间取得平衡的权重。
+              在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
               - `embedding_weight: number`
 
-                嵌入在倒数排名融合中的权重。
+                在倒数排名融合中嵌入的权重。
 
               - `text_weight: number`
 
-                文本在倒数排名融合中的权重。
+                在倒数排名融合中文本的权重。
 
             - `ranker: optional "auto" or "default-2024-11-15"`
 
-              用于文件搜索的排序器。
+              用于 文件搜索 的排序器。
 
               - `"auto"`
 
@@ -28017,11 +28025,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `score_threshold: optional number`
 
-              文件搜索的分数阈值，为0到1之间的数字。数字越接近1，将尝试仅返回最相关的结果，但可能返回较少的結果。
+              文件搜索 的分数阈值，取值范围为 0 到 1 之间。数值越接近 1，越会尝试只返回最相关的结果，但返回的结果数量可能会减少。
 
         - `Computer object { type }`
 
-          一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -28031,19 +28039,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          一个控制虚拟计算机的工具。了解更多关于 [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](https://platform.openai.com/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
-            计算机显示器的宽度。
+            计算机显示屏的高度。
 
           - `display_width: number`
 
-            计算机显示器的宽度。
+            计算机显示屏的宽度。
 
           - `environment: "windows" or "mac" or "linux" or 2 more`
 
-            要控制的计算机环境的类型。
+            要控制的计算机环境类型。
 
             - `"windows"`
 
@@ -28063,12 +28071,12 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-          搜索互联网以获取与提示相关的来源。了解更多关于
+          在互联网上搜索与提示相关的来源。详细了解
           [网页搜索工具](/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
-            网页搜索工具的类型。之一为 `web_search` 或 `web_search_2025_08_26`.
+            网页搜索工具的类型，取值之一为 `web_search` 或 `web_search_2025_08_26`.
 
             - `"web_search"`
 
@@ -28076,22 +28084,22 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `external_web_access: optional boolean`
 
-            允许网页搜索实时访问互联网。省略时默认为true。为false时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+            允许 网页搜索 进行实时互联网访问。省略时默认为 true。当值为 false 时，网页搜索工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
           - `filters: optional object { allowed_domains }  or null`
 
-            搜索的过滤器。
+            搜索的筛选条件。
 
             - `allowed_domains: optional array of string or null`
 
-              搜索允许的域名。如果未提供，则允许所有域名。
-              所提供域名的子域名也允许。
+              允许进行搜索的域名。如果未提供，则允许所有域名。
+              同时也允许所提供域名的子域名。
 
               示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -28105,15 +28113,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `city: optional string or null`
 
-              用户的城市的自由文本输入，例如 `San Francisco`.
+              用户所在城市的自由文本输入，例如 `San Francisco`.
 
             - `country: optional string or null`
 
-              用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -28121,14 +28129,14 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `type: optional "approximate"`
 
-              位置近似的类型。始终 `approximate`.
+              位置近似的类型。始终为 `approximate`.
 
               - `"approximate"`
 
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-          通过远程 Model Context Protocol 让模型访问额外工具
-          (MCP) 服务器。 [了解更多关于 MCP](/docs/guides/tools-remote-mcp).
+          通过远程 Model Context Protocol
+          （MCP）服务器为模型提供对其他工具的访问权限。 [了解更多关于 MCP 的信息](/docs/guides/tools-remote-mcp).
 
           - `server_label: string`
 
@@ -28136,13 +28144,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "mcp"`
 
-            MCP 工具的类型。始终 `mcp`.
+            MCP 工具的类型。始终为 `mcp`.
 
             - `"mcp"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -28154,7 +28162,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `McpAllowedTools = array of string`
 
-              允许工具名称的字符串数组
+              允许的工具名称组成的字符串数组
 
             - `McpToolFilter object { read_only, tool_names }`
 
@@ -28162,9 +28170,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `read_only: optional boolean`
 
-                指示工具是否修改数据或为只读。如果
-                MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                指示工具是否修改数据或是否为只读。如果某个
+                MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，它将匹配此过滤条件。
 
               - `tool_names: optional array of string`
 
@@ -28172,26 +28180,26 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `authorization: optional string`
 
-            可用于远程 MCP 服务器的 OAuth 访问令牌，可以
-            与自定义 MCP 服务器 URL 或服务连接器配合使用。你的应用程序
-            必须处理 OAuth 授权流程并在此处提供令牌。
+            可用于远程 MCP 服务器的 OAuth 访问令牌，可搭配自定义 MCP 服务器 URL 或服务连接器使用。你的应用
+            必须处理 OAuth 授权流程，并在此处提供该令牌。
+            必须处理 OAuth 授权流程，并在此处提供该令牌。
 
           - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-            服务连接器的标识符，类似于 ChatGPT 中可用的那些。必须提供以下之一：
-            `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中之一。了解更多
-            关于服务连接器 [此处](/docs/guides/tools-remote-mcp#connectors).
+            服务连接器的标识符，例如 ChatGPT 中提供的连接器之一。
+            `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解关于服务连接器
+            的更多信息 [请参阅此处](/docs/guides/tools-remote-mcp#connectors).
 
-            当前支持的值 `connector_id` 包括：
+            当前支持 `connector_id` 的值为：
 
-            - Dropbox： `connector_dropbox`
-            - Gmail： `connector_gmail`
-            - Google Calendar： `connector_googlecalendar`
-            - Google Drive： `connector_googledrive`
-            - Microsoft Teams： `connector_microsoftteams`
-            - Outlook Calendar： `connector_outlookcalendar`
-            - Outlook Email： `connector_outlookemail`
-            - SharePoint： `connector_sharepoint`
+            - Dropbox: `connector_dropbox`
+            - Gmail: `connector_gmail`
+            - Google Calendar: `connector_googlecalendar`
+            - Google Drive: `connector_googledrive`
+            - Microsoft Teams: `connector_microsoftteams`
+            - Outlook Calendar: `connector_outlookcalendar`
+            - Outlook Email: `connector_outlookemail`
+            - SharePoint: `connector_sharepoint`
 
             - `"connector_dropbox"`
 
@@ -28211,11 +28219,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `defer_loading: optional boolean`
 
-            此 MCP 工具是否被延迟并通过工具搜索发现。
+            此 MCP 工具是否被延迟，并通过工具搜索发现。
 
           - `headers: optional map[string] or null`
 
-            发送到 MCP 服务器的可选 HTTP 头。用于身份验证
+            发送到 MCP 服务器的可选 HTTP 请求头。用于身份验证
             或其他用途。
 
           - `require_approval: optional object { always, never }  or "always" or "never" or null`
@@ -28225,8 +28233,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
             - `McpToolApprovalFilter object { always, never }`
 
               指定 MCP 服务器的哪些工具需要审批。可以是
-              `always`, `never`，或一个与需要审批的工具关联的过滤器对象
-              。
+              `always`, `never`，或与工具关联的过滤对象
+              ，这些工具需要审批。
 
               - `always: optional object { read_only, tool_names }`
 
@@ -28234,9 +28242,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  指示工具是否修改数据或是否为只读。如果某个
+                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  ，它将匹配此过滤条件。
 
                 - `tool_names: optional array of string`
 
@@ -28248,9 +28256,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `read_only: optional boolean`
 
-                  指示工具是否修改数据或为只读。如果
-                  MCP 服务器被 [注释为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  指示工具是否修改数据或是否为只读。如果某个
+                  MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                  ，它将匹配此过滤条件。
 
                 - `tool_names: optional array of string`
 
@@ -28258,8 +28266,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `McpToolApprovalSetting = "always" or "never"`
 
-              为所有工具指定单一审批策略。可以是 `always` 或
-              `never`。之一。当设置为 `always`，时，所有工具都需要审批。当
+              为所有工具指定统一的审批策略。可选值为 `always` 或
+              `never`。当设置为 `always`，时，所有工具都需要审批。当
               设置为 `never`，时，所有工具都不需要审批。
 
               - `"always"`
@@ -28272,22 +28280,22 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `server_url: optional string`
 
-            MCP 服务器的 URL。必须提供 `server_url`, `connector_id`，或
-            `tunnel_id` 之一。
+            MCP 服务器的 URL。 `server_url`, `connector_id`，或
+            `tunnel_id` 必须提供其中一个。
 
           - `tunnel_id: optional string`
 
-            用于替代直接服务器 URL 的安全 MCP 隧道 ID。必须提供
-            `server_url`, `connector_id`，或 `tunnel_id` 之一。
+            用于替代直接服务器 URL 的安全 MCP 隧道 ID。
+            `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中一个。
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
-          一个运行 Python 代码以帮助生成提示响应的工具。
+          运行 Python 代码以帮助生成对提示词响应的工具。
 
           - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器。可以是容器 ID，或一个对象，其中
-            指定了上传的文件 ID 以供你的代码使用，以及
+            代码解释器容器。可以是容器 ID，也可以是指定可供代码使用的已上传文件 ID 的对象，以及一个
+            指定可供你的代码使用的已上传文件 ID，以及一个
             可选的 `memory_limit` 设置。
 
             - `string`
@@ -28296,17 +28304,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-              代码解释器容器的配置。可选择指定要在其上运行代码的文件 ID。
+              代码解释器容器的配置。可选择指定要对其运行代码的文件 ID。
 
               - `type: "auto"`
 
-                始终 `auto`.
+                始终为 `auto`.
 
                 - `"auto"`
 
               - `file_ids: optional array of string`
 
-                一个可选的已上传文件列表，供你的代码使用。
+                一个可选的、供代码使用的已上传文件列表。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -28330,13 +28338,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "code_interpreter"`
 
-            代码解释器工具的类型。始终 `code_interpreter`.
+            代码解释器工具的类型。始终为 `code_interpreter`.
 
             - `"code_interpreter"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -28346,7 +28354,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "programmatic_tool_calling"`
 
-            工具的类型。始终 `programmatic_tool_calling`.
+            工具的类型。始终为 `programmatic_tool_calling`.
 
             - `"programmatic_tool_calling"`
 
@@ -28356,13 +28364,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "image_generation"`
 
-            图像生成工具的类型。始终 `image_generation`.
+            图像生成工具的类型。始终为 `image_generation`.
 
             - `"image_generation"`
 
           - `action: optional "generate" or "edit" or "auto"`
 
-            是否生成新图像或编辑现有图像。默认值： `auto`.
+            是生成新图像还是编辑现有图像。默认值： `auto`.
 
             - `"generate"`
 
@@ -28372,11 +28380,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            设置生成图像的背景。可选值之一： `transparent`,
-            `opaque`，或 `auto`。透明背景可用于
-            支持的 GPT 图像模型。对于 `gpt-image-2` 以及
-            `gpt-image-2-2026-04-21`，此支持目前处于预览阶段。使用
-            `transparent`，时，请将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
+            设置生成图像的背景。取值之一 `transparent`,
+            `opaque`，或 `auto`。透明背景适用于受支持的
+            GPT Image 模型。对于 `gpt-image-2` 和
+            `gpt-image-2-2026-04-21`，该支持目前处于预览阶段。使用
+            `transparent`，时，将输出格式设置为 `png` 或 `webp`。默认值： `auto`.
 
             - `"transparent"`
 
@@ -28386,7 +28394,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            控制模型在匹配输入图像的风格和特征（尤其是面部特征）上投入的努力程度。此参数仅支持 `gpt-image-1` 以及 `gpt-image-1.5` 及更高版本模型，不支持 `gpt-image-1-mini`。支持 `high` 以及 `low`。默认为 `low`.
+            控制模型在匹配输入图像风格和特征（尤其是面部特征）时所付出的努力程度。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持 `high` 和 `low`。默认为 `low`.
 
             - `"high"`
 
@@ -28394,7 +28402,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `input_image_mask: optional object { file_id, image_url }`
 
-            用于修复的可选遮罩。包含 `image_url`
+            用于局部重绘的可选遮罩。包含 `image_url`
             （字符串，可选）和 `file_id` （字符串，可选）。
 
             - `file_id: optional string`
@@ -28407,7 +28415,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            要使用的图像生成模型。可选值之一 `gpt-image-1`,
+            要使用的图像生成模型。可选值为 `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
             `gpt-image-1`.
@@ -28416,7 +28424,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              要使用的图像生成模型。可选值之一 `gpt-image-1`,
+              要使用的图像生成模型。可选值为 `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`，或 `chatgpt-image-latest`。默认值：
               `gpt-image-1`.
@@ -28433,7 +28441,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `moderation: optional "auto" or "low"`
 
-            生成图像的审核级别。默认值： `auto`.
+            生成图像的内容审核级别。默认值： `auto`.
 
             - `"auto"`
 
@@ -28445,7 +28453,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `output_format: optional "png" or "webp" or "jpeg"`
 
-            生成图像的输出格式。可选值之一 `png`, `webp`，或
+            生成图像的输出格式。可选值为 `png`, `webp`，或
             `jpeg`。默认值： `png`.
 
             - `"png"`
@@ -28456,11 +28464,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `partial_images: optional number`
 
-            流式模式下生成的部分图像数量，范围从 0（默认值）到 3。
+            在流式模式下生成的部分图像数量，取值范围为 0（默认值）到 3。
 
           - `quality: optional "low" or "medium" or "high" or "auto"`
 
-            生成图像的质量。可选值之一 `low`, `medium`, `high`,
+            生成图像的质量。可选值为 `low`, `medium`, `high`,
             或 `auto`。默认值： `auto`.
 
             - `"low"`
@@ -28473,13 +28481,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率是实验性的，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT 图像模型支持； `auto` 适用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，支持任意分辨率，格式为 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，并且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸为 `1024x1024`, `1536x1024`，以及 `1024x1536` ， `auto` 由允许自动调整尺寸的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
               - `"1024x1024"`
 
@@ -28491,27 +28499,27 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `LocalShell object { type }`
 
-          一种允许模型在本地环境中执行 shell 命令的工具。
+          允许模型在本地环境中执行 shell 命令的工具。
 
           - `type: "local_shell"`
 
-            本地 shell 工具的类型。始终为 `local_shell`.
+            本地 shell 工具的类型，始终为 `local_shell`.
 
             - `"local_shell"`
 
         - `Shell object { type, allowed_callers, environment }`
 
-          一种允许模型执行 shell 命令的工具。
+          允许模型执行 shell 命令的工具。
 
           - `type: "shell"`
 
-            shell 工具的类型。始终为 `shell`.
+            shell 工具的类型，始终为 `shell`.
 
             - `"shell"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -28527,7 +28535,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Custom object { name, type, allowed_callers, 3 more }`
 
-          一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+          使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -28541,7 +28549,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -28549,7 +28557,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `defer_loading: optional boolean`
 
-            是否应延迟此工具并通过工具搜索发现。
+            是否应延迟此工具并通过工具搜索发现它。
 
           - `description: optional string`
 
@@ -28557,23 +28565,23 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `format: optional CustomToolInputFormat`
 
-            自定义工具的输入格式。默认为无约束文本。
+            自定义工具的输入格式。默认是无约束文本。
 
         - `Namespace object { description, name, tools, type }`
 
-          将函数/自定义工具分组到共享命名空间下。
+          在共享命名空间下对 function/custom 工具进行分组。
 
           - `description: string`
 
-            显示给模型的命名空间描述。
+            展示给模型的命名空间描述。
 
           - `name: string`
 
-            工具调用中使用的命名空间名称（例如， `crm`).
+            在工具调用中使用的命名空间名称（例如， `crm`).
 
           - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
 
-            此命名空间内可用的函数/自定义工具。
+            该命名空间内可用的 function/custom 工具。
 
             - `Function object { name, type, allowed_callers, 5 more }`
 
@@ -28585,7 +28593,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-                工具调用上下文。
+                该工具的调用上下文。
 
                 - `"direct"`
 
@@ -28593,23 +28601,23 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `defer_loading: optional boolean`
 
-                此函数是否应延迟并通过工具搜索发现。
+                是否应延迟此函数并通过工具搜索发现。
 
               - `description: optional string or null`
 
               - `output_schema: optional map[unknown] or null`
 
-                描述此函数工具字符串输出中编码的 JSON 值的 JSON Schema。这不描述内容数组输出。
+                用于描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。此描述不适用于 content-array 输出。
 
               - `parameters: optional unknown or null`
 
               - `strict: optional boolean or null`
 
-                是否强制进行严格的参数验证。如果省略，当 schema 兼容时，Responses 会尝试使用严格验证，否则回退到非严格验证。
+                是否强制执行严格的参数校验。如果省略，Responses 会尝试在 schema 兼容时使用严格校验，否则回退到非严格校验。
 
             - `Custom object { name, type, allowed_callers, 3 more }`
 
-              一种自定义工具，按指定格式处理输入。了解关于   [自定义工具](/docs/guides/function-calling#custom-tools)
+              使用指定格式处理输入的自定义工具。详细了解   [自定义工具](/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -28623,7 +28631,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-                工具调用上下文。
+                该工具的调用上下文。
 
                 - `"direct"`
 
@@ -28631,7 +28639,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `defer_loading: optional boolean`
 
-                是否应延迟此工具并通过工具搜索发现。
+                是否应延迟此工具并通过工具搜索发现它。
 
               - `description: optional string`
 
@@ -28639,27 +28647,27 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `format: optional CustomToolInputFormat`
 
-                自定义工具的输入格式。默认为无约束文本。
+                自定义工具的输入格式。默认是无约束文本。
 
           - `type: "namespace"`
 
-            工具的类型。始终 `namespace`.
+            工具的类型。始终为 `namespace`.
 
             - `"namespace"`
 
         - `ToolSearch object { type, description, execution, parameters }`
 
-          延迟工具的托管或 BYOT 工具搜索配置。
+          用于延迟工具的托管或 BYOT 工具搜索配置。
 
           - `type: "tool_search"`
 
-            工具的类型。始终 `tool_search`.
+            工具的类型。始终为 `tool_search`.
 
             - `"tool_search"`
 
           - `description: optional string or null`
 
-            显示给模型的客户端执行工具搜索工具的描述。
+            展示给模型的客户端执行的工具搜索工具的描述。
 
           - `execution: optional "server" or "client"`
 
@@ -28671,15 +28679,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `parameters: optional unknown or null`
 
-            客户端执行工具搜索工具的参数 schema。
+            客户端执行的工具搜索工具的参数 schema。
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          此工具搜索网页以获取用于响应的相关结果。了解更多关于 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
+          此工具会在网络上搜索相关结果以用于回复中。详细了解 [网页搜索工具](https://platform.openai.com/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-            网页搜索工具的类型。之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+            网页搜索工具的类型，取值之一为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
             - `"web_search_preview"`
 
@@ -28693,7 +28701,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            关于用于搜索的上下文窗口空间量的高级指导。之一为 `low`, `medium`，或 `high`. `medium` 是默认值。
+            搜索所用上下文窗口空间的高级使用指导，取值之一为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -28703,25 +28711,25 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            用户的位置。
+            用户所在的位置。
 
             - `type: "approximate"`
 
-              位置近似的类型。始终 `approximate`.
+              位置近似的类型。始终为 `approximate`.
 
               - `"approximate"`
 
             - `city: optional string or null`
 
-              用户的城市的自由文本输入，例如 `San Francisco`.
+              用户所在城市的自由文本输入，例如 `San Francisco`.
 
             - `country: optional string or null`
 
-              用户的两位 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
+              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
             - `region: optional string or null`
 
-              用户的地区的自由文本输入，例如 `California`.
+              用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
@@ -28729,17 +28737,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ApplyPatch object { type, allowed_callers }`
 
-          允许助手使用统一差异创建、删除或更新文件。
+          允许助手使用 unified diff 创建、删除或更新文件。
 
           - `type: "apply_patch"`
 
-            工具的类型。始终 `apply_patch`.
+            工具的类型。始终为 `apply_patch`.
 
             - `"apply_patch"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
-            工具调用上下文。
+            该工具的调用上下文。
 
             - `"direct"`
 
@@ -28747,15 +28755,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "additional_tools"`
 
-        项目的类型。始终为 `additional_tools`.
+        项的类型。始终为 `additional_tools`.
 
         - `"additional_tools"`
 
     - `Reasoning object { id, summary, type, 3 more }`
 
-      推理模型在生成
-      响应时所用思维链的描述。请务必将这些项目包含在你的 `input` 对 Responses API 的
-      后续对话轮次中，如果你正在手动
+      对推理模型在生成响应时所使用的思维链的描述。如果你是手动
+      管理上下文，请务必在后续对话轮次中将这些项包含在 `input` 对 Responses API 的
+      请求中。
       [管理上下文](/docs/guides/conversation-state).
 
       - `id: string`
@@ -28768,7 +28776,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `text: string`
 
-          模型到目前为止的推理输出摘要。
+          到目前为止模型推理输出的摘要。
 
         - `type: "summary_text"`
 
@@ -28796,20 +28804,20 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `encrypted_content: optional string or null`
 
-        推理项目的加密内容。默认情况下，此字段由
-        返回的推理项目填充，适用于 `POST /v1/responses` 和 WebSocket
-        `response.create` 请求。
+        推理条目的加密内容。默认情况下，对于通过
+        和 WebSocket `POST /v1/responses` 请求返回的推理条目，
+        `response.create` 会填充该字段。
 
-        流式传输时，请使用已完成的推理项及其
-        `encrypted_content` 从 `response.output_item.done` 事件中
-        的后续请求。该 `encrypted_content` 中
-        `response.output_item.added` 可能不完整。这在
-        特别重要，当 `store` 是 `false` 或使用零数据保留时。
+        流式传输时，使用已完成的推理项及其
+        `encrypted_content` 来自 `response.output_item.done` 事件中的
+        字段，并在后续请求中传递。 `encrypted_content` 在
+        `response.output_item.added` 中可能不完整。这一点尤其
+        重要，当你 `store` 为 `false` 时，或使用 Zero Data Retention 时。
 
       - `status: optional "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。其一为 `in_progress`, `completed`，或
-        `incomplete`。当项目通过 API 返回时填充。
+        该条目的状态。可选值为 `in_progress`, `completed`，或
+        `incomplete`。在通过 API 返回 item 时填充。
 
         - `"in_progress"`
 
@@ -28825,19 +28833,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `call_id: string`
 
-        程序项的稳定调用 ID。
+        程序条目的稳定调用 ID。
 
       - `code: string`
 
-        由编程式工具调用执行的 JavaScript 源代码。
+        由程序化工具调用执行的 JavaScript 源码。
 
       - `fingerprint: string`
 
-        不透明的程序重放指纹，必须往返传输。
+        必须往返透传的不透明程序重放指纹。
 
       - `type: "program"`
 
-        项目的类型。始终为 `program`.
+        项的类型。始终为 `program`.
 
         - `"program"`
 
@@ -28865,13 +28873,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "program_output"`
 
-        项目的类型。始终为 `program_output`.
+        项的类型。始终为 `program_output`.
 
         - `"program_output"`
 
     - `Compaction object { id, encrypted_content, type, created_by }`
 
-      由该工具生成的压缩项 [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+      由 [`v1/responses/compact` API](/docs/api-reference/responses/compact).
 
       - `id: string`
 
@@ -28879,17 +28887,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `encrypted_content: string`
 
-        压缩产生的加密内容。
+        由压缩生成的加密内容。
 
       - `type: "compaction"`
 
-        项目的类型。始终为 `compaction`.
+        项的类型。始终为 `compaction`.
 
         - `"compaction"`
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
     - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -28901,7 +28909,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `code: string or null`
 
-        要运行的代码，如果不可用则为 null。
+        要运行的代码，若不可用则为 null。
 
       - `container_id: string`
 
@@ -28910,7 +28918,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
       - `outputs: array of object { logs, type }  or object { type, url }  or null`
 
         代码解释器生成的输出，例如日志或图像。
-        如果没有可用的输出，则可以为 null。
+        若没有可用输出，可能为 null。
 
         - `Logs object { logs, type }`
 
@@ -28928,7 +28936,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Image object { type, url }`
 
-          代码解释器的图像输出。
+          代码解释器输出的图像。
 
           - `type: "image"`
 
@@ -28938,7 +28946,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `url: string`
 
-            代码解释器图像输出的 URL。
+            代码解释器输出图像的 URL。
 
       - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -28970,7 +28978,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `action: object { command, env, type, 3 more }`
 
-        在服务器上执行 shell 命令。
+        在服务端执行 shell 命令。
 
         - `command: array of string`
 
@@ -28992,7 +29000,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `user: optional string or null`
 
-          运行命令的可选用户。
+          运行命令所使用的可选用户。
 
         - `working_directory: optional string or null`
 
@@ -29000,11 +29008,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `call_id: string`
 
-        模型生成的本地 shell 工具调用的唯一 ID。
+        模型生成的本机 shell 工具调用的唯一 ID。
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        本地 shell 调用的状态。
+        本机 shell 调用的状态。
 
         - `"in_progress"`
 
@@ -29014,31 +29022,31 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "local_shell_call"`
 
-        本地 shell 调用的类型。始终为 `local_shell_call`.
+        本机 shell 调用的类型。始终为 `local_shell_call`.
 
         - `"local_shell_call"`
 
     - `LocalShellCallOutput object { id, output, type, status }`
 
-      本地 shell 工具调用的输出。
+      本机 shell 工具调用的输出。
 
       - `id: string`
 
-        模型生成的本地 shell 工具调用的唯一 ID。
+        模型生成的本机 shell 工具调用的唯一 ID。
 
       - `output: string`
 
-        本地 shell 工具调用输出的 JSON 字符串。
+        本机 shell 工具调用输出的 JSON 字符串。
 
       - `type: "local_shell_call_output"`
 
-        本地 shell 工具调用输出的类型。始终为 `local_shell_call_output`.
+        本机 shell 工具调用输出的类型。始终为 `local_shell_call_output`.
 
         - `"local_shell_call_output"`
 
       - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-        条目的状态。其一为 `in_progress`, `completed`，或 `incomplete`.
+        该条目的状态。可选值为 `in_progress`, `completed`，或 `incomplete`.
 
         - `"in_progress"`
 
@@ -29048,25 +29056,25 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `ShellCall object { id, action, call_id, 5 more }`
 
-      在受管环境中执行一个或多个 shell 命令的工具调用。
+      在托管环境中执行一条或多条 shell 命令的工具调用。
 
       - `id: string`
 
-        shell 工具调用的唯一 ID。当此项目通过 API 返回时填充。
+        shell 工具调用的唯一 ID。通过 API 返回此条目时填充。
 
       - `action: object { commands, max_output_length, timeout_ms }`
 
-        描述如何运行工具调用的 shell 命令和限制。
+        描述如何运行该工具调用的 shell 命令和限制。
 
         - `commands: array of string`
 
         - `max_output_length: number or null`
 
-          可选，每个命令返回的最大字符数。
+          可选的每个命令返回的最大字符数。
 
         - `timeout_ms: number or null`
 
-          可选，命令的超时时间（毫秒）。
+          可选的命令超时时间（毫秒）。
 
       - `call_id: string`
 
@@ -29100,7 +29108,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        shell 调用的状态。其中一种为 `in_progress`, `completed`，或 `incomplete`.
+        shell 调用的状态。取值之一： `in_progress`, `completed`，或 `incomplete`.
 
         - `"in_progress"`
 
@@ -29110,7 +29118,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "shell_call"`
 
-        项目的类型。始终为 `shell_call`.
+        项的类型。始终为 `shell_call`.
 
         - `"shell_call"`
 
@@ -29136,15 +29144,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `created_by: optional string`
 
-        创建此工具调用的实体的 ID。
+        创建此工具调用的实体 ID。
 
     - `ShellCallOutput object { id, call_id, max_output_length, 5 more }`
 
-      发出的 shell 工具调用的输出。
+      已发出的 shell 工具调用的输出。
 
       - `id: string`
 
-        shell 调用输出的唯一 ID。当此条目通过 API 返回时填充。
+        shell 调用输出的唯一 ID。当通过 API 返回此条目时会填充该字段。
 
       - `call_id: string`
 
@@ -29152,7 +29160,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `max_output_length: number or null`
 
-        shell 命令输出的最大长度。由模型生成，应与原始输出一起传回。
+        shell 命令输出的最大长度。该值由模型生成，并应与原始输出一起传回。
 
       - `output: array of object { outcome, stderr, stdout, created_by }`
 
@@ -29160,7 +29168,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `outcome: object { type }  or object { exit_code, type }`
 
-          表示 shell 调用输出块的退出结果（含退出码）或超时结果。
+          表示 shell 调用输出块的结果是退出结果（带有退出码）还是超时结果。
 
           - `Timeout object { type }`
 
@@ -29174,11 +29182,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `Exit object { exit_code, type }`
 
-            表示 shell 命令已完成并返回了退出码。
+            表示 shell 命令已执行完成并返回了退出码。
 
             - `exit_code: number`
 
-              Shell 进程的退出代码。
+              shell 进程的退出码。
 
             - `type: "exit"`
 
@@ -29196,11 +29204,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `created_by: optional string`
 
-          创建该项目的执行者的标识符。
+          创建该项的执行者的标识符。
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        Shell 调用输出的状态。取值为 `in_progress`, `completed`，或 `incomplete`.
+        shell 调用输出的状态。取值为 `in_progress`, `completed`，或 `incomplete`.
 
         - `"in_progress"`
 
@@ -29210,7 +29218,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "shell_call_output"`
 
-        Shell 调用输出的类型。始终为 `shell_call_output`.
+        shell 调用输出的类型。始终为 `shell_call_output`.
 
         - `"shell_call_output"`
 
@@ -29236,19 +29244,19 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `created_by: optional string`
 
-        创建该项目的执行者的标识符。
+        创建该项的执行者的标识符。
 
     - `ApplyPatchCall object { id, call_id, operation, 4 more }`
 
-      一种通过创建、删除或更新文件来应用文件差异的工具调用。
+      通过创建、删除或更新文件来应用文件差异的工具调用。
 
       - `id: string`
 
-        API 返回此项目时填充的 apply patch 工具调用的唯一 ID。
+        apply patch 工具调用的唯一 ID。当通过 API 返回此 item 时填充。
 
       - `call_id: string`
 
-        由模型生成的 apply_patch 工具调用的唯一 ID。
+        模型生成的 apply patch 工具调用的唯一 ID。
 
       - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
 
@@ -29268,7 +29276,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "create_file"`
 
-            使用提供的差异创建新文件。
+            使用提供的差异创建一个新文件。
 
             - `"create_file"`
 
@@ -29282,7 +29290,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "delete_file"`
 
-            删除指定文件。
+            删除指定的文件。
 
             - `"delete_file"`
 
@@ -29306,7 +29314,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `status: "in_progress" or "completed"`
 
-        apply_patch 工具调用的状态。之一 `in_progress` 或 `completed`.
+        apply patch 工具调用的状态。取值为 `in_progress` 或 `completed`.
 
         - `"in_progress"`
 
@@ -29314,7 +29322,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "apply_patch_call"`
 
-        项目的类型。始终为 `apply_patch_call`.
+        项的类型。始终为 `apply_patch_call`.
 
         - `"apply_patch_call"`
 
@@ -29340,7 +29348,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `created_by: optional string`
 
-        创建此工具调用的实体的 ID。
+        创建此工具调用的实体 ID。
 
     - `ApplyPatchCallOutput object { id, call_id, status, 4 more }`
 
@@ -29348,15 +29356,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `id: string`
 
-        API 返回此项目时填充的 apply patch 工具调用输出的唯一 ID。
+        apply patch 工具调用输出的唯一 ID。当通过 API 返回此 item 时填充。
 
       - `call_id: string`
 
-        由模型生成的 apply_patch 工具调用的唯一 ID。
+        模型生成的 apply patch 工具调用的唯一 ID。
 
       - `status: "completed" or "failed"`
 
-        apply patch 工具调用输出的状态。可选值之一： `completed` 或 `failed`.
+        apply patch 工具调用输出的状态。取值之一为 `completed` 或 `failed`.
 
         - `"completed"`
 
@@ -29364,7 +29372,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "apply_patch_call_output"`
 
-        项目的类型。始终为 `apply_patch_call_output`.
+        项的类型。始终为 `apply_patch_call_output`.
 
         - `"apply_patch_call_output"`
 
@@ -29390,11 +29398,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `created_by: optional string`
 
-        创建此工具调用输出的实体的 ID。
+        创建此工具调用输出的实体 ID。
 
       - `output: optional string or null`
 
-        apply patch 工具返回的可选文本输出。
+        由 apply patch 工具返回的可选文本输出。
 
     - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -29402,7 +29410,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `id: string`
 
-        列表的唯一 ID。
+        此列表的唯一 ID。
 
       - `server_label: string`
 
@@ -29414,7 +29422,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `input_schema: unknown`
 
-          描述工具输入的 JSON schema。
+          描述该工具输入的 JSON schema。
 
         - `name: string`
 
@@ -29422,7 +29430,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `annotations: optional unknown or null`
 
-          关于工具的附加注释。
+          关于该工具的附加注释。
 
         - `description: optional string or null`
 
@@ -29430,7 +29438,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "mcp_list_tools"`
 
-        项目的类型。始终为 `mcp_list_tools`.
+        项的类型。始终为 `mcp_list_tools`.
 
         - `"mcp_list_tools"`
 
@@ -29440,11 +29448,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `McpApprovalRequest object { id, arguments, name, 2 more }`
 
-      请求人工批准工具调用的请求。
+      对工具调用的人工审批请求。
 
       - `id: string`
 
-        批准请求的唯一 ID。
+        审批请求的唯一 ID。
 
       - `arguments: string`
 
@@ -29460,13 +29468,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "mcp_approval_request"`
 
-        项目的类型。始终为 `mcp_approval_request`.
+        项的类型。始终为 `mcp_approval_request`.
 
         - `"mcp_approval_request"`
 
     - `McpApprovalResponse object { id, approval_request_id, approve, 2 more }`
 
-      对 MCP 批准请求的响应。
+      对 MCP 审批请求的响应。
 
       - `id: string`
 
@@ -29474,37 +29482,37 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `approval_request_id: string`
 
-        正在回答的审批请求的 ID。
+        正在回复的审批请求的 ID。
 
       - `approve: boolean`
 
-        该请求是否已获批准。
+        请求是否已批准。
 
       - `type: "mcp_approval_response"`
 
-        项目的类型。始终为 `mcp_approval_response`.
+        项的类型。始终为 `mcp_approval_response`.
 
         - `"mcp_approval_response"`
 
       - `reason: optional string or null`
 
-        该决定的可选原因。
+        可选的决策原因。
 
     - `McpCall object { id, arguments, name, 6 more }`
 
-      在 MCP 服务器上对工具的一次调用。
+      对 MCP 服务器上某个工具的调用。
 
       - `id: string`
 
-        工具调用的唯一 ID。
+        该工具调用的唯一 ID。
 
       - `arguments: string`
 
-        传递给工具的参数的 JSON 字符串。
+        传递给该工具的参数的 JSON 字符串。
 
       - `name: string`
 
-        所运行的工具的名称。
+        已运行工具的名称。
 
       - `server_label: string`
 
@@ -29512,18 +29520,18 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `type: "mcp_call"`
 
-        项目的类型。始终为 `mcp_call`.
+        项的类型。始终为 `mcp_call`.
 
         - `"mcp_call"`
 
       - `approval_request_id: optional string or null`
 
         MCP 工具调用审批请求的唯一标识符。
-        在后续 `mcp_approval_response` 输入中包含此值，以批准或拒绝对应的工具调用。
+        在后续的 `mcp_approval_response` 输入中包含该值，以批准或拒绝相应的工具调用。
 
       - `error: optional McpToolCallError or null`
 
-        工具调用产生的错误（如有）。
+        工具调用的错误（如果有）。
 
         - `McpProtocolError object { code, message, type }`
 
@@ -29559,7 +29567,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `status: optional "in_progress" or "completed" or "incomplete" or 2 more`
 
-        工具调用的状态。取值为 `in_progress`, `completed`, `incomplete`, `calling`，或 `failed`.
+        工具调用的状态，取值为 `in_progress`, `completed`, `incomplete`, `calling`，或 `failed`.
 
         - `"in_progress"`
 
@@ -29573,7 +29581,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `CustomToolCall object { call_id, input, name, 4 more }`
 
-      由模型创建的自定义工具调用。
+      模型对自定义工具的调用。
 
       - `call_id: string`
 
@@ -29595,7 +29603,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `id: optional string`
 
-        自定义工具调用在 OpenAI 平台中的唯一 ID。
+        该自定义工具调用在 OpenAI 平台中的唯一 ID。
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -29623,7 +29631,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `CustomToolCallOutput object { call_id, output, type, 2 more }`
 
-      来自你的代码的自定义工具调用的输出，正在发送回模型。
+      来自你代码的自定义工具调用输出，正被发回给模型。
 
       - `call_id: string`
 
@@ -29631,12 +29639,12 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `output: string or array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
-        由你的代码生成的自定义工具调用的输出。
+        由你代码生成的自定义工具调用的输出。
         可以是字符串或输出内容列表。
 
         - `StringOutput = string`
 
-          自定义工具调用的输出字符串。
+          自定义工具调用输出的字符串。
 
         - `OutputContentList = array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
@@ -29644,15 +29652,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            输入给模型的文本输入。
+            提供给模型的文本输入。
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            输入给模型的图像输入。了解 [图像输入](/docs/guides/vision).
+            提供给模型的图像输入。了解 [image inputs](/docs/guides/vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-            输入给模型的文件。
+            模型的文件输入。
 
       - `type: "custom_tool_call_output"`
 
@@ -29662,7 +29670,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `id: optional string`
 
-        自定义工具调用输出在 OpenAI 平台中的唯一 ID。
+        该自定义工具调用输出在 OpenAI 平台中的唯一 ID。
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -29672,7 +29680,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "direct"`
 
-            调用者类型。始终为 `direct`.
+            调用方类型。始终为 `direct`.
 
             - `"direct"`
 
@@ -29684,24 +29692,24 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `type: "program"`
 
-            调用者类型。始终为 `program`.
+            调用方类型。始终为 `program`.
 
             - `"program"`
 
   - `first_id: string`
 
-    列表中第一项项目的 ID。
+    列表中第一项的 ID。
 
   - `has_more: boolean`
 
-    是否还有更多可用项目。
+    是否还有更多可用项。
 
   - `last_id: string`
 
-    列表中最后一项项目的 ID。
+    列表中最后一项的 ID。
 
   - `object: "list"`
 
-    返回的对象类型，必须为 `list`.
+    返回对象的类型，必须为 `list`.
 
     - `"list"`

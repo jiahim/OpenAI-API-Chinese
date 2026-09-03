@@ -6,22 +6,22 @@ This guide includes an overview on error codes you might see from both the [API]
 
 ## API errors
 
-| Code                                                             | Overview                                                                                                                                                                                                                                                                                          |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 400 - Invalid `service_tier` argument                            | **Cause:** The requested or resolved service tier is not allowed for the project. <br /> **Solution:** Set `service_tier` to a tier allowed for the project, or update the allowed service tiers in [project settings](https://platform.openai.com/settings/).                                    |
-| 401 - Invalid Authentication                                     | **Cause:** Invalid Authentication <br /> **Solution:** Ensure the correct [API key](https://platform.openai.com/settings/organization/api-keys) and requesting organization are being used.                                                                                                       |
-| 401 - Incorrect API key provided                                 | **Cause:** The requesting API key is not correct. <br /> **Solution:** Ensure the API key used is correct, clear your browser cache, or [generate a new one](https://platform.openai.com/settings/organization/api-keys).                                                                         |
-| 401 - You must be a member of an organization to use the API     | **Cause:** Your account is not part of an organization. <br /> **Solution:** Contact us to get added to a new organization or ask your organization manager to [invite you to an organization](https://platform.openai.com/settings/organization/people).                                         |
-| 401 - IP not authorized                                          | **Cause:** Your request IP does not match the configured IP allowlist for your project or organization. <br /> **Solution:** Send the request from the correct IP, or update your [IP allowlist settings](https://platform.openai.com/settings/organization/security/ip-allowlist).               |
-| 403 - Country, region, or territory not supported                | **Cause:** You are accessing the API from an unsupported country, region, or territory. <br /> **Solution:** Please see [this page](https://developers.openai.com/api/docs/supported-countries) for more information.                                                                                                          |
-| 429 - Credit balance exhausted                                   | **Code:** `credit_balance_exhausted` <br /> **Cause:** Your organization has no prepaid credits remaining. <br /> **Solution:** [Add credits](https://platform.openai.com/settings/organization/billing) to continue using the API.                                                               |
-| 429 - Rate limit reached for requests                            | **Cause:** You are sending requests too quickly. <br /> **Solution:** Pace your requests and follow the `Retry-After` header when it's present. Read the [Rate limit guide](https://developers.openai.com/api/docs/guides/rate-limits).                                                                                        |
-| 429 - Organization spend limit reached                           | **Code:** `organization_spend_limit_exceeded` <br /> **Cause:** Your organization reached its enforced spend limit. <br /> **Solution:** Increase or remove your [organization spend limit](https://platform.openai.com/settings/organization/limits).                                            |
-| 429 - Project spend limit reached                                | **Code:** `project_spend_limit_exceeded` <br /> **Cause:** Your project reached its enforced spend limit. <br /> **Solution:** Increase or remove the spend limit in your [project settings](https://platform.openai.com/settings/).                                                              |
-| 429 - Organization usage limit reached                           | **Code:** `organization_usage_limit_exceeded` <br /> **Cause:** Your organization reached its OpenAI-assigned usage limit. <br /> **Solution:** Request a higher [approved usage limit](https://platform.openai.com/settings/organization/limits) or [contact support](https://help.openai.com/). |
-| 500 - The server had an error while processing your request      | **Cause:** Issue on our servers. <br /> **Solution:** Retry your request after a brief wait and contact us if the issue persists. Check the [status page](https://status.openai.com/).                                                                                                            |
-| 503 - The engine is currently overloaded, please try again later | **Cause:** Our servers are experiencing high traffic. <br /> **Solution:** Please retry your requests after a brief wait.                                                                                                                                                                         |
-| 503 - Slow Down                                                  | **Cause:** A sudden increase in your request rate is impacting service reliability. <br /> **Solution:** Please reduce your request rate to its original level, maintain a consistent rate for at least 15 minutes, and then gradually increase it.                                               |
+| Code                                                         | Overview                                                                                                                                                                                                                                                                                          |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 400 - Invalid `service_tier` argument                        | **Cause:** The requested or resolved service tier is not allowed for the project. <br /> **Solution:** Set `service_tier` to a tier allowed for the project, or update the allowed service tiers in [project settings](https://platform.openai.com/settings/).                                    |
+| 401 - Invalid Authentication                                 | **Cause:** Invalid Authentication <br /> **Solution:** Ensure the correct [API key](https://platform.openai.com/settings/organization/api-keys) and requesting organization are being used.                                                                                                       |
+| 401 - Incorrect API key provided                             | **Cause:** The requesting API key is not correct. <br /> **Solution:** Ensure the API key used is correct, clear your browser cache, or [generate a new one](https://platform.openai.com/settings/organization/api-keys).                                                                         |
+| 401 - You must be a member of an organization to use the API | **Cause:** Your account is not part of an organization. <br /> **Solution:** Contact us to get added to a new organization or ask your organization manager to [invite you to an organization](https://platform.openai.com/settings/organization/people).                                         |
+| 401 - IP not authorized                                      | **Cause:** Your request IP does not match the configured IP allowlist for your project or organization. <br /> **Solution:** Send the request from the correct IP, or update your [IP allowlist settings](https://platform.openai.com/settings/organization/security/ip-allowlist).               |
+| 403 - Country, region, or territory not supported            | **Cause:** You are accessing the API from an unsupported country, region, or territory. <br /> **Solution:** Please see [this page](https://developers.openai.com/api/docs/supported-countries) for more information.                                                                                                          |
+| 429 - Credit balance exhausted                               | **Code:** `credit_balance_exhausted` <br /> **Cause:** Your organization has no prepaid credits remaining. <br /> **Solution:** [Add credits](https://platform.openai.com/settings/organization/billing) to continue using the API.                                                               |
+| 429 - Rate limit reached for requests                        | **Cause:** You are sending requests too quickly. <br /> **Solution:** Pace your requests and follow the `Retry-After` header when it's present. Read the [Rate limit guide](https://developers.openai.com/api/docs/guides/rate-limits).                                                                                        |
+| 429 - Slow down                                              | **Type:** `rate_limit_error` <br /> **Code:** `slow_down` <br /> **Cause:** Your request rate increased too quickly. <br /> **Solution:** Follow the `Retry-After` header when it's present, reduce your request rate, and increase it gradually.                                                 |
+| 429 - Organization spend limit reached                       | **Code:** `organization_spend_limit_exceeded` <br /> **Cause:** Your organization reached its enforced spend limit. <br /> **Solution:** Increase or remove your [organization spend limit](https://platform.openai.com/settings/organization/limits).                                            |
+| 429 - Project spend limit reached                            | **Code:** `project_spend_limit_exceeded` <br /> **Cause:** Your project reached its enforced spend limit. <br /> **Solution:** Increase or remove the spend limit in your [project settings](https://platform.openai.com/settings/).                                                              |
+| 429 - Organization usage limit reached                       | **Code:** `organization_usage_limit_exceeded` <br /> **Cause:** Your organization reached its OpenAI-assigned usage limit. <br /> **Solution:** Request a higher [approved usage limit](https://platform.openai.com/settings/organization/limits) or [contact support](https://help.openai.com/). |
+| 500 - The server had an error while processing your request  | **Cause:** Issue on our servers. <br /> **Solution:** Retry your request after a brief wait and contact us if the issue persists. Check the [status page](https://status.openai.com/).                                                                                                            |
+| 503 - Model temporarily overloaded                           | **Type:** `service_unavailable_error` <br /> **Code:** `server_is_overloaded` <br /> **Cause:** The requested model is temporarily overloaded. <br /> **Solution:** Follow the `Retry-After` header when it's present, then retry your request.                                                   |
 
 For billing-related errors, inspect `error.code` to identify the specific cause. The broader `error.type` can still be `insufficient_quota`.
 
@@ -156,6 +156,27 @@ To resolve this error, please follow these steps:
 
 
 
+### 429 - Slow down
+
+
+A `429` response with the `rate_limit_error` type and `slow_down` code indicates that your request rate increased faster than the service can safely handle. It can occur even when your traffic is within its requests-per-minute and tokens-per-minute limits.
+
+As a rule of thumb, once your traffic reaches 1 million input tokens per minute (TPM), increase it by no more than 50% every 15 minutes. The exact point at which the ramp-rate limit applies can vary by model and traffic conditions.
+
+To resolve this error:
+
+- If a `Retry-After` header is present, wait at least as long as it specifies before retrying. If it's missing, increase the delay between retries and add a small random delay.
+- Reduce your request rate, then increase it gradually.
+- Keep your traffic pattern steady to reduce the chance of another `slow_down` error.
+
+Enterprise customers whose pay-as-you-go traffic routinely hits ramp-rate limits can consider [Scale Tier](https://openai.com/api-scale-tier/) for more predictable capacity on eligible models. For GPT-5.6 and later models, see [Reserved Tier](https://openai.com/api-reserved-tier/). These capacity options don't replace the recovery steps above: continue to follow `Retry-After` when it's present and ramp traffic gradually.
+
+
+
+
+
+
+
 ### 429 - Organization spend limit reached
 
 
@@ -195,37 +216,12 @@ To restore API access, request a higher [approved usage limit](https://platform.
 
 
 
-### 503 - The engine is currently overloaded, please try again later
+### 503 - Model temporarily overloaded
 
 
-This error message indicates that our servers are experiencing high traffic and are unable to process your request at the moment. This could happen for several reasons, such as:
+A `503` response with the `service_unavailable_error` type and `server_is_overloaded` code indicates that the requested model does not have enough capacity to process your request at the moment.
 
-- There is a sudden spike or surge in demand for our services.
-- There is scheduled or unscheduled maintenance or update on our servers.
-- There is an unexpected or unavoidable outage or incident on our servers.
-
-To resolve this error, please follow these steps:
-
-- Retry your request after a brief wait. We recommend using an exponential backoff strategy or a retry logic that respects the response headers and the rate limit. You can read more about our rate limit [best practices](https://help.openai.com/en/articles/6891753-rate-limit-advice).
-- Check our [status page](https://status.openai.com/) for any updates or announcements regarding our services and servers.
-- If you are still getting this error after a reasonable amount of time, please contact us for further assistance. We apologize for any inconvenience and appreciate your patience and understanding.
-
-
-
-
-
-
-
-### 503 - Slow Down
-
-
-This error can occur with Pay-As-You-Go models, which are shared across all OpenAI users. It indicates that your traffic has significantly increased, overloading the model and triggering temporary throttling to maintain service stability.
-
-To resolve this error, please follow these steps:
-
-- Reduce your request rate to its original level, keep it stable for at least 15 minutes, and then gradually ramp it up.
-- Maintain a consistent traffic pattern to minimize the likelihood of throttling. You should rarely encounter this error if your request volume remains steady.
-- Consider upgrading to the [Scale Tier](https://openai.com/api-scale-tier/) for guaranteed capacity and performance, ensuring more reliable access during peak demand periods.
+If a `Retry-After` header is present, wait at least as long as it specifies before retrying. If it's missing, increase the delay between retries. If the error continues, check the [status page](https://status.openai.com/) for an active incident.
 
 
 

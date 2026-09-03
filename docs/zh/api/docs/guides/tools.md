@@ -1,8 +1,8 @@
 # 使用工具
 
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 后追加 `.md` 来获取。
 
-当生成模型响应或构建智能体时，你可以使用内置工具、函数调用、程序化工具调用、工具搜索和远程 MCP 服务器来扩展能力。这些功能使模型能够搜索网页、从你的文件中检索内容、在运行时加载延迟定义的工具、调用你自己的函数、用 JavaScript 组合工具调用，或访问第三方服务。仅 `gpt-5.4` 及更高版本的模型支持 `tool_search`.
+在生成模型响应或构建智能体时，你可以使用内置工具、函数调用、程序化工具调用、工具搜索和远程 MCP 服务器来扩展能力。这些功能使模型能够搜索网页、从你的文件中检索内容、在运行时加载延迟工具定义、调用你自己的函数、在 JavaScript 中组合工具调用，或访问第三方服务。仅 `gpt-5.4` 及更高版本的模型支持 `tool_search`.
 
 
 
@@ -229,11 +229,12 @@ using OpenAI.Responses;
 #pragma warning disable OPENAI001
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string vectorStoreId = "<vector_store_id>";
 ResponsesClient client = new(key);
 
 CreateResponseOptions options = new() { Model = "gpt-5.6" };
 options.Tools.Add(
-    ResponseTool.CreateFileSearchTool(["<vector_store_id>"])
+    ResponseTool.CreateFileSearchTool([vectorStoreId])
 );
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")
@@ -693,10 +694,7 @@ client.responses().create(params).output().forEach(System.out::println);
 ```
 
 ```csharp
-using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
 using OpenAI.Responses;
-#pragma warning disable CA1869
 #pragma warning disable OPENAI001
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
@@ -729,16 +727,30 @@ options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("What is the weather like in Paris today?")
 );
 
-ResponseResult response = client.CreateResponse(options);
-Console.WriteLine(
-    JsonSerializer.Serialize(
-        response.OutputItems[0],
-        new JsonSerializerOptions
+ResponseResult response = await client.CreateResponseAsync(options);
+foreach (ResponseItem outputItem in response.OutputItems)
+{
+    if (outputItem is FunctionCallResponseItem functionCall)
+    {
+        Console.WriteLine(
+            $"{functionCall.FunctionName}({functionCall.FunctionArguments})"
+        );
+    }
+    else if (outputItem is MessageResponseItem message)
+    {
+        foreach (ResponseContentPart content in message.Content)
         {
-            TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
+            if (content.Kind == ResponseContentPartKind.OutputText)
+            {
+                Console.WriteLine(content.Text);
+            }
+            else if (content.Kind == ResponseContentPartKind.Refusal)
+            {
+                Console.WriteLine(content.Refusal);
+            }
         }
-    )
-);
+    }
+}
 ```
 
 ```ruby
@@ -985,7 +997,7 @@ puts(response.output_text)
 
 ## 可用工具
 
-以下是 OpenAI 平台中可用工具的概览——选择其中一个以获取使用指南。
+以下是 OpenAI 平台中可用工具的概览——选择其中一个以获取详细的使用指导。
 
 [函数调用
 
@@ -1007,7 +1019,7 @@ puts(response.output_text)
       Give the model access to new capabilities via Model Context Protocol (MCP)
     servers.](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)
 
-[技能
+[Skills
 
 
 
@@ -1046,31 +1058,31 @@ puts(response.output_text)
       Dynamically load relevant tools into the model’s context to optimize token
     usage.](https://developers.openai.com/api/docs/guides/tools-tool-search)
 
-[编程工具调用
+[编程式工具调用
 
 
 
       Let models compose and run JavaScript that orchestrates tool calls.](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling)
 
-## 在 API 中的使用
+## API 中的使用
 
-当请求生成 [模型响应](https://developers.openai.com/api/reference/resources/responses/methods/create)，时，你通常通过在 `tools` 参数中指定配置来启用工具访问。每个工具都有其独特的配置要求——请参阅 [可用工具](#available-tools) 部分获取详细说明。
+当你向 接口 发起请求以生成 [模型响应](https://developers.openai.com/api/reference/resources/responses/methods/create)，时，通常需要在 `tools` 参数中指定配置来启用工具访问。每个工具都有其独特的配置要求——详见 [可用工具](#available-tools) 部分中的详细说明。
 
-根据提供的 [提示](https://developers.openai.com/api/docs/guides/text)，模型会自动决定是否使用已配置的工具。例如，如果你的提示请求的信息超出了模型的训练截止日期，且网页搜索已启用，模型通常会调用网页搜索工具来检索相关的最新信息。
+根据提供的 [提示](https://developers.openai.com/api/docs/guides/text)，模型会自动决定是否使用已配置的工具。例如，如果你的提示请求的内容超出了模型的训练截止日期，并且启用了网页搜索，模型通常会调用网页搜索工具来获取相关的最新信息。
 
-一些高级工作流还可以在交互过程中加载更多工具定义。例如， [工具搜索](https://developers.openai.com/api/docs/guides/tools-tool-search) 可以推迟函数定义，直到模型决定需要它们。
+一些高级工作流还可以在交互过程中加载更多工具定义。例如， [工具搜索](https://developers.openai.com/api/docs/guides/tools-tool-search) 可以推迟函数定义，直到模型判断需要时再加载。
 
-你可以通过设置 `tool_choice` 参数 [来显式控制或引导此行为，在API请求中](https://developers.openai.com/api/reference/resources/responses/methods/create).
+你可以通过在 API 请求中设置 `tool_choice` 参数 [显式控制或引导此行为](https://developers.openai.com/api/reference/resources/responses/methods/create).
 
-## 在 Agents SDK 中的使用
+## Agents SDK 中的用法
 
-在 Agents SDK 中，工具语义保持不变，但接线方式移入 智能体 定义和 工作流 设计中，而非单个 Responses API 请求。
+在 Agents SDK 中，工具语义保持不变，但连接方式被移入 智能体 定义和 工作流 设计中，而不是放在单个 Responses API 请求里。
 
-- 当某个专家智能体需要自行调用工具时，直接在该智能体上附加托管工具、函数工具或托管 MCP 工具。
-- 当经理需要保持对面向用户回复的控制时，将专家作为工具暴露。
-- 即使SDK建模了工具决策，也要在运行时中保留 shell、apply patch 和 computer-use 工具环境。
+- 当某个专家应自行调用托管工具、函数工具或托管 MCP 工具时，直接将其挂载到该智能体上。
+- 当管理者需要掌控面向用户的回复时，将专家作为工具暴露出去。
+- 即使 SDK 对工具决策进行了建模，也应在运行时中保留 shell、apply patch 和 computer-use 测试框架。
 
-将本地逻辑封装为函数工具
+将本地逻辑包装为函数工具
 
 ```javascript
 import { tool } from "@openai/agents";
@@ -1097,7 +1109,7 @@ def get_weather(city: str) -> str:
 ```
 
 
-将专家能力暴露为工具
+将专家智能体暴露为工具
 
 ```javascript
 import { Agent } from "@openai/agents";
@@ -1138,4 +1150,4 @@ main_agent = Agent(
 ```
 
 
-在 [智能体 定义](https://developers.openai.com/api/docs/guides/agents/define-agents) 中塑造单个专家时， [编排与交接](https://developers.openai.com/api/docs/guides/agents/orchestration) 在工具影响所有权时， [护栏与人工审查](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals) 在工具影响审批时，以及 [集成与可观测性](https://developers.openai.com/api/docs/guides/agents/integrations-observability#mcp) 在能力来源于 MCP 时。
+使用 [智能体定义](https://developers.openai.com/api/docs/guides/agents/define-agents) 当你正在塑造单个专家智能体时， [编排与交接](https://developers.openai.com/api/docs/guides/agents/orchestration) 当工具影响所有权时， [护栏与人工审核](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals) 当工具影响审批时，以及 [集成与可观测性](https://developers.openai.com/api/docs/guides/agents/integrations-observability#mcp) 当该能力来自 MCP 时。

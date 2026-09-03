@@ -1,18 +1,18 @@
-# 批量
+# Batches
 
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾附加 `.md` 即可获取文档页面的 Markdown 版本。
 
-## 取消批次
+## Cancel batch
 
-**post** `/batches/{batch_id}/cancel`
+**后** `/batches/{batch_id}/cancel`
 
-取消进行中的批次。批次将保持 `cancelling` 状态最多 10 分钟，然后变为 `cancelled`，在此状态下，输出文件中可获取部分结果（如果有）。
+取消正在进行的批量任务。该批量任务将处于 `cancelling` 状态，最长持续 10 分钟，然后变为 `cancelled`，状态，此时输出文件中将提供部分结果（若有）。
 
 ### 路径参数
 
 - `batch_id: string`
 
-### 返回
+### 返回值
 
 - `Batch object { id, completion_window, created_at, 19 more }`
 
@@ -20,19 +20,19 @@
 
   - `completion_window: string`
 
-    批处理应在该时间范围内进行处理。
+    处理该批次的时间窗口。
 
   - `created_at: number`
 
-    批处理创建时的 Unix 时间戳（以秒为单位）。
+    批次创建时的 Unix 时间戳（秒）。
 
   - `endpoint: string`
 
-    批处理使用的 OpenAI API 端点。
+    该批次所使用的 OpenAI API 端点。
 
   - `input_file_id: string`
 
-    批处理的输入文件 ID。
+    该批次的输入文件 ID。
 
   - `object: "batch"`
 
@@ -42,7 +42,7 @@
 
   - `status: "validating" or "failed" or "in_progress" or 5 more`
 
-    批处理的当前状态。
+    该批次当前的状态。
 
     - `"validating"`
 
@@ -62,19 +62,19 @@
 
   - `cancelled_at: optional number`
 
-    批处理取消时的 Unix 时间戳（以秒为单位）。
+    该批次被取消时的 Unix 时间戳（秒）。
 
   - `cancelling_at: optional number`
 
-    批处理开始取消时的 Unix 时间戳（以秒为单位）。
+    该批次开始取消时的 Unix 时间戳（秒）。
 
   - `completed_at: optional number`
 
-    批处理完成时的 Unix 时间戳（以秒为单位）。
+    该批次完成时的 Unix 时间戳（秒）。
 
   - `error_file_id: optional string`
 
-    包含出错请求输出的文件 ID。
+    包含请求错误输出的文件 ID。
 
   - `errors: optional object { data, object }`
 
@@ -82,19 +82,19 @@
 
       - `code: optional string`
 
-        标识错误类型的错误代码。
+        用于标识错误类型的错误代码。
 
       - `line: optional number or null`
 
-        错误发生时输入文件的行号（如适用）。
+        发生错误的输入文件行号（如果适用）。
 
       - `message: optional string`
 
-        提供有关错误更多详细信息的人类可读消息。
+        提供更多错误细节的人类可读消息。
 
       - `param: optional string or null`
 
-        导致错误的参数名称（如适用）。
+        引发错误的参数名称（如果适用）。
 
     - `object: optional string`
 
@@ -102,94 +102,94 @@
 
   - `expired_at: optional number`
 
-    批处理过期时的 Unix 时间戳（以秒为单位）。
+    该批次过期时的 Unix 时间戳（秒）。
 
   - `expires_at: optional number`
 
-    批处理将过期时的 Unix 时间戳（以秒为单位）。
+    该批次将过期时的 Unix 时间戳（秒）。
 
   - `failed_at: optional number`
 
-    批处理失败时的 Unix 时间戳（以秒为单位）。
+    该批次失败时的 Unix 时间戳（秒）。
 
   - `finalizing_at: optional number`
 
-    批处理开始最终确定时的 Unix 时间戳（以秒为单位）。
+    该批次开始终结时的 Unix 时间戳（秒）。
 
   - `in_progress_at: optional number`
 
-    批处理开始处理时的 Unix 时间戳（以秒为单位）。
+    该批次开始处理时的 Unix 时间戳（秒）。
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象上的 16 组键值对。这可用于
-    以结构化格式存储关于该对象的额外信息，
-    并通过 API 或控制面板查询对象。
+    可附加到对象的 16 组键值对。可用于
+    用于以结构化格式存储对象的附加信息，
+    并通过 API 或控制台查询对象。
 
     键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
   - `model: optional string`
 
-    用于处理批次的模型 ID，例如 `gpt-5-2025-08-07`。OpenAI
-    提供多种具有不同能力、性能特点
-    和价格点的模型。请参阅 [模型
+    用于处理该批处理的模型 ID，例如 `gpt-5.6-sol`。OpenAI
+    提供了多种具备不同能力、性能
+    特征和价位的模型。请参阅 [模型
     指南](/docs/models) 以浏览和比较可用模型。
 
   - `output_file_id: optional string`
 
-    包含成功执行请求输出的文件 ID。
+    包含已成功执行请求输出内容的文件 ID。
 
   - `request_counts: optional BatchRequestCounts`
 
-    批次中不同状态的请求计数。
+    该批处理中不同状态的请求计数。
 
     - `completed: number`
 
-      已成功完成的请求数。
+      已成功完成的请求数量。
 
     - `failed: number`
 
-      已失败的请求数。
+      已失败的请求数量。
 
     - `total: number`
 
-      批次中的请求总数。
+      该批处理中的请求总数。
 
   - `usage: optional BatchUsage`
 
-    表示令牌使用详情，包括输入令牌、输出令牌、
-    输出令牌的明细以及使用的令牌总数。仅填补于
-    2025 年 9 月 7 日之后创建的批次。
+    表示 token 使用详情，包括输入 token、输出 token、输出
+    token 的细分以及使用的 token 总数。仅在
+    2025 年 9 月 7 日之后创建的批处理上填充。
 
     - `input_tokens: number`
 
-      输入令牌数。
+      输入 token 的数量。
 
     - `input_tokens_details: object { cached_tokens }`
 
-      输入令牌的详细细分。
+      输入 token 的详细明细。
 
       - `cached_tokens: number`
 
-        从缓存中检索的令牌数。 [更多信息
-        提示缓存](/docs/guides/prompt-caching).
+        从缓存中检索到的 token 数。 [了解更多
+        prompt caching](/docs/guides/prompt-caching).
 
     - `output_tokens: number`
 
-      输出令牌数。
+      输出 token 数。
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      输出令牌的详细细分。
+      输出 token 的详细明细。
 
       - `reasoning_tokens: number`
 
-        推理令牌数。
+        推理 token 数。
 
     - `total_tokens: number`
 
-      使用的令牌总数。
+      使用的 token 总数。
 
 ### 示例
 
@@ -297,23 +297,23 @@ curl https://api.openai.com/v1/batches/batch_abc123/cancel \
 }
 ```
 
-## 创建批次
+## 创建批处理
 
-**post** `/batches`
+**后** `/batches`
 
-根据上传的请求文件创建并执行一个批次
+从已上传的请求文件创建并执行批量任务
 
 ### 正文参数
 
 - `completion_window: "24h"`
 
-  批处理应被处理的时间范围。目前仅支持 `24h` 。
+  批量应在该时间范围内处理。目前仅支持 `24h` 。
 
   - `"24h"`
 
 - `endpoint: "/v1/responses" or "/v1/chat/completions" or "/v1/embeddings" or 5 more`
 
-  批处理中所有请求将使用的端点。目前支持 `/v1/responses`, `/v1/chat/completions`, `/v1/embeddings`, `/v1/completions`, `/v1/moderations`, `/v1/images/generations`, `/v1/images/edits`，以及 `/v1/videos` 。请注意， `/v1/embeddings` 批处理中的所有请求合计最多只能包含 50,000 个嵌入输入。
+  用于该批处理中所有请求的端点。目前支持 `/v1/responses`, `/v1/chat/completions`, `/v1/embeddings`, `/v1/completions`, `/v1/moderations`, `/v1/images/generations`, `/v1/images/edits`，和 `/v1/videos` 。请注意， `/v1/embeddings` 批量还限制该批处理中所有请求的嵌入输入总数上限为 50,000 个。
 
   - `"/v1/responses"`
 
@@ -337,32 +337,32 @@ curl https://api.openai.com/v1/batches/batch_abc123/cancel \
 
   请参阅 [上传文件](/docs/api-reference/files/create) 了解如何上传文件。
 
-  你的输入文件必须格式化为 [JSONL 文件](/docs/api-reference/batch/request-input)，并且必须以上传目的 `batch`。进行上传。该文件最多可包含 50,000 个请求，大小可达 200 MB。
+  你的输入文件必须格式化为 [JSONL 文件](/docs/api-reference/batch/request-input)，并必须以该用途上传 `batch`。文件最多可包含 50,000 个请求，大小可达 200 MB。
 
 - `metadata: optional Metadata or null`
 
-  一组 16 个键值对，可附加到对象上。这可以
-  用于以结构化格式存储关于对象的附加信息，
-  并通过 API 或仪表板查询对象。
+  可附加到对象的 16 组键值对。可用于
+  用于以结构化格式存储对象的附加信息，
+  并通过 API 或控制台查询对象。
 
-  键是字符串，最大长度为 64 个字符。值是字符串，
+  键为字符串，最大长度为 64 个字符。值为字符串，
   最大长度为 512 个字符。
 
 - `output_expires_after: optional object { anchor, seconds }`
 
-  为批处理生成的输出文件和/或错误文件的过期策略。
+  为某个批次生成的输出文件和/或错误文件的过期策略。
 
   - `anchor: "created_at"`
 
-    过期策略开始生效的锚点时间戳。支持的锚点： `created_at`。请注意，锚点是文件创建时间，而非批次创建时间。
+    过期策略生效所基于的锚点时间戳。支持以下锚点： `created_at`. 请注意，锚点是文件的创建时间，而非批次的创建时间。
 
     - `"created_at"`
 
   - `seconds: number`
 
-    锚点时间之后文件过期的秒数。必须在 3600（1小时）到 2592000（30天）之间。
+    距锚点时间多少秒后文件过期。必须介于 3600（1 小时）到 2592000（30 天）之间。
 
-### 返回
+### 返回值
 
 - `Batch object { id, completion_window, created_at, 19 more }`
 
@@ -370,19 +370,19 @@ curl https://api.openai.com/v1/batches/batch_abc123/cancel \
 
   - `completion_window: string`
 
-    批次应在该时间范围内处理。
+    处理该批次的时间窗口。
 
   - `created_at: number`
 
-    批次创建时的 Unix 时间戳（以秒为单位）。
+    批次创建时的 Unix 时间戳（秒）。
 
   - `endpoint: string`
 
-    批次使用的 OpenAI API 端点。
+    该批次所使用的 OpenAI API 端点。
 
   - `input_file_id: string`
 
-    批次输入文件的 ID。
+    该批次的输入文件 ID。
 
   - `object: "batch"`
 
@@ -392,7 +392,7 @@ curl https://api.openai.com/v1/batches/batch_abc123/cancel \
 
   - `status: "validating" or "failed" or "in_progress" or 5 more`
 
-    批次的当前状态。
+    该批次当前的状态。
 
     - `"validating"`
 
@@ -412,19 +412,19 @@ curl https://api.openai.com/v1/batches/batch_abc123/cancel \
 
   - `cancelled_at: optional number`
 
-    批次被取消时的 Unix 时间戳（以秒为单位）。
+    该批次被取消时的 Unix 时间戳（秒）。
 
   - `cancelling_at: optional number`
 
-    批次开始取消时的 Unix 时间戳（以秒为单位）。
+    该批次开始取消时的 Unix 时间戳（秒）。
 
   - `completed_at: optional number`
 
-    批次完成时的 Unix 时间戳（以秒为单位）。
+    该批次完成时的 Unix 时间戳（秒）。
 
   - `error_file_id: optional string`
 
-    包含出错请求输出内容的文件 ID。
+    包含请求错误输出的文件 ID。
 
   - `errors: optional object { data, object }`
 
@@ -436,15 +436,15 @@ curl https://api.openai.com/v1/batches/batch_abc123/cancel \
 
       - `line: optional number or null`
 
-        错误发生时输入文件中对应的行号（如适用）。
+        发生错误的输入文件行号（如果适用）。
 
       - `message: optional string`
 
-        提供有关错误更多详细信息的人类可读消息。
+        提供更多错误细节的人类可读消息。
 
       - `param: optional string or null`
 
-        导致错误的参数名称（如适用）。
+        引发错误的参数名称（如果适用）。
 
     - `object: optional string`
 
@@ -452,47 +452,47 @@ curl https://api.openai.com/v1/batches/batch_abc123/cancel \
 
   - `expired_at: optional number`
 
-    批次过期时的 Unix 时间戳（以秒为单位）。
+    该批次过期时的 Unix 时间戳（秒）。
 
   - `expires_at: optional number`
 
-    批次即将过期时的 Unix 时间戳（以秒为单位）。
+    该批次将过期时的 Unix 时间戳（秒）。
 
   - `failed_at: optional number`
 
-    批次失败时的 Unix 时间戳（以秒为单位）。
+    该批次失败时的 Unix 时间戳（秒）。
 
   - `finalizing_at: optional number`
 
-    批次开始定稿时的 Unix 时间戳（以秒为单位）。
+    该批次开始终结时的 Unix 时间戳（秒）。
 
   - `in_progress_at: optional number`
 
-    批次开始处理时的 Unix 时间戳（以秒为单位）。
+    该批次开始处理时的 Unix 时间戳（秒）。
 
   - `metadata: optional Metadata or null`
 
-    一组 16 个键值对，可附加到对象上。这可以
-    用于以结构化方式存储关于对象的额外信息，
-    并通过 API 或仪表板查询对象。
+    可附加到对象的 16 组键值对。可用于
+    用于以结构化格式存储对象的附加信息，
+    并通过 API 或控制台查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串
-    ，最大长度为 512 个字符。
+    键为字符串，最大长度为 64 个字符。值为字符串，
+    最大长度为 512 个字符。
 
   - `model: optional string`
 
-    用于处理批次的模型 ID，如 `gpt-5-2025-08-07`。OpenAI
-    提供多种模型，具有不同的功能、性能
-    特征和价格点。请参阅 [模型
+    用于处理该批处理的模型 ID，例如 `gpt-5.6-sol`。OpenAI
+    提供了多种具备不同能力、性能
+    特征和价位的模型。请参阅 [模型
     指南](/docs/models) 以浏览和比较可用模型。
 
   - `output_file_id: optional string`
 
-    包含成功执行请求输出的文件的 ID。
+    包含已成功执行请求输出内容的文件 ID。
 
   - `request_counts: optional BatchRequestCounts`
 
-    批次内不同状态的请求计数。
+    该批处理中不同状态的请求计数。
 
     - `completed: number`
 
@@ -500,17 +500,17 @@ curl https://api.openai.com/v1/batches/batch_abc123/cancel \
 
     - `failed: number`
 
-      失败的请求数量。
+      已失败的请求数量。
 
     - `total: number`
 
-      批次中的请求总数。
+      该批处理中的请求总数。
 
   - `usage: optional BatchUsage`
 
-    表示令牌使用详情，包括输入令牌、输出令牌、输出令牌的
-    细分以及使用的总令牌。仅在
-    2025 年 9 月 7 日之后创建的批次中填充。
+    表示 token 使用详情，包括输入 token、输出 token、输出
+    token 的细分以及使用的 token 总数。仅在
+    2025 年 9 月 7 日之后创建的批处理上填充。
 
     - `input_tokens: number`
 
@@ -518,24 +518,24 @@ curl https://api.openai.com/v1/batches/batch_abc123/cancel \
 
     - `input_tokens_details: object { cached_tokens }`
 
-      输入 token 的详细分解。
+      输入 token 的详细明细。
 
       - `cached_tokens: number`
 
-        从缓存中检索的 token 数量。 [更多关于
-        提示缓存](/docs/guides/prompt-caching).
+        从缓存中检索到的 token 数。 [了解更多
+        prompt caching](/docs/guides/prompt-caching).
 
     - `output_tokens: number`
 
-      输出 token 的数量。
+      输出 token 数。
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      输出 token 的详细分解。
+      输出 token 的详细明细。
 
       - `reasoning_tokens: number`
 
-        推理 token 的数量。
+        推理 token 数。
 
     - `total_tokens: number`
 
@@ -656,7 +656,7 @@ curl https://api.openai.com/v1/batches \
 }
 ```
 
-## 列出批次
+## 列出批量任务
 
 **get** `/batches`
 
@@ -666,13 +666,13 @@ curl https://api.openai.com/v1/batches \
 
 - `after: optional string`
 
-  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发出一个列表请求并收到 100 个对象，以 obj_foo 结尾，那么你随后的调用可以包含 after=obj_foo，以便获取列表的下一页。
+  用于分页游标的对象 ID。 `after` 是用于定义你在列表中所处位置的对象 ID。例如，如果你发起列表请求并收到 100 个对象，最后一个为 obj_foo，则后续调用可以包含 after=obj_foo 以获取列表的下一页。
 
 - `limit: optional number`
 
-  对返回对象数量的限制。限制范围可以在 1 到 100 之间，默认值为 20。
+  返回对象数量的上限。范围介于 1 到 100 之间，默认值为 20。
 
-### 返回
+### 返回值
 
 - `data: array of Batch`
 
@@ -680,19 +680,19 @@ curl https://api.openai.com/v1/batches \
 
   - `completion_window: string`
 
-    批处理应被处理的时间范围。
+    处理该批次的时间窗口。
 
   - `created_at: number`
 
-    批处理创建时的 Unix 时间戳（秒）。
+    批次创建时的 Unix 时间戳（秒）。
 
   - `endpoint: string`
 
-    批处理使用的 OpenAI API 端点。
+    该批次所使用的 OpenAI API 端点。
 
   - `input_file_id: string`
 
-    批处理的输入文件的 ID。
+    该批次的输入文件 ID。
 
   - `object: "batch"`
 
@@ -702,7 +702,7 @@ curl https://api.openai.com/v1/batches \
 
   - `status: "validating" or "failed" or "in_progress" or 5 more`
 
-    批处理的当前状态。
+    该批次当前的状态。
 
     - `"validating"`
 
@@ -722,19 +722,19 @@ curl https://api.openai.com/v1/batches \
 
   - `cancelled_at: optional number`
 
-    批处理被取消时的 Unix 时间戳（秒）。
+    该批次被取消时的 Unix 时间戳（秒）。
 
   - `cancelling_at: optional number`
 
-    批处理开始取消时的 Unix 时间戳（秒）。
+    该批次开始取消时的 Unix 时间戳（秒）。
 
   - `completed_at: optional number`
 
-    批处理完成时的 Unix 时间戳（秒）。
+    该批次完成时的 Unix 时间戳（秒）。
 
   - `error_file_id: optional string`
 
-    包含请求错误输出的文件的 ID。
+    包含请求错误输出的文件 ID。
 
   - `errors: optional object { data, object }`
 
@@ -742,19 +742,19 @@ curl https://api.openai.com/v1/batches \
 
       - `code: optional string`
 
-        标识错误类型的错误代码。
+        用于标识错误类型的错误代码。
 
       - `line: optional number or null`
 
-        错误发生的输入文件行号（如适用）。
+        发生错误的输入文件行号（如果适用）。
 
       - `message: optional string`
 
-        提供有关错误的更多信息的人类可读消息。
+        提供更多错误细节的人类可读消息。
 
       - `param: optional string or null`
 
-        导致错误的参数的名称（如适用）。
+        引发错误的参数名称（如果适用）。
 
     - `object: optional string`
 
@@ -762,47 +762,47 @@ curl https://api.openai.com/v1/batches \
 
   - `expired_at: optional number`
 
-    批处理过期时的 Unix 时间戳（秒）。
+    该批次过期时的 Unix 时间戳（秒）。
 
   - `expires_at: optional number`
 
-    批处理将过期时的 Unix 时间戳（秒）。
+    该批次将过期时的 Unix 时间戳（秒）。
 
   - `failed_at: optional number`
 
-    批处理失败时的 Unix 时间戳（秒）。
+    该批次失败时的 Unix 时间戳（秒）。
 
   - `finalizing_at: optional number`
 
-    批处理开始完成时的 Unix 时间戳（秒）。
+    该批次开始终结时的 Unix 时间戳（秒）。
 
   - `in_progress_at: optional number`
 
-    批处理开始处理时的 Unix 时间戳（秒）。
+    该批次开始处理时的 Unix 时间戳（秒）。
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象上的 16 个键值对集合。这可用于
-    以结构化格式存储有关该对象的附加信息，并可通过
-    API 或仪表盘查询对象。
+    可附加到对象的 16 组键值对。可用于
+    用于以结构化格式存储对象的附加信息，
+    并通过 API 或控制台查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串，
+    键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
   - `model: optional string`
 
-    用于处理批次的模型 ID，例如 `gpt-5-2025-08-07`。OpenAI
-    提供多种具有不同能力、性能特征和价格点的模型。请参阅
-    模型 [指南
-    以浏览和比较可用模型。](/docs/models) 以浏览和比较可用模型。
+    用于处理该批处理的模型 ID，例如 `gpt-5.6-sol`。OpenAI
+    提供了多种具备不同能力、性能
+    特征和价位的模型。请参阅 [模型
+    指南](/docs/models) 以浏览和比较可用模型。
 
   - `output_file_id: optional string`
 
-    包含成功执行请求输出结果的文件 ID。
+    包含已成功执行请求输出内容的文件 ID。
 
   - `request_counts: optional BatchRequestCounts`
 
-    批次内不同状态的请求计数。
+    该批处理中不同状态的请求计数。
 
     - `completed: number`
 
@@ -814,42 +814,42 @@ curl https://api.openai.com/v1/batches \
 
     - `total: number`
 
-      批次中的请求总数。
+      该批处理中的请求总数。
 
   - `usage: optional BatchUsage`
 
-    表示令牌使用详情，包括输入令牌、输出令牌、输出令牌的细分以及使用的总令牌数。仅在
-    2025 年 9 月 7 日之后创建的批次上填充。
-    2025 年 9 月 7 日之后创建的批次上填充。
+    表示 token 使用详情，包括输入 token、输出 token、输出
+    token 的细分以及使用的 token 总数。仅在
+    2025 年 9 月 7 日之后创建的批处理上填充。
 
     - `input_tokens: number`
 
-      输入令牌的数量。
+      输入 token 的数量。
 
     - `input_tokens_details: object { cached_tokens }`
 
-      输入令牌的详细分解。
+      输入 token 的详细明细。
 
       - `cached_tokens: number`
 
-        从缓存中检索到的令牌数量。 [更多信息
-        提示缓存](/docs/guides/prompt-caching).
+        从缓存中检索到的 token 数。 [了解更多
+        prompt caching](/docs/guides/prompt-caching).
 
     - `output_tokens: number`
 
-      输出令牌的数量。
+      输出 token 数。
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      输出令牌的详细分解。
+      输出 token 的详细明细。
 
       - `reasoning_tokens: number`
 
-        推理令牌的数量。
+        推理 token 数。
 
     - `total_tokens: number`
 
-      使用的令牌总数。
+      使用的 token 总数。
 
 - `has_more: boolean`
 
@@ -982,7 +982,7 @@ curl https://api.openai.com/v1/batches?limit=2 \
 }
 ```
 
-## 检索批次
+## Retrieve batch
 
 **get** `/batches/{batch_id}`
 
@@ -1000,19 +1000,19 @@ curl https://api.openai.com/v1/batches?limit=2 \
 
   - `completion_window: string`
 
-    批处理应被处理的时间范围。
+    处理该批次的时间窗口。
 
   - `created_at: number`
 
-    批次创建时的 Unix 时间戳（以秒为单位）。
+    批次创建时的 Unix 时间戳（秒）。
 
   - `endpoint: string`
 
-    批次使用的 OpenAI API 端点。
+    该批次所使用的 OpenAI API 端点。
 
   - `input_file_id: string`
 
-    批次输入文件的 ID。
+    该批次的输入文件 ID。
 
   - `object: "batch"`
 
@@ -1022,7 +1022,7 @@ curl https://api.openai.com/v1/batches?limit=2 \
 
   - `status: "validating" or "failed" or "in_progress" or 5 more`
 
-    批次的当前状态。
+    该批次当前的状态。
 
     - `"validating"`
 
@@ -1042,19 +1042,19 @@ curl https://api.openai.com/v1/batches?limit=2 \
 
   - `cancelled_at: optional number`
 
-    批次被取消时的 Unix 时间戳（以秒为单位）。
+    该批次被取消时的 Unix 时间戳（秒）。
 
   - `cancelling_at: optional number`
 
-    批次开始取消时的 Unix 时间戳（以秒为单位）。
+    该批次开始取消时的 Unix 时间戳（秒）。
 
   - `completed_at: optional number`
 
-    批次完成时的 Unix 时间戳（以秒为单位）。
+    该批次完成时的 Unix 时间戳（秒）。
 
   - `error_file_id: optional string`
 
-    包含错误请求输出的文件 ID。
+    包含请求错误输出的文件 ID。
 
   - `errors: optional object { data, object }`
 
@@ -1062,19 +1062,19 @@ curl https://api.openai.com/v1/batches?limit=2 \
 
       - `code: optional string`
 
-        标识错误类型的错误代码。
+        用于标识错误类型的错误代码。
 
       - `line: optional number or null`
 
-        发生错误的输入文件行号，如果适用的话。
+        发生错误的输入文件行号（如果适用）。
 
       - `message: optional string`
 
-        提供关于错误的更多详细信息的人类可读消息。
+        提供更多错误细节的人类可读消息。
 
       - `param: optional string or null`
 
-        导致错误的参数名称，如果适用的话。
+        引发错误的参数名称（如果适用）。
 
     - `object: optional string`
 
@@ -1082,65 +1082,65 @@ curl https://api.openai.com/v1/batches?limit=2 \
 
   - `expired_at: optional number`
 
-    批次过期时的 Unix 时间戳（以秒为单位）。
+    该批次过期时的 Unix 时间戳（秒）。
 
   - `expires_at: optional number`
 
-    批次将过期时的 Unix 时间戳（以秒为单位）。
+    该批次将过期时的 Unix 时间戳（秒）。
 
   - `failed_at: optional number`
 
-    批次失败时的 Unix 时间戳（以秒为单位）。
+    该批次失败时的 Unix 时间戳（秒）。
 
   - `finalizing_at: optional number`
 
-    批次开始最终确定时的 Unix 时间戳（以秒为单位）。
+    该批次开始终结时的 Unix 时间戳（秒）。
 
   - `in_progress_at: optional number`
 
-    批次开始处理时的 Unix 时间戳（以秒为单位）。
+    该批次开始处理时的 Unix 时间戳（秒）。
 
   - `metadata: optional Metadata or null`
 
-    一组最多 16 个键值对，可附加到对象上。这
-    有助于以结构化格式存储有关该对象的额外信息，
-    并可通过 API 或仪表板查询对象。
+    可附加到对象的 16 组键值对。可用于
+    用于以结构化格式存储对象的附加信息，
+    并通过 API 或控制台查询对象。
 
     键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
   - `model: optional string`
 
-    用于处理批次的模型 ID，例如 `gpt-5-2025-08-07`。OpenAI
-    提供多种具有不同能力、性能
-    特性和价格点的模型。请参阅 [模型
+    用于处理该批处理的模型 ID，例如 `gpt-5.6-sol`。OpenAI
+    提供了多种具备不同能力、性能
+    特征和价位的模型。请参阅 [模型
     指南](/docs/models) 以浏览和比较可用模型。
 
   - `output_file_id: optional string`
 
-    包含成功执行请求输出的文件的 ID。
+    包含已成功执行请求输出内容的文件 ID。
 
   - `request_counts: optional BatchRequestCounts`
 
-    批次中不同状态的请求计数。
+    该批处理中不同状态的请求计数。
 
     - `completed: number`
 
-      已成功完成的请求数。
+      已成功完成的请求数量。
 
     - `failed: number`
 
-      失败的请求数。
+      已失败的请求数量。
 
     - `total: number`
 
-      批次中的请求总数。
+      该批处理中的请求总数。
 
   - `usage: optional BatchUsage`
 
-    表示令牌使用详情，包括输入令牌、输出令牌、输出令牌的
-    细分以及使用的令牌总数。仅对 2025 年 9 月 7 日之后创建
-    的批次填充。
+    表示 token 使用详情，包括输入 token、输出 token、输出
+    token 的细分以及使用的 token 总数。仅在
+    2025 年 9 月 7 日之后创建的批处理上填充。
 
     - `input_tokens: number`
 
@@ -1148,24 +1148,24 @@ curl https://api.openai.com/v1/batches?limit=2 \
 
     - `input_tokens_details: object { cached_tokens }`
 
-      输入 token 的详细分类。
+      输入 token 的详细明细。
 
       - `cached_tokens: number`
 
-        从缓存中检索的 token 数量。 [更多关于
-        提示缓存](/docs/guides/prompt-caching).
+        从缓存中检索到的 token 数。 [了解更多
+        prompt caching](/docs/guides/prompt-caching).
 
     - `output_tokens: number`
 
-      输出 token 的数量。
+      输出 token 数。
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      输出 token 的详细分类。
+      输出 token 的详细明细。
 
       - `reasoning_tokens: number`
 
-        推理 token 的数量。
+        推理 token 数。
 
     - `total_tokens: number`
 
@@ -1275,9 +1275,9 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 }
 ```
 
-## 域类型
+## Domain Types
 
-### 批处理
+### Batch
 
 - `Batch object { id, completion_window, created_at, 19 more }`
 
@@ -1285,7 +1285,7 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
   - `completion_window: string`
 
-    批次应在该时间范围内处理。
+    处理该批次的时间窗口。
 
   - `created_at: number`
 
@@ -1293,11 +1293,11 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
   - `endpoint: string`
 
-    批次使用的 OpenAI API 端点。
+    该批次所使用的 OpenAI API 端点。
 
   - `input_file_id: string`
 
-    批次输入文件的 ID。
+    该批次的输入文件 ID。
 
   - `object: "batch"`
 
@@ -1307,7 +1307,7 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
   - `status: "validating" or "failed" or "in_progress" or 5 more`
 
-    批次的当前状态。
+    该批次当前的状态。
 
     - `"validating"`
 
@@ -1327,19 +1327,19 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
   - `cancelled_at: optional number`
 
-    批次取消时的 Unix 时间戳（秒）。
+    该批次被取消时的 Unix 时间戳（秒）。
 
   - `cancelling_at: optional number`
 
-    批次开始取消时的 Unix 时间戳（秒）。
+    该批次开始取消时的 Unix 时间戳（秒）。
 
   - `completed_at: optional number`
 
-    批次完成时的 Unix 时间戳（秒）。
+    该批次完成时的 Unix 时间戳（秒）。
 
   - `error_file_id: optional string`
 
-    包含出错请求输出的文件 ID。
+    包含请求错误输出的文件 ID。
 
   - `errors: optional object { data, object }`
 
@@ -1347,19 +1347,19 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
       - `code: optional string`
 
-        标识错误类型的错误代码。
+        用于标识错误类型的错误代码。
 
       - `line: optional number or null`
 
-        错误发生时输入文件的行号（如适用）。
+        发生错误的输入文件行号（如果适用）。
 
       - `message: optional string`
 
-        提供错误更多细节的人类可读消息。
+        提供更多错误细节的人类可读消息。
 
       - `param: optional string or null`
 
-        导致错误的参数名称（如适用）。
+        引发错误的参数名称（如果适用）。
 
     - `object: optional string`
 
@@ -1367,47 +1367,47 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
   - `expired_at: optional number`
 
-    批次过期时的 Unix 时间戳（秒）。
+    该批次过期时的 Unix 时间戳（秒）。
 
   - `expires_at: optional number`
 
-    批次将过期时的 Unix 时间戳（秒）。
+    该批次将过期时的 Unix 时间戳（秒）。
 
   - `failed_at: optional number`
 
-    批次失败时的 Unix 时间戳（秒）。
+    该批次失败时的 Unix 时间戳（秒）。
 
   - `finalizing_at: optional number`
 
-    批次开始定稿时的 Unix 时间戳（秒）。
+    该批次开始终结时的 Unix 时间戳（秒）。
 
   - `in_progress_at: optional number`
 
-    批次开始处理时的 Unix 时间戳（秒）。
+    该批次开始处理时的 Unix 时间戳（秒）。
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象上的 16 个键值对集合。这可以
-    用于以结构化格式存储有关该对象的额外信息，
-    并通过 API 或仪表板查询对象。
+    可附加到对象的 16 组键值对。可用于
+    用于以结构化格式存储对象的附加信息，
+    并通过 API 或控制台查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串，
+    键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
   - `model: optional string`
 
-    用于处理批次的模型 ID，如 `gpt-5-2025-08-07`。OpenAI
-    提供多种具有不同能力、性能和
-    价格点的模型。请参阅 [模型
-    指南](/docs/models) 浏览并比较可用模型。
+    用于处理该批处理的模型 ID，例如 `gpt-5.6-sol`。OpenAI
+    提供了多种具备不同能力、性能
+    特征和价位的模型。请参阅 [模型
+    指南](/docs/models) 以浏览和比较可用模型。
 
   - `output_file_id: optional string`
 
-    包含成功执行的请求输出的文件 ID。
+    包含已成功执行请求输出内容的文件 ID。
 
   - `request_counts: optional BatchRequestCounts`
 
-    批次中不同状态的请求计数。
+    该批处理中不同状态的请求计数。
 
     - `completed: number`
 
@@ -1415,17 +1415,17 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
     - `failed: number`
 
-      失败的请求数量。
+      已失败的请求数量。
 
     - `total: number`
 
-      批次中的请求总数。
+      该批处理中的请求总数。
 
   - `usage: optional BatchUsage`
 
-    表示令牌使用详情，包括输入令牌、输出令牌、输出令牌的
-    细分以及使用的总令牌数。仅在
-    2025年9月7日之后创建的批次中填充。
+    表示 token 使用详情，包括输入 token、输出 token、输出
+    token 的细分以及使用的 token 总数。仅在
+    2025 年 9 月 7 日之后创建的批处理上填充。
 
     - `input_tokens: number`
 
@@ -1433,54 +1433,54 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
     - `input_tokens_details: object { cached_tokens }`
 
-      输入 token 的详细分解。
+      输入 token 的详细明细。
 
       - `cached_tokens: number`
 
-        从缓存中检索的 token 数量。 [更多关于
-        提示缓存](/docs/guides/prompt-caching).
+        从缓存中检索到的 token 数。 [了解更多
+        prompt caching](/docs/guides/prompt-caching).
 
     - `output_tokens: number`
 
-      输出 token 的数量。
+      输出 token 数。
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      输出 token 的详细分解。
+      输出 token 的详细明细。
 
       - `reasoning_tokens: number`
 
-        推理 token 的数量。
+        推理 token 数。
 
     - `total_tokens: number`
 
       使用的 token 总数。
 
-### 批处理错误
+### Batch Error
 
 - `BatchError object { code, line, message, param }`
 
   - `code: optional string`
 
-    标识错误类型的错误代码。
+    用于标识错误类型的错误代码。
 
   - `line: optional number or null`
 
-    发生错误的输入文件的行号（如适用）。
+    发生错误的输入文件行号（如果适用）。
 
   - `message: optional string`
 
-    提供有关错误的更多详细信息的人类可读消息。
+    提供更多错误细节的人类可读消息。
 
   - `param: optional string or null`
 
-    导致错误的参数名称（如适用）。
+    引发错误的参数名称（如果适用）。
 
-### 批量请求计数
+### Batch Request Counts
 
 - `BatchRequestCounts object { completed, failed, total }`
 
-  批次中不同状态的请求计数。
+  该批处理中不同状态的请求计数。
 
   - `completed: number`
 
@@ -1492,41 +1492,41 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
   - `total: number`
 
-    批次中的请求总数。
+    该批处理中的请求总数。
 
-### 批量使用
+### Batch Usage
 
 - `BatchUsage object { input_tokens, input_tokens_details, output_tokens, 2 more }`
 
-  表示令牌用量明细，包括输入令牌、输出令牌、
-  输出令牌的拆分以及所用令牌总数。仅在
-  2025年9月7日之后创建的批次中填充。
+  表示 token 使用详情，包括输入 token、输出 token、输出
+  token 的细分以及使用的 token 总数。仅在
+  2025 年 9 月 7 日之后创建的批处理上填充。
 
   - `input_tokens: number`
 
-    输入令牌的数量。
+    输入 token 的数量。
 
   - `input_tokens_details: object { cached_tokens }`
 
-    输入令牌的详细拆分。
+    输入 token 的详细明细。
 
     - `cached_tokens: number`
 
-      从缓存中检索到的令牌数量。 [更多关于
-      提示缓存](/docs/guides/prompt-caching).
+      从缓存中检索到的 token 数。 [了解更多
+      prompt caching](/docs/guides/prompt-caching).
 
   - `output_tokens: number`
 
-    输出令牌的数量。
+    输出 token 数。
 
   - `output_tokens_details: object { reasoning_tokens }`
 
-    输出令牌的详细拆分。
+    输出 token 的详细明细。
 
     - `reasoning_tokens: number`
 
-      推理令牌的数量。
+      推理 token 数。
 
   - `total_tokens: number`
 
-    所用令牌的总数。
+    使用的 token 总数。

@@ -1108,7 +1108,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -1532,7 +1532,7 @@ Schema name: `BetaResponseCreatedEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -2338,7 +2338,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -2538,8 +2538,7 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -2904,6 +2903,10 @@ Schema name: `BetaResponseCreatedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -2914,7 +2917,8 @@ Schema name: `BetaResponseCreatedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 0": {
@@ -3860,7 +3864,7 @@ Schema name: `BetaResponseCreatedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
@@ -8187,23 +8191,6 @@ Schema name: `BetaResponseCreatedEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -8226,9 +8213,6 @@ Schema name: `BetaResponseCreatedEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -8238,8 +8222,7 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -8390,6 +8373,13 @@ Schema name: `BetaResponseCreatedEvent`
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -64208,7 +64198,7 @@ Schema name: `BetaResponseCreatedEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-2024-08-06",
+    "model": "gpt-5.6-sol",
     "output": [],
     "parallel_tool_calls": true,
     "previous_response_id": null,
@@ -65334,7 +65324,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -65758,7 +65748,7 @@ Schema name: `BetaResponseInProgressEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -66564,7 +66554,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -66764,8 +66754,7 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -67130,6 +67119,10 @@ Schema name: `BetaResponseInProgressEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -67140,7 +67133,8 @@ Schema name: `BetaResponseInProgressEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 0": {
@@ -68086,7 +68080,7 @@ Schema name: `BetaResponseInProgressEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
@@ -72413,23 +72407,6 @@ Schema name: `BetaResponseInProgressEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -72452,9 +72429,6 @@ Schema name: `BetaResponseInProgressEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -72464,8 +72438,7 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -72616,6 +72589,13 @@ Schema name: `BetaResponseInProgressEvent`
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -128434,7 +128414,7 @@ Schema name: `BetaResponseInProgressEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-2024-08-06",
+    "model": "gpt-5.6-sol",
     "output": [],
     "parallel_tool_calls": true,
     "previous_response_id": null,
@@ -129560,7 +129540,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -129984,7 +129964,7 @@ Schema name: `BetaResponseCompletedEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -130790,7 +130770,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -130990,8 +130970,7 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -131356,6 +131335,10 @@ Schema name: `BetaResponseCompletedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -131366,7 +131349,8 @@ Schema name: `BetaResponseCompletedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 0": {
@@ -132312,7 +132296,7 @@ Schema name: `BetaResponseCompletedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
@@ -136639,23 +136623,6 @@ Schema name: `BetaResponseCompletedEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -136678,9 +136645,6 @@ Schema name: `BetaResponseCompletedEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -136690,8 +136654,7 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -136842,6 +136805,13 @@ Schema name: `BetaResponseCompletedEvent`
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -192661,7 +192631,7 @@ Schema name: `BetaResponseCompletedEvent`
     "input": [],
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [
       {
         "id": "msg_123",
@@ -193803,7 +193773,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -194227,7 +194197,7 @@ Schema name: `BetaResponseFailedEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -195033,7 +195003,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -195233,8 +195203,7 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -195599,6 +195568,10 @@ Schema name: `BetaResponseFailedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -195609,7 +195582,8 @@ Schema name: `BetaResponseFailedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 0": {
@@ -196555,7 +196529,7 @@ Schema name: `BetaResponseFailedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
@@ -200882,23 +200856,6 @@ Schema name: `BetaResponseFailedEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -200921,9 +200878,6 @@ Schema name: `BetaResponseFailedEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -200933,8 +200887,7 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -201085,6 +201038,13 @@ Schema name: `BetaResponseFailedEvent`
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -256906,7 +256866,7 @@ Schema name: `BetaResponseFailedEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [],
     "previous_response_id": null,
     "reasoning_effort": null,
@@ -258027,7 +257987,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -258451,7 +258411,7 @@ Schema name: `BetaResponseIncompleteEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -259257,7 +259217,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -259457,8 +259417,7 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -259823,6 +259782,10 @@ Schema name: `BetaResponseIncompleteEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -259833,7 +259796,8 @@ Schema name: `BetaResponseIncompleteEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 0": {
@@ -260779,7 +260743,7 @@ Schema name: `BetaResponseIncompleteEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
@@ -265106,23 +265070,6 @@ Schema name: `BetaResponseIncompleteEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -265145,9 +265092,6 @@ Schema name: `BetaResponseIncompleteEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -265157,8 +265101,7 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -265309,6 +265252,13 @@ Schema name: `BetaResponseIncompleteEvent`
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -321129,7 +321079,7 @@ Schema name: `BetaResponseIncompleteEvent`
     },
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [],
     "previous_response_id": null,
     "reasoning_effort": null,
@@ -387337,7 +387287,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaResponseProperties/properties/model",
@@ -387761,7 +387711,7 @@ Schema name: `BetaResponseQueuedEvent`
       ]
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -388567,7 +388517,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -388767,8 +388717,7 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -389133,6 +389082,10 @@ Schema name: `BetaResponseQueuedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -389143,7 +389096,8 @@ Schema name: `BetaResponseQueuedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 0": {
@@ -390089,7 +390043,7 @@ Schema name: `BetaResponseQueuedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) model > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
@@ -394416,23 +394370,6 @@ Schema name: `BetaResponseQueuedEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -394455,9 +394392,6 @@ Schema name: `BetaResponseQueuedEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -394467,8 +394401,7 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -394619,6 +394552,13 @@ Schema name: `BetaResponseQueuedEvent`
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",

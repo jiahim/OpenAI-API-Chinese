@@ -1,21 +1,21 @@
 # Responses 流式事件
 
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 来获取。
+> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。通过在页面 URL 后追加 `.md` 可获取文档页面的 Markdown 版本。
 
-当你 [创建 Response](https://developers.openai.com/docs/api-reference/responses/create) 并将
-`stream` 设置为 `true`，时，服务器会向
-客户端发送服务器发送事件，因为 Response 正在生成。本节包含
-服务器发出的事件。
+当你 [create a Response](https://developers.openai.com/docs/api-reference/responses/create) 时设置
+`stream` 为 `true`, the server will emit server-sent events to the
+client as the Response is generated. 本节列出了服务器发出的事件。
+这些事件由服务器发出。
 
-[了解更多关于流式响应的信息](https://developers.openai.com/docs/guides/streaming-responses?api-mode=responses).
+[Learn more about streaming responses](https://developers.openai.com/docs/guides/streaming-responses?api-mode=responses).
 
 ## response.created
 
-当响应被创建时发出的事件。
+在创建响应时发出的事件。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseCreatedEvent`
+Schema name: `ResponseCreatedEvent`
 
 ```json
 {
@@ -823,6 +823,9 @@ Schema 名称： `ResponseCreatedEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -914,14 +917,14 @@ Schema 名称： `ResponseCreatedEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -1727,7 +1730,7 @@ Schema 名称： `ResponseCreatedEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -2265,6 +2268,10 @@ Schema 名称： `ResponseCreatedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -2275,7 +2282,8 @@ Schema 名称： `ResponseCreatedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -2889,6 +2897,9 @@ Schema 名称： `ResponseCreatedEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -7087,7 +7098,7 @@ Schema 名称： `ResponseCreatedEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -7670,6 +7681,13 @@ Schema 名称： `ResponseCreatedEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -8671,12 +8689,16 @@ Schema 名称： `ResponseCreatedEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -21449,6 +21471,23 @@ Schema 名称： `ResponseCreatedEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -54258,7 +54297,7 @@ Schema 名称： `ResponseCreatedEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-2024-08-06",
+    "model": "gpt-5.6-sol",
     "output": [],
     "parallel_tool_calls": true,
     "previous_response_id": null,
@@ -54287,11 +54326,11 @@ Schema 名称： `ResponseCreatedEvent`
 
 ## response.in_progress
 
-当响应正在进行时发出。
+在响应进行中时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseInProgressEvent`
+Schema name: `ResponseInProgressEvent`
 
 ```json
 {
@@ -55099,6 +55138,9 @@ Schema 名称： `ResponseInProgressEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -55190,14 +55232,14 @@ Schema 名称： `ResponseInProgressEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -56003,7 +56045,7 @@ Schema 名称： `ResponseInProgressEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -56541,6 +56583,10 @@ Schema 名称： `ResponseInProgressEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -56551,7 +56597,8 @@ Schema 名称： `ResponseInProgressEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -57165,6 +57212,9 @@ Schema 名称： `ResponseInProgressEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -61363,7 +61413,7 @@ Schema 名称： `ResponseInProgressEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -61946,6 +61996,13 @@ Schema 名称： `ResponseInProgressEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -62947,12 +63004,16 @@ Schema 名称： `ResponseInProgressEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -75725,6 +75786,23 @@ Schema 名称： `ResponseInProgressEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -108534,7 +108612,7 @@ Schema 名称： `ResponseInProgressEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-2024-08-06",
+    "model": "gpt-5.6-sol",
     "output": [],
     "parallel_tool_calls": true,
     "previous_response_id": null,
@@ -108565,9 +108643,9 @@ Schema 名称： `ResponseInProgressEvent`
 
 当模型响应完成时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseCompletedEvent`
+Schema name: `ResponseCompletedEvent`
 
 ```json
 {
@@ -109375,6 +109453,9 @@ Schema 名称： `ResponseCompletedEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -109466,14 +109547,14 @@ Schema 名称： `ResponseCompletedEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -110279,7 +110360,7 @@ Schema 名称： `ResponseCompletedEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -110817,6 +110898,10 @@ Schema 名称： `ResponseCompletedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -110827,7 +110912,8 @@ Schema 名称： `ResponseCompletedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -111441,6 +111527,9 @@ Schema 名称： `ResponseCompletedEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -115639,7 +115728,7 @@ Schema 名称： `ResponseCompletedEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -116222,6 +116311,13 @@ Schema 名称： `ResponseCompletedEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -117223,12 +117319,16 @@ Schema 名称： `ResponseCompletedEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -130001,6 +130101,23 @@ Schema 名称： `ResponseCompletedEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -162811,7 +162928,7 @@ Schema 名称： `ResponseCompletedEvent`
     "input": [],
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [
       {
         "id": "msg_123",
@@ -162858,9 +162975,9 @@ Schema 名称： `ResponseCompletedEvent`
 
 当响应失败时发出的事件。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseFailedEvent`
+Schema name: `ResponseFailedEvent`
 
 ```json
 {
@@ -163668,6 +163785,9 @@ Schema 名称： `ResponseFailedEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -163759,14 +163879,14 @@ Schema 名称： `ResponseFailedEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -164572,7 +164692,7 @@ Schema 名称： `ResponseFailedEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -165110,6 +165230,10 @@ Schema 名称： `ResponseFailedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -165120,7 +165244,8 @@ Schema 名称： `ResponseFailedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -165734,6 +165859,9 @@ Schema 名称： `ResponseFailedEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -169932,7 +170060,7 @@ Schema 名称： `ResponseFailedEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -170515,6 +170643,13 @@ Schema 名称： `ResponseFailedEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -171516,12 +171651,16 @@ Schema 名称： `ResponseFailedEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -184294,6 +184433,23 @@ Schema 名称： `ResponseFailedEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -217106,7 +217262,7 @@ Schema 名称： `ResponseFailedEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [],
     "previous_response_id": null,
     "reasoning_effort": null,
@@ -217130,11 +217286,11 @@ Schema 名称： `ResponseFailedEvent`
 
 ## response.incomplete
 
-当响应因不完整而结束时发出的事件。
+当响应未完成结束时发出的事件。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseIncompleteEvent`
+Schema name: `ResponseIncompleteEvent`
 
 ```json
 {
@@ -217942,6 +218098,9 @@ Schema 名称： `ResponseIncompleteEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -218033,14 +218192,14 @@ Schema 名称： `ResponseIncompleteEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -218846,7 +219005,7 @@ Schema 名称： `ResponseIncompleteEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -219384,6 +219543,10 @@ Schema 名称： `ResponseIncompleteEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -219394,7 +219557,8 @@ Schema 名称： `ResponseIncompleteEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -220008,6 +220172,9 @@ Schema 名称： `ResponseIncompleteEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -224206,7 +224373,7 @@ Schema 名称： `ResponseIncompleteEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -224789,6 +224956,13 @@ Schema 名称： `ResponseIncompleteEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -225790,12 +225964,16 @@ Schema 名称： `ResponseIncompleteEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -238568,6 +238746,23 @@ Schema 名称： `ResponseIncompleteEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -271379,7 +271574,7 @@ Schema 名称： `ResponseIncompleteEvent`
     },
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [],
     "previous_response_id": null,
     "reasoning_effort": null,
@@ -271406,9 +271601,9 @@ Schema 名称： `ResponseIncompleteEvent`
 
 当添加新的输出项时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseOutputItemAddedEvent`
+Schema name: `ResponseOutputItemAddedEvent`
 
 ```json
 {
@@ -294905,11 +295100,11 @@ Schema 名称： `ResponseOutputItemAddedEvent`
 
 ## response.output_item.done
 
-当输出项被标记为完成时触发。
+当某个输出项被标记为完成时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseOutputItemDoneEvent`
+Schema name: `ResponseOutputItemDoneEvent`
 
 ```json
 {
@@ -318412,11 +318607,11 @@ Schema 名称： `ResponseOutputItemDoneEvent`
 
 ## response.content_part.added
 
-当添加新的内容部分时触发。
+当新增一个内容部分时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseContentPartAddedEvent`
+Schema name: `ResponseContentPartAddedEvent`
 
 ```json
 {
@@ -319561,11 +319756,11 @@ Schema 名称： `ResponseContentPartAddedEvent`
 
 ## response.content_part.done
 
-当内容部分完成时发出。
+在内容片段完成时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseContentPartDoneEvent`
+Schema name: `ResponseContentPartDoneEvent`
 
 ```json
 {
@@ -320712,9 +320907,9 @@ Schema 名称： `ResponseContentPartDoneEvent`
 
 当存在额外的文本增量时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseTextDeltaEvent`
+Schema name: `ResponseTextDeltaEvent`
 
 ```json
 {
@@ -320999,11 +321194,11 @@ Schema 名称： `ResponseTextDeltaEvent`
 
 ## response.output_text.done
 
-当文本内容最终确定时发出。
+当文本内容完成时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseTextDoneEvent`
+Schema name: `ResponseTextDoneEvent`
 
 ```json
 {
@@ -321288,11 +321483,11 @@ Schema 名称： `ResponseTextDoneEvent`
 
 ## response.refusal.delta
 
-当存在部分拒绝文本时发出。
+在出现部分拒绝文本时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseRefusalDeltaEvent`
+Schema name: `ResponseRefusalDeltaEvent`
 
 ```json
 {
@@ -321453,11 +321648,11 @@ Schema 名称： `ResponseRefusalDeltaEvent`
 
 ## response.refusal.done
 
-当拒绝文本最终确定时触发。
+在拒绝文本最终确定时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseRefusalDoneEvent`
+Schema name: `ResponseRefusalDoneEvent`
 
 ```json
 {
@@ -321618,11 +321813,11 @@ Schema 名称： `ResponseRefusalDoneEvent`
 
 ## response.function_call_arguments.delta
 
-当存在部分函数调用参数增量时发出。
+当存在部分函数调用参数的增量时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseFunctionCallArgumentsDeltaEvent`
+Schema name: `ResponseFunctionCallArgumentsDeltaEvent`
 
 ```json
 {
@@ -321766,9 +321961,9 @@ Schema 名称： `ResponseFunctionCallArgumentsDeltaEvent`
 
 当函数调用参数最终确定时触发。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseFunctionCallArgumentsDoneEvent`
+Schema name: `ResponseFunctionCallArgumentsDoneEvent`
 
 ```json
 {
@@ -321928,11 +322123,11 @@ Schema 名称： `ResponseFunctionCallArgumentsDoneEvent`
 
 ## response.file_search_call.in_progress
 
-当发起文件搜索调用时触发。
+在发起 文件搜索 调用时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseFileSearchCallInProgressEvent`
+Schema name: `ResponseFileSearchCallInProgressEvent`
 
 ```json
 {
@@ -322055,11 +322250,11 @@ Schema 名称： `ResponseFileSearchCallInProgressEvent`
 
 ## response.file_search_call.searching
 
-当文件搜索正在进行搜索时发出。
+当 文件搜索正在执行搜索时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseFileSearchCallSearchingEvent`
+Schema name: `ResponseFileSearchCallSearchingEvent`
 
 ```json
 {
@@ -322182,11 +322377,11 @@ Schema 名称： `ResponseFileSearchCallSearchingEvent`
 
 ## response.file_search_call.completed
 
-当文件搜索调用完成（找到结果）时发出。
+当 文件搜索 调用完成时发出（已找到结果）。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseFileSearchCallCompletedEvent`
+Schema name: `ResponseFileSearchCallCompletedEvent`
 
 ```json
 {
@@ -322309,11 +322504,11 @@ Schema 名称： `ResponseFileSearchCallCompletedEvent`
 
 ## response.web_search_call.in_progress
 
-当发起网页搜索调用时触发。
+在发起网页搜索调用时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseWebSearchCallInProgressEvent`
+Schema name: `ResponseWebSearchCallInProgressEvent`
 
 ```json
 {
@@ -322436,11 +322631,11 @@ Schema 名称： `ResponseWebSearchCallInProgressEvent`
 
 ## response.web_search_call.searching
 
-当网页搜索调用正在执行时发出。
+当一次网页搜索调用正在执行时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseWebSearchCallSearchingEvent`
+Schema name: `ResponseWebSearchCallSearchingEvent`
 
 ```json
 {
@@ -322563,11 +322758,11 @@ Schema 名称： `ResponseWebSearchCallSearchingEvent`
 
 ## response.web_search_call.completed
 
-当网页搜索调用完成时发出。
+在 网页搜索 调用完成时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseWebSearchCallCompletedEvent`
+Schema name: `ResponseWebSearchCallCompletedEvent`
 
 ```json
 {
@@ -322690,11 +322885,11 @@ Schema 名称： `ResponseWebSearchCallCompletedEvent`
 
 ## response.reasoning_summary_part.added
 
-当添加新的推理摘要部分时触发。
+当添加新的推理总结部分时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseReasoningSummaryPartAddedEvent`
+Schema name: `ResponseReasoningSummaryPartAddedEvent`
 
 ```json
 {
@@ -322915,11 +323110,11 @@ Schema 名称： `ResponseReasoningSummaryPartAddedEvent`
 
 ## response.reasoning_summary_part.done
 
-当推理摘要部分完成时发出。
+在某个推理摘要部分完成时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseReasoningSummaryPartDoneEvent`
+Schema name: `ResponseReasoningSummaryPartDoneEvent`
 
 ```json
 {
@@ -323175,11 +323370,11 @@ Schema 名称： `ResponseReasoningSummaryPartDoneEvent`
 
 ## response.reasoning_summary_text.delta
 
-当增量被添加到推理摘要文本时发出。
+当向推理摘要文本添加增量时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseReasoningSummaryTextDeltaEvent`
+Schema name: `ResponseReasoningSummaryTextDeltaEvent`
 
 ```json
 {
@@ -323340,11 +323535,11 @@ Schema 名称： `ResponseReasoningSummaryTextDeltaEvent`
 
 ## response.reasoning_summary_text.done
 
-当推理摘要文本完成时触发。
+在推理摘要文本完成时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseReasoningSummaryTextDoneEvent`
+Schema name: `ResponseReasoningSummaryTextDoneEvent`
 
 ```json
 {
@@ -323505,11 +323700,11 @@ Schema 名称： `ResponseReasoningSummaryTextDoneEvent`
 
 ## response.reasoning_text.delta
 
-当增量添加到推理文本时发出。
+当向推理文本添加增量时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseReasoningTextDeltaEvent`
+Schema name: `ResponseReasoningTextDeltaEvent`
 
 ```json
 {
@@ -323670,11 +323865,11 @@ Schema 名称： `ResponseReasoningTextDeltaEvent`
 
 ## response.reasoning_text.done
 
-当推理文本完成时发出。
+当推理文本完成时触发。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseReasoningTextDoneEvent`
+Schema name: `ResponseReasoningTextDoneEvent`
 
 ```json
 {
@@ -323837,9 +324032,9 @@ Schema 名称： `ResponseReasoningTextDoneEvent`
 
 当图像生成工具调用完成且最终图像可用时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseImageGenCallCompletedEvent`
+Schema name: `ResponseImageGenCallCompletedEvent`
 
 ```json
 {
@@ -323962,11 +324157,11 @@ Schema 名称： `ResponseImageGenCallCompletedEvent`
 
 ## response.image_generation_call.generating
 
-当图像生成工具调用正在生成图像时发出（中间状态）。
+当图像生成工具调用正在主动生成图像时发出（中间状态）。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseImageGenCallGeneratingEvent`
+Schema name: `ResponseImageGenCallGeneratingEvent`
 
 ```json
 {
@@ -324089,11 +324284,11 @@ Schema 名称： `ResponseImageGenCallGeneratingEvent`
 
 ## response.image_generation_call.in_progress
 
-当图像生成工具调用正在进行时触发。
+当图像生成工具调用正在进行时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseImageGenCallInProgressEvent`
+Schema name: `ResponseImageGenCallInProgressEvent`
 
 ```json
 {
@@ -324216,11 +324411,11 @@ Schema 名称： `ResponseImageGenCallInProgressEvent`
 
 ## response.image_generation_call.partial_image
 
-在图像生成流式传输期间，当部分图像可用时触发。
+在图像生成流式传输过程中，当有部分图像可用时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseImageGenCallPartialImageEvent`
+Schema name: `ResponseImageGenCallPartialImageEvent`
 
 ```json
 {
@@ -324453,11 +324648,11 @@ Schema 名称： `ResponseImageGenCallPartialImageEvent`
 
 ## response.mcp_call_arguments.delta
 
-当 MCP 工具调用的参数出现增量（部分更新）时发出。
+当 MCP 工具调用的参数存在增量（部分更新）时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseMCPCallArgumentsDeltaEvent`
+Schema name: `ResponseMCPCallArgumentsDeltaEvent`
 
 ```json
 {
@@ -324601,9 +324796,9 @@ Schema 名称： `ResponseMCPCallArgumentsDeltaEvent`
 
 当 MCP 工具调用的参数最终确定时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseMCPCallArgumentsDoneEvent`
+Schema name: `ResponseMCPCallArgumentsDoneEvent`
 
 ```json
 {
@@ -324745,11 +324940,11 @@ Schema 名称： `ResponseMCPCallArgumentsDoneEvent`
 
 ## response.mcp_call.completed
 
-当 MCP 工具调用成功完成时发出。
+MCP 工具调用成功完成时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseMCPCallCompletedEvent`
+Schema name: `ResponseMCPCallCompletedEvent`
 
 ```json
 {
@@ -324874,9 +325069,9 @@ Schema 名称： `ResponseMCPCallCompletedEvent`
 
 当 MCP 工具调用失败时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseMCPCallFailedEvent`
+Schema name: `ResponseMCPCallFailedEvent`
 
 ```json
 {
@@ -324999,11 +325194,11 @@ Schema 名称： `ResponseMCPCallFailedEvent`
 
 ## response.mcp_call.in_progress
 
-当 MCP 工具调用正在进行时触发。
+当 MCP 工具调用进行中时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseMCPCallInProgressEvent`
+Schema name: `ResponseMCPCallInProgressEvent`
 
 ```json
 {
@@ -325126,11 +325321,11 @@ Schema 名称： `ResponseMCPCallInProgressEvent`
 
 ## response.mcp_list_tools.completed
 
-当可用 MCP 工具列表成功获取时发出。
+在可用 MCP 工具列表成功被检索到时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseMCPListToolsCompletedEvent`
+Schema name: `ResponseMCPListToolsCompletedEvent`
 
 ```json
 {
@@ -325255,9 +325450,9 @@ Schema 名称： `ResponseMCPListToolsCompletedEvent`
 
 当尝试列出可用的 MCP 工具失败时触发。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseMCPListToolsFailedEvent`
+Schema name: `ResponseMCPListToolsFailedEvent`
 
 ```json
 {
@@ -325380,11 +325575,11 @@ Schema 名称： `ResponseMCPListToolsFailedEvent`
 
 ## response.mcp_list_tools.in_progress
 
-当系统正在检索可用 MCP 工具列表时触发。
+当系统正在检索可用的 MCP 工具列表时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseMCPListToolsInProgressEvent`
+Schema name: `ResponseMCPListToolsInProgressEvent`
 
 ```json
 {
@@ -325509,9 +325704,9 @@ Schema 名称： `ResponseMCPListToolsInProgressEvent`
 
 当代码解释器调用正在进行时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseCodeInterpreterCallInProgressEvent`
+Schema name: `ResponseCodeInterpreterCallInProgressEvent`
 
 ```json
 {
@@ -325634,11 +325829,11 @@ Schema 名称： `ResponseCodeInterpreterCallInProgressEvent`
 
 ## response.code_interpreter_call.interpreting
 
-当代码解释器正在主动解释代码片段时发出。
+当代码解释器正在主动解释代码片段时触发。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseCodeInterpreterCallInterpretingEvent`
+Schema name: `ResponseCodeInterpreterCallInterpretingEvent`
 
 ```json
 {
@@ -325763,9 +325958,9 @@ Schema 名称： `ResponseCodeInterpreterCallInterpretingEvent`
 
 当代码解释器调用完成时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseCodeInterpreterCallCompletedEvent`
+Schema name: `ResponseCodeInterpreterCallCompletedEvent`
 
 ```json
 {
@@ -325888,11 +326083,11 @@ Schema 名称： `ResponseCodeInterpreterCallCompletedEvent`
 
 ## response.code_interpreter_call_code.delta
 
-当代码解释器流式输出部分代码片段时发出。
+当代码解释器流式传输部分代码片段时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseCodeInterpreterCallCodeDeltaEvent`
+Schema name: `ResponseCodeInterpreterCallCodeDeltaEvent`
 
 ```json
 {
@@ -326034,11 +326229,11 @@ Schema 名称： `ResponseCodeInterpreterCallCodeDeltaEvent`
 
 ## response.code_interpreter_call_code.done
 
-当代码解释器完成代码片段时触发。
+当代码片段被代码解释器完成时触发。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseCodeInterpreterCallCodeDoneEvent`
+Schema name: `ResponseCodeInterpreterCallCodeDoneEvent`
 
 ```json
 {
@@ -326180,11 +326375,11 @@ Schema 名称： `ResponseCodeInterpreterCallCodeDoneEvent`
 
 ## response.output_text.annotation.added
 
-当注释被添加到输出文本内容时发出。
+当向输出文本内容添加注释时触发。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseOutputTextAnnotationAddedEvent`
+Schema name: `ResponseOutputTextAnnotationAddedEvent`
 
 ```json
 {
@@ -326908,9 +327103,9 @@ Schema 名称： `ResponseOutputTextAnnotationAddedEvent`
 
 当响应已排队并等待处理时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseQueuedEvent`
+Schema name: `ResponseQueuedEvent`
 
 ```json
 {
@@ -327718,6 +327913,9 @@ Schema 名称： `ResponseQueuedEvent`
                 "members": [
                   {
                     "ident": "type"
+                  },
+                  {
+                    "ident": "id"
                   }
                 ]
               },
@@ -327809,14 +328007,14 @@ Schema 名称： `ResponseQueuedEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -328622,7 +328820,7 @@ Schema 名称： `ResponseQueuedEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -329160,6 +329358,10 @@ Schema 名称： `ResponseQueuedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -329170,7 +329372,8 @@ Schema 名称： `ResponseQueuedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -329784,6 +329987,9 @@ Schema 名称： `ResponseQueuedEvent`
             "members": [
               {
                 "ident": "type"
+              },
+              {
+                "ident": "id"
               }
             ]
           },
@@ -333982,7 +334188,7 @@ Schema 名称： `ResponseQueuedEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -334565,6 +334771,13 @@ Schema 名称： `ResponseQueuedEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -335566,12 +335779,16 @@ Schema 名称： `ResponseQueuedEvent`
       "members": [
         {
           "ident": "type"
+        },
+        {
+          "ident": "id"
         }
       ]
     },
     "childrenParentSchema": "object",
     "children": [
-      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type"
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29": {
@@ -348344,6 +348561,23 @@ Schema 名称： `ResponseQueuedEvent`
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) type > (member) 0"
     ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 28 > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/CompactionTriggerItemParam/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of this compaction trigger.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "examples": [
+      "msg_123"
+    ],
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 29 > (property) id": {
     "kind": "HttpDeclProperty",
@@ -381155,11 +381389,11 @@ Schema 名称： `ResponseQueuedEvent`
 
 ## response.custom_tool_call_input.delta
 
-表示自定义工具调用输入增量（部分更新）的事件。
+表示对自定义工具调用的输入的增量（部分更新）的事件。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseCustomToolCallInputDeltaEvent`
+Schema name: `ResponseCustomToolCallInputDeltaEvent`
 
 ```json
 {
@@ -381300,11 +381534,11 @@ Schema 名称： `ResponseCustomToolCallInputDeltaEvent`
 
 ## response.custom_tool_call_input.done
 
-表明自定义工具调用的输入已完成的事件。
+表示自定义工具调用的输入已完成的 Event。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseCustomToolCallInputDoneEvent`
+Schema name: `ResponseCustomToolCallInputDoneEvent`
 
 ```json
 {
@@ -381443,13 +381677,13 @@ Schema 名称： `ResponseCustomToolCallInputDoneEvent`
 }
 ```
 
-## 错误
+## error
 
-发生错误时触发。
+在发生错误时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseErrorEvent`
+Schema name: `ResponseErrorEvent`
 
 ```json
 {
@@ -381591,11 +381825,11 @@ Schema 名称： `ResponseErrorEvent`
 
 ## response.audio.delta
 
-当存在部分音频响应时发出。
+当存在部分音频响应时触发。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseAudioDeltaEvent`
+Schema name: `ResponseAudioDeltaEvent`
 
 ```json
 {
@@ -381702,9 +381936,9 @@ Schema 名称： `ResponseAudioDeltaEvent`
 
 当音频响应完成时触发。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseAudioDoneEvent`
+Schema name: `ResponseAudioDoneEvent`
 
 ```json
 {
@@ -381790,11 +382024,11 @@ Schema 名称： `ResponseAudioDoneEvent`
 
 ## response.audio.transcript.delta
 
-当存在音频的部分转录时发出。
+当存在音频的部分转录文本时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseAudioTranscriptDeltaEvent`
+Schema name: `ResponseAudioTranscriptDeltaEvent`
 
 ```json
 {
@@ -381899,11 +382133,11 @@ Schema 名称： `ResponseAudioTranscriptDeltaEvent`
 
 ## response.audio.transcript.done
 
-当完整音频转录完成时触发。
+在完整音频转录完成时发出。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseAudioTranscriptDoneEvent`
+Schema name: `ResponseAudioTranscriptDoneEvent`
 
 ```json
 {
@@ -381989,11 +382223,11 @@ Schema 名称： `ResponseAudioTranscriptDoneEvent`
 
 ## response.shell_call_command.added
 
-一个流式事件，表示已将 shell 命令添加到工具调用中。
+表示某个 shell 命令已添加到工具调用的流式事件。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseShellCallCommandAddedStreamingEvent`
+Schema name: `ResponseShellCallCommandAddedStreamingEvent`
 
 ```json
 {
@@ -382125,16 +382359,22 @@ Schema 名称： `ResponseShellCallCommandAddedStreamingEvent`
 ### 示例
 
 ```json
-{}
+{
+  "type": "response.shell_call_command.added",
+  "sequence_number": 0,
+  "output_index": 0,
+  "command_index": 0,
+  "command": "command"
+}
 ```
 
 ## response.shell_call_command.delta
 
 一个流式事件，指示 shell 命令被增量更新。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseShellCallCommandDeltaStreamingEvent`
+Schema name: `ResponseShellCallCommandDeltaStreamingEvent`
 
 ```json
 {
@@ -382284,16 +382524,23 @@ Schema 名称： `ResponseShellCallCommandDeltaStreamingEvent`
 ### 示例
 
 ```json
-{}
+{
+  "type": "response.shell_call_command.delta",
+  "sequence_number": 0,
+  "output_index": 0,
+  "command_index": 0,
+  "delta": "delta",
+  "obfuscation": "obfuscation"
+}
 ```
 
 ## response.shell_call_command.done
 
 表示 shell 命令已完成的流式事件。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseShellCallCommandDoneStreamingEvent`
+Schema name: `ResponseShellCallCommandDoneStreamingEvent`
 
 ```json
 {
@@ -382425,16 +382672,22 @@ Schema 名称： `ResponseShellCallCommandDoneStreamingEvent`
 ### 示例
 
 ```json
-{}
+{
+  "type": "response.shell_call_command.done",
+  "sequence_number": 0,
+  "output_index": 0,
+  "command_index": 0,
+  "command": "command"
+}
 ```
 
 ## response.shell_call_output_content.delta
 
-一个流式事件，表示 Shell 调用的输出被增量添加。
+一个流式事件，用于指示 shell 调用输出被增量添加。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseShellCallOutputContentDeltaStreamingEvent`
+Schema name: `ResponseShellCallOutputContentDeltaStreamingEvent`
 
 ```json
 {
@@ -382625,16 +382878,26 @@ Schema 名称： `ResponseShellCallOutputContentDeltaStreamingEvent`
 ### 示例
 
 ```json
-{}
+{
+  "type": "response.shell_call_output_content.delta",
+  "sequence_number": 0,
+  "item_id": "item_id",
+  "output_index": 0,
+  "command_index": 0,
+  "delta": {
+    "stdout": "stdout",
+    "stderr": "stderr"
+  }
+}
 ```
 
 ## response.shell_call_output_content.done
 
-一个流式事件，表示 shell 调用输出已完成。
+表示 shell 调用输出已完成的流式事件。
 
-### 架构
+### Schema
 
-Schema 名称： `ResponseShellCallOutputContentDoneStreamingEvent`
+Schema name: `ResponseShellCallOutputContentDoneStreamingEvent`
 
 ```json
 {
@@ -383009,5 +383272,21 @@ Schema 名称： `ResponseShellCallOutputContentDoneStreamingEvent`
 ### 示例
 
 ```json
-{}
+{
+  "type": "response.shell_call_output_content.done",
+  "sequence_number": 0,
+  "item_id": "item_id",
+  "output_index": 0,
+  "command_index": 0,
+  "output": [
+    {
+      "stdout": "stdout",
+      "stderr": "stderr",
+      "outcome": {
+        "type": "timeout"
+      },
+      "created_by": "created_by"
+    }
+  ]
+}
 ```

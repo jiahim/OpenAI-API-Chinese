@@ -1,18 +1,18 @@
 # 结构化模型输出
 
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
 
-JSON 是世界上应用程序交换数据最广泛使用的格式之一。
+JSON 是全球应用程序间数据交换最广泛使用的格式之一。
 
-结构化输出是一项功能，可确保模型始终生成符合你提供的 [JSON Schema](https://json-schema.org/overview/what-is-jsonschema)，的响应，因此你不必担心模型遗漏必需键或虚构无效枚举值。
+Structured Outputs 是一项功能，可确保模型始终生成遵循你提供的 [JSON Schema](https://json-schema.org/overview/what-is-jsonschema)，的响应，因此你无需担心模型遗漏必需字段，或生成无效的枚举值。
 
-结构化输出的一些好处包括：
+Structured Outputs 的一些优势包括：
 
-1. **可靠的类型安全：** 无需验证或重试格式不正确的响应
-1. **明确的拒绝：** 基于安全性的模型拒绝现在可以以编程方式检测
-1. **更简单的提示：** 无需使用措辞强硬的提示即可实现一致的格式
+1. **可靠的类型安全：** 无需验证或重试格式错误的响应
+1. **显式拒绝：** 基于安全模型的拒绝现在可以通过编程检测
+1. **更简洁的提示：** 无需使用强硬的提示词即可实现一致的格式化
 
-除了在 REST API 中支持 JSON Schema 之外，OpenAI SDKs 也支持 [Python](https://github.com/openai/openai-python/blob/main/helpers.md#structured-outputs-parsing-helpers) 和 [JavaScript](https://github.com/openai/openai-node/blob/master/helpers.md#structured-outputs-parsing-helpers) ，使得使用 [Pydantic](https://docs.pydantic.dev/latest/) 和 [Zod](https://zod.dev/) 轻松定义对象模式变得简单。下面，你可以看到如何从符合代码中定义模式的无结构文本中提取信息。
+除了在 REST API 中支持 JSON Schema 外，OpenAI 的 SDK 也支持 [Python](https://github.com/openai/openai-python/blob/main/helpers.md#structured-outputs-parsing-helpers) 和 [JavaScript](https://github.com/openai/openai-node/blob/master/helpers.md#structured-outputs-parsing-helpers) 它们也可以方便地使用 [Pydantic](https://docs.pydantic.dev/latest/) 和 [Zod](https://zod.dev/) 来定义对象 schema。下面，你可以看到如何从符合代码中定义的 schema 的非结构化文本中提取信息。
 
 
 
@@ -185,6 +185,56 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "date": { "type": "string" },
+        "participants": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["name", "date", "participants"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "event",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateSystemMessageItem("Extract the event information.")
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Alice and Bob are going to a science fair on Friday."
+    )
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -223,14 +273,14 @@ puts(response.output_text)
 
 ### 支持的模型
 
-结构化输出可在我们的 [最新大型语言模型](https://developers.openai.com/api/docs/models)，中使用，从 GPT-4o 开始。对于新项目，请从 [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol)。开始。较旧的模型如 `gpt-4-turbo` 及更早版本可能使用 [JSON 模式](#json-mode) 代替。
+结构化输出在我们最新的 [最新的大语言模型](https://developers.openai.com/api/docs/models)，中可用，从 GPT-4o 开始。对于新项目，请使用 [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol)。像 `gpt-4-turbo` 及更早的模型可以使用 [JSON 模式](#json-mode) 。
 
 
 
 
   
 
-何时通过函数调用使用结构化输出与通过 
+何时通过函数调用使用结构化输出，何时通过 
     
 text.format
 
@@ -242,51 +292,51 @@ text.format
 1. 当使用 [函数调用](https://developers.openai.com/api/docs/guides/function-calling)
 2. 当使用 `json_schema` 响应格式
 
-函数调用在你构建一个桥接模型与你应用程序功能的应用程序时非常有用。
+当你构建的应用需要在模型和应用自身的功能之间架起桥梁时，函数调用会非常有用。
 
-例如，你可以为模型提供查询数据库的函数，以构建一个能够帮助用户处理订单的 AI 助手，或者提供与 UI 交互的函数。
+例如，你可以让模型调用一些查询数据库的函数，从而构建一个能帮助用户处理订单的 AI 助手；也可以让它调用能够与 UI 交互的函数。
 
-相反，通过 `response_format` 更适合当你想指示一个结构化的模式，用于模型回应用户时，而不是当模型调用工具时。
+与之相对，结构化输出（通过 `response_format` 实现）更适合在你希望为模型回复用户时指定一个结构化 schema 的场景，而不是在模型调用工具时使用。
 
-例如，如果你正在构建一个数学辅导应用程序，你可能希望助手使用特定的 JSON Schema 回应用户，以便你能生成一个以不同方式显示模型输出不同部分的 UI。
+例如，如果你正在构建一个数学辅导应用，你可能希望助手以特定的 JSON Schema 来回复用户，从而能够生成相应的 UI，以不同方式展示模型输出的各个部分。
 
-简而言之：
-
-
+简单来说：
 
 
-  - 如果你要将模型连接到工具、函数、数据等，在你的
-  系统中，那么你应该使用函数调用 - 如果你想结构化
-  模型对用户的输出，那么你应该使用结构化
+
+
+  - 如果你要把模型连接到你的系统中的工具、函数、数据等，那么你应该使用 function calling - 如果你想在模型响应用户时
+  系统，那么你应该使用 function calling - 如果你想在模型响应用户时对其输出进行结构化处理，那么你应该使用结构化
+  输出结构化处理，那么你应该使用结构化输出
   `text.format`
 
 
 
 
 
-  本指南的其余部分将重点介绍非函数调用场景，
-    即Responses API。要了解如何将结构化输出用于
-    函数调用，请参阅 
-    [函数调用](https://developers.openai.com/api/docs/guides/function-calling#strict-mode) 
+  本指南的其余部分将重点介绍以下场景中的非函数调用用例：
+    Responses API。要了解如何将结构化输出与
+    函数调用结合使用，请参阅 
+    [Function Calling](https://developers.openai.com/api/docs/guides/function-calling#strict-mode) 
     指南。
 
 
-### 结构化输出与 JSON 模式
+### Structured Outputs 与 JSON 模式对比
 
-结构化输出是 [JSON 模式](#json-mode)。的演进。虽然两者都能确保生成有效的 JSON，但只有结构化输出才能确保符合模式。结构化输出和 JSON 模式均在 Responses API、Chat Completions API、Assistants API、微调 API 和 Batch API 中得到支持。
+Structured Outputs 是 [JSON 模式](#json-mode)。的演进。两者都能确保生成有效的 JSON，但只有 Structured Outputs 能确保遵循架构。Structured Outputs 和 JSON 模式都受 Responses API、Chat Completions API、Assistants API、Fine-tuning API 以及 Batch API 支持。
 
-我们建议尽可能始终使用结构化输出而非 JSON 模式。
+我们建议在可能的情况下始终使用 Structured Outputs 而不是 JSON 模式。
 
-然而，带有 `response_format: {type: "json_schema", ...}` 的结构化输出仅在 `gpt-4o-mini`, `gpt-4o-mini-2024-07-18`，和 `gpt-4o-2024-08-06` 模型快照及更高版本中受支持。
+然而，使用 `response_format: {type: "json_schema", ...}` 的 Structured Outputs 仅受 `gpt-4o-mini`, `gpt-4o-mini-2024-07-18`，支持， `gpt-4o-2024-08-06` 模型快照及更高版本。
 
 
 
 
 |                                            | 结构化输出                                                                                                             | JSON 模式                                  |
 |--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------|
-| **输出有效 JSON**                     | 是                                                                                                                            | 是                                        |
-| **遵循模式**                      | 是（参见 [受支持的模式](#supported-schemas))                                               | 否                                         |
-| **兼容模型**                      | `gpt-4o-mini`, `gpt-4o-2024-08-06`及后续版本                                                                                  | `gpt-3.5-turbo`, `gpt-4-*`, `gpt-4o-*`及兼容的 GPT-5 模型 |
+| **输出有效的 JSON**                     | 是                                                                                                                            | 是                                        |
+| **遵循架构**                      | 是（请参阅 [支持的架构](#supported-schemas))                                               | 否                                         |
+| **兼容模型**                      | `gpt-4o-mini`, `gpt-4o-2024-08-06`及更高版本                                                                                  | `gpt-3.5-turbo`, `gpt-4-*`, `gpt-4o-*`及兼容的 GPT-5 模型 |
 | **启用**                               | `text: { format: { type: "json_schema", "strict": true, "schema": ... } }`                                       | `text: { format: { type: "json_object" } }` |
 
 
@@ -294,18 +344,18 @@ text.format
 
 
 
-思维链
+思路链
 
     
 
-### 思维链
+### Chain of thought
 
-你可以要求模型以结构化的、分步的方式输出答案，以引导用户完成解决方案。
-
-
+你可以要求模型以结构化的、循序渐进的方式输出答案，引导用户完成解决方案。
 
 
-  用于思维链数学辅导的结构化输出
+
+
+  用于数学辅导思路链的结构化输出
 
 ```javascript
 import OpenAI from "openai";
@@ -506,6 +556,58 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using System.Text.Json;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "explanation": { "type": "string" },
+              "output": { "type": "string" }
+            },
+            "required": ["explanation", "output"],
+            "additionalProperties": false
+          }
+        },
+        "final_answer": { "type": "string" }
+      },
+      "required": ["steps", "final_answer"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "math_response",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a helpful math tutor. Guide the user through the solution step by step."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("How can I solve 8x + 7 = -23?"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+using JsonDocument parsed = JsonDocument.Parse(response.GetOutputText());
+Console.WriteLine(parsed.RootElement);
+```
+
 ```ruby
 require "openai"
 
@@ -641,11 +743,11 @@ curl https://api.openai.com/v1/responses \
 
 ### 结构化数据提取
 
-你可以定义结构化字段，从非结构化输入数据（如研究论文）中提取信息。
+你可以定义结构化字段，用于从非结构化输入数据（例如研究论文）中提取信息。
 
 
 
-  使用结构化输出从研究论文中提取数据
+  使用 Structured Outputs 从研究论文中提取数据
 
 ```javascript
 import OpenAI from "openai";
@@ -845,6 +947,60 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using System.Text.Json;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "authors": { "type": "array", "items": { "type": "string" } },
+        "abstract": { "type": "string" },
+        "keywords": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["title", "authors", "abstract", "keywords"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "research_paper",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("Extract the title, authors, abstract, and keywords from the research paper."));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        """
+        Attention Is All You Need by Ashish Vaswani, Noam Shazeer,
+        Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez,
+        Łukasz Kaiser, and Illia Polosukhin. We propose the
+        Transformer, a sequence transduction architecture based
+        entirely on attention. Keywords: transformers, attention,
+        sequence transduction.
+        """
+    )
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+using JsonDocument parsed = JsonDocument.Parse(response.GetOutputText());
+Console.WriteLine(parsed.RootElement);
+```
+
 ```ruby
 require "openai"
 
@@ -963,9 +1119,9 @@ UI 生成
 
     
 
-### 界面生成
+### UI Generation
 
-你可以通过将 HTML 表示为带有约束（如枚举）的递归数据结构来生成有效的 HTML。
+你可以通过使用带约束的递归数据结构（例如枚举）来表示 HTML，从而生成合法的 HTML。
 
 
 
@@ -1205,6 +1361,67 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using System.Text.Json;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "ui": { "$ref": "#/$defs/component" }
+      },
+      "required": ["ui"],
+      "additionalProperties": false,
+      "$defs": {
+        "component": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string", "enum": ["div", "button", "header", "section", "field", "form"] },
+            "label": { "type": "string" },
+            "children": { "type": "array", "items": { "$ref": "#/$defs/component" } },
+            "attributes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": { "name": { "type": "string" }, "value": { "type": "string" } },
+                "required": ["name", "value"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["type", "label", "children", "attributes"],
+          "additionalProperties": false
+        }
+      }
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "ui",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a UI generator. Convert the user request into a component tree."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("Make a User Profile Form"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+using JsonDocument parsed = JsonDocument.Parse(response.GetOutputText());
+Console.WriteLine(parsed.RootElement);
+```
+
 ```ruby
 require "openai"
 
@@ -1407,18 +1624,18 @@ curl https://api.openai.com/v1/responses \
   
 
     
-审核
+Moderation
 
     
 
-### 审核
+### Moderation
 
-你可以对输入进行多类别分类，这是执行审核的常见方式。
-
-
+你可以对输入按多个类别进行分类，这是常见的审核方式。
 
 
-  使用结构化输出的审核
+
+
+  使用结构化输出进行审核
 
 ```javascript
 import OpenAI from "openai";
@@ -1613,6 +1830,51 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using System.Text.Json;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "is_violating": { "type": "boolean" },
+        "category": {
+          "type": ["string", "null"],
+          "enum": ["violence", "sexual", "self_harm", null]
+        },
+        "explanation_if_violating": { "type": ["string", "null"] }
+      },
+      "required": ["is_violating", "category", "explanation_if_violating"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "content_compliance",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("Determine whether the user input violates content guidelines."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("How do I prepare for a job interview?"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+using JsonDocument parsed = JsonDocument.Parse(response.GetOutputText());
+Console.WriteLine(parsed.RootElement);
+```
+
 ```ruby
 require "openai"
 
@@ -1733,23 +1995,35 @@ text.format
 
 
 
-步骤 1：定义你的模式
+## 步骤 1：定义你的架构
 
-首先，你必须设计模型应遵循的 JSON Schema。请参阅本指南顶部的 [示例](https://developers.openai.com/api/docs/guides/structured-outputs#examples) 以供参考。
 
-虽然结构化输出支持 JSON Schema 的大部分功能，但某些功能由于性能或技术原因不可用。请参阅 [此处](https://developers.openai.com/api/docs/guides/structured-outputs#supported-schemas) 了解详情。
 
-#### JSON Schema 使用技巧
+首先，你需要设计模型应遵守的 JSON Schema。参见本文档开头的 [示例](https://developers.openai.com/api/docs/guides/structured-outputs#examples) 以供参考。
 
-为了最大化模型生成内容的质量，我们建议如下：
+虽然 Structured Outputs 支持大部分 JSON Schema，但由于性能或技术原因，某些功能不可用。详见 [此处](https://developers.openai.com/api/docs/guides/structured-outputs#supported-schemas) 了解详细信息。
 
-- 清晰直观地命名键
+#### JSON Schema 使用提示
+
+为了最大化模型生成的质量，我们建议遵循以下做法：
+
+- 清晰且直观地命名键
 - 为结构中的重要键创建清晰的标题和描述
 - 创建并使用评估来确定最适合你用例的结构
 
-步骤 2：在 API 调用中提供你的 schema
 
-要使用结构化输出，只需指定
+
+
+
+
+
+## 第 2 步：在 API 调用中提供你的架构
+
+
+
+
+
+要使用 Structured Outputs，只需指定
 
 
 
@@ -1973,6 +2247,58 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using System.Text.Json;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "explanation": { "type": "string" },
+              "output": { "type": "string" }
+            },
+            "required": ["explanation", "output"],
+            "additionalProperties": false
+          }
+        },
+        "final_answer": { "type": "string" }
+      },
+      "required": ["steps", "final_answer"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "math_response",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a helpful math tutor. Guide the user through the solution step by step."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("How can I solve 8x + 7 = -23?"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+using JsonDocument parsed = JsonDocument.Parse(response.GetOutputText());
+Console.WriteLine(parsed.RootElement);
+```
+
 ```ruby
 require "openai"
 
@@ -2068,13 +2394,23 @@ curl https://api.openai.com/v1/responses \
 
 
 
-**注意：** 使用任何 schema 发出的第一个请求都会因我们的 API 处理该 schema 而增加额外延迟，但使用同一 schema 的后续请求不会再有额外延迟。
+**注意：** 你使用任何 schema 发出的首次请求都会产生额外的延迟，因为我们的 API 需要处理该 schema，但使用同一 schema 的后续请求不会再产生额外的延迟。
 
-步骤 3：处理边界情况
 
-在某些情况下，模型可能无法生成与提供的 JSON schema 匹配的有效响应。
 
-这种情况可能发生在模型因安全原因拒绝回答时，或者例如达到最大 token 限制导致响应不完整时。
+
+
+
+
+## 第 3 步：处理边界情况
+
+
+
+
+
+在某些情况下，模型可能不会生成与所提供 JSON schema 匹配的有效响应。
+
+这种情况可能发生在模型因安全原因拒绝回答时，或者例如你达到了 max tokens 上限导致响应不完整时。
 
 
 
@@ -2388,6 +2724,77 @@ if (content.refusal().isPresent()) {
 }
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "explanation": { "type": "string" },
+              "output": { "type": "string" }
+            },
+            "required": ["explanation", "output"],
+            "additionalProperties": false
+          }
+        },
+        "final_answer": { "type": "string" }
+      },
+      "required": ["steps", "final_answer"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    MaxOutputTokenCount = 300,
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "math_response",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a helpful math tutor. Guide the user through the solution step by step."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("How can I solve 8x + 7 = -23?"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+if (
+    response.Status == ResponseStatus.Incomplete
+    && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.MaxOutputTokens
+)
+{
+    throw new InvalidOperationException("The structured response was incomplete.");
+}
+if (
+    response.Status == ResponseStatus.Incomplete
+    && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.ContentFilter
+)
+{
+    throw new InvalidOperationException("The structured response was interrupted by the content filter.");
+}
+MessageResponseItem message = response.OutputItems.OfType<MessageResponseItem>().FirstOrDefault()
+    ?? throw new InvalidOperationException("The response did not include an output message.");
+ResponseContentPart content = message.Content.FirstOrDefault()
+    ?? throw new InvalidOperationException("The response did not include output content.");
+Console.WriteLine(
+    content.Kind == ResponseContentPartKind.Refusal ? content.Refusal : content.Text
+);
+```
+
 ```ruby
 require "openai"
 
@@ -2456,13 +2863,13 @@ end
 
 
 
-使用结构化输出时的拒绝
+结构化输出的拒绝情况
 
 
 
-当使用结构化输出处理用户生成的输入时，OpenAI 模型偶尔会出于安全原因拒绝执行请求。由于拒绝不一定遵循你在 `response_format`，中提供的 schema，因此 API 响应将包含一个名为 `refusal` 的新字段，以指示模型拒绝了该请求。
+当对用户生成的输入使用结构化输出时，OpenAI 模型有时可能因安全原因拒绝执行请求。由于拒绝不一定遵循你在 `response_format`，中提供的 schema，API 响应中将包含一个新字段 `refusal` ，用于表明模型拒绝执行请求。
 
-当 `refusal` 属性出现在输出对象中时，你可以拒绝在 UI 中呈现，或在消费响应的代码中包含条件逻辑来处理拒绝请求的情况。
+当 `refusal` 属性出现在你的输出对象中时，你可以在 UI 中展示该拒绝信息，或者在消费响应的代码中加入条件逻辑以处理请求被拒绝的情况。
 
 
 
@@ -2695,6 +3102,64 @@ for (var output : response.output()) {
 }
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "explanation": { "type": "string" },
+              "output": { "type": "string" }
+            },
+            "required": ["explanation", "output"],
+            "additionalProperties": false
+          }
+        },
+        "final_answer": { "type": "string" }
+      },
+      "required": ["steps", "final_answer"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "math_response",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a helpful math tutor. Guide the user through the solution step by step."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("How can I solve 8x + 7 = -23?"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+foreach (MessageResponseItem message in response.OutputItems.OfType<MessageResponseItem>())
+{
+    foreach (ResponseContentPart content in message.Content)
+    {
+        Console.WriteLine(
+            content.Kind == ResponseContentPartKind.Refusal ? content.Refusal : content.Text
+        );
+    }
+}
+```
+
 ```ruby
 require "openai"
 
@@ -2755,7 +3220,7 @@ end
 
 
 
-拒绝时的 API 响应如下所示：
+拒绝时 API 的响应大致如下：
 
 
 
@@ -2800,38 +3265,38 @@ end
 
 
 
-提示和最佳实践
+提示与最佳实践
 
 
 
-#### 处理用户生成的输入
+#### 处理用户输入
 
-如果你的应用使用用户生成输入，请确保你的提示中包含如何处理输入无法产生有效响应情况的说明。
+如果你的应用使用了用户生成输入,请确保提示中包含相关说明,以处理输入无法产生有效响应的情况。
 
-模型总是会尝试遵循所提供的 schema，如果输入与 schema 完全不相关，这可能导致幻觉。
+模型会始终尝试遵循所提供的 schema,如果输入与 schema 完全无关,可能会产生幻觉。
 
-你可以在提示中加入语言，以指定当模型检测到输入与任务不兼容时，希望返回空参数或特定语句。
+你可以在提示中加入相应措辞,指定当模型检测到输入与任务不兼容时,应返回空参数或返回某个特定句子。
 
 #### 处理错误
 
-结构化输出仍可能包含错误。如果发现错误，可以尝试调整指令、在系统指令中提供示例，或将任务拆分为更简单的子任务。请参阅 [提示工程指南](https://developers.openai.com/api/docs/guides/prompt-engineering) 以获取有关如何调整输入内容的更多指导。
+结构化输出仍可能出现错误。如果你发现错误，可以尝试调整你的指令、在系统指令中提供示例，或将任务拆分为更简单的子任务。请参阅 [提示工程指南](https://developers.openai.com/api/docs/guides/prompt-engineering) 以获取有关如何调整输入的更多指导。
 
-#### 避免JSON模式分歧
+#### 避免 JSON schema 出现分歧
 
-为防止你的 JSON Schema 与编程语言中对应的类型发生偏差，我们强烈建议使用原生 Pydantic/zod 开发工具包 支持。
+为了防止你的 JSON Schema 与编程语言中的对应类型出现分歧，我们强烈建议使用 Pydantic/zod 开发工具包 的原生支持。
 
-如果你更倾向于直接指定 JSON schema，可以添加 CI 规则，在 JSON schema 或底层数据对象被编辑时发出警告，或者添加一个 CI 步骤，从类型定义自动生成 JSON Schema（反之亦然）。
+如果你更倾向于直接指定 JSON schema，可以添加 CI 规则，在编辑 JSON schema 或底层数据对象时进行标记，或者添加一个 CI 步骤，从类型定义自动生成 JSON Schema（反之亦然）。
 
 ## 流式传输
 
 
 
-你可以使用流式处理在模型响应或函数调用参数生成时进行处理，并将其解析为结构化数据。
+你可以使用流式传输来处理模型响应或函数调用参数，在它们生成的同时将其解析为结构化数据。
 
-这样，你无需等待整个响应完成即可进行处理。
-如果你希望逐条显示 JSON 字段，或在函数调用参数可用时立即处理，这一点尤其有用。
+这样，你就不必等待整个响应完成后再进行处理。
+如果你希望逐个显示 JSON 字段，或在函数调用参数可用时立即处理它们，这一点尤其有用。
 
-我们建议依靠 SDK 来处理结构化输出的流式传输。
+我们建议依赖 SDK 来处理结构化输出场景下的流式传输。
 
 
 
@@ -3005,35 +3470,82 @@ try (StreamResponse<ResponseStreamEvent> stream = client.responses().createStrea
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+entities_schema = {
+  type: :object,
+  properties: {
+    attributes: {type: :array, items: {type: :string}},
+    colors: {type: :array, items: {type: :string}},
+    animals: {type: :array, items: {type: :string}}
+  },
+  required: %w[attributes colors animals],
+  additionalProperties: false
+}
+
+stream = client.responses.stream(
+  model: "gpt-5.6",
+  input: [
+    {role: :system, content: "Extract entities from the input text."},
+    {
+      role: :user,
+      content: "The quick brown fox jumps over the lazy dog with piercing blue eyes."
+    }
+  ],
+  text: {
+    format: {
+      type: :json_schema,
+      name: "entities",
+      strict: true,
+      schema: entities_schema
+    }
+  }
+)
+
+stream.each do |event|
+  case event
+  when OpenAI::Models::Responses::ResponseRefusalDeltaEvent,
+       OpenAI::Models::Responses::ResponseTextDeltaEvent
+    print(event.delta)
+  when OpenAI::Models::Responses::ResponseErrorEvent
+    warn(event.message)
+  when OpenAI::Models::Responses::ResponseCompletedEvent
+    puts("\nCompleted")
+  end
+end
+```
 
 
-## 支持的架构
+
+## 支持的模式
 
 
 
-结构化输出支持以下 [JSON Schema](https://json-schema.org/docs) 语言子集。
+Structured Outputs 支持以下语言的子集： [JSON Schema](https://json-schema.org/docs) 语言。
 
 #### 支持的类型
 
-结构化输出支持以下类型：
+Structured Outputs 支持以下类型：
 
-- 字符串
-- 数字
-- 布尔值
-- 整数
-- 对象
-- 数组
-- 枚举
+- String
+- Number
+- Boolean
+- Integer
+- Object
+- Array
+- Enum
 - anyOf
 
 #### 支持的属性
 
-除指定属性类型外，你还可以指定可选的其他约束条件：
+除了指定属性的类型之外，你还可以指定一些额外的约束条件：
 
 **支持的 `string` 属性：**
 
-- `pattern` — 该字符串必须匹配的正则表达式。
-- `format` — 字符串的预定义格式。目前支持：
+- `pattern` — 字符串必须匹配的正则表达式。
+- `format` — 字符串的预定义格式。当前支持：
   - `date-time`
   - `time`
   - `date`
@@ -3046,18 +3558,18 @@ try (StreamResponse<ResponseStreamEvent> stream = client.responses().createStrea
 
 **支持的 `number` 属性：**
 
-- `multipleOf` — 该数字必须是此值的倍数。
-- `maximum` — 该数字必须小于或等于此值。
-- `exclusiveMaximum` — 该数字必须小于此值。
-- `minimum` — 该数字必须大于或等于此值。
-- `exclusiveMinimum` — 该数字必须大于此值。
+- `multipleOf` — 数字必须为此值的倍数。
+- `maximum` — 数字必须小于或等于此值。
+- `exclusiveMaximum` — 数字必须小于此值。
+- `minimum` — 数字必须大于或等于此值。
+- `exclusiveMinimum` — 数字必须大于此值。
 
 **支持的 `array` 属性：**
 
 - `minItems` — 数组必须至少包含这么多项。
-- `maxItems` — 数组必须最多包含这么多项。
+- `maxItems` — 数组最多只能包含这么多项。
 
-以下是一些使用这些类型限制的示例：
+以下是一些关于如何使用这些类型限制的示例：
 
 
 
@@ -3139,12 +3651,12 @@ try (StreamResponse<ResponseStreamEvent> stream = client.responses().createStrea
 
 
 
-请注意，这些限制 [尚不适用于经过微调的
+请注意，这些限制 [尚不支持微调
   模型](#some-type-specific-keywords-are-not-yet-supported).
 
-#### 根对象不得 `anyOf` 且必须为对象
+#### 根对象不能是 `anyOf` ，且必须是对象
 
-请注意，schema 的根级对象必须是对象，而不能使用 `anyOf`。Zod（举一个例子）中出现的一种模式是使用可辨识联合，这会生成一个 `anyOf` 位于顶层。因此，如下代码将无法正常工作：
+请注意，schema 的根级对象必须是 object 类型，不能使用 `anyOf`。Zod 中存在这样一种模式（举例而言）：使用 discriminated union，这会在顶层产生一个 `anyOf` 。因此类似下面的代码是无法使用的：
 
 ```javascript
 import { z } from "zod";
@@ -3169,7 +3681,7 @@ const json = zodResponseFormat(finalSchema, "final_schema");
 
 #### 所有字段必须 `required`
 
-要使用结构化输出，所有字段或函数参数必须指定为 `required`.
+要使用 Structured Outputs，所有字段或函数参数都必须指定为 `required`.
 
 ```json
 {
@@ -3198,7 +3710,7 @@ const json = zodResponseFormat(finalSchema, "final_schema");
 ```
 
 
-虽然所有字段都必须为必填（且模型会为每个参数返回一个值），但可以通过使用联合类型配合 `null`.
+虽然所有字段都必须是必需的（并且模型将为每个参数返回值），但可以通过使用联合类型来模拟可选参数， `null`.
 
 ```json
 {
@@ -3229,25 +3741,25 @@ const json = zodResponseFormat(finalSchema, "final_schema");
 ```
 
 
-#### 对象的嵌套深度和大小存在限制
+#### 对象对嵌套深度和大小有限制
 
-一个模式总共最多可有 5000 个对象属性，嵌套层级最多可达 10 层。
+一个 schema 最多可以包含 5000 个对象属性，嵌套层级最多 10 层。
 
-#### 字符串总大小的限制
+#### Limitations on total string size
 
-在模式中，所有属性名称、定义名称、枚举值和常量值的字符串总长度不能超过 120,000 个字符。
+在 schema 中，所有属性名、定义名、枚举值和 const 值的字符串总长度不得超过 120,000 个字符。
 
 #### 枚举大小的限制
 
-一个 schema 中所有 enum 属性合计最多可以有 1000 个 enum 值。
+一个 schema 在所有枚举属性中最多可包含 1000 个枚举值。
 
-对于具有字符串值的单个 enum 属性，当 enum 值超过 250 个时，所有 enum 值的总字符串长度不能超过 15,000 个字符。
+对于具有字符串值的单个枚举属性，当枚举值超过 250 个时，所有枚举值的字符串总长度不能超过 15,000 个字符。
 
 #### `additionalProperties: false` 必须在对象中始终设置
 
-`additionalProperties` 控制对象是否可以包含 JSON Schema 中未定义的额外键/值。
+`additionalProperties` 控制对象是否可以包含 JSON Schema 中未定义的其他键 / 值。
 
-结构化输出仅支持生成指定的键/值，因此我们要求开发者设置 `additionalProperties: false` 以选择使用结构化输出。
+Structured Outputs 仅支持生成指定的键 / 值，因此我们要求开发者设置 `additionalProperties: false` 以启用 Structured Outputs。
 
 ```json
 {
@@ -3278,26 +3790,26 @@ const json = zodResponseFormat(finalSchema, "final_schema");
 ```
 
 
-#### 键顺序
+#### 键的排序
 
-使用结构化输出时，输出的生成顺序将与模式中键的排列顺序相同。
+在使用结构化输出时，输出会按照 schema 中键的顺序依次生成。
 
-#### 部分类型特定的关键词尚不受支持
+#### 部分特定类型的关键词暂不支持
 
-- **组合方式：** `allOf`, `not`, `dependentRequired`, `dependentSchemas`, `if`, `then`, `else`
+- **组合：** `allOf`, `not`, `dependentRequired`, `dependentSchemas`, `if`, `then`, `else`
 
-对于微调模型，我们另外不支持以下内容：
+对于微调模型，我们同样不支持以下功能：
 
-- **对于字符串：** `minLength`, `maxLength`, `pattern`, `format`
-- **对于数字：** `minimum`, `maximum`, `multipleOf`
-- **对于对象：** `patternProperties`
-- **对于数组：** `minItems`, `maxItems`
+- **字符串：** `minLength`, `maxLength`, `pattern`, `format`
+- **数字：** `minimum`, `maximum`, `multipleOf`
+- **对象：** `patternProperties`
+- **数组：** `minItems`, `maxItems`
 
-如果你通过提供 `strict: true` 并调用API时使用了不受支持的 JSON Schema，你将收到一个错误。
+如果你通过提供 `strict: true` 并使用不支持的 JSON Schema 调用 API，则会收到错误。
 
-#### 对于 `anyOf`，嵌套的模式各自必须是符合此子集的有效 JSON Schema
+#### 对于 `anyOf`，每个嵌套模式必须是符合此子集的合法 JSON Schema
 
-以下是一个支持的 anyOf 模式示例：
+以下是一个受支持的 anyOf 架构示例：
 
 ```json
 {
@@ -3361,7 +3873,7 @@ const json = zodResponseFormat(finalSchema, "final_schema");
 
 #### 支持定义
 
-你可以使用定义来定义在整个模式中引用的子模式。以下是一个简单的示例。
+你可以使用 definitions 来定义在 schema 中被多次引用的子 schema。以下是一个简单的示例。
 
 ```json
 {
@@ -3404,9 +3916,9 @@ const json = zodResponseFormat(finalSchema, "final_schema");
 ```
 
 
-#### 支持递归模式
+#### 支持递归架构
 
-使用 `#` 表示根递归的示例递归模式。
+使用以下结构的示例递归 schema `#` 以指示根级递归。
 
 ```json
 {
@@ -3459,7 +3971,7 @@ const json = zodResponseFormat(finalSchema, "final_schema");
 ```
 
 
-使用显式递归的示例递归模式：
+使用显式递归的示例递归架构：
 
 ```json
 {
@@ -3503,28 +4015,34 @@ const json = zodResponseFormat(finalSchema, "final_schema");
 
 
 
-## JSON 模式
+## JSON mode
 
-JSON 模式是结构化输出功能的一个更基础版本。虽然
-  JSON 模式确保模型输出是有效的 JSON，结构化输出则可靠地
-  将模型的输出与你指定的模式匹配。我们建议你在
-  用例支持的情况下使用结构化输出。
+JSON 模式是 Structured Outputs 功能的基础版本。虽然
+  JSON 模式可确保模型输出是合法 JSON，但 Structured Outputs 能可靠地
+  将模型的输出与你指定的 schema 进行匹配。如果你的用例支持
+  Structured Outputs，建议你使用它。
 
-当 JSON 模式开启时，模型的输出被确保为有效的 JSON，除了一些你应该检测并适当处理的边缘情况。
-
-
+启用 JSON 模式后，模型的输出会被确保为合法 JSON，但某些边界情况除外，你需要自行检测并妥善处理。
 
 
-要使用 Responses API 开启 JSON 模式，你可以设置 `text.format` 为 `{ "type": "json_object" }`。如果你使用函数调用，JSON 模式始终是开启的。
 
 
-重要说明：
+要使用 Responses API 启用 JSON 模式，你可以设置 `text.format` 为 `{ "type": "json_object" }`。如果你使用的是函数调用功能，JSON 模式始终处于启用状态。
 
-- 使用 JSON 模式时，你必须在对话中通过某种消息（例如系统消息）指示模型生成 JSON。如果你没有包含生成 JSON 的明确指令，模型可能会生成无休止的空白字符流，请求可能会持续运行直到达到令牌限制。为了确保你不会忘记，如果上下文中的某处没有出现字符串 "JSON"，API 将抛出错误。
-- JSON 模式不保证输出符合任何特定模式，只保证输出有效且能无错误解析。你应该使用结构化输出以确保输出符合你的模式；如果不可能，则应使用验证库并可能重试，以确保输出符合你期望的模式。
-- 你的应用程序必须检测并处理可能导致模型输出不是完整 JSON 对象的边缘情况（见下文）
 
-处理边缘情况
+重要提示：
+
+- 使用 JSON 模式时，你必须始终通过对话中的某条消息（例如系统消息）指示模型输出 JSON。如果不包含生成 JSON 的明确指令，模型可能会生成无止境的空白字符，请求会持续运行直至达到 token 上限。为了避免你忘记，API 会在上下文中任何位置都没有出现字符串 "JSON" 时抛出错误。
+- JSON 模式不会保证输出符合任何特定 schema，只会保证它是有效的并能无误地解析。你应该使用 Structured Outputs 来确保其符合你的 schema；如果无法做到，则应使用校验库并结合必要的重试来确保输出符合所需的 schema。
+- 你的应用必须检测并处理可能导致模型输出不是完整 JSON 对象的边界情况（见下文）。
+
+
+
+### 处理边界情况
+
+
+
+
 
 ```javascript
 const we_did_not_specify_stop_tokens = true;
@@ -3767,6 +4285,55 @@ try {
 }
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonObjectFormat(),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a helpful assistant designed to output JSON."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("Who won the World Series in 2020? Respond with the winner in JSON."));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+if (
+    response.Status == ResponseStatus.Incomplete
+    && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.MaxOutputTokens
+)
+{
+    Console.WriteLine("The response was truncated before the JSON completed.");
+}
+else if (
+    response.Status == ResponseStatus.Incomplete
+    && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.ContentFilter
+)
+{
+    Console.WriteLine("The response was interrupted by the content filter.");
+}
+else if (response.Status == ResponseStatus.Completed)
+{
+    MessageResponseItem message = response.OutputItems.OfType<MessageResponseItem>().FirstOrDefault()
+        ?? throw new InvalidOperationException("The response did not include an output message.");
+    ResponseContentPart content = message.Content.FirstOrDefault()
+        ?? throw new InvalidOperationException("The response did not include output content.");
+    Console.WriteLine(
+        content.Kind == ResponseContentPartKind.Refusal ? content.Refusal : content.Text
+    );
+}
+else
+{
+    throw new InvalidOperationException($"The response ended with status: {response.Status}");
+}
+```
+
 ```ruby
 require "json"
 require "openai"
@@ -3800,9 +4367,15 @@ else
 end
 ```
 
+
+
+
+
+
+
 ## 资源
 
-要了解有关结构化输出的更多信息，我们建议浏览以下资源：
+如需详细了解结构化输出，我们建议你浏览以下资源：
 
-- 查看我们的 [入门食谱](https://developers.openai.com/cookbook/examples/structured_outputs_intro) 关于结构化输出
-- 学习 [如何构建多智能体系统](https://developers.openai.com/cookbook/examples/structured_outputs_multi_agent) 使用结构化输出
+- 查看我们的 [结构化输出入门指南](https://developers.openai.com/cookbook/examples/structured_outputs_intro) 结构化输出入门指南
+- 了解 [如何使用结构化输出构建多智能体系统](https://developers.openai.com/cookbook/examples/structured_outputs_multi_agent) 使用结构化输出

@@ -1,14 +1,14 @@
-# 视频
+# Videos
 
-> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获得。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 创建视频
 
 **post** `/videos`
 
-根据提示词和可选的参考素材创建新的视频生成任务。
+根据提示词和可选的参考素材创建一个新的视频生成任务。
 
-### 请求体参数
+### 正文参数
 
 - `prompt: string`
 
@@ -16,17 +16,17 @@
 
 - `input_reference: optional ImageInputReferenceParam`
 
-  用于指导生成的可选参考对象。请提供且仅提供以下之一： `image_url` 或 `file_id`.
+  用于引导生成的可选参考对象。只能提供以下之一 `image_url` 或 `file_id`.
 
   - `file_id: optional string`
 
   - `image_url: optional string`
 
-    一个完全限定的 URL 或 base64 编码的数据 URL。
+    完整的 URL 或 base64 编码的 data URL。
 
 - `model: optional VideoModel`
 
-  用于视频生成的模型（允许值：sora-2、sora-2-pro）。默认为 `sora-2`.
+  要使用的视频生成模型（允许的值：sora-2、sora-2-pro）。默认为 `sora-2`.
 
   - `string`
 
@@ -44,7 +44,7 @@
 
 - `seconds: optional VideoSeconds`
 
-  片段时长（秒）（允许值：4、8、12）。默认为 4 秒。
+  片段时长（单位：秒，允许的值：4、8、12）。默认为 4 秒。
 
   - `"4"`
 
@@ -54,7 +54,7 @@
 
 - `size: optional VideoSize`
 
-  输出分辨率，格式为宽 x 高（允许值：720x1280、1280x720、1024x1792、1792x1024）。默认为 720x1280。
+  输出分辨率，格式为 宽 x 高（允许的值：720x1280、1280x720、1024x1792、1792x1024）。默认为 720x1280。
 
   - `"720x1280"`
 
@@ -64,11 +64,11 @@
 
   - `"1792x1024"`
 
-### 返回
+### Returns
 
 - `Video object { id, completed_at, created_at, 10 more }`
 
-  描述所生成视频任务的结构化信息。
+  描述生成的视频任务的结构化信息。
 
   - `id: string`
 
@@ -76,7 +76,7 @@
 
   - `completed_at: number or null`
 
-    任务完成时的 Unix 时间戳（秒），如果已结束。
+    任务完成时的 Unix 时间戳（秒），如果已完成。
 
   - `created_at: number`
 
@@ -84,7 +84,7 @@
 
   - `error: VideoCreateError or null`
 
-    解释生成失败原因的错误负载，如果适用。
+    用于解释生成失败原因的错误负载（如适用）。
 
     - `code: string`
 
@@ -92,11 +92,11 @@
 
     - `message: string`
 
-      返回的错误的可读描述。
+      返回错误的人类可读描述。
 
   - `expires_at: number or null`
 
-    可下载资产过期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源过期时的 Unix 时间戳（秒），如果已设置。
 
   - `model: VideoModel`
 
@@ -128,19 +128,19 @@
 
   - `prompt: string or null`
 
-    用于生成视频的提示词。
+    用于生成该视频的提示词。
 
   - `remixed_from_video_id: string or null`
 
-    如果此视频是混剪，则为源视频的标识符。
+    如果该视频为二次创作，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成剪辑的时长（秒）。对于扩展，这是拼接后的总时长。
+    生成片段的时长（秒）。对于扩展，这是拼接后的总时长。
 
   - `size: VideoSize`
 
-    生成视频的分辨率。
+    所生成视频的分辨率。
 
     - `"720x1280"`
 
@@ -152,7 +152,7 @@
 
   - `status: "queued" or "in_progress" or "completed" or "failed"`
 
-    视频任务的当前生命周期状态。
+    视频任务当前的生命周期状态。
 
     - `"queued"`
 
@@ -225,17 +225,17 @@ curl https://api.openai.com/v1/videos \
 
 **post** `/videos/characters`
 
-从上传的视频创建角色。
+Create a character from an uploaded video.
 
-### 返回
+### Returns
 
 - `id: string or null`
 
-  角色创建客串的标识符。
+  角色创建 cameo 的标识符。
 
 - `created_at: number`
 
-  角色创建时的 Unix 时间戳（秒）。
+  角色创建时的 Unix 时间戳（以秒为单位）。
 
 - `name: string or null`
 
@@ -263,15 +263,15 @@ curl https://api.openai.com/v1/videos/characters \
 
 ## 删除视频
 
-**删除** `/videos/{video_id}`
+**delete** `/videos/{video_id}`
 
-永久删除已完成或失败的视频及其存储的资产。
+永久删除已完成的或失败的视频及其存储的资源。
 
 ### 路径参数
 
 - `video_id: string`
 
-### 返回
+### Returns
 
 - `id: string`
 
@@ -279,11 +279,11 @@ curl https://api.openai.com/v1/videos/characters \
 
 - `deleted: boolean`
 
-  表示视频资源已被删除。
+  指示视频资源已被删除。
 
 - `object: "video.deleted"`
 
-  指示删除响应的对象类型。
+  表示删除响应的对象类型。
 
   - `"video.deleted"`
 
@@ -307,11 +307,11 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
 ## 检索视频内容
 
-**获取** `/videos/{video_id}/content`
+**get** `/videos/{video_id}/content`
 
-下载生成的视频字节或派生预览资源。
+下载生成的视频字节或派生的预览资源。
 
-流式传输指定视频作业的渲染视频内容。
+为指定视频任务流式传输已渲染的视频内容。
 
 ### 路径参数
 
@@ -321,7 +321,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
 - `variant: optional "video" or "thumbnail" or "spritesheet"`
 
-  要返回哪个可下载资源。默认为 MP4 视频。
+  要返回的可下载资源。默认为 MP4 视频。
 
   - `"video"`
 
@@ -336,13 +336,13 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID/content \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-## 通过编辑源视频或已生成的视频来创建新的视频生成任务。
+## 通过编辑源视频或现有的已生成视频，创建一个新的视频生成任务。
 
 **post** `/videos/edits`
 
-通过编辑源视频或已有的生成视频来创建新的视频生成任务。
+通过编辑源视频或已有生成视频来创建一个新的视频生成任务。
 
-### 请求体参数
+### 正文参数
 
 - `prompt: string`
 
@@ -350,17 +350,17 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID/content \
 
 - `video: object { id }`
 
-  对要编辑的已完成视频的引用。
+  指向已完成的待编辑视频的引用。
 
   - `id: string`
 
     已完成视频的标识符。
 
-### 返回
+### Returns
 
 - `Video object { id, completed_at, created_at, 10 more }`
 
-  描述所生成视频任务的结构化信息。
+  描述生成的视频任务的结构化信息。
 
   - `id: string`
 
@@ -368,7 +368,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID/content \
 
   - `completed_at: number or null`
 
-    任务完成时的 Unix 时间戳（秒），如果已结束。
+    任务完成时的 Unix 时间戳（秒），如果已完成。
 
   - `created_at: number`
 
@@ -376,7 +376,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID/content \
 
   - `error: VideoCreateError or null`
 
-    解释生成失败原因的错误负载，如果适用。
+    用于解释生成失败原因的错误负载（如适用）。
 
     - `code: string`
 
@@ -384,11 +384,11 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID/content \
 
     - `message: string`
 
-      返回的错误的可读描述。
+      返回错误的人类可读描述。
 
   - `expires_at: number or null`
 
-    可下载资产过期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源过期时的 Unix 时间戳（秒），如果已设置。
 
   - `model: VideoModel`
 
@@ -420,19 +420,19 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID/content \
 
   - `prompt: string or null`
 
-    用于生成视频的提示词。
+    用于生成该视频的提示词。
 
   - `remixed_from_video_id: string or null`
 
-    如果此视频是混剪，则为源视频的标识符。
+    如果该视频为二次创作，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成剪辑的时长（秒）。对于扩展，这是拼接后的总时长。
+    生成片段的时长（秒）。对于扩展，这是拼接后的总时长。
 
   - `size: VideoSize`
 
-    生成视频的分辨率。
+    所生成视频的分辨率。
 
     - `"720x1280"`
 
@@ -444,7 +444,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID/content \
 
   - `status: "queued" or "in_progress" or "completed" or "failed"`
 
-    视频任务的当前生命周期状态。
+    视频任务当前的生命周期状态。
 
     - `"queued"`
 
@@ -491,21 +491,21 @@ curl https://api.openai.com/v1/videos/edits \
 }
 ```
 
-## 创建已完成视频的扩展。
+## Create an extension of a completed video.
 
 **post** `/videos/extensions`
 
 创建已完成视频的扩展。
 
-### 请求体参数
+### 正文参数
 
 - `prompt: string`
 
-  更新后的文本提示，用于指导扩展生成。
+  用于指导扩展生成环节的更新后文本提示词。
 
 - `seconds: VideoSeconds`
 
-  新生成的扩展片段长度（秒）（允许值：4、8、12、16、20）。
+  新生成的扩展片段时长（单位为秒，允许的值：4、8、12、16、20）。
 
   - `"4"`
 
@@ -515,17 +515,17 @@ curl https://api.openai.com/v1/videos/edits \
 
 - `video: object { id }`
 
-  对要扩展的已完成视频的引用。
+  对已完成视频的引用，用于对其进行扩展。
 
   - `id: string`
 
     已完成视频的标识符。
 
-### 返回
+### Returns
 
 - `Video object { id, completed_at, created_at, 10 more }`
 
-  描述所生成视频任务的结构化信息。
+  描述生成的视频任务的结构化信息。
 
   - `id: string`
 
@@ -533,7 +533,7 @@ curl https://api.openai.com/v1/videos/edits \
 
   - `completed_at: number or null`
 
-    任务完成时的 Unix 时间戳（秒），如果已结束。
+    任务完成时的 Unix 时间戳（秒），如果已完成。
 
   - `created_at: number`
 
@@ -541,7 +541,7 @@ curl https://api.openai.com/v1/videos/edits \
 
   - `error: VideoCreateError or null`
 
-    解释生成失败原因的错误负载，如果适用。
+    用于解释生成失败原因的错误负载（如适用）。
 
     - `code: string`
 
@@ -549,11 +549,11 @@ curl https://api.openai.com/v1/videos/edits \
 
     - `message: string`
 
-      返回的错误的可读描述。
+      返回错误的人类可读描述。
 
   - `expires_at: number or null`
 
-    可下载资产过期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源过期时的 Unix 时间戳（秒），如果已设置。
 
   - `model: VideoModel`
 
@@ -585,19 +585,19 @@ curl https://api.openai.com/v1/videos/edits \
 
   - `prompt: string or null`
 
-    用于生成视频的提示词。
+    用于生成该视频的提示词。
 
   - `remixed_from_video_id: string or null`
 
-    如果此视频是混剪，则为源视频的标识符。
+    如果该视频为二次创作，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成剪辑的时长（秒）。对于扩展，这是拼接后的总时长。
+    生成片段的时长（秒）。对于扩展，这是拼接后的总时长。
 
   - `size: VideoSize`
 
-    生成视频的分辨率。
+    所生成视频的分辨率。
 
     - `"720x1280"`
 
@@ -609,7 +609,7 @@ curl https://api.openai.com/v1/videos/edits \
 
   - `status: "queued" or "in_progress" or "completed" or "failed"`
 
-    视频任务的当前生命周期状态。
+    视频任务当前的生命周期状态。
 
     - `"queued"`
 
@@ -659,7 +659,7 @@ curl https://api.openai.com/v1/videos/extensions \
 
 ## 获取一个字符。
 
-**获取** `/videos/characters/{character_id}`
+**get** `/videos/characters/{character_id}`
 
 获取一个字符。
 
@@ -667,15 +667,15 @@ curl https://api.openai.com/v1/videos/extensions \
 
 - `character_id: string`
 
-### 返回
+### Returns
 
 - `id: string or null`
 
-  角色创建客串的标识符。
+  角色创建 cameo 的标识符。
 
 - `created_at: number`
 
-  角色创建时的 Unix 时间戳（秒）。
+  角色创建时的 Unix 时间戳（以秒为单位）。
 
 - `name: string or null`
 
@@ -700,7 +700,7 @@ curl https://api.openai.com/v1/videos/characters/$CHARACTER_ID \
 
 ## 列出视频
 
-**获取** `/videos`
+**get** `/videos`
 
 列出当前项目最近生成的视频。
 
@@ -716,13 +716,13 @@ curl https://api.openai.com/v1/videos/characters/$CHARACTER_ID \
 
 - `order: optional "asc" or "desc"`
 
-  按时间戳对结果进行排序。使用 `asc` 表示升序，或 `desc` 表示降序。
+  按时间戳对结果进行排序。使用 `asc` 表示升序，或使用 `desc` 表示降序。
 
   - `"asc"`
 
   - `"desc"`
 
-### 返回
+### Returns
 
 - `data: array of Video`
 
@@ -734,7 +734,7 @@ curl https://api.openai.com/v1/videos/characters/$CHARACTER_ID \
 
   - `completed_at: number or null`
 
-    任务完成时的 Unix 时间戳（秒），如果已结束。
+    任务完成时的 Unix 时间戳（秒），如果已完成。
 
   - `created_at: number`
 
@@ -742,7 +742,7 @@ curl https://api.openai.com/v1/videos/characters/$CHARACTER_ID \
 
   - `error: VideoCreateError or null`
 
-    解释生成失败原因的错误负载，如果适用。
+    用于解释生成失败原因的错误负载（如适用）。
 
     - `code: string`
 
@@ -750,11 +750,11 @@ curl https://api.openai.com/v1/videos/characters/$CHARACTER_ID \
 
     - `message: string`
 
-      返回的错误的可读描述。
+      返回错误的人类可读描述。
 
   - `expires_at: number or null`
 
-    可下载资产过期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源过期时的 Unix 时间戳（秒），如果已设置。
 
   - `model: VideoModel`
 
@@ -786,19 +786,19 @@ curl https://api.openai.com/v1/videos/characters/$CHARACTER_ID \
 
   - `prompt: string or null`
 
-    用于生成视频的提示词。
+    用于生成该视频的提示词。
 
   - `remixed_from_video_id: string or null`
 
-    如果此视频是混剪，则为源视频的标识符。
+    如果该视频为二次创作，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成剪辑的时长（秒）。对于扩展，这是拼接后的总时长。
+    生成片段的时长（秒）。对于扩展，这是拼接后的总时长。
 
   - `size: VideoSize`
 
-    生成视频的分辨率。
+    所生成视频的分辨率。
 
     - `"720x1280"`
 
@@ -810,7 +810,7 @@ curl https://api.openai.com/v1/videos/characters/$CHARACTER_ID \
 
   - `status: "queued" or "in_progress" or "completed" or "failed"`
 
-    视频任务的当前生命周期状态。
+    视频任务当前的生命周期状态。
 
     - `"queued"`
 
@@ -822,19 +822,19 @@ curl https://api.openai.com/v1/videos/characters/$CHARACTER_ID \
 
 - `first_id: string or null`
 
-  列表中第一个项目的 ID。
+  列表中第一项的 ID。
 
 - `has_more: boolean`
 
-  是否还有更多可用项目。
+  是否还有更多可用项。
 
 - `last_id: string or null`
 
-  列表中最后一个项目的 ID。
+  列表中最后一项的 ID。
 
 - `object: "list"`
 
-  返回的对象类型，必须是 `list`.
+  返回对象的类型，必须为 `list`.
 
   - `"list"`
 
@@ -899,27 +899,27 @@ curl https://api.openai.com/v1/videos \
 }
 ```
 
-## Remix 视频
+## Remix video
 
 **post** `/videos/{video_id}/remix`
 
-使用刷新后的提示词，为已完成的视频创建一个混剪版本。
+使用更新后的提示词创建已生成视频的混剪版本。
 
 ### 路径参数
 
 - `video_id: string`
 
-### 请求体参数
+### 正文参数
 
 - `prompt: string`
 
-  用于指导混音生成的更新文本提示。
+  更新后的文本提示，用于引导 remix 生成。
 
-### 返回
+### Returns
 
 - `Video object { id, completed_at, created_at, 10 more }`
 
-  描述所生成视频任务的结构化信息。
+  描述生成的视频任务的结构化信息。
 
   - `id: string`
 
@@ -927,7 +927,7 @@ curl https://api.openai.com/v1/videos \
 
   - `completed_at: number or null`
 
-    任务完成时的 Unix 时间戳（秒），如果已结束。
+    任务完成时的 Unix 时间戳（秒），如果已完成。
 
   - `created_at: number`
 
@@ -935,7 +935,7 @@ curl https://api.openai.com/v1/videos \
 
   - `error: VideoCreateError or null`
 
-    解释生成失败原因的错误负载，如果适用。
+    用于解释生成失败原因的错误负载（如适用）。
 
     - `code: string`
 
@@ -943,11 +943,11 @@ curl https://api.openai.com/v1/videos \
 
     - `message: string`
 
-      返回的错误的可读描述。
+      返回错误的人类可读描述。
 
   - `expires_at: number or null`
 
-    可下载资产过期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源过期时的 Unix 时间戳（秒），如果已设置。
 
   - `model: VideoModel`
 
@@ -979,19 +979,19 @@ curl https://api.openai.com/v1/videos \
 
   - `prompt: string or null`
 
-    用于生成视频的提示词。
+    用于生成该视频的提示词。
 
   - `remixed_from_video_id: string or null`
 
-    如果此视频是混剪，则为源视频的标识符。
+    如果该视频为二次创作，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成剪辑的时长（秒）。对于扩展，这是拼接后的总时长。
+    生成片段的时长（秒）。对于扩展，这是拼接后的总时长。
 
   - `size: VideoSize`
 
-    生成视频的分辨率。
+    所生成视频的分辨率。
 
     - `"720x1280"`
 
@@ -1003,7 +1003,7 @@ curl https://api.openai.com/v1/videos \
 
   - `status: "queued" or "in_progress" or "completed" or "failed"`
 
-    视频任务的当前生命周期状态。
+    视频任务当前的生命周期状态。
 
     - `"queued"`
 
@@ -1076,19 +1076,19 @@ curl -X POST https://api.openai.com/v1/videos/video_123/remix \
 
 ## 检索视频
 
-**获取** `/videos/{video_id}`
+**get** `/videos/{video_id}`
 
-获取已生成视频的最新元数据。
+获取所生成视频的最新元数据。
 
 ### 路径参数
 
 - `video_id: string`
 
-### 返回
+### Returns
 
 - `Video object { id, completed_at, created_at, 10 more }`
 
-  描述所生成视频任务的结构化信息。
+  描述生成的视频任务的结构化信息。
 
   - `id: string`
 
@@ -1096,7 +1096,7 @@ curl -X POST https://api.openai.com/v1/videos/video_123/remix \
 
   - `completed_at: number or null`
 
-    任务完成时的 Unix 时间戳（秒），如果已结束。
+    任务完成时的 Unix 时间戳（秒），如果已完成。
 
   - `created_at: number`
 
@@ -1104,7 +1104,7 @@ curl -X POST https://api.openai.com/v1/videos/video_123/remix \
 
   - `error: VideoCreateError or null`
 
-    解释生成失败原因的错误负载，如果适用。
+    用于解释生成失败原因的错误负载（如适用）。
 
     - `code: string`
 
@@ -1112,11 +1112,11 @@ curl -X POST https://api.openai.com/v1/videos/video_123/remix \
 
     - `message: string`
 
-      返回的错误的可读描述。
+      返回错误的人类可读描述。
 
   - `expires_at: number or null`
 
-    可下载资产过期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源过期时的 Unix 时间戳（秒），如果已设置。
 
   - `model: VideoModel`
 
@@ -1148,19 +1148,19 @@ curl -X POST https://api.openai.com/v1/videos/video_123/remix \
 
   - `prompt: string or null`
 
-    用于生成视频的提示词。
+    用于生成该视频的提示词。
 
   - `remixed_from_video_id: string or null`
 
-    如果此视频是混剪，则为源视频的标识符。
+    如果该视频为二次创作，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成剪辑的时长（秒）。对于扩展，这是拼接后的总时长。
+    生成片段的时长（秒）。对于扩展，这是拼接后的总时长。
 
   - `size: VideoSize`
 
-    生成视频的分辨率。
+    所生成视频的分辨率。
 
     - `"720x1280"`
 
@@ -1172,7 +1172,7 @@ curl -X POST https://api.openai.com/v1/videos/video_123/remix \
 
   - `status: "queued" or "in_progress" or "completed" or "failed"`
 
-    视频任务的当前生命周期状态。
+    视频任务当前的生命周期状态。
 
     - `"queued"`
 
@@ -1212,9 +1212,9 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 }
 ```
 
-## 领域类型
+## 域类型
 
-### 图像输入参考参数
+### 图片输入参考参数
 
 - `ImageInputReferenceParam object { file_id, image_url }`
 
@@ -1222,13 +1222,13 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
   - `image_url: optional string`
 
-    一个完全限定的 URL 或 base64 编码的数据 URL。
+    完整的 URL 或 base64 编码的 data URL。
 
 ### 视频
 
 - `Video object { id, completed_at, created_at, 10 more }`
 
-  描述所生成视频任务的结构化信息。
+  描述生成的视频任务的结构化信息。
 
   - `id: string`
 
@@ -1236,7 +1236,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
   - `completed_at: number or null`
 
-    任务完成时的 Unix 时间戳（秒），如果已结束。
+    任务完成时的 Unix 时间戳（秒），如果已完成。
 
   - `created_at: number`
 
@@ -1244,7 +1244,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
   - `error: VideoCreateError or null`
 
-    解释生成失败原因的错误负载，如果适用。
+    用于解释生成失败原因的错误负载（如适用）。
 
     - `code: string`
 
@@ -1252,11 +1252,11 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
     - `message: string`
 
-      返回的错误的可读描述。
+      返回错误的人类可读描述。
 
   - `expires_at: number or null`
 
-    可下载资产过期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源过期时的 Unix 时间戳（秒），如果已设置。
 
   - `model: VideoModel`
 
@@ -1288,19 +1288,19 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
   - `prompt: string or null`
 
-    用于生成视频的提示词。
+    用于生成该视频的提示词。
 
   - `remixed_from_video_id: string or null`
 
-    如果此视频是混剪，则为源视频的标识符。
+    如果该视频为二次创作，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成剪辑的时长（秒）。对于扩展，这是拼接后的总时长。
+    生成片段的时长（秒）。对于扩展，这是拼接后的总时长。
 
   - `size: VideoSize`
 
-    生成视频的分辨率。
+    所生成视频的分辨率。
 
     - `"720x1280"`
 
@@ -1312,7 +1312,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
   - `status: "queued" or "in_progress" or "completed" or "failed"`
 
-    视频任务的当前生命周期状态。
+    视频任务当前的生命周期状态。
 
     - `"queued"`
 
@@ -1322,27 +1322,27 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
     - `"failed"`
 
-### 视频创建角色响应
+### Video Create Character 响应
 
 - `VideoCreateCharacterResponse object { id, created_at, name }`
 
   - `id: string or null`
 
-    角色创建客串的标识符。
+    角色创建 cameo 的标识符。
 
   - `created_at: number`
 
-    角色创建时的 Unix 时间戳（秒）。
+    角色创建时的 Unix 时间戳（以秒为单位）。
 
   - `name: string or null`
 
     角色的显示名称。
 
-### 视频创建错误
+### Video Create 错误
 
 - `VideoCreateError object { code, message }`
 
-  生成响应时发生的错误。
+  生成响应过程中发生的错误。
 
   - `code: string`
 
@@ -1350,9 +1350,9 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
   - `message: string`
 
-    返回的错误的可读描述。
+    返回错误的人类可读描述。
 
-### 视频删除响应
+### Video Delete Response
 
 - `VideoDeleteResponse object { id, deleted, object }`
 
@@ -1364,31 +1364,31 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
   - `deleted: boolean`
 
-    表示视频资源已被删除。
+    指示视频资源已被删除。
 
   - `object: "video.deleted"`
 
-    指示删除响应的对象类型。
+    表示删除响应的对象类型。
 
     - `"video.deleted"`
 
-### 视频获取角色响应
+### Video Get Character Response
 
 - `VideoGetCharacterResponse object { id, created_at, name }`
 
   - `id: string or null`
 
-    角色创建客串的标识符。
+    角色创建 cameo 的标识符。
 
   - `created_at: number`
 
-    角色创建时的 Unix 时间戳（秒）。
+    角色创建时的 Unix 时间戳（以秒为单位）。
 
   - `name: string or null`
 
     角色的显示名称。
 
-### 视频模型
+### Video Model
 
 - `VideoModel = string or "sora-2" or "sora-2-pro" or "sora-2-2025-10-06" or 2 more`
 
@@ -1406,7 +1406,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
     - `"sora-2-2025-12-08"`
 
-### 视频秒数
+### Video Seconds
 
 - `VideoSeconds = "4" or "8" or "12"`
 
@@ -1416,7 +1416,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
   - `"12"`
 
-### 视频大小
+### Video Size
 
 - `VideoSize = "720x1280" or "1280x720" or "1024x1792" or "1792x1024"`
 

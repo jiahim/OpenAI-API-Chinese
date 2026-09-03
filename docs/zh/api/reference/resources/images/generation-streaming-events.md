@@ -1,17 +1,17 @@
 # 图像生成流式事件
 
-> 完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获得。
+> 完整的文档索引请参见 [llms.txt](/llms.txt)。可在页面 URL 末尾附加 `.md` 来获取相应文档页面的 Markdown 版本。
 
-使用服务器发送事件实时流式生成和编辑图像。
-[了解更多关于图像流式传输的信息](https://developers.openai.com/docs/guides/image-generation).
+通过服务端发送事件实时流式生成和编辑图像。
+[详细了解图像流式传输](https://developers.openai.com/docs/guides/image-generation).
 
 ## image_generation.partial_image
 
-在图像生成流式传输期间，当部分图像可用时发出。
+在图像生成流式传输过程中，当部分图像可用时发出。
 
 ### Schema
 
-Schema 名称： `ImageGenPartialImageEvent`
+Schema name: `ImageGenPartialImageEvent`
 
 ```json
 {
@@ -401,11 +401,11 @@ Schema 名称： `ImageGenPartialImageEvent`
 
 ## image_generation.completed
 
-当图像生成已完成且最终图像可用时发出。
+当图像生成完成且最终图像可用时发出。
 
 ### Schema
 
-Schema 名称： `ImageGenCompletedEvent`
+Schema name: `ImageGenCompletedEvent`
 
 ```json
 {

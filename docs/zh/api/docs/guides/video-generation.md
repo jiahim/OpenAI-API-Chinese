@@ -1,58 +1,58 @@
 # 使用 Sora 生成视频
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。如需 Markdown 版本的文档页面，可在页面 URL 末尾附加 `.md` 来获取。
 
 ## 概述
 
-Sora 是 OpenAI 在生成式媒体领域的最新前沿——一款最先进的视频模型，能够根据自然语言或图像生成细节丰富、动感十足且带音频的片段。基于多年来对多模态扩散的研究，并在多样化的视觉数据上训练，Sora 将 3D 空间、运动和场景连续性的深刻理解带入文本到视频的生成。
+Sora 是 OpenAI 在生成式媒体领域的最新前沿——一款最先进的视频模型，能够根据自然语言或图像创建细节丰富、富有动态感的音频片段。它基于多年对多模态扩散技术的研究，并使用多样化的视觉数据训练而成，将对 3D 空间、运动和场景连续性的深刻理解带入文本生成视频之中。
 
-该 [Videos API](https://developers.openai.com/api/reference/resources/videos) 首次向开发者开放这些能力，支持视频的程序化创建、扩展、编辑和管理。
+该 [Videos API](https://developers.openai.com/api/reference/resources/videos) 首次将这些能力开放给开发者，支持以编程方式创建、扩展、编辑和管理视频。
 
 你可以使用它来：
 
-- 根据提示创建新视频。
-- 使用图像参考引导生成过程。
-- 在多次生成中复用角色素材，以实现更强的视觉一致性。
+- 根据提示词创建新视频。
+- 使用图像参考引导生成。
+- 在多次生成中复用角色资产，以获得更强的视觉一致性。
 - 通过视频扩展延续已完成的片段。
-- 对现有视频进行有针对性的修改。
-- 下载完成的视频和支持素材。
-- 通过以下方式提交大型离线渲染队列： [批处理 API](https://developers.openai.com/api/docs/guides/batch).
+- 对已有视频进行有针对性的修改。
+- 下载已完成的视频及相关资源。
+- 通过 [Batch API](https://developers.openai.com/api/docs/guides/batch).
 
 ## 模型
 
-第二代 Sora 模型提供两个版本，各自针对不同的使用场景而设计。
+第二代 Sora 模型提供两种变体，每种都针对不同的使用场景进行了定制。
 
 ### Sora 2
 
-`sora-2` 旨在提供 **速度和灵活性**。它非常适合探索阶段，当你正在尝试语气、结构或视觉风格，并且需要快速反馈而非完美保真时。
+`sora-2` 专为 **速度和灵活性**。而设计。它非常适合探索阶段，当你正在试验语气、结构或视觉风格，并需要快速反馈而非完美的保真度时。
 
-它能快速生成高质量结果，非常适合快速迭代、概念构思和粗剪。 `sora-2` 对于社交媒体内容、原型以及周转时间比超高保真更重要的场景，它通常绰绰有余。
+它能够快速生成质量不错的效果，非常适合快速迭代、构思和粗剪。 `sora-2` 通常足以应对社交媒体内容、原型设计以及那些更看重交付速度而非超高保真度的场景。
 
 ### Sora 2 Pro
 
-`sora-2-pro` 产生更高质量的结果。当你需要 **生产级输出**.
+`sora-2-pro` 生成更高质量的结果。当你需要 **生产级输出**.
 
-`sora-2-pro` 渲染时间更长且运行成本更高，但能产生更精致、更稳定的结果。它最适合高分辨率电影片段、营销素材以及任何视觉精度至关重要的场景。
+`sora-2-pro` 渲染时间更长，运行成本也更高，但它能产出更精致、更稳定的结果。它最适合高分辨率电影级画面、营销素材，以及任何对视觉精度有严苛要求的场景。
 
-使用 `sora-2-pro` 当你需要 1080p 导出时， `1920x1080` 或 `1080x1920`.
+在需要以 `sora-2-pro` 导出 1080p 视频时使用 `1920x1080` 或 `1080x1920`.
 
-两者都 `sora-2` 和 `sora-2-pro` 支持 `16`- 和 `20`- 秒生成。
+两者 `sora-2` 和 `sora-2-pro` 都支持 `16`-秒和 `20`-秒生成。
 
-## 生成视频
+## Generate a video
 
 生成视频是一个 **异步** 过程：
 
-1. 当你调用 `POST /videos` 端点时，API会返回一个包含作业 ID 的作业对象 `id` 以及一个初始 `status`.
+1. 当你调用 `POST /videos` endpoint 时，API 会返回一个包含 job `id` 和初始 `status`.
 
-2. 你可以轮询 `GET /videos/{video_id}` 端点直到状态转为已完成，或采用更高效的方式——使用 webhooks（参见下方 webhooks 部分）在作业完成时自动收到通知。
+2. 你可以轮询 `GET /videos/{video_id}` endpoint 直到状态变为 completed，或者——为了更高效——使用 webhook（见下方 webhook 部分）在任务完成时自动收到通知。
 
-3. 一旦作业达到 `completed` 状态，你可以通过以下方式获取最终的 MP4 文件 `GET /videos/{video_id}/content`.
+3. 当任务达到 `completed` 状态后，你可以通过 `GET /videos/{video_id}/content`.
 
-### 启动渲染作业
+### 启动渲染任务
 
-首先调用 `POST /videos` 并传入文本提示和所需参数。提示词定义创意观感——主题、镜头、灯光和运动——而诸如 `size` 和 `seconds` 等参数则控制视频的分辨率和长度。
+首先调用 `POST /videos` 并传入文本提示词和必需参数。提示词决定了视频的创意风格与观感——包括主题、镜头、光照和运动——而诸如 `size` 和 `seconds` 等参数则用于控制视频的分辨率和时长。
 
-创建视频
+Create a video
 
 ```javascript
 import OpenAI from "openai";
@@ -139,7 +139,7 @@ curl -X POST "https://api.openai.com/v1/videos" \
 ```
 
 
-响应是一个 JSON 对象，包含唯一 id 和初始状态，例如 `queued` 或 `in_progress`。这意味着渲染任务已开始。
+响应是一个 JSON 对象，包含唯一的 id 和初始状态，例如 `queued` 或 `in_progress`.这意味着渲染任务已启动。
 
 ```shell
 {
@@ -154,48 +154,48 @@ curl -X POST "https://api.openai.com/v1/videos" \
 }
 ```
 
-### 选择大小和时长
+### 选择尺寸与时长
 
-选择满足你生产需求的最小格式：
+选择能满足你生产需求的最小格式：
 
-- 在迭代提示词、运镜或构图时，请使用较短的片段。
-- 生成最长 `20` 秒的视频，以呈现更长的节拍、更完整的场景或更完整的片段。
-- 在 `sora-2-pro` 中使用更高分辨率的导出格式， `1920x1080` 或 `1080x1920`.
+- 在调试提示词、运动或构图时使用较短的片段。
+- 需要更长的节拍、更饱满的场景或更完整的片段时，生成最长达 `20` 秒的视频。
+- 使用 `sora-2-pro` 以导出更高分辨率的 `1920x1080` 或 `1080x1920`.
 
-较长的时长和 1080p 任务可能比短暂的 720p 或 480p 渲染花费明显更长的时间，因此在面向用户的流程中请规划更高的延迟。
+较长的时长和 1080p 任务完成所需的时间可能明显长于较短的 720p 或 480p 渲染，因此在为面向用户的工作流做规划时应预留更高的延迟。
 
 ### 护栏与限制
 
-该API强制执行多项内容限制：
+API 强制实施若干内容限制：
 
-- 仅限适合 18 岁以下受众的内容（未来将提供绕过此限制的设置）。
-- 受版权保护的角色和受版权保护的音乐将被拒绝。
-- 无法生成真实人物（包括公众人物）。
-- 默认情况下，描绘人类相似度的角色上传会被阻止。
-- 目前拒绝包含人脸的输入图像。
+- 仅面向 18 岁以下受众的内容（未来将提供绕过此限制的设置）。
+- 受版权保护的角色形象和受版权保护的音乐将被拒绝。
+- 不能生成真人形象，包括公众人物。
+- 描绘人类形象的素材上传默认会被拦截。
+- 当前会拒绝包含人脸的输入图像。
 
-确保提示词、参考图像和转录内容遵循这些规则，以避免生成失败。
+确保提示词、参考图像和转录文本遵循这些规则，以避免生成失败。
 
 ### 有效提示
 
-为获得最佳效果，请描述 **镜头类型、主体、动作、场景和灯光**。例如：
+为了获得最佳效果，请描述 **镜头类型、主体、动作、场景和光照**。例如：
 
-- _“孩子在草地上放红色风筝的广角镜头，金色黄昏阳光，镜头缓慢向上摇摄。”_
-- _“木桌上热气腾腾咖啡杯的特写，晨光透过百叶窗，浅景深。”_
+- _“黄金时刻的阳光下，一个孩子在绿草如茵的公园里放飞红色风筝的远景镜头，摄像机缓慢向上摇摄。”_
+- _“木质桌上一个冒着热气的咖啡杯特写，清晨光线透过百叶窗洒入，景深柔和。”_
 
-这种程度的明确性有助于模型生成一致的结果，而不会编造不必要的细节。如需更高级的提示技巧，请参阅我们专门的 Sora 2 [提示指南](https://developers.openai.com/cookbook/examples/sora/sora2_prompting_guide).
+这种具体的细节有助于模型产出稳定的结果，避免编造不必要的内容。如需了解更高级的提示技巧，请参阅我们的 Sora 2 [提示指南](https://developers.openai.com/cookbook/examples/sora/sora2_prompting_guide).
 
 ### 监控进度
 
-视频生成需要时间。具体取决于模型、API负载及分辨率， **单次渲染可能需要几分钟**.
+视频生成需要一定时间。具体耗时取决于模型、API 负载和分辨率， **单次渲染可能需要数分钟**.
 
-为高效管理这一过程，你可以轮询API以请求状态更新，或通过 webhook 接收通知。
+为了高效管理，你可以轮询 API 以请求状态更新，也可以通过 webhook 接收通知。
 
 #### 轮询状态端点
 
-调用 `GET /videos/{video_id}` 时使用创建调用返回的 id。响应显示作业的当前状态、进度百分比（如果有）以及任何错误。
+Call `GET /videos/{video_id}` 并使用创建调用返回的 id。响应会显示任务的当前状态、进度百分比（若可用）以及任何错误。
 
-典型状态为 `queued`, `in_progress`, `completed`，以及 `failed`。以合理的间隔进行轮询（例如，每 10–20 秒），如有必要，使用指数退避，并向用户提供作业仍在进行中的反馈。
+常见状态包括 `queued`, `in_progress`, `completed`，以及 `failed`。以合理的间隔进行轮询（例如每 10–20 秒一次），必要时使用指数退避，并向用户反馈任务仍在进行中。
 
 轮询状态端点
 
@@ -336,13 +336,13 @@ puts("Video successfully completed: #{video.id}")
 }
 ```
 
-#### 使用 Webhook 接收通知
+#### 使用 Webhook 进行通知
 
-与其反复轮询作业状态， `GET`，不如注册一个 [webhook](https://developers.openai.com/api/docs/guides/webhooks) ，以便在视频生成完成或失败时自动收到通知。
+无需反复轮询任务状态， `GET`，而是注册一个 [webhook](https://developers.openai.com/api/docs/guides/webhooks) 以便在视频生成完成或失败时自动接收通知。
 
-你可以在 [webhook 设置页面](https://platform.openai.com/settings/project/webhooks)。中配置 Webhooks。当作业完成时，API 会发出两种事件类型之一： `video.completed` 和 `video.failed`. 每个事件都包含触发它的作业 ID。
+可在你的 [webhook 设置页面](https://platform.openai.com/settings/project/webhooks)。中配置 Webhook。任务结束时，API 会发出以下两种事件类型之一： `video.completed` 和 `video.failed`。每个事件都包含触发该事件的任务 ID。
 
-示例 webhook 负载：
+示例 webhook 载荷：
 
 ```
 {
@@ -360,7 +360,7 @@ puts("Video successfully completed: #{video.id}")
 
 #### 下载 MP4
 
-一旦任务达到状态 `completed`，即可使用以下接口获取 MP4 `GET /videos/{video_id}/content`。该端点会流式传输二进制视频数据并返回标准内容标头，因此你可以直接将文件保存到磁盘，或将其传输到云存储。
+任务进入状态 `completed`，后，使用以下方式获取 MP4: `GET /videos/{video_id}/content`。该端点以流式方式传输二进制视频数据并返回标准的 content 响应头，因此你可以直接将文件保存到磁盘，也可以将其管道传输到云存储。
 
 下载 MP4
 
@@ -571,11 +571,11 @@ curl -L "https://api.openai.com/v1/videos/video_abc123/content" \
 ```
 
 
-现在你已获得可用于播放、编辑或分发的最终视频文件。下载链接在生成后的最长 1 小时内有效。如需长期存储，请及时将文件复制到你自己的存储系统中。
+现在你已获得可用于播放、剪辑或分发的最终视频文件。下载链接在生成后最长 1 小时内有效。如需长期存储，请及时将文件复制到你自己的存储系统中。
 
-#### 下载支持资产
+#### 下载支持资源
 
-对于每个已完成视频，你还可以下载 **缩略图** 和 **精灵表**。这些是轻量级资源，适用于预览、进度条或目录展示。使用 `variant` 查询参数指定要下载的内容。默认值为 `variant=video` 用于 MP4。
+对于每个已完成的视频，你还可以下载 **缩略图** 和 **雪碧图**。这些是轻量级资源，可用于预览、拖动条或目录展示。使用 `variant` 查询参数来指定你要下载的内容。默认值为 `variant=video` ，对应 MP4。
 
 ```bash
 # Download a thumbnail
@@ -590,18 +590,18 @@ curl -L "https://api.openai.com/v1/videos/video_abc123/content?variant=spriteshe
 ```
 
 
-## 使用图像引用
+## 使用图片引用
 
-你可以使用输入图像引导生成，该图像作为 **视频的第一帧**。如果输出视频需要保留品牌资产、角色或特定环境的外观，这将非常有用。
+你可以使用一张输入图像来引导生成，该图像将作为 **视频的首帧**。当你需要生成的视频保留品牌素材、角色或特定环境的风格时，这非常有用。
 
 根据请求类型选择 `input_reference` 格式：
 
-- 使用 `input_reference` 并附带上传的图片，用于 `multipart/form-data` 请求。
-- 使用 `input_reference` 并附带 JSON 对象，用于 `application/json` 请求，包括 Batch。JSON 形式接受 `file_id` 或 `image_url`.
+- 使用 `input_reference` 与上传的图片一起在 `multipart/form-data` 请求中使用。
+- 使用 `input_reference` 与一个 JSON 对象一起在 `application/json` 请求中使用，包括 Batch。JSON 形式接受任一 `file_id` 或 `image_url`.
 
 图像必须与目标视频的分辨率匹配（`size`).
 
-支持的文件格式为 `image/jpeg`, `image/png`，以及 `image/webp`.
+支持的文件格式包括 `image/jpeg`, `image/png`，以及 `image/webp`.
 
 ```bash
 curl -X POST "https://api.openai.com/v1/videos" \
@@ -615,31 +615,31 @@ curl -X POST "https://api.openai.com/v1/videos" \
 ```
 
 
-|                          输入图像使用 [OpenAI GPT Image 生成](https://developers.openai.com/api/docs/guides/image-generation)                           |                                 使用 Sora 2 生成的视频（已转换为 GIF）                                  |
+|                          使用以下工具生成的输入图像 [OpenAI GPT Image](https://developers.openai.com/api/docs/guides/image-generation)                           |                                 使用 Sora 2 生成的视频（已转换为 GIF）                                  |
 | :---------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------: |
-| ![][sora_woman_skyline_original][下载此图像](https://cdn.openai.com/API/docs/images/sora/woman_skyline_original_720p.jpeg) |    ![][sora_woman_skyline_video] 提示词： _“她转过身微笑，然后慢慢走出画面。”_    |
-|    ![][sora_monster_original_jpeg][下载此图像](https://cdn.openai.com/API/docs/images/sora/monster_original_720p.jpeg)     | ![][sora_monster_original_gif] 提示词： _“冰箱门打开了。一个可爱、胖乎乎的紫色怪物从里面出来了。”_ |
+| ![][sora_woman_skyline_original][下载此图像](https://cdn.openai.com/API/docs/images/sora/woman_skyline_original_720p.jpeg) |    ![][sora_woman_skyline_video] 提示词： _“她转过身笑了笑，然后慢慢走出画面。”_    |
+|    ![][sora_monster_original_jpeg][下载此图像](https://cdn.openai.com/API/docs/images/sora/monster_original_720p.jpeg)     | ![][sora_monster_original_gif] 提示词： _“冰箱门打开了。一只可爱、胖乎乎的紫色怪物从里面走了出来。”_ |
 
 ## 使用字符以保持一致性
 
-角色（Character）允许你上传一个可复用的非人类主体，并在多次生成中引用它。当你希望动物、吉祥物或物体在多张画面中保持相同的核心外观、风格和屏幕表现时，这非常有用。
+角色让你可以上传一个可重复使用的非人类主体，并在多次生成中引用它。当你希望某个动物、吉祥物或物体在多个镜头中保持相同的核心外观、风格和画面存在感时，这非常有用。
 
-角色上传目前最适合短 `2`-到 `4`-秒的片段，
-  `16:9` 或 `9:16`，在 `720p` 到 `1080p`。角色源视频在
-  与请求输出的宽高比匹配时效果最佳。如果宽高比
+角色上传目前在较短的 `2`- 到 `4`-秒片段中效果最佳，在
+  `16:9` 或 `9:16`，在 `720p` 到 `1080p`。角色源视频在以下情况下效果最佳：
+  它们的宽高比与所请求输出的宽高比一致。如果宽高比
   不同，角色可能会出现拉伸或变形。单个视频可以
   包含最多两个角色。
 
-角色与 `input_reference`。不同。图像参考只影响
-单次生成的起始帧，而角色素材可以在未来的视频请求中重复使用
-。
+角色与以下内容不同： `input_reference`。图像参考会对单次生成的
+起始帧进行条件约束，而角色资产可以在未来的
+视频请求中重复使用。
 
-通过上传一个简短的 MP4 片段到 `POST /v1/videos/characters`，来创建角色，然后在创建视频时在 `characters` 数组中包含返回的角色 ID。
+通过上传一段简短的 MP4 片段到 `POST /v1/videos/characters`，来创建角色，然后将返回的角色 ID 包含在创建 `characters` 视频时的数组中。
 
-默认情况下，描绘人类相似度的角色上传会被阻止。请联系
-  你的客户经理或 [联系我们的销售
-  团队](https://openai.com/contact-sales/) 了解更多关于资格
-  拟真访问权限的信息。
+默认情况下，涉及人类肖像的角色上传会被拦截。请联系
+  你的账户经理或 [联系我们的销售
+  团队](https://openai.com/contact-sales/) 了解有关以下资格要求的更多信息：
+  类人访问。
 
 ```bash
 curl -X POST "https://api.openai.com/v1/videos/characters" \
@@ -650,10 +650,10 @@ curl -X POST "https://api.openai.com/v1/videos/characters" \
 ```
 
 
-在提示词中逐字提及角色名称。仅传递角色 ID
-不足以在画面中可靠地保留角色。
+在提示中逐字提及角色名称。仅传递角色 ID
+不足以可靠地在镜头中保留该角色。
 
-角色可与 `input_reference`. 扩展不支持
+角色可以与 `input_reference`。组合使用。扩展不支持
 角色。
 
 ```bash
@@ -672,16 +672,16 @@ curl -X POST "https://api.openai.com/v1/videos" \
 ```
 
 
-## 扩展已完成的视频
+## Extend completed videos
 
-视频扩展功能可让你延续已有的完整视频并创建新的拼接结果。在 `video` 字段中提供源视频， `POST /v1/videos/extensions`，添加描述场景应如何延续的提示，然后 API 会以完整源片段为上下文生成下一段。
+视频扩展可以让你延续一段已完成的视频，并生成一个新的拼接结果。在 `video` 字段中提供源视频 `POST /v1/videos/extensions`，添加一段描述场景应如何延续的提示词，API 会以完整的源片段作为上下文来生成下一段。
 
-当你希望保留运动、镜头方向和场景连续性时，请使用扩展功能。如果只需控制新生成的起始帧，请使用 `input_reference` 代替。
+当你希望保留动作、镜头方向和场景连续性时，可以使用扩展。如果你只需要控制新生成内容的起始帧，请使用 `input_reference` 。
 
 每次扩展最多可增加 `20` 秒。单个视频最多可扩展
-  六次，总长度上限为 `120` 秒。扩展功能
-  目前仅接受源视频和提示，不支持角色
-  或图像引用。
+  至六次，总长度上限为 `120` 秒。扩展功能
+  目前仅接受源视频和提示词，不支持角色
+  或图像参考。
 
 ```bash
 curl -X POST "https://api.openai.com/v1/videos/extensions" \
@@ -699,17 +699,17 @@ curl -X POST "https://api.openai.com/v1/videos/extensions" \
 
 ## 编辑现有视频
 
-通过编辑，你可以对现有视频进行有针对性的调整，而无需从头重新生成。发送 `POST /v1/videos/edits` 并附上提示词和 `video` 参考，系统会复用原始结构、连续性和构图，同时应用修改。当你进行单一且明确的更改时效果最佳，因为更小、更聚焦的编辑能保留更多原始保真度，并降低引入伪影的风险。
+Editing 允许你对已有的视频进行定向调整，无需从头重新生成。发送 `POST /v1/videos/edits` 一个提示词和一个 `video` 参考，系统会复用原有的结构、连续性和构图，再应用修改。当你只做一个明确的小改动时效果最佳，因为更小、更聚焦的编辑能保留更多原始保真度，并降低引入伪影的风险。
 
-此前，视频生成可通过 remix 端点进行编辑，该端点
-  即将弃用。新的集成请使用 edits 端点。
+此前可以通过 remix 端点编辑视频生成结果，该端点
+  已被弃用。新集成请使用 edits 端点。
 
-该 `video` 字段接受视频 ID 或上传的视频。如果传入
+该 `video` 字段接受视频 ID 或上传的视频。如果你传入一个
 视频 ID，API 会根据源视频推断模型。
 
-仅限符合条件的客户编辑上传的视频。请联系你的
-  客户经理或 [联系我们的销售
-  团队](https://openai.com/contact-sales/) 如果你需要此工作流。
+编辑已上传的视频仅向符合条件的客户提供。请联系你的
+  账户经理，或 [联系我们的销售
+  团队](https://openai.com/contact-sales/) 如果你需要此 工作流。
 
 ```bash
 curl -X POST "https://api.openai.com/v1/videos/edits" \
@@ -724,8 +724,8 @@ curl -X POST "https://api.openai.com/v1/videos/edits" \
 ```
 
 
-如果你上传新视频而非编辑现有生成，请在请求中明确设置
-`model` 。
+如果你上传新视频而不是编辑已有生成结果，请在请求中
+`model` 显式设置。
 
 ```bash
 curl -X POST "https://api.openai.com/v1/videos/edits" \
@@ -737,36 +737,36 @@ curl -X POST "https://api.openai.com/v1/videos/edits" \
 ```
 
 
-编辑对迭代尤其有价值，因为它让你无需丢弃已有成效的部分即可进行精炼。通过将每次编辑限制为一项明确的调整，你可以保持视觉风格、主体一致性和镜头构图稳定，同时仍能探索情绪、调色或场面调度上的变化。这使得通过小而可靠的步骤构建精致序列变得容易得多。
+Editing 对于迭代尤其有价值，因为它让你在不丢弃已有可用成果的情况下逐步打磨。将每次编辑约束为一项清晰的调整，你可以保持视觉风格、主体一致性和镜头构图稳定，同时仍然探索情绪、配色或布景的变化。这让通过小巧、可靠的步骤来构建精致的序列变得容易得多。
 
 |         原始视频         |                             编辑后的生成视频                              |
 | :----------------------------: | :-----------------------------------------------------------------------------: |
-| ![][sora_monster_original_gif] | ![][sora_monster_orange] 提示词： _“把怪物的颜色改成橙色。”_ |
-| ![][sora_monster_original_gif] | ![][sora_monster_2monsters] 提示词： _“紧接着出现第二只怪物。”_ |
+| ![][sora_monster_original_gif] | ![][sora_monster_orange] 提示词： _“将怪物的颜色改为橙色。”_ |
+| ![][sora_monster_original_gif] | ![][sora_monster_2monsters] 提示词： _“紧接着第二个怪物出现。”_ |
 
-## 通过批量 API 运行视频任务
+## 通过 Batch API 运行视频任务
 
-当你需要排队处理大量视频渲染以进行离线处理、审阅管线或工作室工作流时，请使用 [Batch API](https://developers.openai.com/api/docs/guides/batch) 。批处理输入文件中的每一行使用与发送至 `POST /v1/videos`，相同的 JSON 请求体，这使其非常适合镜头列表和计划渲染队列。
+使用 [Batch API](https://developers.openai.com/api/docs/guides/batch) 在需要将大量视频渲染加入离线处理、审片流水线或工作室工作流的队列时使用。批处理输入文件中的每一行使用的 JSON 请求体，与你发送给发送的 接口 的请求体相同，这使得它非常适合镜头清单和定时渲染队列。 `POST /v1/videos`，这使得它非常适合镜头清单和定时渲染队列。
 
-对于 Batch 中的视频生成：
+批量视频生成：
 
-- 批处理目前支持 `POST /v1/videos` 。
-- 批处理请求必须使用 JSON，不能使用 multipart。
-- 提前上传资源，并从 JSON 请求体中引用它们。
-- 在批处理中，使用 `input_reference` 进行图像引导生成。在 JSON 请求中，传递 `input_reference` 作为对象，包含 `file_id` 或 `image_url`.
-- Multipart `input_reference` 上传（包括视频参考输入）在批处理中不受支持。
-- 批处理生成的视频可在批处理完成后下载，最长 `24` 小时。
+- Batch 当前支持 `POST /v1/videos` only。
+- Batch 请求必须使用 JSON，不能使用 multipart。
+- 提前上传素材，并在 JSON 请求体中引用它们。
+- 使用 `input_reference` 用于 Batch 中的图像引导生成。在 JSON 请求中，传入 `input_reference` 作为一个对象，配合 `file_id` 或 `image_url`.
+- Multipart `input_reference` 上传，包括视频参考输入，在 Batch 中不受支持。
+- Batch 生成的视频在批次完成后可下载，时长最多为 `24` 小时。
 
 ```jsonl
 {"custom_id":"shot-001","method":"POST","url":"/v1/videos","body":{"model":"sora-2-pro","prompt":"Slow dolly shot through a miniature paper city at blue hour, soft fog, practical window lights flickering on.","size":"1920x1080","seconds":"20"}}
 {"custom_id":"shot-002","method":"POST","url":"/v1/videos","body":{"model":"sora-2-pro","prompt":"Portrait close-up of a red panda chef plating noodles in a stainless-steel kitchen, shallow depth of field.","size":"1080x1920","seconds":"16"}}
 ```
 
-当批次达到 `completed`，时，其输出中的视频任务已处于最终状态，例如 `completed`, `failed`，或 `expired`。使用稳定的 `custom_id` 值，以便将批次结果映射回内部镜头 ID、编辑队列或资产管线，然后使用返回的视频 ID 下载最终资产。
+当一个批次达到 `completed`，时，其输出中的视频任务已经进入终态，例如 `completed`, `failed`，或 `expired`。使用稳定的 `custom_id` 值，以便将批次结果映射回你内部的镜头 ID、剪辑队列或资产流水线，然后使用返回的视频 ID 下载最终资产。
 
 ## 维护你的库
 
-使用 `GET /videos` 来枚举你的视频。该端点支持用于分页和排序的可选查询参数。
+在需要以 `GET /videos` 以列举你的视频。该端点支持可选的查询参数，用于分页和排序。
 
 ```bash
 curl "https://api.openai.com/v1/videos?limit=20&after=video_123&order=asc" \
@@ -774,7 +774,7 @@ curl "https://api.openai.com/v1/videos?limit=20&after=video_123&order=asc" \
 ```
 
 
-使用 `DELETE /videos/{video_id}` 从 OpenAI 的存储中移除你不再需要的视频。
+在需要以 `DELETE /videos/{video_id}` 以移除你不再需要的视频，将其从OpenAI的存储中删除。
 
 ```bash
 curl -X DELETE "https://api.openai.com/v1/videos/REPLACE_WITH_YOUR_VIDEO_ID" \

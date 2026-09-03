@@ -917,14 +917,14 @@ Schema name: `ResponseCreatedEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -1730,7 +1730,7 @@ Schema name: `ResponseCreatedEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -1917,8 +1917,7 @@ Schema name: `ResponseCreatedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -2269,6 +2268,10 @@ Schema name: `ResponseCreatedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -2279,7 +2282,8 @@ Schema name: `ResponseCreatedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -7094,7 +7098,7 @@ Schema name: `ResponseCreatedEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -7495,23 +7499,6 @@ Schema name: `ResponseCreatedEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -7534,9 +7521,6 @@ Schema name: `ResponseCreatedEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -7546,8 +7530,7 @@ Schema name: `ResponseCreatedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -7698,6 +7681,13 @@ Schema name: `ResponseCreatedEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -54307,7 +54297,7 @@ Schema name: `ResponseCreatedEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-2024-08-06",
+    "model": "gpt-5.6-sol",
     "output": [],
     "parallel_tool_calls": true,
     "previous_response_id": null,
@@ -55242,14 +55232,14 @@ Schema name: `ResponseInProgressEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -56055,7 +56045,7 @@ Schema name: `ResponseInProgressEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -56242,8 +56232,7 @@ Schema name: `ResponseInProgressEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -56594,6 +56583,10 @@ Schema name: `ResponseInProgressEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -56604,7 +56597,8 @@ Schema name: `ResponseInProgressEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -61419,7 +61413,7 @@ Schema name: `ResponseInProgressEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -61820,23 +61814,6 @@ Schema name: `ResponseInProgressEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -61859,9 +61836,6 @@ Schema name: `ResponseInProgressEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -61871,8 +61845,7 @@ Schema name: `ResponseInProgressEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -62023,6 +61996,13 @@ Schema name: `ResponseInProgressEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -108632,7 +108612,7 @@ Schema name: `ResponseInProgressEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-2024-08-06",
+    "model": "gpt-5.6-sol",
     "output": [],
     "parallel_tool_calls": true,
     "previous_response_id": null,
@@ -109567,14 +109547,14 @@ Schema name: `ResponseCompletedEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -110380,7 +110360,7 @@ Schema name: `ResponseCompletedEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -110567,8 +110547,7 @@ Schema name: `ResponseCompletedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -110919,6 +110898,10 @@ Schema name: `ResponseCompletedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -110929,7 +110912,8 @@ Schema name: `ResponseCompletedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -115744,7 +115728,7 @@ Schema name: `ResponseCompletedEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -116145,23 +116129,6 @@ Schema name: `ResponseCompletedEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -116184,9 +116151,6 @@ Schema name: `ResponseCompletedEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -116196,8 +116160,7 @@ Schema name: `ResponseCompletedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -116348,6 +116311,13 @@ Schema name: `ResponseCompletedEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -162958,7 +162928,7 @@ Schema name: `ResponseCompletedEvent`
     "input": [],
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [
       {
         "id": "msg_123",
@@ -163909,14 +163879,14 @@ Schema name: `ResponseFailedEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -164722,7 +164692,7 @@ Schema name: `ResponseFailedEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -164909,8 +164879,7 @@ Schema name: `ResponseFailedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -165261,6 +165230,10 @@ Schema name: `ResponseFailedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -165271,7 +165244,8 @@ Schema name: `ResponseFailedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -170086,7 +170060,7 @@ Schema name: `ResponseFailedEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -170487,23 +170461,6 @@ Schema name: `ResponseFailedEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -170526,9 +170483,6 @@ Schema name: `ResponseFailedEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -170538,8 +170492,7 @@ Schema name: `ResponseFailedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -170690,6 +170643,13 @@ Schema name: `ResponseFailedEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -217302,7 +217262,7 @@ Schema name: `ResponseFailedEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [],
     "previous_response_id": null,
     "reasoning_effort": null,
@@ -218232,14 +218192,14 @@ Schema name: `ResponseIncompleteEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -219045,7 +219005,7 @@ Schema name: `ResponseIncompleteEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -219232,8 +219192,7 @@ Schema name: `ResponseIncompleteEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -219584,6 +219543,10 @@ Schema name: `ResponseIncompleteEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -219594,7 +219557,8 @@ Schema name: `ResponseIncompleteEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -224409,7 +224373,7 @@ Schema name: `ResponseIncompleteEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -224810,23 +224774,6 @@ Schema name: `ResponseIncompleteEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -224849,9 +224796,6 @@ Schema name: `ResponseIncompleteEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -224861,8 +224805,7 @@ Schema name: `ResponseIncompleteEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -225013,6 +224956,13 @@ Schema name: `ResponseIncompleteEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -271624,7 +271574,7 @@ Schema name: `ResponseIncompleteEvent`
     },
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-4o-mini-2024-07-18",
+    "model": "gpt-5.6-sol",
     "output": [],
     "previous_response_id": null,
     "reasoning_effort": null,
@@ -328057,14 +328007,14 @@ Schema name: `ResponseQueuedEvent`
     "oasRef": "#/components/schemas/ResponseProperties/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
+    "docstring": "Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI\noffers a wide range of models with different capabilities, performance\ncharacteristics, and price points. Refer to the [model guide](/docs/models)\nto browse and compare available models.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsesModel",
       "$ref": "(resource) $shared > (model) responses_model > (schema)"
     },
     "examples": [
-      "gpt-5.1"
+      "gpt-5.6-sol"
     ],
     "optional": false,
     "nullable": false,
@@ -328870,7 +328820,7 @@ Schema name: `ResponseQueuedEvent`
     "oasRef": "#/components/schemas/Response/allOf/2/properties/reasoning",
     "deprecated": false,
     "key": "reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "title": "Reasoning",
     "type": {
       "kind": "HttpTypeReference",
@@ -329057,8 +329007,7 @@ Schema name: `ResponseQueuedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) user": {
@@ -329409,6 +329358,10 @@ Schema name: `ResponseQueuedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -329419,7 +329372,8 @@ Schema name: `ResponseQueuedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 0": {
@@ -334234,7 +334188,7 @@ Schema name: `ResponseQueuedEvent`
   "(resource) $shared > (model) reasoning > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Reasoning",
-    "docstring": "**gpt-5 and o-series models only**\n\nConfiguration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
+    "docstring": "Configuration options for\n[reasoning models](https://platform.openai.com/docs/guides/reasoning).\n",
     "ident": "Reasoning",
     "type": {
       "kind": "HttpTypeObject",
@@ -334635,23 +334589,6 @@ Schema name: `ResponseQueuedEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) responses > (model) response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) responses > (model) response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ResponseUsage",
@@ -334674,9 +334611,6 @@ Schema name: `ResponseQueuedEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -334686,8 +334620,7 @@ Schema name: `ResponseQueuedEvent`
       "(resource) responses > (model) response_usage > (schema) > (property) input_tokens_details",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens",
       "(resource) responses > (model) response_usage > (schema) > (property) output_tokens_details",
-      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens",
-      "(resource) responses > (model) response_usage > (schema) > (property) compute_units"
+      "(resource) responses > (model) response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) responses > (model) response_error > (schema) > (property) code > (member) 0": {
@@ -334838,6 +334771,13 @@ Schema name: `ResponseQueuedEvent`
     }
   },
   "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
