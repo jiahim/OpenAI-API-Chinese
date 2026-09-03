@@ -1,17 +1,17 @@
-# 图像编辑流式事件
+# 图片编辑流式事件
 
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt). 通过在页面 URL 后追加 `.md` 即可获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾附加 `.md` 即可获取该页面的 Markdown 版本。
 
-使用服务器发送事件实时流式生成和编辑图像。
-[了解更多关于图像流式传输的信息](https://developers.openai.com/docs/guides/image-generation).
+使用服务端发送的事件实时流式生成和编辑图像。
+[详细了解图像流式处理](https://developers.openai.com/docs/guides/image-generation).
 
 ## image_edit.partial_image
 
-在图像编辑流式传输期间，当部分图像可用时触发。
+在图像编辑流式传输过程中，当有部分图像可用时触发。
 
 ### Schema
 
-架构名称： `ImageEditPartialImageEvent`
+Schema name: `ImageEditPartialImageEvent`
 
 ```json
 {
@@ -401,11 +401,11 @@
 
 ## image_edit.completed
 
-当图像编辑完成且最终图像可用时触发。
+在图像编辑完成且最终图像可用时发出。
 
 ### Schema
 
-架构名称： `ImageEditCompletedEvent`
+Schema name: `ImageEditCompletedEvent`
 
 ```json
 {

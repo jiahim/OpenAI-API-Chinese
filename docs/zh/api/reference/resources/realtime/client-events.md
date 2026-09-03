@@ -1,24 +1,24 @@
-# 实时客户端事件
+# Realtime 客户端事件
 
-> 关于完整文档索引，请参见 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
-这些是 OpenAI Realtime WebSocket 服务器将从客户端接受的事件。
+这些事件是 OpenAI Realtime WebSocket 服务器将接受来自客户端的事件。
 
 ## session.update
 
 发送此事件以更新会话的配置。
-客户端可随时发送此事件以更新任何字段
-，除了 `voice` 和 `model`. `voice` 仅在尚无其他音频输出时才可更新。
+客户端可以随时发送此事件来更新任何字段
+除了 `voice` 和 `model`. `voice` 之外,只有在尚未产生其他音频输出时才能更新。
 
-当服务器收到 `session.update`，时，它将响应
-一个 `session.updated` 事件，显示完整且有效的配置。
-只有出现在 `session.update` 中的字段才会被更新。要清除像
-`instructions`，这样的字段，请传入空字符串。要清除像 `tools`，这样的字段，请传入空数组。
-要清除像 `turn_detection`，这样的字段，请传入 `null`.
+当服务器收到一个 `session.update`，时,它会响应一个
+包含 `session.updated` 事件,显示完整且生效的配置。
+仅会更新 `session.update` 中存在的字段。若要清除类似
+`instructions`，的字段,请传递空字符串。若要清除类似 `tools`，的字段,请传递空数组。
+若要清除类似 `turn_detection`，的字段,请传递 `null`.
 
 ### Schema
 
-Schema 名称： `RealtimeClientEventSessionUpdate`
+Schema name: `RealtimeClientEventSessionUpdate`
 
 ```json
 {
@@ -5646,23 +5646,23 @@ Schema 名称： `RealtimeClientEventSessionUpdate`
 
 ## input_audio_buffer.append
 
-发送此事件以将音频字节附加到输入音频缓冲区。该音频
-缓冲区是你可写入并稍后提交的临时存储。“提交”将根据缓冲区内容
-在对话历史中创建新的用户消息项，并清空缓冲区。
-输入音频转录（若启用）将在缓冲区提交时生成。
+发送此事件以将音频字节追加到输入音频缓冲区。该音频
+缓冲区是可写入的临时存储，之后可以提交。“提交”操作会根据缓冲区内容在
+对话历史中创建一个新的用户消息条目，并清空缓冲区。
+（如果启用）将在缓冲区提交时生成输入音频转录。
 
-若启用了 VAD，音频缓冲区将用于检测语音，服务器将决定
-何时提交。当服务器端 VAD 被禁用时，你必须手动提交音频缓冲区。
-输入音频降噪作用于对音频缓冲区的写入。
+如果启用了 VAD，则使用音频缓冲区来检测语音，并由服务端决定
+何时提交。当服务端 VAD 禁用时，你必须手动提交音频缓冲区。
+输入音频降噪功能作用于对音频缓冲区的写入。
 
-客户端可自行决定在每次事件中放置多少音频，最多不超过
-15 MiB，例如从客户端流式传输较小的块可能使
-VAD 更加灵敏。与大多数其他客户端事件不同，服务器不会
-对该事件发送确认响应。
+客户端可以选择每次事件放入多少音频，最大不超过
+15 MiB；例如，从客户端流式传输较小的数据块可以让
+VAD 响应更及时。与大多数其他客户端事件不同，服务端
+不会为该事件发送确认响应。
 
 ### Schema
 
-Schema 名称： `RealtimeClientEventInputAudioBufferAppend`
+Schema name: `RealtimeClientEventInputAudioBufferAppend`
 
 ```json
 {
@@ -5769,13 +5769,13 @@ Schema 名称： `RealtimeClientEventInputAudioBufferAppend`
 
 ## input_audio_buffer.commit
 
-发送此事件以提交用户输入音频缓冲区，这将在对话中创建一个新的用户消息项。如果输入音频缓冲区为空，此事件将产生错误。在服务端VAD模式下，客户端无需发送此事件，服务端将自动提交音频缓冲区。
+发送此事件以提交用户输入音频缓冲区，这将在对话中创建一个新的用户消息项。如果输入音频缓冲区为空，此事件将产生错误。在 Server VAD 模式下，客户端无需发送此事件，服务端会自动提交音频缓冲区。
 
-提交输入音频缓冲区将触发输入音频转录（如果在会话配置中启用），但不会从模型生成响应。服务端将响应一个 `input_audio_buffer.committed` 事件。
+提交输入音频缓冲区将触发输入音频转录（如果在会话配置中启用），但不会创建来自模型的响应。服务端将以一个 `input_audio_buffer.committed` 事件作出响应。
 
 ### Schema
 
-Schema 名称： `RealtimeClientEventInputAudioBufferCommit`
+Schema name: `RealtimeClientEventInputAudioBufferCommit`
 
 ```json
 {
@@ -5863,12 +5863,12 @@ Schema 名称： `RealtimeClientEventInputAudioBufferCommit`
 
 ## input_audio_buffer.clear
 
-发送此事件以清除缓冲区中的音频字节。服务器将
-以以下内容响应 `input_audio_buffer.cleared` 事件。
+发送该事件以清空缓冲区中的音频字节。服务端将
+以以下响应作出回复 `input_audio_buffer.cleared` 事件作出响应。
 
 ### Schema
 
-Schema 名称： `RealtimeClientEventInputAudioBufferClear`
+Schema name: `RealtimeClientEventInputAudioBufferClear`
 
 ```json
 {
@@ -5956,17 +5956,17 @@ Schema 名称： `RealtimeClientEventInputAudioBufferClear`
 
 ## conversation.item.create
 
-向 Conversation 的上下文中添加一个新 Item，包括消息、函数
-调用和函数调用响应。此事件既可用来填充对话的
-“历史记录”，也可在流式传输过程中添加新条目，但存在一个
-当前的限制：它无法填充 assistant 音频消息。
+向会话上下文中添加一个新 Item，包括消息、函数
+调用和函数调用响应。该事件既可用于填充会话的
+“历史记录”，也可用于在流式传输过程中添加新的 Item，但存在
+当前限制：无法填充助手音频消息。
 
-如果成功，服务器将响应一个 `conversation.item.created`
+如果成功，服务端将响应一个 `conversation.item.created`
 事件，否则将发送一个 `error` 事件。
 
 ### Schema
 
-Schema 名称： `RealtimeClientEventConversationItemCreate`
+Schema name: `RealtimeClientEventConversationItemCreate`
 
 ```json
 {
@@ -8651,14 +8651,14 @@ Schema 名称： `RealtimeClientEventConversationItemCreate`
 
 ## conversation.item.retrieve
 
-当你希望检索对话历史中特定条目的服务端表示时，发送此事件。例如，这在检查经过噪音消除和 VAD 处理后的用户音频时非常有用。
-服务器将响应一个 `conversation.item.retrieved` 事件，
-除非该条目不存在于对话历史中，在这种情况下，
-服务器将响应一个错误。
+当你希望获取服务器对会话历史中某一项的表示时，发送此事件。例如，可用于在降噪和 VAD 之后检查用户音频。
+服务器将返回一个 `conversation.item.retrieved` 事件，
+除非该项不存在于会话历史中，此时
+服务器将返回错误。
 
 ### Schema
 
-Schema 名称： `RealtimeClientEventConversationItemRetrieve`
+Schema name: `RealtimeClientEventConversationItemRetrieve`
 
 ```json
 {
@@ -8765,21 +8765,21 @@ Schema 名称： `RealtimeClientEventConversationItemRetrieve`
 
 ## conversation.item.truncate
 
-发送此事件可截断先前助手消息的音频。服务器
-生成音频的速度将快于实时，因此当用户
-打断以截断已发送给客户端但尚未播放的音频时，此事件非常有用。
-这将使服务器对音频的理解与
-客户端的播放保持同步。
+发送此事件以截断之前的助手消息的音频。服务器
+生成音频的速度快于实时，因此当用户中断以截断已经发送给
+客户端但尚未播放的音频时，该事件非常有用。这会将服务器对
+音频的理解与客户端的播放同步起来。
+客户端的播放同步起来。
 
-截断音频将删除服务端的文本转录，以确保
-上下文中没有用户尚未听到的文本。
+截断音频将删除服务端 文本转录，以确保上下文中
+不会出现用户尚未听到的文本。
 
-如果成功，服务器将响应一个 `conversation.item.truncated`
-事件。
+如果成功，服务端将响应一个 `conversation.item.truncated`
+事件作出响应。
 
 ### Schema
 
-Schema 名称： `RealtimeClientEventConversationItemTruncate`
+Schema name: `RealtimeClientEventConversationItemTruncate`
 
 ```json
 {
@@ -8924,14 +8924,14 @@ Schema 名称： `RealtimeClientEventConversationItemTruncate`
 
 ## conversation.item.delete
 
-当你想要从对话中移除任何条目时，发送此事件
-历史记录。服务器将响应一个 `conversation.item.deleted` 事件，
-除非该条目不存在于对话历史中，在这种情况下，
-服务器将响应一个错误。
+当你想从对话历史中移除任何条目时发送该事件
+。服务端将响应一个 `conversation.item.deleted` 事件，
+除非该项不存在于会话历史中，此时
+服务器将返回错误。
 
 ### Schema
 
-Schema 名称： `RealtimeClientEventConversationItemDelete`
+Schema name: `RealtimeClientEventConversationItemDelete`
 
 ```json
 {
@@ -9038,35 +9038,35 @@ Schema 名称： `RealtimeClientEventConversationItemDelete`
 
 ## response.create
 
-此事件指示服务器创建 Response，这意味着触发
-模型推理。当处于服务器端 VAD 模式时，服务器将自动创建
-Responses。
+此事件指示服务端创建一个 Response，即触发
+模型推理。在 Server VAD 模式下，服务端会自动创建 Response
+。
 
-一个 Response 将至少包含一个 Item，也可能包含两个，在这种情况下
-第二个将是函数调用。这些 Item 将默认追加到
+一个 Response 至少包含一个 Item，也可能有两个，此时
+第二个将是一个函数调用。这些 Item 默认会被追加到
 对话历史中。
 
-服务器将响应一个 `response.created` 事件，以及为 Items
-和创建的内容生成的事件，最后是一个 `response.done` 事件来表示
+服务器将返回一个 `response.created` 事件、Items 事件
+以及已创建内容的事件，最后是一个 `response.done` 事件以指示
 Response 已完成。
 
 该 `response.create` 事件包含推理配置，例如
-`instructions` 和 `tools`。如果设置了这些配置，它们将仅为此 Response 覆盖会话的
+`instructions` 和 `tools`。如果设置了，它们将仅针对此次 Response 覆盖 Session 的
 配置。
 
-Responses 可以在默认会话之外创建，这意味着它们可以
-具有任意输入，并且可以禁用将输出写入会话。
-一次只能有一个 Response 写入默认会话，但除此之外，多个
-Responses 可以并行创建。该 `metadata` 字段是消除
-多个同时进行的 Responses 歧义的好方法。
+Response 可以在默认 Conversation 之外创建，这意味着它们可以
+包含任意输入，并且可以禁用将输出写入到 Conversation。
+默认 Conversation 同一时间只能由一个 Response 写入，但除此之外可以并行创建多个
+Response。 `metadata` 字段是区分
+同时进行的多个 Response 的好方法。
 
-客户端可以设置 `conversation` 为 `none` 以创建不写入默认
-对话的响应。可以通过 `input` 字段提供任意输入，该字段是一个数组，接受
-原始条目和对现有条目的引用。
+客户端可以设置 `conversation` 以 `none` 来创建一个不会写入默认
+会话的 Response。可以通过 `input` 字段提供任意输入，该字段是一个接受
+原始 Items 和对现有 Items 引用的数组。
 
 ### Schema
 
-Schema 名称： `RealtimeClientEventResponseCreate`
+Schema name: `RealtimeClientEventResponseCreate`
 
 ```json
 {
@@ -14798,15 +14798,15 @@ Schema 名称： `RealtimeClientEventResponseCreate`
 
 ## response.cancel
 
-发送此事件以取消进行中的响应。服务器将响应
-一个 `response.done` 一个状态为 `response.status=cancelled`。的事件。如果
-没有要取消的响应，服务器将返回错误。即使
-调用 `response.cancel` 时没有进行中的响应，也会返回错误，但
+发送此事件以取消进行中的响应。服务端将响应
+包含 `response.done` 状态为 `response.status=cancelled`。的事件。如果
+没有可取消的响应，服务端将返回错误。即使
+调用 `response.cancel` 时没有响应正在进行，也会返回错误，
 会话将不受影响。
 
 ### Schema
 
-Schema 名称： `RealtimeClientEventResponseCancel`
+Schema name: `RealtimeClientEventResponseCancel`
 
 ```json
 {
@@ -14912,15 +14912,15 @@ Schema 名称： `RealtimeClientEventResponseCancel`
 
 ## output_audio_buffer.clear
 
-**仅 WebRTC/SIP：** 发出以切断当前的音频响应。这将触发服务器
-停止生成音频并发出 `output_audio_buffer.cleared` 事件。该
-事件之前应有一个 `response.cancel` 客户端事件来停止
-当前响应的生成。
+**仅限 WebRTC/SIP：** 发送以切断当前的音频响应。这将触发服务器
+停止生成音频并发出一个 `output_audio_buffer.cleared` 事件。此
+事件应之前发送一个 `response.cancel` 客户端事件以停止当前响应
+的生成。
 [了解更多](https://developers.openai.com/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
 ### Schema
 
-Schema 名称： `RealtimeClientEventOutputAudioBufferClear`
+Schema name: `RealtimeClientEventOutputAudioBufferClear`
 
 ```json
 {

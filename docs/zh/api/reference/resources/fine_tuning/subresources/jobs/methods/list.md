@@ -1,8 +1,8 @@
-> 完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
 
-## 列出微调作业
+## 列出微调任务
 
-**获取** `/fine_tuning/jobs`
+**get** `/fine_tuning/jobs`
 
 列出你组织的微调作业
 
@@ -10,31 +10,31 @@
 
 - `after: optional string`
 
-  上一次分页请求中最后一个任务的标识符。
+  上一次分页请求中最后一个作业的标识符。
 
 - `limit: optional number`
 
-  要检索的微调任务数量。
+  要检索的微调作业数量。
 
 - `metadata: optional map[string] or null`
 
-  可选的元数据过滤器。要过滤，请使用语法 `metadata[k]=v`。或者，设置 `metadata=null` 以表示无元数据。
+  可选的元数据筛选器。要进行筛选，请使用语法 `metadata[k]=v`。或者，设置为 `metadata=null` 以表示没有元数据。
 
-### 返回
+### Returns
 
 - `data: array of FineTuningJob`
 
   - `id: string`
 
-    对象标识符，可在API端点中引用。
+    对象标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
-    创建微调作业时的 Unix 时间戳（以秒为单位）。
+    微调任务创建时的 Unix 时间戳（以秒为单位）。
 
   - `error: object { code, message, param }  or null`
 
-    对于已 `failed`，的微调作业，此处将包含有关失败原因的更多信息。
+    对于已 `failed`，的微调任务，此字段将包含有关失败原因的更多信息。
 
     - `code: string`
 
@@ -46,24 +46,24 @@
 
     - `param: string or null`
 
-      无效的参数，通常是 `training_file` 或 `validation_file`。如果失败与参数无关，此字段将为 null。
+      无效的参数，通常为 `training_file` 或 `validation_file`。如果失败并非由特定参数导致，此字段将为 null。
 
   - `fine_tuned_model: string or null`
 
-    正在创建的微调模型的名称。如果微调作业仍在运行，该值将为 null。
+    正在创建的微调模型的名称。如果微调任务仍在运行，则该值为 null。
 
   - `finished_at: number or null`
 
-    微调作业完成时的 Unix 时间戳（以秒为单位）。如果微调作业仍在运行，该值将为 null。
+    微调任务完成时的 Unix 时间戳（以秒为单位）。如果微调任务仍在运行，则该值为 null。
 
   - `hyperparameters: object { batch_size, learning_rate_multiplier, n_epochs }`
 
-    用于微调作业的超参数。仅当运行 `supervised` 作业时才会返回此值。
+    用于微调任务的超参数。仅当运行 `supervised` 任务时才会返回此值。
 
     - `batch_size: optional "auto" or number or null`
 
-      每个批次中的示例数量。较大的批次大小意味着模型参数
-      更新的频率较低，但方差较小。
+      每个批次中的样本数量。更大的批量大小意味着模型参数
+      更新的频率更低，但方差更小。
 
       - `"auto"`
 
@@ -73,7 +73,7 @@
 
     - `learning_rate_multiplier: optional "auto" or number`
 
-      学习率的缩放因子。较小的学习率可能有助于避免
+      学习率的缩放因子。使用较小的学习率可能有助于避免
       过拟合。
 
       - `"auto"`
@@ -84,8 +84,8 @@
 
     - `n_epochs: optional "auto" or number`
 
-      训练模型的周期数。一个周期指完整遍历
-      训练数据集一次。
+      训练模型的轮次（epoch）数。一个 epoch 指对训练数据集进行
+      一次完整遍历。
 
       - `"auto"`
 
@@ -95,7 +95,7 @@
 
   - `model: string`
 
-    正在被微调的基础模型。
+    正在进行微调的基础模型。
 
   - `object: "fine_tuning.job"`
 
@@ -105,19 +105,19 @@
 
   - `organization_id: string`
 
-    拥有该微调作业的组织。
+    拥有该微调任务的所有组织。
 
   - `result_files: array of string`
 
-    微调作业的已编译结果文件 ID。你可以通过以下方式检索结果： [Files API](/docs/api-reference/files/retrieve-contents).
+    该微调任务的编译结果文件 ID。你可以使用 [Files API](/docs/api-reference/files/retrieve-contents).
 
   - `seed: number`
 
-    用于微调作业的种子。
+    该微调任务使用的随机种子。
 
   - `status: "validating_files" or "queued" or "running" or 3 more`
 
-    微调作业的当前状态，可以是 `validating_files`, `queued`, `running`, `succeeded`, `failed`，或 `cancelled`.
+    该微调任务的当前状态，可为 `validating_files`, `queued`, `running`, `succeeded`, `failed`，或 `cancelled`.
 
     - `"validating_files"`
 
@@ -133,19 +133,19 @@
 
   - `trained_tokens: number or null`
 
-    此微调作业处理的可计费 token 总数。如果微调作业仍在运行，该值将为 null。
+    此微调任务处理的计费 token 总数。如果微调任务仍在运行，则该值为 null。
 
   - `training_file: string`
 
-    用于训练的文件 ID。你可以通过以下方式检索训练数据： [Files API](/docs/api-reference/files/retrieve-contents).
+    用于训练的文件 ID。你可以使用 [Files API](/docs/api-reference/files/retrieve-contents).
 
   - `validation_file: string or null`
 
-    用于验证的文件 ID。你可以通过以下方式检索验证结果： [Files API](/docs/api-reference/files/retrieve-contents).
+    用于验证的文件 ID。你可以使用 [Files API](/docs/api-reference/files/retrieve-contents).
 
   - `estimated_finish: optional number or null`
 
-    微调作业预计完成的 Unix 时间戳（秒）。如果微调作业未在运行，该值将为 null。
+    微调作业预计完成的 Unix 时间戳（以秒为单位）。如果微调作业未在运行，则该值为 null。
 
   - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
@@ -159,18 +159,18 @@
 
     - `wandb: FineTuningJobWandbIntegration`
 
-      用于与 Weights and Biases 集成的设置。此负载指定了指标将发送到的
-      项目。可选地，你可以为运行设置显式显示名称、为运行添加标签，
-      并设置要与运行关联的默认实体（团队、用户名等）。
+      与 Weights and Biases 集成的设置。此负载指定将指标发送到的项目。
+      你可以选择为运行设置显式显示名称，并添加标签
+      添加到你的运行，并设置一个默认实体（团队、用户名等）来关联你的运行。
 
       - `project: string`
 
-        新运行将在其下创建的项目的名称。
+        新运行将在其下创建的项目名称。
 
       - `entity: optional string or null`
 
-        用于运行的实体。这允许你设置希望与运行关联的 WandB 用户的团队或用户名。
-        如果未设置，将使用注册的 WandB API 密钥的默认实体。
+        运行要使用的实体。这允许你设置要与运行关联的 WandB 用户的团队或用户名，你
+        希望关联运行。如果未设置，则使用已注册 WandB API 密钥的默认实体。
 
       - `name: optional string or null`
 
@@ -178,17 +178,17 @@
 
       - `tags: optional array of string`
 
-        要附加到新创建运行的一组标签。这些标签会直接传递给 WandB。部分
-        OpenAI会生成默认标签："openai/finetune"、"openai/{base-model}"、"openai/{ftjob-abcdef}".
+        要附加到新创建运行的一组标签。这些标签会直接传递给 WandB。某些
+        默认标签由 OpenAI 生成："openai/finetune"、"openai/{base-model}"、"openai/{ftjob-abcdef}".
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象上的16个键值对集合。这可以
-    用于以结构化格式存储有关对象的额外信息，
-    并通过API或仪表板查询对象。
+    一组可附加到对象的 16 个键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
+    并通过 API 或仪表板查询对象。
 
-    键是字符串，最大长度为64个字符。值是字符串
-    ，最大长度为512个字符。
+    键为字符串，最大长度为 64 个字符。值为字符串，
+    最大长度为 512 个字符。
 
   - `method: optional object { type, dpo, reinforcement, supervised }`
 
@@ -196,7 +196,7 @@
 
     - `type: "supervised" or "dpo" or "reinforcement"`
 
-      方法的类型。可以是 `supervised`, `dpo`，或 `reinforcement`.
+      方法的类型。是 `supervised`, `dpo`，或 `reinforcement`.
 
       - `"supervised"`
 
@@ -206,15 +206,15 @@
 
     - `dpo: optional DpoMethod`
 
-      DPO微调方法的配置。
+      DPO 微调方法的配置。
 
       - `hyperparameters: optional DpoHyperparameters`
 
-        用于DPO微调作业的超参数。
+        用于 DPO 微调作业的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的示例数量。较大的批次大小意味着模型参数更新的频率较低，但方差较小。
+          每个批次中的示例数量。较大的批大小意味着模型参数更新频率降低，但方差也更低。
 
           - `"auto"`
 
@@ -224,7 +224,7 @@
 
         - `beta: optional "auto" or number`
 
-          DPO方法的beta值。较高的beta值会增加策略模型与参考模型之间惩罚的权重。
+          DPO 方法的 beta 值。较高的 beta 值会增大策略模型与参考模型之间惩罚项的权重。
 
           - `"auto"`
 
@@ -234,7 +234,7 @@
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
+          学习率的缩放因子。使用较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -244,7 +244,7 @@
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮数。一轮是指对训练数据集进行的一次完整循环。
+          训练模型的轮次数。一个 epoch 指的是对训练数据集进行一次完整的遍历。
 
           - `"auto"`
 
@@ -262,11 +262,11 @@
 
         - `StringCheckGrader object { input, name, operation, 2 more }`
 
-          一个StringCheckGrader对象，使用指定的操作对输入和参考进行字符串比较。
+          一个 StringCheckGrader 对象，使用指定的操作对输入和参考进行字符串比较。
 
           - `input: string`
 
-            输入文本。这可能包含模板字符串。
+            输入文本。可以包含模板字符串。
 
           - `name: string`
 
@@ -274,7 +274,7 @@
 
           - `operation: "eq" or "ne" or "like" or "ilike"`
 
-            要执行的字符串检查操作。可选值之一： `eq`, `ne`, `like`，或 `ilike`.
+            要执行的字符串检查操作。取值为以下之一 `eq`, `ne`, `like`，或 `ilike`.
 
             - `"eq"`
 
@@ -286,7 +286,7 @@
 
           - `reference: string`
 
-            参考文本。可能包含模板字符串。
+            参考文本。可以包含模板字符串。
 
           - `type: "string_check"`
 
@@ -300,7 +300,7 @@
 
           - `evaluation_metric: "cosine" or "fuzzy_match" or "bleu" or 8 more`
 
-            要使用的评估指标。可选值之一： `cosine`, `fuzzy_match`, `bleu`,
+            要使用的评估指标。取值为以下之一 `cosine`, `fuzzy_match`, `bleu`,
             `gleu`, `meteor`, `rouge_1`, `rouge_2`, `rouge_3`, `rouge_4`, `rouge_5`,
             或 `rouge_l`.
 
@@ -328,7 +328,7 @@
 
           - `input: string`
 
-            正在被评分的文本。
+            被评分的文本。
 
           - `name: string`
 
@@ -336,7 +336,7 @@
 
           - `reference: string`
 
-            用于对照评分的文本。
+            作为评分参照的文本。
 
           - `type: "text_similarity"`
 
@@ -346,7 +346,7 @@
 
         - `PythonGrader object { name, source, type, image_tag }`
 
-          一个 PythonGrader 对象，对输入运行 python 脚本。
+          一个 PythonGrader 对象，对输入运行 Python 脚本。
 
           - `name: string`
 
@@ -354,7 +354,7 @@
 
           - `source: string`
 
-            python 脚本的源代码。
+            Python 脚本的源代码。
 
           - `type: "python"`
 
@@ -364,31 +364,31 @@
 
           - `image_tag: optional string`
 
-            用于 python 脚本的镜像标签。
+            Python 脚本所使用的镜像标签。
 
         - `ScoreModelGrader object { input, model, name, 3 more }`
 
-          一个 ScoreModelGrader 对象，使用模型为输入分配分数。
+          一个 ScoreModelGrader 对象，使用一个模型为输入打分。
 
           - `input: array of object { content, role, type }`
 
-            评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，可能包含模板字符串。
+            由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并可以包含模板字符串。
 
             - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-              模型的输入 - 可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单项或项数组。
+              提供给模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可作为单个项或项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                提供给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                提供给模型的文本输入。
 
                 - `text: string`
 
-                  模型的文本输入。
+                  提供给模型的文本输入。
 
                 - `type: "input_text"`
 
@@ -398,11 +398,11 @@
 
                 - `prompt_cache_breakpoint: optional object { mode }`
 
-                  标记可重用提示前缀的精确结束位置。断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会四舍五入到令牌块。
+                  标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会对齐到 token 块。
 
                   - `mode: "explicit"`
 
-                    断点模式。始终 `explicit`.
+                    断点模式。始终为 `explicit`.
 
                     - `"explicit"`
 
@@ -416,13 +416,13 @@
 
                 - `type: "output_text"`
 
-                  输出文本的类型。始终 `output_text`.
+                  输出文本的类型。始终为 `output_text`.
 
                   - `"output_text"`
 
               - `InputImage object { image_url, type, detail }`
 
-                用于 EvalItem 内容数组中的图像输入块。
+                在 EvalItem 内容数组中使用的图像输入块。
 
                 - `image_url: string`
 
@@ -430,17 +430,17 @@
 
                 - `type: "input_image"`
 
-                  图像输入的类型。始终 `input_image`.
+                  图像输入的类型。始终为 `input_image`.
 
                   - `"input_image"`
 
                 - `detail: optional string`
 
-                  发送给模型的图像的细节级别。以下之一 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
-                模型的音频输入。
+                发送给模型的音频输入。
 
                 - `input_audio: object { data, format }`
 
@@ -465,16 +465,16 @@
 
               - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                输入列表，每一项可以是输入文本、输出文本、输入
+                输入列表，其中每个输入可以是输入文本、输出文本、输入
                 图像或输入音频对象。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  提供给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  提供给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
@@ -486,13 +486,13 @@
 
                   - `type: "output_text"`
 
-                    输出文本的类型。始终 `output_text`.
+                    输出文本的类型。始终为 `output_text`.
 
                     - `"output_text"`
 
                 - `InputImage object { image_url, type, detail }`
 
-                  用于 EvalItem 内容数组中的图像输入块。
+                  在 EvalItem 内容数组中使用的图像输入块。
 
                   - `image_url: string`
 
@@ -500,21 +500,21 @@
 
                   - `type: "input_image"`
 
-                    图像输入的类型。始终 `input_image`.
+                    图像输入的类型。始终为 `input_image`.
 
                     - `"input_image"`
 
                   - `detail: optional string`
 
-                    发送给模型的图像的细节级别。以下之一 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
-                  模型的音频输入。
+                  发送给模型的音频输入。
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。以下之一 `user`, `assistant`, `system`，或
+              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
               `developer`.
 
               - `"user"`
@@ -527,7 +527,7 @@
 
             - `type: optional "message"`
 
-              消息输入的类型。始终 `message`.
+              消息输入的类型。始终为 `message`.
 
               - `"message"`
 
@@ -547,7 +547,7 @@
 
           - `range: optional array of number`
 
-            分数的范围。默认为 `[0, 1]`.
+            分数的取值范围。默认为 `[0, 1]`.
 
           - `sampling_params: optional object { max_completions_tokens, reasoning_effort, seed, 2 more }`
 
@@ -559,13 +559,13 @@
 
             - `reasoning_effort: optional ReasoningEffort or null`
 
-              限制推理模型在推理上的投入。当前支持
-              的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-              降低推理投入可导致更快的响应和更少的 token
-              用于响应中的推理。并非所有推理模型都支持每个
-              值。请参阅
+              约束推理模型在推理上的投入程度。目前支持
+              的取值有 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+              降低推理投入程度可以让响应更快，并减少在响应中用于推理的 token
+              数量。并非所有推理模型都支持每一个
+              取值。请参阅
               [推理指南](https://platform.openai.com/docs/guides/reasoning)
-              以了解模型特定支持。
+              以了解各模型的具体支持情况。
 
               - `"none"`
 
@@ -583,31 +583,31 @@
 
             - `seed: optional number or null`
 
-              用于初始化采样随机性的种子值。
+              用于在采样过程中初始化随机性的种子值。
 
             - `temperature: optional number or null`
 
-              较高的温度会增加输出的随机性。
+              较高的 temperature 会增加输出中的随机性。
 
             - `top_p: optional number or null`
 
-              使用核采样时替代温度的一种方式；1.0 包含所有 token。
+              用于核采样的 temperature 的替代方案；1.0 表示包含所有 token。
 
         - `MultiGrader object { calculate_output, graders, name, type }`
 
-          MultiGrader 对象组合多个评分器的输出以产生单一分数。
+          MultiGrader 对象将多个评分器的输出合并为单一分数。
 
           - `calculate_output: string`
 
-            根据评分器结果计算输出的公式。
+            用于根据评分器结果计算输出的公式。
 
           - `graders: StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more`
 
-            一个StringCheckGrader对象，使用指定的操作对输入和参考进行字符串比较。
+            一个 StringCheckGrader 对象，使用指定的操作对输入和参考进行字符串比较。
 
             - `StringCheckGrader object { input, name, operation, 2 more }`
 
-              一个StringCheckGrader对象，使用指定的操作对输入和参考进行字符串比较。
+              一个 StringCheckGrader 对象，使用指定的操作对输入和参考进行字符串比较。
 
             - `TextSimilarityGrader object { evaluation_metric, input, name, 2 more }`
 
@@ -615,30 +615,30 @@
 
             - `PythonGrader object { name, source, type, image_tag }`
 
-              一个 PythonGrader 对象，对输入运行 python 脚本。
+              一个 PythonGrader 对象，对输入运行 Python 脚本。
 
             - `ScoreModelGrader object { input, model, name, 3 more }`
 
-              一个 ScoreModelGrader 对象，使用模型为输入分配分数。
+              一个 ScoreModelGrader 对象，使用一个模型为输入打分。
 
             - `LabelModelGrader object { input, labels, model, 3 more }`
 
-              LabelModelGrader 对象，使用模型为评估中的每个项目
+              一个 LabelModelGrader 对象，使用模型为评估中的每个条目
               分配标签。
 
               - `input: array of object { content, role, type }`
 
                 - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
-                  模型的输入 - 可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单项或项数组。
+                  提供给模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可作为单个项或项的数组。
 
                   - `TextInput = string`
 
-                    模型的文本输入。
+                    提供给模型的文本输入。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    提供给模型的文本输入。
 
                   - `OutputText object { text, type }`
 
@@ -650,13 +650,13 @@
 
                     - `type: "output_text"`
 
-                      输出文本的类型。始终 `output_text`.
+                      输出文本的类型。始终为 `output_text`.
 
                       - `"output_text"`
 
                   - `InputImage object { image_url, type, detail }`
 
-                    用于 EvalItem 内容数组中的图像输入块。
+                    在 EvalItem 内容数组中使用的图像输入块。
 
                     - `image_url: string`
 
@@ -664,26 +664,26 @@
 
                     - `type: "input_image"`
 
-                      图像输入的类型。始终 `input_image`.
+                      图像输入的类型。始终为 `input_image`.
 
                       - `"input_image"`
 
                     - `detail: optional string`
 
-                      发送给模型的图像的细节级别。以下之一 `high`, `low`，或 `auto`。默认为 `auto`.
+                      发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
 
                   - `ResponseInputAudio object { input_audio, type }`
 
-                    模型的音频输入。
+                    发送给模型的音频输入。
 
                   - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-                    输入列表，每一项可以是输入文本、输出文本、输入
+                    输入列表，其中每个输入可以是输入文本、输出文本、输入
                     图像或输入音频对象。
 
                 - `role: "user" or "assistant" or "system" or "developer"`
 
-                  消息输入的角色。以下之一 `user`, `assistant`, `system`，或
+                  消息输入的角色。可选值为 `user`, `assistant`, `system`，或
                   `developer`.
 
                   - `"user"`
@@ -696,17 +696,17 @@
 
                 - `type: optional "message"`
 
-                  消息输入的类型。始终 `message`.
+                  消息输入的类型。始终为 `message`.
 
                   - `"message"`
 
               - `labels: array of string`
 
-                评估中每个项目要分配的标签。
+                要分配给评估中每个条目的标签。
 
               - `model: string`
 
-                用于评估的模型。必须支持结构化输出。
+                用于评估的模型，必须支持结构化输出。
 
               - `name: string`
 
@@ -714,7 +714,7 @@
 
               - `passing_labels: array of string`
 
-                表示通过结果的标签。必须是标签的子集。
+                表示通过的标签，必须是 labels 的子集。
 
               - `type: "label_model"`
 
@@ -734,11 +734,11 @@
 
       - `hyperparameters: optional ReinforcementHyperparameters`
 
-        强化微调作业使用的超参数。
+        用于强化微调任务的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的示例数量。较大的批次大小意味着模型参数更新的频率较低，但方差较小。
+          每个批次中的示例数量。较大的批大小意味着模型参数更新频率降低，但方差也更低。
 
           - `"auto"`
 
@@ -748,7 +748,7 @@
 
         - `compute_multiplier: optional "auto" or number`
 
-          训练期间用于探索搜索空间的计算量乘数。
+          训练期间用于探索搜索空间的算力乘数。
 
           - `"auto"`
 
@@ -778,7 +778,7 @@
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
+          学习率的缩放因子。使用较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -788,7 +788,7 @@
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮数。一轮是指对训练数据集进行的一次完整循环。
+          训练模型的轮次数。一个 epoch 指的是对训练数据集进行一次完整的遍历。
 
           - `"auto"`
 
@@ -798,7 +798,7 @@
 
         - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
 
-          推理努力程度。
+          推理力度级别。
 
           - `"default"`
 
@@ -818,7 +818,7 @@
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的示例数量。较大的批次大小意味着模型参数更新的频率较低，但方差较小。
+          每个批次中的示例数量。较大的批大小意味着模型参数更新频率降低，但方差也更低。
 
           - `"auto"`
 
@@ -828,7 +828,7 @@
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
+          学习率的缩放因子。使用较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -838,7 +838,7 @@
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮数。一轮是指对训练数据集进行的一次完整循环。
+          训练模型的轮次数。一个 epoch 指的是对训练数据集进行一次完整的遍历。
 
           - `"auto"`
 

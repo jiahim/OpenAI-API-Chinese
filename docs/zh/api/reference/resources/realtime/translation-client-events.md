@@ -1,18 +1,18 @@
-# Realtime 翻译客户端事件
+# 实时翻译客户端事件
 
-> 完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可在页面 URL 末尾追加以获取文档页面的 Markdown 版本， `.md` 。
 
-这些是 OpenAI Realtime Translation WebSocket 服务器将从客户端接受的事件。
+这些是 OpenAI Realtime Translation WebSocket 服务器将接受来自客户端的事件。
 
 ## session.update
 
 发送此事件以更新翻译会话配置。Translation
-会话支持对 `audio.output.language`, `audio.input.transcription`,
+sessions 支持更新 `audio.output.language`, `audio.input.transcription`,
 和 `audio.input.noise_reduction`.
 
 ### Schema
 
-Schema 名称： `RealtimeTranslationClientEventSessionUpdate`
+Schema name: `RealtimeTranslationClientEventSessionUpdate`
 
 ```json
 {
@@ -361,25 +361,25 @@ Schema 名称： `RealtimeTranslationClientEventSessionUpdate`
 
 ## session.input_audio_buffer.append
 
-发送此事件以将音频字节追加到翻译会话的输入音频缓冲区。
+发送此事件可将音频字节追加到翻译会话的输入音频缓冲区。
 
 WebSocket 翻译会话接受 base64 编码的 24 kHz PCM16 单声道
-小端原始音频字节。不支持的 WebSocket 音频格式会返回
-验证错误，因为较低质量的音频会显著降低翻译
+小端原始音频字节。不受支持的 WebSocket 音频格式会返回
+校验错误，因为质量较低的音频会显著降低翻译
 质量。
 
-翻译消耗 200 ms 引擎帧。为了获得最佳的实时行为，请以
-200 ms 的块追加音频。如果块较短，服务器会将其缓冲，直到
-有足够的音频组成一帧。如果块较长，服务器会将其拆分为
-200 ms 的帧并连续排队。
+翻译按 200 ms 的引擎帧进行消费。为获得最佳实时效果，请按
+200 ms 的分块追加音频。如果分块较短，服务端会将其缓冲，
+直到凑齐一帧音频为止。如果分块较长，服务端会将其拆分为
+200 ms 的帧并依次入队。
 
-在会话活动期间持续追加静音。如果客户端停止发送
-音频后恢复发送，模型时间会将恢复的音频视为与
-先前音频连续，而不是真实的暂停。
+在会话处于活动状态期间持续追加静音。如果客户端停止发送
+音频后稍后又恢复，模型会将恢复的音频视为与之前的音频连续，
+而不是视为真实世界中的停顿。
 
 ### Schema
 
-Schema 名称： `RealtimeTranslationClientEventInputAudioBufferAppend`
+Schema name: `RealtimeTranslationClientEventInputAudioBufferAppend`
 
 ```json
 {
@@ -486,13 +486,13 @@ Schema 名称： `RealtimeTranslationClientEventInputAudioBufferAppend`
 
 ## session.close
 
-优雅关闭实时翻译会话。服务端会在关闭前刷新待处理的
-输入音频并发出所有剩余的翻译输出，然后关闭
-会话。
+优雅地关闭实时翻译会话。服务器会刷新待处理的
+输入音频，并在关闭
+会话之前输出所有剩余的翻译结果。
 
 ### Schema
 
-Schema 名称： `RealtimeTranslationClientEventSessionClose`
+Schema name: `RealtimeTranslationClientEventSessionClose`
 
 ```json
 {

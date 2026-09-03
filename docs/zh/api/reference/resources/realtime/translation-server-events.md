@@ -1,18 +1,18 @@
-# 实时翻译服务端事件
+# Realtime 翻译服务端事件
 
-> 完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获得该页面的 Markdown 版本。
 
-这些是从 OpenAI Realtime Translation WebSocket 服务器发送到客户端的事件。
+这些事件是从 OpenAI Realtime Translation WebSocket 服务器向客户端发送的事件。
 
-## 错误
+## error
 
-当发生错误时返回，可能是客户端问题或服务器
-问题。大多数错误可恢复且会话将保持打开，我们
-建议实施者默认监控并记录错误消息。
+发生错误时返回，可能是客户端问题或服务端
+问题。大多数错误都是可恢复的，会话将保持打开，建议实现
+者默认监控并记录错误消息。
 
 ### Schema
 
-Schema 名称： `RealtimeServerEventError`
+架构名称： `RealtimeServerEventError`
 
 ```json
 {
@@ -237,13 +237,13 @@ Schema 名称： `RealtimeServerEventError`
 
 ## session.created
 
-当翻译会话创建时返回。当
-新连接建立时自动发出，作为第一个服务器事件。该事件包含
+在创建翻译会话时返回。在建立新连接时作为第一个服务端事件自动发出。该事件包含
 默认的翻译会话配置。
+the default translation session configuration.
 
 ### Schema
 
-Schema 名称： `RealtimeTranslationServerEventSessionCreated`
+架构名称： `RealtimeTranslationServerEventSessionCreated`
 
 ```json
 {
@@ -693,12 +693,12 @@ Schema 名称： `RealtimeTranslationServerEventSessionCreated`
 
 ## session.updated
 
-当翻译会话更新并带有 `session.update` 事件时返回，
-除非出现错误。
+当翻译会话通过 `session.update` 事件更新时返回，
+除非发生错误。
 
 ### Schema
 
-Schema 名称： `RealtimeTranslationServerEventSessionUpdated`
+架构名称： `RealtimeTranslationServerEventSessionUpdated`
 
 ```json
 {
@@ -1148,11 +1148,11 @@ Schema 名称： `RealtimeTranslationServerEventSessionUpdated`
 
 ## session.closed
 
-当实时翻译会话关闭时返回。
+实时翻译会话关闭时返回。
 
 ### Schema
 
-Schema 名称： `RealtimeTranslationServerEventSessionClosed`
+架构名称： `RealtimeTranslationServerEventSessionClosed`
 
 ```json
 {
@@ -1237,15 +1237,15 @@ Schema 名称： `RealtimeTranslationServerEventSessionClosed`
 
 ## session.input_transcript.delta
 
-当可选的源语言转录文本可用时返回。此事件
-仅在 `audio.input.transcription` 配置时发出。
+当可选的源语言转写文本可用时返回。该事件
+仅在 `audio.input.transcription` 已配置时才会发出。
 
-转录增量是仅追加的文本片段。客户端不应在增量之间插入
-无条件空格。
+转写增量是仅追加的文本片段。客户端不应在增量之间
+插入无条件的空格。
 
 ### Schema
 
-Schema 名称： `RealtimeTranslationServerEventSessionInputTranscriptDelta`
+架构名称： `RealtimeTranslationServerEventSessionInputTranscriptDelta`
 
 ```json
 {
@@ -1370,12 +1370,12 @@ Schema 名称： `RealtimeTranslationServerEventSessionInputTranscriptDelta`
 
 当翻译后的转录文本可用时返回。
 
-转录增量是仅追加的文本片段。客户端不应在增量之间插入
-无条件空格。
+转写增量是仅追加的文本片段。客户端不应在增量之间
+插入无条件的空格。
 
 ### Schema
 
-Schema 名称： `RealtimeTranslationServerEventSessionOutputTranscriptDelta`
+架构名称： `RealtimeTranslationServerEventSessionOutputTranscriptDelta`
 
 ```json
 {
@@ -1499,12 +1499,12 @@ Schema 名称： `RealtimeTranslationServerEventSessionOutputTranscriptDelta`
 ## session.output_audio.delta
 
 当翻译后的输出音频可用时返回。该 `delta` 包含一个
-PCM16 音频块，其长度可能变化。客户端应解码并排队
-完整增量，而不是假设固定的字节或样本数。
+PCM16 音频块，其长度可能会有所不同。客户端应解码并对
+完整的增量进行排队，而不是假定固定的字节数或采样数。
 
 ### Schema
 
-Schema 名称： `RealtimeTranslationServerEventSessionOutputAudioDelta`
+架构名称： `RealtimeTranslationServerEventSessionOutputAudioDelta`
 
 ```json
 {
