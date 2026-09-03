@@ -1,0 +1,26 @@
+{
+  "id": "2026-09-03T02-33-26-000Z",
+  "generatedAt": "2026-09-03T02:33:26Z",
+  "added": [],
+  "modified": [
+    {
+      "path": "docs/en/api/docs/guides/embeddings.md",
+      "route": "/api/docs/guides/embeddings",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/embeddings.md",
+      "title": "Vector embeddings"
+    },
+    {
+      "path": "docs/en/api/docs/guides/prompt-generation.md",
+      "route": "/api/docs/guides/prompt-generation",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/prompt-generation.md",
+      "title": "Prompt generation"
+    },
+    {
+      "path": "docs/en/api/docs/guides/structured-outputs.md",
+      "route": "/api/docs/guides/structured-outputs",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/structured-outputs.md",
+      "title": "Structured model outputs"
+    }
+  ],
+  "removed": []
+}
