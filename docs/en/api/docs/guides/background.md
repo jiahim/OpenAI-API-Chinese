@@ -687,7 +687,7 @@ last_sequence_number = -1
 response_id = ""
 stream.each do |event|
   puts(event.type)
-  last_sequence_number = event.sequence_number
+  last_sequence_number = event.sequence_number || last_sequence_number
   if event.is_a?(OpenAI::Models::Responses::ResponseCreatedEvent)
     response_id = event.response.id
   end

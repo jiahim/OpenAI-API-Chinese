@@ -153,27 +153,31 @@ ResponseCreateParams params =
         .build();
 
 var response = client.responses().create(params);
-JsonValue moderation = response._additionalProperties().get("moderation");
-if (moderation == null) {
-  throw new IllegalStateException("The response did not include moderation results");
-}
-Map<?, ?> results = moderation.convert(Map.class);
+var moderation =
+    response
+        .moderation()
+        .orElseThrow(
+            () -> new IllegalStateException("The response did not include moderation results"));
 List<Boolean> flags = new ArrayList<>();
-for (String side : List.of("input", "output")) {
-  if (!(results.get(side) instanceof Map<?, ?> result)) {
-    throw new IllegalStateException("Missing " + side + " moderation result");
-  }
-  if ("error".equals(result.get("type"))) {
-    throw new IllegalStateException(String.valueOf(result.get("message")));
-  }
-  if (!"moderation_result".equals(result.get("type"))) {
-    throw new IllegalStateException("Unexpected " + side + " moderation result type");
-  }
-  if (!(result.get("flagged") instanceof Boolean flagged)) {
-    throw new IllegalStateException("Missing " + side + " moderation flag");
-  }
-  flags.add(flagged);
+
+var input = moderation.input();
+if (input.isError()) {
+  throw new IllegalStateException(input.asError().message());
 }
+if (!input.isModerationResult()) {
+  throw new IllegalStateException("Missing input moderation flag");
+}
+flags.add(input.asModerationResult().flagged());
+
+var output = moderation.output();
+if (output.isError()) {
+  throw new IllegalStateException(output.asError().message());
+}
+if (!output.isModerationResult()) {
+  throw new IllegalStateException("Missing output moderation flag");
+}
+flags.add(output.asModerationResult().flagged());
+
 flags.forEach(System.out::println);
 ```
 

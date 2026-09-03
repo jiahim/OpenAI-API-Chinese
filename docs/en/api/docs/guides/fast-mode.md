@@ -126,7 +126,7 @@ Fast mode consumption counts toward rate limits the same way as Standard process
 
 **Ramp rate limit**
 
-If your traffic ramps too fast, the system may downgrade some Fast mode requests to standard speeds and charge standard rates. When this happens, the response contains `service_tier: "default"`. The ramp rate limit may apply if you send at least 1 million tokens per minute (TPM) and increase TPM by more than 50% within 15 minutes.
+If your traffic ramps too fast, the system may downgrade some Fast mode requests to standard speeds and charge standard rates. When this happens, the response contains `service_tier: "default"`. As a rule of thumb, once your traffic reaches 1 million input tokens per minute (TPM), increase it by no more than 50% every 15 minutes. The exact point at which the ramp-rate limit applies can vary by model and traffic conditions.
 
 To avoid triggering the ramp rate limit:
 
