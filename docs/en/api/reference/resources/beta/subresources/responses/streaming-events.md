@@ -91,6 +91,7 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) output_text",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) previous_response_id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention",
@@ -2260,6 +2261,70 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response_prompt > (schema) > (property) version"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/prompt_cache_diagnostics",
+    "deprecated": false,
+    "key": "prompt_cache_diagnostics",
+    "docstring": "Prompt cache diagnostics requested for this response.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/prompt_cache_diagnostics",
+      "types": [
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "cache_missed_tokens"
+            },
+            {
+              "ident": "reason"
+            },
+            {
+              "ident": "type"
+            },
+            {
+              "ident": "comparison_reusable_tokens"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "union",
+    "childrenParentSchema": "union",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3"
+    ]
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaModelResponseProperties/properties/prompt_cache_key",
@@ -2292,6 +2357,9 @@ Schema name: `BetaResponseCreatedEvent`
         },
         {
           "ident": "ttl"
+        },
+        {
+          "ident": "comparison_response_id"
         }
       ]
     },
@@ -2301,7 +2369,8 @@ Schema name: `BetaResponseCreatedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) comparison_response_id"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention": {
@@ -2635,6 +2704,9 @@ Schema name: `BetaResponseCreatedEvent`
           "ident": "prompt"
         },
         {
+          "ident": "prompt_cache_diagnostics"
+        },
+        {
           "ident": "prompt_cache_key"
         },
         {
@@ -2697,6 +2769,7 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) output_text",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) previous_response_id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention",
@@ -7559,6 +7632,86 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response_prompt > (schema) > (property) version"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/0",
+    "ident": "CacheMiss",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "cache_missed_tokens"
+        },
+        {
+          "ident": "reason"
+        },
+        {
+          "ident": "type"
+        },
+        {
+          "ident": "comparison_reusable_tokens"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) cache_missed_tokens",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) comparison_reusable_tokens"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/1",
+    "ident": "CacheHit",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/2",
+    "ident": "ComparisonResponseNotFound",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/3",
+    "ident": "Unavailable",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type"
+    ]
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaPromptCacheOptions/properties/mode",
@@ -7611,6 +7764,20 @@ Schema name: `BetaResponseCreatedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl > (member) 0"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) comparison_response_id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheOptions/properties/comparison_response_id",
+    "deprecated": false,
+    "key": "comparison_response_id",
+    "docstring": "The response ID supplied as the prompt cache diagnostics comparison.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention > (member) 0": {
     "kind": "HttpDeclReference",
@@ -18955,6 +19122,194 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) file_url",
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) filename",
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) prompt_cache_breakpoint"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) cache_missed_tokens": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/cache_missed_tokens",
+    "deprecated": false,
+    "key": "cache_missed_tokens",
+    "docstring": "The estimated number of input tokens affected after the first detected divergence.",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "integer",
+    "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/reason",
+    "deprecated": false,
+    "key": "reason",
+    "docstring": "The reason prompt cache reuse did not occur.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/reason",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "model_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "prompt_cache_key_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "tools_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "text_format_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "reasoning_effort_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "verbosity_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "context_compacted"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "input_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "service_tier_changed"
+        }
+      ]
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 8"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "cache_miss"
+        }
+      ]
+    },
+    "default": "cache_miss",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) comparison_reusable_tokens": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/comparison_reusable_tokens",
+    "deprecated": false,
+    "key": "comparison_reusable_tokens",
+    "docstring": "The raw token count of the reusable prefix in the compared response.",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "integer",
+    "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheHitDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheHitDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "cache_hit"
+        }
+      ]
+    },
+    "default": "cache_hit",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheComparisonResponseNotFoundDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheComparisonResponseNotFoundDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "comparison_response_not_found"
+        }
+      ]
+    },
+    "default": "comparison_response_not_found",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheUnavailableDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheUnavailableDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "unavailable"
+        }
+      ]
+    },
+    "default": "unavailable",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type > (member) 0"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode > (member) 0": {
@@ -31747,6 +32102,97 @@ Schema name: `BetaResponseCreatedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) prompt_cache_breakpoint > (property) mode"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "model_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "prompt_cache_key_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "tools_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "text_format_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "reasoning_effort_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "verbosity_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "context_compacted"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "input_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "service_tier_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "cache_miss"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "cache_hit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "comparison_response_not_found"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "unavailable"
+    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) reasoning > (property) mode > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
@@ -64307,6 +64753,7 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) output_text",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) previous_response_id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention",
@@ -66476,6 +66923,70 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response_prompt > (schema) > (property) version"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/prompt_cache_diagnostics",
+    "deprecated": false,
+    "key": "prompt_cache_diagnostics",
+    "docstring": "Prompt cache diagnostics requested for this response.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/prompt_cache_diagnostics",
+      "types": [
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "cache_missed_tokens"
+            },
+            {
+              "ident": "reason"
+            },
+            {
+              "ident": "type"
+            },
+            {
+              "ident": "comparison_reusable_tokens"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "union",
+    "childrenParentSchema": "union",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3"
+    ]
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaModelResponseProperties/properties/prompt_cache_key",
@@ -66508,6 +67019,9 @@ Schema name: `BetaResponseInProgressEvent`
         },
         {
           "ident": "ttl"
+        },
+        {
+          "ident": "comparison_response_id"
         }
       ]
     },
@@ -66517,7 +67031,8 @@ Schema name: `BetaResponseInProgressEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) comparison_response_id"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention": {
@@ -66851,6 +67366,9 @@ Schema name: `BetaResponseInProgressEvent`
           "ident": "prompt"
         },
         {
+          "ident": "prompt_cache_diagnostics"
+        },
+        {
           "ident": "prompt_cache_key"
         },
         {
@@ -66913,6 +67431,7 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) output_text",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) previous_response_id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention",
@@ -71775,6 +72294,86 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response_prompt > (schema) > (property) version"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/0",
+    "ident": "CacheMiss",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "cache_missed_tokens"
+        },
+        {
+          "ident": "reason"
+        },
+        {
+          "ident": "type"
+        },
+        {
+          "ident": "comparison_reusable_tokens"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) cache_missed_tokens",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) comparison_reusable_tokens"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/1",
+    "ident": "CacheHit",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/2",
+    "ident": "ComparisonResponseNotFound",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/3",
+    "ident": "Unavailable",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type"
+    ]
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaPromptCacheOptions/properties/mode",
@@ -71827,6 +72426,20 @@ Schema name: `BetaResponseInProgressEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl > (member) 0"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) comparison_response_id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheOptions/properties/comparison_response_id",
+    "deprecated": false,
+    "key": "comparison_response_id",
+    "docstring": "The response ID supplied as the prompt cache diagnostics comparison.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention > (member) 0": {
     "kind": "HttpDeclReference",
@@ -83171,6 +83784,194 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) file_url",
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) filename",
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) prompt_cache_breakpoint"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) cache_missed_tokens": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/cache_missed_tokens",
+    "deprecated": false,
+    "key": "cache_missed_tokens",
+    "docstring": "The estimated number of input tokens affected after the first detected divergence.",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "integer",
+    "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/reason",
+    "deprecated": false,
+    "key": "reason",
+    "docstring": "The reason prompt cache reuse did not occur.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/reason",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "model_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "prompt_cache_key_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "tools_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "text_format_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "reasoning_effort_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "verbosity_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "context_compacted"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "input_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "service_tier_changed"
+        }
+      ]
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 8"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "cache_miss"
+        }
+      ]
+    },
+    "default": "cache_miss",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) comparison_reusable_tokens": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/comparison_reusable_tokens",
+    "deprecated": false,
+    "key": "comparison_reusable_tokens",
+    "docstring": "The raw token count of the reusable prefix in the compared response.",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "integer",
+    "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheHitDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheHitDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "cache_hit"
+        }
+      ]
+    },
+    "default": "cache_hit",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheComparisonResponseNotFoundDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheComparisonResponseNotFoundDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "comparison_response_not_found"
+        }
+      ]
+    },
+    "default": "comparison_response_not_found",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheUnavailableDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheUnavailableDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "unavailable"
+        }
+      ]
+    },
+    "default": "unavailable",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type > (member) 0"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode > (member) 0": {
@@ -95963,6 +96764,97 @@ Schema name: `BetaResponseInProgressEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) prompt_cache_breakpoint > (property) mode"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "model_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "prompt_cache_key_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "tools_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "text_format_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "reasoning_effort_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "verbosity_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "context_compacted"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "input_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "service_tier_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "cache_miss"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "cache_hit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "comparison_response_not_found"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "unavailable"
+    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) reasoning > (property) mode > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
@@ -128523,6 +129415,7 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) output_text",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) previous_response_id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention",
@@ -130692,6 +131585,70 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response_prompt > (schema) > (property) version"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/prompt_cache_diagnostics",
+    "deprecated": false,
+    "key": "prompt_cache_diagnostics",
+    "docstring": "Prompt cache diagnostics requested for this response.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/prompt_cache_diagnostics",
+      "types": [
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "cache_missed_tokens"
+            },
+            {
+              "ident": "reason"
+            },
+            {
+              "ident": "type"
+            },
+            {
+              "ident": "comparison_reusable_tokens"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "union",
+    "childrenParentSchema": "union",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3"
+    ]
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaModelResponseProperties/properties/prompt_cache_key",
@@ -130724,6 +131681,9 @@ Schema name: `BetaResponseCompletedEvent`
         },
         {
           "ident": "ttl"
+        },
+        {
+          "ident": "comparison_response_id"
         }
       ]
     },
@@ -130733,7 +131693,8 @@ Schema name: `BetaResponseCompletedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) comparison_response_id"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention": {
@@ -131067,6 +132028,9 @@ Schema name: `BetaResponseCompletedEvent`
           "ident": "prompt"
         },
         {
+          "ident": "prompt_cache_diagnostics"
+        },
+        {
           "ident": "prompt_cache_key"
         },
         {
@@ -131129,6 +132093,7 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) output_text",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) previous_response_id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention",
@@ -135991,6 +136956,86 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response_prompt > (schema) > (property) version"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/0",
+    "ident": "CacheMiss",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "cache_missed_tokens"
+        },
+        {
+          "ident": "reason"
+        },
+        {
+          "ident": "type"
+        },
+        {
+          "ident": "comparison_reusable_tokens"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) cache_missed_tokens",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) comparison_reusable_tokens"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/1",
+    "ident": "CacheHit",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/2",
+    "ident": "ComparisonResponseNotFound",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/3",
+    "ident": "Unavailable",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type"
+    ]
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaPromptCacheOptions/properties/mode",
@@ -136043,6 +137088,20 @@ Schema name: `BetaResponseCompletedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl > (member) 0"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) comparison_response_id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheOptions/properties/comparison_response_id",
+    "deprecated": false,
+    "key": "comparison_response_id",
+    "docstring": "The response ID supplied as the prompt cache diagnostics comparison.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention > (member) 0": {
     "kind": "HttpDeclReference",
@@ -147387,6 +148446,194 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) file_url",
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) filename",
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) prompt_cache_breakpoint"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) cache_missed_tokens": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/cache_missed_tokens",
+    "deprecated": false,
+    "key": "cache_missed_tokens",
+    "docstring": "The estimated number of input tokens affected after the first detected divergence.",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "integer",
+    "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/reason",
+    "deprecated": false,
+    "key": "reason",
+    "docstring": "The reason prompt cache reuse did not occur.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/reason",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "model_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "prompt_cache_key_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "tools_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "text_format_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "reasoning_effort_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "verbosity_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "context_compacted"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "input_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "service_tier_changed"
+        }
+      ]
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 8"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "cache_miss"
+        }
+      ]
+    },
+    "default": "cache_miss",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) comparison_reusable_tokens": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/comparison_reusable_tokens",
+    "deprecated": false,
+    "key": "comparison_reusable_tokens",
+    "docstring": "The raw token count of the reusable prefix in the compared response.",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "integer",
+    "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheHitDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheHitDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "cache_hit"
+        }
+      ]
+    },
+    "default": "cache_hit",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheComparisonResponseNotFoundDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheComparisonResponseNotFoundDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "comparison_response_not_found"
+        }
+      ]
+    },
+    "default": "comparison_response_not_found",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheUnavailableDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheUnavailableDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "unavailable"
+        }
+      ]
+    },
+    "default": "unavailable",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type > (member) 0"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode > (member) 0": {
@@ -160179,6 +161426,97 @@ Schema name: `BetaResponseCompletedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) prompt_cache_breakpoint > (property) mode"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "model_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "prompt_cache_key_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "tools_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "text_format_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "reasoning_effort_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "verbosity_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "context_compacted"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "input_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "service_tier_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "cache_miss"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "cache_hit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "comparison_response_not_found"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "unavailable"
+    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) reasoning > (property) mode > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
@@ -192756,6 +194094,7 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) output_text",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) previous_response_id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention",
@@ -194925,6 +196264,70 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response_prompt > (schema) > (property) version"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/prompt_cache_diagnostics",
+    "deprecated": false,
+    "key": "prompt_cache_diagnostics",
+    "docstring": "Prompt cache diagnostics requested for this response.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/prompt_cache_diagnostics",
+      "types": [
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "cache_missed_tokens"
+            },
+            {
+              "ident": "reason"
+            },
+            {
+              "ident": "type"
+            },
+            {
+              "ident": "comparison_reusable_tokens"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "union",
+    "childrenParentSchema": "union",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3"
+    ]
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaModelResponseProperties/properties/prompt_cache_key",
@@ -194957,6 +196360,9 @@ Schema name: `BetaResponseFailedEvent`
         },
         {
           "ident": "ttl"
+        },
+        {
+          "ident": "comparison_response_id"
         }
       ]
     },
@@ -194966,7 +196372,8 @@ Schema name: `BetaResponseFailedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) comparison_response_id"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention": {
@@ -195300,6 +196707,9 @@ Schema name: `BetaResponseFailedEvent`
           "ident": "prompt"
         },
         {
+          "ident": "prompt_cache_diagnostics"
+        },
+        {
           "ident": "prompt_cache_key"
         },
         {
@@ -195362,6 +196772,7 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) output_text",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) previous_response_id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention",
@@ -200224,6 +201635,86 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response_prompt > (schema) > (property) version"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/0",
+    "ident": "CacheMiss",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "cache_missed_tokens"
+        },
+        {
+          "ident": "reason"
+        },
+        {
+          "ident": "type"
+        },
+        {
+          "ident": "comparison_reusable_tokens"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) cache_missed_tokens",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) comparison_reusable_tokens"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/1",
+    "ident": "CacheHit",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/2",
+    "ident": "ComparisonResponseNotFound",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/3",
+    "ident": "Unavailable",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type"
+    ]
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaPromptCacheOptions/properties/mode",
@@ -200276,6 +201767,20 @@ Schema name: `BetaResponseFailedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl > (member) 0"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) comparison_response_id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheOptions/properties/comparison_response_id",
+    "deprecated": false,
+    "key": "comparison_response_id",
+    "docstring": "The response ID supplied as the prompt cache diagnostics comparison.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention > (member) 0": {
     "kind": "HttpDeclReference",
@@ -211620,6 +213125,194 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) file_url",
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) filename",
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) prompt_cache_breakpoint"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) cache_missed_tokens": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/cache_missed_tokens",
+    "deprecated": false,
+    "key": "cache_missed_tokens",
+    "docstring": "The estimated number of input tokens affected after the first detected divergence.",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "integer",
+    "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/reason",
+    "deprecated": false,
+    "key": "reason",
+    "docstring": "The reason prompt cache reuse did not occur.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/reason",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "model_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "prompt_cache_key_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "tools_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "text_format_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "reasoning_effort_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "verbosity_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "context_compacted"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "input_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "service_tier_changed"
+        }
+      ]
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 8"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "cache_miss"
+        }
+      ]
+    },
+    "default": "cache_miss",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) comparison_reusable_tokens": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/comparison_reusable_tokens",
+    "deprecated": false,
+    "key": "comparison_reusable_tokens",
+    "docstring": "The raw token count of the reusable prefix in the compared response.",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "integer",
+    "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheHitDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheHitDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "cache_hit"
+        }
+      ]
+    },
+    "default": "cache_hit",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheComparisonResponseNotFoundDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheComparisonResponseNotFoundDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "comparison_response_not_found"
+        }
+      ]
+    },
+    "default": "comparison_response_not_found",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheUnavailableDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheUnavailableDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "unavailable"
+        }
+      ]
+    },
+    "default": "unavailable",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type > (member) 0"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode > (member) 0": {
@@ -224412,6 +226105,97 @@ Schema name: `BetaResponseFailedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) prompt_cache_breakpoint > (property) mode"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "model_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "prompt_cache_key_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "tools_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "text_format_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "reasoning_effort_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "verbosity_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "context_compacted"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "input_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "service_tier_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "cache_miss"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "cache_hit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "comparison_response_not_found"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "unavailable"
+    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) reasoning > (property) mode > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
@@ -256970,6 +258754,7 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) output_text",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) previous_response_id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention",
@@ -259139,6 +260924,70 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response_prompt > (schema) > (property) version"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/prompt_cache_diagnostics",
+    "deprecated": false,
+    "key": "prompt_cache_diagnostics",
+    "docstring": "Prompt cache diagnostics requested for this response.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/prompt_cache_diagnostics",
+      "types": [
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "cache_missed_tokens"
+            },
+            {
+              "ident": "reason"
+            },
+            {
+              "ident": "type"
+            },
+            {
+              "ident": "comparison_reusable_tokens"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "union",
+    "childrenParentSchema": "union",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3"
+    ]
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaModelResponseProperties/properties/prompt_cache_key",
@@ -259171,6 +261020,9 @@ Schema name: `BetaResponseIncompleteEvent`
         },
         {
           "ident": "ttl"
+        },
+        {
+          "ident": "comparison_response_id"
         }
       ]
     },
@@ -259180,7 +261032,8 @@ Schema name: `BetaResponseIncompleteEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) comparison_response_id"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention": {
@@ -259514,6 +261367,9 @@ Schema name: `BetaResponseIncompleteEvent`
           "ident": "prompt"
         },
         {
+          "ident": "prompt_cache_diagnostics"
+        },
+        {
           "ident": "prompt_cache_key"
         },
         {
@@ -259576,6 +261432,7 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) output_text",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) previous_response_id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention",
@@ -264438,6 +266295,86 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response_prompt > (schema) > (property) version"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/0",
+    "ident": "CacheMiss",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "cache_missed_tokens"
+        },
+        {
+          "ident": "reason"
+        },
+        {
+          "ident": "type"
+        },
+        {
+          "ident": "comparison_reusable_tokens"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) cache_missed_tokens",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) comparison_reusable_tokens"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/1",
+    "ident": "CacheHit",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/2",
+    "ident": "ComparisonResponseNotFound",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/3",
+    "ident": "Unavailable",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type"
+    ]
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaPromptCacheOptions/properties/mode",
@@ -264490,6 +266427,20 @@ Schema name: `BetaResponseIncompleteEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl > (member) 0"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) comparison_response_id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheOptions/properties/comparison_response_id",
+    "deprecated": false,
+    "key": "comparison_response_id",
+    "docstring": "The response ID supplied as the prompt cache diagnostics comparison.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention > (member) 0": {
     "kind": "HttpDeclReference",
@@ -275834,6 +277785,194 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) file_url",
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) filename",
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) prompt_cache_breakpoint"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) cache_missed_tokens": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/cache_missed_tokens",
+    "deprecated": false,
+    "key": "cache_missed_tokens",
+    "docstring": "The estimated number of input tokens affected after the first detected divergence.",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "integer",
+    "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/reason",
+    "deprecated": false,
+    "key": "reason",
+    "docstring": "The reason prompt cache reuse did not occur.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/reason",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "model_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "prompt_cache_key_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "tools_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "text_format_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "reasoning_effort_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "verbosity_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "context_compacted"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "input_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "service_tier_changed"
+        }
+      ]
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 8"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "cache_miss"
+        }
+      ]
+    },
+    "default": "cache_miss",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) comparison_reusable_tokens": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/comparison_reusable_tokens",
+    "deprecated": false,
+    "key": "comparison_reusable_tokens",
+    "docstring": "The raw token count of the reusable prefix in the compared response.",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "integer",
+    "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheHitDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheHitDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "cache_hit"
+        }
+      ]
+    },
+    "default": "cache_hit",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheComparisonResponseNotFoundDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheComparisonResponseNotFoundDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "comparison_response_not_found"
+        }
+      ]
+    },
+    "default": "comparison_response_not_found",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheUnavailableDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheUnavailableDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "unavailable"
+        }
+      ]
+    },
+    "default": "unavailable",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type > (member) 0"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode > (member) 0": {
@@ -288626,6 +290765,97 @@ Schema name: `BetaResponseIncompleteEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) prompt_cache_breakpoint > (property) mode"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "model_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "prompt_cache_key_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "tools_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "text_format_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "reasoning_effort_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "verbosity_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "context_compacted"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "input_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "service_tier_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "cache_miss"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "cache_hit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "comparison_response_not_found"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "unavailable"
+    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) reasoning > (property) mode > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
@@ -386270,6 +388500,7 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) output_text",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) previous_response_id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention",
@@ -388439,6 +390670,70 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response_prompt > (schema) > (property) version"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/prompt_cache_diagnostics",
+    "deprecated": false,
+    "key": "prompt_cache_diagnostics",
+    "docstring": "Prompt cache diagnostics requested for this response.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaResponse/allOf/2/properties/prompt_cache_diagnostics",
+      "types": [
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "cache_missed_tokens"
+            },
+            {
+              "ident": "reason"
+            },
+            {
+              "ident": "type"
+            },
+            {
+              "ident": "comparison_reusable_tokens"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        },
+        {
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "type"
+            }
+          ]
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "union",
+    "childrenParentSchema": "union",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3"
+    ]
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaModelResponseProperties/properties/prompt_cache_key",
@@ -388471,6 +390766,9 @@ Schema name: `BetaResponseQueuedEvent`
         },
         {
           "ident": "ttl"
+        },
+        {
+          "ident": "comparison_response_id"
         }
       ]
     },
@@ -388480,7 +390778,8 @@ Schema name: `BetaResponseQueuedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) comparison_response_id"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention": {
@@ -388814,6 +391113,9 @@ Schema name: `BetaResponseQueuedEvent`
           "ident": "prompt"
         },
         {
+          "ident": "prompt_cache_diagnostics"
+        },
+        {
           "ident": "prompt_cache_key"
         },
         {
@@ -388876,6 +391178,7 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) output_text",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) previous_response_id",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_key",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention",
@@ -393738,6 +396041,86 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response_prompt > (schema) > (property) version"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/0",
+    "ident": "CacheMiss",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "cache_missed_tokens"
+        },
+        {
+          "ident": "reason"
+        },
+        {
+          "ident": "type"
+        },
+        {
+          "ident": "comparison_reusable_tokens"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) cache_missed_tokens",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) comparison_reusable_tokens"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/1",
+    "ident": "CacheHit",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/2",
+    "ident": "ComparisonResponseNotFound",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/BetaPromptCacheDiagnostics/oneOf/3",
+    "ident": "Unavailable",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type"
+    ]
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaPromptCacheOptions/properties/mode",
@@ -393790,6 +396173,20 @@ Schema name: `BetaResponseQueuedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) ttl > (member) 0"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) comparison_response_id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheOptions/properties/comparison_response_id",
+    "deprecated": false,
+    "key": "comparison_response_id",
+    "docstring": "The response ID supplied as the prompt cache diagnostics comparison.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_retention > (member) 0": {
     "kind": "HttpDeclReference",
@@ -405134,6 +407531,194 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) file_url",
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) filename",
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) prompt_cache_breakpoint"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) cache_missed_tokens": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/cache_missed_tokens",
+    "deprecated": false,
+    "key": "cache_missed_tokens",
+    "docstring": "The estimated number of input tokens affected after the first detected divergence.",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "integer",
+    "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/reason",
+    "deprecated": false,
+    "key": "reason",
+    "docstring": "The reason prompt cache reuse did not occur.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/reason",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "model_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "prompt_cache_key_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "tools_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "text_format_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "reasoning_effort_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "verbosity_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "context_compacted"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "input_changed"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "service_tier_changed"
+        }
+      ]
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 2",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 8"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "cache_miss"
+        }
+      ]
+    },
+    "default": "cache_miss",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) comparison_reusable_tokens": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheMissDiagnosticsBody/properties/comparison_reusable_tokens",
+    "deprecated": false,
+    "key": "comparison_reusable_tokens",
+    "docstring": "The raw token count of the reusable prefix in the compared response.",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "integer",
+    "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheHitDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheHitDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "cache_hit"
+        }
+      ]
+    },
+    "default": "cache_hit",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheComparisonResponseNotFoundDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheComparisonResponseNotFoundDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "comparison_response_not_found"
+        }
+      ]
+    },
+    "default": "comparison_response_not_found",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaPromptCacheUnavailableDiagnosticsBody/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaPromptCacheUnavailableDiagnosticsBody/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "unavailable"
+        }
+      ]
+    },
+    "default": "unavailable",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type > (member) 0"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_options > (property) mode > (member) 0": {
@@ -417926,6 +420511,97 @@ Schema name: `BetaResponseQueuedEvent`
     "children": [
       "(resource) beta.responses > (model) beta_response_input_file > (schema) > (property) prompt_cache_breakpoint > (property) mode"
     ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "model_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "prompt_cache_key_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "tools_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "text_format_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "reasoning_effort_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "verbosity_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "context_compacted"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "input_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) reason > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "service_tier_changed"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 0 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "cache_miss"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 1 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "cache_hit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 2 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "comparison_response_not_found"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) prompt_cache_diagnostics > (variant) 3 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "unavailable"
+    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) reasoning > (property) mode > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
