@@ -1,16 +1,16 @@
 # Chat Completions 流式事件
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt).可通过在页面 URL 末尾追加 `.md` 获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾添加 `.md` 来获取。
 
-实时流式传输 Chat Completions。使用服务端发送事件接收模型返回的补全分块
+实时流式输出 Chat Completions。以服务端发送事件的形式接收模型返回的补全分块
 。
-[了解详情](https://developers.openai.com/docs/guides/streaming-responses?api-mode=chat).
+[了解更多](https://developers.openai.com/docs/guides/streaming-responses?api-mode=chat).
 
 ## chat.completion.chunk
 
-表示模型基于所提供的输入返回的聊天补全响应的流式分块
+表示模型基于所提供的输入流式返回的聊天补全响应分块
 。
-[了解详情](https://developers.openai.com/docs/guides/streaming-responses).
+[了解更多](https://developers.openai.com/docs/guides/streaming-responses).
 
 ### Schema
 
@@ -305,7 +305,6 @@ Schema name: `CreateChatCompletionStreamResponse`
       "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens",
       "(resource) completions > (model) completion_usage > (schema) > (property) total_tokens",
       "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details",
-      "(resource) completions > (model) completion_usage > (schema) > (property) compute_units",
       "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details"
     ]
   },
@@ -661,23 +660,6 @@ Schema name: `CreateChatCompletionStreamResponse`
       "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details > (property) text_tokens"
     ]
   },
-  "(resource) completions > (model) completion_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CompletionUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/CompletionUsage/properties/prompt_tokens_details",
@@ -737,9 +719,6 @@ Schema name: `CreateChatCompletionStreamResponse`
           "ident": "completion_tokens_details"
         },
         {
-          "ident": "compute_units"
-        },
-        {
           "ident": "prompt_tokens_details"
         }
       ]
@@ -750,7 +729,6 @@ Schema name: `CreateChatCompletionStreamResponse`
       "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens",
       "(resource) completions > (model) completion_usage > (schema) > (property) total_tokens",
       "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details",
-      "(resource) completions > (model) completion_usage > (schema) > (property) compute_units",
       "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details"
     ]
   },
@@ -2189,7 +2167,7 @@ Schema name: `CreateChatCompletionStreamResponse`
 }
 ```
 
-### 示例
+### Example
 
 ```json
 {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-5.6-sol", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"obfuscation":"r4N7vQ2m"}

@@ -1,21 +1,21 @@
 # Beta Responses 流式事件
 
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获得文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
-当你 [创建 Response](https://developers.openai.com/docs/api-reference/responses/create) 时
-`stream` 设置为 `true`，服务器会向客户端发送服务端发送事件
-（server-sent events），在 Response 生成过程中推送。本节包含服务器
-所发送的事件。
+当你 [创建 Response](https://developers.openai.com/docs/api-reference/responses/create) 使用
+`stream` 设置为 `true`，时，服务端会向客户端发送服务端发送事件（server-sent events），
+在 Response 生成过程中持续推送。本节列出了服务端发出的
+事件类型。
 
-[了解有关流式响应的更多信息](https://developers.openai.com/docs/guides/streaming-responses?api-mode=responses).
+[了解更多关于流式 Response 的信息](https://developers.openai.com/docs/guides/streaming-responses?api-mode=responses).
 
 ## response.created
 
-在响应创建时发出的事件。
+在响应被创建时发出的事件。
 
 ### Schema
 
-Schema 名称: `BetaResponseCreatedEvent`
+Schema name: `BetaResponseCreatedEvent`
 
 ```json
 {
@@ -2538,8 +2538,7 @@ Schema 名称: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -2904,6 +2903,10 @@ Schema 名称: `BetaResponseCreatedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -2914,7 +2917,8 @@ Schema 名称: `BetaResponseCreatedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 0": {
@@ -8187,23 +8191,6 @@ Schema 名称: `BetaResponseCreatedEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -8226,9 +8213,6 @@ Schema 名称: `BetaResponseCreatedEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -8238,8 +8222,7 @@ Schema 名称: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -8390,6 +8373,13 @@ Schema 名称: `BetaResponseCreatedEvent`
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -64237,11 +64227,11 @@ Schema 名称: `BetaResponseCreatedEvent`
 
 ## response.in_progress
 
-当响应正在进行时发出。
+在响应进行中时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseInProgressEvent`
+Schema name: `BetaResponseInProgressEvent`
 
 ```json
 {
@@ -66764,8 +66754,7 @@ Schema 名称: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -67130,6 +67119,10 @@ Schema 名称: `BetaResponseInProgressEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -67140,7 +67133,8 @@ Schema 名称: `BetaResponseInProgressEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 0": {
@@ -72413,23 +72407,6 @@ Schema 名称: `BetaResponseInProgressEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -72452,9 +72429,6 @@ Schema 名称: `BetaResponseInProgressEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -72464,8 +72438,7 @@ Schema 名称: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -72616,6 +72589,13 @@ Schema 名称: `BetaResponseInProgressEvent`
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -128463,11 +128443,11 @@ Schema 名称: `BetaResponseInProgressEvent`
 
 ## response.completed
 
-在模型响应完成时发出。
+当模型响应完成时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseCompletedEvent`
+Schema name: `BetaResponseCompletedEvent`
 
 ```json
 {
@@ -130990,8 +130970,7 @@ Schema 名称: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -131356,6 +131335,10 @@ Schema 名称: `BetaResponseCompletedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -131366,7 +131349,8 @@ Schema 名称: `BetaResponseCompletedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 0": {
@@ -136639,23 +136623,6 @@ Schema 名称: `BetaResponseCompletedEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -136678,9 +136645,6 @@ Schema 名称: `BetaResponseCompletedEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -136690,8 +136654,7 @@ Schema 名称: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -136842,6 +136805,13 @@ Schema 名称: `BetaResponseCompletedEvent`
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -192706,11 +192676,11 @@ Schema 名称: `BetaResponseCompletedEvent`
 
 ## response.failed
 
-在响应失败时发出的事件。
+当响应失败时发出的事件。
 
 ### Schema
 
-Schema 名称: `BetaResponseFailedEvent`
+Schema name: `BetaResponseFailedEvent`
 
 ```json
 {
@@ -195233,8 +195203,7 @@ Schema 名称: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -195599,6 +195568,10 @@ Schema 名称: `BetaResponseFailedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -195609,7 +195582,8 @@ Schema 名称: `BetaResponseFailedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 0": {
@@ -200882,23 +200856,6 @@ Schema 名称: `BetaResponseFailedEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -200921,9 +200878,6 @@ Schema 名称: `BetaResponseFailedEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -200933,8 +200887,7 @@ Schema 名称: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -201085,6 +201038,13 @@ Schema 名称: `BetaResponseFailedEvent`
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -256930,11 +256890,11 @@ Schema 名称: `BetaResponseFailedEvent`
 
 ## response.incomplete
 
-当响应未完成时发出的事件。
+当响应以未完成状态结束时发出的事件。
 
 ### Schema
 
-Schema 名称: `BetaResponseIncompleteEvent`
+Schema name: `BetaResponseIncompleteEvent`
 
 ```json
 {
@@ -259457,8 +259417,7 @@ Schema 名称: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -259823,6 +259782,10 @@ Schema 名称: `BetaResponseIncompleteEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -259833,7 +259796,8 @@ Schema 名称: `BetaResponseIncompleteEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 0": {
@@ -265106,23 +265070,6 @@ Schema 名称: `BetaResponseIncompleteEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -265145,9 +265092,6 @@ Schema 名称: `BetaResponseIncompleteEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -265157,8 +265101,7 @@ Schema 名称: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -265309,6 +265252,13 @@ Schema 名称: `BetaResponseIncompleteEvent`
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -321154,11 +321104,11 @@ Schema 名称: `BetaResponseIncompleteEvent`
 
 ## response.output_item.added
 
-添加新的输出项时触发。
+当添加新的输出项时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseOutputItemAddedEvent`
+Schema name: `BetaResponseOutputItemAddedEvent`
 
 ```json
 {
@@ -348687,11 +348637,11 @@ Schema 名称: `BetaResponseOutputItemAddedEvent`
 
 ## response.output_item.done
 
-在某个输出项被标记为完成时触发。
+当某个输出项被标记为完成时触发。
 
 ### Schema
 
-Schema 名称: `BetaResponseOutputItemDoneEvent`
+Schema name: `BetaResponseOutputItemDoneEvent`
 
 ```json
 {
@@ -376226,11 +376176,11 @@ Schema 名称: `BetaResponseOutputItemDoneEvent`
 
 ## response.content_part.added
 
-添加新的内容部分时发出。
+当新增一个内容部分时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseContentPartAddedEvent`
+Schema name: `BetaResponseContentPartAddedEvent`
 
 ```json
 {
@@ -377415,11 +377365,11 @@ Schema 名称: `BetaResponseContentPartAddedEvent`
 
 ## response.content_part.done
 
-当内容部分完成时发出。
+当内容片段完成时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseContentPartDoneEvent`
+Schema name: `BetaResponseContentPartDoneEvent`
 
 ```json
 {
@@ -378608,7 +378558,7 @@ Schema 名称: `BetaResponseContentPartDoneEvent`
 
 ### Schema
 
-Schema 名称: `BetaResponseTextDeltaEvent`
+Schema name: `BetaResponseTextDeltaEvent`
 
 ```json
 {
@@ -378933,11 +378883,11 @@ Schema 名称: `BetaResponseTextDeltaEvent`
 
 ## response.output_text.done
 
-当文本内容最终确定时发出。
+在文本内容完成时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseTextDoneEvent`
+Schema name: `BetaResponseTextDoneEvent`
 
 ```json
 {
@@ -379262,11 +379212,11 @@ Schema 名称: `BetaResponseTextDoneEvent`
 
 ## response.refusal.delta
 
-当存在部分拒绝文本时发出。
+存在部分拒绝文本时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseRefusalDeltaEvent`
+Schema name: `BetaResponseRefusalDeltaEvent`
 
 ```json
 {
@@ -379467,11 +379417,11 @@ Schema 名称: `BetaResponseRefusalDeltaEvent`
 
 ## response.refusal.done
 
-当拒绝文本最终确定时发出。
+当拒绝文本最终确定时触发。
 
 ### Schema
 
-Schema 名称: `BetaResponseRefusalDoneEvent`
+Schema name: `BetaResponseRefusalDoneEvent`
 
 ```json
 {
@@ -379676,7 +379626,7 @@ Schema 名称: `BetaResponseRefusalDoneEvent`
 
 ### Schema
 
-Schema 名称: `BetaResponseFunctionCallArgumentsDeltaEvent`
+Schema name: `BetaResponseFunctionCallArgumentsDeltaEvent`
 
 ```json
 {
@@ -379858,11 +379808,11 @@ Schema 名称: `BetaResponseFunctionCallArgumentsDeltaEvent`
 
 ## response.function_call_arguments.done
 
-在函数调用参数最终确定时发出。
+在函数调用参数完成时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseFunctionCallArgumentsDoneEvent`
+Schema name: `BetaResponseFunctionCallArgumentsDoneEvent`
 
 ```json
 {
@@ -380062,11 +380012,11 @@ Schema 名称: `BetaResponseFunctionCallArgumentsDoneEvent`
 
 ## response.file_search_call.in_progress
 
-在发起文件搜索调用时发出。
+在发起 文件搜索 调用时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseFileSearchCallInProgressEvent`
+Schema name: `BetaResponseFileSearchCallInProgressEvent`
 
 ```json
 {
@@ -380229,11 +380179,11 @@ Schema 名称: `BetaResponseFileSearchCallInProgressEvent`
 
 ## response.file_search_call.searching
 
-在 文件搜索 当前正在执行搜索时发出。
+在当前进行文件搜索时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseFileSearchCallSearchingEvent`
+Schema name: `BetaResponseFileSearchCallSearchingEvent`
 
 ```json
 {
@@ -380396,11 +380346,11 @@ Schema 名称: `BetaResponseFileSearchCallSearchingEvent`
 
 ## response.file_search_call.completed
 
-当一次文件搜索调用完成（已找到结果）时发出。
+在 文件搜索 调用完成时发出（已找到结果）。
 
 ### Schema
 
-Schema 名称: `BetaResponseFileSearchCallCompletedEvent`
+Schema name: `BetaResponseFileSearchCallCompletedEvent`
 
 ```json
 {
@@ -380563,11 +380513,11 @@ Schema 名称: `BetaResponseFileSearchCallCompletedEvent`
 
 ## response.web_search_call.in_progress
 
-在发起网页搜索调用时发出。
+在发起 网页搜索 调用时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseWebSearchCallInProgressEvent`
+Schema name: `BetaResponseWebSearchCallInProgressEvent`
 
 ```json
 {
@@ -380730,11 +380680,11 @@ Schema 名称: `BetaResponseWebSearchCallInProgressEvent`
 
 ## response.web_search_call.searching
 
-在执行网页搜索调用时发出。
+当 网页搜索 调用正在执行时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseWebSearchCallSearchingEvent`
+Schema name: `BetaResponseWebSearchCallSearchingEvent`
 
 ```json
 {
@@ -380897,11 +380847,11 @@ Schema 名称: `BetaResponseWebSearchCallSearchingEvent`
 
 ## response.web_search_call.completed
 
-当 网页搜索 调用完成时发出。
+在 网页搜索 调用完成时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseWebSearchCallCompletedEvent`
+Schema name: `BetaResponseWebSearchCallCompletedEvent`
 
 ```json
 {
@@ -381064,11 +381014,11 @@ Schema 名称: `BetaResponseWebSearchCallCompletedEvent`
 
 ## response.reasoning_summary_part.added
 
-当新增一个推理摘要片段时触发。
+当新增一段推理摘要内容时触发。
 
 ### Schema
 
-Schema 名称: `BetaResponseReasoningSummaryPartAddedEvent`
+Schema name: `BetaResponseReasoningSummaryPartAddedEvent`
 
 ```json
 {
@@ -381329,11 +381279,11 @@ Schema 名称: `BetaResponseReasoningSummaryPartAddedEvent`
 
 ## response.reasoning_summary_part.done
 
-当推理摘要部分完成时发出。
+当推理摘要片段完成时触发。
 
 ### Schema
 
-Schema 名称: `BetaResponseReasoningSummaryPartDoneEvent`
+Schema name: `BetaResponseReasoningSummaryPartDoneEvent`
 
 ```json
 {
@@ -381629,11 +381579,11 @@ Schema 名称: `BetaResponseReasoningSummaryPartDoneEvent`
 
 ## response.reasoning_summary_text.delta
 
-当向推理摘要文本添加增量时发出。
+当向推理摘要文本添加增量时触发。
 
 ### Schema
 
-Schema 名称: `BetaResponseReasoningSummaryTextDeltaEvent`
+Schema name: `BetaResponseReasoningSummaryTextDeltaEvent`
 
 ```json
 {
@@ -381834,11 +381784,11 @@ Schema 名称: `BetaResponseReasoningSummaryTextDeltaEvent`
 
 ## response.reasoning_summary_text.done
 
-当推理摘要文本完成时发出。
+在推理摘要文本完成时触发。
 
 ### Schema
 
-Schema 名称: `BetaResponseReasoningSummaryTextDoneEvent`
+Schema name: `BetaResponseReasoningSummaryTextDoneEvent`
 
 ```json
 {
@@ -382039,11 +381989,11 @@ Schema 名称: `BetaResponseReasoningSummaryTextDoneEvent`
 
 ## response.reasoning_text.delta
 
-在向推理文本添加增量时发出。
+当向推理文本添加增量时触发。
 
 ### Schema
 
-Schema 名称: `BetaResponseReasoningTextDeltaEvent`
+Schema name: `BetaResponseReasoningTextDeltaEvent`
 
 ```json
 {
@@ -382244,11 +382194,11 @@ Schema 名称: `BetaResponseReasoningTextDeltaEvent`
 
 ## response.reasoning_text.done
 
-当一段推理文本完成时发出。
+在推理文本完成时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseReasoningTextDoneEvent`
+Schema name: `BetaResponseReasoningTextDoneEvent`
 
 ```json
 {
@@ -382449,11 +382399,11 @@ Schema 名称: `BetaResponseReasoningTextDoneEvent`
 
 ## response.image_generation_call.completed
 
-当图片生成工具调用完成且最终图片可用时触发。
+当图像生成工具调用已完成且最终图像可用时触发。
 
 ### Schema
 
-Schema 名称: `BetaResponseImageGenCallCompletedEvent`
+Schema name: `BetaResponseImageGenCallCompletedEvent`
 
 ```json
 {
@@ -382616,11 +382566,11 @@ Schema 名称: `BetaResponseImageGenCallCompletedEvent`
 
 ## response.image_generation_call.generating
 
-当图像生成工具调用正在主动生成图像时发出（中间状态）。
+当图像生成工具调用正在主动生成图像时触发（中间状态）。
 
 ### Schema
 
-Schema 名称: `BetaResponseImageGenCallGeneratingEvent`
+Schema name: `BetaResponseImageGenCallGeneratingEvent`
 
 ```json
 {
@@ -382783,11 +382733,11 @@ Schema 名称: `BetaResponseImageGenCallGeneratingEvent`
 
 ## response.image_generation_call.in_progress
 
-当图像生成工具调用进行中时发出。
+在图像生成工具调用进行中时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseImageGenCallInProgressEvent`
+Schema name: `BetaResponseImageGenCallInProgressEvent`
 
 ```json
 {
@@ -382950,11 +382900,11 @@ Schema 名称: `BetaResponseImageGenCallInProgressEvent`
 
 ## response.image_generation_call.partial_image
 
-在图像生成流式传输期间，当有部分图像可用时发出。
+在图像生成流式传输过程中，当有部分图像可用时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseImageGenCallPartialImageEvent`
+Schema name: `BetaResponseImageGenCallPartialImageEvent`
 
 ```json
 {
@@ -383227,11 +383177,11 @@ Schema 名称: `BetaResponseImageGenCallPartialImageEvent`
 
 ## response.mcp_call_arguments.delta
 
-当 MCP 工具调用的参数出现增量（部分更新）时触发。
+当 MCP 工具调用的参数出现增量（部分更新）时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseMCPCallArgumentsDeltaEvent`
+Schema name: `BetaResponseMCPCallArgumentsDeltaEvent`
 
 ```json
 {
@@ -383413,11 +383363,11 @@ Schema 名称: `BetaResponseMCPCallArgumentsDeltaEvent`
 
 ## response.mcp_call_arguments.done
 
-在 MCP 工具调用的参数最终确定时发出。
+当 MCP 工具调用的参数最终确定时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseMCPCallArgumentsDoneEvent`
+Schema name: `BetaResponseMCPCallArgumentsDoneEvent`
 
 ```json
 {
@@ -383599,11 +383549,11 @@ Schema 名称: `BetaResponseMCPCallArgumentsDoneEvent`
 
 ## response.mcp_call.completed
 
-当 MCP 工具调用成功完成时发出。
+在 MCP 工具调用成功完成时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseMCPCallCompletedEvent`
+Schema name: `BetaResponseMCPCallCompletedEvent`
 
 ```json
 {
@@ -383766,11 +383716,11 @@ Schema 名称: `BetaResponseMCPCallCompletedEvent`
 
 ## response.mcp_call.failed
 
-当 MCP 工具调用失败时发出。
+当某个 MCP 工具调用失败时触发。
 
 ### Schema
 
-Schema 名称: `BetaResponseMCPCallFailedEvent`
+Schema name: `BetaResponseMCPCallFailedEvent`
 
 ```json
 {
@@ -383933,11 +383883,11 @@ Schema 名称: `BetaResponseMCPCallFailedEvent`
 
 ## response.mcp_call.in_progress
 
-当 MCP 工具调用进行时发出。
+当 MCP 工具调用进行中时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseMCPCallInProgressEvent`
+Schema name: `BetaResponseMCPCallInProgressEvent`
 
 ```json
 {
@@ -384100,11 +384050,11 @@ Schema 名称: `BetaResponseMCPCallInProgressEvent`
 
 ## response.mcp_list_tools.completed
 
-在成功获取可用 MCP 工具列表时发出。
+当可用 MCP 工具列表已成功获取时触发。
 
 ### Schema
 
-Schema 名称: `BetaResponseMCPListToolsCompletedEvent`
+Schema name: `BetaResponseMCPListToolsCompletedEvent`
 
 ```json
 {
@@ -384267,11 +384217,11 @@ Schema 名称: `BetaResponseMCPListToolsCompletedEvent`
 
 ## response.mcp_list_tools.failed
 
-在尝试列出可用的 MCP 工具失败时发出。
+当尝试列出可用的 MCP 工具失败时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseMCPListToolsFailedEvent`
+Schema name: `BetaResponseMCPListToolsFailedEvent`
 
 ```json
 {
@@ -384434,11 +384384,11 @@ Schema 名称: `BetaResponseMCPListToolsFailedEvent`
 
 ## response.mcp_list_tools.in_progress
 
-当系统正在检索可用的 MCP 工具列表时发出。
+在系统正在检索可用的 MCP 工具列表时触发。
 
 ### Schema
 
-Schema 名称: `BetaResponseMCPListToolsInProgressEvent`
+Schema name: `BetaResponseMCPListToolsInProgressEvent`
 
 ```json
 {
@@ -384601,11 +384551,11 @@ Schema 名称: `BetaResponseMCPListToolsInProgressEvent`
 
 ## response.code_interpreter_call.in_progress
 
-当代码解释器调用进行中时发出。
+在代码解释器调用进行中时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseCodeInterpreterCallInProgressEvent`
+Schema name: `BetaResponseCodeInterpreterCallInProgressEvent`
 
 ```json
 {
@@ -384768,11 +384718,11 @@ Schema 名称: `BetaResponseCodeInterpreterCallInProgressEvent`
 
 ## response.code_interpreter_call.interpreting
 
-在代码解释器正在主动解释代码片段时发出。
+当代码解释器正在主动解释代码片段时触发。
 
 ### Schema
 
-Schema 名称: `BetaResponseCodeInterpreterCallInterpretingEvent`
+Schema name: `BetaResponseCodeInterpreterCallInterpretingEvent`
 
 ```json
 {
@@ -384935,11 +384885,11 @@ Schema 名称: `BetaResponseCodeInterpreterCallInterpretingEvent`
 
 ## response.code_interpreter_call.completed
 
-当代码解释器调用完成时触发。
+在代码解释器调用完成时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseCodeInterpreterCallCompletedEvent`
+Schema name: `BetaResponseCodeInterpreterCallCompletedEvent`
 
 ```json
 {
@@ -385102,11 +385052,11 @@ Schema 名称: `BetaResponseCodeInterpreterCallCompletedEvent`
 
 ## response.code_interpreter_call_code.delta
 
-当代码解释器流式传输部分代码片段时触发。
+当代码解释器流式传输部分代码片段时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseCodeInterpreterCallCodeDeltaEvent`
+Schema name: `BetaResponseCodeInterpreterCallCodeDeltaEvent`
 
 ```json
 {
@@ -385288,11 +385238,11 @@ Schema 名称: `BetaResponseCodeInterpreterCallCodeDeltaEvent`
 
 ## response.code_interpreter_call_code.done
 
-当代码解释器完成代码片段时发出。
+当代码片段由代码解释器最终确定时触发。
 
 ### Schema
 
-Schema 名称: `BetaResponseCodeInterpreterCallCodeDoneEvent`
+Schema name: `BetaResponseCodeInterpreterCallCodeDoneEvent`
 
 ```json
 {
@@ -385474,11 +385424,11 @@ Schema 名称: `BetaResponseCodeInterpreterCallCodeDoneEvent`
 
 ## response.output_text.annotation.added
 
-当有标注被添加到输出文本内容时发出。
+当向输出文本内容添加注解时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseOutputTextAnnotationAddedEvent`
+Schema name: `BetaResponseOutputTextAnnotationAddedEvent`
 
 ```json
 {
@@ -386240,11 +386190,11 @@ Schema 名称: `BetaResponseOutputTextAnnotationAddedEvent`
 
 ## response.queued
 
-当响应被排队等待处理时触发。
+当 response（响应）被排入队列并等待处理时触发。
 
 ### Schema
 
-Schema 名称: `BetaResponseQueuedEvent`
+Schema name: `BetaResponseQueuedEvent`
 
 ```json
 {
@@ -388767,8 +388717,7 @@ Schema 名称: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) user": {
@@ -389133,6 +389082,10 @@ Schema 名称: `BetaResponseQueuedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "max_messages"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "content_filter"
         }
       ]
@@ -389143,7 +389096,8 @@ Schema 名称: `BetaResponseQueuedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 0",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 0": {
@@ -394416,23 +394370,6 @@ Schema 名称: `BetaResponseQueuedEvent`
     "schemaType": "integer",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaResponseUsage/properties/compute_units",
-    "deprecated": false,
-    "key": "compute_units",
-    "docstring": "Compute units for the request. Currently null when available.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "minimum": 0
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "integer",
-    "children": []
-  },
   "(resource) beta.responses > (model) beta_response_usage > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaResponseUsage",
@@ -394455,9 +394392,6 @@ Schema 名称: `BetaResponseQueuedEvent`
         },
         {
           "ident": "total_tokens"
-        },
-        {
-          "ident": "compute_units"
         }
       ]
     },
@@ -394467,8 +394401,7 @@ Schema 名称: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) input_tokens_details",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens",
       "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) output_tokens_details",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens",
-      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) compute_units"
+      "(resource) beta.responses > (model) beta_response_usage > (schema) > (property) total_tokens"
     ]
   },
   "(resource) beta.responses > (model) beta_response_error > (schema) > (property) code > (member) 0": {
@@ -394619,6 +394552,13 @@ Schema 名称: `BetaResponseQueuedEvent`
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max_messages"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) incomplete_details > (property) reason > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -450443,7 +450383,7 @@ Schema 名称: `BetaResponseQueuedEvent`
 
 ### Schema
 
-Schema 名称: `BetaResponseCustomToolCallInputDeltaEvent`
+Schema name: `BetaResponseCustomToolCallInputDeltaEvent`
 
 ```json
 {
@@ -450628,7 +450568,7 @@ Schema 名称: `BetaResponseCustomToolCallInputDeltaEvent`
 
 ### Schema
 
-Schema 名称: `BetaResponseCustomToolCallInputDoneEvent`
+Schema name: `BetaResponseCustomToolCallInputDoneEvent`
 
 ```json
 {
@@ -450809,11 +450749,11 @@ Schema 名称: `BetaResponseCustomToolCallInputDoneEvent`
 
 ## error
 
-在发生错误时发出。
+在发生错误时触发。
 
 ### Schema
 
-Schema 名称: `BetaResponseErrorEvent`
+Schema name: `BetaResponseErrorEvent`
 
 ```json
 {
@@ -450999,7 +450939,7 @@ Schema 名称: `BetaResponseErrorEvent`
 
 ### Schema
 
-Schema 名称: `BetaResponseAudioDeltaEvent`
+Schema name: `BetaResponseAudioDeltaEvent`
 
 ```json
 {
@@ -451144,11 +451084,11 @@ Schema 名称: `BetaResponseAudioDeltaEvent`
 
 ## response.audio.done
 
-当音频响应完成时发出。
+在音频响应完成时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseAudioDoneEvent`
+Schema name: `BetaResponseAudioDoneEvent`
 
 ```json
 {
@@ -451274,11 +451214,11 @@ Schema 名称: `BetaResponseAudioDoneEvent`
 
 ## response.audio.transcript.delta
 
-当存在音频的部分转录时发出。
+当存在音频的部分转录文本时发出。
 
 ### Schema
 
-Schema 名称: `BetaResponseAudioTranscriptDeltaEvent`
+Schema name: `BetaResponseAudioTranscriptDeltaEvent`
 
 ```json
 {
@@ -451423,11 +451363,11 @@ Schema 名称: `BetaResponseAudioTranscriptDeltaEvent`
 
 ## response.audio.transcript.done
 
-当完整音频转录完成时发出。
+当完整音频转写完成时触发。
 
 ### Schema
 
-Schema 名称: `BetaResponseAudioTranscriptDoneEvent`
+Schema name: `BetaResponseAudioTranscriptDoneEvent`
 
 ```json
 {
@@ -451553,11 +451493,11 @@ Schema 名称: `BetaResponseAudioTranscriptDoneEvent`
 
 ## response.shell_call_command.added
 
-一个流式事件，用于指示已将 shell 命令添加到工具调用中。
+一个流式事件，表示一条 shell 命令已被添加到工具调用中。
 
 ### Schema
 
-Schema 名称: `BetaResponseShellCallCommandAddedStreamingEvent`
+Schema name: `BetaResponseShellCallCommandAddedStreamingEvent`
 
 ```json
 {
@@ -451743,11 +451683,11 @@ Schema 名称: `BetaResponseShellCallCommandAddedStreamingEvent`
 
 ## response.shell_call_command.delta
 
-表示 shell 命令被增量更新的流式事件。
+一个流式事件，指示 shell 命令被增量更新。
 
 ### Schema
 
-Schema 名称: `BetaResponseShellCallCommandDeltaStreamingEvent`
+Schema name: `BetaResponseShellCallCommandDeltaStreamingEvent`
 
 ```json
 {
@@ -451952,11 +451892,11 @@ Schema 名称: `BetaResponseShellCallCommandDeltaStreamingEvent`
 
 ## response.shell_call_command.done
 
-表示 shell 命令已完成的流式事件。
+指示 shell 命令已完成的流式事件。
 
 ### Schema
 
-Schema 名称: `BetaResponseShellCallCommandDoneStreamingEvent`
+Schema name: `BetaResponseShellCallCommandDoneStreamingEvent`
 
 ```json
 {
@@ -452142,11 +452082,11 @@ Schema 名称: `BetaResponseShellCallCommandDoneStreamingEvent`
 
 ## response.shell_call_output_content.delta
 
-表示 shell 调用输出被增量添加的流式事件。
+一个流式事件，指示 shell 调用输出已增量添加。
 
 ### Schema
 
-Schema 名称: `BetaResponseShellCallOutputContentDeltaStreamingEvent`
+Schema name: `BetaResponseShellCallOutputContentDeltaStreamingEvent`
 
 ```json
 {
@@ -452395,11 +452335,11 @@ Schema 名称: `BetaResponseShellCallOutputContentDeltaStreamingEvent`
 
 ## response.shell_call_output_content.done
 
-指示 shell 调用输出已完成的一个流事件。
+表示 shell 调用输出已完成的事件。
 
 ### Schema
 
-Schema 名称: `BetaResponseShellCallOutputContentDoneStreamingEvent`
+Schema name: `BetaResponseShellCallOutputContentDoneStreamingEvent`
 
 ```json
 {
