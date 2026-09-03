@@ -1,107 +1,61 @@
 # OpenAI API 中文文档
 
-本项目已从早期手工维护方式迁移为可自动维护的文档仓库。官方英文 Markdown 同步与可追溯、可增量恢复的中文翻译 PR 流水线均已闭环，当前按核心文档优先级持续积累中文内容。
+这是一个由社区维护的 OpenAI API 中文文档项目，帮助中文读者更轻松地阅读和理解 OpenAI API 文档。
 
-> `docs/en/` 是官方英文内容的镜像，不是本项目原创内容。接口行为、价格、限制和安全要求请始终以 [OpenAI API 文档](https://developers.openai.com/api/) 为准。
+你可以在这里阅读中文译文，也可以随时对照英文原文。无论你是第一次接触 OpenAI API，还是只想快速查找某项功能的说明，都可以直接从在线文档开始。
 
-## 目录结构
+👉 **[打开 OpenAI API 中文文档](https://www.openai-api-chinese.com)**
 
-```text
-.
-├── apps/web/               # Next.js 双语静态站（Vercel）
-├── scripts/
-│   ├── sync-docs.ts          # 英文文档发现、同步和更新检查
-│   ├── translate-docs.ts     # 中文翻译状态和增量计划
-│   ├── fetch-coordinator.ts  # 全局限速、重试和熔断
-│   ├── docs.config.json      # 来源与网络策略配置
-│   └── translation/          # 翻译规划、提示词、术语表和优先级
-├── docs/
-│   ├── en/                   # 提交到 Git 的官方英文 Markdown 镜像
-│   │   ├── api/docs/
-│   │   ├── api/reference/
-│   │   └── .source-manifest.json
-│   ├── zh/                   # 简体中文 Markdown 镜像与翻译 manifest
-│   └── legacy/               # 早期手工中文译文及图片归档
-└── .github/workflows/
-    ├── ci.yml                # PR、main 与手动触发的质量门禁
-    ├── sync-docs.yml         # 每天检查并创建官方更新 PR
-    └── translate-docs.yml    # 按语义分批的自动翻译 PR
-```
+> 本项目不是 OpenAI 官方网站。涉及接口行为、价格、使用限制和安全要求时，请以 [OpenAI 官方文档](https://developers.openai.com/api/) 为准。
 
-英文文件严格按照官网 URL 的路径保存。例如：
+## 怎么看
 
-```text
-https://developers.openai.com/api/docs/quickstart.md
-→ docs/en/api/docs/quickstart.md
-```
+- **日常阅读**：打开[在线中文文档](https://www.openai-api-chinese.com)，从页面目录中选择需要的内容。
+- **对照原文**：阅读中文时遇到疑问，可以切换到相应的英文内容核对。
+- **查看官方信息**：需要确认最新的接口行为、价格或使用限制时，请访问 [OpenAI 官方文档](https://developers.openai.com/api/)。
 
-同步器不会修改 Markdown 正文，因此相对链接保持原有相对关系，外部链接也保留官方原始地址。
+如果习惯直接在 GitHub 中阅读，也可以进入[中文文档目录](docs/zh/)或[英文文档目录](docs/en/)。两个目录采用相近的结构，方便相互对照。
 
-## 使用
+## 文档如何更新
 
-需要 Node.js 24 和 pnpm：
+这个项目通过 GitHub Actions 持续维护文档：
 
-```bash
-pnpm install
-pnpm docs:bootstrap
-pnpm docs:status
-pnpm docs:check
-pnpm docs:sync
-pnpm translate:status
-pnpm translate:check
-pnpm translate:plan -- --section guides --match quickstart --limit 10
-pnpm translate:simulate -- --match guides/agents/quickstart.md --limit 1
-```
+- 定期检查 OpenAI 官方英文文档是否发生变化；
+- 发现变化后，通过自动创建或更新的 PR 同步英文内容；
+- 英文更新后继续更新对应的中文翻译，并定期补充尚未完成的内容；
+- 如果已有翻译 PR 等待审核，会先等待当前内容处理完毕，避免同时产生多批改动；
+- 自动生成的改动不会直接进入主分支，需要通过项目检查并由维护者审核。
 
-- `docs:bootstrap`：迁移时从已落盘的 `docs/en/` 离线初始化 manifest；不会联网或修改 Markdown。
-- `docs:status`：离线查看已跟踪页面数量和数据量。
-- `docs:check`：联网检查官方内容或本地镜像是否变化，不写文件；有变化时退出码为 `1`。
-- `docs:sync`：以低并发和全局限速联网同步 Markdown；本轮全部下载成功后才更新文件和 `docs/en/.source-manifest.json`。
+这些规则让文档可以持续跟进官方变化，同时保留必要的检查和人工确认。
 
-完整同步会拒绝空索引和异常大幅删除。命令行同步超过自动安全阈值时，必须由维护者使用 `--allow-large-prune` 明确确认。定时同步只会把变更写入待审核的自动 PR，不会直接写入 `main`，因此会显式启用该参数；大规模删除仍须由维护者在 PR 中审核后合并。
+## 找不到中文内容怎么办
 
-维护细节和筛选参数见 [`scripts/README.md`](scripts/README.md)，文档目录说明见 [`docs/README.md`](docs/README.md)。
+中文翻译会逐步完善，因此部分内容可能暂时只有英文版本，也可能与刚更新的官方文档存在时间差。
 
-## 自动更新
+遇到这种情况时，可以先切换到英文内容或查看 OpenAI 官方文档。之后再次访问时，对应的中文内容可能已经补充或更新。
 
-GitHub Actions 每天北京时间 00:00 读取官方 `llms.txt` 索引、运行测试并同步英文 Markdown。只有 `docs/en/` 相对 `main` 实际发生变化时，机器人分支 `automation/sync-openai-docs` 才会创建或更新 PR；机器人不会直接写入 `main`。自动 PR 仍须在维护者批准工作流运行后通过 `Quality gate`，并由维护者审核合并。
+## 发现问题
 
-中文翻译 Action 在英文变更合入 `main` 后立即运行，并每天北京时间 01:00 补充执行。它只检出受信任的 `main`，并从 **Settings → Environments → translation-production** 读取运行配置。
+如果你发现错译、漏译、表述不清或链接失效，欢迎[提交 Issue](https://github.com/jiahim/OpenAI-API-Chinese/issues)。
 
-`TRANSLATION_PROVIDER` 支持以下键名：
+反馈时请尽量说明：
 
-| 键名 | 服务 | API 地址 | Environment secret | 模型变量 | 默认模型 |
-| --- | --- | --- | --- | --- | --- |
-| `deepseek` | DeepSeek | `https://api.deepseek.com/v1` | `DEEPSEEK_API_KEY` | `DEEPSEEK_MODEL` | `deepseek-chat` |
-| `minimax` | MiniMax 国际站 | `https://api.minimax.io/v1` | `MINIMAX_API_KEY` | `MINIMAX_MODEL` | `MiniMax-M3` |
-| `minimax-cn` | MiniMax 国内站（含国内 Token Plan） | `https://api.minimaxi.com/v1` | `MINIMAX_API_KEY` | `MINIMAX_MODEL` | `MiniMax-M3` |
+- 问题出现在哪个文件；
+- 哪句话不容易理解或可能有误；
+- 如果方便，你建议怎样表达。
 
-在 **Environment secrets** 中配置 `MINIMAX_API_KEY` 或 `DEEPSEEK_API_KEY`。只有一个 Key 时会自动选择对应供应商；仅有 MiniMax Key 时默认选择国内站 `minimax-cn`。同时存在两个 Key 时必须在 **Environment variables** 中设置 `TRANSLATION_PROVIDER`，值只能是上表中的键名。模型可通过同处的 `MINIMAX_MODEL` 或 `DEEPSEEK_MODEL` 切换，无需修改仓库或创建 PR。MiniMax 国内站 Plan 应使用 `minimax-cn`；国内站与国际站的 Key 和额度按各自接口生效，不应混用。
+这些信息能帮助维护者更快地找到并处理问题。
 
-运行时解析出的实际 provider/model 会进入翻译策略指纹。每轮最多翻译 100 篇页面；长页面先由 Markdown adapter 拆成可安全回填的语义单元，再由 `easy-translate` 按每批最多 20 个单元、4,000 个源字符组织模型请求，并通过 `automation/translate-openai-docs` 创建一个 PR。已有翻译 PR 等待审核时不会继续调用模型。自动选择先按 stale/missing 状态维护既有译文，再在同一状态内按 `scripts/translation/priority.zh-CN.json` 的核心文档顺序处理，未列入清单的页面保持稳定路径排序。术语表中的 `preserve` 项会在请求前替换为可恢复占位符；每个成功批次都会写入 checkpoint，单批请求耗尽有限重试后，页面还会基于 checkpoint 额外恢复一次，认证、配置和完整性错误不会盲目重试。
+## 想参与维护
 
-仓库必须在 **Settings → Actions → General → Workflow permissions** 中启用 **Allow GitHub Actions to create and approve pull requests**。`main` 的 Ruleset 可以因此保持空 bypass，并要求所有更新通过 PR 和 `Quality gate`。PR 标题必须以 `[AI] ` 或 `[Human] ` 标明来源，其中 `codex/` 与 `automation/` 分支强制使用 `[AI] `。
+与文档同步、翻译和网站有关的维护说明，分别放在以下目录中：
 
-`translate:status` 离线汇总全部页面的增量状态，`translate:check` 额外拒绝目标文件缺失、未登记或与 manifest 不一致；`translate:plan` 按自动队列优先级只读列出下一轮可翻译或阻塞的页面。`translate:simulate` 使用 Echo/Fake Provider 执行无 key、无写入闭环。`translate:run` 用于本地精确单篇翻译，`translate:auto` 为远端按优先级选择最多 100 篇页面并按语义单元分批处理；人工润色后用 `translate:review` 收录目标 SHA 并标记 `reviewed`。完整翻译设计见 [`docs/translation-design.md`](docs/translation-design.md)。
+- [文档目录](docs/)
+- [维护工具目录](scripts/)
+- [文档网站目录](apps/web/)
 
-人工校对中可复用的固定译法应进入术语表，通用表达要求应进入翻译提示词；只适用于单篇文档的上下文、歧义或官方原文勘误记录在 `scripts/translation/review-notes.zh-CN.json`。页面级备注会自动加入该页翻译请求和策略 SHA，仅让对应页面进入 `stale-policy`，不会触发全站重翻。
+普通读者不需要安装或运行任何维护工具，直接阅读文档即可。
 
-## 静态双语文档站
+## 内容归属
 
-当前仓库同时维护首个可用站点 [`apps/web`](apps/web)。它在构建期读取 source/translation manifest 和磁盘 Markdown，按官方 `llms.txt` 的分组与顺序生成完整导航：421 篇英文源页面都有稳定静态路由，其中 414 篇直接渲染正文；7 篇超过 1 MB 的事件/资源总表暂时生成轻量说明页，避免单页 HTML 和 Vercel 产物异常膨胀。已有中文译文显示在同路径的 `/zh/` 页面，其余中文路径保留原目录位置并引导到本站英文原文。Markdown 中指向 `developers.openai.com/api/docs` 与 `/api/reference` 的链接会转换为当前语言的本站路由，外部链接保持明确标识。
-
-```bash
-pnpm web:dev
-pnpm web:typecheck
-pnpm web:lint
-pnpm web:test
-pnpm web:build
-```
-
-站点使用 Next.js 静态导出，Vercel 项目 Root Directory 设置为 `apps/web`，并在 Root Directory 设置中启用 **Include source files outside of the Root Directory in the Build Step**，让构建读取仓库根部 `docs/`。站点无需数据库或运行时服务；生产环境建议设置 `NEXT_PUBLIC_SITE_ORIGIN` 为正式域名。首页会把 [OpenAI 官方开发者文档](https://developers.openai.com/api/) 明确展示为权威内容源，本项目不冒充官方网站。
-
-首个实现暂留在当前仓库，以便同步、翻译和展示闭环快速演进；代码内部保持内容适配、结构导航、Markdown 渲染和部署配置的边界。出现第二个真实翻译站后，再把通用部分提取为独立包或仓库。演进方案见 [`docs/static-site-architecture.md`](docs/static-site-architecture.md)。
-
-## 许可证与内容归属
-
-项目代码见 [`LICENSE`](LICENSE)。OpenAI 文档内容及商标权利归其各自权利人所有。
+英文文档内容来自 OpenAI 官方文档，其内容及相关商标权利归各自权利人所有。本项目提供的代码遵循仓库所附许可证。
