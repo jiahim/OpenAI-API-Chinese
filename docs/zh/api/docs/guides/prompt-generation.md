@@ -1,23 +1,23 @@
-# Prompt 生成
+# Prompt generation
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 获取。
 
-该 **生成** 按钮在 [Playground](https://platform.openai.com/chat/edit) 让你仅根据任务描述就能生成提示词、 [函数](https://developers.openai.com/api/docs/guides/function-calling)，以及 [架构](https://developers.openai.com/api/docs/guides/structured-outputs#supported-schemas) 。本指南将详细讲解它的工作原理。
+该 **生成** 按钮，位于 [Playground](https://platform.openai.com/chat/edit) 可让你根据任务描述生成提示、 [函数](https://developers.openai.com/api/docs/guides/function-calling)，和 [架构](https://developers.openai.com/api/docs/guides/structured-outputs#supported-schemas) 。本指南将详细讲解其具体工作原理。
 
 ## 概述
 
-从头开始创建提示和模式可能非常耗时，因此生成它们可以帮助你快速上手。Generate 按钮主要采用两种方式：
+从零开始创建提示和模式可能很耗时，因此生成它们可以帮助你快速上手。Generate 按钮主要使用两种方法：
 
-1. **提示词：** 我们使用 **元提示** （meta-prompts），融入最佳实践，用于生成或改进提示词。
-1. **模式（Schema）：** 我们使用 **元模式** （meta-schemas），用于生成合法的 JSON 和函数语法。
+1. **提示词：** 我们使用 **元提示词** ，结合最佳实践来生成或改进提示词。
+1. **模式：** 我们使用 **元模式** ，用于生成合法的 JSON 和函数语法。
 
-虽然我们目前使用元提示和架构，但未来可能会集成更先进的技术，例如 [DSPy](https://arxiv.org/abs/2310.03714) 和 ["Gradient Descent"](https://arxiv.org/abs/2305.03495).
+虽然我们目前使用元提示和模式，但未来可能会集成更先进的技术，例如 [DSPy](https://arxiv.org/abs/2310.03714) 和 ["梯度下降"](https://arxiv.org/abs/2305.03495).
 
 ## Prompts
 
-一个 **meta-prompt** 指示模型根据你的任务描述创建一个优质提示，或者改进现有提示。Playground 中的元提示借鉴自我们的 [提示工程](https://developers.openai.com/api/docs/guides/prompt-engineering) 最佳实践以及与用户交流积累的实战经验。
+一个 **meta-prompt** 指示模型根据你的任务描述创建一个好的提示，或改进现有的提示。Playground 中的 meta-prompt 源自我们的 [prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering) 最佳实践以及与用户的实际经验。
 
-我们针对不同的输出类型（例如音频）使用特定的元提示，以确保生成的提示符合预期格式。
+我们针对不同的输出类型（如音频）使用特定的 meta-prompt，以确保生成的提示符合预期格式。
 
 ### Meta-prompts
 
@@ -232,6 +232,74 @@ client.chat().completions().create(params).choices().stream()
     .forEach(System.out::println);
 ````
 
+````ruby
+require "openai"
+
+client = OpenAI::Client.new
+meta_prompt = <<~PROMPT
+  Given a task description or existing prompt, produce a detailed system prompt to guide a language model in completing the task effectively.
+
+  # Guidelines
+
+  - Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.
+  - Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.
+  - Reasoning Before Conclusions**: Encourage reasoning steps before any conclusions are reached. ATTENTION! If the user provides examples where the reasoning happens afterward, REVERSE the order! NEVER START EXAMPLES WITH CONCLUSIONS!
+      - Reasoning Order: Call out reasoning portions of the prompt and conclusion parts (specific fields by name). For each, determine the ORDER in which this is done, and whether it needs to be reversed.
+      - Conclusion, classifications, or results should ALWAYS appear last.
+  - Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.
+     - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.
+  - Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.
+  - Formatting: Use markdown features for readability. DO NOT USE ``` CODE BLOCKS UNLESS SPECIFICALLY REQUESTED.
+  - Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.
+  - Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.
+  - Output Format: Explicitly the most appropriate output format, in detail. This should include length and syntax (e.g. short sentence, paragraph, JSON, etc.)
+      - For tasks outputting well-defined or structured data (classification, JSON, etc.) bias toward outputting a JSON.
+      - JSON should never be wrapped in code blocks (```) unless explicitly requested.
+
+  The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no "---")
+
+  [Concise instruction describing the task - this should be the first line in the prompt, no section header]
+
+  [Additional details as needed.]
+
+  [Optional sections with headings or bullet points for detailed steps.]
+
+  # Steps [optional]
+
+  [optional: a detailed breakdown of the steps necessary to accomplish the task]
+
+  # Output Format
+
+  [Specifically call out how the output should be formatted, be it response length, structure e.g. JSON, markdown, etc]
+
+  # Examples [optional]
+
+  [Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]
+  [If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]
+
+  # Notes [optional]
+
+  [optional: edge cases, details, and an area to call or repeat out specific important considerations]
+PROMPT
+
+def generate_prompt(client, meta_prompt, task_or_prompt)
+  completion = client.chat.completions.create(
+    model: "gpt-5.6",
+    messages: [
+      {role: :system, content: meta_prompt},
+      {
+        role: :user,
+        content: "Task, Goal, or Current Prompt:\n#{task_or_prompt}"
+      }
+    ]
+  )
+
+  completion.choices.fetch(0).message.content
+end
+
+puts(generate_prompt(client, meta_prompt, "Write a concise product launch announcement."))
+````
+
   
 
   
@@ -420,11 +488,70 @@ client.chat().completions().create(params).choices().stream()
     .forEach(System.out::println);
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+meta_prompt = <<~PROMPT
+  Given a task description or existing prompt, produce a detailed system prompt to guide a realtime audio output language model in completing the task effectively.
+
+  # Guidelines
+
+  - Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.
+  - Tone: Make sure to specifically call out the tone. By default it should be emotive and friendly, and speak quickly to avoid keeping the user just waiting.
+  - Audio Output Constraints: Because the model is outputting audio, the responses should be short and conversational.
+  - Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.
+  - Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.
+     - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.
+    - It is very important that any examples included reflect the short, conversational output responses of the model.
+  Keep the sentences very short by default. Instead of 3 sentences in a row by the assistant, it should be split up with a back and forth with the user instead.
+    - By default each sentence should be a few words only (5-20ish words). However, if the user specifically asks for "short" responses, then the examples should truly have 1-10 word responses max.
+    - Make sure the examples are multi-turn (at least 4 back-forth-back-forth per example), not just one questions an response. They should reflect an organic conversation.
+  - Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.
+  - Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.
+  - Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.
+
+  The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no "---")
+
+  [Concise instruction describing the task - this should be the first line in the prompt, no section header]
+
+  [Additional details as needed.]
+
+  [Optional sections with headings or bullet points for detailed steps.]
+
+  # Examples [optional]
+
+  [Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]
+  [If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]
+
+  # Notes [optional]
+
+  [optional: edge cases, details, and an area to call or repeat out specific important considerations]
+PROMPT
+
+def generate_prompt(client, meta_prompt, task_or_prompt)
+  completion = client.chat.completions.create(
+    model: "gpt-5.6",
+    messages: [
+      {role: :system, content: meta_prompt},
+      {
+        role: :user,
+        content: "Task, Goal, or Current Prompt:\n#{task_or_prompt}"
+      }
+    ]
+  )
+
+  completion.choices.fetch(0).message.content
+end
+
+puts(generate_prompt(client, meta_prompt, "Create a friendly voice assistant for a bike shop."))
+```
+
 
 
 ### 提示词编辑
 
-为了编辑提示词，我们使用了一个稍作修改的元提示词。虽然直接编辑比较容易应用，但对于更开放式的修改，识别必要的更改可能具有挑战性。为了解决这个问题，我们在响应开头加入了一个 **reasoning section** 。该部分通过评估现有提示词的清晰度、思维链顺序、整体结构和具体性等因素，帮助引导模型确定需要进行哪些更改。reasoning section 会提出改进建议，然后从最终响应中解析出来。
+为了编辑提示词，我们使用一个稍作修改的元提示词。虽然直接修改比较容易应用，但识别开放式修订所需的必要更改可能具有挑战性。为了解决这个问题，我们在响应开头包含一个 **推理部分** 。该部分通过评估现有提示词的清晰度、思维链顺序、整体结构和具体性等因素，引导模型确定需要做哪些修改。推理部分会提出改进建议，然后从最终响应中解析出来。
 
 
 
@@ -694,6 +821,93 @@ client.chat().completions().create(params).choices().stream()
     .forEach(System.out::println);
 ````
 
+````ruby
+require "openai"
+
+client = OpenAI::Client.new
+meta_prompt = <<~PROMPT
+  Given a current prompt and a change description, produce a detailed system prompt to guide a language model in completing the task effectively.
+
+  Your final output will be the full corrected prompt verbatim. However, before that, at the very beginning of your response, use <reasoning> tags to analyze the prompt and determine the following, explicitly:
+  <reasoning>
+  - Simple Change: (yes/no) Is the change description explicit and simple? (If so, skip the rest of these questions.)
+  - Reasoning: (yes/no) Does the current prompt use reasoning, analysis, or chain of thought?
+      - Identify: (max 10 words) if so, which section(s) utilize reasoning?
+      - Conclusion: (yes/no) is the chain of thought used to determine a conclusion?
+      - Ordering: (before/after) is the chain of though located before or after
+  - Structure: (yes/no) does the input prompt have a well defined structure
+  - Examples: (yes/no) does the input prompt have few-shot examples
+      - Representative: (1-5) if present, how representative are the examples?
+  - Complexity: (1-5) how complex is the input prompt?
+      - Task: (1-5) how complex is the implied task?
+      - Necessity: ()
+  - Specificity: (1-5) how detailed and specific is the prompt? (not to be confused with length)
+  - Prioritization: (list) what 1-3 categories are the MOST important to address.
+  - Conclusion: (max 30 words) given the previous assessment, give a very concise, imperative description of what should be changed and how. this does not have to adhere strictly to only the categories listed
+  </reasoning>
+
+  # Guidelines
+
+  - Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.
+  - Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.
+  - Reasoning Before Conclusions**: Encourage reasoning steps before any conclusions are reached. ATTENTION! If the user provides examples where the reasoning happens afterward, REVERSE the order! NEVER START EXAMPLES WITH CONCLUSIONS!
+      - Reasoning Order: Call out reasoning portions of the prompt and conclusion parts (specific fields by name). For each, determine the ORDER in which this is done, and whether it needs to be reversed.
+      - Conclusion, classifications, or results should ALWAYS appear last.
+  - Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.
+     - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.
+  - Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.
+  - Formatting: Use markdown features for readability. DO NOT USE ``` CODE BLOCKS UNLESS SPECIFICALLY REQUESTED.
+  - Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.
+  - Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.
+  - Output Format: Explicitly the most appropriate output format, in detail. This should include length and syntax (e.g. short sentence, paragraph, JSON, etc.)
+      - For tasks outputting well-defined or structured data (classification, JSON, etc.) bias toward outputting a JSON.
+      - JSON should never be wrapped in code blocks (```) unless explicitly requested.
+
+  The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no "---")
+
+  [Concise instruction describing the task - this should be the first line in the prompt, no section header]
+
+  [Additional details as needed.]
+
+  [Optional sections with headings or bullet points for detailed steps.]
+
+  # Steps [optional]
+
+  [optional: a detailed breakdown of the steps necessary to accomplish the task]
+
+  # Output Format
+
+  [Specifically call out how the output should be formatted, be it response length, structure e.g. JSON, markdown, etc]
+
+  # Examples [optional]
+
+  [Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]
+  [If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]
+
+  # Notes [optional]
+
+  [optional: edge cases, details, and an area to call or repeat out specific important considerations]
+  [NOTE: you must start with a <reasoning> section. the immediate next token you produce should be <reasoning>]
+PROMPT
+
+def generate_prompt(client, meta_prompt, task_or_prompt)
+  completion = client.chat.completions.create(
+    model: "gpt-5.6",
+    messages: [
+      {role: :system, content: meta_prompt},
+      {
+        role: :user,
+        content: "Task, Goal, or Current Prompt:\n#{task_or_prompt}"
+      }
+    ]
+  )
+
+  completion.choices.fetch(0).message.content
+end
+
+puts(generate_prompt(client, meta_prompt, "Make this support prompt more concise and empathetic."))
+````
+
   
 
   
@@ -940,59 +1154,137 @@ client.chat().completions().create(params).choices().stream()
     .forEach(System.out::println);
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+meta_prompt = <<~PROMPT
+  Given a current prompt and a change description, produce a detailed system prompt to guide a realtime audio output language model in completing the task effectively.
+
+  Your final output will be the full corrected prompt verbatim. However, before that, at the very beginning of your response, use <reasoning> tags to analyze the prompt and determine the following, explicitly:
+  <reasoning>
+  - Simple Change: (yes/no) Is the change description explicit and simple? (If so, skip the rest of these questions.)
+  - Reasoning: (yes/no) Does the current prompt use reasoning, analysis, or chain of thought?
+      - Identify: (max 10 words) if so, which section(s) utilize reasoning?
+      - Conclusion: (yes/no) is the chain of thought used to determine a conclusion?
+      - Ordering: (before/after) is the chain of though located before or after
+  - Structure: (yes/no) does the input prompt have a well defined structure
+  - Examples: (yes/no) does the input prompt have few-shot examples
+      - Representative: (1-5) if present, how representative are the examples?
+  - Complexity: (1-5) how complex is the input prompt?
+      - Task: (1-5) how complex is the implied task?
+      - Necessity: ()
+  - Specificity: (1-5) how detailed and specific is the prompt? (not to be confused with length)
+  - Prioritization: (list) what 1-3 categories are the MOST important to address.
+  - Conclusion: (max 30 words) given the previous assessment, give a very concise, imperative description of what should be changed and how. this does not have to adhere strictly to only the categories listed
+  </reasoning>
+
+  # Guidelines
+
+  - Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.
+  - Tone: Make sure to specifically call out the tone. By default it should be emotive and friendly, and speak quickly to avoid keeping the user just waiting.
+  - Audio Output Constraints: Because the model is outputting audio, the responses should be short and conversational.
+  - Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.
+  - Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.
+     - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.
+    - It is very important that any examples included reflect the short, conversational output responses of the model.
+  Keep the sentences very short by default. Instead of 3 sentences in a row by the assistant, it should be split up with a back and forth with the user instead.
+    - By default each sentence should be a few words only (5-20ish words). However, if the user specifically asks for "short" responses, then the examples should truly have 1-10 word responses max.
+    - Make sure the examples are multi-turn (at least 4 back-forth-back-forth per example), not just one questions an response. They should reflect an organic conversation.
+  - Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.
+  - Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.
+  - Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.
+
+  The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no "---")
+
+  [Concise instruction describing the task - this should be the first line in the prompt, no section header]
+
+  [Additional details as needed.]
+
+  [Optional sections with headings or bullet points for detailed steps.]
+
+  # Examples [optional]
+
+  [Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]
+  [If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]
+
+  # Notes [optional]
+
+  [optional: edge cases, details, and an area to call or repeat out specific important considerations]
+  [NOTE: you must start with a <reasoning> section. the immediate next token you produce should be <reasoning>]
+PROMPT
+
+def generate_prompt(client, meta_prompt, task_or_prompt)
+  completion = client.chat.completions.create(
+    model: "gpt-5.6",
+    messages: [
+      {role: :system, content: meta_prompt},
+      {
+        role: :user,
+        content: "Task, Goal, or Current Prompt:\n#{task_or_prompt}"
+      }
+    ]
+  )
+
+  completion.choices.fetch(0).message.content
+end
+
+puts(generate_prompt(client, meta_prompt, "Make this voice assistant prompt warmer and more direct."))
+```
+
 
 
 ## Schemas
 
-[结构化输出](https://developers.openai.com/api/docs/guides/structured-outputs) schemas 和函数模式本身就是 JSON 对象，因此我们借助结构化输出（Structured Outputs）来生成它们。
-这需要为期望的输出定义一个模式，而本例中的输出本身也是一个模式。为此，我们使用自描述模式——一个 **元模式**.
+[Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) schema 和 function schema 本身都是 JSON 对象，因此我们借助 Structured Outputs 来生成它们。
+这需要为期望的输出定义一个 schema，而这里期望的输出本身就是一个 schema。为此，我们使用一个自描述 schema —— 一个 **meta-schema**.
 
-由于函数模式中的 `parameters` 字段本身也是一个模式，我们使用同一个元模式来生成函数。
+由于 function schema 中的 `parameters` 字段本身也是一个 schema，我们使用同一个 meta-schema 来生成函数。
 
-### 定义受限的元模式
+### 定义受限的元架构
 
-[结构化输出](https://developers.openai.com/api/docs/guides/structured-outputs) 支持两种模式： `strict=true` 和 `strict=false`。两种模式都使用同一个经过训练的模型来遵循所提供的 schema，但只有 "strict mode" 通过受限采样保证完美遵循。
+[Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) 支持两种模式： `strict=true` 和 `strict=false`。两种模式都使用同一模型训练以遵循所提供的 schema，但只有“严格模式”能通过受约束采样保证完全遵循。
 
-我们的目标是使用 strict mode 本身为 strict mode 生成 schema。然而，由 [JSON Schema 规范](https://json-schema.org/specification#meta-schemas) 提供的官方 meta-schema 依赖 [strict mode 当前不支持](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported) 的特性。这带来了同时影响输入和输出 schema 的挑战。
+我们的目标是使用严格模式本身来为严格模式生成 schema。然而， [JSON Schema 规范](https://json-schema.org/specification#meta-schemas) 官方提供的元 schema 依赖 [严格模式下暂不支持](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported) 的特性，这对输入和输出 schema 都带来了挑战。
 
-1. **输入模式：** 我们无法使用 [unsupported features](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported) 中的功能来描述输出模式。
-2. **输出模式：** 生成模式不得包含 [unsupported features](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported).
+1. **输入架构：** 我们无法使用 [不受支持的功能](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported) 来描述输入架构中的输出架构。
+2. **输出架构：** 生成的架构不得包含 [不受支持的功能](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported).
 
-由于需要在输出 schema 中生成新的键，输入的元 schema 必须使用 `additionalProperties`。这意味着我们目前无法使用 strict 模式来生成 schema。不过，我们仍然希望生成的 schema 符合 strict 模式的约束。
+因为我们需要在输出 schema 中生成新的键，输入元 schema 必须使用 `additionalProperties`。这意味着我们目前无法使用 strict 模式来生成 schema。不过，我们仍然希望生成的 schema 能够符合 strict 模式的约束。
 
-为了克服这一限制，我们定义了一个 **pseudo-meta-schema** —— 一个元模式（meta-schema），它使用严格模式下不支持的特性，仅用于描述严格模式下所支持的特性。本质上，这种方式在元模式定义时跳出严格模式，同时仍确保所生成的模式遵循严格模式约束。
-
-
-
-构建一个受限的元模式是一项具有挑战性的任务，因此我们借助了模型来协助完成。
-
-我们首先提供 `o1-preview` 和 `gpt-4o` 在 JSON 模式下，根据 Structured Outputs 文档描述我们的目标。
-经过几次迭代，我们开发出了第一个可用的元模式。
-
-然后我们使用了 `gpt-4o` 配合 Structured Outputs，并提供了 _那个初步的 schema_ 以及我们的任务说明和文档，以生成更好的候选方案。每一次迭代我们都使用更好的 schema 来生成下一个，直到最后我们仔细手工审核了它。
-
-最后，在清理输出之后，我们针对一组针对 schema 和函数的评估对它们进行了验证。
+为了克服这一限制，我们定义了一个 **伪元 schema** ——一种使用了 strict 模式不支持的特性、仅用来描述 strict 模式所支持特性的元 schema。本质上，这种方法在元 schema 定义中跳出了 strict 模式，同时仍然确保生成的 schema 遵循 strict 模式的约束。
 
 
 
-### 输出清洗
+构建一个受限制的元 schema 是一项具有挑战性的任务，因此我们借助模型来帮忙。
 
-严格模式可确保完全符合架构。不过，我们无法在生成过程中使用它，因此需要在生成输出后对其进行验证和转换。
+我们首先让 `o1-preview` 和 `gpt-4o` 在 JSON 模式下根据 Structured Outputs 文档给出对我们目标的描述。
+经过几次迭代后，我们开发出了第一个可用的元 schema。
 
-生成架构后，我们会执行以下步骤：
+然后我们使用 `gpt-4o` 配合 Structured Outputs，并向其提供 _那个初始 schema_ 以及我们的任务描述和文档，以生成更好的候选方案。每一次迭代，我们都使用一个更好的 schema 来生成下一个，直到最终仔细地进行人工审核。
+
+最后，在清理输出之后，我们根据一组针对 schema 和函数的评估对生成的 schema 进行了验证。
+
+
+
+### 输出清理
+
+严格模式可以保证完全遵循 schema。然而，由于我们在生成过程中无法使用它，因此需要在生成完成后对输出进行校验和转换。
+
+生成 schema 后，我们会执行以下步骤：
 
 1. **将 `additionalProperties` 设置为 `false`** ，适用于所有对象。
 1. **将所有属性标记为必填**.
-1. **对于结构化输出架构**，请使用 [`json_schema`](https://developers.openai.com/api/docs/guides/structured-outputs?context=without_parse#how-to-use) 对象进行包装。
-1. **对于函数**，请使用 [`function`](https://developers.openai.com/api/docs/guides/function-calling#defining-functions) 对象进行包装。
+1. **对于结构化输出 schema**，请将它们包裹在 [`json_schema`](https://developers.openai.com/api/docs/guides/structured-outputs?context=without_parse#how-to-use) 对象中。
+1. **对于函数**，请将它们包裹在 [`function`](https://developers.openai.com/api/docs/guides/function-calling#defining-functions) 对象中。
 
 Realtime API
   [函数](https://developers.openai.com/api/docs/guides/realtime-conversations#function-calling) 对象
-  与 Chat Completions API 略有不同，但使用相同的架构。
+  与 Chat Completions API 略有差异，但使用相同的架构。
 
-### Meta-schemas
+### 元模式
 
-每个元 schema 都对应一个提示，其中包含少量示例。借助 Structured Outputs 的可靠性——即使未使用严格模式——我们也能够生成 schema。
+每个元数据 schema 都附带一个包含少样本示例的提示词。结合 Structured Outputs 的可靠性 —— 即便不使用严格模式 —— 我们也能成功生成 schema。
 
 
 
