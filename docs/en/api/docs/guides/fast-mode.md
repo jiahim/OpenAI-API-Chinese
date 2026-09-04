@@ -172,8 +172,8 @@ Yes. All your traffic contributes to the same ramp rate limit. If you routinely 
 
 ### What happens if Fast mode doesn't meet its latency target?
 
-Contact your account director if you have questions or concerns. Fast mode and Scale Tier receive the same service-level agreement treatment, and eligible Enterprise agreements may provide service credits when those targets aren't met.
+Fast mode for GPT-6 Astra does not include a latency SLA. For GPT-5.6 and earlier models, Fast mode and Scale Tier receive the same service-level agreement treatment, and eligible Enterprise agreements may provide service credits when latency targets aren't met. Contact your account director if you have questions or concerns.
 
 ### Is Fast mode compatible with data residency, Zero Data Retention, and a BAA?
 
-Yes. Fast mode is compatible with data residency, Zero Data Retention, and a Business Associate Agreement (BAA). Existing endpoint, tool, eligibility, and contractual requirements still apply. See the [Your data guide](https://developers.openai.com/api/docs/guides/your-data) for details.
+Fast mode is compatible with data residency, Zero Data Retention, and a Business Associate Agreement (BAA), subject to model-specific availability. GPT-6 Astra does not support Fast mode with EU data residency. Existing endpoint, tool, eligibility, and contractual requirements still apply. See the [Your data guide](https://developers.openai.com/api/docs/guides/your-data) for details.

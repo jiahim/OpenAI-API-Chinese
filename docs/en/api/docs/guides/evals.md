@@ -47,7 +47,7 @@ or "Other". Respond with only one of those words.
 const ticket = "My monitor won't turn on - help!";
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     { role: "developer", content: instructions },
     { role: "user", content: ticket },
@@ -71,7 +71,7 @@ or "Other". Respond with only one of those words.
 ticket = "My monitor won't turn on - help!"
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {"role": "developer", "content": instructions},
         {"role": "user", "content": ticket},
@@ -96,7 +96,7 @@ func main() {
 	client := openai.NewClient()
 	instructions := "You are an expert in categorizing IT support tickets. Given the support ticket below, categorize the request into one of \"Hardware\", \"Software\", or \"Other\". Respond with only one of those words."
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
 			responses.ResponseInputItemParamOfMessage(instructions, responses.EasyInputMessageRoleDeveloper),
 			responses.ResponseInputItemParamOfMessage("My monitor won't turn on - help!", responses.EasyInputMessageRoleUser),
@@ -119,7 +119,7 @@ import java.util.List;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .inputOfResponse(
             List.of(
                 ResponseInputItem.ofEasyInputMessage(
@@ -150,7 +150,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateDeveloperMessageItem(
             "Categorize the IT support ticket as Hardware, Software, or Other. Respond with only one of those words."
@@ -172,7 +172,7 @@ instructions = <<~INSTRUCTIONS
   Respond with only one of those words.
 INSTRUCTIONS
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {role: :developer, content: instructions},
     {role: :user, content: "My monitor won't turn on - help!"}
@@ -186,7 +186,7 @@ curl https://api.openai.com/v1/responses \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -H "Content-Type: application/json" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "input": [
             {
                 "role": "developer",
@@ -549,7 +549,7 @@ const run = await openai.evals.runs.create("YOUR_EVAL_ID", {
   name: "Categorization text run",
   data_source: {
     type: "responses",
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     input_messages: {
       type: "template",
       template: [
@@ -578,7 +578,7 @@ run = client.evals.runs.create(
     name="Categorization text run",
     data_source={
         "type": "responses",
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "input_messages": {
             "type": "template",
             "template": [
@@ -616,7 +616,7 @@ run = client.evals.runs.create(
         {role: :user, content: "{{ item.ticket_text }}"}
       ]
     },
-    model: "gpt-5.6"
+    model: "gpt-6-astra"
   }
 )
 puts(run.id)
@@ -630,7 +630,7 @@ curl https://api.openai.com/v1/evals/YOUR_EVAL_ID/runs \
         "name": "Categorization text run",
         "data_source": {
             "type": "responses",
-            "model": "gpt-5.6",
+            "model": "gpt-6-astra",
             "input_messages": {
                 "type": "template",
                 "template": [

@@ -25,7 +25,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     { role: "user", content: "knock knock." },
     { role: "assistant", content: "Who's there?" },
@@ -42,7 +42,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {"role": "user", "content": "knock knock."},
         {"role": "assistant", "content": "Who's there?"},
@@ -68,7 +68,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfInputItemList: responses.ResponseInputParam{
 				responses.ResponseInputItemParamOfMessage("Knock knock.", responses.EasyInputMessageRoleUser),
@@ -95,7 +95,7 @@ import java.util.List;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .inputOfResponse(
             List.of(
                 ResponseInputItem.ofEasyInputMessage(
@@ -130,7 +130,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem("Knock knock."),
         ResponseItem.CreateAssistantMessageItem("Who's there?"),
@@ -147,7 +147,7 @@ require "openai"
 client = OpenAI::Client.new
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {role: :user, content: "Knock knock."},
     {role: :assistant, content: "Who's there?"},
@@ -187,7 +187,7 @@ let history = [
 ];
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: history,
   store: false,
 });
@@ -203,7 +203,7 @@ history.push({
 });
 
 const secondResponse = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: history,
   store: false,
 });
@@ -219,7 +219,7 @@ client = OpenAI()
 history = [{"role": "user", "content": "tell me a joke"}]
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=history,
     store=False,
 )
@@ -232,7 +232,7 @@ history += response.output
 history.append({"role": "user", "content": "tell me another"})
 
 second_response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=history,
     store=False,
 )
@@ -258,7 +258,7 @@ func main() {
 		responses.ResponseInputItemParamOfMessage("tell me a joke", responses.EasyInputMessageRoleUser),
 	}
 	first, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: history},
 		Store: openai.Bool(false),
 	})
@@ -270,7 +270,7 @@ func main() {
 	history = append(history, outputAsInput(first.Output)...)
 	history = append(history, responses.ResponseInputItemParamOfMessage("tell me another", responses.EasyInputMessageRoleUser))
 	second, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: history},
 		Store: openai.Bool(false),
 	})
@@ -315,7 +315,7 @@ var first =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .inputOfResponse(history)
                 .store(false)
                 .build());
@@ -338,7 +338,7 @@ client
     .responses()
     .create(
         ResponseCreateParams.builder()
-            .model("gpt-5.6")
+            .model("gpt-6-astra")
             .inputOfResponse(history)
             .store(false)
             .build())
@@ -362,7 +362,7 @@ List<ResponseItem> history =
     ResponseItem.CreateUserMessageItem("Tell me a joke."),
 ];
 
-CreateResponseOptions options = new("gpt-5.6", history)
+CreateResponseOptions options = new("gpt-6-astra", history)
 {
     StoredOutputEnabled = false,
     IncludedProperties =
@@ -376,7 +376,7 @@ Console.WriteLine(first.GetOutputText());
 history.AddRange(first.OutputItems);
 history.Add(ResponseItem.CreateUserMessageItem("Tell me another."));
 
-options = new("gpt-5.6", history)
+options = new("gpt-6-astra", history)
 {
     StoredOutputEnabled = false,
     IncludedProperties =
@@ -395,7 +395,7 @@ client = OpenAI::Client.new
 history = [{role: :user, content: "Tell me a joke."}]
 
 first = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: history,
   store: false
 )
@@ -405,7 +405,7 @@ history.concat(first.output)
 history << {role: :user, content: "Tell me another."}
 
 second = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: history,
   store: false
 )
@@ -465,7 +465,7 @@ In a multi-turn interaction, you can pass the `conversation` into subsequent res
 
 ```javascript
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [{ role: "user", content: "What are the five Ds of dodgeball?" }],
   conversation: conversation.id,
 });
@@ -475,7 +475,7 @@ console.log(response.output_text);
 
 ```python
 response = openai.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[{"role": "user", "content": "What are the 5 Ds of dodgeball?"}],
     conversation=conversation.id,
 )
@@ -483,7 +483,7 @@ response = openai.responses.create(
 
 ```go
 response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-	Model: "gpt-5.6",
+	Model: "gpt-6-astra",
 	Conversation: responses.ResponseNewParamsConversationUnion{
 		OfString: openai.String(conversation.ID),
 	},
@@ -509,7 +509,7 @@ var response =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .conversation(conversation.id())
                 .input("What are the five Ds of dodgeball?")
                 .build());
@@ -523,7 +523,7 @@ response.output().stream()
 
 ```ruby
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   conversation: conversation.id,
   input: "What are the five Ds of dodgeball?"
 )
@@ -544,7 +544,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "tell me a joke",
   store: true,
 });
@@ -552,7 +552,7 @@ const response = await openai.responses.create({
 console.log(response.output_text);
 
 const secondResponse = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   previous_response_id: response.id,
   input: [{ role: "user", content: "explain why this is funny." }],
   store: true,
@@ -567,13 +567,13 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="tell me a joke",
 )
 print(response.output_text)
 
 second_response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     previous_response_id=response.id,
     input=[{"role": "user", "content": "explain why this is funny."}],
 )
@@ -595,7 +595,7 @@ func main() {
 	client := openai.NewClient()
 
 	first, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Tell me a joke."),
 		},
@@ -606,7 +606,7 @@ func main() {
 	fmt.Println(first.OutputText())
 
 	second, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:              "gpt-5.6",
+		Model:              "gpt-6-astra",
 		PreviousResponseID: openai.String(first.ID),
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Explain why this is funny."),
@@ -628,7 +628,7 @@ var first =
     client
         .responses()
         .create(
-            ResponseCreateParams.builder().model("gpt-5.6").input("Tell me a joke.").build());
+            ResponseCreateParams.builder().model("gpt-6-astra").input("Tell me a joke.").build());
 
 first.output().stream()
     .flatMap(item -> item.message().stream())
@@ -641,7 +641,7 @@ var second =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .input("Explain why this is funny.")
                 .previousResponseId(first.id())
                 .build());
@@ -660,13 +660,13 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 ResponseResult first = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     "Tell me a joke."
 );
 Console.WriteLine(first.GetOutputText());
 
 ResponseResult second = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     "Explain why this is funny.",
     previousResponseId: first.Id
 );
@@ -679,13 +679,13 @@ require "openai"
 client = OpenAI::Client.new
 
 first = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Tell me a joke."
 )
 puts(first.output_text)
 
 second = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   previous_response_id: first.id,
   input: "Explain why this is funny."
 )
@@ -704,7 +704,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "tell me a joke",
   store: true,
 });
@@ -712,7 +712,7 @@ const response = await openai.responses.create({
 console.log(response.output_text);
 
 const secondResponse = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   previous_response_id: response.id,
   input: [{ role: "user", content: "explain why this is funny." }],
   store: true,
@@ -727,13 +727,13 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="tell me a joke",
 )
 print(response.output_text)
 
 second_response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     previous_response_id=response.id,
     input=[{"role": "user", "content": "explain why this is funny."}],
 )
@@ -755,7 +755,7 @@ func main() {
 	client := openai.NewClient()
 
 	first, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Tell me a joke."),
 		},
@@ -766,7 +766,7 @@ func main() {
 	fmt.Println(first.OutputText())
 
 	second, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:              "gpt-5.6",
+		Model:              "gpt-6-astra",
 		PreviousResponseID: openai.String(first.ID),
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Explain why this is funny."),
@@ -788,7 +788,7 @@ var first =
     client
         .responses()
         .create(
-            ResponseCreateParams.builder().model("gpt-5.6").input("Tell me a joke.").build());
+            ResponseCreateParams.builder().model("gpt-6-astra").input("Tell me a joke.").build());
 
 first.output().stream()
     .flatMap(item -> item.message().stream())
@@ -801,7 +801,7 @@ var second =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .input("Explain why this is funny.")
                 .previousResponseId(first.id())
                 .build());
@@ -820,13 +820,13 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 ResponseResult first = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     "Tell me a joke."
 );
 Console.WriteLine(first.GetOutputText());
 
 ResponseResult second = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     "Explain why this is funny.",
     previousResponseId: first.Id
 );
@@ -839,13 +839,13 @@ require "openai"
 client = OpenAI::Client.new
 
 first = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Tell me a joke."
 )
 puts(first.output_text)
 
 second = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   previous_response_id: first.id,
   input: "Explain why this is funny."
 )

@@ -46,7 +46,7 @@ Run your evals against test inputs like you expect to see in production. Using o
 With evals in place, you can effectively iterate on [prompts](https://developers.openai.com/api/docs/guides/text). The prompt engineering process may be all you need in order to get great results for your use case. Different models may require different prompting techniques, but there are several best practices you can apply across the board to get better results.
 
 - **Include relevant context** - in your instructions, include text or image content that the model will need to generate a response from outside its training data. This could include data from private databases or current, up-to-the-minute information.
-- **Provide clear instructions** - your prompt should contain clear goals about what kind of output you want. Start with [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol) for new work, and use [reasoning model guidance](https://developers.openai.com/api/docs/guides/reasoning) to tune outcome-level instructions, reasoning effort, and verbosity.
+- **Provide clear instructions** - your prompt should contain clear goals about what kind of output you want. Start with [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) for new work, and use [reasoning model guidance](https://developers.openai.com/api/docs/guides/reasoning) to tune outcome-level instructions, reasoning effort, and verbosity.
 - **Provide example outputs** - give the model a few examples of correct output for a given prompt (a process called few-shot learning). The model can extrapolate from these examples how it should respond for other prompts.
 
 [Learn about prompt engineering

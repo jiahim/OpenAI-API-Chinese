@@ -121,7 +121,7 @@ const crmNamespace = {
 };
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "List open orders for customer CUST-12345.",
   // highlight-start:subtle
   tools: [crmNamespace, { type: "tool_search" }],
@@ -175,7 +175,7 @@ crm_namespace = {
 }
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="List open orders for customer CUST-12345.",
     tools=[
         crm_namespace,
@@ -221,7 +221,7 @@ func main() {
 		},
 	)
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:             "gpt-5.6",
+		Model:             "gpt-6-astra",
 		Input:             responses.ResponseNewParamsInputUnion{OfString: openai.String("List open orders for customer CUST-12345.")},
 		Tools:             []responses.ToolUnionParam{namespace, {OfToolSearch: &responses.ToolSearchToolParam{}}},
 		ParallelToolCalls: openai.Bool(false),
@@ -245,7 +245,7 @@ import java.util.Map;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("List open orders for customer CUST-12345.")
         .parallelToolCalls(false)
         .addTool(
@@ -305,7 +305,7 @@ parameters = {
   additionalProperties: false
 }
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "List open orders for customer CUST-12345.",
   parallel_tool_calls: false,
   tools: [
@@ -417,7 +417,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const firstResponse = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Find the shipping ETA tool first, then use it for order_42.",
   tools: [
     {
@@ -477,7 +477,7 @@ const searchOutput = {
 };
 
 const secondResponse = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     ...firstResponse.output,
     // highlight-start:subtle
@@ -495,7 +495,7 @@ from openai import OpenAI
 client = OpenAI()
 
 first_response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Find the shipping ETA tool first, then use it for order_42.",
     tools=[
         {
@@ -539,7 +539,7 @@ loaded_tools = [
 ]
 
 second_response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         *first_response.output,
         {
@@ -583,7 +583,7 @@ func main() {
 		},
 	}}
 	first, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:             "gpt-5.6",
+		Model:             "gpt-6-astra",
 		Input:             responses.ResponseNewParamsInputUnion{OfString: openai.String("Find the shipping ETA tool first, then use it for order_42.")},
 		Tools:             []responses.ToolUnionParam{searchTool},
 		ParallelToolCalls: openai.Bool(false),
@@ -616,7 +616,7 @@ func main() {
 	searchOutput.OfToolSearchOutput.Status = responses.ResponseToolSearchOutputItemParamStatusCompleted
 
 	second, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:              "gpt-5.6",
+		Model:              "gpt-6-astra",
 		PreviousResponseID: openai.String(first.ID),
 		Input:              responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{searchOutput}},
 	})
@@ -641,7 +641,7 @@ import java.util.Map;
 
 ResponseCreateParams searchRequest =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Find the shipping ETA tool, then use it for order_42.")
         .parallelToolCalls(false)
         .addTool(
@@ -698,7 +698,7 @@ var response =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .previousResponseId(search.id())
                 .inputOfResponse(List.of(ResponseInputItem.ofToolSearchOutput(searchOutput)))
                 .build());
@@ -716,7 +716,7 @@ require "openai"
 
 client = OpenAI::Client.new
 search = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Find the shipping ETA tool, then use it for order_42.",
   parallel_tool_calls: false,
   tools: [{
@@ -739,7 +739,7 @@ unless call.is_a?(OpenAI::Models::Responses::ResponseToolSearchCall)
 end
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   previous_response_id: search.id,
   input: [{
     type: :tool_search_output,

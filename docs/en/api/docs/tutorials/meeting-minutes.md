@@ -78,7 +78,7 @@ In this function, `audio_file_path` is the path to the audio file you want to tr
 
 ## Summarizing and analyzing the transcript with a GPT model
 
-Having obtained the transcript, we now pass it to a GPT model via the [Chat Completions API](https://developers.openai.com/api/reference/resources/chat). The snippets below use a tested model to generate a summary, extract key points, action items, and perform sentiment analysis. For new projects, start with [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol).
+Having obtained the transcript, we now pass it to a GPT model via the [Chat Completions API](https://developers.openai.com/api/reference/resources/chat). The snippets below use a tested model to generate a summary, extract key points, action items, and perform sentiment analysis. For new projects, start with [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra).
 
 This tutorial uses distinct functions for each task we want the model to perform. This is not the most efficient way to do this task - you can put these instructions into one function, however, splitting them up can lead to higher quality summarization.
 

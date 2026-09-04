@@ -115,7 +115,7 @@ async def add_to_todo_list(ctx: RunContextWrapper[AgentContext], item: str) -> N
 
 
 assistant_agent = Agent[AgentContext](
-    model="gpt-5.6",
+    model="gpt-6-astra",
     name="Assistant",
     instructions="You are a helpful assistant",
     tools=[add_to_todo_list],

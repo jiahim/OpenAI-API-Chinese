@@ -1,27 +1,23 @@
-# Safety checks
+# Safety classifiers
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-We run several types of evaluations on our models and how they're being used. This guide covers how we test for safety and what you can do to avoid violations.
-
-## Safety classifiers for GPT-5 and forward
-
 With the introduction of [GPT-5](https://developers.openai.com/api/docs/models/gpt-5), we added some checks to find and halt hazardous information from being accessed. It's likely some users will eventually try to use your application for things outside of OpenAI’s policies, especially in applications with a wide range of use cases.
 
-### The safety classifier process
+## The safety classifier process
 
 1. We classify requests to GPT-5 into risk thresholds.
 1. If your org hits high thresholds repeatedly, OpenAI returns an error and sends a warning email.
 1. If the requests continue past the stated time threshold (usually seven days), we stop your org's access to GPT-5. Requests will no longer work.
 
-### How to avoid errors, latency, and bans
+## How to avoid errors, latency, and bans
 
 If your org engages in suspicious activity that violates our safety policies, we may return an error, limit model access, or even block your account. The following safety measures help us identify where high-risk requests are coming from and block individual end users, rather than blocking your entire org.
 
 - [Implement safety identifiers](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers) for products where individual users interact with a model. Safety identifiers are recommended but not required.
 - If your use case depends on accessing a less restricted version of our services in order to engage in beneficial applications across the life sciences, read about our [special access program](https://help.openai.com/en/articles/11826767-life-science-research-special-access-program) to see if you meet criteria.
 
-### Implementing safety identifiers for individual users
+## Implementing safety identifiers for individual users
 
 The `safety_identifier` parameter is available in both the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create) and older [Chat Completions API](https://developers.openai.com/api/reference/resources/chat). The Realtime API supports the same concept through the `OpenAI-Safety-Identifier` header. To use safety identifiers, provide a stable ID for your end user on each request. Hash user email or internal user IDs to avoid passing any personal information.
 
@@ -253,7 +249,7 @@ curl https://api.openai.com/v1/realtime/client_secrets \
 
 
 
-### Potential consequences
+## Potential consequences
 
 If OpenAI monitoring systems identify potential abuse, we may take different levels of action:
 
@@ -267,17 +263,10 @@ If OpenAI monitoring systems identify potential abuse, we may take different lev
 
 For these blocks to be effective, ensure you have controls in place to prevent blocked users from opening a new account. As a reminder, repeated policy violations from your organization can lead to losing access for your entire organization.
 
-### Why we're doing this
+## Why we're doing this
 
 The specific enforcement criteria may change based on evolving real-world usage or new model releases. Currently, OpenAI may restrict or block access for safety identifiers with risky or suspicious biology or chemical activity. See the [blog post](https://openai.com/index/preparing-for-future-ai-capabilities-in-biology/) for more information about how we’re approaching higher AI capabilities in biology.
 
 ## Other types of safety checks
 
-To help ensure safety in your use of the OpenAI API and tools, we run safety checks on our own models, including all fine-tuned models, and on the computer use tool.
-
-Learn more:
-
-- [Model evaluations hub](https://openai.com/safety/evaluations-hub)
-- [Cyber safety models](https://developers.openai.com/codex/cyber-safety)
-- [Fine-tuning safety](https://developers.openai.com/api/docs/guides/supervised-fine-tuning#safety-checks)
-- [Safety checks in computer use](https://developers.openai.com/api/docs/guides/tools-computer-use#handle-user-confirmation-and-consent)
+For safeguards specific to tools and model customization, see [computer use confirmation and consent](https://developers.openai.com/api/docs/guides/tools-computer-use#handle-user-confirmation-and-consent) and [fine-tuning safety](https://developers.openai.com/api/docs/guides/supervised-fine-tuning#safety-checks). OpenAI also publishes results in the [model evaluations hub](https://openai.com/safety/evaluations-hub).

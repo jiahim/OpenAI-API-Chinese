@@ -33,7 +33,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.inputTokens.count({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Tell me a joke.",
 });
 
@@ -46,7 +46,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.input_tokens.count(
-    model="gpt-5.6", input="Tell me a joke."
+    model="gpt-6-astra", input="Tell me a joke."
 )
 print(response.input_tokens)
 ```
@@ -65,7 +65,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	count, err := client.Responses.InputTokens.Count(context.Background(), responses.InputTokenCountParams{
-		Model: openai.String("gpt-5.6"),
+		Model: openai.String("gpt-6-astra"),
 		Input: responses.InputTokenCountParamsInputUnion{OfString: openai.String("Tell me a joke.")},
 	})
 	if err != nil {
@@ -86,7 +86,7 @@ var count =
         .inputTokens()
         .count(
             InputTokenCountParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .input("Tell me a joke.")
                 .build());
 
@@ -99,7 +99,7 @@ require "openai"
 client = OpenAI::Client.new
 
 count = client.responses.input_tokens.count(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Tell me a joke."
 )
 
@@ -111,14 +111,14 @@ curl https://api.openai.com/v1/responses/input_tokens \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "input": "Tell me a joke."
   }'
 ```
 
 ```bash
 openai responses:input-tokens count \
-  --model gpt-5.6 \
+  --model gpt-6-astra \
   --input "Tell me a joke." \
   --raw-output \
   --transform input_tokens
@@ -135,7 +135,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.inputTokens.count({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     { role: "user", content: "What is 2 + 2?" },
     { role: "assistant", content: "2 + 2 equals 4." },
@@ -152,7 +152,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.input_tokens.count(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {"role": "user", "content": "What is 2 + 2?"},
         {"role": "assistant", "content": "2 + 2 equals 4."},
@@ -181,7 +181,7 @@ func main() {
 		responses.ResponseInputItemParamOfMessage("What about 3 + 3?", responses.EasyInputMessageRoleUser),
 	}
 	count, err := client.Responses.InputTokens.Count(context.Background(), responses.InputTokenCountParams{
-		Model: openai.String("gpt-5.6"),
+		Model: openai.String("gpt-6-astra"),
 		Input: responses.InputTokenCountParamsInputUnion{OfResponseInputItemArray: input},
 	})
 	if err != nil {
@@ -205,7 +205,7 @@ var count =
         .inputTokens()
         .count(
             InputTokenCountParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .inputOfResponseInputItems(
                     List.of(
                         ResponseInputItem.ofEasyInputMessage(
@@ -239,7 +239,7 @@ conversation = [
 ]
 
 count = client.responses.input_tokens.count(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: conversation
 )
 
@@ -251,7 +251,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "input": [
       {"role": "user", "content": "What is 2 + 2?"},
       {"role": "assistant", "content": "2 + 2 equals 4."},
@@ -264,7 +264,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
 openai responses:input-tokens count \
   --raw-output \
   --transform input_tokens <<'YAML'
-model: gpt-5.6
+model: gpt-6-astra
 input:
   - role: user
     content: What is 2 + 2?
@@ -286,7 +286,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.inputTokens.count({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   instructions: "You are a helpful assistant that explains concepts simply.",
   input: "Explain quantum computing in one sentence.",
 });
@@ -300,7 +300,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.input_tokens.count(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     instructions="You are a helpful assistant that explains concepts simply.",
     input="Explain quantum computing in one sentence.",
 )
@@ -321,7 +321,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	count, err := client.Responses.InputTokens.Count(context.Background(), responses.InputTokenCountParams{
-		Model:        openai.String("gpt-5.6"),
+		Model:        openai.String("gpt-6-astra"),
 		Instructions: openai.String("You are a helpful assistant that explains concepts simply."),
 		Input:        responses.InputTokenCountParamsInputUnion{OfString: openai.String("Explain quantum computing in one sentence.")},
 	})
@@ -343,7 +343,7 @@ var count =
         .inputTokens()
         .count(
             InputTokenCountParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .input("Explain quantum computing in one sentence.")
                 .instructions("You are a helpful assistant that explains concepts simply.")
                 .build());
@@ -357,7 +357,7 @@ require "openai"
 client = OpenAI::Client.new
 
 count = client.responses.input_tokens.count(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   instructions: "You are a helpful assistant that explains concepts simply.",
   input: "Explain quantum computing in one sentence."
 )
@@ -370,7 +370,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "instructions": "You are a helpful assistant that explains concepts simply.",
     "input": "Explain quantum computing in one sentence."
   }'
@@ -380,7 +380,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
 openai responses:input-tokens count \
   --raw-output \
   --transform input_tokens <<'YAML'
-model: gpt-5.6
+model: gpt-6-astra
 instructions: You are a helpful assistant that explains concepts simply.
 input: Explain quantum computing in one sentence.
 YAML
@@ -399,7 +399,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.inputTokens.count({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -425,7 +425,7 @@ client = OpenAI()
 
 # Use file_id from uploaded file, or image_url for a URL
 response = client.responses.input_tokens.count(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -465,7 +465,7 @@ func main() {
 		),
 	}
 	count, err := client.Responses.InputTokens.Count(context.Background(), responses.InputTokenCountParams{
-		Model: openai.String("gpt-5.6"),
+		Model: openai.String("gpt-6-astra"),
 		Input: responses.InputTokenCountParamsInputUnion{OfResponseInputItemArray: input},
 	})
 	if err != nil {
@@ -489,7 +489,7 @@ var count =
         .inputTokens()
         .count(
             InputTokenCountParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .inputOfResponseInputItems(
                     List.of(
                         ResponseInputItem.ofMessage(
@@ -514,7 +514,7 @@ require "openai"
 client = OpenAI::Client.new
 
 count = client.responses.input_tokens.count(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: :user,
@@ -538,7 +538,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "input": [{
       "role": "user",
       "content": [
@@ -553,7 +553,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
 openai responses:input-tokens count \
   --raw-output \
   --transform input_tokens <<'YAML'
-model: gpt-5.6
+model: gpt-6-astra
 input:
   - role: user
     content:
@@ -579,7 +579,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.inputTokens.count({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "function",
@@ -606,7 +606,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.input_tokens.count(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "function",
@@ -648,7 +648,7 @@ func main() {
 	tool := responses.ToolParamOfFunction("get_weather", parameters, true)
 	tool.OfFunction.Description = openai.String("Get the current weather in a location")
 	count, err := client.Responses.InputTokens.Count(context.Background(), responses.InputTokenCountParams{
-		Model: openai.String("gpt-5.6"),
+		Model: openai.String("gpt-6-astra"),
 		Input: responses.InputTokenCountParamsInputUnion{OfString: openai.String("What is the weather in San Francisco?")},
 		Tools: []responses.ToolUnionParam{tool},
 	})
@@ -674,7 +674,7 @@ var count =
         .inputTokens()
         .count(
             InputTokenCountParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .input("What is the weather in San Francisco?")
                 .addTool(
                     FunctionTool.builder()
@@ -705,7 +705,7 @@ require "openai"
 client = OpenAI::Client.new
 
 count = client.responses.input_tokens.count(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "What is the weather in San Francisco?",
   tools: [
     {
@@ -731,7 +731,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tools": [{
       "type": "function",
       "name": "get_weather",
@@ -750,7 +750,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
 openai responses:input-tokens count \
   --raw-output \
   --transform input_tokens <<'YAML'
-model: gpt-5.6
+model: gpt-6-astra
 tools:
   - type: function
     name: get_weather

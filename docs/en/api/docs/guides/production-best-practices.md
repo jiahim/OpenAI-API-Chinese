@@ -93,8 +93,8 @@ Now that we have looked at the basics of latency, let’s take a look at various
 
 #### Model
 
-Our API offers different models with varying levels of complexity and generality. The most capable models, such as `gpt-5.6`, can generate more complex and diverse completions, but they also take longer to process your query.
-Models such as `gpt-5.6-terra` and `gpt-5.6-luna` can generate faster and cheaper Responses, while `gpt-5.6` is a stronger default when you want more headroom on complex tasks. You can choose the model that best suits your use case and the trade-off between speed, cost, and quality.
+Our API offers different models with varying levels of complexity and generality. The most capable models, such as `gpt-6-astra`, can generate more complex and diverse completions, but they also take longer to process your query.
+Models such as `gpt-5.6-terra` and `gpt-5.6-luna` can generate faster and cheaper Responses, while `gpt-6-astra` is a stronger default when you want more headroom on complex tasks. You can choose the model that best suits your use case and the trade-off between speed, cost, and quality.
 
 #### Number of completion tokens
 

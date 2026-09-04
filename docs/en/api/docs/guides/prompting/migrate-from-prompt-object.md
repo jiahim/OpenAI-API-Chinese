@@ -157,7 +157,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "system",
@@ -181,7 +181,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "system",
@@ -211,7 +211,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
 			responses.ResponseInputItemParamOfMessage("You are a helpful support assistant. Be concise, accurate, and friendly.", responses.EasyInputMessageRoleSystem),
 			responses.ResponseInputItemParamOfMessage("Customer name: Acme. Issue: billing question. Write a response to the customer.", responses.EasyInputMessageRoleUser),
@@ -234,7 +234,7 @@ import java.util.List;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .inputOfResponse(
             List.of(
                 ResponseInputItem.ofEasyInputMessage(
@@ -266,7 +266,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateSystemMessageItem(
             "You are a helpful support assistant. Be concise, accurate, and friendly."
@@ -286,7 +286,7 @@ require "openai"
 client = OpenAI::Client.new
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: :system,
@@ -307,7 +307,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "input": [
       {
         "role": "system",
@@ -365,7 +365,7 @@ function buildSupportPrompt({ customerName, issue }) {
 }
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: buildSupportPrompt({
     customerName: "Acme",
     issue: "billing question",
@@ -393,7 +393,7 @@ def build_support_prompt(customer_name, issue):
 
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=build_support_prompt(
         customer_name="Acme",
         issue="billing question",
@@ -415,7 +415,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: buildSupportPrompt("Acme", "billing question")},
 	})
 	if err != nil {
@@ -462,7 +462,7 @@ private static List<ResponseInputItem> buildSupportPrompt(String customerName, S
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .inputOfResponse(buildSupportPrompt("Acme", "billing question"))
         .build();
 
@@ -491,7 +491,7 @@ static ResponseItem[] BuildSupportPrompt(string customerName, string issue) =>
 ];
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     BuildSupportPrompt("Acme", "billing question")
 );
 Console.WriteLine(response.GetOutputText());
@@ -516,7 +516,7 @@ end
 client = OpenAI::Client.new
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: build_support_prompt("Acme", "billing question")
 )
 

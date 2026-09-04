@@ -137,7 +137,7 @@ Cancel an ongoing evaluation run.
 
         - `model: optional string or null`
 
-          An optional model to filter by (e.g., 'gpt-5.6-sol').
+          An optional model to filter by (e.g., 'gpt-6-astra').
 
     - `type: "completions"`
 
@@ -942,7 +942,7 @@ Cancel an ongoing evaluation run.
             model will not generate JSON without a system or user message instructing it
             to do so.
 
-      - `tools: optional array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: optional array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
         An array of tools the model may call while generating a response. You
         can specify which tool to use by setting the `tool_choice` parameter.
@@ -957,7 +957,7 @@ Cancel an ongoing evaluation run.
           enabling the model to call your own code. Learn more about
           [function calling](/docs/guides/function-calling).
 
-        - `Function object { name, parameters, strict, 5 more }`
+        - `Function object { name, parameters, strict, 6 more }`
 
           Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
 
@@ -986,6 +986,8 @@ Cancel an ongoing evaluation run.
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
 
           - `defer_loading: optional boolean`
 
@@ -1780,7 +1782,7 @@ Cancel an ongoing evaluation run.
 
                 - `"container_reference"`
 
-        - `Custom object { name, type, allowed_callers, 3 more }`
+        - `Custom object { name, type, allowed_callers, 4 more }`
 
           A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -1801,6 +1803,10 @@ Cancel an ongoing evaluation run.
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
+
+            Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
           - `defer_loading: optional boolean`
 
@@ -1858,11 +1864,11 @@ Cancel an ongoing evaluation run.
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
+          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
-            - `Function object { name, type, allowed_callers, 5 more }`
+            - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
@@ -1877,6 +1883,10 @@ Cancel an ongoing evaluation run.
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -1894,7 +1904,7 @@ Cancel an ongoing evaluation run.
 
                 Whether to enforce strict parameter validation. If omitted, Responses attempts to use strict validation when the schema is compatible, and falls back to non-strict validation otherwise.
 
-            - `Custom object { name, type, allowed_callers, 3 more }`
+            - `Custom object { name, type, allowed_callers, 4 more }`
 
               A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -1915,6 +1925,10 @@ Cancel an ongoing evaluation run.
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -2234,8 +2248,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
   "eval_id": "eval_67abd54d9b0081909a86353f6fb9317a",
   "report_url": "https://platform.openai.com/evaluations/eval_67abd54d9b0081909a86353f6fb9317a?run_id=evalrun_67abd54d60ec8190832b46859da808f7",
   "status": "canceled",
-  "model": "gpt-5.6-sol",
-  "name": "gpt-5.6-sol",
+  "model": "gpt-6-astra",
+  "name": "gpt-6-astra",
   "created_at": 1743092069,
   "result_counts": {
     "total": 0,
@@ -2363,7 +2377,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
         }
       ]
     },
-    "model": "gpt-5.6-sol",
+    "model": "gpt-6-astra",
     "sampling_params": {
       "max_completions_tokens": 2048
     }

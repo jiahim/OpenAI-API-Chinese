@@ -94,6 +94,38 @@ Create a new video generation job from a prompt and optional reference assets.
 
       A human-readable description of the error that was returned.
 
+    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+
+      - `detailed_explanation: optional string`
+
+        The public explanation for this block.
+
+      - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+        An optional classification; clients must accept additional values.
+
+        - `string`
+
+        - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+          An optional classification; clients must accept additional values.
+
+          - `"potentially_unintended_data_transfer"`
+
+          - `"potentially_unintended_data_access"`
+
+          - `"potentially_unintended_destructive_activity"`
+
+          - `"other"`
+
+      - `steer: optional object { message }`
+
+        An optional public continuation instruction.
+
+        - `message: string`
+
+          The public continuation instruction.
+
   - `expires_at: number or null`
 
     Unix timestamp (seconds) for when the downloadable assets expire, if set.
@@ -182,7 +214,14 @@ curl https://api.openai.com/v1/videos \
   "created_at": 0,
   "error": {
     "code": "code",
-    "message": "message"
+    "message": "message",
+    "misalignment": {
+      "detailed_explanation": "detailed_explanation",
+      "error_type": "potentially_unintended_data_transfer",
+      "steer": {
+        "message": "message"
+      }
+    }
   },
   "expires_at": 0,
   "model": "sora-2",
@@ -386,6 +425,38 @@ Create a new video generation job by editing a source video or existing generate
 
       A human-readable description of the error that was returned.
 
+    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+
+      - `detailed_explanation: optional string`
+
+        The public explanation for this block.
+
+      - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+        An optional classification; clients must accept additional values.
+
+        - `string`
+
+        - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+          An optional classification; clients must accept additional values.
+
+          - `"potentially_unintended_data_transfer"`
+
+          - `"potentially_unintended_data_access"`
+
+          - `"potentially_unintended_destructive_activity"`
+
+          - `"other"`
+
+      - `steer: optional object { message }`
+
+        An optional public continuation instruction.
+
+        - `message: string`
+
+          The public continuation instruction.
+
   - `expires_at: number or null`
 
     Unix timestamp (seconds) for when the downloadable assets expire, if set.
@@ -477,7 +548,14 @@ curl https://api.openai.com/v1/videos/edits \
   "created_at": 0,
   "error": {
     "code": "code",
-    "message": "message"
+    "message": "message",
+    "misalignment": {
+      "detailed_explanation": "detailed_explanation",
+      "error_type": "potentially_unintended_data_transfer",
+      "steer": {
+        "message": "message"
+      }
+    }
   },
   "expires_at": 0,
   "model": "sora-2",
@@ -550,6 +628,38 @@ Create an extension of a completed video.
     - `message: string`
 
       A human-readable description of the error that was returned.
+
+    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+
+      - `detailed_explanation: optional string`
+
+        The public explanation for this block.
+
+      - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+        An optional classification; clients must accept additional values.
+
+        - `string`
+
+        - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+          An optional classification; clients must accept additional values.
+
+          - `"potentially_unintended_data_transfer"`
+
+          - `"potentially_unintended_data_access"`
+
+          - `"potentially_unintended_destructive_activity"`
+
+          - `"other"`
+
+      - `steer: optional object { message }`
+
+        An optional public continuation instruction.
+
+        - `message: string`
+
+          The public continuation instruction.
 
   - `expires_at: number or null`
 
@@ -643,7 +753,14 @@ curl https://api.openai.com/v1/videos/extensions \
   "created_at": 0,
   "error": {
     "code": "code",
-    "message": "message"
+    "message": "message",
+    "misalignment": {
+      "detailed_explanation": "detailed_explanation",
+      "error_type": "potentially_unintended_data_transfer",
+      "steer": {
+        "message": "message"
+      }
+    }
   },
   "expires_at": 0,
   "model": "sora-2",
@@ -752,6 +869,38 @@ List recently generated videos for the current project.
 
       A human-readable description of the error that was returned.
 
+    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+
+      - `detailed_explanation: optional string`
+
+        The public explanation for this block.
+
+      - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+        An optional classification; clients must accept additional values.
+
+        - `string`
+
+        - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+          An optional classification; clients must accept additional values.
+
+          - `"potentially_unintended_data_transfer"`
+
+          - `"potentially_unintended_data_access"`
+
+          - `"potentially_unintended_destructive_activity"`
+
+          - `"other"`
+
+      - `steer: optional object { message }`
+
+        An optional public continuation instruction.
+
+        - `message: string`
+
+          The public continuation instruction.
+
   - `expires_at: number or null`
 
     Unix timestamp (seconds) for when the downloadable assets expire, if set.
@@ -856,7 +1005,14 @@ curl https://api.openai.com/v1/videos \
       "created_at": 0,
       "error": {
         "code": "code",
-        "message": "message"
+        "message": "message",
+        "misalignment": {
+          "detailed_explanation": "detailed_explanation",
+          "error_type": "potentially_unintended_data_transfer",
+          "steer": {
+            "message": "message"
+          }
+        }
       },
       "expires_at": 0,
       "model": "sora-2",
@@ -944,6 +1100,38 @@ Create a remix of a completed video using a refreshed prompt.
     - `message: string`
 
       A human-readable description of the error that was returned.
+
+    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+
+      - `detailed_explanation: optional string`
+
+        The public explanation for this block.
+
+      - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+        An optional classification; clients must accept additional values.
+
+        - `string`
+
+        - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+          An optional classification; clients must accept additional values.
+
+          - `"potentially_unintended_data_transfer"`
+
+          - `"potentially_unintended_data_access"`
+
+          - `"potentially_unintended_destructive_activity"`
+
+          - `"other"`
+
+      - `steer: optional object { message }`
+
+        An optional public continuation instruction.
+
+        - `message: string`
+
+          The public continuation instruction.
 
   - `expires_at: number or null`
 
@@ -1033,7 +1221,14 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID/remix \
   "created_at": 0,
   "error": {
     "code": "code",
-    "message": "message"
+    "message": "message",
+    "misalignment": {
+      "detailed_explanation": "detailed_explanation",
+      "error_type": "potentially_unintended_data_transfer",
+      "steer": {
+        "message": "message"
+      }
+    }
   },
   "expires_at": 0,
   "model": "sora-2",
@@ -1113,6 +1308,38 @@ Fetch the latest metadata for a generated video.
     - `message: string`
 
       A human-readable description of the error that was returned.
+
+    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+
+      - `detailed_explanation: optional string`
+
+        The public explanation for this block.
+
+      - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+        An optional classification; clients must accept additional values.
+
+        - `string`
+
+        - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+          An optional classification; clients must accept additional values.
+
+          - `"potentially_unintended_data_transfer"`
+
+          - `"potentially_unintended_data_access"`
+
+          - `"potentially_unintended_destructive_activity"`
+
+          - `"other"`
+
+      - `steer: optional object { message }`
+
+        An optional public continuation instruction.
+
+        - `message: string`
+
+          The public continuation instruction.
 
   - `expires_at: number or null`
 
@@ -1198,7 +1425,14 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
   "created_at": 0,
   "error": {
     "code": "code",
-    "message": "message"
+    "message": "message",
+    "misalignment": {
+      "detailed_explanation": "detailed_explanation",
+      "error_type": "potentially_unintended_data_transfer",
+      "steer": {
+        "message": "message"
+      }
+    }
   },
   "expires_at": 0,
   "model": "sora-2",
@@ -1253,6 +1487,38 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
     - `message: string`
 
       A human-readable description of the error that was returned.
+
+    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+
+      - `detailed_explanation: optional string`
+
+        The public explanation for this block.
+
+      - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+        An optional classification; clients must accept additional values.
+
+        - `string`
+
+        - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+          An optional classification; clients must accept additional values.
+
+          - `"potentially_unintended_data_transfer"`
+
+          - `"potentially_unintended_data_access"`
+
+          - `"potentially_unintended_destructive_activity"`
+
+          - `"other"`
+
+      - `steer: optional object { message }`
+
+        An optional public continuation instruction.
+
+        - `message: string`
+
+          The public continuation instruction.
 
   - `expires_at: number or null`
 
@@ -1340,7 +1606,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
 ### Video Create Error
 
-- `VideoCreateError object { code, message }`
+- `VideoCreateError object { code, message, misalignment }`
 
   An error that occurred while generating the response.
 
@@ -1351,6 +1617,38 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
   - `message: string`
 
     A human-readable description of the error that was returned.
+
+  - `misalignment: optional object { detailed_explanation, error_type, steer }`
+
+    - `detailed_explanation: optional string`
+
+      The public explanation for this block.
+
+    - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+      An optional classification; clients must accept additional values.
+
+      - `string`
+
+      - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+        An optional classification; clients must accept additional values.
+
+        - `"potentially_unintended_data_transfer"`
+
+        - `"potentially_unintended_data_access"`
+
+        - `"potentially_unintended_destructive_activity"`
+
+        - `"other"`
+
+    - `steer: optional object { message }`
+
+      An optional public continuation instruction.
+
+      - `message: string`
+
+        The public continuation instruction.
 
 ### Video Delete Response
 

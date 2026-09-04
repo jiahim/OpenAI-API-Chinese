@@ -378,7 +378,7 @@ const client = new OpenAI();
 
 try {
   const response = await client.responses.create({
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     input: "Hello world",
   });
   console.log(response.output_text);
@@ -402,7 +402,7 @@ from openai import OpenAI
 client = OpenAI()
 
 try:
-    response = client.responses.create(model="gpt-5.6", input="Hello world")
+    response = client.responses.create(model="gpt-6-astra", input="Hello world")
 except openai.APIConnectionError as e:
     print(f"Failed to connect to OpenAI API: {e}")
 except openai.RateLimitError as e:
@@ -428,7 +428,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Hello world")},
 	})
 	if err != nil {
@@ -455,7 +455,7 @@ try {
       client
           .responses()
           .create(
-              ResponseCreateParams.builder().model("gpt-5.6").input("Say hello.").build());
+              ResponseCreateParams.builder().model("gpt-6-astra").input("Say hello.").build());
 
   response.output().stream()
       .flatMap(item -> item.message().stream())
@@ -472,7 +472,7 @@ require "openai"
 
 client = OpenAI::Client.new
 begin
-  response = client.responses.create(model: "gpt-5.6", input: "Say hello.")
+  response = client.responses.create(model: "gpt-6-astra", input: "Say hello.")
   puts(response.output_text)
 rescue OpenAI::Errors::APIError => error
   warn(error.message)

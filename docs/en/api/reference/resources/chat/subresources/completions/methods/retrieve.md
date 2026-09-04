@@ -693,7 +693,7 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 {
   "object": "chat.completion",
   "id": "chatcmpl-abc123",
-  "model": "gpt-5.6-sol",
+  "model": "gpt-6-astra",
   "created": 1738960610,
   "request_id": "req_ded8ab984ec4bf840f37566c1011c417",
   "tool_choice": null,

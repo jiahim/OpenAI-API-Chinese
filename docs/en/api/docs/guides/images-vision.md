@@ -38,7 +38,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
   tools: [{ type: "image_generation" }],
@@ -63,7 +63,7 @@ import base64
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -97,7 +97,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Generate an image of a gray tabby cat hugging an otter with an orange scarf."),
 		},
@@ -139,7 +139,7 @@ import java.util.Base64;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
         .addTool(Tool.ImageGeneration.builder().build())
         .build();
@@ -162,7 +162,7 @@ ResponsesClient client = new(key);
 
 CreateResponseOptions options = new()
 {
-    Model = "gpt-5.6",
+    Model = "gpt-6-astra",
 };
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem(
@@ -190,7 +190,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
   tools: [{type: :image_generation}]
 )
@@ -210,7 +210,7 @@ File.binwrite(
 
 ```bash
 openai responses create \
-  --model gpt-5.6 \
+  --model gpt-6-astra \
   --raw-output \
   --transform 'output.#(type=="image_generation_call").result' <<'YAML' | base64 --decode > cat_and_otter.png
 tools:
@@ -258,7 +258,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -284,7 +284,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -317,7 +317,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfInputItemList: responses.ResponseInputParam{
 				responses.ResponseInputItemParamOfMessage(
@@ -364,7 +364,7 @@ ResponseInputItem imageInput =
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .inputOfResponse(List.of(imageInput))
         .build();
 
@@ -387,7 +387,7 @@ Uri imageUrl = new(
 );
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem(
             [
@@ -407,7 +407,7 @@ require "openai"
 client = OpenAI::Client.new
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: :user,
@@ -431,7 +431,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "input": [
       {
         "role": "user",
@@ -449,7 +449,7 @@ curl https://api.openai.com/v1/responses \
 
 ```bash
 openai responses create \
-  --model gpt-5.6 \
+  --model gpt-6-astra \
   --raw-output \
   --transform 'output.#(type=="message").content.0.text' <<'YAML'
 input:
@@ -481,7 +481,7 @@ const imagePath = "fixtures/example.jpg";
 const base64Image = fs.readFileSync(imagePath, "base64");
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -521,7 +521,7 @@ base64_image = encode_image(image_path)
 
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -561,7 +561,7 @@ func main() {
 	imageURL := "data:image/png;base64," + base64.StdEncoding.EncodeToString(image)
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfInputItemList: responses.ResponseInputParam{
 				responses.ResponseInputItemParamOfMessage(
@@ -616,7 +616,7 @@ ResponseInputItem imageInput =
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .inputOfResponse(List.of(imageInput))
         .build();
 
@@ -645,7 +645,7 @@ using Stream stream = await http.GetStreamAsync(imageUrl);
 BinaryData imageData = BinaryData.FromStream(stream, "image/png");
 
 ResponseResult response1 = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem(
             [
@@ -663,7 +663,7 @@ byte[] bytes = await http.GetByteArrayAsync(imageUrl);
 imageData = BinaryData.FromBytes(bytes, "image/png");
 
 ResponseResult response2 = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem(
             [
@@ -685,7 +685,7 @@ client = OpenAI::Client.new
 image = Base64.strict_encode64(File.binread("image.png"))
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: :user,
@@ -733,7 +733,7 @@ async function createFile(filePath) {
 const fileId = await createFile("fixtures/example.jpg");
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -772,7 +772,7 @@ def create_file(file_path):
 file_id = create_file("path_to_your_image.jpg")
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -819,7 +819,7 @@ func main() {
 	}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfInputItemList: responses.ResponseInputParam{
 				responses.ResponseInputItemParamOfMessage(
@@ -868,7 +868,7 @@ var response =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .inputOfResponse(
                     List.of(
                         ResponseInputItem.ofMessage(
@@ -916,7 +916,7 @@ OpenAIFile file = await files.UploadFileAsync(
 );
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem(
             [
@@ -941,7 +941,7 @@ uploaded = client.files.create(
 )
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: :user,

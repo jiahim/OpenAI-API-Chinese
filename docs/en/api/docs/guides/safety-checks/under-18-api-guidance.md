@@ -1,14 +1,14 @@
-# Under 18 API Guidance
+# Under-18 guidance
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
 Young people have unique needs online and offline, so developers should implement additional safeguards when using our API to serve minors (under 18 years old). These are in addition to requirements under our [usage policies](https://openai.com/policies/usage-policies/) and [terms and conditions](https://openai.com/policies/services-agreement/).
 
-**Regulatory Standards**
+## Regulatory standards
 
 Organizations serving minors must comply with all applicable child protection, safety, and privacy laws, including the Children's Online Privacy Protection Act (COPPA). You should not use OpenAI services to process any personal data of children under 13 or the applicable age of digital consent without first implementing zero data retention in our API. You are solely responsible for ensuring that you and your users use OpenAI services in compliance with applicable law.
 
-**Safety Standards**
+## Safety standards
 
 Organizations serving minors must take reasonable steps to ensure that the content they are serving to minors via the API is safe and age appropriate, in line with our usage policies to “Keep minors safe.” This may include, but is not limited to:
 
@@ -17,7 +17,7 @@ Organizations serving minors must take reasonable steps to ensure that the conte
 3. Implementing reasonable monitoring and reporting mechanisms, including escalation paths for high-risk interactions.
 4. Where required or otherwise appropriate for your use case, using age assurance systems to ensure only intended users can access the product.
 
-**Best Practices**
+## Best practices
 
 Organizations serving minors should follow these best practices when interacting with our API:
 

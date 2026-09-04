@@ -17,7 +17,9 @@ GPT-5.6 also introduces a new naming scheme. The `gpt-5.6` alias routes requests
 
 When migrating from GPT-5.5 or GPT-5.4, start with your current GPT-5.5 or GPT-5.4 reasoning setting, then test the same setting and one level lower on representative tasks. GPT-5.6 can often maintain or improve quality with fewer tokens, but the best setting depends on your workload.
 
-## What is new
+<a id="what-is-new" className="scroll-mt-[110px]"></a>
+
+## What's new
 
 - **Programmatic Tool Calling:** GPT-5.6 can write JavaScript to call eligible tools, pass results between calls, and process intermediate outputs in a hosted runtime. Use [Programmatic Tool Calling](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling) for bounded, tool-heavy workflows that do not require fresh model judgment between each step. Programmatic Tool Calling is ZDR-compatible with no additional container costs.
 - **Multi-agent [beta]:** [Multi-agent](https://developers.openai.com/api/docs/guides/responses-multi-agent) lets a GPT-5.6 instance coordinate multiple subagents in parallel and synthesize their results. Similar to ultra mode in Codex, this can reduce wall-clock time and improve performance for complex tasks that divide cleanly into independent workstreams. Multi-agent is available as a beta feature in the Responses API as we iterate on developer feedback.

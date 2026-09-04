@@ -54,6 +54,38 @@ List recently generated videos for the current project.
 
       A human-readable description of the error that was returned.
 
+    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+
+      - `detailed_explanation: optional string`
+
+        The public explanation for this block.
+
+      - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+        An optional classification; clients must accept additional values.
+
+        - `string`
+
+        - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+          An optional classification; clients must accept additional values.
+
+          - `"potentially_unintended_data_transfer"`
+
+          - `"potentially_unintended_data_access"`
+
+          - `"potentially_unintended_destructive_activity"`
+
+          - `"other"`
+
+      - `steer: optional object { message }`
+
+        An optional public continuation instruction.
+
+        - `message: string`
+
+          The public continuation instruction.
+
   - `expires_at: number or null`
 
     Unix timestamp (seconds) for when the downloadable assets expire, if set.
@@ -158,7 +190,14 @@ curl https://api.openai.com/v1/videos \
       "created_at": 0,
       "error": {
         "code": "code",
-        "message": "message"
+        "message": "message",
+        "misalignment": {
+          "detailed_explanation": "detailed_explanation",
+          "error_type": "potentially_unintended_data_transfer",
+          "steer": {
+            "message": "message"
+          }
+        }
       },
       "expires_at": 0,
       "model": "sora-2",

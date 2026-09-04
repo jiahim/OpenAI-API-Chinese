@@ -8,6 +8,33 @@ Upcoming deprecations are listed on the [deprecations page](/api/docs/deprecatio
 
 ## September, 2026
 
+### Sep 3
+
+Feature · Model: gpt-6-astra · API: v1/responses · API: v1/chat/completions
+
+Released [GPT-6 Astra](https://developers.openai.com/api/docs/models/gpt-6-astra), our most capable model, built for the hardest end-to-end work.
+
+Use GPT-6 Astra for reasoning, coding, computer use, research, and document creation. It combines these capabilities to carry complex tasks from an initial request to a finished result, using the context and tools you provide.
+
+Key changes to consider when migrating:
+
+- GPT-6 Astra does not support the `none` reasoning effort level.
+- GPT-6 Astra does not support custom `temperature` or `top_p` values or log probabilities (`logprobs`).
+- Tool calling requires the Responses API. If you use tools with Chat Completions, follow the [Responses migration guide](https://developers.openai.com/api/docs/guides/migrate-to-responses).
+- [Misalignment monitoring](https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring) asynchronously checks for potential issues during agent work in supported Responses API requests. Checks can trigger safety alerts or stop a conversation for review.
+
+Start with [Using GPT-6 Astra](https://developers.openai.com/api/docs/guides/latest-model) for capabilities, prompting, and migration guidance. Explore [computer use](https://developers.openai.com/api/docs/guides/tools-computer-use) for browser and desktop workflows, and see [pricing](https://developers.openai.com/api/docs/pricing) for available inference tiers.
+
+### Sep 3
+
+Feature · API: v1/responses
+
+Added new controls for long-running work with GPT-6 Astra in the Responses API:
+
+- [Async tool calling](https://developers.openai.com/api/docs/guides/async-tool-calling): Let the model continue working while your application runs function or custom tools, then return results as they become available.
+- [Mid-turn steering](https://developers.openai.com/api/docs/guides/steering): Send additional instructions while a response is in progress over WebSockets, so the model can incorporate corrections or changing requirements.
+- [Change reasoning effort mid-conversation](https://developers.openai.com/api/docs/guides/reasoning#change-reasoning-mid-conversation): Increase effort for difficult work or reduce it for routine follow-ups while preserving the cached prompt prefix.
+
 ### Sep 2
 
 Update
@@ -15,6 +42,12 @@ Update
 Updated API errors so applications can distinguish traffic that increases too quickly from temporary model overload.
 
 Traffic that increases too quickly can return a `429` error with the `slow_down` code. Temporary model overload returns a `503` error with the `server_is_overloaded` code. Both responses may include `Retry-After`. When the header is present, wait at least as long as it specifies before retrying. If it's missing, use exponential backoff. See the [error codes guide](https://developers.openai.com/api/docs/guides/error-codes) and [rate limits guide](https://developers.openai.com/api/docs/guides/rate-limits).
+
+### Sep 1
+
+Update
+
+Connections to `api.openai.com` can now use IPv6.
 
 ## August, 2026
 
@@ -128,7 +161,7 @@ Added hard spend limits for organizations and projects on the OpenAI API platfor
 
 Feature · Model: gpt-5.6-sol · Model: gpt-5.6-terra · Model: gpt-5.6-luna · API: v1/responses · API: v1/chat/completions · API: v1/batch
 
-Released the [GPT-5.6 model family](https://developers.openai.com/api/docs/guides/latest-model), including GPT-5.6 Sol for frontier capability, GPT-5.6 Terra for a balance of intelligence and cost, and GPT-5.6 Luna for efficient, high-volume workloads. The `gpt-5.6` alias routes requests to `gpt-5.6-sol`.
+Released the [GPT-5.6 model family](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.6), including GPT-5.6 Sol for frontier capability, GPT-5.6 Terra for a balance of intelligence and cost, and GPT-5.6 Luna for efficient, high-volume workloads. The `gpt-5.6` alias routes requests to `gpt-5.6-sol`.
 
 GPT-5.6 adds [Programmatic Tool Calling](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling), [explicit prompt caching controls](https://developers.openai.com/api/docs/guides/prompt-caching), [persisted reasoning, `max` reasoning effort, and Pro mode](https://developers.openai.com/api/docs/guides/reasoning), and [Multi-agent orchestration in beta for the Responses API](https://developers.openai.com/api/docs/guides/responses-multi-agent). GPT-5.6 also accepts images at their original dimensions with `original` or `auto` image detail.
 

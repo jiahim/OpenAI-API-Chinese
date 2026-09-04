@@ -18,7 +18,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tools": [{
       "type": "code_interpreter",
       "container": { "type": "auto", "memory_limit": "4g" }
@@ -38,7 +38,7 @@ write and run code using the python tool to answer the question.
 `;
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "code_interpreter",
@@ -63,7 +63,7 @@ write and run code using the python tool to answer the question.
 """
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "code_interpreter",
@@ -92,7 +92,7 @@ func main() {
 	client := openai.NewClient()
 	tool := responses.ToolParamOfCodeInterpreter(responses.ToolCodeInterpreterContainerCodeInterpreterContainerAutoParam{MemoryLimit: "4g"})
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:        "gpt-5.6",
+		Model:        "gpt-6-astra",
 		Tools:        []responses.ToolUnionParam{tool},
 		Instructions: openai.String("You are a personal math tutor. When asked a math question, write and run code using the python tool to answer the question."),
 		Input:        responses.ResponseNewParamsInputUnion{OfString: openai.String("I need to solve the equation 3x + 11 = 14. Can you help me?")},
@@ -112,7 +112,7 @@ import com.openai.models.responses.Tool;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("I need to solve the equation 3x + 11 = 14. Can you help me?")
         .instructions(
             "You are a personal math tutor. Write and run Python code to answer each math question.")
@@ -132,7 +132,7 @@ require "openai"
 client = OpenAI::Client.new
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   instructions: "You are a personal math tutor. Write and run Python code to answer each math question.",
   input: "I need to solve the equation 3x + 11 = 14. Can you help me?",
   tools: [
@@ -177,7 +177,7 @@ curl https://api.openai.com/v1/responses \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tools": [{
       "type": "code_interpreter",
       "container": "cntr_abc123"
@@ -197,7 +197,7 @@ const container = await client.containers.create({
 });
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "code_interpreter",
@@ -220,7 +220,7 @@ client = OpenAI()
 container = client.containers.create(name="test-container", memory_limit="4g")
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[{"type": "code_interpreter", "container": container.id}],
     tool_choice="required",
     input="use the python tool to calculate what is 4 * 3.82. and then find its square root and then find the square root of that result",
@@ -256,7 +256,7 @@ func main() {
 	}()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:      "gpt-5.6",
+		Model:      "gpt-6-astra",
 		Tools:      []responses.ToolUnionParam{responses.ToolParamOfCodeInterpreter(container.ID)},
 		ToolChoice: responses.ResponseNewParamsToolChoiceUnion{OfToolChoiceMode: openai.Opt(responses.ToolChoiceOptionsRequired)},
 		Input:      responses.ResponseNewParamsInputUnion{OfString: openai.String("use the python tool to calculate what is 4 * 3.82. and then find its square root and then find the square root of that result")},
@@ -289,7 +289,7 @@ var response =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .input("Calculate 4 * 3.82, then take the square root twice.")
                 .toolChoice(ToolChoiceOptions.REQUIRED)
                 .addCodeInterpreterTool(container.id())
@@ -308,7 +308,7 @@ require "openai"
 client = OpenAI::Client.new
 container = client.containers.create(name: "analysis", memory_limit: "4g")
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [{type: :code_interpreter, container: container.id}],
   tool_choice: :required,
   input: "Calculate 4 * 3.82, then take the square root twice."
