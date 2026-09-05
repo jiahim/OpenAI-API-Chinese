@@ -294,7 +294,7 @@ const client = new OpenAI();
 const conversation = [{ role: "user", content: "Plan a trip to Kyoto." }];
 
 const compacted = await client.responses.compact({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: conversation,
 });
 
@@ -310,7 +310,7 @@ const nextInput = [
 ];
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: nextInput,
   store: false,
 });
@@ -324,7 +324,7 @@ long_input_items_array = [{"role": "user", "content": "Plan a trip to Kyoto."}]
 
 # 1) Compact the current window
 compacted = client.responses.compact(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=long_input_items_array,
 )
 
@@ -339,7 +339,7 @@ next_input = [
 ]
 
 next_response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=next_input,
     store=False,  # Keep the flow ZDR-friendly
 )
@@ -365,7 +365,7 @@ func main() {
 		responses.ResponseInputItemParamOfMessage("Plan a trip to Kyoto.", responses.EasyInputMessageRoleUser),
 	}
 	compacted, err := client.Responses.Compact(context.Background(), responses.ResponseCompactParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseCompactParamsInputUnion{OfResponseInputItemArray: longInputItems},
 	})
 	if err != nil {
@@ -379,7 +379,7 @@ func main() {
 		responses.ResponseInputItemParamOfMessage(scanner.Text(), responses.EasyInputMessageRoleUser),
 	)
 	nextResponse, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Store: openai.Bool(false),
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: nextInput},
 	})
@@ -417,7 +417,7 @@ var compacted =
         .responses()
         .compact(
             ResponseCompactParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .input("Plan a trip to Kyoto.")
                 .build());
 var input = new ArrayList<ResponseInputItem>();
@@ -445,7 +445,7 @@ client
     .responses()
     .create(
         ResponseCreateParams.builder()
-            .model("gpt-5.6")
+            .model("gpt-6-astra")
             .inputOfResponse(input)
             .store(false)
             .build())
@@ -463,7 +463,7 @@ require "openai"
 client = OpenAI::Client.new
 long_input = [{role: :user, content: "Plan a trip to Kyoto."}]
 compaction = client.responses.compact(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: long_input
 )
 next_input = [
@@ -471,7 +471,7 @@ next_input = [
   {type: :message, role: :user, content: "Add restaurant recommendations."}
 ]
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: next_input,
   store: false
 )

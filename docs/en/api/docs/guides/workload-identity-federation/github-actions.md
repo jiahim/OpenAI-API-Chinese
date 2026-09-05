@@ -50,14 +50,296 @@ For the full claim list and subject formats, see GitHub's [OpenID Connect refere
 
 Before configuring workload identity federation, export the GitHub OIDC token as `TOKEN`, then run this script in the workflow runner to inspect its claims:
 
+```javascript
+const parts = process.env.TOKEN?.split(".") ?? [];
+if (parts.length !== 3) {
+  throw new Error("Expected a compact JWT with three segments");
+}
+if (!/^[A-Za-z0-9_-]+$/.test(parts[1]) || parts[1].length % 4 === 1) {
+  throw new Error("JWT payload is not valid Base64URL");
+}
+
+const bytes = Buffer.from(parts[1], "base64url");
+if (bytes.toString("base64url") !== parts[1]) {
+  throw new Error("JWT payload is not valid Base64URL");
+}
+const decoded = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+const claims = JSON.parse(decoded);
+if (claims === null || Array.isArray(claims) || typeof claims !== "object") {
+  throw new Error("JWT payload is not a JSON object");
+}
+console.log(decoded);
+```
+
 ```python
 import base64
 import json
 import os
+import re
 
-payload = os.environ["TOKEN"].split(".")[1]
-payload += "=" * (-len(payload) % 4)
-print(json.dumps(json.loads(base64.urlsafe_b64decode(payload)), indent=2))
+
+def reject_non_json_constant(value):
+    raise ValueError(f"JWT payload contains non-JSON constant: {value}")
+
+
+parts = os.environ.get("TOKEN", "").split(".")
+if len(parts) != 3:
+    raise ValueError("Expected a compact JWT with three segments")
+
+payload = parts[1]
+if re.fullmatch(r"[A-Za-z0-9_-]+", payload) is None or len(payload) % 4 == 1:
+    raise ValueError("JWT payload is not valid Base64URL")
+padded_payload = payload + "=" * (-len(payload) % 4)
+decoded = base64.b64decode(padded_payload, altchars=b"-_", validate=True)
+if base64.urlsafe_b64encode(decoded).rstrip(b"=").decode("ascii") != payload:
+    raise ValueError("JWT payload is not valid Base64URL")
+decoded_text = decoded.decode("utf-8")
+claims = json.loads(decoded_text, parse_constant=reject_non_json_constant)
+if not isinstance(claims, dict):
+    raise ValueError("JWT payload is not a JSON object")
+print(decoded_text)
+```
+
+```go
+package main
+
+import (
+	"bytes"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"os"
+	"strings"
+	"unicode/utf8"
+)
+
+func decodeSegment(segment string) (json.RawMessage, error) {
+	if !isBase64URLSegment(segment) {
+		return nil, fmt.Errorf("JWT segment is not valid Base64URL")
+	}
+	decoded, err := base64.RawURLEncoding.DecodeString(segment)
+	if err != nil {
+		return nil, err
+	}
+	if base64.RawURLEncoding.EncodeToString(decoded) != segment {
+		return nil, fmt.Errorf("JWT segment is not valid Base64URL")
+	}
+	if !utf8.Valid(decoded) {
+		return nil, fmt.Errorf("JWT segment is not valid UTF-8")
+	}
+
+	var value json.RawMessage
+	if err := json.Unmarshal(decoded, &value); err != nil {
+		return nil, err
+	}
+	if trimmed := bytes.TrimSpace(value); len(trimmed) == 0 || trimmed[0] != '{' {
+		return nil, fmt.Errorf("JWT segment is not a JSON object")
+	}
+	return value, nil
+}
+
+func isBase64URLSegment(segment string) bool {
+	if segment == "" || len(segment)%4 == 1 {
+		return false
+	}
+	for _, character := range segment {
+		if !('A' <= character && character <= 'Z') &&
+			!('a' <= character && character <= 'z') &&
+			!('0' <= character && character <= '9') &&
+			character != '-' &&
+			character != '_' {
+			return false
+		}
+	}
+	return true
+}
+
+func main() {
+	parts := strings.Split(os.Getenv("TOKEN"), ".")
+	if len(parts) != 3 {
+		panic("Expected a compact JWT with three segments")
+	}
+
+	payload, err := decodeSegment(parts[1])
+	if err != nil {
+		panic(err)
+	}
+	formatted, err := json.MarshalIndent(payload, "", "  ")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(string(formatted))
+}
+```
+
+```java
+// Add Jackson (com.fasterxml.jackson.core:jackson-databind) to your project.
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
+public final class DecodeJwtPayloadExample {
+  private static final ObjectMapper JSON =
+      new ObjectMapper().enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+
+  private DecodeJwtPayloadExample() {}
+
+  static String decodeUtf8(byte[] bytes) throws IOException {
+    try {
+      return StandardCharsets.UTF_8
+          .newDecoder()
+          .onMalformedInput(CodingErrorAction.REPORT)
+          .onUnmappableCharacter(CodingErrorAction.REPORT)
+          .decode(ByteBuffer.wrap(bytes))
+          .toString();
+    } catch (CharacterCodingException exception) {
+      throw new IOException("JWT segment is not valid UTF-8", exception);
+    }
+  }
+
+  static String decodeSegment(String segment) throws IOException {
+    if (!isBase64UrlSegment(segment)) {
+      throw new IllegalArgumentException("JWT segment is not valid Base64URL");
+    }
+    byte[] bytes = Base64.getUrlDecoder().decode(segment);
+    if (!Base64.getUrlEncoder().withoutPadding().encodeToString(bytes).equals(segment)) {
+      throw new IllegalArgumentException("JWT segment is not valid Base64URL");
+    }
+    String decoded = decodeUtf8(bytes);
+    JsonNode value = JSON.readTree(decoded);
+    if (value == null || value.isMissingNode() || !value.isObject()) {
+      throw new IOException("JWT segment is not a JSON object");
+    }
+    return decoded;
+  }
+
+  static boolean isBase64UrlSegment(String segment) {
+    if (segment.isEmpty() || segment.length() % 4 == 1) {
+      return false;
+    }
+    return segment
+        .chars()
+        .allMatch(
+            character ->
+                character >= 'A' && character <= 'Z'
+                    || character >= 'a' && character <= 'z'
+                    || character >= '0' && character <= '9'
+                    || character == '-'
+                    || character == '_');
+  }
+
+  static String[] requireCompactJwt(String token) {
+    if (token == null) {
+      throw new IllegalArgumentException("Expected a compact JWT with three segments");
+    }
+    String[] parts = token.split("\\.", -1);
+    if (parts.length != 3) {
+      throw new IllegalArgumentException("Expected a compact JWT with three segments");
+    }
+    return parts;
+  }
+
+  public static void main(String[] args) throws IOException {
+    String[] parts = requireCompactJwt(System.getenv("TOKEN"));
+    System.out.println(decodeSegment(parts[1]));
+  }
+}
+```
+
+```csharp
+using System.Text;
+using System.Text.Json;
+
+static string DecodeSegment(string segment)
+{
+    if (
+        segment.Length % 4 == 1 ||
+        segment.Any(
+            character =>
+                !(
+                    character is >= 'A' and <= 'Z' ||
+                    character is >= 'a' and <= 'z' ||
+                    character is >= '0' and <= '9' ||
+                    character is '-' or '_'
+                )
+        )
+    )
+    {
+        throw new FormatException("JWT segment is not valid Base64URL");
+    }
+
+    byte[] decoded = Convert.FromBase64String(
+        segment.Replace('-', '+').Replace('_', '/') +
+        new string('=', (4 - segment.Length % 4) % 4)
+    );
+    string canonicalSegment = Convert
+        .ToBase64String(decoded)
+        .TrimEnd('=')
+        .Replace('+', '-')
+        .Replace('/', '_');
+    if (canonicalSegment != segment)
+    {
+        throw new FormatException("JWT segment is not valid Base64URL");
+    }
+    string decodedJson = new UTF8Encoding(false, true).GetString(decoded);
+    using JsonDocument document = JsonDocument.Parse(decodedJson);
+    if (document.RootElement.ValueKind is not JsonValueKind.Object)
+    {
+        throw new FormatException("JWT segment is not a JSON object");
+    }
+    return decodedJson;
+}
+
+string? token = Environment.GetEnvironmentVariable("TOKEN");
+if (token is null)
+{
+    throw new InvalidOperationException(
+        "Expected a compact JWT with three segments"
+    );
+}
+string[] parts = token.Split('.');
+if (parts.Length != 3)
+{
+    throw new InvalidOperationException(
+        "Expected a compact JWT with three segments"
+    );
+}
+
+Console.WriteLine(DecodeSegment(parts[1]));
+```
+
+```ruby
+require "base64"
+require "json"
+
+parts = ENV.fetch("TOKEN", "").split(".", -1)
+raise "Expected a compact JWT with three segments" unless parts.length == 3
+
+unless parts[1].match?(/\A[A-Za-z0-9_-]+\z/) && parts[1].length % 4 != 1
+  raise "JWT payload is not valid Base64URL"
+end
+
+begin
+  payload = Base64.urlsafe_decode64(parts[1].ljust((parts[1].length + 3) & ~3, "="))
+rescue ArgumentError
+  raise "JWT payload is not valid Base64URL"
+end
+unless Base64.urlsafe_encode64(payload, padding: false) == parts[1]
+  raise "JWT payload is not valid Base64URL"
+end
+payload.force_encoding(Encoding::UTF_8)
+raise "JWT payload is not valid UTF-8" unless payload.valid_encoding?
+
+claims = JSON.parse(payload)
+raise "JWT payload is not a JSON object" unless claims.is_a?(Hash)
+
+puts(payload)
 ```
 
 

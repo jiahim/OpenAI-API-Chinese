@@ -24,7 +24,7 @@ const client = new OpenAI({
 
 const response = await client.responses.create(
   {
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     instructions: "List and describe all the metaphors used in this book.",
     input: "<very long text of book here>",
     service_tier: "flex",
@@ -45,7 +45,7 @@ client = OpenAI(
 
 # you can override the max timeout per request as well
 response = client.with_options(timeout=900.0).responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     instructions="List and describe all the metaphors used in this book.",
     input="<very long text of book here>",
     service_tier="flex",
@@ -70,7 +70,7 @@ import (
 func main() {
 	client := openai.NewClient(option.WithRequestTimeout(15 * time.Minute))
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:        "gpt-5.6",
+		Model:        "gpt-6-astra",
 		Instructions: openai.String("List and describe all the metaphors used in this book."),
 		Input:        responses.ResponseNewParamsInputUnion{OfString: openai.String("<very long text of book here>")},
 		ServiceTier:  responses.ResponseNewParamsServiceTierFlex,
@@ -92,7 +92,7 @@ client = client.withOptions(options -> options.timeout(Duration.ofMinutes(15)));
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("<very long text of book here>")
         .instructions("List and describe all the metaphors used in this book.")
         .serviceTier(ResponseCreateParams.ServiceTier.FLEX)
@@ -116,7 +116,7 @@ ResponsesClient client = new(new ApiKeyCredential(key), clientOptions);
 
 CreateResponseOptions options = new()
 {
-    Model = "gpt-5.6",
+    Model = "gpt-6-astra",
     Instructions = "List and describe all the metaphors used in this book.",
     ServiceTier = ResponseServiceTier.Flex,
 };
@@ -133,7 +133,7 @@ require "openai"
 client = OpenAI::Client.new(timeout: 900.0)
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   service_tier: :flex,
   instructions: "List and describe all the metaphors used in this book.",
   input: "<very long text of book here>"
@@ -147,7 +147,7 @@ curl https://api.openai.com/v1/responses \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "instructions": "List and describe all the metaphors used in this book.",
     "input": "<very long text of book here>",
     "service_tier": "flex"

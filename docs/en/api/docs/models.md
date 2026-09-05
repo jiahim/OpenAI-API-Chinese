@@ -4,15 +4,18 @@
 
 > Explore models available on the OpenAI API.
 
-If you're not sure where to start, use [GPT-5.6 Sol](/api/docs/models/gpt-5.6-sol), our flagship model for complex reasoning and coding. Choose [GPT-5.6 Terra](/api/docs/models/gpt-5.6-terra) to balance intelligence and cost, or [GPT-5.6 Luna](/api/docs/models/gpt-5.6-luna) for cost-sensitive, high-volume workloads.
+If you're not sure where to start, use [GPT-6 Astra](/api/docs/models/gpt-6-astra), our flagship model for complex reasoning and coding. Choose [GPT-5.6 Terra](/api/docs/models/gpt-5.6-terra) to balance intelligence and cost, or [GPT-5.6 Luna](/api/docs/models/gpt-5.6-luna) for cost-sensitive, high-volume workloads.
 
 All latest OpenAI models support text and image input, text output, multilingual capabilities, and vision. Models are available via the [Responses API](/api/reference/resources/responses/methods/create) and our [Client SDKs](/api/docs/libraries).
 
-## Recommended models
+## Featured models
 
-- [GPT-5.6 Sol](/api/docs/models/gpt-5.6-sol.md): Start here for complex reasoning and coding.
-- [GPT-5.6 Terra](/api/docs/models/gpt-5.6-terra.md): Balance intelligence and cost.
-- [GPT-5.6 Luna](/api/docs/models/gpt-5.6-luna.md): Optimize cost-sensitive, high-volume workloads.
+GPT‑6 Astra is rolling out today for enterprises in our [Trusted Access Program⁠](https://openai.com/form/enterprise-trusted-access-for-cyber/), with access through API and our Plus, Pro, Business and Enterprise plans coming in the coming days.
+
+- [GPT-6 Astra](/api/docs/models/gpt-6-astra.md): Our most capable model, built for the hardest end-to-end work
+- [GPT-5.6 Sol](/api/docs/models/gpt-5.6-sol.md): Flagship model for complex professional work
+- [GPT-5.6 Terra](/api/docs/models/gpt-5.6-terra.md): GPT-5.6 model that balances intelligence and cost
+- [GPT-5.6 Luna](/api/docs/models/gpt-5.6-luna.md): GPT-5.6 model optimized for cost-sensitive workloads
 
 ## Browse our full catalog of models
 
@@ -76,6 +79,7 @@ See [how OpenAI uses your data](/api/docs/guides/your-data.md) and review [depre
 - [GPT-5.6 Luna](/api/docs/models/gpt-5.6-luna.md): GPT-5.6 model optimized for cost-sensitive workloads
 - [GPT-5.6 Sol](/api/docs/models/gpt-5.6-sol.md): Flagship model for complex professional work
 - [GPT-5.6 Terra](/api/docs/models/gpt-5.6-terra.md): GPT-5.6 model that balances intelligence and cost
+- [GPT-6 Astra](/api/docs/models/gpt-6-astra.md): Our most capable model, built for the hardest end-to-end work
 - [GPT-Audio](/api/docs/models/gpt-audio.md): For audio inputs and outputs with Chat Completions API
 - [GPT-Audio Mini](/api/docs/models/gpt-audio-mini.md): A cost-efficient version of GPT Audio
 - [GPT-Audio-1.5](/api/docs/models/gpt-audio-1.5.md): The best voice model for audio in, audio out with Chat Completions.

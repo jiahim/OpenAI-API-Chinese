@@ -28,7 +28,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tools": [
       { "type": "shell", "environment": { "type": "container_auto" } }
     ],
@@ -51,7 +51,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [{ type: "shell", environment: { type: "container_auto" } }],
   input: [
     {
@@ -77,7 +77,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[{"type": "shell", "environment": {"type": "container_auto"}}],
     input=[
         {
@@ -114,7 +114,7 @@ func main() {
 		Environment: responses.FunctionShellToolEnvironmentUnionParam{OfContainerAuto: &responses.ContainerAutoParam{}},
 	}}
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Execute: ls -lah /mnt/data && python --version && node --version")},
 	})
@@ -134,7 +134,7 @@ import com.openai.models.responses.ResponseCreateParams;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Run ls -lah /mnt/data, then show the Python and Node.js versions.")
         .addTool(
             FunctionShellTool.builder().environment(ContainerAuto.builder().build()).build())
@@ -152,7 +152,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Run ls -lah /mnt/data, then show the Python and Node.js versions.",
   tools: [{type: :shell, environment: {type: :container_auto}}]
 )
@@ -292,7 +292,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tools": [
       {
         "type": "shell",
@@ -312,7 +312,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "shell",
@@ -330,7 +330,7 @@ console.log(response.output_text);
 
 ```python
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "shell",
@@ -363,7 +363,7 @@ func main() {
 		Environment: responses.FunctionShellToolEnvironmentUnionParam{OfContainerReference: &responses.ContainerReferenceParam{ContainerID: "cntr_08f3d96c87a585390069118b594f7481a088b16cda7d9415fe"}},
 	}}
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("List files in the container and show disk usage.")},
 	})
@@ -384,7 +384,7 @@ String containerId = "cntr_08f3d96c87a585390069118b594f7481a088b16cda7d9415fe";
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("List files in the container and show disk usage.")
         .addTool(FunctionShellTool.builder().containerReferenceEnvironment(containerId).build())
         .build();
@@ -401,7 +401,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "List files in the container and show disk usage.",
   tools: [{
     type: :shell,
@@ -570,7 +570,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tool_choice": "required",
     "tools": [
       {
@@ -599,7 +599,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tool_choice: "required",
   tools: [
     {
@@ -631,7 +631,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tool_choice="required",
     tools=[
         {
@@ -681,7 +681,7 @@ func main() {
 		}},
 	}}
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:      "gpt-5.6",
+		Model:      "gpt-6-astra",
 		ToolChoice: responses.ResponseNewParamsToolChoiceUnion{OfToolChoiceMode: openai.Opt(responses.ToolChoiceOptionsRequired)},
 		Tools:      []responses.ToolUnionParam{tool},
 		Input:      responses.ResponseNewParamsInputUnion{OfString: openai.String("In the container, pip install httpx beautifulsoup4, fetch release pages, and write /mnt/data/release_digest.md.")},
@@ -704,7 +704,7 @@ import com.openai.models.responses.ToolChoiceOptions;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Fetch release pages and write /mnt/data/release_digest.md.")
         .toolChoice(ToolChoiceOptions.REQUIRED)
         .addTool(
@@ -733,7 +733,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Fetch release pages and write /mnt/data/release_digest.md.",
   tool_choice: :required,
   tools: [{
@@ -810,7 +810,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tools": [
       {
         "type": "shell",
@@ -867,7 +867,7 @@ const container = await client.containers.create({
 });
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "shell",
@@ -927,7 +927,7 @@ container = client.containers.create(
 )
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "shell",
@@ -1058,7 +1058,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "input": [
       {
         "role": "user",
@@ -1094,7 +1094,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -1133,7 +1133,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -1191,7 +1191,7 @@ func main() {
 		}},
 	}}
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:      "gpt-5.6",
+		Model:      "gpt-6-astra",
 		ToolChoice: responses.ResponseNewParamsToolChoiceUnion{OfToolChoiceMode: openai.Opt(responses.ToolChoiceOptionsRequired)},
 		Tools:      []responses.ToolUnionParam{tool},
 		Input:      responses.ResponseNewParamsInputUnion{OfString: openai.String("Use curl to call https://httpbin.org/headers with header Authorization: Bearer $API_KEY. Tell me what you see in the final text response.")},
@@ -1215,7 +1215,7 @@ import com.openai.models.responses.ToolChoiceOptions;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input(
             "Use curl to call https://httpbin.org/status/204 with an "
                 + "Authorization: Bearer $API_KEY header. Print only the HTTP status code; "
@@ -1251,7 +1251,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Use curl to call https://httpbin.org/headers with an " \
     '"Authorization: Bearer $API_KEY" header.',
   tool_choice: :required,
@@ -1287,7 +1287,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "previous_response_id": "resp_2a8e5c9174d63b0f18a4c572de9f64a1b3c76d508e12f9ab47",
     "tools": [
       {
@@ -1308,7 +1308,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   previous_response_id:
     "resp_2a8e5c9174d63b0f18a4c572de9f64a1b3c76d508e12f9ab47",
   tools: [
@@ -1332,7 +1332,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     previous_response_id="resp_2a8e5c9174d63b0f18a4c572de9f64a1b3c76d508e12f9ab47",
     tools=[
         {
@@ -1366,7 +1366,7 @@ func main() {
 		Environment: responses.FunctionShellToolEnvironmentUnionParam{OfContainerReference: &responses.ContainerReferenceParam{ContainerID: "cntr_f19c2b51e4a06793d82d54a7be0fc9154d3361ab28ce7f6041"}},
 	}}
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:              "gpt-5.6",
+		Model:              "gpt-6-astra",
 		PreviousResponseID: openai.String("resp_2a8e5c9174d63b0f18a4c572de9f64a1b3c76d508e12f9ab47"),
 		Tools:              []responses.ToolUnionParam{tool},
 		Input:              responses.ResponseNewParamsInputUnion{OfString: openai.String("Read /mnt/data/top5.csv and report the top candidate.")},
@@ -1390,7 +1390,7 @@ String containerId = "cntr_f19c2b51e4a06793d82d54a7be0fc9154d3361ab28ce7f6041";
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Read /mnt/data/top5.csv and report the top candidate.")
         .previousResponseId(responseId)
         .addTool(FunctionShellTool.builder().containerReferenceEnvironment(containerId).build())
@@ -1408,7 +1408,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Read /mnt/data/top5.csv and report the top candidate.",
   previous_response_id: "resp_2a8e5c9174d63b0f18a4c572de9f64a1b3c76d508e12f9ab47",
   tools: [{
@@ -1457,7 +1457,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "instructions": "The local bash shell environment is on Mac.",
     "input": "find me the largest pdf file in ~/Documents",
     "tools": [{ "type": "shell", "environment": { "type": "local" } }]
@@ -1470,7 +1470,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   instructions: "The local bash shell environment is on Mac.",
   input: "find me the largest pdf file in ~/Documents",
   tools: [{ type: "shell", environment: { type: "local" } }],
@@ -1485,7 +1485,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     instructions="The local bash shell environment is on Mac.",
     input="find me the largest pdf file in ~/Documents",
     tools=[{"type": "shell", "environment": {"type": "local"}}],
@@ -1511,7 +1511,7 @@ func main() {
 		Environment: responses.FunctionShellToolEnvironmentUnionParam{OfLocal: &responses.LocalEnvironmentParam{}},
 	}}
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:        "gpt-5.6",
+		Model:        "gpt-6-astra",
 		Instructions: openai.String("The local bash shell environment is on Mac."),
 		Input:        responses.ResponseNewParamsInputUnion{OfString: openai.String("find me the largest pdf file in ~/Documents")},
 		Tools:        []responses.ToolUnionParam{tool},
@@ -1533,7 +1533,7 @@ import java.util.Map;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Find the largest PDF in ~/Documents.")
         .instructions("The local shell environment is macOS.")
         .putAdditionalBodyProperty(
@@ -1553,7 +1553,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   instructions: "The local shell environment is macOS.",
   input: "Find the largest PDF in ~/Documents.",
   tools: [{type: :shell, environment: {type: :local}}]
@@ -1797,7 +1797,7 @@ const shell = new LocalShell();
 
 const agent = new Agent({
   name: "Shell Assistant",
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   instructions:
     "You can execute shell commands to inspect the repository. Keep responses concise and include command output when helpful.",
   tools: [
@@ -1853,7 +1853,7 @@ shell_tool = ShellTool(
 
 agent = Agent(
     name="Shell Assistant",
-    model="gpt-5.6",
+    model="gpt-6-astra",
     instructions="You can execute shell commands to inspect the repository. Keep responses concise and include command output when helpful.",
     tools=[shell_tool],
 )

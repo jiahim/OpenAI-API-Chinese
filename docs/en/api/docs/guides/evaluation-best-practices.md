@@ -109,7 +109,7 @@ To test your LLM-based application's ability to do Q&A over docs, your eval desi
    Set up continuous evaluation (CE) to run evals on every change, monitor your app to identify new cases of nondeterminism, and grow the eval set over time.
 
 When creating an eval dataset, 
-  [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol) 
+  [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) 
   is useful for collecting eval examples and edge cases. Consider using it to
   help you generate a diverse set of test data across various scenarios. Ensure
   your test data includes typical cases, edge cases, and adversarial cases. Use
@@ -421,7 +421,7 @@ Human judgment evals provide the highest quality but are slow and expensive.
 
 ### LLM-as-a-judge and model graders
 
-Using models to judge output is cheaper to run and more scalable than human evaluation. Start with [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol) when you need a strong LLM judge, then validate agreement against your human labels before optimizing for cost or latency.
+Using models to judge output is cheaper to run and more scalable than human evaluation. Start with [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) when you need a strong LLM judge, then validate agreement against your human labels before optimizing for cost or latency.
 
 - **Examples**:
   - Pairwise comparison: Present the judge model with two responses and ask it to determine which one is better based on specific criteria
@@ -430,7 +430,7 @@ Using models to judge output is cheaper to run and more scalable than human eval
 - **Challenges**: Position bias (response order), verbosity bias (preferring longer responses)
 - **Recommendations**:
   - Use pairwise comparison or pass/fail for more reliability
-  - Use the most capable model to grade if you can. Start with [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol), then validate whether a specialized reasoning model performs better for your rubric or reference-answer set
+  - Use the most capable model to grade if you can. Start with [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra), then validate whether a specialized reasoning model performs better for your rubric or reference-answer set
   - Control for response lengths as LLMs bias towards longer responses in general
   - Add reasoning and chain-of-thought as reasoning before scoring improves eval performance
   - Once the LLM judge reaches a point where it's faster, cheaper, and consistently agrees with human annotations, scale up

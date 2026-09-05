@@ -36,7 +36,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \ 
 -H "Authorization: Bearer $OPENAI_API_KEY" \ 
 -d '{
-  "model": "gpt-5.6",
+  "model": "gpt-6-astra",
     "tools": [
       {
         "type": "mcp",
@@ -55,7 +55,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -78,7 +78,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "mcp",
@@ -113,7 +113,7 @@ func main() {
 	tool.OfMcp.RequireApproval = responses.ToolMcpRequireApprovalUnionParam{OfMcpToolApprovalSetting: openai.String("never")}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Roll 2d4+1")},
 	})
@@ -132,7 +132,7 @@ import com.openai.models.responses.Tool;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Roll 2d4+1")
         .addTool(
             Tool.Mcp.builder()
@@ -158,7 +158,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "dmcp",
@@ -179,7 +179,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -222,7 +222,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tools": [
       {
         "type": "mcp",
@@ -241,7 +241,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -266,7 +266,7 @@ client = OpenAI()
 connector_authorization = os.environ["OPENAI_CONNECTOR_AUTHORIZATION"]
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "mcp",
@@ -301,7 +301,7 @@ func main() {
 	tool.OfMcp.RequireApproval = responses.ToolMcpRequireApprovalUnionParam{OfMcpToolApprovalSetting: openai.String("never")}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Summarize the Q2 earnings report.")},
 	})
@@ -322,7 +322,7 @@ String oauthAccessToken = "<oauth access token>";
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Summarize the Q2 earnings report.")
         .addTool(
             Tool.Mcp.builder()
@@ -349,7 +349,7 @@ string dropboxToken =
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "Dropbox",
@@ -372,7 +372,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Summarize the Q2 earnings report.",
   tools: [{
     type: :mcp,
@@ -488,7 +488,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tools": [
       {
         "type": "mcp",
@@ -508,7 +508,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -532,7 +532,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "mcp",
@@ -569,7 +569,7 @@ func main() {
 	tool.OfMcp.AllowedTools = responses.ToolMcpAllowedToolsUnionParam{OfMcpAllowedTools: []string{"roll"}}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Roll 2d4+1")},
 	})
@@ -589,7 +589,7 @@ import java.util.List;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Roll 2d4+1")
         .addTool(
             Tool.Mcp.builder()
@@ -616,7 +616,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "dmcp",
@@ -638,7 +638,7 @@ require "openai"
 client = OpenAI::Client.new
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Roll 2d4+1",
   tools: [
     {
@@ -700,7 +700,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tools": [
       {
         "type": "mcp",
@@ -724,7 +724,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -755,7 +755,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "mcp",
@@ -797,7 +797,7 @@ func main() {
 	tool.OfMcp.RequireApproval = responses.ToolMcpRequireApprovalUnionParam{OfMcpToolApprovalSetting: openai.String("always")}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:              "gpt-5.6",
+		Model:              "gpt-6-astra",
 		PreviousResponseID: openai.String("resp_682d498bdefc81918b4a6aa477bfafd904ad1e533afccbfa"),
 		Tools:              []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
@@ -825,7 +825,7 @@ String approvalRequestId = "mcpr_682d498e3bd4819196a0ce1664f8e77b04ad1e533afccbf
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input(
             ResponseCreateParams.Input.ofResponse(
                 List.of(
@@ -858,7 +858,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "dmcp",
@@ -890,7 +890,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   previous_response_id: "resp_682d498bdefc81918b4a6aa477bfafd904ad1e533afccbfa",
   input: [{
     type: :mcp_approval_response,
@@ -921,7 +921,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tools": [
       {
         "type": "mcp",
@@ -943,7 +943,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -969,7 +969,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "mcp",
@@ -1010,7 +1010,7 @@ func main() {
 	}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("What transport protocols does the 2025-03-26 version of the MCP spec (modelcontextprotocol/modelcontextprotocol) support?")},
 	})
@@ -1029,7 +1029,7 @@ import com.openai.models.responses.Tool;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("What transport protocols does the 2025-03-26 version of the MCP spec support?")
         .addTool(
             Tool.Mcp.builder()
@@ -1060,7 +1060,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "deepwiki",
@@ -1091,7 +1091,7 @@ require "openai"
 client = OpenAI::Client.new
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "What transport protocols does the 2025-03-26 version of the MCP spec support?",
   tools: [
     {
@@ -1120,7 +1120,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "input": "Create a payment link for $20",
     "tools": [
       {
@@ -1138,7 +1138,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Create a payment link for $20",
   tools: [
     {
@@ -1161,7 +1161,7 @@ client = OpenAI()
 authorization = os.environ["STRIPE_OAUTH_ACCESS_TOKEN"]
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Create a payment link for $20",
     tools=[
         {
@@ -1199,7 +1199,7 @@ func main() {
 	tool.OfMcp.Authorization = openai.String(authorization)
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Create a payment link for $20")},
 	})
@@ -1220,7 +1220,7 @@ String stripeAccessToken = System.getenv("STRIPE_OAUTH_ACCESS_TOKEN");
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Create a payment link for $20.")
         .addTool(
             Tool.Mcp.builder()
@@ -1246,7 +1246,7 @@ string authToken =
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "stripe",
@@ -1268,7 +1268,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Create a payment link for $20.",
   tools: [{
     type: :mcp,
@@ -1326,7 +1326,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tools": [
       {
         "type": "mcp",
@@ -1345,7 +1345,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -1369,7 +1369,7 @@ client = OpenAI()
 authorization = os.environ["GOOGLE_CALENDAR_OAUTH_ACCESS_TOKEN"]
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "mcp",
@@ -1404,7 +1404,7 @@ func main() {
 	tool.OfMcp.RequireApproval = responses.ToolMcpRequireApprovalUnionParam{OfMcpToolApprovalSetting: openai.String("never")}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("What's on my Google Calendar for today?")},
 	})
@@ -1425,7 +1425,7 @@ String oauthAccessToken = "<oauth access token>";
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("What's on my Google Calendar for today?")
         .addTool(
             Tool.Mcp.builder()
@@ -1452,7 +1452,7 @@ string authToken =
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "google_calendar",
@@ -1475,7 +1475,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "What's on my Google Calendar for today?",
   tools: [{
     type: :mcp,

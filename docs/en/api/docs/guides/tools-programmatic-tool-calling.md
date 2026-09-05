@@ -345,7 +345,7 @@ import json
 from openai import OpenAI
 
 client = OpenAI()
-model = "gpt-5.6"
+model = "gpt-6-astra"
 
 
 def get_inventory(sku):

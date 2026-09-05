@@ -25,7 +25,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-  "model": "gpt-5.6",
+  "model": "gpt-6-astra",
   "input": "Write a very long novel about otters in space.",
   "background": true
 }'
@@ -36,7 +36,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a very long novel about otters in space.",
   background: true,
 });
@@ -50,7 +50,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Write a very long novel about otters in space.",
     background=True,
 )
@@ -73,7 +73,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:      "gpt-5.6",
+		Model:      "gpt-6-astra",
 		Background: openai.Bool(true),
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Write a very long novel about otters in space."),
@@ -94,7 +94,7 @@ import com.openai.models.responses.ResponseCreateParams;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Write a detailed market analysis.")
         .background(true)
         .build();
@@ -112,7 +112,7 @@ ResponsesClient client = new(key);
 
 CreateResponseOptions options = new()
 {
-    Model = "gpt-5.6",
+    Model = "gpt-6-astra",
     BackgroundModeEnabled = true,
 };
 options.InputItems.Add(
@@ -128,7 +128,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a detailed market analysis.",
   background: true
 )
@@ -154,7 +154,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 let resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a very long novel about otters in space.",
   background: true,
 });
@@ -175,7 +175,7 @@ from time import sleep
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Write a very long novel about otters in space.",
     background=True,
 )
@@ -204,7 +204,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:      "gpt-5.6",
+		Model:      "gpt-6-astra",
 		Background: openai.Bool(true),
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Write a very long novel about otters in space."),
@@ -235,7 +235,7 @@ import com.openai.models.responses.ResponseStatus;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Write a very long novel about otters in space.")
         .background(true)
         .build();
@@ -264,7 +264,7 @@ ResponsesClient client = new(key);
 
 CreateResponseOptions options = new()
 {
-    Model = "gpt-5.6",
+    Model = "gpt-6-astra",
     BackgroundModeEnabled = true,
 };
 options.InputItems.Add(
@@ -291,7 +291,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a very long novel about otters in space.",
   background: true
 )
@@ -413,7 +413,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-  "model": "gpt-5.6",
+  "model": "gpt-6-astra",
   "input": "Write a very long novel about otters in space.",
   "background": true,
   "stream": true
@@ -430,7 +430,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const stream = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a very long novel about otters in space.",
   background: true,
   stream: true,
@@ -454,7 +454,7 @@ client = OpenAI()
 
 # Fire off an async response but also start streaming immediately
 stream = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Write a very long novel about otters in space.",
     background=True,
     stream=True,
@@ -486,7 +486,7 @@ func main() {
 	client := openai.NewClient()
 
 	stream := client.Responses.NewStreaming(context.Background(), responses.ResponseNewParams{
-		Model:      "gpt-5.6",
+		Model:      "gpt-6-astra",
 		Background: openai.Bool(true),
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Write a very long novel about otters in space."),
@@ -533,7 +533,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Write a very long novel about otters in space.")
         .background(true)
         .build();
@@ -597,7 +597,7 @@ ResponsesClient client = new(key);
 
 CreateResponseOptions options = new()
 {
-    Model = "gpt-5.6",
+    Model = "gpt-6-astra",
     BackgroundModeEnabled = true,
     StreamingEnabled = true,
 };
@@ -678,7 +678,7 @@ require "openai"
 
 client = OpenAI::Client.new
 stream = client.responses.stream(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a very long novel about otters in space.",
   background: true
 )

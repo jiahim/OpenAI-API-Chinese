@@ -1,0 +1,675 @@
+{
+  "id": "2026-09-04T18-52-29-000Z",
+  "generatedAt": "2026-09-04T18:52:29Z",
+  "added": [
+    {
+      "path": "docs/en/api/docs/guides/async-tool-calling.md",
+      "route": "/api/docs/guides/async-tool-calling",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/async-tool-calling.md",
+      "title": "Async tool calling"
+    },
+    {
+      "path": "docs/en/api/docs/guides/latest-model/gpt-6-astra.md",
+      "route": "/api/docs/guides/latest-model/gpt-6-astra",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/latest-model/gpt-6-astra.md",
+      "title": "Using GPT-6 Astra"
+    },
+    {
+      "path": "docs/en/api/docs/guides/safety-checks/misalignment-monitoring.md",
+      "route": "/api/docs/guides/safety-checks/misalignment-monitoring",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring.md",
+      "title": "Misalignment monitoring"
+    },
+    {
+      "path": "docs/en/api/docs/guides/steering.md",
+      "route": "/api/docs/guides/steering",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/steering.md",
+      "title": "Mid-turn steering"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-computer-use-integration.md",
+      "route": "/api/docs/guides/tools-computer-use-integration",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-computer-use-integration.md",
+      "title": "Computer use integration recipes"
+    },
+    {
+      "path": "docs/en/api/reference/resources/audio/subresources/transcriptions/streaming-events.md",
+      "route": "/api/reference/resources/audio/subresources/transcriptions/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/streaming-events.md",
+      "title": "Transcription streaming events"
+    }
+  ],
+  "modified": [
+    {
+      "path": "docs/en/api/docs/changelog.md",
+      "route": "/api/docs/changelog",
+      "sourceUrl": "https://developers.openai.com/api/docs/changelog.md",
+      "title": "API changelog"
+    },
+    {
+      "path": "docs/en/api/docs/concepts.md",
+      "route": "/api/docs/concepts",
+      "sourceUrl": "https://developers.openai.com/api/docs/concepts.md",
+      "title": "Key concepts"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents/define-agents.md",
+      "route": "/api/docs/guides/agents/define-agents",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents/define-agents.md",
+      "title": "Agent definitions"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents/models.md",
+      "route": "/api/docs/guides/agents/models",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents/models.md",
+      "title": "Models and providers"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents/quickstart.md",
+      "route": "/api/docs/guides/agents/quickstart",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents/quickstart.md",
+      "title": "Quickstart"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents/sandboxes.md",
+      "route": "/api/docs/guides/agents/sandboxes",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents/sandboxes.md",
+      "title": "Sandbox Agents"
+    },
+    {
+      "path": "docs/en/api/docs/guides/background.md",
+      "route": "/api/docs/guides/background",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/background.md",
+      "title": "Background mode"
+    },
+    {
+      "path": "docs/en/api/docs/guides/code-generation.md",
+      "route": "/api/docs/guides/code-generation",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/code-generation.md",
+      "title": "Code generation"
+    },
+    {
+      "path": "docs/en/api/docs/guides/compaction.md",
+      "route": "/api/docs/guides/compaction",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/compaction.md",
+      "title": "Compaction"
+    },
+    {
+      "path": "docs/en/api/docs/guides/completions.md",
+      "route": "/api/docs/guides/completions",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/completions.md",
+      "title": "Completions API"
+    },
+    {
+      "path": "docs/en/api/docs/guides/conversation-state.md",
+      "route": "/api/docs/guides/conversation-state",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/conversation-state.md",
+      "title": "Conversation state"
+    },
+    {
+      "path": "docs/en/api/docs/guides/custom-chatkit.md",
+      "route": "/api/docs/guides/custom-chatkit",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/custom-chatkit.md",
+      "title": "Advanced integrations with ChatKit"
+    },
+    {
+      "path": "docs/en/api/docs/guides/deep-research.md",
+      "route": "/api/docs/guides/deep-research",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/deep-research.md",
+      "title": "Deep research"
+    },
+    {
+      "path": "docs/en/api/docs/guides/deployment-checklist.md",
+      "route": "/api/docs/guides/deployment-checklist",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/deployment-checklist.md",
+      "title": "API deployment checklist"
+    },
+    {
+      "path": "docs/en/api/docs/guides/error-codes.md",
+      "route": "/api/docs/guides/error-codes",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/error-codes.md",
+      "title": "Error codes"
+    },
+    {
+      "path": "docs/en/api/docs/guides/evals.md",
+      "route": "/api/docs/guides/evals",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/evals.md",
+      "title": "Working with evals"
+    },
+    {
+      "path": "docs/en/api/docs/guides/evaluation-best-practices.md",
+      "route": "/api/docs/guides/evaluation-best-practices",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/evaluation-best-practices.md",
+      "title": "Evaluation best practices"
+    },
+    {
+      "path": "docs/en/api/docs/guides/fast-mode.md",
+      "route": "/api/docs/guides/fast-mode",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/fast-mode.md",
+      "title": "Fast mode"
+    },
+    {
+      "path": "docs/en/api/docs/guides/file-inputs.md",
+      "route": "/api/docs/guides/file-inputs",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/file-inputs.md",
+      "title": "File inputs"
+    },
+    {
+      "path": "docs/en/api/docs/guides/flex-processing.md",
+      "route": "/api/docs/guides/flex-processing",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/flex-processing.md",
+      "title": "Flex processing"
+    },
+    {
+      "path": "docs/en/api/docs/guides/function-calling.md",
+      "route": "/api/docs/guides/function-calling",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/function-calling.md",
+      "title": "Function calling"
+    },
+    {
+      "path": "docs/en/api/docs/guides/image-generation.md",
+      "route": "/api/docs/guides/image-generation",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/image-generation.md",
+      "title": "Image generation"
+    },
+    {
+      "path": "docs/en/api/docs/guides/images-vision.md",
+      "route": "/api/docs/guides/images-vision",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/images-vision.md",
+      "title": "Images and vision"
+    },
+    {
+      "path": "docs/en/api/docs/guides/latest-model/gpt-5.6.md",
+      "route": "/api/docs/guides/latest-model/gpt-5.6",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/latest-model/gpt-5.6.md",
+      "title": "Using GPT-5.6"
+    },
+    {
+      "path": "docs/en/api/docs/guides/migrate-to-responses.md",
+      "route": "/api/docs/guides/migrate-to-responses",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/migrate-to-responses.md",
+      "title": "Migrate to the Responses API"
+    },
+    {
+      "path": "docs/en/api/docs/guides/model-optimization.md",
+      "route": "/api/docs/guides/model-optimization",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/model-optimization.md",
+      "title": "Model optimization"
+    },
+    {
+      "path": "docs/en/api/docs/guides/model-selection.md",
+      "route": "/api/docs/guides/model-selection",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/model-selection.md",
+      "title": "Model selection"
+    },
+    {
+      "path": "docs/en/api/docs/guides/moderation.md",
+      "route": "/api/docs/guides/moderation",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/moderation.md",
+      "title": "Moderation"
+    },
+    {
+      "path": "docs/en/api/docs/guides/private-link.md",
+      "route": "/api/docs/guides/private-link",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/private-link.md",
+      "title": "Private Link"
+    },
+    {
+      "path": "docs/en/api/docs/guides/production-best-practices.md",
+      "route": "/api/docs/guides/production-best-practices",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/production-best-practices.md",
+      "title": "Production best practices"
+    },
+    {
+      "path": "docs/en/api/docs/guides/prompt-caching.md",
+      "route": "/api/docs/guides/prompt-caching",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/prompt-caching.md",
+      "title": "Prompt caching"
+    },
+    {
+      "path": "docs/en/api/docs/guides/prompt-engineering.md",
+      "route": "/api/docs/guides/prompt-engineering",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/prompt-engineering.md",
+      "title": "Prompt engineering"
+    },
+    {
+      "path": "docs/en/api/docs/guides/prompt-generation.md",
+      "route": "/api/docs/guides/prompt-generation",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/prompt-generation.md",
+      "title": "Prompt generation"
+    },
+    {
+      "path": "docs/en/api/docs/guides/prompting/migrate-from-prompt-object.md",
+      "route": "/api/docs/guides/prompting/migrate-from-prompt-object",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/prompting/migrate-from-prompt-object.md",
+      "title": "Migrate from prompt objects"
+    },
+    {
+      "path": "docs/en/api/docs/guides/reasoning.md",
+      "route": "/api/docs/guides/reasoning",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/reasoning.md",
+      "title": "Reasoning models"
+    },
+    {
+      "path": "docs/en/api/docs/guides/retrieval.md",
+      "route": "/api/docs/guides/retrieval",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/retrieval.md",
+      "title": "Retrieval"
+    },
+    {
+      "path": "docs/en/api/docs/guides/safety-best-practices.md",
+      "route": "/api/docs/guides/safety-best-practices",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/safety-best-practices.md",
+      "title": "Safety best practices"
+    },
+    {
+      "path": "docs/en/api/docs/guides/safety-checks.md",
+      "route": "/api/docs/guides/safety-checks",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/safety-checks.md",
+      "title": "Safety classifiers"
+    },
+    {
+      "path": "docs/en/api/docs/guides/safety-checks/under-18-api-guidance.md",
+      "route": "/api/docs/guides/safety-checks/under-18-api-guidance",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/safety-checks/under-18-api-guidance.md",
+      "title": "Under-18 guidance"
+    },
+    {
+      "path": "docs/en/api/docs/guides/streaming-responses.md",
+      "route": "/api/docs/guides/streaming-responses",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/streaming-responses.md",
+      "title": "Streaming API responses"
+    },
+    {
+      "path": "docs/en/api/docs/guides/structured-outputs.md",
+      "route": "/api/docs/guides/structured-outputs",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/structured-outputs.md",
+      "title": "Structured model outputs"
+    },
+    {
+      "path": "docs/en/api/docs/guides/text.md",
+      "route": "/api/docs/guides/text",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/text.md",
+      "title": "Text generation"
+    },
+    {
+      "path": "docs/en/api/docs/guides/token-counting.md",
+      "route": "/api/docs/guides/token-counting",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/token-counting.md",
+      "title": "Counting tokens"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-apply-patch.md",
+      "route": "/api/docs/guides/tools-apply-patch",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-apply-patch.md",
+      "title": "Apply Patch"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-code-interpreter.md",
+      "route": "/api/docs/guides/tools-code-interpreter",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-code-interpreter.md",
+      "title": "Code Interpreter"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-computer-use.md",
+      "route": "/api/docs/guides/tools-computer-use",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-computer-use.md",
+      "title": "Computer use"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-connectors-mcp.md",
+      "route": "/api/docs/guides/tools-connectors-mcp",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-connectors-mcp.md",
+      "title": "MCP and Connectors"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-file-search.md",
+      "route": "/api/docs/guides/tools-file-search",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-file-search.md",
+      "title": "File search"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-image-generation.md",
+      "route": "/api/docs/guides/tools-image-generation",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-image-generation.md",
+      "title": "Image generation"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-programmatic-tool-calling.md",
+      "route": "/api/docs/guides/tools-programmatic-tool-calling",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling.md",
+      "title": "Programmatic Tool Calling"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-shell.md",
+      "route": "/api/docs/guides/tools-shell",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-shell.md",
+      "title": "Shell"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-skills.md",
+      "route": "/api/docs/guides/tools-skills",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-skills.md",
+      "title": "Skills"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-tool-search.md",
+      "route": "/api/docs/guides/tools-tool-search",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-tool-search.md",
+      "title": "Tool search"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-web-search.md",
+      "route": "/api/docs/guides/tools-web-search",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-web-search.md",
+      "title": "Web search"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools.md",
+      "route": "/api/docs/guides/tools",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools.md",
+      "title": "Using tools"
+    },
+    {
+      "path": "docs/en/api/docs/guides/voice-agents.md",
+      "route": "/api/docs/guides/voice-agents",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/voice-agents.md",
+      "title": "Voice agents"
+    },
+    {
+      "path": "docs/en/api/docs/guides/webhooks.md",
+      "route": "/api/docs/guides/webhooks",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/webhooks.md",
+      "title": "Webhooks"
+    },
+    {
+      "path": "docs/en/api/docs/guides/websocket-mode.md",
+      "route": "/api/docs/guides/websocket-mode",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/websocket-mode.md",
+      "title": "WebSocket Mode"
+    },
+    {
+      "path": "docs/en/api/docs/guides/workload-identity-federation/aws.md",
+      "route": "/api/docs/guides/workload-identity-federation/aws",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/workload-identity-federation/aws.md",
+      "title": "Configuring workload identity federation for AWS"
+    },
+    {
+      "path": "docs/en/api/docs/guides/workload-identity-federation/github-actions.md",
+      "route": "/api/docs/guides/workload-identity-federation/github-actions",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/workload-identity-federation/github-actions.md",
+      "title": "Configuring workload identity federation for GitHub Actions"
+    },
+    {
+      "path": "docs/en/api/docs/guides/workload-identity-federation/google-cloud.md",
+      "route": "/api/docs/guides/workload-identity-federation/google-cloud",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/workload-identity-federation/google-cloud.md",
+      "title": "Configuring workload identity federation for Google Cloud"
+    },
+    {
+      "path": "docs/en/api/docs/guides/workload-identity-federation/kubernetes.md",
+      "route": "/api/docs/guides/workload-identity-federation/kubernetes",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/workload-identity-federation/kubernetes.md",
+      "title": "Configuring workload identity federation for Kubernetes"
+    },
+    {
+      "path": "docs/en/api/docs/guides/workload-identity-federation/microsoft-azure.md",
+      "route": "/api/docs/guides/workload-identity-federation/microsoft-azure",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/workload-identity-federation/microsoft-azure.md",
+      "title": "Configuring workload identity federation for Microsoft Azure"
+    },
+    {
+      "path": "docs/en/api/docs/guides/workload-identity-federation/oracle-cloud.md",
+      "route": "/api/docs/guides/workload-identity-federation/oracle-cloud",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/workload-identity-federation/oracle-cloud.md",
+      "title": "Configuring workload identity federation for Oracle Cloud Infrastructure"
+    },
+    {
+      "path": "docs/en/api/docs/guides/workload-identity-federation/spiffe.md",
+      "route": "/api/docs/guides/workload-identity-federation/spiffe",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/workload-identity-federation/spiffe.md",
+      "title": "Configuring workload identity federation for SPIFFE"
+    },
+    {
+      "path": "docs/en/api/docs/guides/workload-identity-federation/x509.md",
+      "route": "/api/docs/guides/workload-identity-federation/x509",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/workload-identity-federation/x509.md",
+      "title": "Configure workload identity federation with X.509 certificates"
+    },
+    {
+      "path": "docs/en/api/docs/guides/your-data.md",
+      "route": "/api/docs/guides/your-data",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/your-data.md",
+      "title": "Data controls in the OpenAI platform"
+    },
+    {
+      "path": "docs/en/api/docs/libraries.md",
+      "route": "/api/docs/libraries",
+      "sourceUrl": "https://developers.openai.com/api/docs/libraries.md",
+      "title": "SDKs and CLI"
+    },
+    {
+      "path": "docs/en/api/docs/libraries/openai-cli.md",
+      "route": "/api/docs/libraries/openai-cli",
+      "sourceUrl": "https://developers.openai.com/api/docs/libraries/openai-cli.md",
+      "title": "OpenAI CLI"
+    },
+    {
+      "path": "docs/en/api/docs/models.md",
+      "route": "/api/docs/models",
+      "sourceUrl": "https://developers.openai.com/api/docs/models.md",
+      "title": "Models"
+    },
+    {
+      "path": "docs/en/api/docs/models/all.md",
+      "route": "/api/docs/models/all",
+      "sourceUrl": "https://developers.openai.com/api/docs/models/all.md",
+      "title": "All models"
+    },
+    {
+      "path": "docs/en/api/docs/models/compare.md",
+      "route": "/api/docs/models/compare",
+      "sourceUrl": "https://developers.openai.com/api/docs/models/compare.md",
+      "title": "Compare models"
+    },
+    {
+      "path": "docs/en/api/docs/pricing.md",
+      "route": "/api/docs/pricing",
+      "sourceUrl": "https://developers.openai.com/api/docs/pricing.md",
+      "title": "Pricing"
+    },
+    {
+      "path": "docs/en/api/docs/quickstart.md",
+      "route": "/api/docs/quickstart",
+      "sourceUrl": "https://developers.openai.com/api/docs/quickstart.md",
+      "title": "Developer quickstart"
+    },
+    {
+      "path": "docs/en/api/docs/tutorials/meeting-minutes.md",
+      "route": "/api/docs/tutorials/meeting-minutes",
+      "sourceUrl": "https://developers.openai.com/api/docs/tutorials/meeting-minutes.md",
+      "title": "Meeting minutes"
+    },
+    {
+      "path": "docs/en/api/reference/resources/batches.md",
+      "route": "/api/reference/resources/batches",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/batches.md",
+      "title": "Batches"
+    },
+    {
+      "path": "docs/en/api/reference/resources/batches/methods/cancel.md",
+      "route": "/api/reference/resources/batches/methods/cancel",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/batches/methods/cancel.md",
+      "title": "Batches — Cancel"
+    },
+    {
+      "path": "docs/en/api/reference/resources/batches/methods/create.md",
+      "route": "/api/reference/resources/batches/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/batches/methods/create.md",
+      "title": "Batches — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/batches/methods/list.md",
+      "route": "/api/reference/resources/batches/methods/list",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/batches/methods/list.md",
+      "title": "Batches — List"
+    },
+    {
+      "path": "docs/en/api/reference/resources/batches/methods/retrieve.md",
+      "route": "/api/reference/resources/batches/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/batches/methods/retrieve.md",
+      "title": "Batches — Retrieve"
+    },
+    {
+      "path": "docs/en/api/reference/resources/beta/subresources/responses/streaming-events.md",
+      "route": "/api/reference/resources/beta/subresources/responses/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/responses/streaming-events.md",
+      "title": "Beta Responses streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/beta/subresources/responses/websocket-events.md",
+      "route": "/api/reference/resources/beta/subresources/responses/websocket-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/responses/websocket-events.md",
+      "title": "Beta Responses WebSocket events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/chat.md",
+      "route": "/api/reference/resources/chat",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/chat.md",
+      "title": "Chat"
+    },
+    {
+      "path": "docs/en/api/reference/resources/chat/subresources/completions/methods/retrieve.md",
+      "route": "/api/reference/resources/chat/subresources/completions/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/retrieve.md",
+      "title": "Chat Completions — Retrieve"
+    },
+    {
+      "path": "docs/en/api/reference/resources/chat/subresources/completions/streaming-events.md",
+      "route": "/api/reference/resources/chat/subresources/completions/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/chat/subresources/completions/streaming-events.md",
+      "title": "Chat Completions streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/conversations.md",
+      "route": "/api/reference/resources/conversations",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/conversations.md",
+      "title": "Conversations"
+    },
+    {
+      "path": "docs/en/api/reference/resources/conversations/methods/create.md",
+      "route": "/api/reference/resources/conversations/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/conversations/methods/create.md",
+      "title": "Conversations — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/conversations/subresources/items/methods/list.md",
+      "route": "/api/reference/resources/conversations/subresources/items/methods/list",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/conversations/subresources/items/methods/list.md",
+      "title": "Conversations Items — List"
+    },
+    {
+      "path": "docs/en/api/reference/resources/evals.md",
+      "route": "/api/reference/resources/evals",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/evals.md",
+      "title": "Evals"
+    },
+    {
+      "path": "docs/en/api/reference/resources/evals/subresources/runs/methods/cancel.md",
+      "route": "/api/reference/resources/evals/subresources/runs/methods/cancel",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/evals/subresources/runs/methods/cancel.md",
+      "title": "Evals Runs — Cancel"
+    },
+    {
+      "path": "docs/en/api/reference/resources/models.md",
+      "route": "/api/reference/resources/models",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/models.md",
+      "title": "Models"
+    },
+    {
+      "path": "docs/en/api/reference/resources/models/methods/retrieve.md",
+      "route": "/api/reference/resources/models/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/models/methods/retrieve.md",
+      "title": "Models — Retrieve"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses.md",
+      "route": "/api/reference/resources/responses",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses.md",
+      "title": "Responses"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/cancel.md",
+      "route": "/api/reference/resources/responses/methods/cancel",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/cancel.md",
+      "title": "Responses — Cancel"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/compact.md",
+      "route": "/api/reference/resources/responses/methods/compact",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/compact.md",
+      "title": "Responses — Compact"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/create.md",
+      "route": "/api/reference/resources/responses/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/create.md",
+      "title": "Responses — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/retrieve.md",
+      "route": "/api/reference/resources/responses/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/retrieve.md",
+      "title": "Responses — Retrieve"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/streaming-events.md",
+      "route": "/api/reference/resources/responses/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/streaming-events.md",
+      "title": "Responses streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/subresources/input_items/methods/list.md",
+      "route": "/api/reference/resources/responses/subresources/input_items/methods/list",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/subresources/input_items/methods/list.md",
+      "title": "Responses Input Items — List"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/subresources/input_tokens.md",
+      "route": "/api/reference/resources/responses/subresources/input_tokens",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/subresources/input_tokens.md",
+      "title": "Responses Input Tokens"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/websocket-events.md",
+      "route": "/api/reference/resources/responses/websocket-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/websocket-events.md",
+      "title": "Responses WebSocket events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/videos.md",
+      "route": "/api/reference/resources/videos",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/videos.md",
+      "title": "Videos"
+    },
+    {
+      "path": "docs/en/api/reference/resources/videos/methods/create.md",
+      "route": "/api/reference/resources/videos/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/videos/methods/create.md",
+      "title": "Videos — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/videos/methods/list.md",
+      "route": "/api/reference/resources/videos/methods/list",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/videos/methods/list.md",
+      "title": "Videos — List"
+    },
+    {
+      "path": "docs/en/api/reference/resources/videos/methods/retrieve.md",
+      "route": "/api/reference/resources/videos/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/videos/methods/retrieve.md",
+      "title": "Videos — Retrieve"
+    }
+  ],
+  "removed": []
+}

@@ -97,7 +97,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -124,7 +124,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -160,7 +160,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfInputItemList: responses.ResponseInputParam{
 				responses.ResponseInputItemParamOfMessage(
@@ -199,7 +199,7 @@ import java.util.List;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .inputOfResponse(
             List.of(
                 ResponseInputItem.ofMessage(
@@ -234,7 +234,7 @@ Uri fileUrl = new(
 );
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem(
             [
@@ -256,7 +256,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -282,7 +282,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "input": [
             {
                 "role": "user",
@@ -325,7 +325,7 @@ const file = await client.files.create({
 });
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -354,7 +354,7 @@ client = OpenAI()
 file = client.files.create(file=open("draconomicon.pdf", "rb"), purpose="user_data")
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -405,7 +405,7 @@ func main() {
 	}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfInputItemList: responses.ResponseInputParam{
 				responses.ResponseInputItemParamOfMessage(
@@ -457,7 +457,7 @@ var response =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .inputOfResponse(
                     List.of(
                         ResponseInputItem.ofMessage(
@@ -491,7 +491,7 @@ OpenAIFile file = await files.UploadFileAsync(
 );
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem(
             [
@@ -519,7 +519,7 @@ file = openai.files.create(
 )
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -544,7 +544,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "input": [
             {
                 "role": "user",
@@ -585,7 +585,7 @@ const data = fs.readFileSync("fixtures/draconomicon.pdf");
 const base64String = data.toString("base64");
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -619,7 +619,7 @@ with open("draconomicon.pdf", "rb") as f:
 base64_string = base64.b64encode(data).decode("utf-8")
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -664,7 +664,7 @@ func main() {
 	fileData := "data:application/pdf;base64," + base64.StdEncoding.EncodeToString(data)
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfInputItemList: responses.ResponseInputParam{
 				responses.ResponseInputItemParamOfMessage(
@@ -709,7 +709,7 @@ String pdfData =
         .encodeToString(Files.readAllBytes(Path.of(System.getenv("OPENAI_EXAMPLE_FILE_PATH"))));
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .inputOfResponse(
             List.of(
                 ResponseInputItem.ofMessage(
@@ -740,7 +740,7 @@ ResponsesClient client = new(key);
 
 BinaryData fileBytes = BinaryData.FromBytes(await File.ReadAllBytesAsync("draconomicon.pdf"));
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem(
             [
@@ -767,7 +767,7 @@ require "openai"
 client = OpenAI::Client.new
 pdf_data = Base64.strict_encode64(File.binread("draconomicon.pdf"))
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [{
     role: :user,
     content: [
@@ -789,7 +789,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "input": [
             {
                 "role": "user",

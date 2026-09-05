@@ -4,6 +4,8 @@
 
 OpenAI [webhooks](http://chatgpt.com/?q=eli5+what+is+a+webhook?) allow you to receive real-time notifications about events in the API, such as when a batch completes, a background response is generated, or a fine-tuning job finishes. Webhooks are delivered to an HTTP endpoint you control, following the [Standard Webhooks specification](https://github.com/standard-webhooks/standard-webhooks/blob/main/spec/standard-webhooks.md). The full list of webhook events can be found in the [API reference](https://developers.openai.com/api/reference/resources/webhooks).
 
+To receive misalignment monitoring notifications for an API project, see [Receive project safety alerts](https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring#receive-project-safety-alerts).
+
 [API reference for webhook events
 
 
@@ -153,7 +155,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-  "model": "gpt-5.6",
+  "model": "gpt-6-astra",
   "input": "Write a very long novel about otters in space.",
   "background": true
 }'
@@ -164,7 +166,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a very long novel about otters in space.",
   background: true,
 });
@@ -178,7 +180,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Write a very long novel about otters in space.",
     background=True,
 )
@@ -201,7 +203,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:      "gpt-5.6",
+		Model:      "gpt-6-astra",
 		Background: openai.Bool(true),
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Write a very long novel about otters in space."),
@@ -222,7 +224,7 @@ import com.openai.models.responses.ResponseCreateParams;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Write a detailed market analysis.")
         .background(true)
         .build();
@@ -240,7 +242,7 @@ ResponsesClient client = new(key);
 
 CreateResponseOptions options = new()
 {
-    Model = "gpt-5.6",
+    Model = "gpt-6-astra",
     BackgroundModeEnabled = true,
 };
 options.InputItems.Add(
@@ -256,7 +258,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a detailed market analysis.",
   background: true
 )
@@ -265,7 +267,7 @@ puts(response.status)
 ```
 
 
-In this guide, you will learn how to create webook endpoints in the dashboard, set up server-side code to handle them, and verify that inbound requests originated from OpenAI.
+In this guide, you will learn how to create webhook endpoints in the dashboard, set up server-side code to handle them, and verify that inbound requests originated from OpenAI.
 
 ## Creating webhook endpoints
 

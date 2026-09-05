@@ -46,7 +46,7 @@ Ask the model to plan and emit patches
 
 ```javascript
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: fileContext,
   tools: [{ type: "apply_patch" }],
 });
@@ -88,7 +88,7 @@ Help me rename the fib() function to fibonacci()
 """
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=RESPONSE_INPUT,
     tools=[{"type": "apply_patch"}],
 )
@@ -103,7 +103,7 @@ patch_calls = [
 
 ```go
 response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-	Model: "gpt-5.6",
+	Model: "gpt-6-astra",
 	Input: responses.ResponseNewParamsInputUnion{OfString: openai.String(responseInput)},
 	Tools: []responses.ToolUnionParam{{OfApplyPatch: &responses.ApplyPatchToolParam{}}},
 })
@@ -126,7 +126,7 @@ import com.openai.models.responses.ResponseCreateParams;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input(
             "Rename fib() to fibonacci() in lib/fib.py and update run.py to use the new name.")
         .addTool(ApplyPatchTool.builder().build())
@@ -142,7 +142,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Rename fib() to fibonacci() in lib/fib.py and update run.py to use the new name.",
   tools: [{type: :apply_patch}]
 )
@@ -196,7 +196,7 @@ const results = patchCalls.map((call) => {
 });
 
 const followup = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   previous_response_id: response.id,
   input: results,
   tools: [{ type: "apply_patch" }],
@@ -223,7 +223,7 @@ for call in patch_calls:
     )
 
 followup = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     previous_response_id=response.id,
     input=results,
     tools=[{"type": "apply_patch"}],
@@ -243,7 +243,7 @@ for _, call := range patchCalls {
 	results = append(results, result)
 }
 _, err = client.Responses.New(context.Background(), responses.ResponseNewParams{
-	Model:              "gpt-5.6",
+	Model:              "gpt-6-astra",
 	PreviousResponseID: openai.String(response.ID),
 	Input:              responses.ResponseNewParamsInputUnion{OfInputItemList: results},
 	Tools:              []responses.ToolUnionParam{{OfApplyPatch: &responses.ApplyPatchToolParam{}}},
@@ -263,7 +263,7 @@ import java.util.List;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .inputOfResponse(
             List.of(
                 ResponseInputItem.ofApplyPatchCallOutput(
@@ -290,7 +290,7 @@ client = OpenAI::Client.new
 response_id = ENV.fetch("OPENAI_RESPONSE_ID")
 patch_call_id = ENV.fetch("OPENAI_APPLY_PATCH_CALL_ID")
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   previous_response_id: response_id,
   input: [{
     type: :apply_patch_call_output,
@@ -391,7 +391,7 @@ const editor = new WorkspaceEditor();
 
 const agent = new Agent({
   name: "Patch Assistant",
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   instructions:
     "You can edit files inside the /tmp directory using the apply_patch tool.",
   tools: [
@@ -443,7 +443,7 @@ editor = WorkspaceEditor()
 
 agent = Agent(
     name="Patch Assistant",
-    model="gpt-5.6",
+    model="gpt-6-astra",
     instructions="You can edit files inside the /tmp directory using the apply_patch tool.",
     tools=[
         ApplyPatchTool(

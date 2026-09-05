@@ -78,7 +78,7 @@ The final prompt you output should adhere to the following structure below. Do n
 
 async function generatePrompt(taskOrPrompt) {
   const completion = await client.chat.completions.create({
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     messages: [
       { role: "system", content: metaPrompt },
       {
@@ -150,7 +150,7 @@ The final prompt you output should adhere to the following structure below. Do n
 
 def generate_prompt(task_or_prompt: str):
     completion = client.chat.completions.create(
-        model="gpt-5.6",
+        model="gpt-6-astra",
         messages=[
             {
                 "role": "system",
@@ -221,7 +221,7 @@ String metaPrompt =
 
 ChatCompletionCreateParams params =
     ChatCompletionCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .addSystemMessage(metaPrompt)
         .addUserMessage(
             "Task, Goal, or Current Prompt:\nWrite a concise product launch announcement.")
@@ -284,7 +284,7 @@ PROMPT
 
 def generate_prompt(client, meta_prompt, task_or_prompt)
   completion = client.chat.completions.create(
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     messages: [
       {role: :system, content: meta_prompt},
       {
@@ -351,7 +351,7 @@ The final prompt you output should adhere to the following structure below. Do n
 
 async function generatePrompt(taskOrPrompt) {
   const completion = await client.chat.completions.create({
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     messages: [
       { role: "system", content: metaPrompt },
       {
@@ -414,7 +414,7 @@ The final prompt you output should adhere to the following structure below. Do n
 
 def generate_prompt(task_or_prompt: str):
     completion = client.chat.completions.create(
-        model="gpt-5.6",
+        model="gpt-6-astra",
         messages=[
             {
                 "role": "system",
@@ -476,7 +476,7 @@ String metaPrompt =
 
 ChatCompletionCreateParams params =
     ChatCompletionCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .addSystemMessage(metaPrompt)
         .addUserMessage(
             "Task, Goal, or Current Prompt:\n"
@@ -531,7 +531,7 @@ PROMPT
 
 def generate_prompt(client, meta_prompt, task_or_prompt)
   completion = client.chat.completions.create(
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     messages: [
       {role: :system, content: meta_prompt},
       {
@@ -629,7 +629,7 @@ The final prompt you output should adhere to the following structure below. Do n
 
 async function generatePrompt(taskOrPrompt) {
   const completion = await client.chat.completions.create({
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     messages: [
       { role: "system", content: metaPrompt },
       {
@@ -720,7 +720,7 @@ The final prompt you output should adhere to the following structure below. Do n
 
 def generate_prompt(task_or_prompt: str):
     completion = client.chat.completions.create(
-        model="gpt-5.6",
+        model="gpt-6-astra",
         messages=[
             {
                 "role": "system",
@@ -810,7 +810,7 @@ String metaPrompt =
 
 ChatCompletionCreateParams params =
     ChatCompletionCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .addSystemMessage(metaPrompt)
         .addUserMessage(
             "Task, Goal, or Current Prompt:\nMake this product launch announcement clearer and more concise.")
@@ -892,7 +892,7 @@ PROMPT
 
 def generate_prompt(client, meta_prompt, task_or_prompt)
   completion = client.chat.completions.create(
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     messages: [
       {role: :system, content: meta_prompt},
       {
@@ -978,7 +978,7 @@ The final prompt you output should adhere to the following structure below. Do n
 
 async function generatePrompt(taskOrPrompt) {
   const completion = await client.chat.completions.create({
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     messages: [
       { role: "system", content: metaPrompt },
       {
@@ -1062,7 +1062,7 @@ The final prompt you output should adhere to the following structure below. Do n
 
 def generate_prompt(task_or_prompt: str):
     completion = client.chat.completions.create(
-        model="gpt-5.6",
+        model="gpt-6-astra",
         messages=[
             {
                 "role": "system",
@@ -1143,7 +1143,7 @@ String metaPrompt =
 
 ChatCompletionCreateParams params =
     ChatCompletionCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .addSystemMessage(metaPrompt)
         .addUserMessage(
             "Task, Goal, or Current Prompt:\nMake this voice assistant prompt warmer and more direct.")
@@ -1216,7 +1216,7 @@ PROMPT
 
 def generate_prompt(client, meta_prompt, task_or_prompt)
   completion = client.chat.completions.create(
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     messages: [
       {role: :system, content: meta_prompt},
       {

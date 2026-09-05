@@ -78,7 +78,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a one-sentence bedtime story about a unicorn.",
 });
 
@@ -123,7 +123,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Write a one-sentence bedtime story about a unicorn.",
 )
 
@@ -167,7 +167,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     "Say 'this is a test.'"
 );
 
@@ -190,7 +190,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.56.0</version>
+  <version>4.58.0</version>
 </dependency>
 ```
 
@@ -210,7 +210,7 @@ public class Main {
     OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 
     ResponseCreateParams params =
-        ResponseCreateParams.builder().input("Say this is a test").model("gpt-5.6").build();
+        ResponseCreateParams.builder().input("Say this is a test").model("gpt-6-astra").build();
 
     Response response = client.responses().create(params);
     response.output().stream()
@@ -269,7 +269,7 @@ func main() {
 	client := openai.NewClient()
 
 	resp, err := client.Responses.New(context.TODO(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Say this is a test")},
 	})
 	if err != nil {
@@ -318,7 +318,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a one-sentence bedtime story about a unicorn."
 )
 
@@ -400,7 +400,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -429,7 +429,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -464,7 +464,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
 			responses.ResponseInputItemParamOfMessage(
 				responses.ResponseInputMessageContentListParam{
@@ -508,7 +508,7 @@ ResponseInputItem imageInput =
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .inputOfResponse(List.of(imageInput))
         .build();
 
@@ -531,7 +531,7 @@ Uri imageUrl = new(
 );
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem(
             [
@@ -551,7 +551,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -577,7 +577,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "input": [
             {
                 "role": "user",
@@ -598,7 +598,7 @@ curl "https://api.openai.com/v1/responses" \
 
 ```bash
 openai responses create \
-  --model gpt-5.6 \
+  --model gpt-6-astra \
   --raw-output \
   --transform 'output.#(type=="message").content.0.text' <<'YAML'
 input:
@@ -625,7 +625,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -652,7 +652,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -688,7 +688,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfInputItemList: responses.ResponseInputParam{
 				responses.ResponseInputItemParamOfMessage(
@@ -727,7 +727,7 @@ import java.util.List;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .inputOfResponse(
             List.of(
                 ResponseInputItem.ofMessage(
@@ -762,7 +762,7 @@ Uri fileUrl = new(
 );
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem(
             [
@@ -784,7 +784,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -810,7 +810,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "input": [
             {
                 "role": "user",
@@ -849,7 +849,7 @@ const file = await client.files.create({
 });
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -878,7 +878,7 @@ client = OpenAI()
 file = client.files.create(file=open("draconomicon.pdf", "rb"), purpose="user_data")
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -929,7 +929,7 @@ func main() {
 	}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfInputItemList: responses.ResponseInputParam{
 				responses.ResponseInputItemParamOfMessage(
@@ -981,7 +981,7 @@ var response =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .inputOfResponse(
                     List.of(
                         ResponseInputItem.ofMessage(
@@ -1015,7 +1015,7 @@ OpenAIFile file = await files.UploadFileAsync(
 );
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem(
             [
@@ -1043,7 +1043,7 @@ file = openai.files.create(
 )
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -1068,7 +1068,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "input": [
             {
                 "role": "user",
@@ -1116,7 +1116,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [{ type: "web_search" }],
   input: "What was a positive news story from today?",
 });
@@ -1130,7 +1130,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[{"type": "web_search"}],
     input="What was a positive news story from today?",
 )
@@ -1152,7 +1152,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{
 			responses.ToolParamOfWebSearch(responses.WebSearchToolTypeWebSearch),
 		},
@@ -1173,7 +1173,7 @@ import com.openai.models.responses.WebSearchTool;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("What was a positive news story from today?")
         .addTool(WebSearchTool.builder().type(WebSearchTool.Type.WEB_SEARCH).build())
         .build();
@@ -1192,7 +1192,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(ResponseTool.CreateWebSearchTool());
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("What was a positive news story from today?")
@@ -1209,7 +1209,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [{type: "web_search"}],
   input: "What was a positive news story from today?"
 )
@@ -1222,7 +1222,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "tools": [{"type": "web_search"}],
         "input": "what was a positive news story from today?"
 }'
@@ -1230,7 +1230,7 @@ curl "https://api.openai.com/v1/responses" \
 
 ```bash
 openai responses create \
-  --model gpt-5.6 \
+  --model gpt-6-astra \
   --raw-output \
   --transform 'output.#(type=="message").content.0.text' <<'YAML'
 tools:
@@ -1253,7 +1253,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "What is deep research by OpenAI?",
   tools: [
     {
@@ -1271,7 +1271,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="What is deep research by OpenAI?",
     tools=[{"type": "file_search", "vector_store_ids": ["<vector_store_id>"]}],
 )
@@ -1292,7 +1292,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("What is deep research by OpenAI?")},
 		Tools: []responses.ToolUnionParam{responses.ToolParamOfFileSearch([]string{"<vector_store_id>"})},
 	})
@@ -1313,7 +1313,7 @@ String vectorStoreId = "<vector_store_id>";
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("What is deep research by OpenAI?")
         .addFileSearchTool(List.of(vectorStoreId))
         .build();
@@ -1333,7 +1333,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 string vectorStoreId = "<vector_store_id>";
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateFileSearchTool([vectorStoreId])
 );
@@ -1352,7 +1352,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "What is deep research by OpenAI?",
   tools: [
     {
@@ -1379,7 +1379,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   instructions:
     "You are a personal math tutor. When asked a math question, write and run code to answer the question.",
   tools: [
@@ -1400,7 +1400,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     instructions="You are a personal math tutor. When asked a math question, write and run code to answer the question.",
     tools=[{"type": "code_interpreter", "container": {"type": "auto"}}],
     input="I need to solve the equation 3x + 11 = 14. Can you help me?",
@@ -1423,7 +1423,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:        "gpt-5.6",
+		Model:        "gpt-6-astra",
 		Instructions: openai.String("You are a personal math tutor. When asked a math question, write and run code to answer the question."),
 		Tools: []responses.ToolUnionParam{
 			responses.ToolParamOfCodeInterpreter(responses.ToolCodeInterpreterContainerCodeInterpreterContainerAutoParam{}),
@@ -1445,7 +1445,7 @@ import com.openai.models.responses.Tool;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("I need to solve the equation 3x + 11 = 14. Can you help me?")
         .instructions(
             "You are a personal math tutor. When asked a math question, write and run code to answer the question.")
@@ -1472,7 +1472,7 @@ CodeInterpreterToolContainer container = new(
 );
 CreateResponseOptions options = new()
 {
-    Model = "gpt-5.6",
+    Model = "gpt-6-astra",
     Instructions = "You are a personal math tutor. Write and run code to answer math questions.",
 };
 options.Tools.Add(ResponseTool.CreateCodeInterpreterTool(container));
@@ -1492,7 +1492,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   instructions: "You are a personal math tutor. When asked a math question, write and run code to answer the question.",
   tools: [
     {
@@ -1511,7 +1511,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "instructions": "You are a personal math tutor. When asked a math question, write and run code to answer the question.",
     "tools": [
       {
@@ -1558,7 +1558,7 @@ const tools = [
 ];
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     { role: "user", content: "What is the weather like in Paris today?" },
   ],
@@ -1594,7 +1594,7 @@ tools = [
 ]
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {"role": "user", "content": "What is the weather like in Paris today?"},
     ],
@@ -1632,7 +1632,7 @@ func main() {
 	tool.OfFunction.Description = openai.String("Get current temperature for a given location.")
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
 			responses.ResponseInputItemParamOfMessage("What is the weather like in Paris today?", responses.EasyInputMessageRoleUser),
 		}},
@@ -1656,7 +1656,7 @@ import java.util.Map;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("What is the weather like in Paris today?")
         .addTool(
             FunctionTool.builder()
@@ -1691,7 +1691,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateFunctionTool(
         functionName: "get_weather",
@@ -1770,7 +1770,7 @@ tools = [
 ]
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {role: "user", content: "What is the weather like in Paris today?"}
   ],
@@ -1785,7 +1785,7 @@ curl -X POST https://api.openai.com/v1/responses \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "input": [
       {"role": "user", "content": "What is the weather like in Paris today?"}
     ],
@@ -1825,7 +1825,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \ 
 -H "Authorization: Bearer $OPENAI_API_KEY" \ 
 -d '{
-  "model": "gpt-5.6",
+  "model": "gpt-6-astra",
     "tools": [
       {
         "type": "mcp",
@@ -1844,7 +1844,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -1867,7 +1867,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "mcp",
@@ -1902,7 +1902,7 @@ func main() {
 	tool.OfMcp.RequireApproval = responses.ToolMcpRequireApprovalUnionParam{OfMcpToolApprovalSetting: openai.String("never")}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Roll 2d4+1")},
 	})
@@ -1921,7 +1921,7 @@ import com.openai.models.responses.Tool;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Roll 2d4+1")
         .addTool(
             Tool.Mcp.builder()
@@ -1947,7 +1947,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "dmcp",
@@ -1968,7 +1968,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -2009,7 +2009,7 @@ import { OpenAI } from "openai";
 const client = new OpenAI();
 
 const stream = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -2030,7 +2030,7 @@ from openai import OpenAI
 client = OpenAI()
 
 stream = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -2058,7 +2058,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	stream := client.Responses.NewStreaming(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Say 'double bubble bath' ten times fast.")},
 	})
 	for stream.Next() {
@@ -2079,7 +2079,7 @@ import com.openai.models.responses.ResponseStreamEvent;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Say 'double bubble bath' ten times fast.")
         .build();
 
@@ -2096,7 +2096,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 var responses = client.CreateResponseStreamingAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     "Say 'double bubble bath' ten times fast."
 );
 
@@ -2115,7 +2115,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 stream = openai.responses.stream(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",

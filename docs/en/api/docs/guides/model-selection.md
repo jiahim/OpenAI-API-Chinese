@@ -2,7 +2,7 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-Choosing the right model, whether [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol) or a smaller option like [`gpt-5.6-terra`](https://developers.openai.com/api/docs/models/gpt-5.6-terra), requires balancing **accuracy**, **latency**, and **cost**. This guide explains key principles to help you make informed decisions, along with a practical example.
+Choosing the right model, whether [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) or a smaller option like [`gpt-5.6-terra`](https://developers.openai.com/api/docs/models/gpt-5.6-terra), requires balancing **accuracy**, **latency**, and **cost**. This guide explains key principles to help you make informed decisions, along with a practical example.
 
 ## Core principles
 
@@ -59,7 +59,7 @@ Clear exceptions exist for these principles. If your use case is extremely cost 
 
 ## Practical example
 
-To demonstrate these principles, we'll develop a fake news classifier with the following target metrics. The experiment below uses historical GPT-4o-family results to show the workflow; for current evaluations, start with [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol) and compare against smaller or fine-tuned models.
+To demonstrate these principles, we'll develop a fake news classifier with the following target metrics. The experiment below uses historical GPT-4o-family results to show the workflow; for current evaluations, start with [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) and compare against smaller or fine-tuned models.
 
 - **Accuracy:** Achieve 90% correct classification
 - **Cost:** Spend less than $5 per 1,000 articles
@@ -83,4 +83,4 @@ We ran three experiments to reach our goal:
 
 By switching from `gpt-4o` to `gpt-4o-mini` with fine-tuning, we achieved **equivalent performance for less than 2%** of the cost, using only 1,000 labeled examples.
 
-This process is important - you often can’t jump right to fine-tuning because you don’t know whether fine-tuning is the right tool for the optimization you need, or you don’t have enough labeled examples. Start with [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol) to establish your accuracy target, then test smaller or fine-tuned models when cost and latency matter.
+This process is important - you often can’t jump right to fine-tuning because you don’t know whether fine-tuning is the right tool for the optimization you need, or you don’t have enough labeled examples. Start with [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) to establish your accuracy target, then test smaller or fine-tuned models when cost and latency matter.

@@ -2,6 +2,8 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
+For safeguards applied by OpenAI, see [Safety classifiers](https://developers.openai.com/api/docs/guides/safety-checks), [cybersecurity checks](https://developers.openai.com/api/docs/guides/safety-checks/cybersecurity), and [misalignment monitoring](https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring). If your application serves minors, also follow the [Under-18 guidance](https://developers.openai.com/api/docs/guides/safety-checks/under-18-api-guidance).
+
 ### Use our free Moderation API
 
 OpenAI's [Moderation API](https://developers.openai.com/api/docs/guides/moderation) is free-to-use and can help reduce the frequency of unsafe content in your completions. Alternatively, you may wish to develop your own content filtration system tailored to your use case.
@@ -68,7 +70,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.chat.completions.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   messages: [{ role: "user", content: "This is a test" }],
   max_completion_tokens: 5,
   safety_identifier: "user_123456",
@@ -83,7 +85,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.chat.completions.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     messages=[{"role": "user", "content": "This is a test"}],
     max_completion_tokens=5,
     safety_identifier="user_123456",
@@ -103,7 +105,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Chat.Completions.New(context.Background(), openai.ChatCompletionNewParams{
-		Model:               "gpt-5.6",
+		Model:               "gpt-6-astra",
 		Messages:            []openai.ChatCompletionMessageParamUnion{openai.UserMessage("This is a test")},
 		MaxCompletionTokens: openai.Int(5),
 		SafetyIdentifier:    openai.String("user_123456"),
@@ -122,7 +124,7 @@ import com.openai.models.chat.completions.ChatCompletionCreateParams;
 
 ChatCompletionCreateParams params =
     ChatCompletionCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .addUserMessage("Help me plan a study schedule.")
         .safetyIdentifier("user_1234")
         .build();
@@ -137,7 +139,7 @@ require "openai"
 
 client = OpenAI::Client.new
 completion = client.chat.completions.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   messages: [{role: :user, content: "Help me plan a study schedule."}],
   safety_identifier: "user_1234"
 )
@@ -150,7 +152,7 @@ curl https://api.openai.com/v1/chat/completions \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-"model": "gpt-5.6",
+"model": "gpt-6-astra",
 "messages": [
 {"role": "user", "content": "This is a test"}
 ],

@@ -194,6 +194,7 @@ Each entry has a Markdown twin at `/api/reference/<slug>.md`.
 - [Responses Input Tokens](https://developers.openai.com/api/reference/resources/responses/subresources/input_tokens.md): OpenAI API endpoint reference.
 - [Responses streaming events](https://developers.openai.com/api/reference/resources/responses/streaming-events.md): OpenAI API streaming event reference.
 - [Responses WebSocket events](https://developers.openai.com/api/reference/resources/responses/websocket-events.md): OpenAI API streaming event reference.
+- [Transcription streaming events](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/streaming-events.md): OpenAI API streaming event reference.
 - [Unwrap](https://developers.openai.com/api/reference/resources/webhooks/methods/unwrap.md)
 - [Uploads](https://developers.openai.com/api/reference/resources/uploads.md): OpenAI API endpoint reference.
 - [Uploads — Cancel](https://developers.openai.com/api/reference/resources/uploads/methods/cancel.md): OpenAI API endpoint method reference.

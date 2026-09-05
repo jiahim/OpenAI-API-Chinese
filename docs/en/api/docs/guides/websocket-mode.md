@@ -14,38 +14,81 @@ Because the connection stays open and each turn sends only incremental input, We
 
 ## Connect and create responses
 
+Install the WebSocket dependencies with `pip install "openai[realtime]>=3.8.0"` for Python or `npm install openai@^7.10.0 ws` for JavaScript.
+
 In WebSocket mode, start each turn by sending a `response.create` event from the client. The payload mirrors the normal [Responses create body](https://developers.openai.com/api/reference/resources/responses/methods/create), except that transport-specific fields like `stream` and `background` are not used.
 
-```python
-from websocket import create_connection
-import json
-import os
+```javascript
+import OpenAI from "openai";
+import { ResponsesWS } from "openai/resources/responses/ws";
 
-ws = create_connection(
-    "wss://api.openai.com/v1/responses",
-    header=[
-        f"Authorization: Bearer {os.environ['OPENAI_API_KEY']}",
+const client = new OpenAI();
+
+const ws = new ResponsesWS(client);
+try {
+  ws.send({
+    type: "response.create",
+    stream_id: "main",
+    model: "gpt-6-astra",
+    store: false,
+    input: [
+      {
+        type: "message",
+        role: "user",
+        content: [{ type: "input_text", text: "Find fizz_buzz()" }],
+      },
     ],
-)
+    tools: [],
+  });
+  let completed = false;
+  for await (const event of ws) {
+    if (event.type === "error") throw event.error;
+    if (event.type !== "message") continue;
+    const message = event.message;
+    if (message.type === "response.output_text.delta") {
+      process.stdout.write(message.delta);
+    } else if (message.type === "response.completed") {
+      completed = true;
+      break;
+    } else if (
+      message.type === "response.failed" ||
+      message.type === "response.incomplete"
+    ) {
+      throw new Error(JSON.stringify(message));
+    }
+  }
+  if (!completed)
+    throw new Error("Connection closed before the response finished.");
+} finally {
+  ws.close();
+}
+```
 
-ws.send(
-    json.dumps(
-        {
-            "type": "response.create",
-            "stream_id": "main",
-            "model": "gpt-5.6",
-            "store": False,
-            "input": [
-                {
-                    "type": "message",
-                    "role": "user",
-                    "content": [{"type": "input_text", "text": "Find fizz_buzz()"}],
-                }
-            ],
-            "tools": [],
-        }
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+with client.responses.connect() as connection:
+    connection.response.create(
+        stream_id="main",
+        model="gpt-6-astra",
+        store=False,
+        input=[
+            {
+                "type": "message",
+                "role": "user",
+                "content": [{"type": "input_text", "text": "Find fizz_buzz()"}],
+            }
+        ],
+        tools=[],
     )
-)
+    for event in connection:
+        if event.type == "response.completed":
+            print(event.response.output_text)
+            break
+        if event.type in {"response.failed", "response.incomplete", "error"}:
+            raise RuntimeError(event.to_json())
 ```
 
 
@@ -53,36 +96,171 @@ Clients can optionally warm up request state by sending `response.create` with `
 
 ## Continue with incremental inputs
 
+To add user instructions while a response is still running, use [Mid-turn steering](https://developers.openai.com/api/docs/guides/steering). Steering preserves completed work and includes the new instructions in a continuation. Use the following `response.create` pattern for ordinary between-turn continuation and tool results.
+
 To continue a run, send another `response.create` with:
 
 - `previous_response_id` set to the prior response ID.
 - `input` containing only new items (for example, tool outputs and the next user message).
 
+```javascript
+import OpenAI from "openai";
+import { ResponsesWS } from "openai/resources/responses/ws";
+
+const client = new OpenAI();
+const model = "gpt-6-astra";
+/** @type {OpenAI.Responses.FunctionTool[]} */
+const tools = [
+  {
+    type: "function",
+    name: "get_test_results",
+    description: "Return a local demo test result.",
+    parameters: { type: "object", properties: {}, additionalProperties: false },
+    strict: true,
+  },
+];
+
+/** @param {ResponsesWS} ws */
+async function waitForResponse(ws) {
+  for await (const event of ws) {
+    if (event.type === "error") throw event.error;
+    if (event.type !== "message") continue;
+    const message = event.message;
+    if (message.type === "response.output_text.delta") {
+      process.stdout.write(message.delta);
+    } else if (message.type === "response.completed") {
+      return message.response;
+    } else if (
+      message.type === "response.failed" ||
+      message.type === "response.incomplete"
+    ) {
+      throw new Error(JSON.stringify(message));
+    }
+  }
+  throw new Error("Connection closed before the response finished.");
+}
+
+const ws = new ResponsesWS(client);
+try {
+  ws.send({
+    type: "response.create",
+    stream_id: "main",
+    model,
+    store: false,
+    input: "Find the failing test and suggest a fix.",
+    tools,
+    tool_choice: { type: "function", name: "get_test_results" },
+    parallel_tool_calls: false,
+  });
+  const first = await waitForResponse(ws);
+  const call = first.output.find((item) => item.type === "function_call");
+  if (!call || call.name !== "get_test_results") {
+    throw new Error("Expected a get_test_results function call.");
+  }
+  const result = {
+    test: "test_fizz_buzz",
+    failure: 'Expected "FizzBuzz" for 15, got "Fizz".',
+  };
+
+  // Continue on the same socket with the actual response and tool-call IDs.
+  ws.send({
+    type: "response.create",
+    stream_id: "main",
+    model,
+    store: false,
+    previous_response_id: first.id,
+    input: [
+      {
+        type: "function_call_output",
+        call_id: call.call_id,
+        output: JSON.stringify(result),
+      },
+      { role: "user", content: "Now optimize it." },
+    ],
+    tools,
+    tool_choice: "none",
+  });
+  await waitForResponse(ws);
+} finally {
+  ws.close();
+}
+```
+
 ```python
-ws.send(
-    json.dumps(
-        {
-            "type": "response.create",
-            "stream_id": "main",
-            "model": "gpt-5.6",
-            "store": False,
-            "previous_response_id": "resp_123",
-            "input": [
-                {
-                    "type": "function_call_output",
-                    "call_id": "call_123",
-                    "output": "tool result",
-                },
-                {
-                    "type": "message",
-                    "role": "user",
-                    "content": [{"type": "input_text", "text": "Now optimize it."}],
-                },
-            ],
-            "tools": [],
-        }
+import json
+
+from openai import OpenAI
+from openai.resources.responses.responses import ResponsesConnection
+from openai.types.responses import FunctionToolParam, Response
+
+client = OpenAI()
+model = "gpt-6-astra"
+tools: list[FunctionToolParam] = [
+    {
+        "type": "function",
+        "name": "get_test_results",
+        "description": "Read the demo test results.",
+        "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": False,
+        },
+        "strict": True,
+    }
+]
+
+
+def get_test_results():
+    # Demo data. Replace this function with your test runner.
+    return {
+        "test": "test_fizz_buzz",
+        "failure": 'Expected "FizzBuzz" for 15, got "Fizz".',
+    }
+
+
+def wait_for_response(connection: ResponsesConnection) -> Response:
+    for event in connection:
+        if event.type == "response.completed":
+            return event.response
+        if event.type in {"response.failed", "response.incomplete", "error"}:
+            raise RuntimeError(event.to_json())
+    raise RuntimeError("Connection closed before the response finished.")
+
+
+with client.responses.connect() as connection:
+    connection.response.create(
+        stream_id="main",
+        model=model,
+        store=False,
+        input="Find the failing test and suggest a fix.",
+        tools=tools,
+        tool_choice={"type": "function", "name": "get_test_results"},
+        parallel_tool_calls=False,
     )
-)
+    response = wait_for_response(connection)
+    call = next(item for item in response.output if item.type == "function_call")
+    if call.name != "get_test_results" or json.loads(call.arguments) != {}:
+        raise ValueError("Expected a get_test_results call with no arguments")
+
+    # Continue on the same connection using the actual response and tool-call IDs.
+    connection.response.create(
+        stream_id="main",
+        model=model,
+        store=False,
+        previous_response_id=response.id,
+        input=[
+            {
+                "type": "function_call_output",
+                "call_id": call.call_id,
+                "output": json.dumps(get_test_results()),
+            },
+            {"role": "user", "content": "Now optimize it."},
+        ],
+        tools=tools,
+        tool_choice="none",
+    )
+    print(wait_for_response(connection).output_text)
 ```
 
 
@@ -113,33 +291,94 @@ The standalone [`/responses/compact` endpoint](https://developers.openai.com/api
 
 Start a new chain by omitting `previous_response_id` or setting it to `null`. Pass the compacted output as-is; do not prune the returned window.
 
+```javascript
+import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
+
+// Compact your current window with an HTTP request.
+const compacted = await client.responses.compact({
+  model: "gpt-6-astra",
+  input: longInputItems,
+});
+const nextInput = toResponseInputItems(compacted.output);
+nextInput.push({
+  type: "message",
+  role: "user",
+  content: [{ type: "input_text", text: "Continue from here." }],
+});
+
+// Start a new response on the WebSocket using the compacted window.
+const ws = new ResponsesWS(client);
+try {
+  ws.send({
+    type: "response.create",
+    stream_id: "main",
+    model: "gpt-6-astra",
+    store: false,
+    input: nextInput,
+    tools: [],
+  });
+  let completed = false;
+  for await (const event of ws) {
+    if (event.type === "error") throw event.error;
+    if (event.type !== "message") continue;
+    const message = event.message;
+    if (message.type === "response.output_text.delta") {
+      process.stdout.write(message.delta);
+    } else if (message.type === "response.completed") {
+      completed = true;
+      break;
+    } else if (
+      message.type === "response.failed" ||
+      message.type === "response.incomplete"
+    ) {
+      throw new Error(JSON.stringify(message));
+    }
+  }
+  if (!completed)
+    throw new Error("Connection closed before the response finished.");
+} finally {
+  ws.close();
+}
+```
+
 ```python
-# Compact your current window (HTTP call)
+from typing import cast
+
+from openai import OpenAI
+from openai.types.responses import ResponseInputParam
+
+# Compact your current window (HTTP call).
 compacted = client.responses.compact(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=long_input_items_array,
 )
-
-# Start a new response on the WebSocket using the compacted window
-ws.send(
-    json.dumps(
-        {
-            "type": "response.create",
-            "stream_id": "main",
-            "model": "gpt-5.6",
-            "store": False,
-            "input": [
-                *compacted.output,
-                {
-                    "type": "message",
-                    "role": "user",
-                    "content": [{"type": "input_text", "text": "Continue from here."}],
-                },
-            ],
-            "tools": [],
-        }
-    )
+next_input = cast(
+    ResponseInputParam,
+    [item.to_dict() for item in compacted.output],
 )
+next_input.append(
+    {
+        "type": "message",
+        "role": "user",
+        "content": [{"type": "input_text", "text": "Continue from here."}],
+    }
+)
+
+# Start a new response on the WebSocket using the compacted window.
+with client.responses.connect() as connection:
+    connection.response.create(
+        stream_id="main",
+        model="gpt-6-astra",
+        store=False,
+        input=next_input,
+        tools=[],
+    )
+    for event in connection:
+        if event.type == "response.completed":
+            print(event.response.output_text)
+            break
+        if event.type in {"response.failed", "response.incomplete", "error"}:
+            raise RuntimeError(event.to_json())
 ```
 
 
@@ -185,16 +424,19 @@ The key calls look like this:
 
 ```text
 # One socket, two independent conversations.
-send_create("planner", "Draft a deployment plan.")
-send_create("research", "List deployment risks.")
+send_create(connection, "planner", "Draft a deployment plan.")
+send_create(connection, "research", "List deployment risks.")
 
 # Fork the planner response, then continue the original branch in parallel.
 send_create(
+    connection,
     "critic",
     "Find gaps in this plan.",
     previous_response_id=planner_response_id,
 )
+wait_for_in_progress(connection, "critic")
 send_create(
+    connection,
     "planner",
     "Add rollback steps.",
     previous_response_id=planner_response_id,
@@ -205,80 +447,224 @@ send_create(
 
 Run parallel conversations, then fork one
 
+```javascript
+import OpenAI from "openai";
+import { ResponsesWS } from "openai/resources/responses/ws";
+
+const client = new OpenAI();
+
+/** @type {Map<string, string>} */
+const latestResponseIdByLane = new Map();
+
+/**
+ * @param {ResponsesWS} ws
+ * @param {string} streamId
+ * @param {string} text
+ * @param {string} [previousResponseId]
+ */
+function sendCreate(
+  ws,
+  streamId,
+  text,
+  previousResponseId = latestResponseIdByLane.get(streamId)
+) {
+  ws.send({
+    type: "response.create",
+    stream_id: streamId,
+    model: "gpt-6-astra",
+    store: false,
+    input: [
+      {
+        type: "message",
+        role: "user",
+        content: [{ type: "input_text", text }],
+      },
+    ],
+    previous_response_id: previousResponseId,
+  });
+}
+
+/** @param {ReturnType<ResponsesWS["stream"]>} events */
+async function readMessage(events) {
+  while (true) {
+    const { value: event, done } = await events.next();
+    if (done)
+      throw new Error("Connection closed before all responses finished.");
+    if (event.type === "error") throw event.error;
+    if (event.type !== "message") continue;
+    const message = event.message;
+    if (
+      message.type === "response.failed" ||
+      message.type === "response.incomplete"
+    ) {
+      throw new Error(
+        `Lane ${message.stream_id} failed: ${JSON.stringify(message)}`
+      );
+    }
+    return message;
+  }
+}
+
+/** @param {ReturnType<ResponsesWS["stream"]>} events @param {Set<string>} expectedStreamIds */
+async function drainUntilComplete(events, expectedStreamIds) {
+  const remaining = new Set(expectedStreamIds);
+  while (remaining.size > 0) {
+    const message = await readMessage(events);
+    const streamId = message.stream_id;
+    if (!streamId || !remaining.has(streamId)) continue;
+    if (message.type === "response.completed") {
+      latestResponseIdByLane.set(streamId, message.response.id);
+      remaining.delete(streamId);
+    }
+  }
+}
+
+/** @param {ReturnType<ResponsesWS["stream"]>} events @param {string} streamId */
+async function waitForInProgress(events, streamId) {
+  while (true) {
+    const message = await readMessage(events);
+    if (
+      message.type === "response.in_progress" &&
+      message.stream_id === streamId
+    )
+      return;
+  }
+}
+
+const ws = new ResponsesWS(client);
+// Keep one iterator so events stay queued while moving between phases.
+const events = ws.stream();
+try {
+  // Run two independent conversations in parallel.
+  sendCreate(
+    ws,
+    "planner",
+    "Draft a deployment plan for a stateless API service."
+  );
+  sendCreate(
+    ws,
+    "research",
+    "List common deployment risks for a stateless API service."
+  );
+  await drainUntilComplete(events, new Set(["planner", "research"]));
+
+  // Fork the planner conversation and continue its original branch in parallel.
+  const plannerResponseId = latestResponseIdByLane.get("planner");
+  sendCreate(
+    ws,
+    "critic",
+    "Find gaps in this deployment plan.",
+    plannerResponseId
+  );
+  // Let the fork load its parent before advancing the original lane's cache.
+  await waitForInProgress(events, "critic");
+  sendCreate(
+    ws,
+    "planner",
+    "Add rollback and monitoring steps to the plan.",
+    plannerResponseId
+  );
+  await drainUntilComplete(events, new Set(["critic", "planner"]));
+} finally {
+  await events.return?.();
+  ws.close();
+}
+```
+
 ```python
-import json
-import os
+from openai import OpenAI
+from openai.resources.responses.responses import ResponsesConnection
 
-from websocket import create_connection
-
-ws = create_connection(
-    "wss://api.openai.com/v1/responses",
-    header=[f"Authorization: Bearer {os.environ['OPENAI_API_KEY']}"],
-)
-
-latest_response_id_by_lane = {}
+client = OpenAI()
+latest_response_id_by_lane: dict[str, str] = {}
 
 
-def send_create(stream_id, text, previous_response_id=None):
-    payload = {
-        "type": "response.create",
-        "stream_id": stream_id,
-        "model": "gpt-5.6",
-        "store": False,
-        "input": [
+def send_create(
+    connection: ResponsesConnection,
+    stream_id: str,
+    text: str,
+    previous_response_id: str | None = None,
+):
+    if previous_response_id is None:
+        previous_response_id = latest_response_id_by_lane.get(stream_id)
+    connection.response.create(
+        stream_id=stream_id,
+        model="gpt-6-astra",
+        store=False,
+        input=[
             {
                 "type": "message",
                 "role": "user",
                 "content": [{"type": "input_text", "text": text}],
             }
         ],
-    }
-    if previous_response_id is None:
-        previous_response_id = latest_response_id_by_lane.get(stream_id)
-    if previous_response_id:
-        payload["previous_response_id"] = previous_response_id
-    ws.send(json.dumps(payload))
+        previous_response_id=previous_response_id,
+    )
 
 
-def drain_until_complete(expected_stream_ids):
-    completed = set()
-    while completed != expected_stream_ids:
-        event = json.loads(ws.recv())
-        stream_id = event.get("stream_id")
-        event_type = event.get("type")
-
-        if event_type == "error" and stream_id is None:
-            raise RuntimeError(f"connection error: {event}")
-        if stream_id not in expected_stream_ids:
+def drain_until_complete(
+    connection: ResponsesConnection, expected_stream_ids: set[str]
+):
+    completed: set[str] = set()
+    for event in connection:
+        stream_id = event.stream_id
+        if event.type == "error" and stream_id is None:
+            raise RuntimeError(f"Connection error: {event.to_json()}")
+        if stream_id is None or stream_id not in expected_stream_ids:
             continue
 
-        if event_type == "response.completed":
-            latest_response_id_by_lane[stream_id] = event["response"]["id"]
+        if event.type == "response.completed":
+            latest_response_id_by_lane[stream_id] = event.response.id
             completed.add(stream_id)
-        elif event_type in {"response.failed", "response.incomplete", "error"}:
-            raise RuntimeError(f"lane {stream_id} failed: {event}")
+            if completed == expected_stream_ids:
+                return
+        elif event.type in {"response.failed", "response.incomplete", "error"}:
+            raise RuntimeError(f"Lane {stream_id} failed: {event.to_json()}")
+    raise RuntimeError("Connection closed before all responses finished.")
 
 
-# 1. Run two independent conversations in parallel.
-send_create("planner", "Draft a deployment plan for a stateless API service.")
-send_create("research", "List common deployment risks for a stateless API service.")
-drain_until_complete({"planner", "research"})
+def wait_for_in_progress(connection: ResponsesConnection, expected_stream_id: str):
+    for event in connection:
+        if event.type == "error" and event.stream_id is None:
+            raise RuntimeError(f"Connection error: {event.to_json()}")
+        if event.stream_id != expected_stream_id:
+            continue
+        if event.type == "response.in_progress":
+            return
+        if event.type in {"response.failed", "response.incomplete", "error"}:
+            raise RuntimeError(f"Lane {expected_stream_id} failed: {event.to_json()}")
+    raise RuntimeError("Connection closed before the fork started.")
 
-# 2. Fork the planner conversation and continue the original branch in parallel.
-planner_response_id = latest_response_id_by_lane["planner"]
-send_create(
-    "critic",
-    "Find gaps in this deployment plan.",
-    previous_response_id=planner_response_id,
-)
-send_create(
-    "planner",
-    "Add rollback and monitoring steps to the plan.",
-    previous_response_id=planner_response_id,
-)
-drain_until_complete({"critic", "planner"})
 
-ws.close()
+with client.responses.connect() as connection:
+    # 1. Run two independent conversations in parallel.
+    send_create(
+        connection, "planner", "Draft a deployment plan for a stateless API service."
+    )
+    send_create(
+        connection,
+        "research",
+        "List common deployment risks for a stateless API service.",
+    )
+    drain_until_complete(connection, {"planner", "research"})
+
+    # 2. Fork the planner conversation and continue the original branch in parallel.
+    planner_response_id = latest_response_id_by_lane["planner"]
+    send_create(
+        connection,
+        "critic",
+        "Find gaps in this deployment plan.",
+        previous_response_id=planner_response_id,
+    )
+    # Let the fork bind its parent before advancing the original lane.
+    wait_for_in_progress(connection, "critic")
+    send_create(
+        connection,
+        "planner",
+        "Add rollback and monitoring steps to the plan.",
+        previous_response_id=planner_response_id,
+    )
+    drain_until_complete(connection, {"critic", "planner"})
 ```
 
 

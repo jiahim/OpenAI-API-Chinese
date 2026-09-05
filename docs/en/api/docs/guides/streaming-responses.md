@@ -16,7 +16,7 @@ import { OpenAI } from "openai";
 const client = new OpenAI();
 
 const stream = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -37,7 +37,7 @@ from openai import OpenAI
 client = OpenAI()
 
 stream = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -65,7 +65,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	stream := client.Responses.NewStreaming(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Say 'double bubble bath' ten times fast.")},
 	})
 	for stream.Next() {
@@ -86,7 +86,7 @@ import com.openai.models.responses.ResponseStreamEvent;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Say 'double bubble bath' ten times fast.")
         .build();
 
@@ -103,7 +103,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 var responses = client.CreateResponseStreamingAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     "Say 'double bubble bath' ten times fast."
 );
 
@@ -122,7 +122,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 stream = openai.responses.stream(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",

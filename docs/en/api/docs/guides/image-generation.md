@@ -227,7 +227,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
   tools: [{ type: "image_generation" }],
@@ -252,7 +252,7 @@ import base64
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -285,7 +285,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Generate an image of gray tabby cat hugging an otter with an orange scarf"),
 		},
@@ -326,7 +326,7 @@ import java.util.Base64;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
         .addTool(Tool.ImageGeneration.builder().build())
         .build();
@@ -348,7 +348,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem(
         "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
@@ -370,7 +370,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
   tools: [{type: :image_generation}]
 )
@@ -402,7 +402,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
   tools: [{ type: "image_generation", action: "generate" }],
@@ -427,7 +427,7 @@ import base64
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation", "action": "generate"}],
 )
@@ -460,7 +460,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Generate an image of gray tabby cat hugging an otter with an orange scarf"),
 		},
@@ -498,7 +498,7 @@ import java.util.Base64;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
         .addTool(
             Tool.ImageGeneration.builder().action(Tool.ImageGeneration.Action.GENERATE).build())
@@ -522,7 +522,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem(
         "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
@@ -549,7 +549,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
   tools: [{type: :image_generation, action: :generate}]
 )
@@ -581,7 +581,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
   tools: [{ type: "image_generation" }],
@@ -600,7 +600,7 @@ if (imageData.length > 0) {
 // Follow up
 
 const response_fwup = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   previous_response_id: response.id,
   input: "Now make it look realistic",
   tools: [{ type: "image_generation" }],
@@ -627,7 +627,7 @@ import base64
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -648,7 +648,7 @@ if image_data:
 # Follow up
 
 response_fwup = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     previous_response_id=response.id,
     input="Now make it look realistic",
     tools=[{"type": "image_generation"}],
@@ -681,7 +681,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	first, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Generate an image of gray tabby cat hugging an otter with an orange scarf"),
 		},
@@ -693,7 +693,7 @@ func main() {
 	saveFirstGeneratedImage(first, "cat_and_otter.png")
 
 	followUp, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:              "gpt-5.6",
+		Model:              "gpt-6-astra",
 		PreviousResponseID: openai.String(first.ID),
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Now make it look realistic"),
@@ -738,7 +738,7 @@ var first =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .input(
                     "Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
                 .addTool(Tool.ImageGeneration.builder().build())
@@ -761,7 +761,7 @@ var second =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .input("Now make it look realistic.")
                 .previousResponseId(first.id())
                 .addTool(Tool.ImageGeneration.builder().build())
@@ -788,7 +788,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem(
@@ -804,7 +804,7 @@ await File.WriteAllBytesAsync("cat_and_otter.png", initialImage.ImageResultBytes
 
 CreateResponseOptions followUp = new()
 {
-    Model = "gpt-5.6",
+    Model = "gpt-6-astra",
     PreviousResponseId = first.Id,
 };
 followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
@@ -826,7 +826,7 @@ require "openai"
 
 client = OpenAI::Client.new
 first = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
   tools: [{type: :image_generation}]
 )
@@ -842,7 +842,7 @@ encoded_image = first_image.result or raise "No image returned"
 File.binwrite("cat_and_otter.png", Base64.strict_decode64(encoded_image))
 
 follow_up = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Now make it look realistic.",
   previous_response_id: first.id,
   tools: [{type: :image_generation}]
@@ -873,7 +873,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
   tools: [{ type: "image_generation" }],
@@ -894,7 +894,7 @@ if (imageData.length > 0) {
 // Follow up
 
 const response_fwup = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -927,7 +927,7 @@ import openai
 import base64
 
 response = openai.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -948,7 +948,7 @@ if image_data:
 # Follow up
 
 response_fwup = openai.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -990,7 +990,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	first, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Generate an image of gray tabby cat hugging an otter with an orange scarf"),
 		},
@@ -1008,7 +1008,7 @@ func main() {
 	))
 
 	followUp, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: input},
 		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{}}},
 	})
@@ -1068,7 +1068,7 @@ var first =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .input(
                     "Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
                 .addTool(Tool.ImageGeneration.builder().build())
@@ -1091,7 +1091,7 @@ var second =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .inputOfResponse(
                     List.of(
                         ResponseInputItem.ofMessage(
@@ -1126,7 +1126,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem(
@@ -1140,7 +1140,7 @@ ImageGenerationCallResponseItem initialImage = first
     .First();
 await File.WriteAllBytesAsync("cat_and_otter.png", initialImage.ImageResultBytes.ToArray());
 
-CreateResponseOptions followUp = new() { Model = "gpt-5.6" };
+CreateResponseOptions followUp = new() { Model = "gpt-6-astra" };
 followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
 followUp.InputItems.Add(ResponseItem.CreateUserMessageItem("Now make it look realistic."));
 followUp.InputItems.Add(ResponseItem.CreateReferenceItem(initialImage.Id));
@@ -1161,7 +1161,7 @@ require "openai"
 
 client = OpenAI::Client.new
 first = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
   tools: [{type: :image_generation}]
 )
@@ -1177,7 +1177,7 @@ encoded_image = first_image.result or raise "No image returned"
 File.binwrite("cat_and_otter.png", Base64.strict_decode64(encoded_image))
 
 follow_up = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: :user,
@@ -1267,7 +1267,7 @@ function saveBase64Image(filename, imageBase64) {
 }
 
 const stream = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
   stream: true,
@@ -1304,7 +1304,7 @@ def save_base64_image(filename, image_base64):
 
 
 stream = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
     stream=True,
     tools=[{"type": "image_generation", "partial_images": 2}],
@@ -1341,7 +1341,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	stream := client.Responses.NewStreaming(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape"),
 		},
@@ -1391,7 +1391,7 @@ import java.util.Base64;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Generate an image of a river made of white owl feathers.")
         .addTool(Tool.ImageGeneration.builder().partialImages(2).build())
         .build();
@@ -1431,7 +1431,7 @@ require "openai"
 
 client = OpenAI::Client.new
 stream = client.responses.stream(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Generate an image of a river made of white owl feathers.",
   tools: [{type: :image_generation, partial_images: 2}]
 )
@@ -1813,7 +1813,7 @@ const fileId1 = await createFile("fixtures/bath-bomb.png");
 const fileId2 = await createFile("fixtures/incense-kit.png");
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -1885,7 +1885,7 @@ file_id1 = create_file("bath-bomb.png")
 file_id2 = create_file("incense-kit.png")
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -1945,7 +1945,7 @@ func main() {
 	incenseKitID := uploadImage(client, "incense-kit.png")
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
 			responses.ResponseInputItemParamOfMessage(
 				responses.ResponseInputMessageContentListParam{
@@ -2072,7 +2072,7 @@ var response =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .inputOfResponse(List.of(input))
                 .addTool(Tool.ImageGeneration.builder().build())
                 .build());
@@ -2107,7 +2107,7 @@ prompt = <<~PROMPT
   containing all the items in the reference pictures.
 PROMPT
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [{
     role: :user,
     content: [
@@ -2414,7 +2414,7 @@ const fileId = await createFile("fixtures/sunlit_lounge.png");
 const maskId = await createFile("fixtures/mask.png");
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -2469,7 +2469,7 @@ fileId = create_file("sunlit_lounge.png")
 maskId = create_file("mask.png")
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -2525,7 +2525,7 @@ func main() {
 	imageID := uploadImage(client, "sunlit_lounge.png")
 	maskID := uploadImage(client, "mask.png")
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
 			responses.ResponseInputItemParamOfMessage(
 				responses.ResponseInputMessageContentListParam{
@@ -2615,7 +2615,7 @@ var response =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .inputOfResponse(
                     List.of(
                         ResponseInputItem.ofMessage(
@@ -2655,7 +2655,7 @@ client = OpenAI::Client.new
 image = client.files.create(file: Pathname("sunlit_lounge.png"), purpose: :vision)
 mask = client.files.create(file: Pathname("mask.png"), purpose: :vision)
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [{
     role: :user,
     content: [

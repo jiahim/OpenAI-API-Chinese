@@ -15,7 +15,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a one-sentence bedtime story about a unicorn.",
 });
 
@@ -28,7 +28,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Write a one-sentence bedtime story about a unicorn.",
 )
 
@@ -50,7 +50,7 @@ func main() {
 	client := openai.NewClient()
 
 	resp, err := client.Responses.New(context.TODO(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Say this is a test")},
 	})
 	if err != nil {
@@ -72,7 +72,7 @@ public class Main {
     OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 
     ResponseCreateParams params =
-        ResponseCreateParams.builder().input("Say this is a test").model("gpt-5.6").build();
+        ResponseCreateParams.builder().input("Say this is a test").model("gpt-6-astra").build();
 
     Response response = client.responses().create(params);
     response.output().stream()
@@ -92,7 +92,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     "Say 'this is a test.'"
 );
 
@@ -105,7 +105,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a one-sentence bedtime story about a unicorn."
 )
 
@@ -114,7 +114,7 @@ puts(response.output_text)
 
 ```bash
 openai responses create \
-  --model "gpt-5.6" \
+  --model "gpt-6-astra" \
   --input "Write a one-sentence bedtime story about a unicorn." \
   --raw-output \
   --transform 'output.#(type=="message").content.0.text'
@@ -125,7 +125,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "input": "Write a one-sentence bedtime story about a unicorn."
     }'
 ```
@@ -168,7 +168,7 @@ A key choice to make when generating content through the API is which model you 
 - **GPT models** are fast, cost-efficient, and highly intelligent, but benefit from more explicit instructions around how to accomplish tasks.
 - **Large and small (mini or nano) models** offer trade-offs for speed, cost, and intelligence. Large models are more effective at understanding prompts and solving problems across domains, while small models are generally faster and cheaper to use.
 
-When in doubt, [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol) offers a strong default for general-purpose text generation and prompt iteration.
+When in doubt, [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) offers a strong default for general-purpose text generation and prompt iteration.
 
 ## Prompt engineering
 
@@ -198,7 +198,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   reasoning: { effort: "low" },
   instructions: "Talk like a pirate.",
   input: "Are semicolons optional in JavaScript?",
@@ -213,7 +213,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     reasoning={"effort": "low"},
     instructions="Talk like a pirate.",
     input="Are semicolons optional in JavaScript?",
@@ -237,7 +237,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:        "gpt-5.6",
+		Model:        "gpt-6-astra",
 		Instructions: openai.String("Talk like a pirate."),
 		Reasoning: responses.ReasoningParam{
 			Effort: responses.ReasoningEffortLow,
@@ -267,7 +267,7 @@ String semicolonsPrompt = "Are semicolons optional in JavaScript?";
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input(semicolonsPrompt)
         .instructions(semicolonsDevMsg)
         .reasoning(Reasoning.builder().effort(ReasoningEffort.LOW).build())
@@ -289,7 +289,7 @@ ResponsesClient client = new(key);
 
 CreateResponseOptions options = new()
 {
-    Model = "gpt-5.6",
+    Model = "gpt-6-astra",
     Instructions = "Talk like a pirate.",
     ReasoningOptions = new ResponseReasoningOptions
     {
@@ -310,7 +310,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   instructions: "Talk like a pirate.",
   reasoning: {effort: :low},
   input: "Are semicolons optional in JavaScript?"
@@ -324,7 +324,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "reasoning": {"effort": "low"},
         "instructions": "Talk like a pirate.",
         "input": "Are semicolons optional in JavaScript?"
@@ -341,7 +341,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   reasoning: { effort: "low" },
   input: [
     {
@@ -364,7 +364,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     reasoning={"effort": "low"},
     input=[
         {"role": "developer", "content": "Talk like a pirate."},
@@ -390,7 +390,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Reasoning: responses.ReasoningParam{
 			Effort: responses.ReasoningEffortLow,
 		},
@@ -431,7 +431,7 @@ String semicolonsPrompt = "Are semicolons optional in JavaScript?";
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input(
             ResponseCreateParams.Input.ofResponse(
                 List.of(
@@ -464,7 +464,7 @@ ResponsesClient client = new(key);
 
 CreateResponseOptions options = new()
 {
-    Model = "gpt-5.6",
+    Model = "gpt-6-astra",
     ReasoningOptions = new ResponseReasoningOptions
     {
         ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
@@ -487,7 +487,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   reasoning: {effort: :low},
   input: [
     {role: :developer, content: "Talk like a pirate."},
@@ -503,7 +503,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "reasoning": {"effort": "low"},
         "input": [
             {
@@ -623,7 +623,7 @@ const client = new OpenAI();
 const instructions = await fs.readFile("fixtures/prompt.txt", "utf-8");
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   instructions,
   input: "How would I declare a variable for a last name?",
 });
@@ -640,7 +640,7 @@ with open("prompt.txt", "r", encoding="utf-8") as f:
     instructions = f.read()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     instructions=instructions,
     input="How would I declare a variable for a last name?",
 )
@@ -669,7 +669,7 @@ func main() {
 	}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:        "gpt-5.6",
+		Model:        "gpt-6-astra",
 		Instructions: openai.String(string(instructions)),
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("How would I declare a variable for a last name?"),
@@ -690,7 +690,7 @@ import com.openai.models.responses.ResponseCreateParams;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .instructions(
             "You are a coding assistant. Answer with concise JavaScript examples and use semicolons.")
         .input("How would I declare a variable for a last name?")
@@ -713,7 +713,7 @@ ResponsesClient client = new(key);
 string instructions = await File.ReadAllTextAsync("prompt.txt");
 CreateResponseOptions options = new()
 {
-    Model = "gpt-5.6",
+    Model = "gpt-6-astra",
     Instructions = instructions,
 };
 options.InputItems.Add(
@@ -730,7 +730,7 @@ require "openai"
 client = OpenAI::Client.new
 instructions = File.read(File.join(__dir__, "prompt.txt"))
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   instructions: instructions,
   input: "How would I declare a variable for a last name?"
 )
@@ -743,7 +743,7 @@ curl https://api.openai.com/v1/responses \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "instructions": "'"$(< prompt.txt)"'",
     "input": "How would I declare a variable for a last name?"
   }'
@@ -816,18 +816,24 @@ Models can only handle so much data within the context they consider during a ge
 
 Models have different context window sizes from the low 100k range up to one million tokens for newer GPT-4.1 models. [Refer to the model docs](https://developers.openai.com/api/docs/models) for specific context window sizes per model.
 
-## Prompting current GPT-5 series models
 
-GPT models like [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol) benefit from precise instructions that explicitly provide the logic and data required to complete the task in the prompt. To get the most out of the latest GPT-5 series model, start with the current prompting guide.
+
+
+## Prompting current models
+
+GPT models like [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) benefit from precise instructions that explicitly provide the logic and data required to complete the task in the prompt. To get the most out of the latest model, start with the current prompting guide.
 
 [
 
-      Get the most out of prompting the latest GPT-5 series model with current
-    guidance, practical examples, and migration notes.](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices)
+      Get the most out of prompting the latest model with current guidance,
+    practical examples, and migration notes.](https://developers.openai.com/api/docs/guides/latest-model)
 
-### Prompting best practices for the latest GPT-5 series model
 
-For the full current treatment, use the [latest GPT-5 prompting best practices](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices). The practical reminders below still apply.
+
+
+### Prompting best practices for the latest model
+
+For the full current treatment, use the [latest model prompting best practices](https://developers.openai.com/api/docs/guides/latest-model). The practical reminders below still apply.
 
 
 
@@ -837,7 +843,7 @@ For the full current treatment, use the [latest GPT-5 prompting best practices](
 
 #### Coding
 
-Prompting `gpt-5.6` for coding tasks is most effective when following a few best practices: define the agent's role, enforce structured tool use with examples, require thorough testing for correctness, and set Markdown standards for clean output.
+Prompting `gpt-6-astra` for coding tasks is most effective when following a few best practices: define the agent's role, enforce structured tool use with examples, require thorough testing for correctness, and set Markdown standards for clean output.
 
 **Explicit role and workflow guidance**
 Frame the model as a software engineering agent with well-defined responsibilities. Provide clear instructions for using tools like `functions.run` for code tasks, and specify when not to use certain modes—for example, avoid interactive execution unless necessary.
@@ -851,7 +857,7 @@ Include concrete examples of how to invoke commands with the provided functions,
 **Markdown standards**
 Guide the model to generate clean, semantically correct markdown using inline code, code fences, lists, and tables where appropriate—and to format file paths, functions, and classes with backticks.
 
-For detailed guidance and prompt samples specific to coding, see the [latest GPT-5 prompting best practices](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices).
+For detailed guidance and prompt samples specific to coding, see the [latest model prompting best practices](https://developers.openai.com/api/docs/guides/latest-model).
 
 
 
@@ -863,7 +869,7 @@ For detailed guidance and prompt samples specific to coding, see the [latest GPT
 
 
 
-[GPT-5.6](https://developers.openai.com/api/docs/models/gpt-5.6-sol)
+[GPT-6 Astra](https://developers.openai.com/api/docs/models/gpt-6-astra)
 performs well at building front ends from scratch as well as contributing to
 large, established codebases. To get the best results, we recommend using the
 following libraries:
@@ -896,7 +902,7 @@ For front-end engineering work in larger codebases, we've found that adding thes
 - **Pages:** Provide templates for common layouts.
 - **Agent Instructions:** Ask the model to confirm design assumptions, scaffold projects, enforce standards, integrate APIs, test states, and document code.
 
-For detailed guidance and prompt samples specific to frontend development, see the [latest GPT-5 prompting best practices](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices).
+For detailed guidance and prompt samples specific to frontend development, see the [latest model prompting best practices](https://developers.openai.com/api/docs/guides/latest-model).
 
 
 
@@ -908,7 +914,7 @@ For detailed guidance and prompt samples specific to frontend development, see t
 
 
 
-For agentic and long-running rollouts with `gpt-5.6`, focus your prompts on three core practices: plan tasks thoroughly to ensure complete resolution, provide clear preambles for major tool usage decisions, and use a TODO tool to track workflow and progress in an organized manner.
+For agentic and long-running rollouts with `gpt-6-astra`, focus your prompts on three core practices: plan tasks thoroughly to ensure complete resolution, provide clear preambles for major tool usage decisions, and use a TODO tool to track workflow and progress in an organized manner.
 
 **Planning and persistence**
 Instruct the model to resolve the full query before yielding control, decomposing it into sub-tasks and reflecting after each tool call to confirm completeness.
@@ -942,7 +948,7 @@ Before you call a tool explain why you are calling it
 
 Use a TODO list tool or rubric to enforce structured planning and avoid missed steps.
 
-For detailed guidance and prompt samples specific to building agents, see the [latest GPT-5 prompting best practices](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices).
+For detailed guidance and prompt samples specific to building agents, see the [latest model prompting best practices](https://developers.openai.com/api/docs/guides/latest-model).
 
 
 
