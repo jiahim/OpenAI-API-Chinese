@@ -1,19 +1,19 @@
-# Text generation
+# 文本生成
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt). 可通过在页面 URL 末尾追加 `.md` 获取文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。通过在页面 URL 末尾附加 `.md` 即可获取文档页面的 Markdown 版本。
 
-通过 OpenAI API，你可以使用 [大语言模型](https://developers.openai.com/api/docs/models) 根据提示词生成文本，就像使用 [ChatGPT](https://chatgpt.com)。一样。模型可以生成几乎任何类型的文本回复——例如代码、数学公式、结构化的 JSON 数据，或类人风格的散文。
+使用 OpenAI API，你可以使用一个 [大语言模型](https://developers.openai.com/api/docs/models) 根据提示生成文本，就像使用 [ChatGPT](https://chatgpt.com)。一样。模型几乎可以生成任何类型的文本响应——例如代码、数学公式、结构化的 JSON 数据或类人散文。
 
-请使用 [Responses API](https://developers.openai.com/api/reference/resources/responses) 来发起此类直接模型请求，例如本节的文本生成调用。
+使用 [Responses API](https://developers.openai.com/api/reference/resources/responses) 来发起直接的模型请求，例如这个文本生成调用。
 
-使用简单提示词生成文本
+根据简单提示生成文本
 
 ```javascript
 import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a one-sentence bedtime story about a unicorn.",
 });
 
@@ -26,7 +26,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Write a one-sentence bedtime story about a unicorn.",
 )
 
@@ -48,7 +48,7 @@ func main() {
 	client := openai.NewClient()
 
 	resp, err := client.Responses.New(context.TODO(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Say this is a test")},
 	})
 	if err != nil {
@@ -70,7 +70,7 @@ public class Main {
     OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 
     ResponseCreateParams params =
-        ResponseCreateParams.builder().input("Say this is a test").model("gpt-5.6").build();
+        ResponseCreateParams.builder().input("Say this is a test").model("gpt-6-astra").build();
 
     Response response = client.responses().create(params);
     response.output().stream()
@@ -90,7 +90,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     "Say 'this is a test.'"
 );
 
@@ -103,7 +103,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a one-sentence bedtime story about a unicorn."
 )
 
@@ -112,7 +112,7 @@ puts(response.output_text)
 
 ```bash
 openai responses create \
-  --model "gpt-5.6" \
+  --model "gpt-6-astra" \
   --input "Write a one-sentence bedtime story about a unicorn." \
   --raw-output \
   --transform 'output.#(type=="message").content.0.text'
@@ -123,13 +123,13 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "input": "Write a one-sentence bedtime story about a unicorn."
     }'
 ```
 
 
-模型生成的内容数组位于响应的 `output` 属性中。在本例中，我们只有一个输出，内容如下：
+模型生成的内容数组位于响应的 `output` 属性中。在这个简单的示例中，我们只有一个输出，如下所示：
 
 ```json
 [
@@ -148,36 +148,36 @@ curl "https://api.openai.com/v1/responses" \
 ]
 ```
 
-**该 `output` 数组中通常不止一个条目！** 它可能包含工具调用、与 [推理模型](https://developers.openai.com/api/docs/guides/reasoning)，生成的推理 token 相关的数据，以及其他条目。不能假设模型的文本输出一定出现在 `output[0].content[0].text`.
+**该 `output` 数组中通常包含多个条目！** 它可能包含工具调用、由 [推理模型](https://developers.openai.com/api/docs/guides/reasoning)，生成的推理 token 相关数据以及其他条目。不能假定模型的文本输出一定出现在 `output[0].content[0].text`.
 
-我们提供的部分 [官方 SDK](https://developers.openai.com/api/docs/libraries) 中包含一个 `output_text` 便捷属性，用于聚合模型返回的所有文本输出为单个字符串，便于快速访问模型的文本输出。
+我们的一些 [官方 SDK](https://developers.openai.com/api/docs/libraries) 中包含一个 `output_text` 属性来方便访问模型响应，该属性会将模型的所有文本输出聚合为单个字符串。这可以作为访问模型文本输出的便捷方式。
 
-除了纯文本外，你还可以让模型以 JSON 格式返回结构化数据——该功能称为 [**结构化输出**](https://developers.openai.com/api/docs/guides/structured-outputs).
+除了纯文本外，你还可以让模型以 JSON 格式返回结构化数据——这一功能称为 [**结构化输出**](https://developers.openai.com/api/docs/guides/structured-outputs).
 
-## 提示工程
+## Prompt engineering
 
-**提示工程** 是为模型编写有效指令的过程，使其能够持续生成符合你需求的内容。
+**提示工程** 是为模型编写有效指令的过程，使其能够稳定地生成符合你要求的内容。
 
-由于模型生成的内容具有不确定性，通过提示获得你期望的输出既是一门艺术，也是一门科学。不过，你可以应用一些技巧和最佳实践来持续获得良好结果。
+由于模型生成的内容具有不确定性，通过提示获得期望输出是一门艺术与科学的结合。不过，你可以应用一些技巧和最佳实践来稳定地获得良好结果。
 
-有些提示工程技术适用于所有模型，例如使用消息角色。但不同的模型可能需要不同的提示方式才能产生最佳结果。即使是同一系列模型中的不同快照版本，也可能会产生不同的结果。因此，在构建更复杂的应用时，我们强烈建议你：
+一些提示工程技术对所有模型都适用，比如使用消息角色。但不同的模型可能需要不同的提示方式才能产生最佳效果。即使是同一系列中不同快照的模型，结果也可能不同。因此，当你构建更复杂的应用时，我们强烈建议你：
 
-- 将你的生产应用固定到特定的 [模型快照](https://developers.openai.com/api/docs/models) （例如 `gpt-5.5-2026-04-23` ，以此确保行为一致
-- 构建测试和评估套件来衡量提示行为，以便在迭代过程中或更换和升级模型版本时监控性能
+- 将你的生产应用固定到特定 [模型快照](https://developers.openai.com/api/docs/models) （例如 `gpt-5.5-2026-04-23` ）以确保行为一致
+- 构建用于衡量 prompt 行为的测试与评估套件，便于你在迭代时或更换和升级模型版本时监控性能
 
-现在，我们来看一下可用于你构建提示词的工具和技术。
+现在，我们来了解一些可用于构建提示词的工具和技巧。
 
-## 选择模型和 API
+## 选择模型和API
 
-OpenAI 拥有许多不同的 [模型](https://developers.openai.com/api/docs/models) 以及多个可供选择的 API。 [推理模型](https://developers.openai.com/api/docs/guides/reasoning)（如 [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol)）的行为与聊天模型不同，对不同的提示也有不同的响应。需要注意的一点是，推理模型在与 Responses API 一起使用时表现更佳，且展现出更高的智能水平。
+OpenAI 有许多不同的 [模型](https://developers.openai.com/api/docs/models) 以及多个 API 可供选择。 [推理模型](https://developers.openai.com/api/docs/guides/reasoning)，例如 [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra)，其行为与聊天模型不同，并且对不同的提示词响应效果更好。一个重要的注意事项是，推理模型在与 Responses API 一起使用时表现更佳，并且会展现出更高的智能水平。
 
-如果你正在构建任何文本生成应用，我们建议使用 Responses API 而非旧的 Chat Completions API。而如果你使用的是推理模型， [迁移到 Responses](https://developers.openai.com/api/docs/guides/migrate-to-responses).
+如果你正在构建任何文本生成应用，我们建议使用 Responses API 而非更旧的 Chat Completions API。并且如果你使用的是推理模型，那么 [迁移到 Responses](https://developers.openai.com/api/docs/guides/migrate-to-responses).
 
 ## 消息角色与指令遵循
 
-你可以通过 [不同权限级别](https://model-spec.openai.com/2025-02-12.html#chain_of_command) 使用 `instructions` API 参数以及 **消息角色**.
+你可以通过以下方式向模型提供不同权限级别的指令 [不同权限级别](https://model-spec.openai.com/2025-02-12.html#chain_of_command) 使用 `instructions` API 参数以及 **消息角色**.
 
-该 `instructions` 参数为模型提供关于其在生成响应时应该如何表现的高级指令，包括语气、目标以及正确响应的示例。以这种方式提供的任何指令将优先于 `input` 参数中的提示。
+该 `instructions` 参数为模型提供关于其在生成响应时应如何行为的高级指令，包括语气、目标和正确响应的示例。以这种方式提供的任何指令将优先于 `input` 参数中的提示。
 
 使用指令生成文本
 
@@ -186,7 +186,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   reasoning: { effort: "low" },
   instructions: "Talk like a pirate.",
   input: "Are semicolons optional in JavaScript?",
@@ -201,7 +201,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     reasoning={"effort": "low"},
     instructions="Talk like a pirate.",
     input="Are semicolons optional in JavaScript?",
@@ -225,7 +225,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:        "gpt-5.6",
+		Model:        "gpt-6-astra",
 		Instructions: openai.String("Talk like a pirate."),
 		Reasoning: responses.ReasoningParam{
 			Effort: responses.ReasoningEffortLow,
@@ -255,7 +255,7 @@ String semicolonsPrompt = "Are semicolons optional in JavaScript?";
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input(semicolonsPrompt)
         .instructions(semicolonsDevMsg)
         .reasoning(Reasoning.builder().effort(ReasoningEffort.LOW).build())
@@ -277,7 +277,7 @@ ResponsesClient client = new(key);
 
 CreateResponseOptions options = new()
 {
-    Model = "gpt-5.6",
+    Model = "gpt-6-astra",
     Instructions = "Talk like a pirate.",
     ReasoningOptions = new ResponseReasoningOptions
     {
@@ -298,7 +298,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   instructions: "Talk like a pirate.",
   reasoning: {effort: :low},
   input: "Are semicolons optional in JavaScript?"
@@ -312,7 +312,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "reasoning": {"effort": "low"},
         "instructions": "Talk like a pirate.",
         "input": "Are semicolons optional in JavaScript?"
@@ -320,7 +320,7 @@ curl "https://api.openai.com/v1/responses" \
 ```
 
 
-上面的示例大致相当于在 `input` 数组中使用以下输入消息：
+上面的示例大致等同于在 `input` 数组中使用以下输入消息：
 
 使用不同角色的消息生成文本
 
@@ -329,7 +329,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   reasoning: { effort: "low" },
   input: [
     {
@@ -352,7 +352,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     reasoning={"effort": "low"},
     input=[
         {"role": "developer", "content": "Talk like a pirate."},
@@ -378,7 +378,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Reasoning: responses.ReasoningParam{
 			Effort: responses.ReasoningEffortLow,
 		},
@@ -419,7 +419,7 @@ String semicolonsPrompt = "Are semicolons optional in JavaScript?";
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input(
             ResponseCreateParams.Input.ofResponse(
                 List.of(
@@ -452,7 +452,7 @@ ResponsesClient client = new(key);
 
 CreateResponseOptions options = new()
 {
-    Model = "gpt-5.6",
+    Model = "gpt-6-astra",
     ReasoningOptions = new ResponseReasoningOptions
     {
         ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
@@ -475,7 +475,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   reasoning: {effort: :low},
   input: [
     {role: :developer, content: "Talk like a pirate."},
@@ -491,7 +491,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "reasoning": {"effort": "low"},
         "input": [
             {
@@ -507,7 +507,7 @@ curl "https://api.openai.com/v1/responses" \
 ```
 
 
-请注意， `instructions` 参数仅适用于当前的响应生成请求。如果你正在 [管理对话状态](https://developers.openai.com/api/docs/guides/conversation-state) 使用 `previous_response_id` 参数，之前轮次中使用的 `instructions` 将不会出现在上下文中。
+请注意， `instructions` 参数仅适用于当前的响应生成请求。如果你正在 [管理对话状态](https://developers.openai.com/api/docs/guides/conversation-state) 使用 `previous_response_id` 参数，则 `instructions` 在先前轮次中使用的不会出现在上下文中。
 
 该 [OpenAI 模型规范](https://model-spec.openai.com/2025-02-12.html#chain_of_command) 描述了我们的模型如何为不同角色的消息赋予不同的优先级。
 
@@ -536,38 +536,38 @@ curl "https://api.openai.com/v1/responses" \
   </tbody>
 </table>
 
-多轮对话可以由多条这些类型的消息以及你与模型提供的其他内容类型组成。详细了解 [管理对话状态](https://developers.openai.com/api/docs/guides/conversation-state).
+多轮对话可能由多条这些类型的消息以及你与模型提供的其他内容类型组成。详细了解 [在此管理对话状态](https://developers.openai.com/api/docs/guides/conversation-state).
 
-你可以把 `developer` 和 `user` 消息看作是编程语言中的函数及其参数。
+你可以把 `developer` 和 `user` 消息想象成编程语言中的函数及其参数。
 
-- `developer` 消息提供系统的规则和业务逻辑，例如函数定义。
-- `user` 消息提供输入和配置， `developer` message 说明会像函数参数一样被应用。
+- `developer` messages 提供系统的规则和业务逻辑，类似于函数定义。
+- `user` messages 提供应用 message 指令时所使用的输入和配置， `developer` 类似于函数的参数。
 
-## 在代码中对提示进行版本管理
+## 在代码中对提示词进行版本管理
 
-将生产环境的提示词存储在应用代码中，而不是创建可复用的提示词对象。通过代码管理提示词，便于使用类型化输入、代码审查、测试以及常规的部署流程来修改模型行为。
+将生产环境中的提示存储在应用代码中，而不是创建可复用的提示对象。由代码管理的提示可让你使用类型化输入、代码审查、测试以及常规的部署流程来修改模型行为。
 
-OpenAI 正在弃用 API 中的可复用提示词对象。提示词创建功能将
-  自 2026-06-03 起逐步弱化，并于 `v1/prompts` 计划于
-  2026-11-30 关停。详见 [deprecations
-  page](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 以查看当前的
-  时间线。
+OpenAI 正在 API 中弃用可复用的提示对象。提示创建将
+  自 2026-06-03 起被弱化，并 `v1/prompts` 计划于 2026-11-30 关停。详见
+  2026-11-30 下线。请参阅 [弃用
+  页面](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 以了解当前的
+  时间表。
 
-如需进行新的文本生成工作：
+对于新的文本生成工作：
 
-- 将提示构建器保存在靠近其所支持功能的小模块中。
-- 对动态值（例如客户数据、文件或任务选项）使用带类型的函数参数或 schema。
+- 将提示构建器放在其所支持功能附近的小型模块中。
+- 对动态值（如客户数据、文件或任务选项）使用类型化函数参数或 schema。
 - 将生成的 `instructions` 和 `input` 直接传递给 [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create).
-- 在修改生产环境的提示之前，添加有代表性的 fixtures、测试和评估检查。
+- 在修改生产环境提示之前，添加有代表性的测试夹具、测试和评估检查。
 - 通过你的部署系统推出提示变更，在需要分阶段发布时使用功能开关或配置。
 
-如果你的集成已经使用提示 ID 或版本调用已保存的提示，请参考 [prompt 对象迁移指南](https://developers.openai.com/api/docs/guides/prompting/migrate-from-prompt-object) 将该提示迁移到代码中。
+如果你的集成已经使用 prompt ID 或版本调用已保存的 prompt，请参阅 [prompt 对象迁移指南](https://developers.openai.com/api/docs/guides/prompting/migrate-from-prompt-object) 将该 prompt 迁移到代码中。
 
-## 下一步
+## 后续步骤
 
-现在你已经了解了文本输入和输出的基础知识，接下来可以查看以下资源。
+现在你已经了解了文本输入和输出的基础知识，接下来可以查看以下某个资源。
 
-[在 Playground 中构建提示
+[在 Playground 中构建提示词
 
 
 

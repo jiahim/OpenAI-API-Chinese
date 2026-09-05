@@ -1,12 +1,12 @@
 # SDK 和 CLI
 
-> 完整的文档索引请参见 [llms.txt](/llms.txt). 文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。你也可以在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
 
-本页面介绍使用 [OpenAI API](https://developers.openai.com/api/reference/overview)：进行开发的主要方式：用于应用代码的官方 SDK、用于 shell 原生工作流的 OpenAI CLI、用于编排的 Agents SDK，或你自己首选的 HTTP 客户端。
+本页面介绍使用 [OpenAI API](https://developers.openai.com/api/reference/overview)：进行开发的主要方式：用于应用代码的官方 SDK、用于 Shell 原生工作流的 OpenAI CLI、用于编排的 Agents SDK，或你自己偏好的 HTTP 客户端。
 
 ## 创建并导出 API 密钥
 
-在开始之前， [在控制台中创建一个 API 密钥](https://platform.openai.com/api-keys)，你将使用该密钥安全地 [访问 API](https://developers.openai.com/api/reference/overview)。请将该密钥保存在安全的位置，例如计算机上的一个 [`.zshrc` 文件](https://www.freecodecamp.org/news/how-do-zsh-configuration-files-work/) 或其他文本文件。生成 API 密钥后，将其导出为终端中的 [环境变量](https://en.wikipedia.org/wiki/Environment_variable) 。
+开始之前， [在仪表板中创建一个 API 密钥](https://platform.openai.com/api-keys)，你将用它来安全地 [访问 API](https://developers.openai.com/api/reference/overview)。将该密钥保存在安全的位置，例如你计算机上的 [`.zshrc` 文件](https://www.freecodecamp.org/news/how-do-zsh-configuration-files-work/) 或其他文本文件。生成 API 密钥后，将其导出为终端中的 [环境变量](https://en.wikipedia.org/wiki/Environment_variable) 。
 
 
 
@@ -52,16 +52,16 @@ npm install openai
 ```
 
 
-安装好 OpenAI SDK 后，新建一个名为 `example.mjs` 的文件，并将示例代码复制到该文件中：
+安装好 OpenAI SDK 后，新建一个文件 `example.mjs` 并将示例代码复制到其中：
 
-测试一个基础的 API 请求
+测试基础的 API 请求
 
 ```javascript
 import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a one-sentence bedtime story about a unicorn.",
 });
 
@@ -69,7 +69,7 @@ console.log(response.output_text);
 ```
 
 
-使用 `node example.mjs` （或 Deno、Bun 中对应的命令）执行该代码。稍等片刻，你应该就能看到 API 请求的输出结果。
+使用 `node example.mjs` （或 Deno、Bun 中对应的命令）执行代码。稍等片刻，你应能看到 API 请求的输出。
 
 [在 GitHub 上了解更多信息
 
@@ -96,9 +96,9 @@ pip install openai
 ```
 
 
-安装好 OpenAI SDK 后，新建一个名为 `example.py` 的文件，并将示例代码复制到该文件中：
+安装好 OpenAI SDK 后，新建一个文件 `example.py` 并将示例代码复制到其中：
 
-测试一个基础的 API 请求
+测试基础的 API 请求
 
 ```python
 from openai import OpenAI
@@ -106,7 +106,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Write a one-sentence bedtime story about a unicorn.",
 )
 
@@ -114,7 +114,7 @@ print(response.output_text)
 ```
 
 
-使用 `python example.py`。稍等片刻，你应该就能看到 API 请求的输出结果。
+使用 `python example.py`。稍等片刻，你应能看到 API 请求的输出。
 
 [在 GitHub 上了解更多信息
 
@@ -132,15 +132,15 @@ print(response.output_text)
 
     
 
-该公司 与 Microsoft 合作提供了一个官方支持的 C# OpenAIAPI 客户端。你可以使用 .NET CLI 通过以下方式安装它： [NuGet](https://www.nuget.org/).
+与 Microsoft 合作，OpenAI 提供一个官方支持的 C# API 客户端。你可以使用 .NET CLI 从 [NuGet](https://www.nuget.org/).
 
 ```
 dotnet add package OpenAI
 ```
 
-向 API 发出的简单请求如下所示，针对的是 [Responses API](https://developers.openai.com/api/reference/resources/responses) 看起来像这样：
+一个针对 API 的简单请求，发送到 [Responses API](https://developers.openai.com/api/reference/resources/responses) 如下所示：
 
-测试一个基础的 API 请求
+测试基础的 API 请求
 
 ```csharp
 using OpenAI.Responses;
@@ -150,7 +150,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     "Say 'this is a test.'"
 );
 
@@ -167,20 +167,20 @@ Java
 
     
 
-OpenAI 为 Java 编程语言提供了一个 API 辅助库，目前处于 beta 阶段。你可以使用以下配置添加 Maven 依赖：
+OpenAI 为 Java 编程语言提供一个 API 帮助库，目前处于 beta 阶段。你可以使用以下配置加入 Maven 依赖：
 
 ```xml
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.56.0</version>
+  <version>4.58.0</version>
 </dependency>
 ```
 
 
-向 API 发出的简单请求如下： [Responses API](https://developers.openai.com/api/reference/resources/responses) 看起来像这样：
+一个针对 API 的简单请求，发送到 [Responses API](https://developers.openai.com/api/reference/resources/responses) 如下所示：
 
-测试一个基础的 API 请求
+测试基础的 API 请求
 
 ```java
 import com.openai.client.OpenAIClient;
@@ -193,7 +193,7 @@ public class Main {
     OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 
     ResponseCreateParams params =
-        ResponseCreateParams.builder().input("Say this is a test").model("gpt-5.6").build();
+        ResponseCreateParams.builder().input("Say this is a test").model("gpt-6-astra").build();
 
     Response response = client.responses().create(params);
     response.output().stream()
@@ -206,7 +206,7 @@ public class Main {
 ```
 
 
-要了解如何在 Java 中使用 OpenAIAPI，请查看下方链接的 GitHub 仓库！
+要了解更多关于在 Java 中使用 OpenAI API 的信息，请查看下方链接的 GitHub 仓库！
 
 [在 GitHub 上了解更多信息
 
@@ -224,7 +224,7 @@ Go
 
     
 
-OpenAI 为 Go 编程语言提供了一个 API 辅助库，目前处于 beta 阶段。你可以使用下面的代码导入该库：
+OpenAI 为 Go 编程语言提供一个 API 帮助库，目前处于 beta 阶段。你可以使用下面的代码导入该库：
 
 ```go
 import (
@@ -233,9 +233,9 @@ import (
 ```
 
 
-向 API 发出的第一个请求示例如下，针对的是 [Responses API](https://developers.openai.com/api/reference/resources/responses) 看起来像这样：
+向 API 发起的第一个请求，发送到 [Responses API](https://developers.openai.com/api/reference/resources/responses) 如下所示：
 
-测试一个基础的 API 请求
+测试基础的 API 请求
 
 ```go
 package main
@@ -252,7 +252,7 @@ func main() {
 	client := openai.NewClient()
 
 	resp, err := client.Responses.New(context.TODO(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Say this is a test")},
 	})
 	if err != nil {
@@ -264,7 +264,7 @@ func main() {
 ```
 
 
-要了解如何在 Go 中使用 OpenAIAPI，请查看下方链接的 GitHub 仓库！
+要了解更多关于在 Go 中使用 OpenAI API 的信息，请查看下方链接的 GitHub 仓库！
 
 [在 GitHub 上了解更多信息
 
@@ -282,18 +282,18 @@ Ruby
 
     
 
-要在 Ruby 中使用 OpenAIAPI，你可以使用官方的 [OpenAI Ruby SDK](https://github.com/openai/openai-ruby)。首先将该 gem 添加到你的应用中：
+要在 Ruby 中使用 OpenAI API，你可以使用官方的 [OpenAI Ruby SDK](https://github.com/openai/openai-ruby)。首先将该 gem 添加到你的应用中：
 
-使用 Bundler 安装 OpenAISDK
+使用 Bundler 安装 OpenAI SDK
 
 ```ruby
 gem "openai"
 ```
 
 
-安装好 OpenAI SDK 后，新建一个名为 `example.rb` 的文件，并将示例代码复制到该文件中：
+安装好 OpenAI SDK 后，新建一个文件 `example.rb` 并将示例代码复制到其中：
 
-测试一个基础的 API 请求
+测试基础的 API 请求
 
 ```ruby
 require "openai"
@@ -301,7 +301,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a one-sentence bedtime story about a unicorn."
 )
 
@@ -309,7 +309,7 @@ puts(response.output_text)
 ```
 
 
-使用 `ruby example.rb`。稍等片刻，你应该就能看到 API 请求的输出结果。
+使用 `ruby example.rb`。稍等片刻，你应能看到 API 请求的输出。
 
 [在 GitHub 上了解更多信息
 
@@ -327,7 +327,7 @@ CLI
 
     
 
-若要从终端直接调用 OpenAIAPI，请安装生成的 `openai` 命令行工具：
+要直接从终端调用 OpenAI API，请安装生成的 `openai` 命令行工具：
 
 使用 Homebrew 安装 OpenAI CLI
 
@@ -336,20 +336,20 @@ brew install openai/tools/openai
 ```
 
 
-然后在命令行中发起一个基础 API 请求：
+然后在 shell 中运行一个基本的 API 请求：
 
-测试一个基础的 API 请求
+测试基础的 API 请求
 
 ```bash
 openai responses create \
-  --model "gpt-5.6" \
+  --model "gpt-6-astra" \
   --input "Write a one-sentence bedtime story about a unicorn." \
   --raw-output \
   --transform 'output.#(type=="message").content.0.text'
 ```
 
 
-你可以将 CLI 用于可重复的终端工作流，例如从文件中提取结构化数据、生成图像、创建语音，以及结合 shell 工具编写 API 调用，例如 `jq`.
+使用 CLI 处理可重复的终端工作流，例如从文件中提取结构化数据、生成图像、创建语音，以及配合以下 shell 工具组合 API 调用 `jq`.
 
 [OpenAI CLI 指南
 
@@ -361,12 +361,12 @@ openai responses create \
 
 ## 使用 Agents SDK
 
-使用上述官方 OpenAI SDK 直接发出 API 请求。如果你的应用需要以代码优先的方式编排，请在需要时使用 Agents SDK
-为 智能体、工具、
-交接、护栏、追踪或沙箱执行提供代码优先的编排。
+使用上述官方的 OpenAI SDK 进行直接的 API 请求。当你的应用需要对智能体进行代码优先的编排时，请使用 Agents SDK
+，包括工具、
+交接、护栏、追踪，或沙箱执行。
 
-如果你正在直接 API 请求与代码优先编排之间进行选择，
-请参阅 [Responses API 与 Agents SDK 的比较](https://developers.openai.com/api/docs/guides/agents#agents-sdk-vs-responses-api).
+如果你在直接的 API 请求与代码优先的编排之间进行选择，
+请参阅 [Responses API 与 Agents SDK 的对比](https://developers.openai.com/api/docs/guides/agents#agents-sdk-vs-responses-api).
 
 [Agents SDK 快速入门
 
@@ -379,18 +379,18 @@ openai responses create \
 
 ## Azure OpenAI 库
 
-Microsoft 的 Azure 团队维护与 OpenAI API 和 Azure OpenAI 服务兼容的库。请阅读下面的库文档，了解如何将它们与 OpenAI API 配合使用。
+Microsoft 的 Azure 团队维护同时兼容 OpenAI API 和 Azure OpenAI 服务的库。请阅读下面的库文档，了解如何将它们与 OpenAI API 配合使用。
 
-- [适用于 .NET 的 Azure OpenAI 客户端库](https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/openai/Azure.AI.OpenAI)
-- [适用于 JavaScript 的 Azure OpenAI 客户端库](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/openai/openai)
-- [适用于 Java 的 Azure OpenAI 客户端库](https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/openai/azure-ai-openai)
-- [适用于 Go 的 Azure OpenAI 客户端库](https://github.com/Azure/azure-sdk-for-go/tree/main/sdk/ai/azopenai)
+- [Azure OpenAI 适用于 .NET 的客户端库](https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/openai/Azure.AI.OpenAI)
+- [Azure OpenAI 适用于 JavaScript 的客户端库](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/openai/openai)
+- [Azure OpenAI 适用于 Java 的客户端库](https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/openai/azure-ai-openai)
+- [Azure OpenAI 适用于 Go 的客户端库](https://github.com/Azure/azure-sdk-for-go/tree/main/sdk/ai/azopenai)
 
 ---
 
 ## 社区库
 
-下面的库由更广泛的开发者社区构建和维护。你还可以 [在 GitHub 上关注我们的 OpenAPI 规范仓库](https://github.com/openai/openai-openapi) ，及时了解 API 的更新情况。
+下面的库由更广泛的开发者社区构建和维护。你还可以 [在 GitHub 上关注我们的 API 规范](https://github.com/openai/openai-openapi) 仓库，及时获取我们对 API 所做更改的更新。
 
 请注意，OpenAI 不会验证这些项目的正确性或安全性。 **使用时请自行承担风险！**
 
@@ -421,7 +421,7 @@ Microsoft 的 Azure 团队维护与 OpenAI API 和 Azure OpenAI 服务兼容的�
 
 ### Rust
 
-- [async-openai](https://github.com/64bit/async-openai) 由 [64bit](https://github.com/64bit)
+- [async-openai](https://github.com/64bit/async-openai) 由 [64位](https://github.com/64bit)
 
 ### Scala
 
@@ -443,8 +443,8 @@ Microsoft 的 Azure 团队维护与 OpenAI API 和 Azure OpenAI 服务兼容的�
 
 ## 其他 OpenAI 仓库
 
-- [tiktoken](https://github.com/openai/tiktoken) - 统计 token 数
+- [tiktoken](https://github.com/openai/tiktoken) - 计算 token 数
 - [simple-evals](https://github.com/openai/simple-evals) - 简单评估库
-- [mle-bench](https://github.com/openai/mle-bench) - 用于评估机器学习工程师智能体的库
+- [mle-bench](https://github.com/openai/mle-bench) - 用于评估机器学习工程师 智能体 的库
 - [gym](https://github.com/openai/gym) - 强化学习库
-- [swarm](https://github.com/openai/swarm) - 教学编排仓库
+- [swarm](https://github.com/openai/swarm) - 用于教学目的的编排仓库

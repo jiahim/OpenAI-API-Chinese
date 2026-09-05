@@ -1,8 +1,8 @@
 # OpenAI CLI
 
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt). 可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
-直接从你的终端通过命令行工具与 OpenAI API 交互 `openai` 命令行工具。
+通过命令行工具直接从终端与 OpenAI API 交互 `openai` 命令行工具。
 
 ## 安装
 
@@ -12,19 +12,19 @@
 brew install openai/tools/openai
 ```
 
-或使用 Go 1.25 或更高版本安装：
+或者使用 Go 1.25 或更高版本安装：
 
 ```bash
 go install 'github.com/openai/openai-cli/cmd/openai@latest'
 ```
 
-旧版本的 Python SDK 也安装了一个旧的 `openai` 命令。如果你此前已经安装过该软件包，并且你看到的命令与本指南不符，则你的 shell 可能仍在解析旧版本的二进制文件。全新安装的 CLI 不会受到影响。
+旧版本的 Python SDK 也会安装一个旧版 `openai` 命令。如果你此前已安装该软件包，但所看到的命令与本指南不一致，说明你的 shell 仍在解析旧版本的二进制文件。新安装的 CLI 不受影响。
 
 ## 身份验证
 
 CLI 从以下位置读取你的 API 密钥： `OPENAI_API_KEY`:
 
-Command：
+命令：
 
 ```bash
 export OPENAI_API_KEY="sk-..."
@@ -32,50 +32,50 @@ export OPENAI_API_KEY="sk-..."
 
 如果你还没有 API 密钥， [在仪表板中创建一个](https://platform.openai.com/api-keys).
 
-对于 Admin API 端点，请设置 `OPENAI_ADMIN_KEY` 。SDK 层会根据被调用的端点选择 admin 密钥或默认的 API 密钥。
+对于 Admin API 接口，请设置 `OPENAI_ADMIN_KEY` 。SDK 层会根据所调用的接口选择 admin 密钥或默认的 API 密钥。
 
 若要指向其他 API 主机，请设置 `OPENAI_BASE_URL`.
 
 ## 用例
 
-当工作天然适合在终端中完成时，使用 CLI：
+当工作自然属于终端环境时，请使用 CLI：
 
-- 生成本地工件，例如图像或语音。
-- 提取结构化数据为 JSONL，供后续 shell 步骤使用。
+- 生成本地产物，例如图像或语音。
+- 将结构化数据提取为 JSONL，供后续 shell 步骤使用。
 - 在云端将 Responses 与文件、计算机使用以及当前网页上下文结合使用。
 - 通过 Admin API 创建项目和 API 密钥。
 
-直接在一次性终端请求中使用它,或在脚本中使用,当智能体需要对文件和生成的产物执行可重复的批处理工作时。
+可直接用于一次性终端请求，或在脚本中使用，以便智能体能够对文件和生成的产物进行可重复的批处理工作。
 
 ## Codex 中 CLI 与子智能体的对比
 
-当你需要执行可重复的 API 工作并希望进行检查和重新运行时，可以使用 CLI，例如批量提取、文件转换、制品生成或刻意的模型选择。当工作仍需要判断时，可以使用子智能体，例如探索代码、比较假设、调试或审查更改。
+当需要可重复、可检查并可重新运行的API工作时（例如批量抽取、文件转换、产物生成或刻意的模型选择），请使用 CLI。当工作仍然需要判断（例如探索代码、比较假设、调试或审查变更）时，请使用子智能体。
 
 ## 全局标志
 
-这些选项在所有命令中均适用：
+这些选项适用于所有命令：
 
-| Flag          | Use                                                                                                          |
+| Flag          | 用途                                                                                                          |
 | ------------- | ------------------------------------------------------------------------------------------------------------ |
-| `--format`    | 将响应打印为 `auto`, `json`, `jsonl`, `pretty`, `raw`, `yaml`，或 `explore`.                           |
-| `--transform` | 在打印前使用 GJSON 路径提取或重组响应数据。                                          |
-| `--debug`     | 将请求和响应详情打印到 stderr。授权信息会被隐去；分享日志前请检查请求头。 |
+| `--format`    | 打印响应为 `auto`, `json`, `jsonl`, `pretty`, `raw`, `yaml`，或 `explore`.                           |
+| `--transform` | 在打印之前使用 GJSON 路径提取或重塑响应数据。                                          |
+| `--debug`     | 将请求和响应详细信息打印到 stderr。授权信息会被隐去；分享日志前请检查请求头。 |
 
-本指南侧重于 CLI 用法模式。如需了解任意 API 系列的最新参数和响应结构，请使用最新的 [API 参考](https://developers.openai.com/api/reference/overview).
+本指南侧重于 CLI 模式。有关任何 API 系列的最新参数和响应结构，请参阅实时 [API 参考文档](https://developers.openai.com/api/reference/overview).
 
-你也可以在需要将 CLI 指向其他兼容端点时更改 base URL，例如某个支持不同模型集或仅支持 API 部分功能的部署。
+当你需要将 CLI 指向另一个兼容端点（例如支持不同模型集的部署，或仅暴露 API 部分接口的部署）时，也可以更改基础 URL。
 
 ## Responses
 
-使用 响应接口 进行文本生成、结构化抽取、网页搜索、文件理解以及可重复执行的、由 Codex 编写的批处理脚本。
+使用 Responses 进行文本生成、结构化提取、网页搜索、文件理解以及可重复运行的 Codex 编写的批处理脚本。
 
 ### 发送你的第一个请求
 
-Command：
+命令：
 
 ```bash
 openai responses create \
-  --model gpt-5.6 \
+  --model gpt-6-astra \
   --input "Say hello in one sentence."
 ```
 
@@ -109,21 +109,21 @@ openai responses create \
 }
 ```
 
-CLI 默认会打印完整的 API 响应对象。本页示例只保留具有代表性的字段，例如 `id`, `status`, `model`, `output`，以及 `usage`，其余字段省略。
+CLI 默认会打印完整的 API 响应对象。本页示例仅保留具有代表性的字段，例如 `id`, `status`, `model`, `output`，以及 `usage`，其余字段省略。
 
-Responses 输出中可能包含非消息项，例如位于助手消息之前的推理项。当你需要助手文本时，请按类型选择消息项，而不是默认假设它始终是 `output[0]`:
+Responses 输出中可能包含非消息项（如推理项），它们会出现在助手消息之前。当你需要获取助手文本时，请按类型选择消息项，而不是假定它始终是 `output[0]`:
 
 ```bash
 --transform 'output.#(type=="message").content.0.text'
 ```
 
-### 将本地文件添加到提示中
+### 向 prompt 添加本地文件
 
-对于简单的本地文件，可以使用命令替换内联构建提示词：
+对于简单的本地文件，可以使用命令替换将 prompt 内联构建：
 
 ```bash
 openai responses create \
-  --model gpt-5.6 \
+  --model gpt-6-astra \
   --input "Summarize this note in one sentence.
 
 <note>
@@ -142,11 +142,11 @@ The note says the launch checklist is ready except for final support ownership.
 
 ### 传递请求体
 
-对短小的标量输入使用 flag。对多行的 prompt、工具、文件或嵌套的请求体使用 YAML heredoc。heredoc 中可以包含你原本通过 flag 传入的相同请求字段。
+对短小的标量输入使用标志。对多行提示、工具、文件或嵌套的请求体使用 YAML heredoc。heredoc 中可以包含你通常以标志形式传入的相同请求字段。
 
-对于那些看起来像 YAML 的字符串值要格外小心，尤其是包含 `:` 或 `{}`。的 prompt。在 flag 模式下，生成的解析器可能把这些值当作结构化 YAML 而非纯文本来解析。如果一段 prompt 看起来像配置，请把它放进 YAML 请求体的 `input: |` 字段中，例如：
+对于看起来像 YAML 的字符串值要小心，尤其是包含 `:` 或 `{}`。的提示。在使用标志时，生成的解析器可能将这些值解释为结构化 YAML 而非纯文本。如果某个提示开始看起来像是配置，请把它放到 YAML 请求体中的 `input: |` 下：
 
-Command：
+命令：
 
 ```bash
 openai responses create \
@@ -171,7 +171,7 @@ YAML
 The release note updates the CLI docs with corrected image generation and installation guidance.
 ```
 
-当 prompt 本身需要进行 shell 拼接时，构造一个 YAML 请求体并通过管道传入命令：
+当提示本身需要通过 shell 拼接时，构建一个 YAML 请求体并通过管道传入命令：
 
 ```bash
 {
@@ -181,7 +181,7 @@ The release note updates the CLI docs with corrected image generation and instal
   sed 's/^/  /' ./note.md
   printf '  </note>\n'
 } | openai responses create \
-  --model gpt-5.6 \
+  --model gpt-6-astra \
   --format yaml \
   --transform 'output.#(type=="message").content.0.text'
 ```
@@ -189,7 +189,7 @@ The release note updates the CLI docs with corrected image generation and instal
 
 ### 将结构化数据写入 JSON
 
-当下游脚本需要稳定的 JSON 时，使用结构化输出。将可复用的架构保存到磁盘：
+当下游脚本需要稳定的 JSON 时，使用结构化输出。将可复用的 schema 保存到磁盘：
 
 保存为 `schema.json`:
 
@@ -210,11 +210,11 @@ The release note updates the CLI docs with corrected image generation and instal
 }
 ```
 
-Command：
+命令：
 
 ```bash
 openai responses create \
-  --model gpt-5.6 \
+  --model gpt-6-astra \
   --instructions "Extract the person and topic from the input." \
   --input "Ada Lovelace wrote notes about the Analytical Engine." \
   --text.format "$(cat ./schema.json)" \
@@ -231,7 +231,7 @@ openai responses create \
 
 ### 将结构化记录写入 JSONL
 
-当单个输入可能产生多条记录时，可以要求模型返回一个数组，并将其展开为 JSONL 格式，以便后续 shell 步骤能够逐行处理每条记录：
+当一个输入可能产生多条记录时，要求模型返回数组并将其扁平化为 JSONL，这样后续的 shell 步骤就能逐行处理每条记录：
 
 保存为 `records-schema.json`:
 
@@ -263,7 +263,7 @@ openai responses create \
 }
 ```
 
-Command：
+命令：
 
 ```bash
 : > records.jsonl
@@ -289,17 +289,17 @@ done
 ```
 
 
-这样做既能让模型响应保持结构化，又能生成每行一个 JSON 对象，方便后续的 shell 步骤处理。
+这样既能保持模型响应的结构化，又能为后续的 shell 步骤生成每行一个 JSON 对象。
 
 ### 网页搜索
 
-响应可以从同一个 YAML 请求体内调用托管工具：
+Responses 可以从同一个 YAML 请求体中调用托管工具：
 
-Command：
+命令：
 
 ```bash
 openai responses create \
-  --model gpt-5.6 \
+  --model gpt-6-astra \
   --format yaml \
   --transform 'output.#(type=="message").content.0.text' <<'YAML'
 tools:
@@ -321,9 +321,9 @@ YAML
 
 ### 文件输入
 
-对于 PDF 等上传文件，请先创建文件，捕获其 ID，然后将其作为 `input_file.file_id`:
+对于已上传的文件（例如 PDF），请先创建文件，捕获其 ID，然后将其作为 `input_file.file_id`:
 
-Command：
+命令：
 
 ```bash
 FILE_ID=$(
@@ -356,15 +356,15 @@ YAML
 - Risks: migration timing, unclear rollback criteria, and unresolved support ownership.
 ```
 
-最近的生成构建会以 multipart 文件分部的形式发送本地文件标志，并附带文件名和内容类型元数据。如果本地上传命令失败并出现 `UploadFile` 类型错误，请更新 CLI 后重试。
+近期生成的构建会将本地文件标志作为 multipart 文件部分发送，并附带文件名和内容类型元数据。如果本地上传命令失败并出现 `UploadFile` 类型错误，请更新 CLI 后重试。
 
-## 图片
+## 图像
 
-### 生成图片
+### 生成图像
 
-生成图像，提取 base64 负载，并将其解码为普通的资源文件：
+生成一张图片，提取 base64 负载，并将其解码为普通的资源文件：
 
-Command：
+命令：
 
 ```bash
 openai images generate \
@@ -382,15 +382,15 @@ printf 'wrote hero.png\n'
 wrote hero.png
 ```
 
-当前的限制：图像命令尚不具备原生 `--output` 支持，因此图像生成仍需自行提取 `b64_json` 并解码。
+当前的限制：图片相关指令尚不具备原生 `--output` 支持，因此图片生成仍然需要自行提取 `b64_json` 并解码。
 
-对于 `gpt-image-2`，请省略 `--input-fidelity`；图像输入始终以高保真度处理。透明背景目前处于预览阶段；请使用 `--background transparent` 配合 `png` （默认值）或 `webp`. `jpeg` 在透明背景下不受支持。该模型还支持比早期 GPT Image 模型更广泛的 `--size` 取值范围，前提是所请求的分辨率满足 Image API 的尺寸限制。
+对于 `gpt-image-2`，可省略 `--input-fidelity`；图片输入始终以高保真度处理。透明背景目前处于预览阶段，可使用 `--background transparent` 配合 `png` （默认值）或 `webp`. `jpeg` 不支持透明背景。该模型还支持比早期 GPT Image 模型更广泛的 `--size` 取值，只要请求的分辨率满足 Image API 的尺寸约束。
 
-### 编辑图片
+### 编辑图像
 
-图像编辑在编辑请求成功后使用同样的 base64 提取方式：
+图像编辑在编辑请求成功后使用相同的 base64 提取模式：
 
-Command：
+命令：
 
 ```bash
 openai images edit \
@@ -411,11 +411,11 @@ wrote hero-edited.png
 
 如果本地图像编辑上传失败并出现 `UploadFile` 类型错误，请更新 CLI 后重试。
 
-## Speech
+## 语音
 
 使用 speech API 在本地创建 MP3：
 
-Command：
+命令：
 
 ```bash
 openai audio:speech create \
@@ -432,13 +432,13 @@ openai audio:speech create \
 Wrote output to: speech.mp3
 ```
 
-使用你机器上任何可用的本地音频工具播放它。在 macOS 上：
+用你机器上任何可用的本地音频工具播放它。在 macOS 上：
 
 ```bash
 afplay speech.mp3
 ```
 
-使用 `--instructions` 来塑造语音的呈现方式，并 `--input` 指定应该朗读的文本内容。指令很适合用于表达语速、能量、热情度、正式程度、强调或目标受众等提示：
+使用 `--instructions` 来调整表达方式，以及 `--input` 来指定应被朗读的文本。指令非常适合作为以下提示：语速、能量、亲和感、正式程度、强调或受众：
 
 ```bash
 openai audio:speech create \
@@ -452,9 +452,9 @@ openai audio:speech create \
 
 ## 转录
 
-为 shell 管道输出纯文本转录：
+输出纯文本转录文本，用于 shell 管道：
 
-Command：
+命令：
 
 ```bash
 openai audio:transcriptions create \
@@ -471,18 +471,18 @@ openai audio:transcriptions create \
 The OpenAI CLI can call the API from ordinary shell scripts.
 ```
 
-根据所需产物选择对应的响应格式：
+使用与你所需产物匹配的响应格式：
 
-| 需求                        | 命令格式                                                        |
+| 需求                        | 命令形态                                                        |
 | --------------------------- | -------------------------------------------------------------------- |
-| 纯文本转写内容       | `--model gpt-4o-transcribe --transform text --raw-output`            |
+| 纯文本转录文本       | `--model gpt-4o-transcribe --transform text --raw-output`            |
 | 字幕文件              | `--model whisper-1 --response-format srt` 或 `--response-format vtt` |
 | 片段或词级时间戳  | `--model whisper-1 --response-format verbose_json`                   |
 | 带说话人标签的说话人分离 | `--model gpt-4o-transcribe-diarize --response-format diarized_json`  |
 
-如需获取词级别的时间戳，请请求详细的转写格式：
+如需词级时间戳，请使用详细转录格式：
 
-Command：
+命令：
 
 ```bash
 openai audio:transcriptions create \
@@ -510,9 +510,9 @@ openai audio:transcriptions create \
 }
 ```
 
-如需输出带说话人标签的结果，请使用说话人分离模型并请求 `diarized_json`:
+如需带说话人标签的输出，请使用说话人分离模型并请求 `diarized_json`:
 
-Command：
+命令：
 
 ```bash
 openai audio:transcriptions create \
@@ -542,19 +542,19 @@ openai audio:transcriptions create \
 }
 ```
 
-`whisper-1` supports `json`, `text`, `srt`, `verbose_json`，以及 `vtt`. `diarized_json` 是用于承载 `segments[].speaker`；使用相同的说话人分离模型并使用普通 `json`，时，响应仅包含转写文本，不包含说话人标签。
+`whisper-1` 支持 `json`, `text`, `srt`, `verbose_json`，以及 `vtt`. `diarized_json` 是承载以下内容的格式： `segments[].speaker`；使用相同的说话人分离模型并采用纯文本 `json`，响应中包含转录文本但不包含说话人标签。
 
-## Admin APIs
+## 管理 API
 
-将 Admin API 用于组织管理、凭据置备、合规以及使用监控工作流。设置 `OPENAI_ADMIN_KEY`，然后调用生成的 `admin:organization:*` 命令。
+使用 Admin API 进行组织管理、凭据配置、合规和使用监控工作流。设置 `OPENAI_ADMIN_KEY`，然后调用生成的 `admin:organization:*` 命令。
 
-若要为新机器置备凭据， [创建项目](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/projects/methods/create), [创建服务账户](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/projects/subresources/service_accounts/methods/create) ，在该项目中，并使用返回的 API 密钥。
+若要配置新的机器凭据， [创建项目](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/projects/methods/create), [创建服务账号](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/projects/subresources/service_accounts/methods/create) 在该项目中，并使用返回的 API 密钥。
 
 ### 创建项目、服务账号和 API 密钥
 
 在该项目中创建服务账号会返回该服务账号的未脱敏 API 密钥。
 
-Command：
+命令：
 
 ```bash
 # Create the project that will own this app or agent and save the response.
@@ -590,6 +590,6 @@ jq -r '.api_key.value | "OPENAI_API_KEY=\(.)"' \
 }
 ```
 
-将项目响应写入 `project.json`，解析其 ID 到下一条命令，将服务账号响应写入 `service-account.json`，并将返回的凭证写入 `.env` 为 `OPENAI_API_KEY=...`。请将这两个 JSON 文件都视为密钥，并将 `project.json`, `service-account.json`，以及 `.env` 添加到 `.gitignore` ，然后再在代码仓库中使用此模式。
+该命令将项目响应写入 `project.json`，解析其 ID 并传入下一条命令，将服务账号响应写入 `service-account.json`，并将返回的凭证写入 `.env` 为 `OPENAI_API_KEY=...`。请将这两个 JSON 文件都视为机密，并将 `project.json`, `service-account.json`，以及 `.env` 添加到 `.gitignore` 中，再在仓库中使用此模式。
 
-对于其余接口，请参阅 [Admin API 使用指南](https://developers.openai.com/api/docs/guides/admin-apis) 以及当前的 [Administration API 参考](https://developers.openai.com/api/reference/administration/overview)。请谨慎将管理员密钥授予未经审查的访问者。
+有关其余接口，请参阅 [Admin APIs 指南](https://developers.openai.com/api/docs/guides/admin-apis) 以及当前的 [Administration API 参考](https://developers.openai.com/api/reference/administration/overview)。请谨慎向未经审核的角色授予管理员密钥的访问权限。
