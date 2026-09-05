@@ -329281,9 +329281,6 @@ Schema name: `ResponseFunctionCallArgumentsDoneEvent`
           "ident": "item_id"
         },
         {
-          "ident": "name"
-        },
-        {
           "ident": "output_index"
         },
         {
@@ -329298,7 +329295,6 @@ Schema name: `ResponseFunctionCallArgumentsDoneEvent`
     "children": [
       "(resource) responses > (model) response_function_call_arguments_done_event > (schema) > (property) arguments",
       "(resource) responses > (model) response_function_call_arguments_done_event > (schema) > (property) item_id",
-      "(resource) responses > (model) response_function_call_arguments_done_event > (schema) > (property) name",
       "(resource) responses > (model) response_function_call_arguments_done_event > (schema) > (property) output_index",
       "(resource) responses > (model) response_function_call_arguments_done_event > (schema) > (property) sequence_number",
       "(resource) responses > (model) response_function_call_arguments_done_event > (schema) > (property) type"
@@ -329324,20 +329320,6 @@ Schema name: `ResponseFunctionCallArgumentsDoneEvent`
     "deprecated": false,
     "key": "item_id",
     "docstring": "The ID of the item.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) responses > (model) response_function_call_arguments_done_event > (schema) > (property) name": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseFunctionCallArgumentsDoneEvent/properties/name",
-    "deprecated": false,
-    "key": "name",
-    "docstring": "The name of the function that was called.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -329413,7 +329395,6 @@ Schema name: `ResponseFunctionCallArgumentsDoneEvent`
 {
   "type": "response.function_call_arguments.done",
   "item_id": "item-abc",
-  "name": "get_weather",
   "output_index": 1,
   "arguments": "{ \"arg\": 123 }",
   "sequence_number": 1

@@ -459,6 +459,305 @@ while True:
         )
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+type toolArguments struct {
+	SKU string `json:"sku"`
+}
+
+func main() {
+	client := openai.NewClient()
+	input := responses.ResponseInputParam{
+		responses.ResponseInputItemParamOfMessage(
+			"Compare inventory with demand for sku_123.",
+			responses.EasyInputMessageRoleUser,
+		),
+	}
+	tools := []responses.ToolUnionParam{
+		functionTool(
+			"get_inventory",
+			"Return an object with sku (string) and available_units (number).",
+			"available_units",
+		),
+		functionTool(
+			"get_demand",
+			"Return an object with sku (string) and requested_units (number).",
+			"requested_units",
+		),
+		programmaticTool(),
+	}
+
+	for {
+		response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+			Model: "gpt-6-astra",
+			Store: openai.Bool(false),
+			Input: responses.ResponseNewParamsInputUnion{OfInputItemList: input},
+			Tools: tools,
+		})
+		if err != nil {
+			panic(err)
+		}
+		if response.Status != "completed" {
+			panic(fmt.Errorf("response ended with status %s", response.Status))
+		}
+
+		// Preserve every output item, including program and reasoning items.
+		input = append(input, outputAsInput(response.Output)...)
+
+		calls := functionCalls(response.Output)
+		if len(calls) == 0 {
+			if text, ok := finalMessageText(response); ok {
+				fmt.Println(text)
+				break
+			}
+			continue
+		}
+
+		for _, call := range calls {
+			result, err := runTool(call.Name, call.Arguments)
+			if err != nil {
+				panic(err)
+			}
+			output, err := json.Marshal(result)
+			if err != nil {
+				panic(err)
+			}
+
+			toolOutput := responses.ResponseInputItemParamOfFunctionCallOutput(string(output))
+			toolOutput.OfFunctionCallOutput.CallID = openai.String(call.CallID)
+			caller := call.Caller.AsProgram()
+			if caller.CallerID == "" {
+				panic("function call is missing its program caller")
+			}
+			// Preserve caller so the runtime can resume the correct program.
+			toolOutput.OfFunctionCallOutput.Caller.OfProgram =
+				&responses.ResponseInputItemFunctionCallOutputCallerProgramParam{
+					CallerID: caller.CallerID,
+				}
+			input = append(input, toolOutput)
+		}
+	}
+}
+
+func functionTool(name, description, resultField string) responses.ToolUnionParam {
+	parameters := map[string]any{
+		"type": "object",
+		"properties": map[string]any{
+			"sku": map[string]any{"type": "string"},
+		},
+		"required":             []string{"sku"},
+		"additionalProperties": false,
+	}
+	outputSchema := map[string]any{
+		"type": "object",
+		"properties": map[string]any{
+			"sku":       map[string]any{"type": "string"},
+			resultField: map[string]any{"type": "number"},
+		},
+		"required":             []string{"sku", resultField},
+		"additionalProperties": false,
+	}
+	tool := responses.ToolParamOfFunction(name, parameters, true)
+	tool.OfFunction.Description = openai.String(description)
+	tool.OfFunction.AllowedCallers = []string{"programmatic"}
+	tool.OfFunction.OutputSchema = outputSchema
+	return tool
+}
+
+func programmaticTool() responses.ToolUnionParam {
+	tool := responses.NewToolProgrammaticToolCallingParam()
+	return responses.ToolUnionParam{OfProgrammaticToolCalling: &tool}
+}
+
+func outputAsInput(
+	output []responses.ResponseOutputItemUnion,
+) []responses.ResponseInputItemUnionParam {
+	input := make([]responses.ResponseInputItemUnionParam, 0, len(output))
+	for _, item := range output {
+		var converted responses.ResponseInputItemUnion
+		if err := json.Unmarshal([]byte(item.RawJSON()), &converted); err != nil {
+			panic(err)
+		}
+		input = append(input, converted.ToParam())
+	}
+	return input
+}
+
+func functionCalls(
+	output []responses.ResponseOutputItemUnion,
+) []responses.ResponseFunctionToolCall {
+	calls := make([]responses.ResponseFunctionToolCall, 0)
+	for _, item := range output {
+		if item.Type == "function_call" {
+			calls = append(calls, item.AsFunctionCall())
+		}
+	}
+	return calls
+}
+
+func finalMessageText(response *responses.Response) (string, bool) {
+	for _, item := range response.Output {
+		if item.Type != "message" {
+			continue
+		}
+		text := response.OutputText()
+		if text != "" {
+			return text, true
+		}
+		for _, content := range item.AsMessage().Content {
+			if content.Type == "refusal" {
+				return content.AsRefusal().Refusal, true
+			}
+		}
+		return "", true
+	}
+	return "", false
+}
+
+func runTool(name, argumentsJSON string) (map[string]any, error) {
+	var arguments toolArguments
+	if err := json.Unmarshal([]byte(argumentsJSON), &arguments); err != nil {
+		return nil, fmt.Errorf("parse %s arguments: %w", name, err)
+	}
+
+	switch name {
+	case "get_inventory":
+		return map[string]any{"sku": arguments.SKU, "available_units": 42}, nil
+	case "get_demand":
+		return map[string]any{"sku": arguments.SKU, "requested_units": 31}, nil
+	default:
+		return nil, fmt.Errorf("unknown tool: %s", name)
+	}
+}
+```
+
+```ruby
+require "json"
+require "openai"
+
+client = OpenAI::Client.new
+
+def get_inventory(sku:)
+  {sku: sku, available_units: 42}
+end
+
+def get_demand(sku:)
+  {sku: sku, requested_units: 31}
+end
+
+implementations = {
+  "get_inventory" => method(:get_inventory),
+  "get_demand" => method(:get_demand)
+}
+tools = [
+  {
+    type: :function,
+    name: "get_inventory",
+    description: "Return an object with sku (string) and available_units (number).",
+    parameters: {
+      type: :object,
+      properties: {sku: {type: :string}},
+      required: ["sku"],
+      additionalProperties: false
+    },
+    output_schema: {
+      type: :object,
+      properties: {
+        sku: {type: :string},
+        available_units: {type: :number}
+      },
+      required: %w[sku available_units],
+      additionalProperties: false
+    },
+    allowed_callers: [:programmatic],
+    strict: true
+  },
+  {
+    type: :function,
+    name: "get_demand",
+    description: "Return an object with sku (string) and requested_units (number).",
+    parameters: {
+      type: :object,
+      properties: {sku: {type: :string}},
+      required: ["sku"],
+      additionalProperties: false
+    },
+    output_schema: {
+      type: :object,
+      properties: {
+        sku: {type: :string},
+        requested_units: {type: :number}
+      },
+      required: %w[sku requested_units],
+      additionalProperties: false
+    },
+    allowed_callers: [:programmatic],
+    strict: true
+  },
+  {type: :programmatic_tool_calling}
+]
+input = [{role: :user, content: "Compare inventory with demand for sku_123."}]
+
+loop do
+  response = client.responses.create(
+    model: "gpt-6-astra",
+    store: false,
+    input: input,
+    tools: tools
+  )
+  unless response.status == OpenAI::Responses::ResponseStatus::COMPLETED
+    raise "Response ended with status #{response.status}"
+  end
+
+  # Preserve every output item, including program and reasoning items.
+  input.concat(response.output)
+  calls = response.output.grep(OpenAI::Models::Responses::ResponseFunctionToolCall)
+
+  if calls.empty?
+    message = response.output.find do |item|
+      item.is_a?(OpenAI::Models::Responses::ResponseOutputMessage)
+    end
+    next unless message.is_a?(OpenAI::Models::Responses::ResponseOutputMessage)
+
+    refusal = message.content.find do |content|
+      content.is_a?(OpenAI::Models::Responses::ResponseOutputRefusal)
+    end
+    text = response.output_text
+    if text.empty? &&
+        refusal.is_a?(OpenAI::Models::Responses::ResponseOutputRefusal)
+      text = refusal.refusal
+    end
+    puts(text)
+    break
+  end
+
+  calls.each do |call|
+    implementation = implementations.fetch(call.name) do
+      raise ArgumentError, "Unknown tool: #{call.name}"
+    end
+    result = implementation.call(**JSON.parse(call.arguments, symbolize_names: true))
+    output = {
+      type: :function_call_output,
+      call_id: call.call_id,
+      output: JSON.generate(result)
+    }
+    # Preserve caller so the runtime can resume the correct program.
+    output[:caller] = call.caller_.to_h if call.caller_
+    input << output
+  end
+end
+```
+
 
 When you store responses, you can continue from `previous_response_id` instead of resending all earlier response items. Send the new `function_call_output` items as the next input. With `store: false`, replay the complete sequence in order, including every `program`, reasoning, function-call, function-call-output, and `program_output` item.
 

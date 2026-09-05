@@ -88240,7 +88240,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
 ### Response Function Call Arguments Done Event
 
-- `ResponseFunctionCallArgumentsDoneEvent object { arguments, item_id, name, 3 more }`
+- `ResponseFunctionCallArgumentsDoneEvent object { arguments, item_id, output_index, 2 more }`
 
   Emitted when function-call arguments are finalized.
 
@@ -88251,10 +88251,6 @@ curl https://api.openai.com/v1/responses/resp_123 \
   - `item_id: string`
 
     The ID of the item.
-
-  - `name: string`
-
-    The name of the function that was called.
 
   - `output_index: number`
 
@@ -141704,7 +141700,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
       - `"response.function_call_arguments.delta"`
 
-  - `ResponseFunctionCallArgumentsDoneEvent object { arguments, item_id, name, 3 more }`
+  - `ResponseFunctionCallArgumentsDoneEvent object { arguments, item_id, output_index, 2 more }`
 
     Emitted when function-call arguments are finalized.
 
@@ -141715,10 +141711,6 @@ curl https://api.openai.com/v1/responses/resp_123 \
     - `item_id: string`
 
       The ID of the item.
-
-    - `name: string`
-
-      The name of the function that was called.
 
     - `output_index: number`
 

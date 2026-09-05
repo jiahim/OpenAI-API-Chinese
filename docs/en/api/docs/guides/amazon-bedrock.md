@@ -32,13 +32,16 @@ Bedrock.
 
 ## Make Responses API requests
 
-To send OpenAI SDK requests through Amazon Bedrock, use the Bedrock-aware SDK
-client and select the AWS Region and model ID for your deployment:
+To send OpenAI SDK requests through Amazon Bedrock, configure your client for
+the AWS Region and model ID for your deployment:
 
-- Instantiate `BedrockOpenAI` instead of the default `OpenAI` client. The client
-  derives the regional Mantle base URL from the AWS Region.
-- This guide's examples use `us-east-2`, which resolves to
-  `https://bedrock-mantle.us-east-2.api.aws/openai/v1`.
+- Client libraries with a Bedrock provider derive a regional Mantle base URL
+  from the AWS Region. The JavaScript, Python, Go, and Java providers use
+  `https://bedrock-mantle.us-east-2.api.aws/openai/v1` for this guide's
+  `us-east-2` examples. The Ruby examples configure this `/openai/v1`
+  endpoint directly because the provider's default `/v1` route doesn't
+  support this model. The .NET SDK also configures the endpoint directly
+  because it doesn't include a Bedrock provider.
 - Use a Bedrock model ID with the `openai.` prefix, such as
   `openai.gpt-5.6-sol`.
 
@@ -48,16 +51,32 @@ AWS Region combination for your Bedrock deployment.
 The following example uses a Bedrock API key stored as
 `AWS_BEARER_TOKEN_BEDROCK`. See
 [Amazon Bedrock API keys](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys.html)
-for information about generating and using a Bedrock API key. The SDK reads the
-token from your environment.
+for information about generating and using a Bedrock API key. Each example
+passes the token from your environment to its language's Bedrock provider, or
+for .NET, to the regional OpenAI-compatible endpoint. The .NET SDK doesn't
+currently include a Bedrock provider.
+
+Install the optional Java Bedrock provider before using either Java example:
+
+```xml
+<dependency>
+  <groupId>com.openai</groupId>
+  <artifactId>openai-java-bedrock</artifactId>
+  <version>4.57.0</version>
+</dependency>
+```
 
 Send a Responses API request through Amazon Bedrock
 
 ```javascript
-import { BedrockOpenAI } from "openai";
+import OpenAI from "openai";
+import { bedrock } from "openai/providers/bedrock";
 
-const client = new BedrockOpenAI({
-  awsRegion: "us-east-2",
+const client = new OpenAI({
+  provider: bedrock({
+    region: "us-east-2",
+    apiKey: process.env.AWS_BEARER_TOKEN_BEDROCK,
+  }),
 });
 
 const response = await client.responses.create({
@@ -69,9 +88,17 @@ console.log(response.output_text);
 ```
 
 ```python
-from openai import BedrockOpenAI
+import os
 
-client = BedrockOpenAI(aws_region="us-east-2")
+from openai import OpenAI
+from openai.providers import bedrock
+
+client = OpenAI(
+    provider=bedrock(
+        region="us-east-2",
+        api_key=os.environ["AWS_BEARER_TOKEN_BEDROCK"],
+    )
+)
 
 response = client.responses.create(
     model="openai.gpt-5.6-sol",
@@ -79,6 +106,117 @@ response = client.responses.create(
 )
 
 print(response.output_text)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/bedrock"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client, err := bedrock.NewClient(context.Background(), bedrock.Config{
+		AWSRegion: "us-east-2",
+		APIKey:    os.Getenv("AWS_BEARER_TOKEN_BEDROCK"),
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model: "openai.gpt-5.6-sol",
+		Input: responses.ResponseNewParamsInputUnion{
+			OfString: openai.String("Write a haiku about cloud infrastructure."),
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response.OutputText())
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.BedrockOpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+
+public final class AmazonBedrockCreateResponseExample {
+  private AmazonBedrockCreateResponseExample() {}
+
+  public static void main(String[] args) {
+    OpenAIClient client =
+        BedrockOpenAIOkHttpClient.builder()
+            .awsRegion("us-east-2")
+            .apiKey(System.getenv("AWS_BEARER_TOKEN_BEDROCK"))
+            .build();
+
+    ResponseCreateParams params =
+        ResponseCreateParams.builder()
+            .model("openai.gpt-5.6-sol")
+            .input("Write a haiku about cloud infrastructure.")
+            .build();
+
+    client.responses().create(params).output().stream()
+        .flatMap(item -> item.message().stream())
+        .flatMap(message -> message.content().stream())
+        .flatMap(content -> content.outputText().stream())
+        .forEach(text -> System.out.println(text.text()));
+  }
+}
+```
+
+```csharp
+using System.ClientModel;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("AWS_BEARER_TOKEN_BEDROCK")!;
+ResponsesClient client = new(
+    new ApiKeyCredential(key),
+    new ResponsesClientOptions
+    {
+        Endpoint = new Uri("https://bedrock-mantle.us-east-2.api.aws/openai/v1"),
+    }
+);
+
+CreateResponseOptions options = new()
+{
+    Model = "openai.gpt-5.6-sol",
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Write a haiku about cloud infrastructure.")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+
+Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new(
+  provider: OpenAI::Providers.bedrock(
+    region: "us-east-2",
+    base_url: "https://bedrock-mantle.us-east-2.api.aws/openai/v1",
+    api_key: ENV.fetch("AWS_BEARER_TOKEN_BEDROCK")
+  )
+)
+
+response = client.responses.create(
+  model: "openai.gpt-5.6-sol",
+  input: "Write a haiku about cloud infrastructure."
+)
+
+puts(response.output_text)
 ```
 
 ```bash
@@ -92,28 +230,40 @@ curl "https://bedrock-mantle.us-east-2.api.aws/openai/v1/responses" \
 ```
 
 
-For long-running applications, pass a token provider instead of a static API
-key. The SDK calls the provider before each request. The AWS token-generator
-packages return a cached short-term key when the current key is valid and
-generate a new key when needed. They use the AWS credential chain, which can
-include credentials configured with `aws login`.
+For long-running applications, prefer the standard AWS credential chain instead
+of a static bearer token. The JavaScript, Python, Go, Java, and Ruby SDK
+providers resolve fresh AWS credentials and sign each request attempt with
+SigV4. The chain can include credentials configured with `aws login`, shared
+profiles, workload roles, and instance or container credentials.
 
-Install the token-generator package for your SDK:
+Install optional dependencies for AWS credential-chain examples before using
+this path:
 
 ```shell
-npm install @aws/bedrock-token-generator
-pip install aws-bedrock-token-generator
+npm install @aws-sdk/credential-provider-node @smithy/hash-node @smithy/signature-v4
+pip install 'openai[bedrock]'
+go get github.com/openai/openai-go/v3/bedrock
+bundle add aws-sdk-core
 ```
 
-Send a request with refreshable Bedrock credentials
+The .NET SDK doesn't currently expose an equivalent Bedrock provider or AWS
+SigV4 authentication policy. Use a Bedrock API key with .NET, or send a signed
+HTTP request through an AWS-supported client when your application requires the
+AWS credential chain.
+
+Send a request with AWS-managed Bedrock credentials
 
 ```javascript
-import { getTokenProvider } from "@aws/bedrock-token-generator";
-import { BedrockOpenAI } from "openai";
+import OpenAI from "openai";
+import { defaultProvider } from "@aws-sdk/credential-provider-node";
+import { bedrock } from "openai/providers/bedrock/aws";
 
-const client = new BedrockOpenAI({
-  awsRegion: "us-east-2",
-  bedrockTokenProvider: getTokenProvider(),
+const client = new OpenAI({
+  provider: bedrock({
+    region: "us-east-2",
+    endpoint: "mantle",
+    credentialProvider: defaultProvider(),
+  }),
 });
 
 const response = await client.responses.create({
@@ -125,12 +275,14 @@ console.log(response.output_text);
 ```
 
 ```python
-from aws_bedrock_token_generator import provide_token
-from openai import BedrockOpenAI
+from openai import OpenAI
+from openai.providers import bedrock
 
-client = BedrockOpenAI(
-    aws_region="us-east-2",
-    bedrock_token_provider=provide_token,
+client = OpenAI(
+    provider=bedrock(
+        region="us-east-2",
+        api_key=None,
+    )
 )
 
 response = client.responses.create(
@@ -139,6 +291,96 @@ response = client.responses.create(
 )
 
 print(response.output_text)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/bedrock"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	awsConfig, err := config.LoadDefaultConfig(context.Background())
+	if err != nil {
+		panic(err)
+	}
+
+	client, err := bedrock.NewClient(context.Background(), bedrock.Config{
+		AWSRegion:              "us-east-2",
+		AWSCredentialsProvider: awsConfig.Credentials,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model: "openai.gpt-5.6-sol",
+		Input: responses.ResponseNewParamsInputUnion{
+			OfString: openai.String("Write a haiku about cloud infrastructure."),
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response.OutputText())
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.BedrockOpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+
+public final class AmazonBedrockCreateResponseWithAwsCredentialsExample {
+  private AmazonBedrockCreateResponseWithAwsCredentialsExample() {}
+
+  public static void main(String[] args) {
+    OpenAIClient client =
+        BedrockOpenAIOkHttpClient.builder()
+            .awsRegion("us-east-2")
+            .awsCredentialsProvider(DefaultCredentialsProvider.create())
+            .build();
+
+    ResponseCreateParams params =
+        ResponseCreateParams.builder()
+            .model("openai.gpt-5.6-sol")
+            .input("Write a haiku about cloud infrastructure.")
+            .build();
+
+    client.responses().create(params).output().stream()
+        .flatMap(item -> item.message().stream())
+        .flatMap(message -> message.content().stream())
+        .flatMap(content -> content.outputText().stream())
+        .forEach(text -> System.out.println(text.text()));
+  }
+}
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new(
+  provider: OpenAI::Providers.bedrock(
+    region: "us-east-2",
+    base_url: "https://bedrock-mantle.us-east-2.api.aws/openai/v1",
+    api_key: nil
+  )
+)
+
+response = client.responses.create(
+  model: "openai.gpt-5.6-sol",
+  input: "Write a haiku about cloud infrastructure."
+)
+
+puts(response.output_text)
 ```
 
 

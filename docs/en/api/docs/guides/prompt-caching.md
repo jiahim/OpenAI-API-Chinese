@@ -377,6 +377,20 @@ long shard = Long.parseLong(digest.substring(0, 8), 16) % shardCount;
 String promptCacheKey = promptVersion + ":" + tenantId + ":shard-" + shard;
 ```
 
+```ruby
+require "digest"
+
+tenant_id = "acme"
+session_id = "session-42"
+prompt_version = "support-v3"
+# Tune for peak traffic per tenant and reusable prompt group; monitor cache hits.
+shard_count = 16
+
+digest = Digest::SHA256.hexdigest("#{tenant_id}:#{session_id}")
+shard = digest.slice(0, 8).to_s.to_i(16) % shard_count
+prompt_cache_key = "#{prompt_version}:#{tenant_id}:shard-#{shard}"
+```
+
 
 
 
@@ -487,6 +501,27 @@ def calculate_input_cost(
     )
     input_cost = weighted_input_tokens * input_price_per_million / 1_000_000
     return input_cost
+```
+
+```ruby
+def calculate_input_cost(
+  usage,
+  input_price_per_million,
+  cache_input_multiplier = 0.1,
+  cache_write_multiplier = 1.25
+)
+  input_tokens = usage.input_tokens
+  details = usage.input_tokens_details
+  cached_tokens = details.cached_tokens
+  cache_write_tokens = details.cache_write_tokens
+  ordinary_input_tokens = input_tokens - cached_tokens - cache_write_tokens
+
+  weighted_input_tokens =
+    ordinary_input_tokens +
+    (cached_tokens * cache_input_multiplier) +
+    (cache_write_tokens * cache_write_multiplier)
+  (weighted_input_tokens * input_price_per_million) / 1_000_000
+end
 ```
 
 
