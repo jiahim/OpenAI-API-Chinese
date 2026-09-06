@@ -7,6 +7,7 @@
   "scripts": {
     "docs:bootstrap": "node scripts/sync-docs.ts bootstrap",
     "docs:check": "node scripts/sync-docs.ts check",
+    "docs:update:check": "node scripts/docs-update-pr.ts",
     "docs:status": "node scripts/sync-docs.ts status",
     "docs:sync": "node scripts/sync-docs.ts sync",
     "test": "node --test --test-concurrency=1 --test-isolation=none scripts/tests/*.test.ts",
