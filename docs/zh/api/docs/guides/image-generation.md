@@ -1,46 +1,46 @@
 # 图像生成
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
 
 ## 概述
 
-OpenAI API 允许你使用 GPT Image 模型（包括我们最新的模型）根据文本提示生成和编辑图像， `gpt-image-2`。你可以通过两个 API 访问图像生成功能：
+OpenAI API 让你使用 GPT Image 模型根据文本提示生成和编辑图像，包括我们最新的模型， `gpt-image-2`。你可以通过两个 API 使用图像生成功能：
 
-### 图像 API
+### Image API
 
-从 `gpt-image-1` 及更高版本的模型开始， [Image API](https://developers.openai.com/api/reference/resources/images) 提供了两个端点，每个端点都有不同的功能：
+从 `gpt-image-1` 及更高版本的模型起，该 [Image API](https://developers.openai.com/api/reference/resources/images) 提供了两个端点，每个端点都有不同的能力：
 
-- **Generations**: [生成图像](#generate-images) 根据文本提示从零生成
-- **Edits**: [修改已有图像](#edit-images) 使用新的提示词进行局部或整体修改
+- **生成**: [生成图像](#generate-images) 根据文本提示从头开始生成
+- **编辑**: [修改现有图像](#edit-images) 使用新的提示进行部分或整体修改
 
 ### Responses API
 
 该 [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-tools) 允许你在对话或多步骤流程中生成图像。它支持将图像生成作为 [内置工具](https://developers.openai.com/api/docs/guides/tools?api-mode=responses)，并在上下文中接受图像输入和输出。
 
-与图像 API 相比，它增加了：
+与图像 API 相比，它新增了：
 
-- **多轮编辑**: 通过提示词迭代地对图像进行高保真编辑
-- **灵活的输入**: 支持将图像 [文件](https://developers.openai.com/api/reference/resources/files) ID 作为输入图像，而不仅限于字节数据
+- **多轮编辑**: 通过提示迭代地对图像进行高保真编辑
+- **灵活的输入**: 接受图像 [文件](https://developers.openai.com/api/reference/resources/files) ID 作为输入图像，而不仅仅是字节
 
-Responses API 的图像生成工具使用其自有的 GPT Image 模型选择。有关支持调用此工具的主流模型的详细信息，请参阅 [支持的模型](#supported-models) 部分。
+Responses API 图像生成工具使用其自有的 GPT Image 模型选择。有关支持调用此工具的主流模型的详细信息,请参阅 [支持的模型](#supported-models) 部分。
 
 ### 选择合适的 API
 
-- 如果你只需要通过单个提示生成或编辑一张图片，Image API 是你的最佳选择。
-- 如果你想使用 GPT Image 构建可对话、可编辑的图片体验，请选择 Responses API。
+- 如果你只需要根据一条提示词生成或编辑单张图像，图像 API 是最佳选择。
+- 如果你想使用 GPT Image 构建可对话、可编辑的图像体验，请选择 Responses API。
 
-使用 Image API 时，你可以直接选择 GPT Image 模型。使用 Responses API 时，你选择一个支持图像生成工具的主线模型；该工具负责选择 GPT Image 模型。Responses API 请求除了图像生成费用外，还会包含主线模型的 token 用量。
+使用 Image API 时，你可以直接选择 GPT Image 模型。使用 Responses API 时，你选择的是一个支持图像生成工具的主流模型；该工具负责选择 GPT Image 模型。Responses API 请求的计费除了图像生成费用外，还包含主流模型的 token 用量。
 
-两个 API 都允许你 [自定义输出](#customize-image-output) ，方法是调整质量、尺寸、格式和压缩。透明背景取决于模型是否支持。
+两种 API 都允许你 [自定义输出](#customize-image-output) ，例如调整质量、尺寸、格式和压缩方式。透明背景取决于模型是否支持。
 
 本指南重点介绍 GPT Image。
 
-为确保这些模型被负责任地使用，你可能需要先完成 [API
+为确保这些模型被负责任地使用，你可能需要完成 [API
   组织
   验证](https://help.openai.com/en/articles/10910291-api-organization-verification)
-  ，可在你的 [开发者
-  控制台](https://platform.openai.com/settings/organization/general) 中完成，
-  然后再使用 GPT Image 模型，包括 `gpt-image-2`, `gpt-image-1.5`,
+  ，从你的 [开发者
+  控制台](https://platform.openai.com/settings/organization/general) 完成
+  后再使用 GPT Image 模型，包括 `gpt-image-2`, `gpt-image-1.5`,
   `gpt-image-1`，以及 `gpt-image-1-mini`.
 
 <div
@@ -54,13 +54,13 @@ Responses API 的图像生成工具使用其自有的 GPT Image 模型选择。�
 
 
 
-## 生成图像
+## 生成图片
 
-你可以使用 [图像生成端点](https://developers.openai.com/api/reference/resources/images) 根据文本提示创建图像,或者使用 [图像生成工具](https://developers.openai.com/api/docs/guides/tools?api-mode=responses) 在 Responses API 中将图像生成作为对话的一部分。
+你可以使用 [图像生成端点](https://developers.openai.com/api/reference/resources/images) 根据文本提示创建图像，也可以使用 [图像生成工具](https://developers.openai.com/api/docs/guides/tools?api-mode=responses) 在 Responses API 中在对话过程中生成图像。
 
-若要了解如何自定义输出(尺寸、质量、格式、压缩),请参阅 [自定义图像输出](#customize-image-output) 部分。
+要详细了解如何自定义输出（尺寸、质量、格式、压缩），请参阅 [自定义图像输出](#customize-image-output) 部分。
 
-你可以设置 `n` 参数,以便在单次请求中同时生成多张图像(默认情况下,API 只返回一张图像)。
+你可以设置 `n` 参数，在单次请求中一次生成多张图像（默认情况下，API 返回单张图像）。
 
 
 
@@ -227,7 +227,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
   tools: [{ type: "image_generation" }],
@@ -252,7 +252,7 @@ import base64
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -285,7 +285,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Generate an image of gray tabby cat hugging an otter with an orange scarf"),
 		},
@@ -326,7 +326,7 @@ import java.util.Base64;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
         .addTool(Tool.ImageGeneration.builder().build())
         .build();
@@ -348,7 +348,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem(
         "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
@@ -370,7 +370,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
   tools: [{type: :image_generation}]
 )
@@ -390,10 +390,10 @@ File.binwrite("otter.png", Base64.strict_decode64(encoded_image))
 
 ### 多轮图像生成
 
-使用 Responses API，你可以通过在上下文中提供图像生成调用的输出（也可以直接使用图像 ID），或者使用 [`previous_response_id` 参数](https://developers.openai.com/api/docs/guides/conversation-state?api-mode=responses#openai-apis-for-conversation-state).
-这样你就可以在多轮对话中迭代图像——优化提示、添加新的指令，并随着对话推进不断调整视觉效果。
+使用 Responses API，你可以通过在上下文中提供图像生成调用的输出（也可以直接使用图像 ID），或者通过使用 [`previous_response_id` 参数](https://developers.openai.com/api/docs/guides/conversation-state?api-mode=responses#openai-apis-for-conversation-state).
+这让你可以在多轮对话中迭代优化图像——调整提示词、应用新的指令，并随着对话推进不断演进视觉效果。
 
-使用 Responses API 的图像生成工具时，受支持的工具模型可以选择是生成新图像还是编辑对话中已有的图像。可选 `action` 参数控制这一行为：设为 `action: "auto"` 表示由模型自行决定，设为 `action: "generate"` 表示始终创建新图像，设为 `action: "edit"` 表示当上下文中已有图像时强制进行编辑。
+使用 Responses API 图像生成工具时，支持的工具模型可以选择是生成新图像还是编辑对话中已有的图像。可选的 `action` 参数控制此行为：保留为 `action: "auto"` 可让模型自行决定，设置为 `action: "generate"` 则始终创建新图像，或者设置为 `action: "edit"` 可在上下文中存在图像时强制进行编辑。
 
 使用 action 强制创建图像
 
@@ -402,7 +402,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
   tools: [{ type: "image_generation", action: "generate" }],
@@ -427,7 +427,7 @@ import base64
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation", "action": "generate"}],
 )
@@ -460,7 +460,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Generate an image of gray tabby cat hugging an otter with an orange scarf"),
 		},
@@ -498,7 +498,7 @@ import java.util.Base64;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
         .addTool(
             Tool.ImageGeneration.builder().action(Tool.ImageGeneration.Action.GENERATE).build())
@@ -522,7 +522,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem(
         "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
@@ -549,7 +549,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
   tools: [{type: :image_generation, action: :generate}]
 )
@@ -568,11 +568,11 @@ puts(output_path)
 ```
 
 
-如果强制 `edit` 而未在上下文中提供图像，则调用将返回错误。将 `action` 留空 `auto` 以让模型自行决定何时生成或编辑。
+如果在上下文中没有提供图像却强制 `edit` ，该调用将返回错误。将 `action` 设为 `auto` 可让模型自行决定何时生成或编辑。
 
 
 
-使用上一个响应 ID
+使用上一次响应 ID
 
     Multi-turn image generation
 
@@ -581,7 +581,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
   tools: [{ type: "image_generation" }],
@@ -600,7 +600,7 @@ if (imageData.length > 0) {
 // Follow up
 
 const response_fwup = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   previous_response_id: response.id,
   input: "Now make it look realistic",
   tools: [{ type: "image_generation" }],
@@ -627,7 +627,7 @@ import base64
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -648,7 +648,7 @@ if image_data:
 # Follow up
 
 response_fwup = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     previous_response_id=response.id,
     input="Now make it look realistic",
     tools=[{"type": "image_generation"}],
@@ -681,7 +681,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	first, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Generate an image of gray tabby cat hugging an otter with an orange scarf"),
 		},
@@ -693,7 +693,7 @@ func main() {
 	saveFirstGeneratedImage(first, "cat_and_otter.png")
 
 	followUp, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:              "gpt-5.6",
+		Model:              "gpt-6-astra",
 		PreviousResponseID: openai.String(first.ID),
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Now make it look realistic"),
@@ -738,7 +738,7 @@ var first =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .input(
                     "Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
                 .addTool(Tool.ImageGeneration.builder().build())
@@ -761,7 +761,7 @@ var second =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .input("Now make it look realistic.")
                 .previousResponseId(first.id())
                 .addTool(Tool.ImageGeneration.builder().build())
@@ -788,7 +788,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem(
@@ -804,7 +804,7 @@ await File.WriteAllBytesAsync("cat_and_otter.png", initialImage.ImageResultBytes
 
 CreateResponseOptions followUp = new()
 {
-    Model = "gpt-5.6",
+    Model = "gpt-6-astra",
     PreviousResponseId = first.Id,
 };
 followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
@@ -826,7 +826,7 @@ require "openai"
 
 client = OpenAI::Client.new
 first = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
   tools: [{type: :image_generation}]
 )
@@ -842,7 +842,7 @@ encoded_image = first_image.result or raise "No image returned"
 File.binwrite("cat_and_otter.png", Base64.strict_decode64(encoded_image))
 
 follow_up = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Now make it look realistic.",
   previous_response_id: first.id,
   tools: [{type: :image_generation}]
@@ -873,7 +873,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
   tools: [{ type: "image_generation" }],
@@ -894,7 +894,7 @@ if (imageData.length > 0) {
 // Follow up
 
 const response_fwup = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -927,7 +927,7 @@ import openai
 import base64
 
 response = openai.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -948,7 +948,7 @@ if image_data:
 # Follow up
 
 response_fwup = openai.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -990,7 +990,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	first, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Generate an image of gray tabby cat hugging an otter with an orange scarf"),
 		},
@@ -1008,7 +1008,7 @@ func main() {
 	))
 
 	followUp, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: input},
 		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{}}},
 	})
@@ -1068,7 +1068,7 @@ var first =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .input(
                     "Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
                 .addTool(Tool.ImageGeneration.builder().build())
@@ -1091,7 +1091,7 @@ var second =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .inputOfResponse(
                     List.of(
                         ResponseInputItem.ofMessage(
@@ -1126,7 +1126,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem(
@@ -1140,7 +1140,7 @@ ImageGenerationCallResponseItem initialImage = first
     .First();
 await File.WriteAllBytesAsync("cat_and_otter.png", initialImage.ImageResultBytes.ToArray());
 
-CreateResponseOptions followUp = new() { Model = "gpt-5.6" };
+CreateResponseOptions followUp = new() { Model = "gpt-6-astra" };
 followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
 followUp.InputItems.Add(ResponseItem.CreateUserMessageItem("Now make it look realistic."));
 followUp.InputItems.Add(ResponseItem.CreateReferenceItem(initialImage.Id));
@@ -1161,7 +1161,7 @@ require "openai"
 
 client = OpenAI::Client.new
 first = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
   tools: [{type: :image_generation}]
 )
@@ -1177,7 +1177,7 @@ encoded_image = first_image.result or raise "No image returned"
 File.binwrite("cat_and_otter.png", Base64.strict_decode64(encoded_image))
 
 follow_up = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: :user,
@@ -1245,10 +1245,10 @@ File.binwrite("cat_and_otter_realistic.png", Base64.strict_decode64(encoded_imag
 
 Responses API 和 Image API 支持流式图像生成。你可以在 API 生成图像的同时流式接收部分图像，从而获得更具交互性的体验。
 
-你可以调整该参数 `partial_images` ，接收 0-3 张部分图像。
+你可以调整 `partial_images` 参数以接收 0-3 张部分图像。
 
 - 如果你将 `partial_images` 设置为 0，你将只会收到最终图像。
-- 对于大于零的值，如果完整图像生成得更快，你可能不会收到所请求的全部部分图像数量。
+- 对于大于零的值，如果完整图像生成得更快，你可能无法收到你请求的全部部分图像数量。
 
 
 
@@ -1267,7 +1267,7 @@ function saveBase64Image(filename, imageBase64) {
 }
 
 const stream = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
   stream: true,
@@ -1304,7 +1304,7 @@ def save_base64_image(filename, image_base64):
 
 
 stream = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
     stream=True,
     tools=[{"type": "image_generation", "partial_images": 2}],
@@ -1341,7 +1341,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	stream := client.Responses.NewStreaming(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape"),
 		},
@@ -1391,7 +1391,7 @@ import java.util.Base64;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Generate an image of a river made of white owl feathers.")
         .addTool(Tool.ImageGeneration.builder().partialImages(2).build())
         .build();
@@ -1431,7 +1431,7 @@ require "openai"
 
 client = OpenAI::Client.new
 stream = client.responses.stream(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Generate an image of a river made of white owl feathers.",
   tools: [{type: :image_generation, partial_images: 2}]
 )
@@ -1580,7 +1580,7 @@ end
 
 
 
-| Partial 1                                                                                                                       | Partial 2                                                                                                                       | Final image                                                                                                                     |
+| Partial 1                                                                                                                       | Partial 2                                                                                                                       | 最终图像                                                                                                                     |
 | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/imgen1p5-streaming1.png" alt="1st partial" /> | <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/imgen1p5-streaming2.png" alt="2nd partial" /> | <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/imgen1p5-streaming3.png" alt="3rd partial" /> |
 
@@ -1589,18 +1589,18 @@ end
 
 
 
-  提示：画一幅由白色猫头鹰羽毛汇成的河流的绚丽图像，蜿蜒
-  流过宁静的冬季景观
+  Prompt: Draw a gorgeous image of a river made of white owl feathers, snaking
+  its way through a serene winter landscape
 
 
 
 ### 修订后的提示词
 
-在 Responses API 中使用图像生成工具时，主线模型（例如， `gpt-5.5`）会自动修改你的提示词以提升效果。
+在使用 Responses API 的图像生成工具时，主线模型（例如， `gpt-5.5`）会自动修订你的提示以提升效果。
 
-你可以在图像生成调用的 `revised_prompt` 字段中查看修改后的提示词：
+你可以在图像生成调用的 `revised_prompt` 字段中访问修订后的提示：
 
-修改后的提示词响应
+修订后的提示响应
 
 ```json
 {
@@ -1615,31 +1615,31 @@ end
 
 ## 编辑图片
 
-该 [图像编辑](https://developers.openai.com/api/reference/resources/images) 端点可让你：
+该 [image edits](https://developers.openai.com/api/reference/resources/images) 端点可用于：
 
 - 编辑现有图像
-- 使用其他图像作为参考来生成新图像
-- 通过上传图像和蒙版来识别要替换的区域，以编辑图像的特定部分
+- 使用其他图像作为参考生成新图像
+- 通过上传图像和遮罩来标识需要替换的区域，从而编辑图像的某些部分
 
 ### 使用图像参考创建新图像
 
 你可以使用一张或多张图片作为参考来生成新图片。
 
-在本示例中，我们将使用 4 张输入图片来生成一张新的图片，内容是一个包含参考图片中物品的礼篮。
+在本例中，我们将使用 4 张输入图片来生成一个新图片，内容是一个包含参考图片中物品的礼篮。
 
 Responses API
 
     
 
-使用 Responses API 时，你可以通过 3 种不同的方式提供输入图片：
+通过 Responses API，你可以通过 3 种不同的方式提供输入图片：
 
 - 通过提供完全限定的 URL
-- 通过提供作为 Base64 编码数据 URL 的图片
+- 通过提供 Base64 编码的图片 data URL
 - 通过提供文件 ID（使用 [Files API](https://developers.openai.com/api/reference/resources/files))
 
-#### 创建文件
+#### Create a File
 
-Create a File
+创建文件
 
 ```javascript
 import fs from "fs";
@@ -1734,9 +1734,9 @@ puts(file.id)
 ```
 
 
-#### 创建一张 base64 编码的图片
+#### 创建 base64 编码的图像
 
-创建 base64 编码的图像
+创建一个经过 base64 编码的图像
 
 ```javascript
 import fs from "fs";
@@ -1813,7 +1813,7 @@ const fileId1 = await createFile("fixtures/bath-bomb.png");
 const fileId2 = await createFile("fixtures/incense-kit.png");
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -1885,7 +1885,7 @@ file_id1 = create_file("bath-bomb.png")
 file_id2 = create_file("incense-kit.png")
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -1945,7 +1945,7 @@ func main() {
 	incenseKitID := uploadImage(client, "incense-kit.png")
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
 			responses.ResponseInputItemParamOfMessage(
 				responses.ResponseInputMessageContentListParam{
@@ -2072,7 +2072,7 @@ var response =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .inputOfResponse(List.of(input))
                 .addTool(Tool.ImageGeneration.builder().build())
                 .build());
@@ -2107,7 +2107,7 @@ prompt = <<~PROMPT
   containing all the items in the reference pictures.
 PROMPT
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [{
     role: :user,
     content: [
@@ -2379,14 +2379,14 @@ openai images edit \
 
 
 
-### 使用蒙版编辑图像
+### 使用遮罩编辑图像
 
-你可以提供一个遮罩，用于指示图像中应当被编辑的部分。
+你可以提供一个遮罩（mask），用于指定图像中需要编辑的部分。
 
-在使用 GPT Image 的遮罩时，额外的指令会被发送给模型，以相应地引导编辑过程。
+在使用 GPT Image 的遮罩时，额外的指令会一并发送给模型，以引导其完成相应的编辑过程。
 
-使用 GPT Image 进行遮罩完全依赖于提示词。模型会将遮罩作为
-  引导依据，但可能无法以完全精确的方式贴合其形状。
+使用 GPT Image 进行遮罩处理完全基于提示（prompt）。模型会将遮罩作为
+  参考，但不一定能精确地遵循其形状。
 
 如果你提供多张输入图像，遮罩将应用于第一张图像。
 
@@ -2414,7 +2414,7 @@ const fileId = await createFile("fixtures/sunlit_lounge.png");
 const maskId = await createFile("fixtures/mask.png");
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -2469,7 +2469,7 @@ fileId = create_file("sunlit_lounge.png")
 maskId = create_file("mask.png")
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -2525,7 +2525,7 @@ func main() {
 	imageID := uploadImage(client, "sunlit_lounge.png")
 	maskID := uploadImage(client, "mask.png")
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
 			responses.ResponseInputItemParamOfMessage(
 				responses.ResponseInputMessageContentListParam{
@@ -2615,7 +2615,7 @@ var response =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .inputOfResponse(
                     List.of(
                         ResponseInputItem.ofMessage(
@@ -2655,7 +2655,7 @@ client = OpenAI::Client.new
 image = client.files.create(file: Pathname("sunlit_lounge.png"), purpose: :vision)
 mask = client.files.create(file: Pathname("mask.png"), purpose: :vision)
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [{
     role: :user,
     content: [
@@ -2861,7 +2861,7 @@ openai images edit \
 
 
 
-| Image                                                                                                                                 | Mask                                                                                                                            | Output                                                                                                                                                                                |
+| 图像                                                                                                                                 | 掩码                                                                                                                            | 输出                                                                                                                                                                                |
 | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/sunlit_lounge.png" alt="A pink room with a pool" /> | <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/mask.png" alt="A mask in part of the pool" /> | <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/sunlit_lounge_result.png" alt="The original pool with an inflatable flamingo replacing the mask" /> |
 
@@ -2870,17 +2870,17 @@ openai images edit \
 
 
 
-  Prompt：阳光充足的室内休息区，池中有一只火烈鸟
+  提示词：一个阳光充足的室内休闲区，内含一个泳池，池中有一只火烈鸟
 
 
 
 #### 掩码要求
 
-待编辑的图像和遮罩必须使用相同的格式和尺寸（大小小于 50MB）。
+待编辑的图像与遮罩必须是相同的格式和尺寸（大小小于 50MB）。
 
-遮罩图像也必须包含 alpha 通道。如果你使用图像编辑工具创建遮罩，请务必将遮罩与 alpha 通道一起保存。
+遮罩图像也必须包含 alpha 通道。如果你使用图像编辑工具创建遮罩，请确保将遮罩保存为包含 alpha 通道的格式。
 
-你可以通过编程方式修改黑白图像来添加 alpha 通道。
+你可以通过编程方式修改黑白图像以添加 alpha 通道。
 
 为黑白遮罩添加 alpha 通道
 
@@ -2954,33 +2954,33 @@ func main() {
 
 ### 图像输入保真度
 
-该 `input_fidelity` 参数控制模型在编辑和参考图像工作流中保留输入图像细节的程度。 `gpt-image-2`，请省略此参数；API 不允许修改该参数，因为模型会自动以高保真度处理每张输入图像。
+该 `input_fidelity` 参数控制模型在编辑和参考图像工作流中保留输入图像细节的程度。对于 `gpt-image-2`，请省略此参数；API 不允许更改它，因为模型会自动以高保真度处理每个图像输入。
 
-由于 `gpt-image-2` 始终以高保真度处理图像输入，因此图像
-  输入 token 在包含参考图像的编辑请求中可能会更高。若要
-  了解成本影响，请参阅 [vision
-  costs](https://developers.openai.com/api/docs/guides/images-vision?api-mode=responses#calculating-costs)
+由于 `gpt-image-2` 始终以高保真度处理图像输入，因此对于
+  包含参考图像的编辑请求，图像输入 token 数可能会更高。若要
+  了解费用影响，请参阅 [vision
+  费用](https://developers.openai.com/api/docs/guides/images-vision?api-mode=responses#calculating-costs)
   部分。
 
 ## 自定义图像输出
 
 你可以配置以下输出选项：
 
-- **Size**: 图像尺寸（例如， `1024x1024`, `1024x1536`)
-- **Quality**: 渲染质量（例如， `low`, `medium`, `high`)
-- **Format**: 文件输出格式
-- **Compression**: JPEG 和 WebP 格式的压缩级别（0-100%）
-- **Background**: 透明、不透明或自动
+- **尺寸**：图像尺寸（例如， `1024x1024`, `1024x1536`)
+- **质量**：渲染质量（例如， `low`, `medium`, `high`)
+- **格式**：文件输出格式
+- **压缩**：JPEG 和 WebP 格式的压缩级别（0-100%）
+- **背景**：透明、不透明或自动
 
 `size`, `quality`，以及 `background` 支持 `auto` 选项，模型将根据提示自动选择最佳选项。
 
-透明背景功能当前可用于预览 `gpt-image-2`。设置
-  `background: "transparent"` 以请求透明背景。使用 `png` （默认值）或 `webp`;
+透明背景预览版可用于 `gpt-image-2`。设置
+  `background: "transparent"` 以请求一个。使用 `png` （默认）或 `webp`;
   `jpeg` 不支持透明背景。
 
 ### 尺寸和质量选项
 
-`gpt-image-2` 在符合以下约束条件时， `size` 参数接受任何分辨率。正方形图像通常生成速度最快。
+`gpt-image-2` 接受任何满足以下约束的 `size` 参数分辨率。正方形图像通常生成速度最快。
 
 <table>
   <tbody>
@@ -3058,12 +3058,12 @@ func main() {
   </tbody>
 </table>
 
-使用 `quality: "low"` 进行快速草图、缩略图和快速迭代。它是
-  最快的选项，在许多常见用例中表现良好，之后你可以切换到
-  `medium` 或 `high` 以生成最终素材。
+使用 `quality: "low"` 进行快速草稿、缩略图和快速迭代。它是
+  最快的选项，适用于许多常见用例，适合在你转向
+  `medium` 或 `high` 生成最终资源之前使用。
 
-包含超过 `2560x1440` (`3,686,400`) 总像素的输出，
-  （通常称为 2K）被视为实验性功能。
+输出包含超过 `2560x1440` (`3,686,400`) 总像素的图像，
+  通常称为 2K，被视为实验性。
 
 ### 输出格式
 
@@ -3073,31 +3073,31 @@ Image API 返回 base64 编码的图像数据。
 如果使用 `jpeg` 或 `webp`，你还可以指定 `output_compression` 参数来控制压缩级别（0-100%）。例如， `output_compression=50` 会将图像压缩 50%。
 
 使用 `jpeg` 比 `png`，更快，因此如果
-  延迟是关注点，应优先使用该格式。
+  延迟是个关注点，则应优先使用该格式。
 
 ## 限制
 
-GPT Image 模型（`gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`，以及 `gpt-image-1-mini`）功能强大且用途广泛，但它们仍有一些需要注意的局限性：
+GPT Image 模型（`gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`，以及 `gpt-image-1-mini`）功能强大且用途广泛，但仍存在一些需要注意的限制：
 
-- **延迟：** 复杂的提示词处理可能需要长达 2 分钟。
-- **文本渲染：** 尽管已有显著改进，模型在精确的文字排布和清晰度方面仍可能遇到困难。
-- **一致性：** 虽然该模型能够生成风格一致的图像，但在多次生成过程中，偶尔可能难以保持反复出现的角色或品牌元素的视觉一致性。
-- **构图控制：** 尽管指令遵循能力有所提升，模型在结构化或对布局敏感的构图中，仍可能难以精确放置元素。
+- **延迟：** 复杂的提示词处理时间最长可达 2 分钟。
+- **文本渲染：** 尽管已有显著改进，该模型在精确的文字排版和清晰度方面仍可能存在不足。
+- **一致性：** 虽然能够生成一致的图像，但在多次生成中，模型偶尔可能难以在重复出现的角色或品牌元素上保持视觉一致性。
+- **构图控制：** 尽管指令遵循能力有所提升，但在结构化或对布局敏感的构图中，模型可能难以精确放置元素。
 
 ### 内容审核
 
-所有提示词和生成的图像都会根据我们的 [内容政策](https://openai.com/policies/usage-policies/).
+所有提示词和生成的图像都会按照我们的 [内容政策](https://openai.com/policies/usage-policies/).
 
-对于使用 GPT Image 模型生成图像（`gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`，以及 `gpt-image-1-mini`），你可以使用 `moderation` 参数来控制审核严格程度。该参数支持两个取值：
+对于使用 GPT Image 模型（`gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`，以及 `gpt-image-1-mini`）进行图像生成，你可以通过该 `moderation` 参数控制审核严格程度。该参数支持两个值：
 
-- `auto` (default): Standard filtering that seeks to limit creating certain categories of potentially age-inappropriate content. (默认)：标准过滤，旨在限制生成某些类别的可能不适合特定年龄段的内容。
-- `low`: Less restrictive filtering. ：限制更少的过滤。
+- `auto` (默认)：标准过滤，旨在限制生成某些类别的潜在不适合特定年龄段的内容。
+- `low`：限制较少的过滤。
 
 ### 处理被阻止的请求和其他错误
 
-按照处理其他 API 错误的方式处理图像生成失败：检查 HTTP 状态码或 SDK 异常类型，记录请求 ID，并参阅 [错误代码指南](https://developers.openai.com/api/docs/guides/error-codes) 以了解身份验证、配额、速率限制和服务端故障。对于瞬时故障，例如 `429` 这类 `5xx`，适合进行重试；但对于需要修改请求的图像生成用户错误，则不适合重试。
+以处理其他 API 错误的方式处理图像生成失败：检查 HTTP 状态码或 SDK 异常类型，记录请求 ID，并参阅 [错误代码指南](https://developers.openai.com/api/docs/guides/error-codes) 了解身份验证、配额、速率限制和服务端失败。可以对 `429` 等 `5xx`，瞬时失败进行重试，但不要对需要修改请求的图像生成用户错误进行重试。
 
-部分图像生成失败属于用户可纠正的类型，可能会返回 `error.type = "image_generation_user_error"`。在没有修改提示词或输入图像的情况下，请勿自动重试这些错误。若要进行程序化处理，请使用 `error.code` 作为稳定的判别器。
+某些图像生成失败属于用户可纠正的错误，可能会返回 `error.type = "image_generation_user_error"`。在没有修改提示词或输入图像的情况下，请勿自动重试这些错误。若要编程式处理，请使用 `error.code` 作为稳定的判别依据。
 
 当 `error.code = "moderation_blocked"`，时，错误还可能包含一个可选的 `error.moderation_details` 对象：
 
@@ -3114,19 +3114,19 @@ GPT Image 模型（`gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`，以及 `gpt-i
 }
 ```
 
-该 `moderation_details` 对象提供粗粒度的调试上下文，且不会暴露内部分类器的标签或分数。
+该 `moderation_details` 对象提供粗粒度的调试上下文，但不会暴露内部分类器的标签或分数。
 
 `moderation_stage` 可以是：
 
-- `input`: 该内容块来自提示词或请求输入。
-- `output`: 该内容块来自生成的图像或下游输出审核阶段。
-- `unknown`当来源难以确定时采用的罕见回退方式。
+- `input`: 该块来自提示或请求输入。
+- `output`: 该块来自生成的图像或下游输出审核阶段。
+- `unknown`: 当来源难以确定时的罕见回退情况。
 
-`categories` 包含粗粒度的公共标签。例如，你可能会看到类似 `harassment`, `self-harm`, `sexual`，的值，或者 `violence`.
+`categories` 包含粗粒度的公开标签。例如，你可能会看到类似以下的值 `harassment`, `self-harm`, `sexual`，或者 `violence`.
 
-对于大多数应用，请保持面向最终用户的主消息内容通用。使用 `moderation_details` 用于开发者日志、支持工作流、分析以及轻量修正提示。
+对于大多数应用来说，请保持主要面向最终用户的消息通用。使用 `moderation_details` 用于开发者日志、支持工作流、分析和轻量修复提示。
 
-例如，如果出现 `harassment` ，建议删除辱骂性或针对性语言。如果拦截发生在 `input` 阶段，引导用户修改提示。如果发生在 `output` 阶段，则将其视为生成结果的安全拦截，并在日志中加以区分。始终优先根据 `error.code = "moderation_blocked"` 进行分支判断，并将 `moderation_details` 作为可选的额外上下文。
+例如，如果出现 `harassment` ，建议删除辱骂性或针对性内容。如果拦截发生在 `input` 阶段，引导用户修改提示词。如果发生在 `output` 阶段，将其视为生成结果的安全拦截，并在日志中加以区分。始终优先根据 `error.code = "moderation_blocked"` 进行分支判断，并将 `moderation_details` 作为可选的额外上下文。
 
 处理被审核拦截的图像生成错误
 
@@ -3341,19 +3341,19 @@ end
 ```
 
 
-### Supported models
+### 支持的模型
 
-在 Responses API 中使用图像生成时， `gpt-5` 以及更新的模型应支持图像生成工具。 [请查看你所使用模型的详情页](https://developers.openai.com/api/docs/models) 以确认你所需的模型是否可以使用图像生成工具。
+当在 Responses API 中使用图像生成时， `gpt-5` 以及更新的模型应支持图像生成工具。 [查看模型的详情页面](https://developers.openai.com/api/docs/models) 以确认你所需的模型是否可以使用图像生成工具。
 
 ## 成本与延迟
 
 ### `gpt-image-2` 输出 token
 
-如需 `gpt-image-2`，请使用计算器根据所请求的 `quality` 这类 `size`:
+若要 `gpt-image-2`，请使用计算器根据请求的输入估算输出 token 数 `quality` 等 `size`:
 
-### Models prior to `gpt-image-2`
+### 在此之前的模型 `gpt-image-2`
 
-GPT Image models prior to `gpt-image-2` 通过首先生成专用的图像 token 来生成图像。延迟和最终成本与渲染图像所需的 token 数量成正比——更大的图像尺寸和更高的质量设置会导致更多 token。
+早于 `gpt-image-2` 的 GPT Image 模型通过首先生成专门的图像 token 来生成图像。延迟和最终成本都与渲染图像所需的 token 数量成正比——更大的图像尺寸和更高的质量设置会导致更多 token。
 
 生成的 token 数量取决于图像尺寸和质量：
 
@@ -3363,30 +3363,30 @@ GPT Image models prior to `gpt-image-2` 通过首先生成专用的图像 token 
 | 中  | 1056 tokens        | 1584 tokens          | 1568 tokens           |
 | 高    | 4160 tokens        | 6240 tokens          | 6208 tokens           |
 
-请注意，你还需要将 [输入 token](https://developers.openai.com/api/docs/guides/images-vision?api-mode=responses#calculating-costs)：若编辑图像，则包括提示词的文本 token 和输入图像的图像 token。
-由于 `gpt-image-2` 始终以高保真度处理图像输入，包含参考图像的编辑请求会使用更多输入 token。
+请注意，你还需要考虑 [输入 token](https://developers.openai.com/api/docs/guides/images-vision?api-mode=responses#calculating-costs)：用于提示词的文本 token，以及编辑图像时输入图像的图像 token。
+由于 `gpt-image-2` 始终以高保真度处理图像输入，包含参考图像的编辑请求可能会使用更多的输入 token。
 
 请参阅 [定价页面](https://developers.openai.com/api/docs/pricing#image-generation) 了解当前的
-文本和图像 token 价格，并参考下方 [计算成本](#calculating-costs)
-部分估算请求成本。
+文本和图像 token 价格，并使用 [成本计算](#calculating-costs)
+部分来估算请求成本。
 
-最终费用是以下各项的总和：
+最终成本是以下各项之和：
 
-- 输入文本标记
-- 若使用 edits 端点，则为输入图像标记
-- 图像输出标记
+- 输入文本 token
+- 如果使用 edits 端点，则为输入图像 token
+- 图像输出 token
 
 ### 计算成本
 
-使用下方的定价计算器估算 GPT Image 模型的请求成本。
-`gpt-image-2` 支持数千种有效分辨率；下表列出了
-与先前 GPT Image 模型所使用的相同尺寸，便于对比。对于 GPT Image 1.5、
-GPT Image 1 和 GPT Image 1 Mini，旧的按图像输出定价表也
-在下方列出。在估算成本时，你仍然需要将文本和图像输入 token 计算在内。
-估算请求的总成本。
+使用下方的定价计算器估算 GPT Image 模型的请求费用。
+`gpt-image-2` 支持上千种有效分辨率；下表列出了与之前 GPT Image 模型相同
+的尺寸以供对比。对于 GPT Image 1.5、
+GPT Image 1 和 GPT Image 1 Mini，下方也列出了旧的按张
+计费输出定价表。在估算单次请求的总成本时，你仍需将文本和图像
+输入 token 计入其中。
 
-在相同质量设置下，较大的非方形分辨率有时会比
-  较小或方形分辨率生成更少的输出 token。
+在相同质量设置下，更大的非正方形分辨率有时会比更小或正方形分辨率
+  生成更少的输出 token。
 
 <table
   style={{ borderCollapse: "collapse", tableLayout: "fixed", width: "100%" }}
@@ -3409,7 +3409,7 @@ GPT Image 1 和 GPT Image 1 Mini，旧的按图像输出定价表也
         
 
         
-其他可用尺寸
+其他可选尺寸
 
       </td>
       <td style={{ padding: "8px" }}>Low</td>
@@ -3501,4 +3501,4 @@ GPT Image 1 和 GPT Image 1 Mini，旧的按图像输出定价表也
 
 ### Partial images cost
 
-如果你希望使用 [流式图像生成](#streaming) 参数，那么每个部分图像将额外计费 100 个图像输出 token。 `partial_images` parameter, each partial image will incur an additional 100 image output tokens.
+如果你希望 [流式图像生成](#streaming) 使用 `partial_images` 参数，每个部分图像将额外产生 100 个图像输出 token。

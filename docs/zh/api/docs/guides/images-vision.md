@@ -1,44 +1,44 @@
-# 图像与视觉
+# 图片与视觉
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 后追加 `.md` 即可获取文档页面的 Markdown 版本。
 
 ## 概述
 
 
 
-  - **[创建图像](https://developers.openai.com/api/docs/guides/image-generation)**：使用 GPT Image 模型生成或编辑图像。
-- **[处理图像输入](#analyze-images)**：利用我们模型的视觉能力来分析图像。
+  - **[Create images](https://developers.openai.com/api/docs/guides/image-generation)**:使用 GPT Image 模型生成或编辑图像。
+- **[Process image inputs](#analyze-images)**:利用我们模型的视觉能力来分析图像。
 
 
 
 <a id="a-tour-of-image-related-use-cases"></a>
 
-近期的语言模型可以处理并分析图像输入——这一能力被称为 **视觉**。GPT 图像模型可以使用文本和图像输入来生成新图像或编辑现有图像。
+近期的语言模型能够处理图像输入并对其进行分析——这一能力被称为 **视觉**。GPT Image 模型可以利用文本和图像输入来创建新图像或编辑现有图像。
 
-根据你想要分析图像还是生成图像，选择相应的端点：
+根据你是想分析图像还是生成图像来选择相应的端点：
 
 | API                                                  | 支持的使用场景                                                        |
 | ---------------------------------------------------- | -------------------------------------------------------------------------- |
 | [Responses API](https://developers.openai.com/api/reference/resources/responses)   | 使用图像生成工具分析图像，或生成和编辑图像 |
-| [Images API](https://developers.openai.com/api/reference/resources/images)         | 生成图像作为输出，可选择使用图像作为输入                |
+| [图像 API](https://developers.openai.com/api/reference/resources/images)         | 生成图像作为输出，可选择使用图像作为输入                |
 | [Chat Completions API](https://developers.openai.com/api/reference/resources/chat) | 分析图像并生成文本响应                                 |
 
-若要详细了解我们的模型所支持的输入和输出模态，请参阅我们的 [模型页面](https://developers.openai.com/api/docs/models).
+要详细了解我们的模型所支持的输入和输出模态，请参阅我们的 [模型页面](https://developers.openai.com/api/docs/models).
 
 ## 生成或编辑图像
 
-使用 Images API,可以选择 `gpt-image-2` 来从文本生成图片或编辑已有图片。使用 Responses API 时,需要选择一个支持图片生成工具的 mainline 模型;该工具会处理 GPT Image 模型的选择。
+使用 Images API，可以选择 `gpt-image-2` 从文本生成图像或编辑现有图像。使用 Responses API 时，请选择支持图像生成工具的主流模型；该工具会处理 GPT Image 模型的选择。
 
 
 
-使用 Responses 生成图片
+使用 Responses 生成图像
 
 ```javascript
 import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
   tools: [{ type: "image_generation" }],
@@ -63,7 +63,7 @@ import base64
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -97,7 +97,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Generate an image of a gray tabby cat hugging an otter with an orange scarf."),
 		},
@@ -139,7 +139,7 @@ import java.util.Base64;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
         .addTool(Tool.ImageGeneration.builder().build())
         .build();
@@ -162,7 +162,7 @@ ResponsesClient client = new(key);
 
 CreateResponseOptions options = new()
 {
-    Model = "gpt-5.6",
+    Model = "gpt-6-astra",
 };
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem(
@@ -190,7 +190,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
   tools: [{type: :image_generation}]
 )
@@ -210,7 +210,7 @@ File.binwrite(
 
 ```bash
 openai responses create \
-  --model gpt-5.6 \
+  --model gpt-6-astra \
   --raw-output \
   --transform 'output.#(type=="image_generation_call").result' <<'YAML' | base64 --decode > cat_and_otter.png
 tools:
@@ -221,16 +221,16 @@ YAML
 
 
 
-你可以在我们的图片 [生成
-  指南](https://developers.openai.com/api/docs/guides/image-generation) 中了解更多关于图片生成的内容。
+你可以在我们的 [图像
+  生成](https://developers.openai.com/api/docs/guides/image-generation) 指南中了解更多关于图像生成的信息。
 
 ### 使用世界知识进行图像生成
 
-GPT Image 模型可以在没有参考图像的情况下运用世界知识进行绘制。例如，提示要一个陈列半宝石的柜子，可以生成包含可识别宝石（如紫水晶、芙蓉石和翡翠）的场景。
+GPT Image 模型可以在没有参考图像的情况下借助世界知识进行绘制。例如，使用一个关于半宝石陈列柜的提示，可以生成包含可识别宝石（如紫水晶、芙蓉石和翡翠）的场景。
 
-## 分析图像
+## Analyze images
 
-使用具备视觉能力的模型来描述图像、读取可见文本，并回答有关物体、形状、颜色或纹理的问题。请考虑模型的 [局限性](#limitations) ，再使用其回答。
+使用具备视觉能力的模型来描述图像、读取可见文本，并回答有关物体、形状、颜色或纹理的问题。在使用其回答时，请考虑模型的 [局限性](#limitations) 。
 
 ### 将图像作为输入提供给模型
 
@@ -238,13 +238,13 @@ GPT Image 模型可以在没有参考图像的情况下运用世界知识进行�
 
 
 
-通过以下任一方式提供待分析的图片：
+通过以下任意方式提供一张图片用于分析：
 
 - 通过提供图片文件的完整 URL
-- 通过以 Base64 编码的数据 URL 形式提供图片
+- 通过将图片作为 Base64 编码的 data URL 提供
 - 通过提供文件 ID（使用 [Files API](https://developers.openai.com/api/reference/resources/files))
 
-你可以在一次请求中通过在 `content` 数组中包含多张图片来提供多张图片作为输入，但请注意， [图片会计入 token](#calculating-costs) 并相应计费。
+你可以在同一个请求中通过在数组中包含多张图片来传入多张图片 `content` 作为输入，但请注意 [图片会计入 token](#calculating-costs) 并据此计费。
 
 
 
@@ -258,7 +258,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -284,7 +284,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -317,7 +317,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfInputItemList: responses.ResponseInputParam{
 				responses.ResponseInputItemParamOfMessage(
@@ -364,7 +364,7 @@ ResponseInputItem imageInput =
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .inputOfResponse(List.of(imageInput))
         .build();
 
@@ -387,7 +387,7 @@ Uri imageUrl = new(
 );
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem(
             [
@@ -407,7 +407,7 @@ require "openai"
 client = OpenAI::Client.new
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: :user,
@@ -431,7 +431,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "input": [
       {
         "role": "user",
@@ -449,7 +449,7 @@ curl https://api.openai.com/v1/responses \
 
 ```bash
 openai responses create \
-  --model gpt-5.6 \
+  --model gpt-6-astra \
   --raw-output \
   --transform 'output.#(type=="message").content.0.text' <<'YAML'
 input:
@@ -481,7 +481,7 @@ const imagePath = "fixtures/example.jpg";
 const base64Image = fs.readFileSync(imagePath, "base64");
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -521,7 +521,7 @@ base64_image = encode_image(image_path)
 
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -561,7 +561,7 @@ func main() {
 	imageURL := "data:image/png;base64," + base64.StdEncoding.EncodeToString(image)
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfInputItemList: responses.ResponseInputParam{
 				responses.ResponseInputItemParamOfMessage(
@@ -616,7 +616,7 @@ ResponseInputItem imageInput =
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .inputOfResponse(List.of(imageInput))
         .build();
 
@@ -645,7 +645,7 @@ using Stream stream = await http.GetStreamAsync(imageUrl);
 BinaryData imageData = BinaryData.FromStream(stream, "image/png");
 
 ResponseResult response1 = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem(
             [
@@ -663,7 +663,7 @@ byte[] bytes = await http.GetByteArrayAsync(imageUrl);
 imageData = BinaryData.FromBytes(bytes, "image/png");
 
 ResponseResult response2 = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem(
             [
@@ -685,7 +685,7 @@ client = OpenAI::Client.new
 image = Base64.strict_encode64(File.binread("image.png"))
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: :user,
@@ -733,7 +733,7 @@ async function createFile(filePath) {
 const fileId = await createFile("fixtures/example.jpg");
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -772,7 +772,7 @@ def create_file(file_path):
 file_id = create_file("path_to_your_image.jpg")
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -819,7 +819,7 @@ func main() {
 	}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfInputItemList: responses.ResponseInputParam{
 				responses.ResponseInputItemParamOfMessage(
@@ -868,7 +868,7 @@ var response =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .inputOfResponse(
                     List.of(
                         ResponseInputItem.ofMessage(
@@ -916,7 +916,7 @@ OpenAIFile file = await files.UploadFileAsync(
 );
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem(
             [
@@ -941,7 +941,7 @@ uploaded = client.files.create(
 )
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: :user,
@@ -961,23 +961,23 @@ puts(response.output_text)
 
 ### 图像输入要求
 
-使用模型能够识别清楚的受支持图片文件。
+使用清晰可辨的受支持图像文件，以便模型进行分析。
 
 | 要求  | 支持的输入                                                                      |
 | ------------ | ------------------------------------------------------------------------------------- |
-| 文件类型   | PNG（`.png`）、JPEG（`.jpeg` ）或 `.jpg`）、WEBP（`.webp`）以及非动画 GIF（`.gif`) |
-| 请求大小 | 每个请求的负载总计最多 512 MB                                                |
-| 图片数量  | 每个请求最多 1,500 张图片                                                        |
+| 文件类型   | PNG (image/png)、`.png`），JPEG (image/jpeg)、`.jpeg` 或 `.jpg`），WEBP (image/webp)、`.webp`，以及非动图 GIF (image/gif)。`.gif`) |
+| 请求大小 | 每次请求总负载最大 512 MB                                                |
+| 图像数量  | 每次请求最多 1,500 张图像                                                        |
 
-对于 [基于 patch 的图像输入](#patch-based-image-tokenization)，API 在应用所选模型的缩放规则后，每个图像最多支持 30,000 个 patch，并且 `detail` 级别。此限制适用于所有受支持的 detail 级别，并对每张图像单独计算，而不是针对整个请求的 patch 总数。
+对于 [基于块的图像输入](#patch-based-image-tokenization)，API 在根据所选模型的缩放规则处理后，每张图像最多支持 30,000 个块，且 `detail` 级别。该限制适用于所有受支持的细节级别，并且针对每张图像单独生效，而不是针对请求中所有图像的块总数。
 
-更低的、按模型和 detail 设定的缩放预算仍然适用。处理后超过 30,000 个 patch 上限的图像将被拒绝，而不会自动缩放以满足该限制。请缩小图像尺寸后重试。
+较低且针对具体模型和细节的缩放预算仍然适用。处理后超过 30,000 个块上限的图像将被拒绝，而不是自动缩放以满足该限制。请减小图像尺寸后重试。
 
-图像 token 以及你提示词中的其余部分也必须符合模型的输入和上下文限制。token 预估并不能保证请求满足所有输入限制。图像使用必须遵守我们的 [使用政策](https://openai.com/policies/usage-policies/).
+图像 token 与你提示词的其余部分也必须符合模型的输入和上下文限制。token 估算并不能保证请求满足所有输入限制。图像使用必须遵守我们的 [使用政策](https://openai.com/policies/usage-policies/).
 
 ### 选择图像详细程度
 
-该 `detail` 参数控制图像预处理。支持的取值取决于模型： `low`, `high`, `original`，或 `auto`。如果你省略该参数，则默认为 `auto` ，在 Responses API 和 Chat Completions API 中都是如此。该 [模型尺寸表](#model-sizing-behavior) 展示了对应的行为。
+该 `detail` 参数控制图像预处理。支持的值取决于模型： `low`, `high`, `original`，或 `auto`。如果省略该参数，则默认为 `auto` ，在 Responses API 和 Chat Completions API 中均如此。 [模型规格表](#model-sizing-behavior) 展示了对应的行为。
 
 
 
@@ -992,20 +992,20 @@ puts(response.output_text)
 
 
 
-使用以下指引来选择细节等级：
+使用以下指南来选择细节等级：
 
-| 详细程度 | 适用场景                                                                                                                    |
+| Detail level | Best for                                                                                                                    |
 | ------------ | --------------------------------------------------------------------------------------------------------------------------- |
-| `low`        | 粗粒度图像理解。缩放和 token 使用量因模型而异； `low` 并不总是比以下情况使用更少的 token `high`. |
-| `high`       | 在不需要精确原图坐标时的标准高保真图像理解。                        |
-| `original`   | 在模型支持时，用于大型、密集、空间敏感或计算机使用的图像。                                     |
-| `auto`       | 使用模型的默认缩放行为，详见模型缩放表。                                                   |
+| `low`        | 粗粒度的图像理解。缩放方式和 token 使用量取决于模型； `low` 并不一定比使用的 token 更少 `high`. |
+| `high`       | 在不需要精确的原始图像坐标时，提供标准的高保真图像理解。                        |
+| `original`   | 在模型支持时，适用于体积较大、信息密集、对空间敏感或用于计算机操作的图像。                                     |
+| `auto`       | 使用模型的默认缩放行为，具体见模型缩放表。                                                   |
 
-对于需要精细视觉细节或精确坐标的任务，例如光学字符识别 (OCR)、小目标检测或计算机操控，请在支持时使用 `"detail": "original"` 。原始细节仍可对图像进行缩放以满足模型的像素维度限制或缩放补丁预算，但不能用于满足单独的 30,000 补丁拒绝限制。对于坐标敏感型任务，请在发送前将图像缩放至符合这些限制，并将返回的坐标映射回原始图像。详见 [计算机操控指南](https://developers.openai.com/api/docs/guides/tools-computer-use) 中关于坐标处理的内容。
+对于需要精细视觉细节或精确坐标的任务，例如光学字符识别 (OCR)、小目标检测或计算机操作，请在受支持时使用 `"detail": "original"` 。原始细节仍可将图片缩放至模型的像素尺寸限制或缩放 patch 预算之内，但不可用于满足单独的 30,000 patch 拒绝限制。对于坐标敏感型任务，请在发送前将图片缩放至符合这些限制，并将返回的坐标映射回原始图片。请参阅 [计算机操作指南](https://developers.openai.com/api/docs/guides/tools-computer-use) 了解坐标处理方式。
 
 ### 模型规模行为
 
-下表涵盖了中可用的通用视觉模型 [图像输入成本计算器](https://developers.openai.com/api/docs/guides/image-cost-calculator)。其他模型和专用变体可能使用不同的限制。所有调整大小都会保持纵横比，且不会放大较小的图像。
+下表涵盖了中提供的通用视觉模型 [图像输入成本计算器](https://developers.openai.com/api/docs/guides/image-cost-calculator)。其他模型和专用变体可能使用不同的限制。所有缩放都会保持宽高比，且不会放大较小的图像。
 
 <table>
   <tr>
@@ -1097,25 +1097,25 @@ puts(response.output_text)
 
 ## 计算成本
 
-视觉模型将图像输入转换为可计费的输入 token。本节 [图像输入成本计算器](https://developers.openai.com/api/docs/guides/image-cost-calculator) 和 patch/tile 规则仅适用于视觉模型输入，不适用于 GPT Image 生成或编辑。有关 [GPT Image 模型输入](#gpt-image-model-inputs) 的单独计费方式，请参阅。
+视觉模型会将图像输入转换为可计费的输入 token。 [图像输入成本计算器](https://developers.openai.com/api/docs/guides/image-cost-calculator) 本节中的图像缩放和 patch/切片规则适用于视觉模型输入，不适用于 GPT Image 的生成或编辑。有关独立的定价规则，请参阅 [GPT Image 模型输入](#gpt-image-model-inputs) 定价。
 
-图像 token 同样计入你的 [每分钟 token 数 (TPM) 限制](https://developers.openai.com/api/docs/guides/rate-limits)。该计算器仅按标准输入费率估算单张图像的费用，不包含你提示词中的其他内容或模型输出。
+图像 token 也会计入你的 [每分钟 token 数 (TPM) 限制](https://developers.openai.com/api/docs/guides/rate-limits)。该计算器按标准输入费率估算一张图像；不包含提示词中的其他内容或模型输出。
 
 ### 图像输入成本计算器
 
-使用 [图像输入成本计算器](https://developers.openai.com/api/docs/guides/image-cost-calculator) 按模型、图像尺寸和细节级别估算单张图片的输入 token 数和成本。
+使用 [图像输入成本计算器](https://developers.openai.com/api/docs/guides/image-cost-calculator) 按模型、图像尺寸和细节级别估算单张图像的输入 token 数量和成本。
 
-### 基于分块的图像分词
+### 基于块的图像分词
 
-一些模型通过 32px x 32px 的图像块来对图像进行分词。许多模型和细节级别的组合定义了调整大小的图像块预算。首先，API 会将图像适配所选细节级别的像素尺寸限制之内，保持原始长宽比，并将尺寸取整为整数像素，且不会放大较小的图像。随后按如下方式确定 token 消耗量：
+部分模型通过使用 32px x 32px 的图块覆盖图像来进行分词。许多模型和细节级别的组合定义了缩放图块预算。首先，API 会将图像适配到所选细节级别的像素尺寸限制内，保持宽高比并四舍五入到整数像素，且不会放大较小的图像。然后按如下方式确定 token 成本：
 
-A. 计算在应用像素尺寸限制后覆盖图像所需的 32px x 32px 图像块数量。一个图像块可以延伸到图像边界之外。
+A. 计算在应用像素尺寸限制后，覆盖该图像所需的 32px x 32px 图块数量。图块可以超出图像边界。
 
 ```
 patch_count = ceil(width/32)×ceil(height/32)
 ```
 
-B. 当所选模型和细节级别指定了调整大小的图像块预算时，如果图像超出该预算，则按比例缩小图像。否则，跳过此步骤。在转换为整数像素尺寸并计算图像块覆盖范围后，再调整缩放比例以保持在预算范围内。在计算最终尺寸之前保留完整的精度。
+B. 当所选模型和细节级别指定了缩放图块预算时，如果图像超出该预算，则按比例缩小图像。否则跳过此步骤。在转换为整数像素尺寸并计算图块覆盖范围后，调整缩放比例以保持在预算范围内。在计算最终尺寸之前保持完整精度。
 
 ```
 shrink_factor = sqrt((32^2 * patch_budget) / (width * height))
@@ -1125,17 +1125,17 @@ adjusted_shrink_factor = shrink_factor * min(
 )
 ```
 
-C. 如果步骤 B 对图像进行了缩放，则将最终缩放后的宽度和高度向下取整为整数像素。然后计算覆盖所得图像所需的图像块数量。这是应用模型乘数之前的图像 token 计数。当存在图像块预算时，该数量应保持在预算范围内。
+C. 如果步骤 B 对图像进行了缩放，则将最终缩放后的宽度和高度向下取整到整数像素。计算覆盖所得图像所需的图块数量。这是应用模型乘数之前的图像 token 计数。当存在图块预算时，该计数会保持在该预算之内。
 
 ```
 resized_patch_count = ceil(resized_width/32)×ceil(resized_height/32)
 ```
 
-如果该数量超过 30,000 个图像块，API 将拒绝该请求。请在应用 token 乘数之前检查此限制。
+如果该计数超过 30,000 个图块，API 将拒绝该请求。在应用 token 乘数之前请检查此限制。
 
-D. 将图像块数量乘以模型的乘数并向上取整，以得到计费的图像输入 token 数。对这些 token 仅应用一次模型的输入价格；该乘数不适用于其他 prompt token，也不会再次计入价格。
+D. 将图块数量乘以模型的乘数并向上取整，以得到可计费的图像输入 token 数量。对这些 token 仅应用一次模型输入价格；该乘数不适用于其他提示词 token，也不会再次应用于价格。
 
-| 模型                                  | 倍率 |
+| Model                                  | Multiplier |
 | -------------------------------------- | ---------- |
 | `gpt-5.6-sol`                          | 1.2        |
 | `gpt-5.6-terra`                        | 1.2        |
@@ -1148,29 +1148,29 @@ D. 将图像块数量乘以模型的乘数并向上取整，以得到计费的�
 | `gpt-5-mini`\*                         | 1.2        |
 | `gpt-5-nano`\*                         | 1.5        |
 | `gpt-4.1-mini`                         | 1.62       |
-| `gpt-4.1-nano`\* （2025-04-14 快照） | 2.46       |
+| `gpt-4.1-nano`\* (2025-04-14 snapshot) | 2.46       |
 | `o4-mini`\*                            | 1.72       |
 
 _对于 `gpt-4.1-mini`，这适用于 2025-04-14 快照。_
 
-\* 已弃用并计划下线。请参阅 [弃用时间表](https://developers.openai.com/api/docs/deprecations) 以了解日期和替代方案。这些模型未包含在上述计算器或模型规模表中。
+\* 已弃用并计划下线。详见 [弃用时间表](https://developers.openai.com/api/docs/deprecations) 了解日期和替代模型。这些模型未包含在上面的计算器或模型规格表中。
 
-**成本计算示例 `gpt-5.4` 使用 `detail: high`**
+**成本计算示例 `gpt-5.4` 搭配 `detail: high`**
 
-此组合使用 2048 像素的最大尺寸、2,500 个图像块的预算以及 1.2× 倍率。
+此组合使用 2048 像素的最大尺寸、2,500 的 patch 预算和 1.2× 倍率。
 
-- 一张 1024 × 1024 的图像需要 `32 × 32 = 1024` 个 patch。无需调整大小。可计费的图像输入为 `ceil(1024 × 1.2) = 1229` 个 token。
-- 一张 2048 × 2048 的图像最初需要 `64 × 64 = 4096` 个 patch。patch 预算将其缩小到 1600 × 1600 像素，即 `50 × 50 = 2500` 个 patch。估算值为 `ceil(2500 × 1.2) = 3000` 个 token。
+- 一幅 1024 × 1024 的图像需要 `32 × 32 = 1024` 个 patch。无需缩放。可计费的图像输入为 `ceil(1024 × 1.2) = 1229` 个 token。
+- 一幅 2048 × 2048 的图像最初需要 `64 × 64 = 4096` 个 patch。patch 预算将其缩小至 1600 × 1600 像素，即 `50 × 50 = 2500` 个 patch。估计为 `ceil(2500 × 1.2) = 3000` 个 token。
 
-计费中的浮点取整可能导致最终计数与预估相差一个 token。
+计费中的浮点取整可能导致最终计数与估算值相差一个 token。
 
-### 基于块的图像分词
+### 基于块（tile）的图像分词
 
 <a id="gpt-4o-gpt-41-gpt-4o-mini-cua-and-o-series-except-o4-mini"></a>
 
-此表中的模型使用基础 token 计数加上图像分块的 token：
+本表中的模型使用基础 token 数加上图像块的 token 数：
 
-| 模型                      | Base tokens | Tile tokens |
+| Model                      | 基础 token | Tile token |
 | -------------------------- | ----------- | ----------- |
 | `gpt-5.1`                  | 70          | 140         |
 | `gpt-5`\*                  | 70          | 140         |
@@ -1178,43 +1178,43 @@ _对于 `gpt-4.1-mini`，这适用于 2025-04-14 快照。_
 | `gpt-4o-mini`              | 2833        | 5667        |
 | `o1`\*, `o1-pro`\*, `o3`\* | 75          | 150         |
 
-\* 已弃用并计划下线。请参阅 [弃用时间表](https://developers.openai.com/api/docs/deprecations) 以了解日期和替代方案。这些模型未包含在上述计算器或模型规模表中。
+\* 已弃用并计划下线。详见 [弃用时间表](https://developers.openai.com/api/docs/deprecations) 了解日期和替代模型。这些模型未包含在上面的计算器或模型规格表中。
 
-使用 `"detail": "low"`，图像仅按模型的基础 token 计费，与尺寸无关。使用 `"detail": "high"` 或 `"detail": "auto"`:
+使用 `"detail": "low"`，一张图像仅按模型的基础 token 计费，与尺寸无关。使用 `"detail": "high"` 或 `"detail": "auto"`:
 
-- 按比例缩放至适配 2048px x 2048px 的方形画布；较小的图像不会被放大。
-- 如果最短边超过 768px，则将其缩放至 768px，另一边向下取整。
-- 统计覆盖整张图像所需的 512px 方块数量。每个方块都会使用模型的 tile token。
-- 将模型的 base token 与 tile token 相加。
+- 按比例缩放至适配 2048px x 2048px 的方框。较小的图像不会放大。
+- 如果最短边超过 768px，则将其缩放至 768px，另一条边向下取整。
+- 统计覆盖图像所需的 512px 方块数量。每个方块会消耗模型的瓦片 tokens。
+- 将模型的基础 tokens 与瓦片 tokens 相加。
 
 ### GPT Image 模型输入
 
-GPT Image 模型对生成和编辑使用单独的图像 token 定价。视觉计算器不会估算其输入或输出成本。当前费率请参阅 [image generation pricing](https://developers.openai.com/api/docs/pricing#image-generation)；有关生成和编辑工作流，请参阅 [Image generation guide](https://developers.openai.com/api/docs/guides/image-generation).
+GPT Image 模型对生成和编辑使用单独的图像 token 计费。视觉计算器不会估算其输入或输出成本。当前费率请参阅 [图像生成定价](https://developers.openai.com/api/docs/pricing#image-generation)；关于生成和编辑工作流，请参阅 [图像生成指南](https://developers.openai.com/api/docs/guides/image-generation).
 
 #### GPT Image 1
 
-以下输入 token 规则适用于 `gpt-image-1`。使用基于分块的图像尺寸策略，但将最短边缩放到 512px 而不是 768px。Token 用量取决于图像尺寸以及 `input_fidelity` 参数（在 [Images API](https://developers.openai.com/api/reference/resources/images/methods/edit).
+以下输入 token 规则适用于 `gpt-image-1`. 使用基于瓦片的图像尺寸调整，但将最短边缩放至 512px 而非 768px。token 用量取决于图像尺寸和 `input_fidelity` 参数（在 [Images API](https://developers.openai.com/api/reference/resources/images/methods/edit).
 
-当输入保真度设置为 low 时，基础费用为 65 个图像 token，每个分块花费 129 个图像 token。
-当使用高输入保真度时，除了上文描述的图像 token 之外，我们还会根据图像的宽高比添加一定数量的 token。
+当输入保真度设置为 low 时，基础费用为 65 个图像 token，每个瓦片费用为 129 个图像 token。
+当使用 high 输入保真度时，除了上述图像 token 之外，我们会根据图像的宽高比添加一定数量的 token。
 
-- 如果你的图片是正方形，我们会额外添加 4160 个输入图片 tokens。
-- 如果更接近竖屏或横屏，我们会额外添加 6240 个 tokens。
+- 如果你的图像是正方形，我们额外添加 4160 个输入图像 token。
+- 如果它更接近竖屏或横屏，我们额外添加 6240 个 token。
 
-若需查看图像输入 token 的定价，请参阅 [图像定价部分](https://developers.openai.com/api/docs/pricing#multimodal-image-pricing).
+如需查看图像输入 token 的价格，请参阅 [图像定价部分](https://developers.openai.com/api/docs/pricing#multimodal-image-pricing).
 
 ## 限制
 
-视觉模型可能会出错。在设计应用时，请考虑这些限制：
+视觉模型可能会出错。在设计应用时，请将这些局限性纳入考虑：
 
 - **医学图像**：该模型不适合解读 CT 扫描等专科医学图像，不应用于医疗建议。
-- **非英语**：在处理包含日语、韩语等非拉丁字母文字的图像时，模型的表现可能不佳。
-- **小号文字**：放大图像中的文字以提升可读性。在条件允许时，使用 `"detail": "original"` 也有助于提升效果。
-- **旋转**：模型可能误读旋转或上下颠倒的文字与图像。
-- **视觉元素**：在图形或文本中，若颜色或样式（如实线、虚线、点线）有所变化，模型可能难以理解。
-- **空间推理**：模型在需要精确空间定位的任务（例如识别国际象棋棋局）上表现欠佳。
-- **准确性**：模型在某些场景下可能生成错误的描述或标题。
-- **图像形状**：模型在处理全景图像和鱼眼图像时表现欠佳。
-- **元数据与缩放**：模型不会处理原始文件名或元数据。图像在分析前可能会被缩放，包括通过 `original` 方式处理。详见 [模型规模行为](#model-sizing-behavior) 以了解适用于每个模型的限制。
-- **计数**：模型可能给出图像中对象的近似计数。
-- **验证码**：出于安全考虑，我们的系统会阻止提交验证码。
+- **非英语**：在处理包含日语或韩语等非拉丁字母文字的图像时，该模型的表现可能不佳。
+- **小号文字**：放大图像中的文字以提升可读性。如果可以，使用 `"detail": "original"` 也有助于提升效果。
+- **旋转**：该模型可能会误读旋转或上下颠倒的文字与图像。
+- **视觉元素**：对于颜色或样式（如实线、虚线或点线）存在变化的图表或文字，该模型的理解能力可能较弱。
+- **空间推理**：在需要精确空间定位的任务（例如识别国际象棋局面）上，该模型表现吃力。
+- **准确性**：在某些场景下，该模型可能生成不正确的描述或标题。
+- **图像形状**：该模型难以处理全景图像和鱼眼图像。
+- **元数据与缩放**：该模型不会处理原始文件名或元数据。图像在分析前可能会被缩放，包括使用 `original` 细节处理的情况。详见 [模型规模行为](#model-sizing-behavior) 以了解适用于每个模型的限制。
+- **计数**:模型可能会给出图像中对象的近似计数。
+- **CAPTCHA**:出于安全考虑，我们的系统会阻止 CAPTCHA 的提交。

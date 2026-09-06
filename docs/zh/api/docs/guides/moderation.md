@@ -1,31 +1,31 @@
-# 内容审核
+# Moderation
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 末尾追加 `.md` 。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取文档页面的 Markdown 版本。
 
-使用 OpenAI 审核模型来检测文本和图像中的有害内容。你可以使用以下方式对独立输入进行分类： [审核接口](https://developers.openai.com/api/reference/resources/moderations) ，或在生成回复的同时请求审核评分。使用这些结果来执行你的应用策略，例如过滤内容、将请求路由到审核流程，或对提交被标记内容的账户进行干预。
+使用 OpenAI 审核模型检测文本和图像中的有害内容。你可以使用 [moderation 端点](https://developers.openai.com/api/reference/resources/moderations) 对独立输入进行分类，或在请求生成响应的同时获取审核评分。使用这些结果来执行你的应用程序策略，例如过滤内容、将请求路由以供审核，或对提交被标记内容的账户进行干预。
 
-该 `omni-moderation-latest` 模型接受文本和图像输入，不对音频进行分类。审核接口可免费使用，图像文件最大为 20 MB。
+该 `omni-moderation-latest` 模型接受文本和图像输入。它不会对音频进行分类。moderation 端点可免费使用，图像文件最大可达 20 MB。
 
 ## 选择审核工作流
 
-| 工作流                                                        | 使用场景                                                                                                     |
+| 工作流                                                        | 适用场景                                                                                                     |
 | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| [审核生成的内容](#moderate-generated-content)       | 你的应用使用 Responses API 或 Chat Completions API 生成文本，并需要审核信号。 |
-| [对独立输入进行分类](#classify-standalone-inputs)       | 你的应用需要对文本或图像进行分类，而不生成模型响应。                       |
+| [审核生成内容](#moderate-generated-content)       | 你的应用使用 Responses API 或 Chat Completions API 生成文本，并需要审核信号。 |
+| [对独立输入进行分类](#classify-standalone-inputs)       | 你的应用需要在不生成模型回复的情况下对文本或图像进行分类。                       |
 | [理解审核结果](#understand-moderation-results) | 你的应用需要解读标记、类别、分数或已应用的输入类型。                       |
 | [查看支持的类别](#review-supported-categories)     | 你的应用需要了解哪些危害类别适用于文本、图像或两者。                         |
 
-## Moderate generated content
+## 中等生成内容
 
-当你的应用需要同时获取生成文本和审核分数时，请在请求中传入顶层 `moderation` 对象。API 会在模型输入和生成输出上返回审核分数，无需额外发起审核请求。
+当你的应用需要同时获取生成文本和审核分数时，在生成请求中传入一个顶层 `moderation` 对象。API 会针对模型输入和生成输出返回审核分数，无需单独的审核请求。
 
-模型仍会正常生成。在将输出展示给用户或执行下游操作之前，请先查看审核结果。
+模型仍然会正常生成。在将输出展示给用户或执行下游操作之前，请先查看审核结果。
 
 
 
 在创建响应时设置 `moderation.model` ：
 
-生成带有审核分数的响应
+生成带审核分数的响应
 
 ```javascript
 import OpenAI from "openai";
@@ -33,7 +33,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -63,7 +63,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -103,7 +103,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("A user asks for instructions to make a harmful weapon. Draft a brief refusal and offer a safer alternative."),
 		},
@@ -145,7 +145,7 @@ import java.util.Map;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input(
             "A user asks for instructions to make a harmful weapon. Draft a brief refusal and offer a safer alternative.")
         .putAdditionalBodyProperty(
@@ -187,7 +187,7 @@ require "openai"
 client = OpenAI::Client.new
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "A user asks for instructions to make a harmful weapon. Draft a brief refusal and offer a safer alternative.",
   moderation: {model: "omni-moderation-latest"}
 )
@@ -196,23 +196,23 @@ puts(response.moderation)
 ```
 
 
-Responses API 会在响应中的 `moderation_result` 对象处返回一个 input `response.moderation.input` 对象，以及在 output `moderation_result` 对象处返回一个 input `response.moderation.output`.
+Responses API 会在 `moderation_result` 中返回一个 input `response.moderation.input` 对象，在 `moderation_result` 中返回一个 input `response.moderation.output`.
 
 
 
 
 
-内联审核结果使用与独立审核结果相同的类别字段。先用 `flagged` 做第一轮判断，然后查看 `categories` 和 `category_scores` 用于日志记录、路由、审计追踪或人工审核队列。即使是拒绝或其他具有安全意识的响应，只要讨论了有害内容，仍然可能触发标记。请将审核分数视为应用策略的参考信号，而非自动阻止的决策依据。
+内联审核结果使用的类别字段与独立审核结果相同。从 `flagged` 开始进行第一轮决策，然后查看 `categories` 和 `category_scores` 用于记录、路由、审计追踪或人工审核队列。即使是拒绝或其他具有安全意识的回复，只要涉及有害内容，仍可能触发标记。请将审核分数视为应用策略的信号，而不是自动阻止决策的依据。
 
-如果你的应用需要处理审核失败的情况，请先检查审核结果的类型再读取分数。如果某个审核步骤无法完成，对应的输入或输出审核字段可能包含错误而非审核分数。
+如果你的应用需要处理审核失败，请在读取分数前先检查审核结果的类型。如果某个审核步骤无法完成，相应的输入或输出审核字段可能会包含错误而非审核分数。
 
-对于工具调用请求，当工具调用参数和工具输出出现在对话内容中时，审核会覆盖这些内容。但它不覆盖工具名称、工具描述、工具 schema 或响应格式 schema。
+对于工具调用请求，当工具调用参数和工具输出出现在对话内容中时，审核会覆盖这些内容；但不会覆盖工具名称、工具描述、工具 schema 或响应格式 schema。
 
-如果你以流式方式获取生成的响应，审核分数会在完整生成输出可用后到达，不会随部分输出的增量一同返回。
+如果你以流式方式接收生成响应，审核分数会在完整生成输出可用后到达，不会随部分输出的增量一起返回。
 
-## Classify standalone inputs
+## 对独立输入进行分类
 
-使用 [审核接口](https://developers.openai.com/api/reference/resources/moderations) 对文本或图像输入进行分类，而无需生成模型响应。以下选项卡展示了如何使用 [OpenAI 库](https://developers.openai.com/api/docs/libraries) 和 [`omni-moderation-latest` 模型](https://developers.openai.com/api/docs/models#moderation):
+使用 [moderation 端点](https://developers.openai.com/api/reference/resources/moderations) 对文本或图像输入进行分类，无需生成模型响应。下方标签页展示了如何使用 [OpenAI libraries](https://developers.openai.com/api/docs/libraries) 以及 [`omni-moderation-latest` 模型](https://developers.openai.com/api/docs/models#moderation):
 
 
 
@@ -524,7 +524,7 @@ curl https://api.openai.com/v1/moderations \
 
 ## 理解审核结果
 
-下面是一张战争电影单帧图像的完整示例输出。模型识别出图像中的暴力指标，其 `violence` 类别评分大于 0.8。
+以下是某战争电影单帧画面的完整示例输出。模型识别出图像中的暴力指标，且 `violence` 类别得分大于 0.8。
 
 ```json
 {
@@ -583,7 +583,7 @@ curl https://api.openai.com/v1/moderations \
 }
 ```
 
-JSON 响应包含描述输入中存在哪些类别以及模型对每个类别置信度的字段。
+JSON 响应包含描述输入中存在哪些类别以及模型对每个类别的置信度的字段。
 
 <table>
   <tr>
@@ -623,17 +623,17 @@ JSON 响应包含描述输入中存在哪些类别以及模型对每个类别置
   </tr>
 </table>
 
-我们计划持续升级审核端点的底层模型。
-  因此，依赖于 `category_scores` 可能需要
-  随时间进行重新校准。
+我们计划持续升级审核接口的底层模型。
+  因此，依赖 `category_scores` 的
+  自定义策略可能需要随时间重新校准。
 
 ## 查看支持的类别
 
-下表描述了审核端点可以检测的内容类别，以及每个类别支持的输入类型。
+下表描述了 moderation 端点可检测的内容类别以及每个类别支持的输入类型。
 
-标记为“仅文本”的类别不支持图像输入。如果你仅向
-  端点发送图像（不附带文本）， `omni-moderation-latest` 模型将为这些
-  不支持的类别返回 0 分。图像文件大小
+标记为 "Text only" 的类别不支持图像输入。如果你只向
+  模型发送图像（不附带文字）， `omni-moderation-latest` 它将
+  对这些不支持的类别返回分数 0。图像文件大小
   限制为 20 MB。
 
 <table>

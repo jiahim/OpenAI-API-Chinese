@@ -1,15 +1,15 @@
-# Webhooks events
+# Webhooks 事件
 
-> 完整文档索引请参见 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 末尾追加 `.md` 。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
 
-Webhooks 是由 OpenAI 在特定事件发生时向你指定的 URL 发起的 HTTP 请求。
-这些事件会在使用 API 的过程中发生。
+Webhook 是由 OpenAI 在以下情况发生时向你指定的 URL 发送的 HTTP 请求：
+使用 API 期间发生某些事件。
 
-[详细了解 Webhooks](https://developers.openai.com/docs/guides/webhooks).
+[详细了解 webhook](https://developers.openai.com/docs/guides/webhooks).
 
 ## response.completed
 
-当后台响应已完成时发送。
+在后台响应已完成时发送。
 
 ### Schema
 
@@ -198,7 +198,7 @@ Schema name: `WebhookResponseCompleted`
 
 ## response.cancelled
 
-当后台响应被取消时发送。
+在后台响应已被取消时发送。
 
 ### Schema
 
@@ -765,7 +765,7 @@ Schema name: `WebhookResponseIncomplete`
 
 ## batch.completed
 
-当批处理 API 请求完成时发送。
+当某个批量API请求已完成时发送。
 
 ### Schema
 
@@ -1143,7 +1143,7 @@ Schema name: `WebhookBatchCancelled`
 
 ## batch.expired
 
-当批量 API 请求已过期时发送。
+当批处理 API 请求已过期时发送。
 
 ### Schema
 
@@ -1332,7 +1332,7 @@ Schema name: `WebhookBatchExpired`
 
 ## batch.failed
 
-在批量 API 请求失败时发送。
+当批量 API 请求失败时发送。
 
 ### Schema
 
@@ -1710,7 +1710,7 @@ Schema name: `WebhookFineTuningJobSucceeded`
 
 ## fine_tuning.job.failed
 
-当微调任务失败时发送。
+当微调作业失败时发送。
 
 ### Schema
 
@@ -1899,7 +1899,7 @@ Schema name: `WebhookFineTuningJobFailed`
 
 ## fine_tuning.job.cancelled
 
-当微调作业已被取消时发送。
+当微调任务被取消时发送。
 
 ### Schema
 
@@ -2088,7 +2088,7 @@ Schema name: `WebhookFineTuningJobCancelled`
 
 ## eval.run.succeeded
 
-在评测运行成功时发送。
+在评估运行成功时发送。
 
 ### Schema
 
@@ -2277,7 +2277,7 @@ Schema name: `WebhookEvalRunSucceeded`
 
 ## eval.run.failed
 
-当评估运行失败时发送。
+在评估运行失败时发送。
 
 ### Schema
 
@@ -2466,7 +2466,7 @@ Schema name: `WebhookEvalRunFailed`
 
 ## eval.run.canceled
 
-当评测运行被取消时发送。
+在评估运行被取消时发送。
 
 ### Schema
 
@@ -2656,8 +2656,8 @@ Schema name: `WebhookEvalRunCanceled`
 ## realtime.call.incoming
 
 当有传入的 API SIP 会话可供 Realtime 接受时发送。
-同一待处理会话还可以发出 `live.call.incoming`；首个
-成功的 Realtime 或 Live accept 端点将选定运行时面。
+同一个待处理会话也会发出 `live.call.incoming`；首个
+成功的 Realtime 或 Live accept 端点将选择运行时接入方式。
 
 ### Schema
 
@@ -2809,7 +2809,7 @@ Schema name: `WebhookRealtimeCallIncoming`
     "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/data/properties/call_id",
     "deprecated": false,
     "key": "call_id",
-    "docstring": "The Transceiver `rtc_...` ID of the pending SIP session. The same\nvalue appears as `session_id` in `live.call.incoming`.\n",
+    "docstring": "The Transceiver `rtc_...` ID of the pending SIP session. The paired\n`live.call.incoming` event derives its `session_id` by replacing the\n`rtc_` prefix with `live_`. Use the ID returned by the event with the\ncorresponding Realtime or Live API.\n",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -2913,9 +2913,9 @@ Schema name: `WebhookRealtimeCallIncoming`
 
 ## live.call.incoming
 
-当有可由 Live 接受的传入 API SIP 会话时发送。
-同一待处理会话还可以发出 `realtime.call.incoming`；首个
-成功的 Realtime 或 Live accept 端点将选定运行时面。
+当有传入的 API SIP 会话可供实时接受时发送。该
+同一挂起会话也可以发出 `realtime.call.incoming`；首个
+成功的 Realtime 或 Live accept 端点将选择运行时接入方式。
 
 ### Schema
 
@@ -3067,7 +3067,7 @@ Schema name: `WebhookLiveCallIncoming`
     "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/data/properties/session_id",
     "deprecated": false,
     "key": "session_id",
-    "docstring": "The Transceiver `rtc_...` ID of the pending SIP session. The same\nvalue appears as `call_id` in `realtime.call.incoming`.\n",
+    "docstring": "The `live_...` ID of the pending SIP session. Forward this value\nunchanged when accepting or rejecting the call through the Live API.\n",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -3159,7 +3159,7 @@ Schema name: `WebhookLiveCallIncoming`
   "type": "live.call.incoming",
   "created_at": 1719168000,
   "data": {
-    "session_id": "rtc_479a275623b54bdb9b6fbae2f7cbd408",
+    "session_id": "live_u0_479a275623b54bdb9b6fbae2f7cbd408",
     "sip_headers": [
       {"name": "Max-Forwards", "value": "63"},
       {"name": "CSeq", "value": "851287 INVITE"},
@@ -3171,7 +3171,7 @@ Schema name: `WebhookLiveCallIncoming`
 
 ## safety.alert.created
 
-当已批准的安全警示可用于 API 项目时发送。
+当某个API项目有已批准的安全警报可用时发送。
 
 ### Schema
 

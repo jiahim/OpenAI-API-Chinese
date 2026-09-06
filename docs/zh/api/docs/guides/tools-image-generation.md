@@ -1,15 +1,15 @@
 # 图像生成
 
-> 完整的文档索引请参见 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 后追加 `.md` 即可获取对应文档页面的 Markdown 版本。
 
-图像生成工具允许你使用文本提示词生成图像，并可选择性地加入图像输入。它使用 GPT Image 模型，包括 `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`，以及 `gpt-image-1-mini`，并会自动优化文本输入以提升性能。
+图像生成工具允许你使用文本提示词生成图像，并可选择性地使用图像输入。它使用 GPT Image 模型，包括 `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`，并 `gpt-image-1-mini`，会自动优化文本输入以提升性能。
 
 要详细了解图像生成，请参阅我们的 [图像生成
   指南](https://developers.openai.com/api/docs/guides/image-generation?api=responses).
 
 ## 用法
 
-当你在请求中包含该 `image_generation` 工具时，模型可以决定在对话中何时以及如何生成图像，并使用你的提示和任何提供的图像输入。
+当你在请求中包含 `image_generation` 工具时，模型可以根据你的提示词和任何提供的图像输入，决定在对话中何时以及如何生成图像。
 
 该 `image_generation_call` 工具调用结果将包含一个 base64 编码的图像。
 
@@ -20,7 +20,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
   tools: [{ type: "image_generation" }],
@@ -45,7 +45,7 @@ import base64
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -78,7 +78,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Generate an image of gray tabby cat hugging an otter with an orange scarf"),
 		},
@@ -119,7 +119,7 @@ import java.util.Base64;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
         .addTool(Tool.ImageGeneration.builder().build())
         .build();
@@ -141,7 +141,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem(
         "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
@@ -163,7 +163,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
   tools: [{type: :image_generation}]
 )
@@ -182,32 +182,32 @@ File.binwrite("otter.png", Base64.strict_decode64(encoded_image))
 
 你可以 [提供输入图像](https://developers.openai.com/api/docs/guides/image-generation?image-generation-model=gpt-image#edit-images) 使用文件 ID 或 base64 数据。
 
-若要强制调用图像生成工具，可以设置参数 `tool_choice` 为 `{"type": "image_generation"}`.
+要强制触发图像生成工具调用，你可以设置参数 `tool_choice` 为 `{"type": "image_generation"}`.
 
 ### 工具选项
 
-你可以将以下输出选项配置为 [图像生成工具](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-tools):
+你可以将以下输出选项作为参数用于 [图像生成工具](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-tools):
 
-- Size：图像尺寸，例如 1024 × 1024 或 1024 × 1536
-- Quality：渲染质量，例如 low、medium 或 high
-- Format：文件输出格式
-- Compression：JPEG 和 WebP 格式的压缩级别（0-100%）
-- Background：transparent、opaque 或 automatic
-- Action：请求是自动选择、生成还是编辑图像
+- 尺寸：图像尺寸，例如 1024 × 1024 或 1024 × 1536
+- 质量：渲染质量，例如 low、medium 或 high
+- 格式：文件输出格式
+- 压缩：JPEG 和 WebP 格式的压缩级别（0-100%）
+- 背景：透明、不透明或自动
+- 操作：请求应自动选择、生成还是编辑图像
 
-`size`, `quality`，以及 `background` 支持 `auto` 选项，让模型根据提示自动选择最佳选项。
+`size`, `quality`，并 `background` 支持 `auto` 选项，模型会根据提示自动选择最佳选项。
 
-`gpt-image-2` 支持灵活的 `size` 值，以满足其 [分辨率约束](https://developers.openai.com/api/docs/guides/image-generation#size-and-quality-options)。透明背景目前为预览版；可设置 `background: "transparent"` 来请求。使用 `png` （默认值）或 `webp`; `jpeg` 不支持透明背景。
+`gpt-image-2` 支持灵活的 `size` 值，以满足其 [分辨率约束](https://developers.openai.com/api/docs/guides/image-generation#size-and-quality-options)。透明背景功能目前处于预览阶段；请设置 `background: "transparent"` 来请求透明背景。使用 `png` （默认值）或 `webp`; `jpeg` 不支持透明背景。
 
 有关可用选项的更多详细信息，请参阅 [图像生成指南](https://developers.openai.com/api/docs/guides/image-generation#customize-image-output).
 
-使用 Responses API 图像生成工具时，受支持的 GPT Image 模型可以选择是生成新图像还是编辑对话中已有的图像。可选参数 `action` 用于控制该行为：保持 `action` 设置为 `auto` ，由模型自行选择是生成还是编辑；或将其设置为 `generate` 或 `edit` 以强制该行为。如果未指定，默认值为 `auto`.
+使用 Responses API 图像生成工具时，支持的 GPT Image 模型可以选择生成新图像或编辑对话中已有的图像。可选的 `action` 参数用于控制此行为：保留 `action` 设置为 `auto` ，让模型自行决定是生成还是编辑；或者将其设置为 `generate` 或 `edit` 以强制该行为。如果未指定，默认值为 `auto`.
 
 ### 修订后的提示词
 
-在使用图像生成工具时，主线模型（mainline model）例如， `gpt-5.5`，会自动改写你的提示词以提升效果。
+使用图像生成工具时，主线模型（例如， `gpt-5.5`）会自动优化你的提示词以提升效果。
 
-你可以在图像生成调用的 `revised_prompt` 字段中查看改写后的提示词：
+你可以在图像生成调用的 `revised_prompt` 字段中查看优化后的提示词：
 
 ```json
 {
@@ -221,17 +221,17 @@ File.binwrite("otter.png", Base64.strict_decode64(encoded_image))
 
 ### 提示技巧
 
-在你的提示中使用类似下面的词语时，图像生成效果最佳 `draw` 或 `edit` 在你的提示中。
+在提示词中使用类似以下这样的术语时，图像生成效果最佳 `draw` 或 `edit` 。
 
-例如，如果你想组合图像，不要说 `combine` 或 `merge`，而可以说类似“编辑第一张图像，将这个元素从第二张图像中添加进去”这样的话。
+例如，如果你想组合图像，不要说 `combine` 或 `merge`，而是可以类似这样说：“编辑第一张图像，将这个元素从第二张图像中添加进去。”
 
 ## 多轮编辑
 
-你可以通过引用之前的 response 或图像 ID 来迭代编辑图像，从而在多个对话轮次中优化图像。
+你可以通过引用之前的 response 或图像 ID 来迭代编辑图像。这样你就可以在多轮对话中不断完善图像。
 
 
 
-使用之前的 response ID
+使用上一次 response ID
 
     Multi-turn image generation
 
@@ -240,7 +240,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
   tools: [{ type: "image_generation" }],
@@ -259,7 +259,7 @@ if (imageData.length > 0) {
 // Follow up
 
 const response_fwup = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   previous_response_id: response.id,
   input: "Now make it look realistic",
   tools: [{ type: "image_generation" }],
@@ -286,7 +286,7 @@ import base64
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -307,7 +307,7 @@ if image_data:
 # Follow up
 
 response_fwup = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     previous_response_id=response.id,
     input="Now make it look realistic",
     tools=[{"type": "image_generation"}],
@@ -340,7 +340,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	first, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Generate an image of gray tabby cat hugging an otter with an orange scarf"),
 		},
@@ -352,7 +352,7 @@ func main() {
 	saveFirstGeneratedImage(first, "cat_and_otter.png")
 
 	followUp, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:              "gpt-5.6",
+		Model:              "gpt-6-astra",
 		PreviousResponseID: openai.String(first.ID),
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Now make it look realistic"),
@@ -397,7 +397,7 @@ var first =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .input(
                     "Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
                 .addTool(Tool.ImageGeneration.builder().build())
@@ -420,7 +420,7 @@ var second =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .input("Now make it look realistic.")
                 .previousResponseId(first.id())
                 .addTool(Tool.ImageGeneration.builder().build())
@@ -447,7 +447,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem(
@@ -463,7 +463,7 @@ await File.WriteAllBytesAsync("cat_and_otter.png", initialImage.ImageResultBytes
 
 CreateResponseOptions followUp = new()
 {
-    Model = "gpt-5.6",
+    Model = "gpt-6-astra",
     PreviousResponseId = first.Id,
 };
 followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
@@ -485,7 +485,7 @@ require "openai"
 
 client = OpenAI::Client.new
 first = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
   tools: [{type: :image_generation}]
 )
@@ -501,7 +501,7 @@ encoded_image = first_image.result or raise "No image returned"
 File.binwrite("cat_and_otter.png", Base64.strict_decode64(encoded_image))
 
 follow_up = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Now make it look realistic.",
   previous_response_id: first.id,
   tools: [{type: :image_generation}]
@@ -532,7 +532,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
   tools: [{ type: "image_generation" }],
@@ -553,7 +553,7 @@ if (imageData.length > 0) {
 // Follow up
 
 const response_fwup = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -586,7 +586,7 @@ import openai
 import base64
 
 response = openai.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -607,7 +607,7 @@ if image_data:
 # Follow up
 
 response_fwup = openai.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -649,7 +649,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	first, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Generate an image of gray tabby cat hugging an otter with an orange scarf"),
 		},
@@ -667,7 +667,7 @@ func main() {
 	))
 
 	followUp, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: input},
 		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{}}},
 	})
@@ -727,7 +727,7 @@ var first =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .input(
                     "Generate an image of a gray tabby cat hugging an otter with an orange scarf.")
                 .addTool(Tool.ImageGeneration.builder().build())
@@ -750,7 +750,7 @@ var second =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .inputOfResponse(
                     List.of(
                         ResponseInputItem.ofMessage(
@@ -785,7 +785,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem(
@@ -799,7 +799,7 @@ ImageGenerationCallResponseItem initialImage = first
     .First();
 await File.WriteAllBytesAsync("cat_and_otter.png", initialImage.ImageResultBytes.ToArray());
 
-CreateResponseOptions followUp = new() { Model = "gpt-5.6" };
+CreateResponseOptions followUp = new() { Model = "gpt-6-astra" };
 followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
 followUp.InputItems.Add(ResponseItem.CreateUserMessageItem("Now make it look realistic."));
 followUp.InputItems.Add(ResponseItem.CreateReferenceItem(initialImage.Id));
@@ -820,7 +820,7 @@ require "openai"
 
 client = OpenAI::Client.new
 first = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
   tools: [{type: :image_generation}]
 )
@@ -836,7 +836,7 @@ encoded_image = first_image.result or raise "No image returned"
 File.binwrite("cat_and_otter.png", Base64.strict_decode64(encoded_image))
 
 follow_up = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: :user,
@@ -862,11 +862,11 @@ File.binwrite("cat_and_otter_realistic.png", Base64.strict_decode64(encoded_imag
 
 ## 流式传输
 
-图像生成工具支持在生成最终结果的过程中流式输出部分图像。这能为用户提供更快的视觉反馈，并改善感知延迟。
+图像生成工具支持在生成最终结果的过程中流式传输部分图像。这能为用户提供更快的视觉反馈，并改善感知延迟。
 
 你可以通过以下参数设置部分图像的数量（1-3）： `partial_images` 参数。
 
-流式输出图像
+流式传输图像
 
 ```javascript
 import OpenAI from "openai";
@@ -879,7 +879,7 @@ function saveBase64Image(filename, imageBase64) {
 }
 
 const stream = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
   stream: true,
@@ -916,7 +916,7 @@ def save_base64_image(filename, image_base64):
 
 
 stream = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
     stream=True,
     tools=[{"type": "image_generation", "partial_images": 2}],
@@ -953,7 +953,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	stream := client.Responses.NewStreaming(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape"),
 		},
@@ -1003,7 +1003,7 @@ import java.util.Base64;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Generate an image of a river made of white owl feathers.")
         .addTool(Tool.ImageGeneration.builder().partialImages(2).build())
         .build();
@@ -1043,7 +1043,7 @@ require "openai"
 
 client = OpenAI::Client.new
 stream = client.responses.stream(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Generate an image of a river made of white owl feathers.",
   tools: [{type: :image_generation, partial_images: 2}]
 )
@@ -1085,4 +1085,4 @@ end
 - `gpt-4o`
 - `gpt-4o-mini`
 
-用于图像生成流程的模型始终是 GPT Image 模型，包括 `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`，以及 `gpt-image-1-mini`，但这些模型不能作为 `model` 字段的有效值传入 Responses API。请使用支持文本的主流模型（例如， `gpt-5.5` 或 `gpt-5`）配合托管 `image_generation` 工具。
+用于图像生成流程的模型始终是 GPT Image 模型，包括 `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`，并 `gpt-image-1-mini`，但这些模型不能作为以下字段的有效值： `model` Responses API 中的 model 字段。请使用支持文本的主流模型（例如， `gpt-5.5` 或 `gpt-5`) 配合托管 `image_generation` 工具。

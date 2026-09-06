@@ -1,21 +1,21 @@
-# MCP and Connectors
+# MCP 和连接器
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获得该页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 后附加 `.md` 来获取。
 
-除了通过 [函数调用](https://developers.openai.com/api/docs/guides/function-calling)，向模型提供的工具外，你还可以使用 **连接器** 和 **远程 MCP 服务器**. 这些工具使模型能够在需要响应用户提示时连接并控制外部服务。这些工具调用既可以被自动允许，也可以被限制为由作为开发者的你显式批准。
+除了通过 [function calling](https://developers.openai.com/api/docs/guides/function-calling)，向模型提供的工具之外，你还可以使用 **连接器** 和 **远程 MCP 服务器**。为模型赋予新能力。这些工具使模型能够在需要时连接并控制外部服务以响应用户的提示。这些工具调用既可以被自动允许，也可以受到限制，要求你作为开发者进行明确批准。
 
 - **连接器** 是 OpenAI 维护的 MCP 包装器，用于 Google Workspace 或 Dropbox 等常用服务，类似于 [ChatGPT](https://chatgpt.com).
-- **远程 MCP 服务器** 可以是公共互联网上实现远程 [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP) 服务器的任意服务器。
+- **远程 MCP 服务器** 可以是公共互联网上实现远程 [Model Context Protocol](https://modelcontextprotocol.io/introduction) （MCP）服务器的任何服务器。
 
-本指南将展示如何使用远程 MCP 服务器和连接器，使模型能够访问新的能力。
+本指南将展示如何使用远程 MCP 服务器和连接器，为模型提供访问新能力的方式。
 
 ## Secure MCP Tunnel
 
-如果你的 MCP 服务器是私有的、本地部署的，或者位于防火墙之后，请使用 [Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels) 来将其连接到受支持的 OpenAI 产品，而无需将服务器暴露在公共互联网上。可从以下地址下载最新的公开版本： [openai/tunnel-client](https://github.com/openai/tunnel-client/releases/latest).
+如果你的 MCP 服务器是私有的、本地部署的或位于防火墙之后，请使用 [安全 MCP 隧道](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels) 将其连接到受支持的 OpenAI 产品，而无需将服务器暴露到公共互联网。从以下位置下载最新的公开版本： [openai/tunnel-client](https://github.com/openai/tunnel-client/releases/latest).
 
-## 快速入门
+## 快速开始
 
-查看下面的示例，了解远程 MCP 服务器和连接器如何通过 [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create)。工作。连接器和远程 MCP 服务器都可以与 `mcp` 内置工具类型一起使用。
+查看下面的示例，了解远程 MCP 服务器和连接器如何通过 [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create)。工作。连接器和远程 MCP 服务器都可以与 `mcp` 内置工具类型配合使用。
 
 
 
@@ -36,7 +36,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \ 
 -H "Authorization: Bearer $OPENAI_API_KEY" \ 
 -d '{
-  "model": "gpt-5.6",
+  "model": "gpt-6-astra",
     "tools": [
       {
         "type": "mcp",
@@ -55,7 +55,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -78,7 +78,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "mcp",
@@ -113,7 +113,7 @@ func main() {
 	tool.OfMcp.RequireApproval = responses.ToolMcpRequireApprovalUnionParam{OfMcpToolApprovalSetting: openai.String("never")}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Roll 2d4+1")},
 	})
@@ -132,7 +132,7 @@ import com.openai.models.responses.Tool;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Roll 2d4+1")
         .addTool(
             Tool.Mcp.builder()
@@ -158,7 +158,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "dmcp",
@@ -179,7 +179,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -222,7 +222,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tools": [
       {
         "type": "mcp",
@@ -241,7 +241,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -266,7 +266,7 @@ client = OpenAI()
 connector_authorization = os.environ["OPENAI_CONNECTOR_AUTHORIZATION"]
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "mcp",
@@ -301,7 +301,7 @@ func main() {
 	tool.OfMcp.RequireApproval = responses.ToolMcpRequireApprovalUnionParam{OfMcpToolApprovalSetting: openai.String("never")}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Summarize the Q2 earnings report.")},
 	})
@@ -322,7 +322,7 @@ String oauthAccessToken = "<oauth access token>";
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Summarize the Q2 earnings report.")
         .addTool(
             Tool.Mcp.builder()
@@ -349,7 +349,7 @@ string dropboxToken =
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "Dropbox",
@@ -372,7 +372,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Summarize the Q2 earnings report.",
   tools: [{
     type: :mcp,
@@ -388,7 +388,7 @@ puts(response.output_text)
 
 
 
-API 会在模型响应的 `output` 数组中返回新的项。如果模型决定使用连接器或 MCP 服务器，它会先发起一次请求以列出服务器中可用的工具，这会创建一个 `mcp_list_tools` 输出项。在上面的简单远程 MCP 服务器示例中，它只包含一个工具定义：
+API 将返回模型响应中的新条目， `output` 这些新条目位于 output 数组中。如果模型决定使用连接器或 MCP 服务器，它会先发起一次请求以列出服务器中可用的工具，这会创建一个 `mcp_list_tools` 输出条目。根据上面的简单远程 MCP 服务器示例，它只包含一个工具定义：
 
 ```json
 {
@@ -416,7 +416,7 @@ API 会在模型响应的 `output` 数组中返回新的项。如果模型决定
 }
 ```
 
-如果模型决定调用 MCP 服务器中某个可用的工具，你还会找到一个 `mcp_call` 输出，它会展示模型发送给 MCP 工具的内容，以及 MCP 工具作为输出返回的内容。
+如果模型决定调用 MCP 服务器中某个可用工具，你还会看到一个 `mcp_call` 输出，用于展示模型发送给 MCP 工具的内容，以及 MCP 工具作为输出返回的内容。
 
 ```json
 {
@@ -431,19 +431,19 @@ API 会在模型响应的 `output` 数组中返回新的项。如果模型决定
 }
 ```
 
-请继续阅读下面的指南，了解 MCP 工具的工作原理、如何过滤可用工具，以及如何处理工具调用审批请求。
+继续阅读下面的指南，了解 MCP 工具的工作原理、如何筛选可用工具，以及如何处理工具调用审批请求。
 
 ## 工作原理
 
-MCP 工具（适用于远程 MCP 服务器和连接器）可在 [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create) 的最新模型中使用。请在此处查看你模型的 MCP 工具兼容性 [此处](https://developers.openai.com/api/docs/models)。使用 MCP 工具时，你只需为 [令牌](https://developers.openai.com/api/docs/pricing) 付费，即导入工具定义或发起工具调用时使用的令牌。每次工具调用不会产生额外费用。
+MCP 工具（包括远程 MCP 服务器和连接器）在以下模型中可用： [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create) 可在大多数最新模型中使用。请在此处查看模型的 MCP 工具兼容性： [此处](https://developers.openai.com/api/docs/models)。使用 MCP 工具时，你只需为以下内容支付 [tokens](https://developers.openai.com/api/docs/pricing) 支付费用，即导入工具定义或发起工具调用时所使用的 tokens。每次工具调用不涉及额外费用。
 
-下面，我们将逐步介绍 API 在调用 MCP 工具时所执行的流程。
+下面，我们将逐步了解 API 在调用 MCP 工具时所经历的流程。
 
-### 第 1 步：列出可用的工具
+### 步骤 1：列出可用工具
 
-当你在 `tools` 参数中指定远程 MCP 服务器时，API 将尝试从服务器获取工具列表。Responses API 支持使用 Streamable HTTP 或 HTTP/SSE 传输协议的远程 MCP 服务器。
+当你在 `tools` 参数中指定远程 MCP 服务器时，API 将尝试从该服务器获取工具列表。Responses API 支持使用 Streamable HTTP 或 HTTP/SSE 传输协议的远程 MCP 服务器。
 
-如果成功获取到工具列表，则会在模型响应输出中出现一个新的 `mcp_list_tools` 输出项。该对象的 `tools` 属性将显示已成功导入的工具。
+如果成功获取到工具列表，则模型响应输出中会出现一个新的 `mcp_list_tools` 输出项。该对象的 `tools` 属性将显示已成功导入的工具。
 
 ```json
 {
@@ -471,24 +471,24 @@ MCP 工具（适用于远程 MCP 服务器和连接器）可在 [Responses API](
 }
 ```
 
-只要该 `mcp_list_tools` 项存在于 API 的上下文中
-  request，API 不会在每次对话轮次时再次从 MCP 服务器获取工具列表，
-  而是在 [conversation](https://developers.openai.com/api/docs/guides/conversation-state)。我们建议你在每个
-  conversation 或
-  工作流 execution 中始终保留此项到模型上下文里，以优化延迟。
+只要该 `mcp_list_tools` 项存在于 API
+  请求的上下文中，API 就不会在
+  每次 [对话](https://developers.openai.com/api/docs/guides/conversation-state)。轮次中再次从 MCP 服务器获取工具列表。建议你将该项作为每次
+  对话或
+  工作流 执行的一部分保留在模型的上下文中，以优化延迟。
 
 #### 过滤工具
 
-一些 MCP 服务器可能包含数十个工具，向模型暴露过多工具会导致较高的成本和延迟。如果只关心 MCP 服务器所暴露工具的一个子集，可以使用 `allowed_tools` 参数仅导入这些工具。
+部分 MCP 服务器可能包含数十个工具，向模型暴露大量工具会导致较高的成本和延迟。如果你只关心 MCP 服务器所暴露工具的一个子集，可以使用 `allowed_tools` 参数来仅导入这些工具。
 
-限制允许的工具
+限制允许使用的工具
 
 ```bash
 curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tools": [
       {
         "type": "mcp",
@@ -508,7 +508,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -532,7 +532,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "mcp",
@@ -569,7 +569,7 @@ func main() {
 	tool.OfMcp.AllowedTools = responses.ToolMcpAllowedToolsUnionParam{OfMcpAllowedTools: []string{"roll"}}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Roll 2d4+1")},
 	})
@@ -589,7 +589,7 @@ import java.util.List;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Roll 2d4+1")
         .addTool(
             Tool.Mcp.builder()
@@ -616,7 +616,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "dmcp",
@@ -638,7 +638,7 @@ require "openai"
 client = OpenAI::Client.new
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Roll 2d4+1",
   tools: [
     {
@@ -656,9 +656,9 @@ puts(response.output_text)
 ```
 
 
-### 步骤 2：调用工具
+### 第 2 步：调用工具
 
-一旦模型获得了这些工具的定义，它可能会根据模型上下文中的内容选择调用它们。当模型决定调用一个 MCP 工具时，API 会向远程 MCP 服务器发起请求以调用该工具，并将其输出放入模型的上下文中。这会产生一条类似于下方的 `mcp_call` 条目：
+一旦模型能够访问这些工具定义，它可能会根据上下文选择调用它们。当模型决定调用 MCP 工具时，API 会向远程 MCP 服务器发起请求以调用该工具，并将其输出放入模型的上下文中。这会生成一个 `mcp_call` 如下所示的条目：
 
 ```json
 {
@@ -673,13 +673,13 @@ puts(response.output_text)
 }
 ```
 
-该条目既包含模型决定用于本次工具调用的参数，也包含远程 MCP 服务器返回的 `output` 结果。所有模型都可以选择发起多次 MCP 工具调用，因此在单次 API 请求中你可能会看到多条这样的条目。
+该条目同时包含模型针对此工具调用所决定的参数，以及 `output` 远程 MCP 服务器返回的内容。所有模型都可以选择进行多次 MCP 工具调用，因此在单个 API 请求中你可能会看到多个此类条目。
 
-失败的工具调用会在该条目的 error 字段中填充 MCP 协议错误、MCP 工具执行错误或一般的连接错误。MCP 错误在 MCP 规范中有所记录 [此处](https://modelcontextprotocol.io/specification/2025-03-26/server/tools#error-handling).
+调用失败的工具会使用 MCP 协议错误、MCP 工具执行错误或一般连接错误填充此条目的 error 字段。MCP 错误的说明请参阅 MCP 规范 [此处](https://modelcontextprotocol.io/specification/2025-03-26/server/tools#error-handling).
 
-#### Approvals
+#### 审批
 
-默认情况下，OpenAI 会在任何数据被共享到连接器或远程 MCP 服务器之前请求你的批准。批准机制可以帮助你保持对发送到 MCP 服务器的数据的可见性和控制权。我们强烈建议你仔细审查（并视情况记录）所有与远程 MCP 服务器共享的数据。请求批准以发起 MCP 工具调用时，会在 Response 的输出中创建一个 `mcp_approval_request` item，类似于：
+默认情况下，OpenAI 会在任何数据与连接器或远程 MCP 服务器共享之前请求你的批准。批准机制可帮助你掌控并了解正在向 MCP 服务器发送哪些数据。强烈建议你仔细检查（并视情况记录）所有与远程 MCP 服务器共享的数据。发起 MCP 工具调用批准的请求会在 Response 的输出中创建如下条目： `mcp_approval_request` 如下所示：
 
 ```json
 {
@@ -691,16 +691,16 @@ puts(response.output_text)
 }
 ```
 
-然后你可以通过创建一个新的 Response 对象并向其中追加一个 `mcp_approval_response` item 来进行回应。
+你可以通过创建一个新的 Response 对象并向其追加一个 `mcp_approval_response` 条目来响应。
 
-在 API 请求中批准使用工具
+在 API 请求中批准工具的使用
 
 ```bash
 curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tools": [
       {
         "type": "mcp",
@@ -724,7 +724,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -755,7 +755,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "mcp",
@@ -797,7 +797,7 @@ func main() {
 	tool.OfMcp.RequireApproval = responses.ToolMcpRequireApprovalUnionParam{OfMcpToolApprovalSetting: openai.String("always")}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:              "gpt-5.6",
+		Model:              "gpt-6-astra",
 		PreviousResponseID: openai.String("resp_682d498bdefc81918b4a6aa477bfafd904ad1e533afccbfa"),
 		Tools:              []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
@@ -825,7 +825,7 @@ String approvalRequestId = "mcpr_682d498e3bd4819196a0ce1664f8e77b04ad1e533afccbf
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input(
             ResponseCreateParams.Input.ofResponse(
                 List.of(
@@ -858,7 +858,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "dmcp",
@@ -890,7 +890,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   previous_response_id: "resp_682d498bdefc81918b4a6aa477bfafd904ad1e533afccbfa",
   input: [{
     type: :mcp_approval_response,
@@ -910,18 +910,18 @@ puts(response.output_text)
 ```
 
 
-这里我们使用 `previous_response_id` 参数将此新的 Response 与生成批准请求的前一个 Response 链接起来。但你也可以将一个 Response 的 [输出作为另一个的输入传递，](https://developers.openai.com/api/docs/guides/conversation-state#manually-manage-conversation-state) 以最大程度地控制进入模型上下文的内容。
+这里我们使用 `previous_response_id` 参数将这个新的 Response 与生成批准请求的上一个 Response 进行链接。但你也可以把一个 Response 的 [outputs 从一个 Response 传回，作为另一个的输入](https://developers.openai.com/api/docs/guides/conversation-state#manually-manage-conversation-state) 以最大程度地控制进入模型上下文的内容。
 
-如果你觉得可以信任某个远程 MCP 服务器，可以选择跳过批准以降低延迟。为此，你可以将 MCP 工具的 `require_approval` 参数设置为一个对象，仅列出你希望跳过批准的工具，如下所示；或者将其设置为值 `'never'` ，以跳过该远程 MCP 服务器中所有工具的批准。
+当你认为可以信任某个远程 MCP 服务器时，可以选择跳过批准以降低延迟。为此，你可以将 MCP 工具的 `require_approval` 参数设置为一个对象，仅列出你希望跳过批准的工具，如下所示；或者将其设置为值 `'never'` 以跳过该远程 MCP 服务器中所有工具的批准。
 
-从不要求某些工具的批准
+永不要求对部分工具进行批准
 
 ```bash
 curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tools": [
       {
         "type": "mcp",
@@ -943,7 +943,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -969,7 +969,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "mcp",
@@ -1010,7 +1010,7 @@ func main() {
 	}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("What transport protocols does the 2025-03-26 version of the MCP spec (modelcontextprotocol/modelcontextprotocol) support?")},
 	})
@@ -1029,7 +1029,7 @@ import com.openai.models.responses.Tool;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("What transport protocols does the 2025-03-26 version of the MCP spec support?")
         .addTool(
             Tool.Mcp.builder()
@@ -1060,7 +1060,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "deepwiki",
@@ -1091,7 +1091,7 @@ require "openai"
 client = OpenAI::Client.new
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "What transport protocols does the 2025-03-26 version of the MCP spec support?",
   tools: [
     {
@@ -1109,9 +1109,9 @@ puts(response.output_text)
 ```
 
 
-## Authentication
+## 认证
 
-与上面的 [示例 MCP 服务器不同](https://dash.deno.com/playground/dmcp-server)，大多数其他 MCP 服务器都需要身份验证。最常见的方案是 OAuth 访问令牌。请使用 MCP 工具的 `authorization` 字段提供该令牌：
+与我们上面使用的 [示例 MCP 服务器不同](https://dash.deno.com/playground/dmcp-server)，大多数其他 MCP 服务器都需要身份验证。最常见的方案是 OAuth 访问令牌。使用 MCP 工具的 `authorization` 字段提供此令牌：
 
 使用 Stripe MCP 工具
 
@@ -1120,7 +1120,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "input": "Create a payment link for $20",
     "tools": [
       {
@@ -1138,7 +1138,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Create a payment link for $20",
   tools: [
     {
@@ -1161,7 +1161,7 @@ client = OpenAI()
 authorization = os.environ["STRIPE_OAUTH_ACCESS_TOKEN"]
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Create a payment link for $20",
     tools=[
         {
@@ -1199,7 +1199,7 @@ func main() {
 	tool.OfMcp.Authorization = openai.String(authorization)
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Create a payment link for $20")},
 	})
@@ -1220,7 +1220,7 @@ String stripeAccessToken = System.getenv("STRIPE_OAUTH_ACCESS_TOKEN");
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Create a payment link for $20.")
         .addTool(
             Tool.Mcp.builder()
@@ -1246,7 +1246,7 @@ string authToken =
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "stripe",
@@ -1268,7 +1268,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Create a payment link for $20.",
   tools: [{
     type: :mcp,
@@ -1282,13 +1282,13 @@ puts(response.output_text)
 ```
 
 
-为防止敏感令牌泄露，Responses API 不会存储你在 `authorization` 字段中提供的值。该值也不会出现在所创建的 Response 对象中。因此，你必须在每次发起 `authorization` 请求时都传入 Responses API 值。
+为防止敏感令牌泄露，Responses API 不会存储你在 `authorization` 字段中提供的值。此值也不会显示在创建的 Response 对象中。因此，你必须在发送的每个 `authorization` 创建请求中都提供该值。Responses API。
 
 ## Connectors
 
-Responses API 内置了对部分第三方服务连接器的支持。这些连接器可让你从流行的应用（如 Dropbox 和 Gmail）中拉取上下文，从而让模型能够与这些常用服务进行交互。
+Responses API 内置了对一组有限的第三方服务连接器的支持。这些连接器允许你从流行的应用程序（例如 Dropbox 和 Gmail）中拉取上下文，从而使模型能够与这些流行服务进行交互。
 
-连接器的使用方式与远程 MCP 服务器相同。二者都允许 OpenAI 模型在 API 请求中访问其他第三方工具。不过，与之不同的是，你传递的是 `server_url` （而不是像调用远程 MCP 服务器时那样传递），而是传递一个 `connector_id` ，用于唯一标识 API 中可用的连接器。
+连接器的使用方式与远程 MCP 服务器相同。两者都允许 OpenAI 模型在 API 请求中访问额外的第三方工具。但是，与调用远程 MCP 服务器不同的是，你需要传入一个 `server_url` ；在调用远程 MCP 服务器时，你会传入一个 `connector_id` ，它用于唯一标识 API 中可用的某个连接器。
 
 ### 可用的连接器
 
@@ -1301,23 +1301,23 @@ Responses API 内置了对部分第三方服务连接器的支持。这些连接
 - Outlook Email: `connector_outlookemail`
 - SharePoint: `connector_sharepoint`
 
-我们优先选择那些没有官方远程 MCP server 的服务。例如，GitHub 拥有一个官方 MCP server，你可以通过将 `https://api.githubcopilot.com/mcp/` 传入到 MCP 工具的 `server_url` 字段来连接它。
+我们优先考虑那些没有官方远程 MCP 服务器的服务。例如，GitHub 有一个官方 MCP 服务器，你可以通过将 `https://api.githubcopilot.com/mcp/` 传递到 `server_url` 字段来连接到它，该字段位于 MCP 工具中。
 
 ### 授权连接器
 
-在 `authorization` 字段中传入 OAuth 访问令牌。OAuth 客户端注册和授权必须由你的应用单独处理。
+在 `authorization` 字段中，传入一个 OAuth 访问令牌。OAuth 客户端注册和授权必须由你的应用程序单独处理。
 
-出于测试目的，你可以使用 Google 的 [OAuth 2.0 Playground](https://developers.google.com/oauthplayground/) 来生成可在 API 请求中使用的临时访问令牌。
+出于测试目的，你可以使用 Google 的 [OAuth 2.0 Playground](https://developers.google.com/oauthplayground/) 来生成临时访问令牌，然后将其用于 API 请求中。
 
-若要使用 playground 来测试连接器 API 功能，请先输入：
+要使用 playground 测试 connectors API 功能，首先输入：
 
 ```
 https://www.googleapis.com/auth/calendar.events
 ```
 
-此授权范围将允许 API 读取 Google 日历事件。在界面中的“Step 1: Select and authorize APIs”部分进行设置。
+此授权范围将允许 API 读取 Google 日历事件。在界面中的“Step 1: Select and authorize APIs”下操作。
 
-使用你的 Google 账户授权该应用后，你将进入“Step 2: Exchange authorization code for tokens”。这将生成一个访问令牌，你可以在使用 Google Calendar 连接器的 API 请求中使用它：
+使用你的 Google 账号授权应用后，你将进入“Step 2: Exchange authorization code for tokens”。这里会生成一个访问令牌，可用于通过 Google Calendar 连接器发起的 API 请求：
 
 使用 Google Calendar 连接器
 
@@ -1326,7 +1326,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tools": [
       {
         "type": "mcp",
@@ -1345,7 +1345,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -1369,7 +1369,7 @@ client = OpenAI()
 authorization = os.environ["GOOGLE_CALENDAR_OAUTH_ACCESS_TOKEN"]
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "mcp",
@@ -1404,7 +1404,7 @@ func main() {
 	tool.OfMcp.RequireApproval = responses.ToolMcpRequireApprovalUnionParam{OfMcpToolApprovalSetting: openai.String("never")}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("What's on my Google Calendar for today?")},
 	})
@@ -1425,7 +1425,7 @@ String oauthAccessToken = "<oauth access token>";
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("What's on my Google Calendar for today?")
         .addTool(
             Tool.Mcp.builder()
@@ -1452,7 +1452,7 @@ string authToken =
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "google_calendar",
@@ -1475,7 +1475,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "What's on my Google Calendar for today?",
   tools: [{
     type: :mcp,
@@ -1490,7 +1490,7 @@ puts(response.output_text)
 ```
 
 
-来自连接器的 MCP 工具调用与来自远程 MCP 服务器的 MCP 工具调用形式相同，均使用 `mcp_call` output 输出项类型。在这种情况下，传入连接器的参数以及连接器返回的响应均为 JSON 字符串：
+来自 Connector 的 MCP 工具调用与来自远程 MCP 服务器的 MCP 工具调用看起来相同，都使用 `mcp_call` 输出项类型。在这种情况下，Connector 的传入参数和返回响应都是 JSON 字符串：
 
 ```json
 {
@@ -1505,9 +1505,9 @@ puts(response.output_text)
 }
 ```
 
-### Available tools in each connector
+### 每个连接器中可用的工具
 
-可用的工具取决于你的 OAuth 令牌所拥有的作用域。请展开下表，查看连接到每个应用程序时可以使用的工具。
+可用的工具取决于你的 OAuth 令牌所拥有的权限范围。展开下表可了解在连接到每个应用时可以使用的工具。
 
 
 
@@ -1847,11 +1847,11 @@ puts(response.output_text)
 
 
 
-## 在 MCP 服务端中延迟加载工具
+## 延迟加载 MCP 服务中的工具
 
-如果你使用 [工具搜索](https://developers.openai.com/api/docs/guides/tools-tool-search)，你可以延迟加载 MCP 服务器暴露的函数，直到模型决定需要它们为止。为此，请在 MCP 服务器工具定义中设置 `defer_loading: true` 。
+如果你使用的是 [tool search](https://developers.openai.com/api/docs/guides/tools-tool-search),你可以推迟加载 MCP 服务器所暴露的函数,直到模型决定需要它们为止。要实现这一点,请在 MCP 服务器工具定义上设置 `defer_loading: true` 。
 
-当你延迟加载 MCP 服务器时，模型仍然可以使用该 MCP 服务器的标签和描述来决定何时搜索它，但各个函数定义仅在需要时才被加载。这有助于降低整体 token 使用量，对于暴露大量函数的 MCP 服务器尤其有用。
+当你推迟加载一个 MCP 服务器时,模型仍然可以使用该 MCP 服务器的标签和描述来决定何时搜索它,但各个函数定义仅在需要时才会被加载。这有助于减少整体 token 使用量,对于暴露大量函数的 MCP 服务器而言尤为有用。
 
 ```json
 {
@@ -1869,47 +1869,47 @@ puts(response.output_text)
 
 ## 风险与安全
 
-MCP 工具允许你将 OpenAI 模型连接到外部服务。这是一项强大功能，但也带来了一些风险。
+MCP 工具允许你将 OpenAI 模型连接到外部服务。这是一项强大的功能，但也伴随着一些风险。
 
-对于连接器，存在可能将敏感数据发送给 OpenAI 的风险，或者允许模型对这些服务中潜在的敏感数据进行读取访问。
+对于连接器，存在可能将敏感数据发送给 OpenAI，或允许模型读取访问这些服务中潜在敏感数据的风险。
 
-远程 MCP 服务器也存在上述同样的风险，此外它们尚未经过 OpenAI 的验证。这些服务器允许模型访问、发送和接收数据，并在这些服务中执行操作。所有 MCP 服务器均为第三方服务，须遵守其各自的条款和条件。
+远程 MCP 服务器也存在同样的风险，但它们尚未经过 OpenAI 的验证。这些服务器可能允许模型访问、发送和接收数据，并在这些服务中执行操作。所有 MCP 服务器都是第三方服务，遵循其各自的服务条款。
 
-如果你发现恶意的 MCP 服务器，请向我们举报 `security@openai.com`.
+如果你发现恶意的 MCP 服务器，请向以下地址举报 `security@openai.com`.
 
-下面列出了一些在集成连接器和远程 MCP 服务器时值得参考的最佳实践。
+在集成连接器和远程 MCP 服务器时，可参考以下一些最佳实践。
 
 #### Prompt injection
 
-[Prompt injection](https://chatgpt.com/?prompt=what%20is%20prompt%20injection?) 是任何 LLM 应用中一项重要的安全考量，在当你让模型访问能够访问敏感数据或执行操作的 MCP 服务器和连接器时，这一点尤为关键。如果提供给模型的提示词包含用户提供的内容，请谨慎使用这些工具并采取相应的缓解措施。
+[Prompt injection](https://chatgpt.com/?prompt=what%20is%20prompt%20injection?) 是任何 LLM 应用中都需要重点关注的安全问题，当你让模型访问可以访问敏感数据或执行操作的 MCP 服务器和连接器时，这一点尤为突出。如果模型的提示中包含用户提供的内容，请在使用这些工具时采取适当的谨慎措施和缓解策略。
 
-#### 始终要求对敏感操作的审批
+#### 始终要求对敏感操作进行审批
 
-使用所提供的 `require_approval` 和 `allowed_tools` 参数，以确保任何敏感操作都需要经过审批流程。
+使用可用的 `require_approval` 和 `allowed_tools` 参数，以确保任何敏感操作都需要审批流程。
 
-#### MCP 工具调用和输出中的 URL
+#### MCP 工具调用与输出中的 URL
 
-请求来自连接器或远程 MCP 服务器的工具调用输出中的 URL，或将这些图片 URL 嵌入到应用中，可能会带来危险。在将其嵌入到应用代码中或以其他方式使用之前，请确保你信任提供这些 URL 的域和服务。
+直接请求工具调用输出中的 URL，或将这些工具调用输出（包括来自连接器或远程 MCP 服务器的输出）中的图片 URL 嵌入代码，可能存在安全风险。在将这些 URL 嵌入应用代码或以其他方式使用之前，请务必确认提供这些 URL 的域名和服务是可信的。
 
 #### 连接到受信任的服务器
 
-选择由服务提供商官方托管的服务器（例如，我们建议连接到由 Stripe 官方托管的 mcp.stripe.com 上的 Stripe 服务器，而不是由第三方托管的 Stripe MCP 服务器）。由于目前官方远程 MCP 服务器数量不多，你可能会倾向于使用由某个并不实际运营该服务器的组织所托管的 MCP 服务器，它只是通过你的API将请求代理到该服务。如果必须这样做，请在尽职调查时格外谨慎，并仔细审查他们如何使用你的数据。
+选择由服务提供商自己托管的官方服务器（例如，我们建议连接到由 Stripe 自己托管的 mcp.stripe.com 上的 Stripe 服务器，而不是由第三方托管的 Stripe MCP 服务器）。由于目前官方远程 MCP 服务器数量不多，你可能会忍不住使用由不运营该服务器的机构托管、仅通过你的API将请求代理到该服务的 MCP 服务器。如果必须这样做，请格外谨慎地对这些“聚合器”进行尽职调查，并仔细审查它们如何使用你的数据。
 
-#### 记录并审查与第三方 MCP 服务器共享的数据。
+#### 记录并查看正在与第三方 MCP 服务器共享的数据。
 
-由于 MCP 服务器自行定义其工具定义，它们可能会请求一些你未必始终愿意与该 MCP 服务器的宿主共享的数据。因此，Responses API 中的 MCP 工具默认要求对每次 MCP 工具调用进行审批。在开发你的应用时，请仔细且充分地审查与这些 MCP 服务器共享的数据类型。一旦你对该 MCP 服务器建立充分信任，便可跳过这些审批，以获得更高的执行性能。
+由于 MCP 服务器自行定义其工具，它们可能会请求一些你未必始终愿意与该 MCP 服务器宿主共享的数据。因此，Responses API 中的 MCP 工具默认要求对每次 MCP 工具调用进行审批。在开发你的应用时，请仔细且充分地审查与这些 MCP 服务器共享的数据类型。一旦你对某个 MCP 服务器建立起足够的信任，就可以跳过这些审批以获得更高效的执行。
 
-我们还建议记录所有发送给 MCP 服务器的数据。如果你正在使用 Responses API 并且 `store=true`，所在组织未启用 Zero Data Retention，则这些数据已通过 API 保留 30 天。你也可以在自己的系统中记录这些数据，并定期审查，以确保数据的共享方式符合你的预期。
+我们还建议你记录发送给 MCP 服务器的所有数据。如果你使用的是 Responses API 以及 `store=true`，这些数据已经会通过 API 被记录 30 天，除非你的组织启用了零数据保留（Zero Data Retention）。你可能还希望在自己的系统中记录这些数据，并定期审查，以确保数据的共享方式符合你的预期。
 
-恶意 MCP 服务器可能包含旨在使 OpenAI 模型表现异常的隐藏指令（提示注入）。虽然 OpenAI 已实施内置的防护措施来帮助检测和拦截这些威胁，但你仍必须仔细审查输入和输出，并确保仅与可信的服务器建立连接。
+恶意 MCP 服务器可能包含隐藏指令（提示注入），旨在使 OpenAI 模型表现出意外行为。尽管 OpenAI 已实现内置防护措施来帮助检测并阻止这些威胁，但仔细审查输入和输出，并确保仅与受信任的服务器建立连接，仍然至关重要。
 
-MCP 服务器可能意外地更新工具行为，从而可能导致意外或恶意的行为。
+MCP 服务器可能会意外更新工具行为，从而可能导致意外或恶意的行为。
 
 #### 对零数据留存和数据驻留的影响
 
-MCP 工具兼容零数据留存和数据驻留，但需要注意的是，MCP 服务器属于第三方服务，发送到 MCP 服务器的数据将适用其各自的数据留存和数据驻留策略。
+MCP 工具兼容零数据留存和数据驻留，但需要注意，MCP 服务器是第三方服务，发送到 MCP 服务器的数据须遵循其数据留存和数据驻留策略。
 
-换句话说，如果你的组织在欧洲启用了数据驻留，OpenAI 会将客户内容的推理和存储限制在欧洲境内，直到数据或通信被发送到 MCP 服务器为止。你有责任确保 MCP 服务器同样遵守你可能存在的任何零数据留存或数据驻留要求。详细了解零数据留存和数据驻留 [此处](https://developers.openai.com/api/docs/guides/your-data).
+换句话说，如果你的组织在欧洲使用数据驻留，OpenAI 会将客户内容的推理和存储限定在欧洲境内，直到数据被发送到 MCP 服务器为止。你需要自行确保 MCP 服务器同样遵守你所要求的零数据留存或数据驻留规定。详细了解零数据留存和数据驻留 [此处](https://developers.openai.com/api/docs/guides/your-data).
 
 ## 使用说明
 
