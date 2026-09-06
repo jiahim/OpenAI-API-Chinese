@@ -13,6 +13,13 @@ const workflowPath = new URL("../../.github/workflows/ci.yml", import.meta.url);
 const workflow = await readFile(workflowPath, "utf8");
 const writerPath = new URL("../../.github/workflows/update-docs.yml", import.meta.url);
 
+test("README describes one automatic checked update without volatile article details", async () => {
+  const readme = await readFile(new URL("../../README.md", import.meta.url), "utf8");
+  assert.match(readme, /英文同步和对应的中文翻译会放在同一个更新中/);
+  assert.match(readme, /检查通过后自动合并/);
+  assert.doesNotMatch(readme, /等待审核|已有翻译 PR|维护者审核/);
+});
+
 test("unified writer is the only scheduled docs writer", async () => {
   const writer = await readFile(writerPath, "utf8");
   assert.match(writer, /^  schedule:$/m);
