@@ -2,6 +2,23 @@ name: CI
 
 on:
   workflow_dispatch:
+    inputs:
+      automation_pr:
+        description: Automation PR number
+        required: true
+        type: string
+      expected_head_sha:
+        description: Exact automation PR head SHA
+        required: true
+        type: string
+      expected_head_ref:
+        description: Exact automation branch
+        required: true
+        type: string
+      expected_title:
+        description: Exact automation PR title
+        required: true
+        type: string
   push:
     branches:
       - main
@@ -21,6 +38,68 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.expected_head_sha || github.sha }}
+
+      - name: Verify dispatched pull request
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/github-script@v9
+        env:
+          AUTOMATION_PR: ${{ inputs.automation_pr }}
+          EXPECTED_HEAD_SHA: ${{ inputs.expected_head_sha }}
+          EXPECTED_HEAD_REF: ${{ inputs.expected_head_ref }}
+          EXPECTED_TITLE: ${{ inputs.expected_title }}
+        with:
+          script: |
+            const rawPullNumber = process.env.AUTOMATION_PR ?? "";
+            if (!/^[1-9]\d*$/.test(rawPullNumber)) {
+              throw new Error("Invalid PR number");
+            }
+            const pullNumber = Number(rawPullNumber);
+            if (!Number.isSafeInteger(pullNumber)) {
+              throw new Error("Invalid PR number");
+            }
+
+            const expectedHeadSha = process.env.EXPECTED_HEAD_SHA ?? "";
+            const expectedHeadRef = process.env.EXPECTED_HEAD_REF ?? "";
+            const expectedTitle = process.env.EXPECTED_TITLE ?? "";
+            if (expectedHeadRef !== "automation/update-openai-docs") {
+              throw new Error("Expected head ref must be automation/update-openai-docs");
+            }
+            if (!expectedHeadSha) {
+              throw new Error("Expected head SHA is required");
+            }
+            if (!expectedTitle) {
+              throw new Error("Expected title is required");
+            }
+
+            const { data: pull } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pullNumber,
+            });
+            if (pull.state !== "open") {
+              throw new Error("Pull request must be open");
+            }
+            if (pull.base.ref !== "main") {
+              throw new Error("Pull request base must be main");
+            }
+            if (pull.title !== expectedTitle) {
+              throw new Error("Pull request title does not match the expected title");
+            }
+            if (pull.head.ref !== expectedHeadRef) {
+              throw new Error("Pull request head ref does not match the expected head ref");
+            }
+            if (pull.head.sha !== expectedHeadSha) {
+              throw new Error("Pull request head SHA does not match the expected head SHA");
+            }
+
+            const checkout = await exec.getExecOutput("git", ["rev-parse", "HEAD"], {
+              silent: true,
+            });
+            if (checkout.stdout.trim() !== expectedHeadSha) {
+              throw new Error("Checked-out SHA does not match the expected head SHA");
+            }
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6
