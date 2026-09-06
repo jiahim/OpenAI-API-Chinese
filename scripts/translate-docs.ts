@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
-import { dirname, resolve } from "node:path";
+import { randomUUID } from "node:crypto";
+import { mkdir, rename, unlink, writeFile } from "node:fs/promises";
+import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import {
@@ -18,7 +20,14 @@ import {
   loadTranslationWorkspace,
 } from "./translation/planner.ts";
 import {
+  inspectDocsUpdateBatchWorkspace,
+  loadDocsUpdateBatch,
+  requiredSourcePaths,
+  type DocsUpdateBatchIssue,
+} from "./docs-update-batch.ts";
+import {
   estimateTranslationPageWorkload,
+  removeTranslationPage,
   reviewTranslationPage,
   runTranslationPage,
   runTranslationPageWithRetry,
@@ -35,6 +44,7 @@ import type {
 
 type Command =
   | "auto"
+  | "batch"
   | "check"
   | "plan"
   | "review"
@@ -50,6 +60,8 @@ interface CliOptions {
   matches: string[];
   maxBatches?: number | undefined;
   maxCharacters?: number | undefined;
+  releasePath?: string | undefined;
+  resultPath?: string | undefined;
   section: SourceSection | "all";
   timeBudgetMinutes?: number | undefined;
 }
@@ -198,6 +210,7 @@ export function parseCliOptions(argv: string[]): CliOptions {
   const command = argv[0];
   if (
     command !== "auto" &&
+    command !== "batch" &&
     command !== "check" &&
     command !== "plan" &&
     command !== "review" &&
@@ -205,7 +218,9 @@ export function parseCliOptions(argv: string[]): CliOptions {
     command !== "simulate" &&
     command !== "status"
   ) {
-    throw new Error("命令必须是 auto、check、plan、review、run、simulate 或 status。");
+    throw new Error(
+      "命令必须是 auto、batch、check、plan、review、run、simulate 或 status。",
+    );
   }
 
   const options: CliOptions = {
@@ -231,6 +246,14 @@ export function parseCliOptions(argv: string[]): CliOptions {
       const value = argv[++index];
       if (!value?.trim()) throw new Error("--match 缺少关键词。");
       options.matches.push(value.toLowerCase());
+    } else if (argument === "--release") {
+      const value = argv[++index];
+      if (!value) throw new Error("--release 缺少路径。");
+      options.releasePath = value;
+    } else if (argument === "--result") {
+      const value = argv[++index];
+      if (!value) throw new Error("--result 缺少路径。");
+      options.resultPath = value;
     } else if (argument === "--max-batches") {
       options.maxBatches = parsePositiveInteger(argv[++index], "--max-batches");
     } else if (argument === "--max-characters") {
@@ -255,13 +278,26 @@ export function parseCliOptions(argv: string[]): CliOptions {
   }
   if (
     options.command !== "auto" &&
+    options.command !== "batch" &&
     (options.maxBatches !== undefined ||
       options.maxCharacters !== undefined ||
       options.timeBudgetMinutes !== undefined)
   ) {
     throw new Error(
-      "--max-batches、--max-characters 和 --time-budget-minutes 仅适用于 auto。",
+      "--max-batches、--max-characters 和 --time-budget-minutes 仅适用于 auto 或 batch。",
     );
+  }
+  if (
+    options.command !== "batch" &&
+    (options.releasePath !== undefined || options.resultPath !== undefined)
+  ) {
+    throw new Error("--release 和 --result 仅适用于 batch 命令。");
+  }
+  if (
+    options.command === "batch" &&
+    (options.releasePath === undefined || options.resultPath === undefined)
+  ) {
+    throw new Error("batch 必须同时提供 --release 和 --result。");
   }
   if (
     (options.command === "check" || options.command === "status") &&
@@ -295,6 +331,16 @@ export function parseCliOptions(argv: string[]): CliOptions {
       `auto 必须提供 --limit ${AUTO_PAGE_LIMIT}，且不允许 --match 或 --commit。`,
     );
   }
+  if (
+    options.command === "batch" &&
+    (options.limit !== AUTO_PAGE_LIMIT ||
+      options.matches.length > 0 ||
+      options.commit)
+  ) {
+    throw new Error(
+      `batch 必须提供 --limit ${AUTO_PAGE_LIMIT}，且不允许 --match 或 --commit。`,
+    );
+  }
   return options;
 }
 
@@ -302,6 +348,15 @@ export type AutomaticTranslationStopReason =
   | "batch-budget"
   | "character-budget"
   | "time-budget";
+
+export interface TranslationBatchRunResult {
+  complete: boolean;
+  issues: DocsUpdateBatchIssue[];
+  removed: string[];
+  schemaVersion: 1;
+  stopReason: AutomaticTranslationStopReason | null;
+  translated: string[];
+}
 
 interface AutomaticTranslationBudget {
   maxBatches: number;
@@ -406,6 +461,7 @@ export function automaticTranslationCandidates(
   entries: TranslationPageInspection[],
   section: SourceSection | "all" = "all",
   prioritySourcePaths: readonly string[] = [],
+  requiredSourcePaths: readonly string[] = [],
 ): TranslationPageInspection[] {
   return entries
     .filter(
@@ -413,11 +469,14 @@ export function automaticTranslationCandidates(
         TRANSLATABLE_STATES.has(entry.state) &&
         (section === "all" || entry.source?.section === section),
     )
-    .sort(translationCandidateComparator(prioritySourcePaths));
+    .sort(
+      translationCandidateComparator(prioritySourcePaths, requiredSourcePaths),
+    );
 }
 
 function translationCandidateComparator(
   prioritySourcePaths: readonly string[],
+  requiredSourcePaths: readonly string[] = [],
 ): (
   left: TranslationPageInspection,
   right: TranslationPageInspection,
@@ -425,7 +484,14 @@ function translationCandidateComparator(
   const sourcePriority = new Map(
     prioritySourcePaths.map((sourcePath, index) => [sourcePath, index]),
   );
+  const requiredPriority = new Map(
+    requiredSourcePaths.map((sourcePath, index) => [sourcePath, index]),
+  );
   return (left, right) =>
+    (requiredPriority.get(left.source?.sourcePath ?? "") ??
+      Number.MAX_SAFE_INTEGER) -
+      (requiredPriority.get(right.source?.sourcePath ?? "") ??
+        Number.MAX_SAFE_INTEGER) ||
     AUTO_STATE_PRIORITY[left.state] - AUTO_STATE_PRIORITY[right.state] ||
     (sourcePriority.get(left.source?.sourcePath ?? "") ??
       Number.MAX_SAFE_INTEGER) -
@@ -655,6 +721,157 @@ async function auto(
   );
 }
 
+function isErrno(error: unknown, code: string): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    error.code === code
+  );
+}
+
+async function writeBatchResult(
+  repositoryRoot: string,
+  resultPath: string,
+  result: TranslationBatchRunResult,
+): Promise<void> {
+  const target = resolve(repositoryRoot, resultPath);
+  const parent = dirname(target);
+  await mkdir(parent, { recursive: true });
+  const temporary = join(
+    parent,
+    `.${basename(target)}.${process.pid}.${randomUUID()}.tmp`,
+  );
+  try {
+    await writeFile(temporary, `${JSON.stringify(result, null, 2)}\n`, {
+      encoding: "utf8",
+      flag: "wx",
+    });
+    await rename(temporary, target);
+  } catch (error) {
+    try {
+      await unlink(temporary);
+    } catch (cleanupError) {
+      if (!isErrno(cleanupError, "ENOENT")) throw cleanupError;
+    }
+    throw error;
+  }
+}
+
+async function batch(
+  workspace: TranslationWorkspaceSnapshot,
+  options: CliOptions,
+): Promise<void> {
+  const releasePath = options.releasePath;
+  const resultPath = options.resultPath;
+  if (!releasePath || !resultPath) {
+    throw new Error("batch 必须同时提供 --release 和 --result。");
+  }
+  const release = await loadDocsUpdateBatch(
+    resolve(workspace.repositoryRoot, releasePath),
+  );
+  const removed: string[] = [];
+  for (const entry of [...release.removed].sort((left, right) =>
+    left.path.localeCompare(right.path, "en"),
+  )) {
+    await removeTranslationPage(workspace, entry.sourceUrl);
+    removed.push(entry.path);
+  }
+
+  const fresh = await loadTranslationWorkspace(
+    workspace.repositoryRoot,
+    workspace.configPath,
+  );
+  const priority = await loadTranslationPriorityConfig(fresh);
+  const required = requiredSourcePaths(release);
+  const selected: SourcedTranslationPageInspection[] = [];
+  for (const entry of automaticTranslationCandidates(
+    fresh.entries,
+    options.section,
+    priority.sourcePaths,
+    required,
+  )) {
+    if (!entry.source) continue;
+    selected.push({ ...entry, source: entry.source });
+    if (selected.length === options.limit) break;
+  }
+
+  const budget: AutomaticTranslationBudget = {
+    maxBatches: options.maxBatches ?? AUTO_MAX_BATCHES,
+    maxCharacters: options.maxCharacters ?? AUTO_MAX_CHARACTERS,
+    timeBudgetMs:
+      (options.timeBudgetMinutes ?? AUTO_TIME_BUDGET_MINUTES) * 60_000,
+  };
+  const startedAt = Date.now();
+  const progress: AutomaticTranslationProgress = {
+    batches: 0,
+    characters: 0,
+    elapsedMs: 0,
+    pages: 0,
+  };
+  const translated: string[] = [];
+  let stopReason: AutomaticTranslationStopReason | null = null;
+  let terminalError: unknown;
+  try {
+    const provider =
+      selected.length === 0
+        ? undefined
+        : createConfiguredProvider(
+            fresh.config.provider,
+            process.env,
+            fresh.glossary.preserve,
+            fresh.glossary.terms,
+          );
+    for (const selection of selected) {
+      const workload = await estimateTranslationPageWorkload(
+        fresh,
+        selection.source.sourceUrl,
+      );
+      progress.elapsedMs = Date.now() - startedAt;
+      stopReason =
+        automaticTranslationStopReason(budget, progress, workload) ?? null;
+      if (stopReason !== null) break;
+      const result = await runProductionTranslationPage(
+        fresh,
+        {
+          sourcePath: selection.source.sourcePath,
+          sourceUrl: selection.source.sourceUrl,
+          targetPath: selection.targetPath,
+        },
+        provider!,
+        true,
+      );
+      translated.push(selection.source.sourcePath);
+      progress.pages += 1;
+      progress.batches += result.result.stats.batches;
+      progress.characters += result.result.stats.characters;
+      progress.elapsedMs = Date.now() - startedAt;
+    }
+  } catch (error) {
+    terminalError = error;
+  }
+
+  const completedWorkspace = await loadTranslationWorkspace(
+    fresh.repositoryRoot,
+    fresh.configPath,
+  );
+  const report = await inspectDocsUpdateBatchWorkspace(
+    release,
+    completedWorkspace,
+  );
+  const result: TranslationBatchRunResult = {
+    complete:
+      terminalError === undefined && stopReason === null && report.complete,
+    issues: report.issues,
+    removed,
+    schemaVersion: 1,
+    stopReason,
+    translated,
+  };
+  await writeBatchResult(fresh.repositoryRoot, resultPath, result);
+  if (terminalError !== undefined) throw terminalError;
+}
+
 async function review(
   workspace: TranslationWorkspaceSnapshot,
   options: CliOptions,
@@ -679,6 +896,10 @@ export async function main(argv = process.argv.slice(2)): Promise<number> {
     REPOSITORY_ROOT,
     options.configPath,
   );
+  if (options.command === "batch") {
+    await batch(workspace, options);
+    return 0;
+  }
   if (options.command === "auto") {
     await auto(workspace, options);
     return 0;
