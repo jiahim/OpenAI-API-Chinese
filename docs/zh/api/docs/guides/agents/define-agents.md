@@ -1,31 +1,31 @@
-# 智能体定义
+# 智能体 定义
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-智能体 是基于 SDK 的 工作流 的核心单元。它封装了模型、指令，以及可选的运行时行为，例如工具、护栏、MCP 服务器、交接和结构化输出。
+智能体是基于 SDK 的 工作流的核心单元。它将模型、指令以及可选的运行时行为（如工具、护栏、MCP 服务器、交接和结构化输出）打包在一起。
 
-## 智能体应包含什么
+## 智能体上应当包含哪些内容
 
-使用 智能体 配置来做出该专家特有的决策：
+将仅与该专家本身相关的决策交由智能体配置处理：
 
-| Property                                                                                                          | Use it for                                                  | Read next                                                                                |
+| 属性                                                                                                          | 用途                                                  | 下一步阅读                                                                                |
 | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `name`                                                                                                            | 在追踪和工具/交接界面中可读的标识 | This page                                                                                |
-| `instructions`                                                                                                    | 该 智能体 的任务、约束和风格              | This page                                                                                |
-| `prompt`                                                                                                          | 基于 Responses 的运行的已存储提示配置        | [Models and providers](https://developers.openai.com/api/docs/guides/agents/models)                                   |
-| `model` 以及模型设置                                                                                        | 选择模型并调整行为                      | [Models and providers](https://developers.openai.com/api/docs/guides/agents/models)                                   |
-| `tools`                                                                                                           | 智能体 可直接调用的能力                    | [Using tools](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)                            |
-| `handoffDescription` 在 TypeScript 中，或 `handoff_description` 在 Python 中 | 提示何时应由另一个 智能体 委派到此处             | [Orchestration and handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration)                      |
-| `handoffs`                                                                                                        | 委派给另一个 智能体                                 | [Orchestration and handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration)                      |
-| `outputType` 在 TypeScript 中，或 `output_type` 在 Python 中                 | 返回结构化输出而非纯文本           | This page                                                                                |
-| Guardrails and approvals                                                                                          | 校验、拦截与审批流程                      | [护栏与人工审核](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals)              |
-| MCP 服务器与托管 MCP 工具                                                                                  | 附加 MCP 支持的能力                           | [集成与可观测性](https://developers.openai.com/api/docs/guides/agents/integrations-observability#mcp) |
+| `name`                                                                                                            | 在追踪和工具/交接界面中的人类可读标识 | 本页                                                                                |
+| `instructions`                                                                                                    | 该智能体的任务、约束与风格              | 本页                                                                                |
+| `prompt`                                                                                                          | 基于 Responses 的运行所使用的存储提示配置        | [模型与提供商](https://developers.openai.com/api/docs/guides/agents/models)                                   |
+| `model` 以及模型设置                                                                                        | 选择模型并调优行为                      | [模型与提供商](https://developers.openai.com/api/docs/guides/agents/models)                                   |
+| `tools`                                                                                                           | 智能体可直接调用的能力                    | [使用工具](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)                            |
+| `handoffDescription` （在 TypeScript 中）或 `handoff_description` （在 Python 中） | 提示何时应由其他智能体委派到此处             | [编排与交接](https://developers.openai.com/api/docs/guides/agents/orchestration)                      |
+| `handoffs`                                                                                                        | 委派给另一个智能体                                 | [编排与交接](https://developers.openai.com/api/docs/guides/agents/orchestration)                      |
+| `outputType` （在 TypeScript 中）或 `output_type` （在 Python 中）                 | 返回结构化输出而非纯文本           | 本页                                                                                |
+| 护栏与审批                                                                                          | 验证、拦截与审核流程                      | [护栏与人工审核](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals)              |
+| MCP 服务器与托管 MCP 工具                                                                                  | 附加由 MCP 支持的能力                           | [集成与可观测性](https://developers.openai.com/api/docs/guides/agents/integrations-observability#mcp) |
 
-## 从一个聚焦的智能体开始
+## 从一个专注的智能体开始
 
-定义能够承担明确任务的最小智能体。仅在需要独立所有权、不同指令、不同工具范围或不同审批策略时，才添加更多智能体。
+定义可以拥有明确任务的最小智能体。只有在需要独立所有权、不同的指令、不同的工具集合或不同的审批策略时，才添加更多智能体。
 
-定义单个智能体
+定义一个智能体
 
 ```javascript
 import { Agent, tool } from "@openai/agents";
@@ -43,7 +43,7 @@ const getWeather = tool({
 const agent = new Agent({
   name: "Weather bot",
   instructions: "You are a helpful weather bot.",
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [getWeather],
 });
 ```
@@ -61,19 +61,19 @@ def get_weather(city: str) -> str:
 agent = Agent(
     name="Weather bot",
     instructions="You are a helpful weather bot.",
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[get_weather],
 )
 ```
 
 
-## 调整指令、交接和输出
+## 塑造指令、交接与输出
 
-三个配置选项需要格外注意：
+有三个配置选项需要格外注意：
 
-- 从静态提示开始 `instructions`。当提示内容依赖当前用户、租户或运行时上下文时，应改用动态提示回调，而不是在调用处拼接字符串。
-- 保持 `handoffDescription` 在 TypeScript 或 `handoff_description` 中的内容简短具体，让路由智能体知道何时选用该专家。
-- 使用 `outputType` 在 TypeScript 或 `output_type` （Python）当下游代码需要类型化数据而非自由文本时。
+- 从静态 `instructions`。入手。当指导内容依赖于当前用户、租户或运行时上下文时，改用动态 instructions 回调，而不是在调用处拼接字符串。
+- 保持 `handoffDescription` 在 TypeScript 中 `handoff_description` 或 Python 中简短具体，让负责路由的智能体知道何时应选择该专家。
+- 使用 `outputType` 在 TypeScript 中 `output_type` （在 Python 中）当下游代码需要强类型数据而非自由形式的文本时使用。
 
 返回结构化输出
 
@@ -132,11 +132,11 @@ if __name__ == "__main__":
 ```
 
 
-使用 `prompt` 当你希望从 Responses API 中引用已存储的提示配置，而不是将完整的系统提示嵌入代码时，可以使用它。
+使用 `prompt` 当你想要从 Responses API 中引用已存储的提示配置，而不是在代码中嵌入完整的系统提示时。
 
 ## 将本地上下文与模型上下文分开
 
-SDK 允许你在不将其发送给模型的情况下，将应用状态和依赖项传入运行。可用于经过身份验证的用户信息、数据库客户端、日志记录器和辅助函数等数据。
+SDK 允许你在不将应用状态和依赖发送给模型的情况下将其传入运行中。可用于传入经过身份验证的用户信息、数据库客户端、日志记录器以及辅助函数等数据。
 
 向工具传递本地上下文
 
@@ -207,23 +207,23 @@ if __name__ == "__main__":
 
 重要的边界是：
 
-- 会话历史是模型看到的内容。
+- 对话历史是模型看到的内容。
 - 运行上下文是你的代码看到的内容。
 
-如果模型需要某个事实，请将其放入 instructions、input、检索内容或工具中。如果仅你的运行时需要它，请保留在本地上下文中。
+如果模型需要某个事实，请将其放入 instructions、input、检索结果或工具中。如果只有你的运行时需要它，则将其保留在本地上下文中。
 
 ## 何时将一个智能体拆分为多个
 
-当某个智能体不应独自负责完整回复，或各项能力存在明显差异时，可以拆分智能体。常见的拆分原因包括：
+当单个专家不应负责完整回复，或当各个能力存在实质性差异时，拆分一个智能体。常见原因包括：
 
-- 某个智能体需要不同的工具或 MCP 接口。
-- 某个智能体需要不同的审批策略或护栏。
-- 工作流的某个分支需要不同的模型或输出风格。
-- 你希望在追踪中显式路由，而不是使用单个大型提示。
+- 专业智能体需要不同的工具或 MCP 界面。
+- 专业智能体需要不同的审批策略或 护栏。
+- 工作流的一个分支需要使用不同的模型或输出风格。
+- 你希望在追踪中进行显式路由，而不是使用单个大型提示。
 
 ## 后续步骤
 
-一旦清晰地定义了一个专家，就继续查看与下一个设计问题匹配的指南。
+清晰定义好一个智能体后，参考与下一个设计问题匹配的指南。
 
 
 
@@ -231,19 +231,19 @@ if __name__ == "__main__":
 
 
 
-        为此智能体选择模型、默认值和传输策略。](https://developers.openai.com/api/docs/guides/agents/models)
+        为该 智能体 选择模型、默认值以及传输策略。](https://developers.openai.com/api/docs/guides/agents/models)
   [使用工具
 
 
 
-        添加智能体可以直接调用的能力。](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)
+        添加该 智能体 可以直接调用的能力。](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)
   [编排与交接
 
 
 
-        当单个智能体不再够用时，选择专家之间的协作方式。](https://developers.openai.com/api/docs/guides/agents/orchestration)
-  [运行智能体
+        当单个 智能体 已无法满足需求时，选择智能体之间的协作方式。](https://developers.openai.com/api/docs/guides/agents/orchestration)
+  [运行 智能体
 
 
 
-        了解运行时循环、状态和流式传输行为。](https://developers.openai.com/api/docs/guides/agents/running-agents)
+        了解运行时循环、状态以及流式行为。](https://developers.openai.com/api/docs/guides/agents/running-agents)
