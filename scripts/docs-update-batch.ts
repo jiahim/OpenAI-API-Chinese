@@ -320,9 +320,22 @@ export function inspectDocsUpdateBatch(
   existingTargetPaths?: ReadonlySet<string>,
 ): DocsUpdateBatchReport {
   const validatedBatch = validateDocsUpdateBatch(batch);
+  return inspectValidatedDocsUpdateBatch(
+    validatedBatch,
+    entries,
+    existingTargetPaths,
+  );
+}
+
+function inspectValidatedDocsUpdateBatch(
+  batch: SyncRelease,
+  entries: TranslationPageInspection[],
+  existingTargetPaths?: ReadonlySet<string>,
+  resolvedTargetPaths: ReadonlyMap<string, string> = new Map(),
+): DocsUpdateBatchReport {
   const bySourcePath = inspectionEntriesBySourcePath(entries);
-  const required = requiredSourcePaths(validatedBatch);
-  const removed = removedSourcePaths(validatedBatch);
+  const required = requiredSourcePaths(batch);
+  const removed = removedSourcePaths(batch);
   const targets = validatedExistingTargetPaths(
     existingTargetPaths ?? new Set(entries.map((entry) => entry.targetPath)),
   );
@@ -340,7 +353,10 @@ export function inspectDocsUpdateBatch(
   }
   for (const sourcePath of removed) {
     const entry = bySourcePath.get(sourcePath);
-    const targetPath = entry?.targetPath ?? defaultTargetPath(sourcePath);
+    const targetPath =
+      entry?.targetPath ??
+      resolvedTargetPaths.get(sourcePath) ??
+      defaultTargetPath(sourcePath);
     if (entry?.record) {
       issues.push({ kind: "removed-record-present", sourcePath, targetPath });
     }
@@ -384,6 +400,7 @@ export async function inspectDocsUpdateBatchWorkspace(
   const bySourcePath = inspectionEntriesBySourcePath(workspace.entries);
   const root = await realpath(resolve(workspace.repositoryRoot));
   const existingTargetPaths = new Set<string>();
+  const resolvedTargetPaths = new Map<string, string>();
   for (const sourcePath of removedSourcePaths(validatedBatch)) {
     const targetPath =
       bySourcePath.get(sourcePath)?.targetPath ??
@@ -392,6 +409,7 @@ export async function inspectDocsUpdateBatchWorkspace(
         workspace.config.sourceRoot,
         workspace.config.targetRoot,
       );
+    resolvedTargetPaths.set(sourcePath, targetPath);
     const target = resolve(
       root,
       normalizedRepositoryPath(targetPath, "待检查中文译文"),
@@ -408,9 +426,10 @@ export async function inspectDocsUpdateBatchWorkspace(
       if (!isErrno(error, "ENOENT")) throw error;
     }
   }
-  return inspectDocsUpdateBatch(
+  return inspectValidatedDocsUpdateBatch(
     validatedBatch,
     workspace.entries,
     existingTargetPaths,
+    resolvedTargetPaths,
   );
 }

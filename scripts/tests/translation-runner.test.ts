@@ -40,6 +40,8 @@ import type { MarkdownTranslationContext } from "../translation/markdown-adapter
 const SOURCE_URL = "https://developers.openai.com/api/docs/quickstart.md";
 const SOURCE_PATH = "docs/en/api/docs/quickstart.md";
 const TARGET_PATH = "docs/zh/api/docs/quickstart.md";
+const REMAPPED_SOURCE_PATH = "docs/en/api/docs/remapped.md";
+const REMAPPED_TARGET_PATH = "docs/zh/api/docs/remapped.md";
 const SECOND_SOURCE_URL = "https://developers.openai.com/api/docs/models.md";
 const SECOND_SOURCE_PATH = "docs/en/api/docs/models.md";
 const SECOND_TARGET_PATH = "docs/zh/api/docs/models.md";
@@ -305,6 +307,35 @@ async function createRemovalFixture(): Promise<{
   return { root, workspace: await loadTranslationWorkspace(root) };
 }
 
+async function remapRemovedPage(root: string): Promise<void> {
+  const sourceManifestPath = join(root, "docs/en/.source-manifest.json");
+  const sourceManifest = JSON.parse(
+    await readFile(sourceManifestPath, "utf8"),
+  ) as { pages: Record<string, { localPath: string }> };
+  const source = sourceManifest.pages[SOURCE_URL];
+  assert.ok(source);
+  source.localPath = REMAPPED_SOURCE_PATH;
+  await writeFile(sourceManifestPath, JSON.stringify(sourceManifest));
+
+  const translationManifestPath = join(
+    root,
+    "docs/zh/.translation-manifest.json",
+  );
+  const translationManifest = JSON.parse(
+    await readFile(translationManifestPath, "utf8"),
+  ) as {
+    pages: Record<string, { sourcePath: string; targetPath: string }>;
+  };
+  const record = translationManifest.pages[SOURCE_URL];
+  assert.ok(record);
+  record.sourcePath = REMAPPED_SOURCE_PATH;
+  record.targetPath = REMAPPED_TARGET_PATH;
+  await writeFile(
+    translationManifestPath,
+    JSON.stringify(translationManifest),
+  );
+}
+
 test("removal deletes a matching target and manifest record", async () => {
   const { root, workspace } = await createRemovalFixture();
   try {
@@ -393,6 +424,39 @@ test("removal refuses a symlink target before following it", async () => {
   } finally {
     await rm(root, { force: true, recursive: true });
     await rm(outside, { force: true, recursive: true });
+  }
+});
+
+test("removal rejects a freshly remapped symlink before workspace loading reads it", async () => {
+  const { root, workspace } = await createRemovalFixture();
+  try {
+    await remapRemovedPage(root);
+    await symlink(
+      join(root, "docs/zh/api/docs"),
+      join(root, REMAPPED_TARGET_PATH),
+    );
+
+    await assert.rejects(
+      removeTranslationPage(workspace, SOURCE_URL),
+      /符号链接或非文件/u,
+    );
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("removal rejects a freshly remapped non-file before workspace loading reads it", async () => {
+  const { root, workspace } = await createRemovalFixture();
+  try {
+    await remapRemovedPage(root);
+    await mkdir(join(root, REMAPPED_TARGET_PATH));
+
+    await assert.rejects(
+      removeTranslationPage(workspace, SOURCE_URL),
+      /符号链接或非文件/u,
+    );
+  } finally {
+    await rm(root, { force: true, recursive: true });
   }
 });
 

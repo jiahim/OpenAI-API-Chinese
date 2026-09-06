@@ -713,6 +713,37 @@ async function fileSha256(
   }
 }
 
+async function safeTargetFileSha256(
+  repositoryRoot: string,
+  filePath: string,
+  label: string,
+): Promise<string | undefined> {
+  try {
+    const stat = await lstat(filePath);
+    if (stat.isSymbolicLink() || !stat.isFile()) {
+      throw new Error(`${label}不能是符号链接或非文件：${filePath}`);
+    }
+  } catch (error) {
+    if (
+      !(
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "ENOENT"
+      )
+    ) {
+      throw error;
+    }
+    await assertMissingPathStaysInsideRepository(
+      repositoryRoot,
+      filePath,
+      label,
+    );
+    return undefined;
+  }
+  return fileSha256(repositoryRoot, filePath, label);
+}
+
 export function classifyTranslationPage(input: {
   policySha256: string;
   record?: TranslationPageRecord | undefined;
@@ -845,7 +876,7 @@ export async function loadTranslationWorkspace(
         throw new Error(`英文页面文件与 source manifest SHA 不一致：${source.sourcePath}`);
       }
     }
-    const targetSha256 = await fileSha256(
+    const targetSha256 = await safeTargetFileSha256(
       root,
       repositoryPath(root, targetPath),
       "中文页面",

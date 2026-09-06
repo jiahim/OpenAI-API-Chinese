@@ -378,6 +378,30 @@ test("workspace consistency detects an existing removed target with lstat", asyn
   }
 });
 
+test("workspace consistency preserves a custom target mapping without an inspection entry", async () => {
+  const root = await mkdtemp(join(tmpdir(), "docs-update-workspace-"));
+  try {
+    await mkdir(join(root, "translations/zh"), { recursive: true });
+    await writeFile(join(root, "translations/zh/removed.md"), "译文\n");
+    const batch = release({ removed: [releaseEntry("docs/en/removed.md")] });
+    const workspace = workspaceAt(root, []);
+    workspace.config.targetRoot = "translations/zh";
+
+    assert.deepEqual(
+      (await inspectDocsUpdateBatchWorkspace(batch, workspace)).issues,
+      [
+        {
+          kind: "removed-target-present",
+          sourcePath: "docs/en/removed.md",
+          targetPath: "translations/zh/removed.md",
+        },
+      ],
+    );
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
 test("workspace consistency refuses symlink and non-file removed targets", async () => {
   for (const targetKind of ["symlink", "directory"] as const) {
     const root = await mkdtemp(join(tmpdir(), "docs-update-workspace-"));
