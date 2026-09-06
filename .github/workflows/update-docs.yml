@@ -3,6 +3,11 @@ name: Update official English and Chinese docs
 on:
   workflow_dispatch:
     inputs:
+      allow_large_prune:
+        description: Allow a verified official removal above the 20-page or 10-percent safety threshold
+        required: false
+        default: false
+        type: boolean
       enable_auto_merge:
         description: Enable squash auto merge for this complete canary batch
         required: false
@@ -106,10 +111,55 @@ jobs:
               await git("checkout", "-b", branch, `origin/${branch}`);
             } else {
               const remote = await git("ls-remote", "--heads", "origin", `refs/heads/${branch}`);
-              if (remote && remote.split(/\s+/)[0] !== process.env.TRUSTED_MAIN_SHA) {
-                throw new Error("Divergent automation branch has no open trusted PR; manual recovery is required");
+              if (remote) {
+                await git("fetch", "origin", `refs/heads/${branch}:refs/remotes/origin/${branch}`);
+                const head = await git("rev-parse", `origin/${branch}`);
+                if (head !== remote.split(/\s+/)[0]) throw new Error("Remote automation head changed during recovery");
+                await checkPaths(head);
+                const ancestor = async (base, tip) => {
+                  const result = await exec.getExecOutput("git", ["merge-base", "--is-ancestor", base, tip], { silent: true, ignoreReturnCode: true });
+                  if (result.exitCode > 1) throw new Error("Could not verify recovery ancestry");
+                  return result.exitCode === 0;
+                };
+                let confirmedMerged = false;
+                const history = await github.paginate(github.rest.pulls.list, {
+                  owner, repo, head: `${owner}:${branch}`, state: "closed", per_page: 100,
+                });
+                for (const recorded of history) {
+                  const { data: previous } = await github.rest.pulls.get({ owner, repo, pull_number: recorded.number });
+                  if (previous.state !== "closed" || previous.user.login !== "github-actions[bot]" ||
+                      previous.title !== process.env.PR_TITLE || previous.base.ref !== "main" ||
+                      previous.head.ref !== branch || previous.head.repo?.full_name !== `${owner}/${repo}`) {
+                    throw new Error("Historical automation PR identity is not trusted");
+                  }
+                  if (previous.merged !== true) throw new Error("Automation branch has a closed-unmerged PR; manual recovery is required");
+                  // Old squash-merged heads may have been deleted and are not necessarily in this clone.
+                  // Missing history is not merge evidence; an orphan can still prove current-main ancestry below.
+                  const available = await exec.getExecOutput("git", ["cat-file", "-e", `${previous.head.sha}^{commit}`], { silent: true, ignoreReturnCode: true });
+                  if (available.exitCode === 0 && previous.merge_commit_sha && await ancestor(previous.head.sha, head) &&
+                      await ancestor(previous.merge_commit_sha, "origin/main")) confirmedMerged = true;
+                }
+                if (!(await ancestor(head, "origin/main"))) {
+                  const subjects = new Set([
+                    "[AI] docs: 同步 OpenAI 官方英文文档", "[AI] docs: 更新本轮 OpenAI 中文翻译", "[AI] docs: 合入最新 main",
+                  ]);
+                  const botEmail = "41898282+github-actions[bot]@users.noreply.github.com";
+                  for (const commit of (await git("rev-list", `origin/main..${head}`)).split("\n").filter(Boolean)) {
+                    const [author, authorEmail, committer, committerEmail, subject] =
+                      (await git("show", "-s", "--format=%an%x00%ae%x00%cn%x00%ce%x00%s", commit)).split("\0");
+                    if (author !== "github-actions[bot]" || committer !== "github-actions[bot]" ||
+                        authorEmail !== botEmail || committerEmail !== botEmail || !subjects.has(subject)) {
+                      throw new Error("Unclaimed automation branch contains a non-writer commit");
+                    }
+                  }
+                  if (!confirmedMerged && !(await ancestor("origin/main", head))) {
+                    throw new Error("Orphan automation branch does not contain current main; manual recovery is required");
+                  }
+                }
+                await git("checkout", "-b", branch, head);
+              } else {
+                await git("checkout", "-b", branch, "origin/main");
               }
-              await git("checkout", "-b", branch, "origin/main");
             }
             await git("config", "user.name", "github-actions[bot]");
             await git("config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com");
@@ -124,8 +174,14 @@ jobs:
 
       - name: Synchronize English and publish the batch release
         id: sync
+        env:
+          ALLOW_LARGE_PRUNE: ${{ github.event_name == 'workflow_dispatch' && inputs.allow_large_prune == true }}
         run: |
-          pnpm docs:sync -- --prune --allow-large-prune
+          prune_args=(--prune)
+          if [[ "$ALLOW_LARGE_PRUNE" == true ]]; then
+            prune_args+=(--allow-large-prune)
+          fi
+          pnpm docs:sync -- "${prune_args[@]}"
           git add -- docs/en
           # The summary CLI reads commits. A temporary snapshot lets English and its release share one published commit.
           snapshot=$(git commit-tree "$(git write-tree)" -p HEAD -m "[AI] docs: 临时同步快照")
@@ -157,10 +213,61 @@ jobs:
           fi
           if ! git diff --quiet origin/main...HEAD; then
             git push origin HEAD:refs/heads/automation/update-openai-docs
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
           fi
+          echo "head_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Create or recover the draft before translation
+        id: draft
+        if: ${{ steps.sync.outputs.has_changes == 'true' }}
+        uses: actions/github-script@v9
+        env:
+          PR_NUMBER: ${{ steps.prepare.outputs.pr_number }}
+          PUSHED_HEAD_SHA: ${{ steps.sync.outputs.head_sha }}
+          SYNC_SUMMARY_PATH: ${{ runner.temp }}/sync-summary.md
+        with:
+          script: |
+            const { readFile } = require("node:fs/promises");
+            const { owner, repo } = context.repo;
+            const body = `<!-- required_complete=false -->\n\n翻译待完成；本轮保持 draft。\n\n${await readFile(process.env.SYNC_SUMMARY_PATH, "utf8")}`;
+            const assertCurrent = (pull) => {
+              if (pull.state !== "open" || pull.user.login !== "github-actions[bot]" ||
+                  pull.base.ref !== "main" || pull.title !== process.env.PR_TITLE ||
+                  pull.head.ref !== process.env.UPDATE_BRANCH || pull.head.repo?.full_name !== `${owner}/${repo}`) {
+                throw new Error("Automation PR identity is no longer trusted and open");
+              }
+              if (pull.head.sha !== process.env.PUSHED_HEAD_SHA) throw new Error("Automation PR head changed after publishing");
+            };
+            let pull;
+            if (process.env.PR_NUMBER) {
+              ({ data: pull } = await github.rest.pulls.get({ owner, repo, pull_number: Number(process.env.PR_NUMBER) }));
+            } else {
+              const existing = await github.paginate(github.rest.pulls.list, {
+                owner, repo, head: `${owner}:${process.env.UPDATE_BRANCH}`, state: "open", per_page: 100,
+              });
+              if (existing.length > 1) throw new Error("Multiple automation PRs found");
+              pull = existing[0];
+              if (!pull) ({ data: pull } = await github.rest.pulls.create({
+                owner, repo, base: "main", head: process.env.UPDATE_BRANCH,
+                title: process.env.PR_TITLE, body, draft: true,
+              }));
+            }
+            ({ data: pull } = await github.rest.pulls.get({ owner, repo, pull_number: pull.number }));
+            assertCurrent(pull);
+            if (!pull.draft) await github.graphql(`mutation($pullRequestId: ID!) {
+              convertPullRequestToDraft(input: { pullRequestId: $pullRequestId }) { pullRequest { id } }
+            }`, { pullRequestId: pull.node_id });
+            await github.rest.pulls.update({ owner, repo, pull_number: pull.number, body });
+            ({ data: pull } = await github.rest.pulls.get({ owner, repo, pull_number: pull.number }));
+            assertCurrent(pull);
+            if (!pull.draft) throw new Error("Published batch must be draft before translation");
+            core.setOutput("number", String(pull.number));
 
       - name: Translate the batch within workload and time budgets
         id: translate
+        if: ${{ steps.sync.outputs.has_changes != 'true' || steps.draft.outputs.number != '' }}
         continue-on-error: true
         timeout-minutes: 160
         env:
@@ -215,6 +322,43 @@ jobs:
             const head = await exec.getExecOutput("git", ["rev-parse", "HEAD"], { silent: true });
             core.setOutput("has_changes", String(changed.exitCode === 1));
             core.setOutput("head_sha", head.stdout.trim());
+
+      - name: Create the draft for a translation-only batch
+        id: backlog_draft
+        if: ${{ !cancelled() && steps.publish.outcome == 'success' && steps.publish.outputs.has_changes == 'true' && steps.draft.outputs.number == '' }}
+        uses: actions/github-script@v9
+        env:
+          PUSHED_HEAD_SHA: ${{ steps.publish.outputs.head_sha }}
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const body = "<!-- required_complete=false -->\n\n历史积压翻译已保存；完整性校验待完成，本轮保持 draft。";
+            const assertCurrent = (pull) => {
+              if (pull.state !== "open" || pull.user.login !== "github-actions[bot]" ||
+                  pull.base.ref !== "main" || pull.title !== process.env.PR_TITLE ||
+                  pull.head.ref !== process.env.UPDATE_BRANCH || pull.head.repo?.full_name !== `${owner}/${repo}`) {
+                throw new Error("Automation PR identity is no longer trusted and open");
+              }
+              if (pull.head.sha !== process.env.PUSHED_HEAD_SHA) throw new Error("Automation PR head changed after publishing");
+            };
+            const existing = await github.paginate(github.rest.pulls.list, {
+              owner, repo, head: `${owner}:${process.env.UPDATE_BRANCH}`, state: "open", per_page: 100,
+            });
+            if (existing.length > 1) throw new Error("Multiple automation PRs found");
+            let pull = existing[0];
+            if (!pull) ({ data: pull } = await github.rest.pulls.create({
+              owner, repo, base: "main", head: process.env.UPDATE_BRANCH,
+              title: process.env.PR_TITLE, body, draft: true,
+            }));
+            ({ data: pull } = await github.rest.pulls.get({ owner, repo, pull_number: pull.number }));
+            assertCurrent(pull);
+            if (!pull.draft) await github.graphql(`mutation($pullRequestId: ID!) {
+              convertPullRequestToDraft(input: { pullRequestId: $pullRequestId }) { pullRequest { id } }
+            }`, { pullRequestId: pull.node_id });
+            ({ data: pull } = await github.rest.pulls.get({ owner, repo, pull_number: pull.number }));
+            assertCurrent(pull);
+            if (!pull.draft) throw new Error("Translation-only batch must be draft before validation");
+            core.setOutput("number", String(pull.number));
 
       - name: Verify batch consistency and render the unified body
         id: status
@@ -294,7 +438,7 @@ jobs:
         if: ${{ !cancelled() && steps.publish.outcome == 'success' && steps.publish.outputs.has_changes == 'true' && steps.status.outputs.complete != '' }}
         uses: actions/github-script@v9
         env:
-          PR_NUMBER: ${{ steps.prepare.outputs.pr_number }}
+          PR_NUMBER: ${{ steps.draft.outputs.number || steps.backlog_draft.outputs.number || steps.prepare.outputs.pr_number }}
           PUSHED_HEAD_SHA: ${{ steps.publish.outputs.head_sha }}
           BATCH_COMPLETE: ${{ steps.status.outputs.complete }}
           PR_BODY_PATH: ${{ runner.temp }}/unified-pr-body.md

@@ -401,7 +401,7 @@ test("writer persists completed pages before validation and reports failures aft
   assert.ok(writer.indexOf("Publish completed translations") < writer.indexOf("Verify batch consistency and render the unified body"));
   assert.ok(writer.indexOf("Create or update the unified pull request") < writer.indexOf("Report failure after preserving the draft pull request"));
   const sync = await writerStep("Synchronize English and publish the batch release");
-  assert.match(sync, /pnpm docs:sync -- --prune --allow-large-prune/);
+  assert.match(sync, /pnpm docs:sync --/);
   assert.match(sync, /--release-output/);
   assert.match(sync, /git push origin HEAD:refs\/heads\/automation\/update-openai-docs/);
   assert.match(sync, /\[AI\] docs: 同步 OpenAI 官方英文文档/);
@@ -442,6 +442,8 @@ interface WriterPull {
   user: { login: string };
   base: { ref: string };
   head: { ref: string; sha: string; repo: { full_name: string } };
+  merged?: boolean;
+  merge_commit_sha?: string | null;
 }
 
 function automationPull(overrides: Partial<WriterPull> = {}): WriterPull {
@@ -458,6 +460,8 @@ async function runWriterApiStep(name: string, options: {
   pull?: WriterPull;
   existing?: boolean;
   staleOnFetch?: number;
+  expectedSha?: string;
+  createFailure?: boolean;
   events?: Array<{ kind: string; data: Record<string, unknown> }>;
 } = {}) {
   const events = options.events ?? [];
@@ -480,6 +484,7 @@ async function runWriterApiStep(name: string, options: {
         },
         create: async (request: Record<string, unknown>) => {
           record("create", request);
+          if (options.createFailure) throw new Error("Transient PR creation failure");
           pull.draft = request.draft === true;
           return { data: structuredClone(pull) };
         },
@@ -507,9 +512,9 @@ async function runWriterApiStep(name: string, options: {
     notice: () => {},
   }, { env: {
     PR_NUMBER: options.existing === false ? "" : "42", PULL_NUMBER: "42",
-    PUSHED_HEAD_SHA: expectedHeadSha, EXPECTED_HEAD_SHA: expectedHeadSha,
+    PUSHED_HEAD_SHA: options.expectedSha ?? expectedHeadSha, EXPECTED_HEAD_SHA: options.expectedSha ?? expectedHeadSha,
     UPDATE_BRANCH: expectedHeadRef, BASE_BRANCH: "main", PR_TITLE: expectedTitle,
-    BATCH_COMPLETE: String(options.complete ?? false), PR_BODY_PATH: "/temporary/body.md",
+    BATCH_COMPLETE: String(options.complete ?? false), PR_BODY_PATH: "/temporary/body.md", SYNC_SUMMARY_PATH: "/temporary/summary.md",
   } }, (name: string) => {
     assert.equal(name, "node:fs/promises");
     return { readFile: async () => "required_complete=false\n本轮已翻译" };
@@ -579,9 +584,10 @@ async function localWriterFixture(t: { after: (callback: () => Promise<void>) =>
     GIT_AUTHOR_NAME: "Workflow test", GIT_AUTHOR_EMAIL: "workflow@example.com",
     GIT_COMMITTER_NAME: "Workflow test", GIT_COMMITTER_EMAIL: "workflow@example.com",
     PATH: `${bin}:${process.env.PATH}`, RUNNER_TEMP: runnerTemp,
+    GITHUB_OUTPUT: join(runnerTemp, "step-output.txt"),
     REAL_CHECKER: fileURLToPath(new URL("../docs-update-pr.ts", import.meta.url)),
   };
-  await writeFile(join(bin, "pnpm"), '#!/bin/sh\ncase "$1" in docs:sync|translate:batch|docs:status|translate:check) exit 0;; esac\nif [ "$1" = "docs:update:check" ]; then shift 2; exec node "$REAL_CHECKER" "$@"; fi\nexit 99\n');
+  await writeFile(join(bin, "pnpm"), '#!/bin/sh\nif [ "$1" = "docs:sync" ] && [ -n "$SYNC_ARGS_LOG" ]; then printf "%s\\n" "$@" > "$SYNC_ARGS_LOG"; fi\ncase "$1" in docs:sync|translate:batch|docs:status|translate:check) exit 0;; esac\nif [ "$1" = "docs:update:check" ]; then shift 2; exec node "$REAL_CHECKER" "$@"; fi\nexit 99\n');
   await chmod(join(bin, "pnpm"), 0o755);
   const calls: Array<{ command: string; args: string[] }> = [];
   const output = (command: string, args: string[], ignoreReturnCode = false) => {
@@ -618,21 +624,31 @@ async function localWriterFixture(t: { after: (callback: () => Promise<void>) =>
     const script = yamlLiteral(await writerStep(name), /^          script: \|$/);
     const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
     const run = new AsyncFunction("github", "context", "core", "process", "require", "exec", script);
-    await run({ paginate: async () => pulls, rest: { pulls: { list: () => {} } } },
+    await run({
+      paginate: async (_method: unknown, request: { state: string }) => request.state === "all" ? pulls : pulls.filter((pull) => pull.state === request.state),
+      rest: { pulls: {
+        list: () => {},
+        get: async (request: { pull_number: number }) => {
+          const pull = pulls.find((entry) => entry.number === request.pull_number);
+          assert.ok(pull, `Missing fixture PR #${request.pull_number}`);
+          return { data: pull };
+        },
+      } },
+    },
       { repo: { owner: "openai", repo: "docs" } },
       { setOutput: (key: string, value: unknown) => { outputs[key] = String(value); }, setFailed: (message: string) => failures.push(message), notice: () => {} },
-      { env: { ...env, UPDATE_BRANCH: expectedHeadRef, TRUSTED_MAIN_SHA: git("rev-parse", "origin/main"), ...extraEnv }, cwd: () => root },
+      { env: { ...env, UPDATE_BRANCH: expectedHeadRef, PR_TITLE: expectedTitle, TRUSTED_MAIN_SHA: git("rev-parse", "origin/main"), ...extraEnv }, cwd: () => root },
       createRequire(import.meta.url),
       {
         getExecOutput: async (command: string, args: string[], options?: { ignoreReturnCode?: boolean }) => output(command, args, options?.ignoreReturnCode),
         exec: async (command: string, args: string[]) => output(command, args).exitCode,
       });
   };
-  const publishFeature = async (path: string, content: string) => {
+  const publishFeature = async (path: string, content: string, subject = "[AI] test: pending batch") => {
     git("checkout", "-b", expectedHeadRef);
     await writeFile(join(root, path), content);
     git("add", "--", path);
-    git("commit", "-m", "[AI] test: pending batch");
+    git("commit", "-m", subject);
     const sha = git("rev-parse", "HEAD");
     git("push", "origin", expectedHeadRef);
     git("checkout", "main");
@@ -818,4 +834,163 @@ test("batch verification distinguishes budget pauses from failures and accepts t
     if (state === "budget") assert.match(body, /character-budget/);
     if (state === "failure") assert.match(body, /Translation failed/);
   }
+});
+
+test("large pruning requires an explicit typed manual opt-in and defaults to the sync thresholds", async (t) => {
+  const writer = await readFile(writerPath, "utf8");
+  const option = yamlBlock(writer, /^      allow_large_prune:$/);
+  assert.match(option, /default: false/);
+  assert.match(option, /type: boolean/);
+  const sync = await writerStep("Synchronize English and publish the batch release");
+  assert.match(sync, /ALLOW_LARGE_PRUNE: \$\{\{ github.event_name == 'workflow_dispatch' && inputs.allow_large_prune == true \}\}/);
+  for (const [event, allowed] of [["schedule", ""], ["workflow_dispatch", "false"], ["workflow_dispatch", "true"]]) {
+    const fixture = await localWriterFixture(t);
+    Object.assign(fixture.env, { GITHUB_EVENT_NAME: event, ALLOW_LARGE_PRUNE: allowed, SYNC_ARGS_LOG: join(fixture.runnerTemp, "sync-args.txt") });
+    await fixture.runStep("Prepare the verified automation branch");
+    fixture.output("bash", ["-e", "-o", "pipefail", "-c", yamlLiteral(sync, /^        run: \|$/)]);
+    const args = (await readFile(fixture.env.SYNC_ARGS_LOG!, "utf8")).trim().split("\n");
+    assert.deepEqual(args, ["docs:sync", "--", "--prune", ...(allowed === "true" ? ["--allow-large-prune"] : [])], event);
+  }
+});
+
+test("published English has a checked draft before translation while no-change runs can translate backlog locally", async () => {
+  const writer = await readFile(writerPath, "utf8");
+  const earlyDraft = await writerStep("Create or recover the draft before translation");
+  const translation = await writerStep("Translate the batch within workload and time budgets");
+  assert.ok(writer.indexOf("Synchronize English and publish") < writer.indexOf("Create or recover the draft before translation"));
+  assert.ok(writer.indexOf("Create or recover the draft before translation") < writer.indexOf("Translate the batch within"));
+  assert.match(earlyDraft, /if: .*steps.sync.outputs.has_changes == 'true'/);
+  assert.match(translation, /if: .*steps.sync.outputs.has_changes != 'true' \|\| steps.draft.outputs.number != ''/);
+  assert.match(earlyDraft, /draft: true/);
+  assert.match(earlyDraft, /convertPullRequestToDraft/);
+  assert.doesNotMatch(earlyDraft, /secrets\./);
+  const events = await runWriterApiStep("Create or recover the draft before translation", { existing: false });
+  assert.equal(events.find((event) => event.kind === "create")?.data.draft, true);
+  assert.ok(events.some((event) => event.kind === "get"));
+  await assert.rejects(runWriterApiStep("Create or recover the draft before translation", { staleOnFetch: 1 }), /head/i);
+  await assert.rejects(runWriterApiStep("Create or recover the draft before translation", { createFailure: true, existing: false }), /Transient/);
+});
+
+function useBotIdentity(fixture: Awaited<ReturnType<typeof localWriterFixture>>) {
+  Object.assign(fixture.env, {
+    GIT_AUTHOR_NAME: "github-actions[bot]", GIT_COMMITTER_NAME: "github-actions[bot]",
+    GIT_AUTHOR_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com",
+    GIT_COMMITTER_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com",
+  });
+}
+
+test("a second run recovers a canonical English branch after interrupted initial PR creation", async (t) => {
+  const fixture = await localWriterFixture(t);
+  useBotIdentity(fixture);
+  await fixture.runStep("Prepare the verified automation branch");
+  await writeFile(join(fixture.root, "docs/en/a.md"), "# New English\n");
+  fixture.output("bash", ["-e", "-o", "pipefail", "-c", yamlLiteral(await writerStep("Synchronize English and publish the batch release"), /^        run: \|$/)]);
+  const head = fixture.git("rev-parse", "HEAD");
+  const pull = automationPull();
+  pull.head.sha = head;
+  await assert.rejects(runWriterApiStep("Create or recover the draft before translation", { existing: false, expectedSha: head, pull, createFailure: true }), /Transient/);
+  fixture.git("checkout", "main");
+  fixture.git("branch", "-D", expectedHeadRef);
+  await fixture.runStep("Prepare the verified automation branch");
+  assert.equal(fixture.git("rev-parse", "HEAD"), head);
+  const recovered = await runWriterApiStep("Create or recover the draft before translation", { existing: false, expectedSha: head, pull });
+  assert.equal(recovered.filter((event) => event.kind === "create").length, 1);
+});
+
+test("orphan recovery rejects foreign authors, subjects, paths, ancestry, and closed-unmerged history", async (t) => {
+  for (const mode of ["author", "subject", "path", "ancestry", "closed", "foreign-history"] as const) {
+    const fixture = await localWriterFixture(t);
+    if (mode !== "author") useBotIdentity(fixture);
+    const pull = await fixture.publishFeature(
+      mode === "path" ? "scripts/untrusted.js" : "docs/en/a.md",
+      "Pending changes\n", mode === "subject" ? "[AI] test: foreign subject" : "[AI] docs: 同步 OpenAI 官方英文文档",
+    );
+    if (mode === "ancestry") {
+      await writeFile(join(fixture.root, "new-main.txt"), "New main\n");
+      fixture.git("add", "new-main.txt");
+      fixture.git("commit", "-m", "[AI] test: advance main");
+      fixture.git("push", "origin", "main");
+    }
+    const history = mode === "closed" || mode === "foreign-history"
+      ? [{ ...pull, state: "closed", merged: false, ...(mode === "foreign-history" ? { user: { login: "human" } } : {}) }]
+      : [];
+    fixture.calls.length = 0;
+    await assert.rejects(fixture.runStep("Prepare the verified automation branch", history), mode);
+    assert.equal(fixture.git("branch", "--show-current"), "main", mode);
+    assert.equal(fixture.calls.some((call) => call.args[0] === "push"), false, mode);
+  }
+});
+
+test("a retained squash-merged branch accepts a second batch through a normal merge and push", async (t) => {
+  const fixture = await localWriterFixture(t);
+  useBotIdentity(fixture);
+  const pull = await fixture.publishFeature("docs/en/a.md", "# First batch\n", "[AI] docs: 同步 OpenAI 官方英文文档");
+  fixture.git("merge", "--squash", `origin/${expectedHeadRef}`);
+  fixture.git("commit", "-m", `${expectedTitle} (#42)`);
+  const mergeSha = fixture.git("rev-parse", "HEAD");
+  fixture.git("push", "origin", "main");
+  const history = { ...pull, state: "closed", merged: true, merge_commit_sha: mergeSha };
+  await fixture.runStep("Prepare the verified automation branch", [history]);
+  assert.equal(fixture.git("rev-parse", "HEAD^2"), mergeSha);
+  assert.equal(fixture.git("diff", "--name-only", "origin/main...HEAD"), "");
+  await writeFile(join(fixture.root, "docs/en/a.md"), "# Second batch\n");
+  fixture.output("bash", ["-e", "-o", "pipefail", "-c", yamlLiteral(await writerStep("Synchronize English and publish the batch release"), /^        run: \|$/)]);
+  assert.equal(fixture.git("rev-parse", `origin/${expectedHeadRef}`), fixture.git("rev-parse", "HEAD"));
+  assert.match(fixture.git("diff", "--name-only", "origin/main...HEAD"), /docs\/en\/a.md/);
+  assert.equal(fixture.output("git", ["merge-base", "--is-ancestor", pull.head.sha, "HEAD"], true).exitCode, 0);
+});
+
+test("a retained branch already reachable from main fast-forwards without requiring auto-deletion", async (t) => {
+  const fixture = await localWriterFixture(t);
+  fixture.git("push", "origin", `HEAD:refs/heads/${expectedHeadRef}`);
+  await writeFile(join(fixture.root, "new-main.txt"), "New main\n");
+  fixture.git("add", "new-main.txt");
+  fixture.git("commit", "-m", "[AI] test: advance main");
+  fixture.git("push", "origin", "main");
+  await fixture.runStep("Prepare the verified automation branch");
+  assert.equal(fixture.git("rev-parse", "HEAD"), fixture.git("rev-parse", "origin/main"));
+});
+
+test("an orphan containing current main can recover after an older merged branch was deleted", async (t) => {
+  const fixture = await localWriterFixture(t);
+  useBotIdentity(fixture);
+  const current = await fixture.publishFeature("docs/en/a.md", "# New batch\n", "[AI] docs: 同步 OpenAI 官方英文文档");
+  const oldMerged = {
+    ...current, state: "closed", merged: true, merge_commit_sha: fixture.git("rev-parse", "origin/main"),
+    head: { ...current.head, sha: "f".repeat(40) },
+  };
+  await fixture.runStep("Prepare the verified automation branch", [oldMerged]);
+  assert.equal(fixture.git("rev-parse", "HEAD"), current.head.sha);
+});
+
+test("no English diff still permits local backlog progress followed by a recoverable draft", async (t) => {
+  const writer = await readFile(writerPath, "utf8");
+  const checkpoint = await writerStep("Create the draft for a translation-only batch");
+  assert.ok(writer.indexOf("Publish completed translations") < writer.indexOf("Create the draft for a translation-only batch"));
+  assert.ok(writer.indexOf("Create the draft for a translation-only batch") < writer.indexOf("Verify batch consistency and render"));
+  assert.match(checkpoint, /steps.publish.outputs.has_changes == 'true' && steps.draft.outputs.number == ''/);
+  const fixture = await localWriterFixture(t);
+  useBotIdentity(fixture);
+  await fixture.runStep("Prepare the verified automation branch");
+  fixture.output("bash", ["-e", "-o", "pipefail", "-c", yamlLiteral(await writerStep("Synchronize English and publish the batch release"), /^        run: \|$/)]);
+  assert.equal(fixture.git("ls-remote", "--heads", "origin", `refs/heads/${expectedHeadRef}`), "");
+  assert.match(await readFile(fixture.env.GITHUB_OUTPUT!, "utf8"), /has_changes=false/);
+  await writeFile(join(fixture.root, "docs/zh/a.md"), "# Completed backlog translation\n");
+  await fixture.runStep("Publish completed translations");
+  const head = fixture.git("rev-parse", "HEAD");
+  const pull = automationPull();
+  pull.head.sha = head;
+  const events = await runWriterApiStep("Create the draft for a translation-only batch", { existing: false, pull, expectedSha: head });
+  assert.equal(events.find((event) => event.kind === "create")?.data.draft, true);
+  fixture.git("checkout", "main");
+  fixture.git("branch", "-D", expectedHeadRef);
+  await fixture.runStep("Prepare the verified automation branch");
+  assert.equal(fixture.git("rev-parse", "HEAD"), head);
+});
+
+test("maintainer guidance accurately describes first-page budget admission", async () => {
+  const readme = await readFile(new URL("../../scripts/README.md", import.meta.url), "utf8");
+  assert.match(readme, /首篇选中的页面即使预估超出批次、字符或时间预算也会启动/);
+  assert.match(readme, /后续页面遵守这些预算/);
+  assert.doesNotMatch(readme, /语义批次和字符预算始终生效/);
 });
