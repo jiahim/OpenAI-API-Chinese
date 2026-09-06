@@ -100,7 +100,7 @@ node scripts/sync-docs.ts sync --prune --allow-large-prune
 
 英文同步和对应中文翻译共用固定分支 `automation/update-openai-docs`，以及面向 `main`、标题为 `[AI] docs: 同步并翻译 OpenAI 官方文档` 的一个 PR。续跑时先验证已有 PR 的作者、标题、base/head 和记录的 SHA，再检查差异仅限 `docs/en/`、`docs/zh/`、`docs/updates/`，随后正常合入最新的已验证 `main`。没有打开 PR 的远端分支仅在安全条件下恢复：已经是 `main` 的祖先；或差异提交的作者、提交者和提交主题均属于规范机器人，且分支包含当前 `main`；或对应的规范历史 PR 已确认合并、其 merge commit 可从当前 `main` 到达。尚未进入 `main` 的提交仍须全部通过机器人身份和主题检查。匹配的手动关闭未合并 PR、外来分支、身份或 SHA 不符、合并冲突均停止并要求处理。保留的 squash-merged 分支会正常合入 `main` 后继续，无需依赖合并后自动删除分支；所有推送均为普通 fast-forward push，不使用 force push，不重置分叉分支，也不直接 push `main`。
 
-每轮默认执行 `pnpm docs:sync -- --prune`；只有手动明确设置布尔输入 `allow_large_prune=true` 才追加 `--allow-large-prune`。记录本轮 release 并推送英文变化后，立即创建或恢复同一个 draft PR，确认身份、head 和 draft 状态后才进入带密钥的翻译步骤。若在首次 push 与建 PR 之间中断，下一轮按上述受限规则恢复，绝不接管手动关闭的 PR。然后用 `translate:batch` 优先处理 release 中新增和修改的文章，并清除已移除文章的对应中文文件与 manifest 记录。本轮必需页面优先于历史待翻译页面使用预算。已完成的中文页面和删除操作会先提交并推送；临时 result JSON 不会进入提交。
+每轮默认执行 `pnpm docs:sync --prune`；只有手动明确设置布尔输入 `allow_large_prune=true` 才追加 `--allow-large-prune`。记录本轮 release 并推送英文变化后，立即创建或恢复同一个 draft PR，确认身份、head 和 draft 状态后才进入带密钥的翻译步骤。若在首次 push 与建 PR 之间中断，下一轮按上述受限规则恢复，绝不接管手动关闭的 PR。然后用 `translate:batch` 优先处理 release 中新增和修改的文章，并清除已移除文章的对应中文文件与 manifest 记录。本轮必需页面优先于历史待翻译页面使用预算。已完成的中文页面和删除操作会先提交并推送；临时 result JSON 不会进入提交。
 
 只有本轮新增和修改页面全部为 `current`、删除项的译文和记录均已清除，并且完整性与路径检查通过，PR 才会转为 ready。预算耗尽但本轮未完成时，任务正常结束并保留 draft PR；翻译或校验失败时，先更新 draft PR 的阻塞项和已完成页面，再将任务标为失败。没有英文变化且尚未发布分支时，仍会在本地推进历史积压，完成的译文提交推送后立即建立 draft，再做完整性校验；真正无变化时不会创建空 PR。已有 PR 可在后续运行中继续完成。
 

@@ -401,7 +401,7 @@ test("writer persists completed pages before validation and reports failures aft
   assert.ok(writer.indexOf("Publish completed translations") < writer.indexOf("Verify batch consistency and render the unified body"));
   assert.ok(writer.indexOf("Create or update the unified pull request") < writer.indexOf("Report failure after preserving the draft pull request"));
   const sync = await writerStep("Synchronize English and publish the batch release");
-  assert.match(sync, /pnpm docs:sync --/);
+  assert.match(sync, /pnpm docs:sync "\$\{prune_args\[@\]\}"/);
   assert.match(sync, /--release-output/);
   assert.match(sync, /git push origin HEAD:refs\/heads\/automation\/update-openai-docs/);
   assert.match(sync, /\[AI\] docs: 同步 OpenAI 官方英文文档/);
@@ -849,7 +849,7 @@ test("large pruning requires an explicit typed manual opt-in and defaults to the
     await fixture.runStep("Prepare the verified automation branch");
     fixture.output("bash", ["-e", "-o", "pipefail", "-c", yamlLiteral(sync, /^        run: \|$/)]);
     const args = (await readFile(fixture.env.SYNC_ARGS_LOG!, "utf8")).trim().split("\n");
-    assert.deepEqual(args, ["docs:sync", "--", "--prune", ...(allowed === "true" ? ["--allow-large-prune"] : [])], event);
+    assert.deepEqual(args, ["docs:sync", "--prune", ...(allowed === "true" ? ["--allow-large-prune"] : [])], event);
   }
 });
 
