@@ -1,0 +1,110 @@
+{
+  "id": "2026-09-05T17-58-51-000Z",
+  "generatedAt": "2026-09-05T17:58:51Z",
+  "added": [],
+  "modified": [
+    {
+      "path": "docs/en/api/docs/guides/amazon-bedrock.md",
+      "route": "/api/docs/guides/amazon-bedrock",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/amazon-bedrock.md",
+      "title": "OpenAI models in Amazon Bedrock"
+    },
+    {
+      "path": "docs/en/api/docs/guides/citation-formatting.md",
+      "route": "/api/docs/guides/citation-formatting",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/citation-formatting.md",
+      "title": "Citation Formatting"
+    },
+    {
+      "path": "docs/en/api/docs/guides/error-codes.md",
+      "route": "/api/docs/guides/error-codes",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/error-codes.md",
+      "title": "Error codes"
+    },
+    {
+      "path": "docs/en/api/docs/guides/latest-model/gpt-6-astra.md",
+      "route": "/api/docs/guides/latest-model/gpt-6-astra",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/latest-model/gpt-6-astra.md",
+      "title": "Using GPT-6 Astra"
+    },
+    {
+      "path": "docs/en/api/docs/guides/prompt-caching.md",
+      "route": "/api/docs/guides/prompt-caching",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/prompt-caching.md",
+      "title": "Prompt caching"
+    },
+    {
+      "path": "docs/en/api/docs/guides/rate-limits.md",
+      "route": "/api/docs/guides/rate-limits",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/rate-limits.md",
+      "title": "Rate limits"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-computer-use.md",
+      "route": "/api/docs/guides/tools-computer-use",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-computer-use.md",
+      "title": "Computer use"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-local-shell.md",
+      "route": "/api/docs/guides/tools-local-shell",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-local-shell.md",
+      "title": "Local shell"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-programmatic-tool-calling.md",
+      "route": "/api/docs/guides/tools-programmatic-tool-calling",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling.md",
+      "title": "Programmatic Tool Calling"
+    },
+    {
+      "path": "docs/en/api/docs/models.md",
+      "route": "/api/docs/models",
+      "sourceUrl": "https://developers.openai.com/api/docs/models.md",
+      "title": "Models"
+    },
+    {
+      "path": "docs/en/api/docs/models/all.md",
+      "route": "/api/docs/models/all",
+      "sourceUrl": "https://developers.openai.com/api/docs/models/all.md",
+      "title": "All models"
+    },
+    {
+      "path": "docs/en/api/docs/pricing.md",
+      "route": "/api/docs/pricing",
+      "sourceUrl": "https://developers.openai.com/api/docs/pricing.md",
+      "title": "Pricing"
+    },
+    {
+      "path": "docs/en/api/reference/resources/beta/subresources/responses/streaming-events.md",
+      "route": "/api/reference/resources/beta/subresources/responses/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/responses/streaming-events.md",
+      "title": "Beta Responses streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/beta/subresources/responses/websocket-events.md",
+      "route": "/api/reference/resources/beta/subresources/responses/websocket-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/responses/websocket-events.md",
+      "title": "Beta Responses WebSocket events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses.md",
+      "route": "/api/reference/resources/responses",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses.md",
+      "title": "Responses"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/streaming-events.md",
+      "route": "/api/reference/resources/responses/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/streaming-events.md",
+      "title": "Responses streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/websocket-events.md",
+      "route": "/api/reference/resources/responses/websocket-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/websocket-events.md",
+      "title": "Responses WebSocket events"
+    }
+  ],
+  "removed": []
+}

@@ -67,7 +67,7 @@ Responses can include the following header fields:
 | x-ratelimit-remaining-project-tokens | 57000        | The remaining number of tokens permitted before exhausting the project-scoped token rate limit.   |
 | x-ratelimit-reset-project-tokens     | 3s           | The time until the project-scoped token rate limit resets to its initial state.                   |
 
-Project-token headers may be present when a project-scoped token limit applies. `Retry-After` may be present on `429` responses caused by a temporary rate limit. It does not mean that quota, billing, or other errors that require user action can be resolved by retrying.
+Project-token headers may be present when a project-scoped token limit applies. `Retry-After` may be present on `429` responses caused by a temporary rate limit and `503` responses caused by temporary model overload. It does not mean that quota, billing, or other errors that require user action can be resolved by retrying.
 
 ### Fine-tuning rate limits
 
@@ -98,6 +98,17 @@ As a rule of thumb, once your traffic reaches 1 million input tokens per minute 
 
 Enterprise customers whose pay-as-you-go traffic routinely hits ramp-rate limits can consider [Scale Tier](https://openai.com/api-scale-tier/) for more predictable capacity on eligible models. For GPT-5.6 and later models, see [Reserved Tier](https://openai.com/api-reserved-tier/). Capacity tiers don't change how you should handle a `slow_down` response: follow `Retry-After` when it's present, reduce traffic, and ramp gradually.
 
+#### Update existing error handlers
+
+If your application handled earlier throttling and overload responses, check both the HTTP status and `error.code`:
+
+- On endpoints that previously returned `503` with the `slow_down` code for both conditions, rapid traffic increases now return `429` with `slow_down`. Model overload remains `503` but uses `server_is_overloaded`.
+- Video requests rejected before creating a job previously returned `429` with the `invalid_request_error` type and `rate_limit_exceeded` code for these conditions. Rapid traffic increases now return `429` with `rate_limit_error` and `slow_down`; model overload returns `503` with `service_unavailable_error` and `server_is_overloaded`. Errors reported in a video job's status are a separate case.
+
+Handle both `429` and `503` in your SDK error handlers. For example, Python, TypeScript, and Ruby use `RateLimitError` for `429` and `InternalServerError` for `503`; Java uses `RateLimitException` and `InternalServerException`. Keep support for earlier response codes while your application can still receive them. Other errors can use the same HTTP statuses, so inspect the error body before choosing a recovery action.
+
+For streaming requests, these HTTP error responses apply before the stream starts. An error after streaming begins can arrive as a stream event; don't automatically replay a request after consuming output.
+
 ### What are some steps I can take to mitigate this?
 
 The OpenAI Cookbook has a [Python notebook](https://developers.openai.com/cookbook/examples/how_to_handle_rate_limits) that explains how to avoid rate limit errors, as well an example [Python script](https://github.com/openai/openai-cookbook/blob/main/examples/api_request_parallel_processor.py) for staying under rate limits while batch processing API requests.
@@ -110,9 +121,11 @@ To protect against automated and high-volume misuse, set a usage limit for indiv
 
 When a request exceeds a temporary rate limit, the API returns a `429` error. The response can include a `Retry-After` header that tells you how many seconds to wait before trying again. Treat this value as a minimum: wait at least that long and add a small random delay so multiple clients don't retry at the same time.
 
-Each [official OpenAI SDK](https://developers.openai.com/api/docs/libraries#install-an-official-sdk) automatically retries eligible rate-limit errors and honors `Retry-After` when it's present. You don't need to parse the header or add another retry loop for standard API calls.
+Each [official OpenAI SDK](https://developers.openai.com/api/docs/libraries#install-an-official-sdk) automatically retries eligible `429` and `503` responses, subject to its retry settings. Handling of `Retry-After`, especially long delays, varies by SDK version and configuration. Check the retry behavior of your installed version rather than assuming every server delay is supported.
 
-If you're using your own HTTP client, follow `Retry-After` when the header is present and contains a valid value. If it's missing or invalid, fall back to exponential backoff with jitter. Limit both the number of attempts and the total time spent retrying. If you add application-level retries, account for the retries your SDK already performs. Don't retry quota, billing, or other errors that require you to take action.
+If a valid server delay exceeds the supported or configured maximum retry delay, stop retrying and defer the request rather than retrying sooner. An SDK can return the original HTTP error when it declines a delay above its limit. Continue to handle cancellation and timeout errors separately: a canceled request or expired deadline can stop retries without returning that HTTP error. A timeout for each attempt isn't necessarily a deadline for the entire operation.
+
+If you're using your own HTTP client, follow `Retry-After` when the header is present and contains a valid value. If it's missing or invalid, fall back to exponential backoff with jitter. Limit both the number of attempts and the total time spent retrying. If you manage retries in your application, disable SDK retries or account for them in those limits so nested retry loops don't multiply requests. Don't retry quota, billing, or other errors that require you to take action.
 
 Exponential backoff means waiting briefly after an unsuccessful request, then increasing the delay after each unsuccessful retry. This continues until the request succeeds or reaches a configured retry limit.
 
@@ -124,7 +137,7 @@ This approach has many benefits:
 
 Note that unsuccessful requests contribute to your per-minute limit, so continuously resending a request won’t work.
 
-Below are a few example solutions **for Python** that use exponential backoff.
+The Python examples below demonstrate fallback backoff. They don't inspect `Retry-After`: before using them, add handling for valid server hints so the wrappers don't retry sooner than requested. Disable SDK retries or account for them in your application's retry limits.
 
 
 

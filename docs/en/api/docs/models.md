@@ -10,8 +10,6 @@ All latest OpenAI models support text and image input, text output, multilingual
 
 ## Featured models
 
-GPT‑6 Astra is rolling out today for enterprises in our [Trusted Access Program⁠](https://openai.com/form/enterprise-trusted-access-for-cyber/), with access through API and our Plus, Pro, Business and Enterprise plans coming in the coming days.
-
 - [GPT-6 Astra](/api/docs/models/gpt-6-astra.md): Our most capable model, built for the hardest end-to-end work
 - [GPT-5.6 Sol](/api/docs/models/gpt-5.6-sol.md): Flagship model for complex professional work
 - [GPT-5.6 Terra](/api/docs/models/gpt-5.6-terra.md): GPT-5.6 model that balances intelligence and cost

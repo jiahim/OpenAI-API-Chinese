@@ -31,11 +31,11 @@ A code-execution integration gives the model a function tool that accepts a scri
 
 ### Run the sample app
 
-The [CUA sample app](https://github.com/openai/openai-cua-sample-app#first-run) includes the environment, tool handlers, local tasks, and outcome checks:
+The [CUA sample app](https://github.com/openai/openai-cua-sample-app#first-run) includes JavaScript/Playwright and Python/PyAutoGUI implementations, with local tasks and a shared console:
 
-1. Follow the sample app's setup instructions in an isolated environment.
-2. Select **Code** mode and set the model to `gpt-6-astra`.
-3. Choose a built-in scenario and start a run. Inspect the actions and screenshots, then check the scenario's verification result.
+1. Follow the setup instructions for your chosen implementation in an isolated environment.
+2. Choose a built-in scenario and start a run. 
+3. Inspect the actions, screenshots, and final state to assess whether the task succeeded.
 
 Use the app's README for installation, desktop permissions, and supported environments. Review [Run safely](#run-safely) before adapting it to real sites or accounts.
 

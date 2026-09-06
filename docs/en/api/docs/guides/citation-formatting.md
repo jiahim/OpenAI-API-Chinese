@@ -413,6 +413,56 @@ def strip_citations(text: str, citations: Iterable[Citation]) -> str:
     return clean_text
 ```
 
+```ruby
+CITATION_START = "\u{E200}"
+CITATION_DELIMITER = "\u{E202}"
+CITATION_STOP = "\u{E201}"
+
+SOURCE_ID_RE = /\A[A-Za-z0-9_-]+\z/
+LINE_LOCATOR_RE = /\AL\d+(?:-L\d+)?\z/
+
+def extract_citations(text, families: ["cite"])
+  return [] if families.empty?
+
+  family_pattern = families.map { |family| Regexp.escape(family) }.join("|")
+  token_re = Regexp.new(
+    "#{Regexp.escape(CITATION_START)}" \
+      "(?<family>#{family_pattern})" \
+      "#{Regexp.escape(CITATION_DELIMITER)}" \
+      "(?<body>.*?)" \
+      "#{Regexp.escape(CITATION_STOP)}",
+    Regexp::MULTILINE
+  )
+
+  text.enum_for(:scan, token_re).map do
+    match = Regexp.last_match
+    next unless match
+
+    body = match[:body]
+    next unless body
+
+    parts = body.split(CITATION_DELIMITER).map(&:strip).reject(&:empty?)
+    locator = parts.pop if parts.last&.match?(LINE_LOCATOR_RE)
+    next if parts.empty? || parts.any? { |part| !part.match?(SOURCE_ID_RE) }
+
+    {
+      raw: match[0],
+      family: match[:family],
+      source_ids: parts,
+      locator: locator,
+      start: match.begin(0),
+      end: match.end(0)
+    }
+  end.compact
+end
+
+def strip_citations(text, citations)
+  citations.sort_by { |citation| -citation.fetch(:start) }.each_with_object(text.dup) do |citation, clean|
+    clean[citation.fetch(:start)...citation.fetch(:end)] = ""
+  end
+end
+```
+
 
 
 
