@@ -157,7 +157,7 @@ describe("document link rewriting", () => {
     const [sourceManifest, translationManifest, workflow] = await Promise.all([
       readFile(resolve(repositoryRoot, "docs/en/.source-manifest.json"), "utf8").then(JSON.parse),
       readFile(resolve(repositoryRoot, "docs/zh/.translation-manifest.json"), "utf8").then(JSON.parse),
-      readFile(resolve(repositoryRoot, ".github/workflows/sync-docs.yml"), "utf8"),
+      readFile(resolve(repositoryRoot, ".github/workflows/update-docs.yml"), "utf8"),
     ]);
     assert.equal(sourceGeneratedAt, sourceManifest.generatedAt);
     assert.equal(translationGeneratedAt, translationManifest.generatedAt);

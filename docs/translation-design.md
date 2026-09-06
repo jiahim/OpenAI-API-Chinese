@@ -52,9 +52,9 @@ manifest 不保存 API key、完整模型响应或供应商凭据。
 | `untracked-target` | 中文文件存在，但没有 manifest 记录 | 阻塞 |
 | `modified-target` | 中文文件 SHA 与 manifest 不一致 | 阻塞 |
 | `current` | 源、策略、目标文件均匹配 | 跳过 |
-| `removed-source` | 英文来源已经移除 | 保留并交给维护者处理 |
+| `removed-source` | 英文来源已经移除，正在检查目标是否可安全移除 | 仅在目标未修改且 SHA 与记录一致时可以安全删除 |
 
-`untracked-target` 必须通过后续显式 adopt 流程处理；`modified-target` 只能通过当前已实现的显式 review 流程收录。自动任务不得覆盖这两种状态，英文来源移除时也不自动删除中文文件。
+`untracked-target` 必须通过后续显式 adopt 流程处理；`modified-target` 只能通过当前已实现的显式 review 流程收录。自动任务不得覆盖这两种状态。英文来源移除时，只有中文目标未修改且其 SHA 与 manifest 记录一致，才能连同对应记录一起安全删除；任何不安全状态都 fail closed 并阻塞批次，绝不覆盖或删除人工改动。
 
 ## Markdown 保护策略
 
@@ -76,11 +76,23 @@ render 会安全移除模型偶发添加在译文单元首尾的空白，同时�
 - 单篇文档内部使用 Easy Translate checkpoint；批次对格式、质量和可重试 Provider 错误做有限指数退避。质量错误会携带定向修正提示重试，但同一单元、规则和消息再次失败时立即停止；批次耗尽后，只有格式响应错误和可重试 Provider 错误可以从 checkpoint 做一次页面级恢复，质量错误不再整页重试。认证、配置、路径和完整性错误不重试。只有整篇 render 和质量检查成功后才原子更新译文与 manifest。
 - 批量任务默认低并发，先支持 `--section`、`--match` 和 `--limit`，再开放全量运行。
 - 质量检查至少覆盖：Markdown 可重新解析、保护内容一致、无空译文、链接目标一致、代码块一致、manifest/文件 SHA 一致。
-- 机器译文以 PR 形式进入 `main`；人工校对只提升 `reviewStatus`，英文或策略变化后仍会重新标记 stale。
+- 机器译文与本轮英文同步通过同一个 automation PR 进入 `main`；人工校对只提升 `reviewStatus`，英文或策略变化后仍会重新标记 stale。
 - 人工润色会先自然进入 `modified-target`；显式 `translate:review` 只在英文来源仍有效、且中英文 Markdown 受保护结构一致时收录新的目标 SHA，并把记录提升为 `reviewed`。如果同一 PR 新增了页面级备注，显式审核会同时采用该页当前策略 SHA；只新增备注但没有人工润色时仍保持 `stale-policy`，必须重新翻译。
 - 人工审核反馈按作用域沉淀：固定译法进入术语表，通用要求进入提示词，可自动判断的问题进入质量门和回归测试，单页上下文与官方原文勘误进入页面级审核备注。Runner 只向匹配 source URL 的翻译请求追加对应备注。
 
 Runner 只接受 Planner 判定为 `pending`、`stale-source`、`stale-policy` 或 `missing-target` 的单篇页面。checkpoint 位于 Git 忽略的 `.cache/translation-checkpoints/`；提交前重新加载工作区并再次验证状态、源 SHA、策略 SHA 和目标路径。写入顺序固定为译文后 manifest，因此异常中断会转化为可检测的阻塞状态，而不会产生虚假的 current 记录。
+
+## 自动同步批次与合并门禁
+
+自动 writer 以英文同步 release 作为本轮的持久化事实。`added` 和 `modified` 页面组成必需集合，翻译选择始终先完成该集合，再处理历史积压；选择顺序不会改变页面内容或策略哈希。`removed` 页面先执行安全清理：只有对应的中文目标文件和 manifest 记录都被移除后，批次才可报告完成；来源移除不会靠模糊匹配或覆盖人工改动来删除文件。
+
+`translate:batch` 会把结果原子写入 result file，包含 `schemaVersion`、`complete`、已翻译路径、已移除路径、阻塞 issue 和可选的 `batch-budget`、`character-budget` 或 `time-budget` 停止原因。预算正常耗尽不是翻译错误：若必需集合尚未完成，结果为 `complete: false`，后续运行可继续；已开始页面的终态翻译或 Provider 错误则保留已完成页面，写出结果后让 workflow 失败。
+
+`translate:check` 仍是全仓结构完整性门，负责拒绝 `missing-target`、`modified-target` 和 `untracked-target` 等结构问题；面向本轮 release 的 batch consistency check 才是合并就绪门，必须确认每个新增或修改来源为 `current`、每个移除来源没有目标文件或记录、结果文件与工作区一致，且变更路径只在 `docs/en/**`、`docs/zh/**` 和 `docs/updates/**`。检查输出必须列出每个阻塞页面及状态。
+
+writer 只维护 `automation/update-openai-docs` 上的一个统一 PR。批次未完成或发生失败时，PR 保持 draft，已完成并推送到 draft PR 的改动和诊断信息留给下一轮续跑；批次完整时才转为 ready。随后 workflow 重新获取 PR，验证 PR 身份和精确 head SHA，并通过 `workflow_dispatch` 把只读 `CI` 的 `Quality gate` 绑定到同一个 head；CI 也会再次校验 PR number、head ref、标题和 SHA。任何 head 漂移都会停止流程。分支续跑只允许 fast-forward 或普通 merge，绝不使用 `--force` 或 `--force-with-lease`，也不直接推送 `main`。
+
+Provider/model 的解析结果（仅 id 和 model，不含凭据）必须在翻译步骤导出，并在批次一致性检查时重新加载、核对对应的 `policySha256`；密钥只注入翻译步骤，不能进入 result、日志、checkpoint、PR 或 CI。启用生产 auto-merge 前必须完成真实 canary，证明 dispatched `Quality gate` 确实附着在统一 PR 的当前 head 且满足 Ruleset；测试通过不能替代这一 GitHub 端验证。canary 未完成前只允许显式 rollout 开关，请求路径保持关闭。
 
 真实 profile 的 `TRANSLATION_PROVIDER` 键名及环境映射如下：
 
@@ -98,7 +110,7 @@ Runner 只接受 Planner 判定为 `pending`、`stale-source`、`stale-policy` �
 2. **Markdown adapter（已完成）**：source-position 提取/还原、保护不变量、fixture 测试，并对齐 `@easy-translate/core` 的 `DocumentAdapter`。
 3. **本地翻译执行器（已完成）**：Core、checkpoint、单篇选择、质量策略、DeepSeek profile 和显式原子提交。
 4. **质量与人工校对（已完成基础闭环）**：结构检查、术语检查、显式 review 收录和 stale 传播；后续补充未登记文件的 adopt 流程。
-5. **自动翻译 PR（已完成首轮生产验收）**：英文变化合入 `main` 后立即触发，并每天补充执行；每轮最多检查 100 篇，长页面由 Markdown adapter 生成语义单元，再由 `easy-translate` 按每批最多 20 个单元、4,000 个源字符执行并逐批保存 checkpoint。启动下一篇前以相同引擎预估语义批次数和待翻译字符数，并用已完成批次的实际平均耗时预测时间；默认上限为 2,400 批、600,000 字符和 140 分钟，达到预算时正常结束并发布已完成页面。首篇不受预算拒绝，避免超大页面永久饥饿；维持单一待审核 PR，继续服从 `Quality gate` 和 `main` Ruleset。
+5. **统一自动同步与翻译 PR（实现已完成，真实 canary 待完成）**：统一 workflow 按计划运行并支持手动 dispatch；每轮最多检查 100 篇，先完成本轮 release 的必需页面，再处理积压。长页面由 Markdown adapter 生成语义单元，再由 `easy-translate` 按每批最多 20 个单元、4,000 个源字符执行并逐批保存 checkpoint。启动下一篇前以相同引擎预估语义批次数和待翻译字符数，并用已完成批次的实际平均耗时预测时间；默认上限为 2,400 批、600,000 字符和 140 分钟，达到预算时正常结束，并将已完成改动提交并推送到 draft PR。首篇不受预算拒绝，避免超大页面永久饥饿；不完整批次保持统一 draft PR，完整批次经精确 head 的 `Quality gate` 后才允许请求 auto-merge。`AUTO_MERGE_ROLLOUT` 仍为 `canary`，只有真实 canary 证明 Ruleset 识别正确后才可启用生产 rollout。
 6. **内容积累（当前）**：按核心文档优先级积累中文页面，观察流水线稳定性后再扩大单轮吞吐。
 
 任何阶段都不得把模型凭据写入仓库，也不得直接 push `main`。

@@ -728,7 +728,7 @@ test("translation CLI parses filters without changing defaults", () => {
   );
   assert.throws(
     () => parseCliOptions(["translate"]),
-    /auto、check、plan、review、run、simulate 或 status/,
+    /auto、batch、check、plan、review、run、simulate 或 status/,
   );
   assert.throws(
     () => parseCliOptions(["plan", "--limit", "0"]),

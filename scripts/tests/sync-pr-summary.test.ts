@@ -1,10 +1,15 @@
+import { mkdtemp, readFile, rm } from "node:fs/promises";
 import assert from "node:assert/strict";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import test from "node:test";
 
 import {
   parseNameStatus,
+  renderUnifiedPullRequestBody,
   renderSyncRelease,
   renderSyncPullRequestBody,
+  writeReleasePath,
 } from "../sync-pr-summary.ts";
 
 test("parseNameStatus separates and sorts added, modified, and removed files", () => {
@@ -64,6 +69,29 @@ test("renderSyncPullRequestBody warns reviewers when automation permits large pr
 
   assert.match(body, /自动任务会显式允许超过命令行安全阈值的大规模删除/);
   assert.match(body, /合入前必须审核“删除文件”清单/);
+});
+
+test("unified PR body reports one batch and its translation readiness", () => {
+  const body = renderUnifiedPullRequestBody(
+    { added: ["docs/en/new.md"], modified: [], removed: [] },
+    { complete: false, issues: ["pending:docs/en/new.md"], translated: [] },
+  );
+  assert.match(body, /同一批次/);
+  assert.match(body, /required_complete=false/);
+  assert.match(body, /pending:docs\/en\/new\.md/);
+  assert.doesNotMatch(body, /维护者审核/);
+});
+
+test("release output points at the release written for this invocation", async () => {
+  const root = await mkdtemp(join(tmpdir(), "sync-release-output-"));
+  try {
+    const resultPath = join(root, "release-path.txt");
+    const releasePath = join(root, "2026-09-06T00-00-00-000Z.json");
+    await writeReleasePath(resultPath, releasePath);
+    assert.equal(await readFile(resultPath, "utf8"), `${releasePath}\n`);
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
 });
 
 test("renderSyncRelease keeps article changes and resolves page metadata", () => {

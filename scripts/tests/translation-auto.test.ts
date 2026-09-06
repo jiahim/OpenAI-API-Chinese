@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash, randomUUID } from "node:crypto";
 import {
+  access,
   cp,
   mkdir,
   mkdtemp,
@@ -13,6 +14,8 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import test from "node:test";
+
+import { parseCliOptions } from "../translate-docs.ts";
 
 const REPOSITORY_ROOT = resolve(
   dirname(fileURLToPath(import.meta.url)),
@@ -40,6 +43,10 @@ async function createCliFixture(source: string): Promise<string> {
     join(REPOSITORY_ROOT, "scripts/translation"),
     join(root, "scripts/translation"),
     { recursive: true },
+  );
+  await cp(
+    join(REPOSITORY_ROOT, "scripts/docs-update-batch.ts"),
+    join(root, "scripts/docs-update-batch.ts"),
   );
   await symlink(join(REPOSITORY_ROOT, "node_modules"), join(root, "node_modules"));
   await mkdir(join(root, "docs/en/api/docs"), { recursive: true });
@@ -98,6 +105,358 @@ async function createCliFixture(source: string): Promise<string> {
   );
   return root;
 }
+
+function releaseEntry(sourcePath: string) {
+  const sourceUrl =
+    sourcePath === SOURCE_PATH ? SOURCE_URL : SECOND_SOURCE_URL;
+  const pathname = new URL(sourceUrl).pathname;
+  return {
+    path: sourcePath,
+    route: pathname.replace(/\.md$/u, ""),
+    sourceUrl,
+    title: sourcePath,
+  };
+}
+
+async function exists(path: string): Promise<boolean> {
+  return access(path).then(
+    () => true,
+    () => false,
+  );
+}
+
+interface BatchFixtureOptions {
+  characterBudget: number;
+  providerFailure?: boolean;
+  removalFailure?: "missing-record";
+  removed?: string[];
+  required?: string | string[];
+  section?: "guides" | "reference";
+  sourceSections?: {
+    first: "guides" | "reference";
+    second: "guides" | "reference";
+  };
+}
+
+interface BatchFixtureRun {
+  error: unknown;
+  exitCode: number | undefined;
+  providerCalls: number;
+  removedTargetExistedAtProviderCall: boolean | undefined;
+  result: {
+    complete: boolean;
+    issues: Array<{ sourcePath: string }>;
+    removed: string[];
+    schemaVersion: number;
+    stopReason: string | null;
+    translated: string[];
+  };
+  root: string;
+}
+
+async function withBatchFixture(
+  options: BatchFixtureOptions,
+  verify: (run: BatchFixtureRun) => Promise<void> | void,
+): Promise<void> {
+  const root = await createCliFixture("# First\n");
+  await addSecondPage(root, "# Second\n");
+  if (options.sourceSections) {
+    const manifestPath = join(root, "docs/en/.source-manifest.json");
+    const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+    manifest.pages[SOURCE_URL].section = options.sourceSections.first;
+    manifest.pages[SECOND_SOURCE_URL].section = options.sourceSections.second;
+    await writeFile(manifestPath, JSON.stringify(manifest));
+  }
+  const required =
+    typeof options.required === "string"
+      ? [options.required]
+      : (options.required ?? []);
+  const removed = options.removed ?? [];
+  const releasePath = join(root, "release.json");
+  const resultPath = join(root, ".tmp/translation-result.json");
+  await writeFile(
+    releasePath,
+    JSON.stringify({
+      added: required.map(releaseEntry),
+      generatedAt: "2026-09-06T00:00:00Z",
+      id: "2026-09-06T00-00-00-000Z",
+      modified: [],
+      removed: removed.map(releaseEntry),
+    }),
+  );
+
+  if (removed.length > 0) {
+    const manifestPath = join(root, "docs/en/.source-manifest.json");
+    const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+    for (const sourcePath of removed) {
+      const sourceUrl = releaseEntry(sourcePath).sourceUrl;
+      manifest.pages[sourceUrl].status = "removed";
+    }
+    await writeFile(manifestPath, JSON.stringify(manifest));
+    await mkdir(join(root, "docs/zh/api/docs"), { recursive: true });
+    const target = "# Existing translation\n";
+    await writeFile(join(root, TARGET_PATH), target);
+    await writeFile(
+      join(root, "docs/zh/.translation-manifest.json"),
+      JSON.stringify({
+        pages:
+          options.removalFailure === "missing-record"
+            ? {}
+            : {
+                [SOURCE_URL]: {
+                  policySha256: "b".repeat(64),
+                  reviewStatus: "machine",
+                  sourcePath: SOURCE_PATH,
+                  sourceSha256: sha256("# First\n"),
+                  sourceUrl: SOURCE_URL,
+                  targetPath: TARGET_PATH,
+                  targetSha256: sha256(target),
+                  translatedAt: "2026-09-06T00:00:00Z",
+                },
+              },
+        schemaVersion: 1,
+        targetLanguage: "zh-CN",
+      }),
+    );
+  }
+
+  const originalFetch = globalThis.fetch;
+  const originalApiKey = process.env.DEEPSEEK_API_KEY;
+  let providerCalls = 0;
+  let removedTargetExistedAtProviderCall: boolean | undefined;
+  globalThis.fetch = (async (_input, init) => {
+    providerCalls += 1;
+    if (removed.includes(SOURCE_PATH)) {
+      removedTargetExistedAtProviderCall = await exists(join(root, TARGET_PATH));
+    }
+    if (options.providerFailure) {
+      return Response.json(
+        { error: { message: "fixture provider failure" } },
+        { status: 401 },
+      );
+    }
+    const request = JSON.parse(String(init?.body));
+    const user = JSON.parse(request.messages[1].content);
+    return Response.json({
+      choices: [
+        {
+          message: {
+            content: JSON.stringify({
+              translations: user.items.map(
+                (item: { id: string; text: string }) => ({
+                  id: item.id,
+                  text: item.text === "First" ? "第一" : "第二",
+                }),
+              ),
+            }),
+          },
+        },
+      ],
+    });
+  }) as typeof fetch;
+  process.env.DEEPSEEK_API_KEY = "test-secret";
+
+  try {
+    const moduleUrl = `${pathToFileURL(join(root, "scripts/translate-docs.ts")).href}?${randomUUID()}`;
+    const translationCli = await import(moduleUrl);
+    let exitCode: number | undefined;
+    let error: unknown;
+    try {
+      exitCode = await translationCli.main([
+        "batch",
+        "--config",
+        "scripts/translation.config.json",
+        "--release",
+        releasePath,
+        "--result",
+        resultPath,
+        "--limit",
+        "100",
+        "--max-batches",
+        "100",
+        "--max-characters",
+        String(options.characterBudget),
+        "--time-budget-minutes",
+        "140",
+        ...(options.section ? ["--section", options.section] : []),
+      ]);
+    } catch (caught) {
+      error = caught;
+    }
+    const result = JSON.parse(await readFile(resultPath, "utf8"));
+    await verify({
+      error,
+      exitCode,
+      providerCalls,
+      removedTargetExistedAtProviderCall,
+      result,
+      root,
+    });
+  } finally {
+    globalThis.fetch = originalFetch;
+    if (originalApiKey === undefined) {
+      delete process.env.DEEPSEEK_API_KEY;
+    } else {
+      process.env.DEEPSEEK_API_KEY = originalApiKey;
+    }
+    await rm(root, { force: true, recursive: true });
+  }
+}
+
+test("batch requires release and result paths", () => {
+  assert.throws(
+    () => parseCliOptions(["batch", "--limit", "100"]),
+    /--release.*--result/u,
+  );
+});
+
+test("batch rejects auto-incompatible selection and commit options", () => {
+  assert.throws(
+    () =>
+      parseCliOptions([
+        "batch",
+        "--release",
+        "release.json",
+        "--result",
+        "result.json",
+        "--limit",
+        "100",
+        "--match",
+        "page",
+      ]),
+    /--match/u,
+  );
+  assert.throws(
+    () =>
+      parseCliOptions([
+        "batch",
+        "--release",
+        "release.json",
+        "--result",
+        "result.json",
+        "--limit",
+        "100",
+        "--commit",
+      ]),
+    /--commit/u,
+  );
+});
+
+test("required batch page runs before an older stale backlog page", async () => {
+  await withBatchFixture(
+    { characterBudget: 8, required: SECOND_SOURCE_PATH },
+    async ({ error, exitCode, providerCalls, result, root }) => {
+      assert.equal(error, undefined);
+      assert.equal(exitCode, 0);
+      assert.equal(providerCalls, 1);
+      assert.deepEqual(result.translated, [SECOND_SOURCE_PATH]);
+      assert.equal(result.complete, true);
+      assert.equal(result.stopReason, "character-budget");
+      assert.equal(await exists(join(root, SECOND_TARGET_PATH)), true);
+      assert.equal(await exists(join(root, TARGET_PATH)), false);
+    },
+  );
+});
+
+test("required pages bypass a section filter applied to optional backlog", async () => {
+  await withBatchFixture(
+    {
+      characterBudget: 8,
+      required: SECOND_SOURCE_PATH,
+      section: "reference",
+      sourceSections: { first: "reference", second: "guides" },
+    },
+    ({ error, exitCode, result }) => {
+      assert.equal(error, undefined);
+      assert.equal(exitCode, 0);
+      assert.deepEqual(result.translated, [SECOND_SOURCE_PATH]);
+      assert.equal(result.complete, true);
+      assert.equal(result.stopReason, "character-budget");
+    },
+  );
+});
+
+test("budget stop writes an incomplete successful result", async () => {
+  await withBatchFixture(
+    {
+      characterBudget: 5,
+      required: [SOURCE_PATH, SECOND_SOURCE_PATH],
+    },
+    ({ error, exitCode, result }) => {
+      assert.equal(error, undefined);
+      assert.equal(exitCode, 0);
+      assert.equal(result.complete, false);
+      assert.equal(result.stopReason, "character-budget");
+      assert.match(result.issues[0]?.sourcePath ?? "", /second-page/u);
+    },
+  );
+});
+
+test("batch removes released pages before inspecting completion", async () => {
+  await withBatchFixture(
+    { characterBudget: 5, removed: [SOURCE_PATH] },
+    async ({
+      error,
+      exitCode,
+      providerCalls,
+      removedTargetExistedAtProviderCall,
+      result,
+      root,
+    }) => {
+      assert.equal(error, undefined);
+      assert.equal(exitCode, 0);
+      assert.equal(providerCalls, 1);
+      assert.equal(removedTargetExistedAtProviderCall, false);
+      assert.deepEqual(result.removed, [SOURCE_PATH]);
+      assert.equal(result.complete, true);
+      assert.equal(await exists(join(root, TARGET_PATH)), false);
+      const manifest = JSON.parse(
+        await readFile(join(root, "docs/zh/.translation-manifest.json"), "utf8"),
+      );
+      assert.equal(manifest.pages[SOURCE_URL], undefined);
+    },
+  );
+});
+
+test("removal failure persists an incomplete result before rejection", async () => {
+  await withBatchFixture(
+    {
+      characterBudget: 5,
+      removalFailure: "missing-record",
+      removed: [SOURCE_PATH],
+    },
+    ({ error, exitCode, result }) => {
+      assert.match(
+        error instanceof Error ? error.message : "",
+        /没有翻译记录/u,
+      );
+      assert.equal(exitCode, undefined);
+      assert.equal(result.complete, false);
+      assert.equal(result.stopReason, null);
+      assert.deepEqual(result.removed, []);
+      assert.equal(result.issues[0]?.sourcePath, SOURCE_PATH);
+    },
+  );
+});
+
+test("terminal page error persists an incomplete result before rejection", async () => {
+  await withBatchFixture(
+    {
+      characterBudget: 100,
+      providerFailure: true,
+      required: SOURCE_PATH,
+    },
+    ({ error, exitCode, result }) => {
+      assert.match(error instanceof Error ? error.message : "", /最终失败/u);
+      assert.equal(exitCode, undefined);
+      assert.equal(result.complete, false);
+      assert.equal(result.stopReason, null);
+      assert.deepEqual(result.translated, []);
+      assert.equal(result.schemaVersion, 1);
+      assert.equal(result.issues[0]?.sourcePath, SOURCE_PATH);
+    },
+  );
+});
 
 async function addSecondPage(root: string, source: string): Promise<void> {
   await writeFile(join(root, SECOND_SOURCE_PATH), source);
