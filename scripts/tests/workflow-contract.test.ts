@@ -12,6 +12,7 @@ import { loadTranslationWorkspace, translationPolicySha256ForPage } from "../tra
 const workflowPath = new URL("../../.github/workflows/ci.yml", import.meta.url);
 const workflow = await readFile(workflowPath, "utf8");
 const writerPath = new URL("../../.github/workflows/update-docs.yml", import.meta.url);
+const designPath = new URL("../../docs/translation-design.md", import.meta.url);
 
 test("README describes one durable checked update without volatile implementation details", async () => {
   const readme = await readFile(new URL("../../README.md", import.meta.url), "utf8");
@@ -21,6 +22,12 @@ test("README describes one durable checked update without volatile implementatio
   assert.match(readme, /检查通过后自动合并/);
   assert.match(readme, /若翻译或检查失败，更新会停留在待处理状态，不会把未完成的中英文内容发布出去/);
   assert.doesNotMatch(readme, /等待审核|已有翻译 PR|维护者审核|TRANSLATION_PROVIDER|DEEPSEEK_API_KEY|MINIMAX_API_KEY|MiniMax|DeepSeek|docs\/en\/api\/|每轮最多|每批最多/);
+});
+
+test("translation design does not claim budgeted pages are published", async () => {
+  const design = await readFile(designPath, "utf8");
+  assert.match(design, /达到预算时正常结束，并将已完成改动提交并推送到 draft PR/);
+  assert.doesNotMatch(design, /正常结束并发布已完成页面/);
 });
 
 test("unified writer is the only scheduled docs writer", async () => {

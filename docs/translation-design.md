@@ -110,7 +110,7 @@ Provider/model 的解析结果（仅 id 和 model，不含凭据）必须在翻�
 2. **Markdown adapter（已完成）**：source-position 提取/还原、保护不变量、fixture 测试，并对齐 `@easy-translate/core` 的 `DocumentAdapter`。
 3. **本地翻译执行器（已完成）**：Core、checkpoint、单篇选择、质量策略、DeepSeek profile 和显式原子提交。
 4. **质量与人工校对（已完成基础闭环）**：结构检查、术语检查、显式 review 收录和 stale 传播；后续补充未登记文件的 adopt 流程。
-5. **统一自动同步与翻译 PR（实现已完成，真实 canary 待完成）**：统一 workflow 按计划运行并支持手动 dispatch；每轮最多检查 100 篇，先完成本轮 release 的必需页面，再处理积压。长页面由 Markdown adapter 生成语义单元，再由 `easy-translate` 按每批最多 20 个单元、4,000 个源字符执行并逐批保存 checkpoint。启动下一篇前以相同引擎预估语义批次数和待翻译字符数，并用已完成批次的实际平均耗时预测时间；默认上限为 2,400 批、600,000 字符和 140 分钟，达到预算时正常结束并发布已完成页面。首篇不受预算拒绝，避免超大页面永久饥饿；不完整批次保持统一 draft PR，完整批次经精确 head 的 `Quality gate` 后才允许请求 auto-merge。`AUTO_MERGE_ROLLOUT` 仍为 `canary`，只有真实 canary 证明 Ruleset 识别正确后才可启用生产 rollout。
+5. **统一自动同步与翻译 PR（实现已完成，真实 canary 待完成）**：统一 workflow 按计划运行并支持手动 dispatch；每轮最多检查 100 篇，先完成本轮 release 的必需页面，再处理积压。长页面由 Markdown adapter 生成语义单元，再由 `easy-translate` 按每批最多 20 个单元、4,000 个源字符执行并逐批保存 checkpoint。启动下一篇前以相同引擎预估语义批次数和待翻译字符数，并用已完成批次的实际平均耗时预测时间；默认上限为 2,400 批、600,000 字符和 140 分钟，达到预算时正常结束，并将已完成改动提交并推送到 draft PR。首篇不受预算拒绝，避免超大页面永久饥饿；不完整批次保持统一 draft PR，完整批次经精确 head 的 `Quality gate` 后才允许请求 auto-merge。`AUTO_MERGE_ROLLOUT` 仍为 `canary`，只有真实 canary 证明 Ruleset 识别正确后才可启用生产 rollout。
 6. **内容积累（当前）**：按核心文档优先级积累中文页面，观察流水线稳定性后再扩大单轮吞吐。
 
 任何阶段都不得把模型凭据写入仓库，也不得直接 push `main`。
