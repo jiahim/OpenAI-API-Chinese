@@ -463,11 +463,14 @@ export function automaticTranslationCandidates(
   prioritySourcePaths: readonly string[] = [],
   requiredSourcePaths: readonly string[] = [],
 ): TranslationPageInspection[] {
+  const required = new Set(requiredSourcePaths);
   return entries
     .filter(
       (entry) =>
         TRANSLATABLE_STATES.has(entry.state) &&
-        (section === "all" || entry.source?.section === section),
+        (required.has(entry.source?.sourcePath ?? "") ||
+          section === "all" ||
+          entry.source?.section === section),
     )
     .sort(
       translationCandidateComparator(prioritySourcePaths, requiredSourcePaths),
@@ -770,32 +773,9 @@ async function batch(
   const release = await loadDocsUpdateBatch(
     resolve(workspace.repositoryRoot, releasePath),
   );
-  const removed: string[] = [];
-  for (const entry of [...release.removed].sort((left, right) =>
-    left.path.localeCompare(right.path, "en"),
-  )) {
-    await removeTranslationPage(workspace, entry.sourceUrl);
-    removed.push(entry.path);
-  }
-
-  const fresh = await loadTranslationWorkspace(
-    workspace.repositoryRoot,
-    workspace.configPath,
-  );
-  const priority = await loadTranslationPriorityConfig(fresh);
   const required = requiredSourcePaths(release);
+  const removed: string[] = [];
   const selected: SourcedTranslationPageInspection[] = [];
-  for (const entry of automaticTranslationCandidates(
-    fresh.entries,
-    options.section,
-    priority.sourcePaths,
-    required,
-  )) {
-    if (!entry.source) continue;
-    selected.push({ ...entry, source: entry.source });
-    if (selected.length === options.limit) break;
-  }
-
   const budget: AutomaticTranslationBudget = {
     maxBatches: options.maxBatches ?? AUTO_MAX_BATCHES,
     maxCharacters: options.maxCharacters ?? AUTO_MAX_CHARACTERS,
@@ -813,6 +793,28 @@ async function batch(
   let stopReason: AutomaticTranslationStopReason | null = null;
   let terminalError: unknown;
   try {
+    for (const entry of [...release.removed].sort((left, right) =>
+      left.path.localeCompare(right.path, "en"),
+    )) {
+      await removeTranslationPage(workspace, entry.sourceUrl);
+      removed.push(entry.path);
+    }
+
+    const fresh = await loadTranslationWorkspace(
+      workspace.repositoryRoot,
+      workspace.configPath,
+    );
+    const priority = await loadTranslationPriorityConfig(fresh);
+    for (const entry of automaticTranslationCandidates(
+      fresh.entries,
+      options.section,
+      priority.sourcePaths,
+      required,
+    )) {
+      if (!entry.source) continue;
+      selected.push({ ...entry, source: entry.source });
+      if (selected.length === options.limit) break;
+    }
     const provider =
       selected.length === 0
         ? undefined
@@ -852,23 +854,22 @@ async function batch(
   }
 
   const completedWorkspace = await loadTranslationWorkspace(
-    fresh.repositoryRoot,
-    fresh.configPath,
+    workspace.repositoryRoot,
+    workspace.configPath,
   );
   const report = await inspectDocsUpdateBatchWorkspace(
     release,
     completedWorkspace,
   );
   const result: TranslationBatchRunResult = {
-    complete:
-      terminalError === undefined && stopReason === null && report.complete,
+    complete: terminalError === undefined && report.complete,
     issues: report.issues,
     removed,
     schemaVersion: 1,
     stopReason,
     translated,
   };
-  await writeBatchResult(fresh.repositoryRoot, resultPath, result);
+  await writeBatchResult(workspace.repositoryRoot, resultPath, result);
   if (terminalError !== undefined) throw terminalError;
 }
 

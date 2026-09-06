@@ -128,8 +128,14 @@ async function exists(path: string): Promise<boolean> {
 interface BatchFixtureOptions {
   characterBudget: number;
   providerFailure?: boolean;
+  removalFailure?: "missing-record";
   removed?: string[];
   required?: string | string[];
+  section?: "guides" | "reference";
+  sourceSections?: {
+    first: "guides" | "reference";
+    second: "guides" | "reference";
+  };
 }
 
 interface BatchFixtureRun {
@@ -154,6 +160,13 @@ async function withBatchFixture(
 ): Promise<void> {
   const root = await createCliFixture("# First\n");
   await addSecondPage(root, "# Second\n");
+  if (options.sourceSections) {
+    const manifestPath = join(root, "docs/en/.source-manifest.json");
+    const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+    manifest.pages[SOURCE_URL].section = options.sourceSections.first;
+    manifest.pages[SECOND_SOURCE_URL].section = options.sourceSections.second;
+    await writeFile(manifestPath, JSON.stringify(manifest));
+  }
   const required =
     typeof options.required === "string"
       ? [options.required]
@@ -186,18 +199,21 @@ async function withBatchFixture(
     await writeFile(
       join(root, "docs/zh/.translation-manifest.json"),
       JSON.stringify({
-        pages: {
-          [SOURCE_URL]: {
-            policySha256: "b".repeat(64),
-            reviewStatus: "machine",
-            sourcePath: SOURCE_PATH,
-            sourceSha256: sha256("# First\n"),
-            sourceUrl: SOURCE_URL,
-            targetPath: TARGET_PATH,
-            targetSha256: sha256(target),
-            translatedAt: "2026-09-06T00:00:00Z",
-          },
-        },
+        pages:
+          options.removalFailure === "missing-record"
+            ? {}
+            : {
+                [SOURCE_URL]: {
+                  policySha256: "b".repeat(64),
+                  reviewStatus: "machine",
+                  sourcePath: SOURCE_PATH,
+                  sourceSha256: sha256("# First\n"),
+                  sourceUrl: SOURCE_URL,
+                  targetPath: TARGET_PATH,
+                  targetSha256: sha256(target),
+                  translatedAt: "2026-09-06T00:00:00Z",
+                },
+              },
         schemaVersion: 1,
         targetLanguage: "zh-CN",
       }),
@@ -262,6 +278,7 @@ async function withBatchFixture(
         String(options.characterBudget),
         "--time-budget-minutes",
         "140",
+        ...(options.section ? ["--section", options.section] : []),
       ]);
     } catch (caught) {
       error = caught;
@@ -333,10 +350,28 @@ test("required batch page runs before an older stale backlog page", async () => 
       assert.equal(exitCode, 0);
       assert.equal(providerCalls, 1);
       assert.deepEqual(result.translated, [SECOND_SOURCE_PATH]);
-      assert.equal(result.complete, false);
+      assert.equal(result.complete, true);
       assert.equal(result.stopReason, "character-budget");
       assert.equal(await exists(join(root, SECOND_TARGET_PATH)), true);
       assert.equal(await exists(join(root, TARGET_PATH)), false);
+    },
+  );
+});
+
+test("required pages bypass a section filter applied to optional backlog", async () => {
+  await withBatchFixture(
+    {
+      characterBudget: 8,
+      required: SECOND_SOURCE_PATH,
+      section: "reference",
+      sourceSections: { first: "reference", second: "guides" },
+    },
+    ({ error, exitCode, result }) => {
+      assert.equal(error, undefined);
+      assert.equal(exitCode, 0);
+      assert.deepEqual(result.translated, [SECOND_SOURCE_PATH]);
+      assert.equal(result.complete, true);
+      assert.equal(result.stopReason, "character-budget");
     },
   );
 });
@@ -379,6 +414,27 @@ test("batch removes released pages before inspecting completion", async () => {
         await readFile(join(root, "docs/zh/.translation-manifest.json"), "utf8"),
       );
       assert.equal(manifest.pages[SOURCE_URL], undefined);
+    },
+  );
+});
+
+test("removal failure persists an incomplete result before rejection", async () => {
+  await withBatchFixture(
+    {
+      characterBudget: 5,
+      removalFailure: "missing-record",
+      removed: [SOURCE_PATH],
+    },
+    ({ error, exitCode, result }) => {
+      assert.match(
+        error instanceof Error ? error.message : "",
+        /没有翻译记录/u,
+      );
+      assert.equal(exitCode, undefined);
+      assert.equal(result.complete, false);
+      assert.equal(result.stopReason, null);
+      assert.deepEqual(result.removed, []);
+      assert.equal(result.issues[0]?.sourcePath, SOURCE_PATH);
     },
   );
 });
