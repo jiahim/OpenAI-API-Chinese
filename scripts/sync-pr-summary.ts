@@ -16,6 +16,7 @@ interface CliOptions {
   headRef: string;
   outputPath: string;
   releaseDirectory?: string;
+  releaseOutputPath?: string;
 }
 
 interface SourcePageRecord {
@@ -42,6 +43,12 @@ export interface SyncRelease {
   id: string;
   modified: SyncReleaseEntry[];
   removed: SyncReleaseEntry[];
+}
+
+export interface BatchPullRequestStatus {
+  complete: boolean;
+  issues: string[];
+  translated: string[];
 }
 
 function sorted(paths: string[]): string[] {
@@ -119,6 +126,40 @@ export function renderSyncPullRequestBody(summary: SyncDiffSummary): string {
   ].join("\n");
 }
 
+export function renderUnifiedPullRequestBody(
+  summary: SyncDiffSummary,
+  translation: BatchPullRequestStatus,
+): string {
+  return [
+    "## 本轮文档更新",
+    "",
+    "英文同步和对应中文翻译在同一批次、同一个 PR 中完成。",
+    "",
+    `- 新增英文：${summary.added.length}`,
+    `- 修改英文：${summary.modified.length}`,
+    `- 删除英文：${summary.removed.length}`,
+    `- required_complete=${translation.complete}`,
+    "",
+    "## 当前阻塞项",
+    "",
+    ...(translation.issues.length ? translation.issues.map(markdownPath) : ["无。"]),
+    "",
+    "## 本轮已翻译",
+    "",
+    ...(translation.translated.length ? translation.translated.map(markdownPath) : ["无。"]),
+    "",
+    "只有本轮中英文一致且当前 head 的 `Quality gate` 通过后，GitHub 才会自动合并。",
+    "",
+  ].join("\n");
+}
+
+export async function writeReleasePath(
+  outputPath: string,
+  releasePath: string,
+): Promise<void> {
+  await writeFile(outputPath, `${releasePath}\n`, "utf8");
+}
+
 function routeFromSourceUrl(sourceUrl: string): string {
   return new URL(sourceUrl).pathname.replace(/\.md$/u, "").replace(/\/$/u, "");
 }
@@ -165,6 +206,7 @@ function parseCliOptions(argv: string[]): CliOptions {
   let headRef = "HEAD";
   let outputPath: string | undefined;
   let releaseDirectory: string | undefined;
+  let releaseOutputPath: string | undefined;
 
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index];
@@ -172,12 +214,16 @@ function parseCliOptions(argv: string[]): CliOptions {
     else if (argument === "--head-ref") headRef = argv[++index] ?? "HEAD";
     else if (argument === "--output") outputPath = argv[++index];
     else if (argument === "--release-dir") releaseDirectory = argv[++index];
+    else if (argument === "--release-output") releaseOutputPath = argv[++index];
     else throw new Error(`未知参数：${argument}`);
   }
 
   if (!baseRef) throw new Error("缺少 --base-ref。");
   if (!outputPath) throw new Error("缺少 --output。");
-  return { baseRef, headRef, outputPath, releaseDirectory };
+  if (releaseOutputPath && !releaseDirectory) {
+    throw new Error("--release-output 必须与 --release-dir 一起使用。");
+  }
+  return { baseRef, headRef, outputPath, releaseDirectory, releaseOutputPath };
 }
 
 export async function main(argv = process.argv.slice(2)): Promise<void> {
@@ -209,6 +255,9 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
       throw new Error(`同步批次文件名无效：${release.id}`);
     }
     await writeFile(releasePath, `${JSON.stringify(release, null, 2)}\n`, "utf8");
+    if (options.releaseOutputPath) {
+      await writeReleasePath(options.releaseOutputPath, releasePath);
+    }
     console.log(`同步批次记录：${releasePath}`);
   }
   console.log(
