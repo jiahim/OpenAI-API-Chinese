@@ -7,6 +7,7 @@ import {
   readdir,
   rm,
   symlink,
+  unlink,
   writeFile,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -29,6 +30,7 @@ import {
   atomicWriteRepositoryFile,
   createTranslationQualityPolicy,
   estimateTranslationPageWorkload,
+  removeTranslationPage,
   reviewTranslationPage,
   runTranslationPage,
   runTranslationPageWithRetry,
@@ -272,6 +274,151 @@ test("runner accumulates manifest records across a batch using one workspace sna
     );
     await readFile(join(root, TARGET_PATH), "utf8");
     await readFile(join(root, SECOND_TARGET_PATH), "utf8");
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+async function markSourceRemoved(root: string): Promise<void> {
+  const sourceManifestPath = join(root, "docs/en/.source-manifest.json");
+  const manifest = JSON.parse(
+    await readFile(sourceManifestPath, "utf8"),
+  ) as { pages: Record<string, { status: string }> };
+  const page = manifest.pages[SOURCE_URL];
+  assert.ok(page);
+  page.status = "removed";
+  await writeFile(sourceManifestPath, JSON.stringify(manifest));
+}
+
+async function createRemovalFixture(): Promise<{
+  root: string;
+  workspace: Awaited<ReturnType<typeof loadTranslationWorkspace>>;
+}> {
+  const root = await createFixture();
+  const active = await loadTranslationWorkspace(root);
+  await runTranslationPage(active, SOURCE_URL, {
+    commit: true,
+    provider: translatedProvider(),
+    useCheckpoint: false,
+  });
+  await markSourceRemoved(root);
+  return { root, workspace: await loadTranslationWorkspace(root) };
+}
+
+test("removal deletes a matching target and manifest record", async () => {
+  const { root, workspace } = await createRemovalFixture();
+  try {
+    const result = await removeTranslationPage(workspace, SOURCE_URL);
+
+    assert.deepEqual(result, {
+      removedRecord: true,
+      removedTarget: true,
+      sourceUrl: SOURCE_URL,
+      targetPath: TARGET_PATH,
+    });
+    await assert.rejects(readFile(join(root, TARGET_PATH)), { code: "ENOENT" });
+    const manifest = JSON.parse(
+      await readFile(join(root, "docs/zh/.translation-manifest.json"), "utf8"),
+    ) as { pages: Record<string, unknown> };
+    assert.equal(manifest.pages[SOURCE_URL], undefined);
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("removal is idempotent after its target and manifest record are absent", async () => {
+  const { root, workspace } = await createRemovalFixture();
+  try {
+    await removeTranslationPage(workspace, SOURCE_URL);
+
+    assert.deepEqual(await removeTranslationPage(workspace, SOURCE_URL), {
+      removedRecord: false,
+      removedTarget: false,
+      sourceUrl: SOURCE_URL,
+      targetPath: TARGET_PATH,
+    });
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("removal refuses a locally modified target", async () => {
+  const { root, workspace } = await createRemovalFixture();
+  try {
+    await writeFile(join(root, TARGET_PATH), "人工修改\n");
+
+    await assert.rejects(
+      removeTranslationPage(workspace, SOURCE_URL),
+      /目标 SHA 不一致/u,
+    );
+    await readFile(join(root, TARGET_PATH), "utf8");
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("removal refuses a target without a translation record", async () => {
+  const { root, workspace } = await createRemovalFixture();
+  try {
+    const manifestPath = join(root, "docs/zh/.translation-manifest.json");
+    const manifest = JSON.parse(await readFile(manifestPath, "utf8")) as {
+      pages: Record<string, unknown>;
+    };
+    delete manifest.pages[SOURCE_URL];
+    await writeFile(manifestPath, JSON.stringify(manifest));
+
+    await assert.rejects(
+      removeTranslationPage(workspace, SOURCE_URL),
+      /没有翻译记录/u,
+    );
+    await readFile(join(root, TARGET_PATH), "utf8");
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("removal refuses a symlink target before following it", async () => {
+  const { root, workspace } = await createRemovalFixture();
+  const outside = await mkdtemp(join(tmpdir(), "translation-removal-outside-"));
+  try {
+    await unlink(join(root, TARGET_PATH));
+    const missingOutsideTarget = join(outside, "missing.md");
+    await symlink(missingOutsideTarget, join(root, TARGET_PATH));
+
+    await assert.rejects(
+      removeTranslationPage(workspace, SOURCE_URL),
+      /符号链接或非文件/u,
+    );
+    await assert.rejects(readFile(missingOutsideTarget), { code: "ENOENT" });
+  } finally {
+    await rm(root, { force: true, recursive: true });
+    await rm(outside, { force: true, recursive: true });
+  }
+});
+
+test("removal refuses a non-file target", async () => {
+  const { root, workspace } = await createRemovalFixture();
+  try {
+    await unlink(join(root, TARGET_PATH));
+    await mkdir(join(root, TARGET_PATH));
+
+    await assert.rejects(
+      removeTranslationPage(workspace, SOURCE_URL),
+      /符号链接或非文件/u,
+    );
+  } finally {
+    await rm(root, { force: true, recursive: true });
+  }
+});
+
+test("removal refuses an active source", async () => {
+  const root = await createFixture();
+  try {
+    const workspace = await loadTranslationWorkspace(root);
+    await assert.rejects(
+      removeTranslationPage(workspace, SOURCE_URL),
+      /未登记为 removed/u,
+    );
   } finally {
     await rm(root, { force: true, recursive: true });
   }

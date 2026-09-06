@@ -101,6 +101,13 @@ export interface TranslationPageReviewResult {
   targetSha256: string;
 }
 
+export interface TranslationRemovalResult {
+  removedRecord: boolean;
+  removedTarget: boolean;
+  sourceUrl: string;
+  targetPath: string;
+}
+
 export interface TranslationPageWorkload {
   batches: number;
   characters: number;
@@ -190,6 +197,24 @@ async function assertSafeExistingTarget(
     assertInsideRoot(root, await realpath(target), label);
   } catch (error) {
     if (!isErrno(error, "ENOENT")) throw error;
+  }
+}
+
+async function safeRemovalTargetExists(
+  root: string,
+  target: string,
+  label: string,
+): Promise<boolean> {
+  try {
+    const stat = await lstat(target);
+    if (stat.isSymbolicLink() || !stat.isFile()) {
+      throw new Error(`${label} 不能删除符号链接或非文件：${target}`);
+    }
+    assertInsideRoot(root, await realpath(target), label);
+    return true;
+  } catch (error) {
+    if (isErrno(error, "ENOENT")) return false;
+    throw error;
   }
 }
 
@@ -603,6 +628,88 @@ export async function reviewTranslationPage(
     sourceUrl,
     targetPath: entry.targetPath,
     targetSha256,
+  };
+}
+
+export async function removeTranslationPage(
+  workspace: TranslationWorkspaceSnapshot,
+  sourceUrl: string,
+): Promise<TranslationRemovalResult> {
+  const snapshotEntry = workspace.entries.find(
+    (candidate) => candidate.source?.sourceUrl === sourceUrl,
+  );
+  if (!snapshotEntry?.source || snapshotEntry.source.status !== "removed") {
+    throw new Error(`英文来源未登记为 removed，拒绝删除译文：${sourceUrl}`);
+  }
+  const snapshotTarget = repositoryPath(
+    workspace.repositoryRoot,
+    snapshotEntry.targetPath,
+    "待删除中文译文",
+  );
+  await safeRemovalTargetExists(
+    workspace.repositoryRoot,
+    snapshotTarget,
+    "待删除中文译文",
+  );
+
+  const fresh = await loadTranslationWorkspace(
+    workspace.repositoryRoot,
+    workspace.configPath,
+  );
+  const entry = fresh.entries.find(
+    (candidate) => candidate.source?.sourceUrl === sourceUrl,
+  );
+  if (!entry?.source || entry.source.status !== "removed") {
+    throw new Error(`英文来源未登记为 removed，拒绝删除译文：${sourceUrl}`);
+  }
+  const target = repositoryPath(
+    fresh.repositoryRoot,
+    entry.targetPath,
+    "待删除中文译文",
+  );
+  const targetExists = await safeRemovalTargetExists(
+    fresh.repositoryRoot,
+    target,
+    "待删除中文译文",
+  );
+  const targetContent = targetExists
+    ? await readFile(target, "utf8")
+    : undefined;
+  if (targetContent !== undefined && !entry.record) {
+    throw new Error(`中文目标没有翻译记录，拒绝删除：${entry.targetPath}`);
+  }
+  if (
+    targetContent !== undefined &&
+    sha256(targetContent) !== entry.record?.targetSha256
+  ) {
+    throw new Error(`中文目标 SHA 不一致，拒绝删除：${entry.targetPath}`);
+  }
+  if (targetContent !== undefined) {
+    await unlink(target);
+  }
+  if (entry.record) {
+    const pages = { ...fresh.translationManifest.pages };
+    delete pages[sourceUrl];
+    const manifest: TranslationManifest = {
+      ...fresh.translationManifest,
+      pages: Object.fromEntries(
+        Object.entries(pages).sort(([left], [right]) =>
+          left.localeCompare(right, "en"),
+        ),
+      ),
+    };
+    await atomicWriteRepositoryFile(
+      fresh.repositoryRoot,
+      fresh.config.translationManifestPath,
+      `${JSON.stringify(manifest, null, 2)}\n`,
+      "中文 translation manifest",
+    );
+  }
+  return {
+    removedRecord: entry.record !== undefined,
+    removedTarget: targetContent !== undefined,
+    sourceUrl,
+    targetPath: entry.targetPath,
   };
 }
 
