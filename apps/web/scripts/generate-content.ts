@@ -193,7 +193,7 @@ async function main(): Promise<void> {
     ),
     readFile(resolve(repositoryRoot, "docs/en/api/docs/llms.txt"), "utf8"),
     readFile(resolve(repositoryRoot, "docs/en/api/reference/llms.txt"), "utf8"),
-    readFile(resolve(repositoryRoot, ".github/workflows/sync-docs.yml"), "utf8"),
+    readFile(resolve(repositoryRoot, ".github/workflows/update-docs.yml"), "utf8"),
     readdir(updatesRoot).catch((error: unknown) => {
       if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
       throw error;

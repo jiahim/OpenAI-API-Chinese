@@ -14,6 +14,33 @@ const workflow = await readFile(workflowPath, "utf8");
 const writerPath = new URL("../../.github/workflows/update-docs.yml", import.meta.url);
 const designPath = new URL("../../docs/translation-design.md", import.meta.url);
 
+for (const path of [
+  "apps/web/scripts/generate-content.ts",
+  "apps/web/tests/links.test.ts",
+]) {
+  test(`${path} derives its schedule from the unified writer`, async () => {
+    const source = await readFile(new URL(`../../${path}`, import.meta.url), "utf8");
+    assert.match(source, /\.github\/workflows\/update-docs\.yml/);
+  });
+}
+
+test("active reader and maintainer sources do not reference deleted workflows", async () => {
+  const repositoryRoot = fileURLToPath(new URL("../../", import.meta.url));
+  // Dated HANDOFF.md and docs/superpowers preserve historical implementation facts.
+  const tracked = spawnSync("git", [
+    "ls-files", "-z", "--", "apps", "scripts", "README.md", "docs/translation-design.md",
+  ], { cwd: repositoryRoot, encoding: "utf8" });
+  assert.equal(tracked.status, 0, tracked.stderr);
+  const references: string[] = [];
+  for (const path of tracked.stdout.split("\0").filter(Boolean)) {
+    const source = await readFile(join(repositoryRoot, path), "utf8");
+    if (/\.github\/workflows\/(?:sync-docs|translate-docs)\.yml/u.test(source)) {
+      references.push(path);
+    }
+  }
+  assert.deepEqual(references, [], "Active sources must reference an existing workflow");
+});
+
 test("README describes one durable checked update without volatile implementation details", async () => {
   const readme = await readFile(new URL("../../README.md", import.meta.url), "utf8");
   assert.match(readme, /\[打开 OpenAI API 中文文档\]\(https:\/\/www\.openai-api-chinese\.com\)/);

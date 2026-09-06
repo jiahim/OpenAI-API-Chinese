@@ -94,11 +94,19 @@ node scripts/sync-docs.ts sync --prune --allow-large-prune
 - 可用时记录官方响应的 `etag`、`sourceLastModified`；
 - `active` 或 `removed` 状态。
 
-## 定时任务
+## 统一文档更新工作流
 
-`.github/workflows/sync-docs.yml` 每天北京时间 00:00（UTC 16:00）从受信任的 `main` 重建固定分支 `automation/sync-openai-docs`，运行完整同步和 `--prune --allow-large-prune`，并只提交 `docs/en/` 的真实变化。定时任务允许把超过命令行安全阈值的大规模删除写入待审核 PR，但不会直接写入 `main`。专用分支使用 `--force-with-lease` 安全更新，工作流不会执行分支自身修改过的脚本。随后创建或更新面向 `main` 的中文 PR；`scripts/sync-pr-summary.ts` 根据实际 Git 差异区分新增、修改和删除，在 PR 中列出对应文件路径，并提醒维护者审核删除清单。维护者批准自动 PR 的工作流运行后，PR 必须通过标准 `pull_request` 触发的 `Quality gate`；工作流不会直接 push `main`。官方内容重新与 `main` 一致时，失效的同步 PR 会被关闭。Job 最长运行 45 分钟，避免上游持续故障或异常 `Retry-After` 无限占用执行器。
+`.github/workflows/update-docs.yml` 每天北京时间 00:00（UTC 16:00）串行运行，也支持从 `main` 手动触发。工作流先检出受信任的 `main`，使用 `--frozen-lockfile --ignore-scripts` 安装依赖，并运行类型检查、测试和 `translate:check`。只有完成可信分支及允许路径检查后，才会把 `translation-production` 环境中的 API key 注入翻译步骤。后续校验只接收解析后的供应商 ID 和模型名，以保持翻译策略 SHA 一致。
 
-首次启用前，需要在仓库 **Settings → Actions → General → Workflow permissions** 勾选 **Allow GitHub Actions to create and approve pull requests**。随后可对 `main` 设置必须通过 PR 和 `Quality gate` 的 Ruleset，无需给同步机器人配置 bypass。
+英文同步和对应中文翻译共用固定分支 `automation/update-openai-docs`，以及面向 `main`、标题为 `[AI] docs: 同步并翻译 OpenAI 官方文档` 的一个 PR。续跑时先验证已有 PR 的作者、标题、base/head 和记录的 SHA，再检查差异仅限 `docs/en/`、`docs/zh/`、`docs/updates/`，随后正常合入最新的已验证 `main`。合并冲突、身份或 SHA 不符、没有对应打开 PR 的分叉远端分支都会停止并要求处理；工作流使用普通 fast-forward push，不使用 force push，也不重置分叉分支或直接 push `main`。
+
+每轮先执行 `pnpm docs:sync -- --prune --allow-large-prune`，记录本轮 release 并提交英文变化，然后用 `translate:batch` 优先处理 release 中新增和修改的文章，并清除已移除文章的对应中文文件与 manifest 记录。大规模删除会进入同一个待检查 PR。本轮必需页面优先于历史待翻译页面使用预算。已完成的中文页面和删除操作会先提交并推送；临时 result JSON 不会进入提交。
+
+只有本轮新增和修改页面全部为 `current`、删除项的译文和记录均已清除，并且完整性与路径检查通过，PR 才会转为 ready。预算耗尽但本轮未完成时，任务正常结束并保留 draft PR；翻译或校验失败时，先更新 draft PR 的阻塞项和已完成页面，再将任务标为失败。无变化时不会创建空 PR；已有 PR 可在后续运行中继续完成。
+
+完整批次会按已推送的精确 head SHA 显式触发 `ci.yml`，并传递 PR 编号、SHA、分支和标题。初始 `AUTO_MERGE_ROLLOUT` 为 `canary`；只有后续启用 rollout，或维护者手动设置 `enable_auto_merge=true`，才会在重新核对同一 head 后请求 squash auto-merge。实际合入仍受当前 head 的 `Quality gate` 和 `main` Ruleset 约束。工作流不会轮询或直接合并 PR，整个 job 最长运行 210 分钟。
+
+首次启用前，需要在仓库 **Settings → Actions → General → Workflow permissions** 勾选 **Allow GitHub Actions to create and approve pull requests**。自动合并还需要仓库启用 auto-merge，并通过真实 canary 确认当前 PR head 的 `Quality gate` 与 `main` Ruleset 正确关联；无需给机器人配置 bypass。
 
 ## 中文翻译规划
 
@@ -137,11 +145,11 @@ pnpm translate:review -- --match guides/agents/quickstart.md --limit 1
 
 `translate:review` 只接受 `current` 或 `modified-target`，先重新比较英文与中文的 Markdown 受保护结构，再更新 manifest 中的目标 SHA 和 `reviewStatus=reviewed`；遇到代码/URL/结构变化、stale、缺失目标或未登记文件时拒绝收录。
 
-## 自动中文翻译
+## 翻译批处理与恢复
 
-`.github/workflows/translate-docs.yml` 在 `docs/en` 变更合入 `main` 后触发，并每天北京时间 01:00（UTC 17:00）补充运行。工作流只检出受信任的 `main`，在类型检查、测试和 `translate:check` 全部通过后，才把 `translation-production` 环境中的 `DEEPSEEK_API_KEY` 注入翻译步骤。
+统一工作流调用 `pnpm translate:batch -- --release <本轮 release 路径> --result <临时 result 路径> --limit 100 --max-batches 2400 --max-characters 600000 --time-budget-minutes 140`。release 中的必需页面排在历史积压之前；其余候选按 `stale-source`、`stale-policy`、`missing-target`、`pending` 的状态顺序选择，同一状态内按 `translation/priority.zh-CN.json` 的 `sourcePaths` 排序，再按稳定路径回退。本地独立批处理可使用相同预算参数调用 `translate:auto`，`translate:plan` 可用于查看候选顺序。
 
-`translate:auto -- --limit 100 --max-batches 2400 --max-characters 600000 --time-budget-minutes 140` 按 `stale-source`、`stale-policy`、`missing-target`、`pending` 的顺序选择页面；同一状态内按 `translation/priority.zh-CN.json` 的 `sourcePaths` 顺序优先处理模型、API 概览、文本生成、流式输出、工具、Realtime、Agents 和生产最佳实践等核心文档，未列入清单的页面按稳定路径回退。`translate:plan` 使用相同顺序展示队列。每轮最多检查 100 篇，不限制整页源字符数；Markdown adapter 先生成可回填的语义单元，`easy-translate` 再按每批最多 20 个单元、4,000 个源字符调用模型，并在每个成功批次后保存 checkpoint。启动下一篇前，CLI 复用 `easy-translate` 的实际分批过程预估去重后的语义批次数和字符数，并结合已完成批次的实际平均耗时预测下一篇能否在时间预算内完成；达到任一预算后正常结束，因此工作流仍会校验并发布已完成页面。首篇始终允许执行，避免单篇超大文档永久饥饿。生成结果只推送到 `automation/translate-openai-docs` 并创建一个 PR。已有翻译 PR 时工作流直接停止，避免重复调用模型和堆积未审核译文。
+每轮最多检查 100 篇，不限制整页源字符数；Markdown adapter 先生成可回填的语义单元，`easy-translate` 再按每批最多 20 个单元、4,000 个源字符调用模型，并在每个成功批次后保存 checkpoint。启动下一篇前，CLI 复用 `easy-translate` 的实际分批过程预估去重后的语义批次数和字符数，并结合已完成批次的实际平均耗时判断时间预算。语义批次和字符预算始终生效；时间预测允许首篇启动，避免仅因预测耗时造成永久饥饿。达到预算时正常结束，已完成改动保存在 PR 分支；本轮尚未完整时维持 draft 状态。
 
 生产翻译采用分层恢复：术语表的 `preserve` 项在发送前按最长匹配包裹为唯一的成对保护标记，标记内保留可见原词；模型复制标记、去掉外壳或改写成对标记内文本时，返回后都会恢复原词，任何保护标记残留都会被拒绝。指定译法按完整单词或短语匹配，并忽略已整体保留的产品名，避免将 `Agent` 误匹配到 `Agents SDK`。当一个 Markdown 语义块被链接、图片、代码或换行拆成多个翻译单元时，术语表仍随完整批次发送给模型，但质量门不再要求每个片段各自包含目标术语，避免中文调整语序后被误判。每个批次对格式、质量、网络、限流、超时和服务端临时错误最多重试 2 次，并记录页面、单元、原因和退避时间；同一质量错误再次出现时提前终止。批次仍失败时，只有格式响应错误和可重试 Provider 错误会在等待 10–12 秒后从 checkpoint 做一次页面恢复，质量错误不再整页重试。认证失败、无效请求、配置、路径和仓库完整性错误不会重试。
 
