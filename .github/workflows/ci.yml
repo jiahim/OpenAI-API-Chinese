@@ -69,8 +69,11 @@ jobs:
             if (!expectedHeadSha) {
               throw new Error("Expected head SHA is required");
             }
-            if (!expectedTitle) {
-              throw new Error("Expected title is required");
+            if (expectedTitle !== "[AI] docs: 同步并翻译 OpenAI 官方文档") {
+              throw new Error("Expected title must be the canonical automation PR title");
+            }
+            if (context.sha !== expectedHeadSha) {
+              throw new Error("Workflow event SHA does not match the expected head SHA");
             }
 
             const { data: pull } = await github.rest.pulls.get({

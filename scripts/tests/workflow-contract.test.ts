@@ -153,6 +153,7 @@ function dispatchedPreflightScript(): string {
 
 async function executeDispatchedPreflight(options?: {
   checkedOutSha?: string;
+  contextSha?: string;
   env?: Partial<Record<string, string>>;
   pull?: {
     base: { ref: string };
@@ -209,7 +210,10 @@ async function executeDispatchedPreflight(options?: {
   );
   await run(
     github,
-    { repo: { owner: "openai", repo: "docs" } },
+    {
+      repo: { owner: "openai", repo: "docs" },
+      sha: options?.contextSha ?? expectedHeadSha,
+    },
     exec,
     { env: environment },
   );
@@ -247,6 +251,14 @@ test("dispatch preflight accepts only the exact open automation PR head", async 
       /title/i,
     ],
     [
+      "matching noncanonical input and PR titles",
+      {
+        env: { EXPECTED_TITLE: "[AI] docs: other" },
+        pull: { ...trustedPull, title: "[AI] docs: other" },
+      },
+      /expected title/i,
+    ],
+    [
       "wrong PR head ref",
       { pull: { ...trustedPull, head: { ...trustedPull.head, ref: "other" } } },
       /head ref/i,
@@ -265,6 +277,11 @@ test("dispatch preflight accepts only the exact open automation PR head", async 
       "wrong checked-out SHA",
       { checkedOutSha: "e".repeat(40) },
       /checked.out sha/i,
+    ],
+    [
+      "wrong dispatch event SHA",
+      { contextSha: "d".repeat(40) },
+      /event sha/i,
     ],
     ["invalid PR number", { env: { AUTOMATION_PR: "42x" } }, /PR number/i],
   ];
