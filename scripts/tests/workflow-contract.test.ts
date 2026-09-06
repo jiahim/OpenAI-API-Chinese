@@ -13,11 +13,14 @@ const workflowPath = new URL("../../.github/workflows/ci.yml", import.meta.url);
 const workflow = await readFile(workflowPath, "utf8");
 const writerPath = new URL("../../.github/workflows/update-docs.yml", import.meta.url);
 
-test("README describes one automatic checked update without volatile article details", async () => {
+test("README describes one durable checked update without volatile implementation details", async () => {
   const readme = await readFile(new URL("../../README.md", import.meta.url), "utf8");
+  assert.match(readme, /\[打开 OpenAI API 中文文档\]\(https:\/\/www\.openai-api-chinese\.com\)/);
+  assert.match(readme, /> 本项目不是 OpenAI 官方网站。涉及接口行为、价格、使用限制和安全要求时，请以 \[OpenAI 官方文档\]\(https:\/\/developers\.openai\.com\/api\/\) 为准。/);
   assert.match(readme, /英文同步和对应的中文翻译会放在同一个更新中/);
   assert.match(readme, /检查通过后自动合并/);
-  assert.doesNotMatch(readme, /等待审核|已有翻译 PR|维护者审核/);
+  assert.match(readme, /若翻译或检查失败，更新会停留在待处理状态，不会把未完成的中英文内容发布出去/);
+  assert.doesNotMatch(readme, /等待审核|已有翻译 PR|维护者审核|TRANSLATION_PROVIDER|DEEPSEEK_API_KEY|MINIMAX_API_KEY|MiniMax|DeepSeek|docs\/en\/api\/|每轮最多|每批最多/);
 });
 
 test("unified writer is the only scheduled docs writer", async () => {
