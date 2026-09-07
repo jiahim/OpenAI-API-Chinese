@@ -1,4 +1,4 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## Retrieve batch
 
@@ -18,7 +18,7 @@
 
   - `completion_window: string`
 
-    批量应在此时间范围内被处理。
+    批量应在该时间段内完成处理。
 
   - `created_at: number`
 
@@ -40,7 +40,7 @@
 
   - `status: "validating" or "failed" or "in_progress" or 5 more`
 
-    批量当前的状态。
+    该批量当前的状态。
 
     - `"validating"`
 
@@ -72,7 +72,7 @@
 
   - `error_file_id: optional string`
 
-    包含请求出错时所产生输出的文件 ID。
+    包含出错请求输出的文件 ID。
 
   - `errors: optional object { data, object }`
 
@@ -84,11 +84,11 @@
 
       - `line: optional number or null`
 
-        发生错误的输入文件行号（如果适用）。
+        发生错误的输入文件所在行号（如果适用）。
 
       - `message: optional string`
 
-        提供有关该错误更多详细信息的人类可读消息。
+        提供有关错误更多详细信息的人类可读消息。
 
       - `param: optional string or null`
 
@@ -112,7 +112,7 @@
 
   - `finalizing_at: optional number`
 
-    批量开始进入最终完成阶段时的 Unix 时间戳（以秒为单位）。
+    批量开始收尾时的 Unix 时间戳（以秒为单位）。
 
   - `in_progress_at: optional number`
 
@@ -120,23 +120,23 @@
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    useful for storing additional information about the object in a structured
-    format, and querying for objects via API or the dashboard.
+    可以附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储关于对象的附加信息，
+    并通过 API 或仪表板查询对象。
 
-    Keys are strings with a maximum length of 64 characters. Values are strings
-    with a maximum length of 512 characters.
+    键是字符串，最大长度为 64 个字符。值是字符串，
+    最大长度为 512 个字符。
 
   - `model: optional string`
 
-    Model ID used to process the batch, like `gpt-5.6-sol`. OpenAI
-    offers a wide range of models with different capabilities, performance
-    characteristics, and price points. Refer to the [model
-    guide](/docs/models) to browse and compare available models.
+    用于处理该批次的模型 ID，例如 `gpt-6-astra`。OpenAI
+    提供了众多具有不同能力、性能
+    特征和价位的模型。请参阅 [模型
+    指南](/docs/models) 以浏览和比较可用的模型。
 
   - `output_file_id: optional string`
 
-    包含成功执行请求输出内容的文件 ID。
+    包含成功执行请求的输出文件的 ID。
 
   - `request_counts: optional BatchRequestCounts`
 
@@ -152,26 +152,26 @@
 
     - `total: number`
 
-      该批次中的请求总数。
+      批次中的请求总数。
 
   - `usage: optional BatchUsage`
 
-    Represents token usage details including input tokens, output tokens, a
-    breakdown of output tokens, and the total tokens used. Only populated on
-    batches created after September 7, 2025.
+    表示 token 使用情况详细信息，包括输入 token、输出 token、
+    输出 token 的细分以及使用的 token 总数。仅在
+    2025 年 9 月 7 日之后创建的批次中填充。
 
     - `input_tokens: number`
 
-      输入 token 数量。
+      输入 token 的数量。
 
     - `input_tokens_details: object { cached_tokens }`
 
-      输入令牌的详细分类。
+      输入令牌的详细分解。
 
       - `cached_tokens: number`
 
         从缓存中检索到的令牌数量。 [了解更多
-        提示词缓存](/docs/guides/prompt-caching).
+        提示缓存](/docs/guides/prompt-caching).
 
     - `output_tokens: number`
 
@@ -179,7 +179,7 @@
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      输出令牌的详细分类。
+      输出令牌的详细分解。
 
       - `reasoning_tokens: number`
 

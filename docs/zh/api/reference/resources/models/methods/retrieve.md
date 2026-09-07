@@ -1,10 +1,10 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取对应文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-## 检索模型
+## Retrieve model
 
 **get** `/models/{model}`
 
-获取一个模型实例，并提供该模型的基本信息，例如所有者和权限设置。
+检索模型实例，提供有关该模型的基本信息，例如所有者和权限配置。
 
 ### 路径参数
 
@@ -14,7 +14,7 @@
 
 - `Model object { id, created, object, 2 more }`
 
-  描述可与 API 一起使用的 OpenAI 模型产品。
+  描述可与 OpenAI API 配合使用的模型服务。
 
   - `id: string`
 
@@ -36,7 +36,7 @@
 
   - `shutdown_date: optional string or null`
 
-    模型将下线的日期，若未公布则为 null。
+    模型将停止运行的日期，如果尚未公布则为 null。
 
 ### 示例
 
@@ -60,7 +60,7 @@ curl https://api.openai.com/v1/models/$MODEL \
 ### 示例
 
 ```http
-curl https://api.openai.com/v1/models/gpt-5.6-sol \
+curl https://api.openai.com/v1/models/gpt-6-astra \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
@@ -68,7 +68,7 @@ curl https://api.openai.com/v1/models/gpt-5.6-sol \
 
 ```json
 {
-  "id": "gpt-5.6-sol",
+  "id": "gpt-6-astra",
   "object": "model",
   "created": 1686935002,
   "owned_by": "openai",

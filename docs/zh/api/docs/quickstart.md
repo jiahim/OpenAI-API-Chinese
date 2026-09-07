@@ -1,8 +1,8 @@
 # 开发者快速入门
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-OpenAI API 提供了一个统一的接口来访问业界领先的 AI [模型](https://developers.openai.com/api/docs/models) ，可用于文本生成、自然语言处理、计算机视觉等场景。你可以从创建 API 密钥并发起你的第一次 API 调用开始，了解如何生成文本、分析图像、构建 智能体 等。
+OpenAI API 提供了一个统一的接口来访问最先进的 AI [模型](https://developers.openai.com/api/docs/models) ，可用于文本生成、自然语言处理、计算机视觉等任务。通过创建 API 密钥并运行你的第一个 API 调用即可上手。了解如何生成文本、分析图像、构建智能体等。
 
 ## 创建并导出 API 密钥
 
@@ -17,13 +17,13 @@ StatsigClient.logEvent("quickstart_create_api_key_click", null, null)
 
 
 
-在开始之前，先在仪表板中创建一个 API 密钥，后续你需要用它来
-安全地 [访问 API](https://developers.openai.com/api/reference/overview)。请将该密钥
-保存在安全的位置，例如计算机上的某个 [`.zshrc`
-文件](https://www.freecodecamp.org/news/how-do-zsh-configuration-files-work/) 或其他文本文件。生成 API 密钥后，将它导出
-生成 接口 密钥后，将它导出
+在开始之前，请在控制台中创建一个 API 密钥，你将用它来
+安全地 [访问 API](https://developers.openai.com/api/reference/overview)。请将此密钥
+存放在安全的位置，例如计算机上的一个 [`.zshrc`
+文件](https://www.freecodecamp.org/news/how-do-zsh-configuration-files-work/) 或
+其他文本文件。生成 API 密钥后，请将其导出
 为 [环境变量](https://en.wikipedia.org/wiki/Environment_variable)
-在终端中。
+，在终端中设置。
 
 
 
@@ -50,9 +50,9 @@ setx OPENAI_API_KEY "your_api_key_here"
 
 
 
-每个 OpenAI SDK 都会自动从系统环境变量中读取你的 API 密钥。
+每个 OpenAI SDK 都会自动从系统环境中读取你的 API 密钥。
 
-## 安装 OpenAI SDK 并运行一次 API 调用
+## 安装 OpenAI SDK 并调用 API
 
 
 
@@ -60,7 +60,7 @@ JavaScript
 
     
 
-要在 Node.js、Deno 或 Bun 等 服务端 JavaScript 环境中使用 OpenAI API，你可以使用官方的 [TypeScript 和 JavaScript 版 OpenAI SDK](https://github.com/openai/openai-node)。首先使用 [npm](https://www.npmjs.com/) 或你常用的包管理器来安装 SDK：
+要在 Node.js、Deno 或 Bun 等服务端 JavaScript 环境中使用 OpenAI API，你可以使用官方的 [OpenAI TypeScript 与 JavaScript SDK](https://github.com/openai/openai-node)。首先使用 [npm](https://www.npmjs.com/) 或你常用的包管理器安装 SDK：
 
 使用 npm 安装 OpenAI SDK
 
@@ -69,7 +69,7 @@ npm install openai
 ```
 
 
-安装好 OpenAI SDK 后，新建一个文件 `example.mjs` 并将下面的示例代码复制到该文件中：
+安装好 OpenAI SDK 后，新建一个文件 `example.mjs` 并将示例代码复制到其中：
 
 测试一个基础的 API 请求
 
@@ -78,7 +78,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a one-sentence bedtime story about a unicorn.",
 });
 
@@ -86,9 +86,9 @@ console.log(response.output_text);
 ```
 
 
-使用 `node example.mjs` （执行该代码（如果你使用的是 Deno 或 Bun，请使用对应的命令）。稍等片刻，你应该就能看到本次 API 请求的输出。
+使用 `node example.mjs` （或 Deno、Bun 中对应的命令）执行代码。稍等片刻，你应该就能看到 API 请求的输出。
 
-[在 GitHub 上了解更多信息
+[在 GitHub 上了解更多
 
 
 
@@ -104,7 +104,7 @@ Python
 
     
 
-要在 Python 中使用 OpenAI API，你可以使用官方的 [Python 版 OpenAI SDK](https://github.com/openai/openai-python)。首先使用 [pip](https://pypi.org/project/pip/):
+要在 Python 中使用 OpenAI API，你可以使用官方的 [OpenAI Python SDK](https://github.com/openai/openai-python)。首先使用 [pip](https://pypi.org/project/pip/):
 
 使用 pip 安装 OpenAI SDK
 
@@ -113,7 +113,7 @@ pip install openai
 ```
 
 
-安装好 OpenAI SDK 后，新建一个文件 `example.py` 并将下面的示例代码复制到该文件中：
+安装好 OpenAI SDK 后，新建一个文件 `example.py` 并将示例代码复制到其中：
 
 测试一个基础的 API 请求
 
@@ -123,7 +123,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Write a one-sentence bedtime story about a unicorn.",
 )
 
@@ -131,9 +131,9 @@ print(response.output_text)
 ```
 
 
-使用 `python example.py`。稍等片刻，你应该就能看到本次 API 请求的输出。
+使用 `python example.py`。稍等片刻，你应该就能看到 API 请求的输出。
 
-[在 GitHub 上了解更多信息
+[在 GitHub 上了解更多
 
 
 
@@ -149,13 +149,13 @@ print(response.output_text)
 
     
 
-与 Microsoft 合作，OpenAI 为 C# 提供官方支持的 API 客户端。你可以使用 .NET CLI 从 [NuGet](https://www.nuget.org/).
+该公司 与 Microsoft 合作，提供官方支持的 C# OpenAI API 客户端。你可以使用 .NET CLI 从 [NuGet](https://www.nuget.org/).
 
 ```
 dotnet add package OpenAI
 ```
 
-向 API 发起的简单请求到 [Responses API](https://developers.openai.com/api/reference/resources/responses) 如下所示：
+向 API 发出的简单请求，调用 [Responses API](https://developers.openai.com/api/reference/resources/responses) 示例如下：
 
 测试一个基础的 API 请求
 
@@ -167,7 +167,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     "Say 'this is a test.'"
 );
 
@@ -184,18 +184,18 @@ Java
 
     
 
-OpenAI 为 Java 编程语言提供了一个 API 辅助库，目前仍处于 beta 阶段。你可以使用以下配置加入 Maven 依赖：
+OpenAI 为 Java 编程语言提供 API 帮助库，目前处于 beta 阶段。你可以使用以下配置添加 Maven 依赖：
 
 ```xml
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.56.0</version>
+  <version>4.58.0</version>
 </dependency>
 ```
 
 
-向 API 发起的简单请求到 [Responses API](https://developers.openai.com/api/reference/resources/responses) 如下所示：
+向 API 发出的简单请求，调用 [Responses API](https://developers.openai.com/api/reference/resources/responses) 示例如下：
 
 测试一个基础的 API 请求
 
@@ -210,7 +210,7 @@ public class Main {
     OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 
     ResponseCreateParams params =
-        ResponseCreateParams.builder().input("Say this is a test").model("gpt-5.6").build();
+        ResponseCreateParams.builder().input("Say this is a test").model("gpt-6-astra").build();
 
     Response response = client.responses().create(params);
     response.output().stream()
@@ -223,9 +223,9 @@ public class Main {
 ```
 
 
-要了解更多在 Java 中使用 OpenAI API 的信息，请查看下方链接的 GitHub 仓库！
+要详细了解如何在 Java 中使用 OpenAI API，请查看下方关联的 GitHub 仓库！
 
-[在 GitHub 上了解更多信息
+[在 GitHub 上了解更多
 
 
 
@@ -241,7 +241,7 @@ Go
 
     
 
-OpenAI 为 Go 编程语言提供了一个 API 辅助库，目前仍处于 beta 阶段。你可以使用下面的代码导入该库：
+OpenAI 为 Go 编程语言提供 API 帮助库，目前处于 beta 阶段。你可以使用下面的代码导入该库：
 
 ```go
 import (
@@ -250,7 +250,7 @@ import (
 ```
 
 
-向 API 发起的首次请求到 [Responses API](https://developers.openai.com/api/reference/resources/responses) 如下所示：
+向 API 发出的首次请求，调用 [Responses API](https://developers.openai.com/api/reference/resources/responses) 示例如下：
 
 测试一个基础的 API 请求
 
@@ -269,7 +269,7 @@ func main() {
 	client := openai.NewClient()
 
 	resp, err := client.Responses.New(context.TODO(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Say this is a test")},
 	})
 	if err != nil {
@@ -281,9 +281,9 @@ func main() {
 ```
 
 
-要了解更多在 Go 中使用 OpenAI API 的信息，请查看下方链接的 GitHub 仓库！
+要详细了解如何在 Go 中使用 OpenAI API，请查看下方关联的 GitHub 仓库！
 
-[在 GitHub 上了解更多信息
+[在 GitHub 上了解更多
 
 
 
@@ -299,7 +299,7 @@ Ruby
 
     
 
-要在 Ruby 中使用 OpenAI API，你可以使用官方的 [OpenAI SDK for Ruby](https://github.com/openai/openai-ruby)。首先将 gem 添加到你的应用中：
+要在 Ruby 中使用 OpenAI API，你可以使用官方的 [OpenAI Ruby SDK](https://github.com/openai/openai-ruby)。首先将 gem 添加到你的应用中：
 
 使用 Bundler 安装 OpenAI SDK
 
@@ -308,7 +308,7 @@ gem "openai"
 ```
 
 
-安装好 OpenAI SDK 后，新建一个文件 `example.rb` 并将下面的示例代码复制到该文件中：
+安装好 OpenAI SDK 后，新建一个文件 `example.rb` 并将示例代码复制到其中：
 
 测试一个基础的 API 请求
 
@@ -318,7 +318,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a one-sentence bedtime story about a unicorn."
 )
 
@@ -326,16 +326,16 @@ puts(response.output_text)
 ```
 
 
-使用 `ruby example.rb`。稍等片刻，你应该就能看到本次 API 请求的输出。
+使用 `ruby example.rb`。稍等片刻，你应该就能看到 API 请求的输出。
 
-[在 GitHub 上了解更多信息
+[在 GitHub 上了解更多
 
 
 
       Discover more SDK capabilities and options on the library's GitHub README.](https://github.com/openai/openai-ruby)
 
 
-[Responses 入门示例应用
+[Responses 入门应用
 
 
 
@@ -347,24 +347,24 @@ puts(response.output_text)
 
       Learn more about prompting, message roles, and building conversational apps.](https://developers.openai.com/api/docs/guides/text)
 
-## 充值额度以继续构建
+## 添加额度以继续构建
 
 
 
 StatsigClient.logEvent("quickstart_add_credits_billing_click", null, null)
   }
 >
-  前往账单
+  前往结算
 
 
 {/* prettier-ignore */}
 
-恭喜你成功运行了一次免费的 API 请求！现在可以开始使用更高的额度构建真实的应用，并使用 [我们的模型](https://developers.openai.com/api/docs/models) 来生成文本、音频、图像、视频等。
+恭喜你成功运行了一次免费的测试 API 请求！开始构建具有更高额度的真实应用，使用 [我们的模型](https://developers.openai.com/api/docs/models) 来生成文本、音频、图像、视频等。
 
 
 
 
-  探索可帮助你更快交付的工具和文档：
+  探索专门帮助你更快交付的工具和文档：
 
 
 [StatsigClient.logEvent(
@@ -374,7 +374,7 @@ StatsigClient.logEvent("quickstart_add_credits_billing_click", null, null)
     )
   }
 >
-  聊天 Playground
+  Chat Playground
 
 
 
@@ -385,9 +385,9 @@ StatsigClient.logEvent("quickstart_add_credits_billing_click", null, null)
 
       Use the Agents SDK to build, run, and observe agent workflows.](https://developers.openai.com/api/docs/guides/agents)
 
-## 分析图像和文件
+## 分析图片和文件
 
-直接将图片 URL、上传的文件或 PDF 文档发送给模型，以提取文本、对内容进行分类或检测视觉元素。
+直接将图片链接、上传的文件或 PDF 文档发送给模型，以提取文本、分类内容或检测视觉元素。
 
 
 
@@ -400,7 +400,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -429,7 +429,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -464,7 +464,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
 			responses.ResponseInputItemParamOfMessage(
 				responses.ResponseInputMessageContentListParam{
@@ -508,7 +508,7 @@ ResponseInputItem imageInput =
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .inputOfResponse(List.of(imageInput))
         .build();
 
@@ -531,7 +531,7 @@ Uri imageUrl = new(
 );
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem(
             [
@@ -551,7 +551,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -577,7 +577,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "input": [
             {
                 "role": "user",
@@ -598,7 +598,7 @@ curl "https://api.openai.com/v1/responses" \
 
 ```bash
 openai responses create \
-  --model gpt-5.6 \
+  --model gpt-6-astra \
   --raw-output \
   --transform 'output.#(type=="message").content.0.text' <<'YAML'
 input:
@@ -625,7 +625,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -652,7 +652,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -688,7 +688,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfInputItemList: responses.ResponseInputParam{
 				responses.ResponseInputItemParamOfMessage(
@@ -727,7 +727,7 @@ import java.util.List;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .inputOfResponse(
             List.of(
                 ResponseInputItem.ofMessage(
@@ -762,7 +762,7 @@ Uri fileUrl = new(
 );
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem(
             [
@@ -784,7 +784,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -810,7 +810,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "input": [
             {
                 "role": "user",
@@ -849,7 +849,7 @@ const file = await client.files.create({
 });
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -878,7 +878,7 @@ client = OpenAI()
 file = client.files.create(file=open("draconomicon.pdf", "rb"), purpose="user_data")
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -929,7 +929,7 @@ func main() {
 	}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfInputItemList: responses.ResponseInputParam{
 				responses.ResponseInputItemParamOfMessage(
@@ -981,7 +981,7 @@ var response =
         .responses()
         .create(
             ResponseCreateParams.builder()
-                .model("gpt-5.6")
+                .model("gpt-6-astra")
                 .inputOfResponse(
                     List.of(
                         ResponseInputItem.ofMessage(
@@ -1015,7 +1015,7 @@ OpenAIFile file = await files.UploadFileAsync(
 );
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateUserMessageItem(
             [
@@ -1043,7 +1043,7 @@ file = openai.files.create(
 )
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -1068,7 +1068,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "input": [
             {
                 "role": "user",
@@ -1103,7 +1103,7 @@ curl "https://api.openai.com/v1/responses" \
 
 ## 使用工具扩展模型
 
-通过附加 [工具](https://developers.openai.com/api/docs/guides/tools)，让模型能够访问外部数据和函数。使用 网页搜索 或 文件搜索 等内置工具，或自行定义工具以调用 API、运行代码或与第三方系统集成。
+通过附加 [工具](https://developers.openai.com/api/docs/guides/tools)。让模型能够访问外部数据和函数。使用内置工具，例如网页搜索 或 文件搜索，也可以自行定义工具来调用 API、运行代码或与第三方系统集成。
 
 
 
@@ -1116,7 +1116,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [{ type: "web_search" }],
   input: "What was a positive news story from today?",
 });
@@ -1130,7 +1130,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[{"type": "web_search"}],
     input="What was a positive news story from today?",
 )
@@ -1152,7 +1152,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{
 			responses.ToolParamOfWebSearch(responses.WebSearchToolTypeWebSearch),
 		},
@@ -1173,7 +1173,7 @@ import com.openai.models.responses.WebSearchTool;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("What was a positive news story from today?")
         .addTool(WebSearchTool.builder().type(WebSearchTool.Type.WEB_SEARCH).build())
         .build();
@@ -1192,7 +1192,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(ResponseTool.CreateWebSearchTool());
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("What was a positive news story from today?")
@@ -1209,7 +1209,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [{type: "web_search"}],
   input: "What was a positive news story from today?"
 )
@@ -1222,7 +1222,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "tools": [{"type": "web_search"}],
         "input": "what was a positive news story from today?"
 }'
@@ -1230,7 +1230,7 @@ curl "https://api.openai.com/v1/responses" \
 
 ```bash
 openai responses create \
-  --model gpt-5.6 \
+  --model gpt-6-astra \
   --raw-output \
   --transform 'output.#(type=="message").content.0.text' <<'YAML'
 tools:
@@ -1253,7 +1253,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "What is deep research by OpenAI?",
   tools: [
     {
@@ -1271,7 +1271,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="What is deep research by OpenAI?",
     tools=[{"type": "file_search", "vector_store_ids": ["<vector_store_id>"]}],
 )
@@ -1292,7 +1292,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("What is deep research by OpenAI?")},
 		Tools: []responses.ToolUnionParam{responses.ToolParamOfFileSearch([]string{"<vector_store_id>"})},
 	})
@@ -1313,7 +1313,7 @@ String vectorStoreId = "<vector_store_id>";
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("What is deep research by OpenAI?")
         .addFileSearchTool(List.of(vectorStoreId))
         .build();
@@ -1333,7 +1333,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 string vectorStoreId = "<vector_store_id>";
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateFileSearchTool([vectorStoreId])
 );
@@ -1352,7 +1352,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "What is deep research by OpenAI?",
   tools: [
     {
@@ -1379,7 +1379,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   instructions:
     "You are a personal math tutor. When asked a math question, write and run code to answer the question.",
   tools: [
@@ -1400,7 +1400,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     instructions="You are a personal math tutor. When asked a math question, write and run code to answer the question.",
     tools=[{"type": "code_interpreter", "container": {"type": "auto"}}],
     input="I need to solve the equation 3x + 11 = 14. Can you help me?",
@@ -1423,7 +1423,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:        "gpt-5.6",
+		Model:        "gpt-6-astra",
 		Instructions: openai.String("You are a personal math tutor. When asked a math question, write and run code to answer the question."),
 		Tools: []responses.ToolUnionParam{
 			responses.ToolParamOfCodeInterpreter(responses.ToolCodeInterpreterContainerCodeInterpreterContainerAutoParam{}),
@@ -1445,7 +1445,7 @@ import com.openai.models.responses.Tool;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("I need to solve the equation 3x + 11 = 14. Can you help me?")
         .instructions(
             "You are a personal math tutor. When asked a math question, write and run code to answer the question.")
@@ -1472,7 +1472,7 @@ CodeInterpreterToolContainer container = new(
 );
 CreateResponseOptions options = new()
 {
-    Model = "gpt-5.6",
+    Model = "gpt-6-astra",
     Instructions = "You are a personal math tutor. Write and run code to answer math questions.",
 };
 options.Tools.Add(ResponseTool.CreateCodeInterpreterTool(container));
@@ -1492,7 +1492,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   instructions: "You are a personal math tutor. When asked a math question, write and run code to answer the question.",
   tools: [
     {
@@ -1511,7 +1511,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "instructions": "You are a personal math tutor. When asked a math question, write and run code to answer the question.",
     "tools": [
       {
@@ -1558,7 +1558,7 @@ const tools = [
 ];
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     { role: "user", content: "What is the weather like in Paris today?" },
   ],
@@ -1594,7 +1594,7 @@ tools = [
 ]
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {"role": "user", "content": "What is the weather like in Paris today?"},
     ],
@@ -1632,7 +1632,7 @@ func main() {
 	tool.OfFunction.Description = openai.String("Get current temperature for a given location.")
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
 			responses.ResponseInputItemParamOfMessage("What is the weather like in Paris today?", responses.EasyInputMessageRoleUser),
 		}},
@@ -1656,7 +1656,7 @@ import java.util.Map;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("What is the weather like in Paris today?")
         .addTool(
             FunctionTool.builder()
@@ -1691,7 +1691,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateFunctionTool(
         functionName: "get_weather",
@@ -1770,7 +1770,7 @@ tools = [
 ]
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {role: "user", content: "What is the weather like in Paris today?"}
   ],
@@ -1785,7 +1785,7 @@ curl -X POST https://api.openai.com/v1/responses \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "input": [
       {"role": "user", "content": "What is the weather like in Paris today?"}
     ],
@@ -1825,7 +1825,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \ 
 -H "Authorization: Bearer $OPENAI_API_KEY" \ 
 -d '{
-  "model": "gpt-5.6",
+  "model": "gpt-6-astra",
     "tools": [
       {
         "type": "mcp",
@@ -1844,7 +1844,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -1867,7 +1867,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "mcp",
@@ -1902,7 +1902,7 @@ func main() {
 	tool.OfMcp.RequireApproval = responses.ToolMcpRequireApprovalUnionParam{OfMcpToolApprovalSetting: openai.String("never")}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Roll 2d4+1")},
 	})
@@ -1921,7 +1921,7 @@ import com.openai.models.responses.Tool;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Roll 2d4+1")
         .addTool(
             Tool.Mcp.builder()
@@ -1947,7 +1947,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-5.6" };
+CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "dmcp",
@@ -1968,7 +1968,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   tools: [
     {
       type: "mcp",
@@ -2000,16 +2000,16 @@ puts(response.output_text)
 
 ## 流式响应并构建实时应用
 
-使用服务端发送的 [streaming events](https://developers.openai.com/api/docs/guides/streaming-responses) 可以在结果生成时即时展示，或使用 [Realtime API](https://developers.openai.com/api/docs/guides/realtime) 构建交互式语音应用，以及支持文本、音频和图像输入的应用。
+使用服务端发送的 [流式事件](https://developers.openai.com/api/docs/guides/streaming-responses) 在结果生成时即时展示，或使用 [Realtime API](https://developers.openai.com/api/docs/guides/realtime) 构建支持文本、音频和图像输入的交互式语音应用。
 
-从 API 流式接收服务端事件
+从 API 流式获取服务端发送的事件
 
 ```javascript
 import { OpenAI } from "openai";
 const client = new OpenAI();
 
 const stream = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -2030,7 +2030,7 @@ from openai import OpenAI
 client = OpenAI()
 
 stream = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -2058,7 +2058,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	stream := client.Responses.NewStreaming(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Say 'double bubble bath' ten times fast.")},
 	})
 	for stream.Next() {
@@ -2079,7 +2079,7 @@ import com.openai.models.responses.ResponseStreamEvent;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .input("Say 'double bubble bath' ten times fast.")
         .build();
 
@@ -2096,7 +2096,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 var responses = client.CreateResponseStreamingAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     "Say 'double bubble bath' ten times fast."
 );
 
@@ -2115,7 +2115,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 stream = openai.responses.stream(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -2144,9 +2144,9 @@ end
 
 ## 构建智能体
 
-使用 OpenAI 平台构建 [智能体](https://developers.openai.com/api/docs/guides/agents) 能够代表你的用户采取行动——例如 [控制计算机](https://developers.openai.com/api/docs/guides/tools-computer-use)。在你的服务器上使用 Agents SDK [智能体开发工具包](https://developers.openai.com/api/docs/guides/agents) 创建编排逻辑。
+使用 OpenAI 平台构建 [智能体](https://developers.openai.com/api/docs/guides/agents) 能够代表你的用户采取行动——例如 [控制计算机](https://developers.openai.com/api/docs/guides/tools-computer-use)。在你的服务器上使用 [Agents SDK](https://developers.openai.com/api/docs/guides/agents) 来创建编排逻辑。
 
-构建语言分诊 智能体
+构建一个语言分诊 智能体
 
 ```javascript
 import { Agent, run } from "@openai/agents";

@@ -1,21 +1,21 @@
-> 完整文档索引请参阅 [llms.txt](/llms.txt). 可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 末尾追加 `.md` 。
 
 ## 获取聊天补全
 
 **get** `/chat/completions/{completion_id}`
 
-获取已存储的聊天补全。仅返回已使用
-参数 `store` 设置为 `true` 创建的 Chat Completions。
+获取已存储的聊天补全。只能获取通过
+参数设置为 `store` 参数设置为 `true` 而创建的聊天补全。
 
 ### 路径参数
 
 - `completion_id: string`
 
-### 返回值
+### 返回
 
 - `ChatCompletion object { id, choices, created, 7 more }`
 
-  表示模型根据所提供输入返回的聊天补全响应。
+  表示由模型根据提供的输入返回的聊天补全响应。
 
   - `id: string`
 
@@ -23,15 +23,15 @@
 
   - `choices: array of object { finish_reason, index, logprobs, message }`
 
-    聊天补全选项列表。如果 `n` 大于 1，则可以包含多个选项。
+    聊天补全选项列表。如果 `n` 大于 1，则可能有多个。
 
     - `finish_reason: "stop" or "length" or "tool_calls" or 2 more`
 
-      模型停止生成 token 的原因。如果模型遇到自然停止点或提供了停止序列，则该原因将 `stop` ；如果请求中指定的最大 token 数已达到，则，
-      `length` ；如果由于我们的内容过滤器的标记而省略了内容，则，
-      `content_filter` ；如果模型调用了工具，则，
-      `tool_calls` ；或者如果模型调用了函数，则 `function_call` （已弃用）。
-      请参阅 [模型规范](https://model-spec.openai.com/2025-12-18.html) 了解更多信息。
+      模型停止生成 token 的原因。该原因将 `stop` 如果模型到达了自然停止点或遇到提供的停止序列，
+      `length` 如果达到了请求中指定的 token 上限数量，
+      `content_filter` 如果内容因我们的内容过滤标记而被省略，
+      `tool_calls` 如果模型调用了工具，或者 `function_call` （已弃用）如果模型调用了函数。
+      请阅读 [模型规范](https://model-spec.openai.com/2025-12-18.html) 了解详情。
 
       - `"stop"`
 
@@ -45,7 +45,7 @@
 
     - `index: number`
 
-      选项在选项列表中的索引。
+      该选项在选项列表中的索引。
 
     - `logprobs: object { content, refusal }  or null`
 
@@ -61,15 +61,15 @@
 
         - `bytes: array of number or null`
 
-          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果该 token 没有字节表示，则可以为 `null` 。
+          表示该 token 的 UTF-8 字节表示的整数列表。在某些字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以为 `null` 如果该 token 没有字节表示。
 
         - `logprob: number`
 
-          该 token 的对数概率（如果它位于概率最高的前 20 个 token 之内）。否则，该值 `-9999.0` 用于表示该 token 出现的可能性极低。
+          该 token 的对数概率，如果它位于最可能的 20 个 token 之内。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
 
         - `top_logprobs: array of object { token, bytes, logprob }`
 
-          在该 token 位置处最可能的 token 列表及其对数概率。条目数可能少于所请求的 `top_logprobs`.
+          在该 token 位置处最可能的 token 及其对数概率列表。返回的条目数可能少于请求的 `top_logprobs`.
 
           - `token: string`
 
@@ -77,15 +77,15 @@
 
           - `bytes: array of number or null`
 
-            表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果该 token 没有字节表示，则可以为 `null` 。
+            表示该 token 的 UTF-8 字节表示的整数列表。在某些字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以为 `null` 如果该 token 没有字节表示。
 
           - `logprob: number`
 
-            该 token 的对数概率（如果它位于概率最高的前 20 个 token 之内）。否则，该值 `-9999.0` 用于表示该 token 出现的可能性极低。
+            该 token 的对数概率，如果它位于最可能的 20 个 token 之内。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
 
       - `refusal: array of ChatCompletionTokenLogprob or null`
 
-        包含消息拒绝 token 及其对数概率信息的列表。
+        包含拒绝消息的 token 及其对数概率信息的列表。
 
         - `token: string`
 
@@ -93,15 +93,15 @@
 
         - `bytes: array of number or null`
 
-          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果该 token 没有字节表示，则可以为 `null` 。
+          表示该 token 的 UTF-8 字节表示的整数列表。在某些字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以为 `null` 如果该 token 没有字节表示。
 
         - `logprob: number`
 
-          该 token 的对数概率（如果它位于概率最高的前 20 个 token 之内）。否则，该值 `-9999.0` 用于表示该 token 出现的可能性极低。
+          该 token 的对数概率，如果它位于最可能的 20 个 token 之内。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
 
         - `top_logprobs: array of object { token, bytes, logprob }`
 
-          在该 token 位置处最可能的 token 列表及其对数概率。条目数可能少于所请求的 `top_logprobs`.
+          在该 token 位置处最可能的 token 及其对数概率列表。返回的条目数可能少于请求的 `top_logprobs`.
 
     - `message: ChatCompletionMessage`
 
@@ -123,8 +123,8 @@
 
       - `annotations: optional array of object { type, url_citation }`
 
-        消息的注解（如适用），例如使用
-        [网页搜索工具](/docs/guides/tools-web-search?api-mode=chat).
+        在适用情况下，消息的注解，例如在使用
+        [网页搜索工具时](/docs/guides/tools-web-search?api-mode=chat).
 
         - `type: "url_citation"`
 
@@ -134,15 +134,15 @@
 
         - `url_citation: object { end_index, start_index, title, url }`
 
-          使用 网页搜索 时的 URL 引用。
+          使用 网页搜索时的 URL 引用。
 
           - `end_index: number`
 
-            消息中 URL 引用末尾字符的索引。
+            消息中 URL 引用最后一个字符的索引。
 
           - `start_index: number`
 
-            消息中 URL 引用起始字符的索引。
+            消息中 URL 引用第一个字符的索引。
 
           - `title: string`
 
@@ -154,8 +154,8 @@
 
       - `audio: optional ChatCompletionAudio or null`
 
-        如果请求了音频输出模态，此对象包含来自模型的音频
-        响应的相关数据。 [了解更多](/docs/guides/audio).
+        如果请求了音频输出模态，则此对象包含来自模型的音频响应的
+        相关数据。 [了解更多](/docs/guides/audio).
 
         - `id: string`
 
@@ -163,14 +163,14 @@
 
         - `data: string`
 
-          由模型生成的 Base64 编码音频字节，格式为
+          模型生成的 Base64 编码音频字节，格式为
           在请求中指定。
 
         - `expires_at: number`
 
-          此音频响应的 Unix 时间戳（单位：秒），表示该音频将在何时
-          在服务端不再可用于多轮
-          对话。
+          此音频响应在服务端不再可用于多轮对话的 Unix 时间戳（以秒为单位）。
+          在服务端不再可用于多轮对话的 Unix 时间戳（以秒为单位）。
+          对话的 Unix 时间戳（以秒为单位）。
 
         - `transcript: string`
 
@@ -178,11 +178,11 @@
 
       - `function_call: optional object { arguments, name }`
 
-        已弃用并替换为 `tool_calls`。应调用的函数的名称和参数，由模型生成。
+        已弃用，由以下字段替代 `tool_calls`。应调用的函数名称和参数，由模型生成。
 
         - `arguments: string`
 
-          用于调用函数的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你函数 schema 中未定义的参数。在调用函数之前，请验证代码中的参数。
+          用于调用函数的参数，由模型以 JSON 格式生成。请注意，模型并不总是会生成有效的 JSON，也可能会生成你的函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
         - `name: string`
 
@@ -206,7 +206,7 @@
 
             - `arguments: string`
 
-              用于调用函数的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你函数 schema 中未定义的参数。在调用函数之前，请验证代码中的参数。
+              用于调用函数的参数，由模型以 JSON 格式生成。请注意，模型并不总是会生成有效的 JSON，也可能会生成你的函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
             - `name: string`
 
@@ -214,7 +214,7 @@
 
           - `type: "function"`
 
-            工具的类型。目前，仅支持 `function` 。
+            工具的类型。目前仅支持 `function` 受支持。
 
             - `"function"`
 
@@ -261,20 +261,20 @@
   - `metadata: optional Metadata or null`
 
     可附加到对象的 16 个键值对。可用于
-    以结构化格式存储对象的附加信息，并通过 API 或仪表板
-    查询对象。
+    以结构化格式存储对象的附加信息，并通过
+    API 或控制面板查询对象。
 
-    键为字符串，最长 64 个字符。值为字符串，
-    最长 512 个字符。
+    键为字符串，最大长度为 64 个字符。值为字符串，
+    最大长度为 512 个字符。
 
   - `moderation: optional object { input, output }  or null`
 
-    请求输入和生成输出的审核结果（如果请求了
-    经审核的补全）。
+    请求输入和生成输出的审核结果（如果请求
+    了经审核的补全）。
 
     - `input: object { model, results, type }  or object { code, message, type }`
 
-      请求输入的审核结果。
+      对请求输入的审核。
 
       - `ModerationResults object { model, results, type }`
 
@@ -290,11 +290,11 @@
 
           - `categories: map[boolean]`
 
-            从审核类别到布尔值的字典，如果输入在该类别下被标记则为 True。
+            审核类别到布尔值的字典，若输入被标记为属于该类别，则为 True。
 
           - `category_applied_input_types: map[array of "text" or "image"]`
 
-            每个类别的分数反映了哪些输入模态。
+            每个类别的评分所反映的输入模态。
 
             - `"text"`
 
@@ -302,7 +302,7 @@
 
           - `category_scores: map[number]`
 
-            从审核类别到分数的字典。
+            审核类别到评分的字典。
 
           - `flagged: boolean`
 
@@ -310,11 +310,11 @@
 
           - `model: string`
 
-            生成此结果的审核模型。
+            生成该结果的审核模型。
 
           - `type: "moderation_result"`
 
-            对象类型，过去始终为 `moderation_result` 用于成功的审核结果。
+            对象类型，始终为 `moderation_result` 表示成功的审核结果。
 
             - `"moderation_result"`
 
@@ -344,7 +344,7 @@
 
     - `output: object { model, results, type }  or object { code, message, type }`
 
-      对生成输出的审核。
+      针对生成内容的审核结果。
 
       - `ModerationResults object { model, results, type }`
 
@@ -360,11 +360,11 @@
 
           - `categories: map[boolean]`
 
-            从审核类别到布尔值的字典，如果输入在该类别下被标记则为 True。
+            审核类别到布尔值的字典，若输入被标记为属于该类别，则为 True。
 
           - `category_applied_input_types: map[array of "text" or "image"]`
 
-            每个类别的分数反映了哪些输入模态。
+            每个类别的评分所反映的输入模态。
 
             - `"text"`
 
@@ -372,7 +372,7 @@
 
           - `category_scores: map[number]`
 
-            从审核类别到分数的字典。
+            审核类别到评分的字典。
 
           - `flagged: boolean`
 
@@ -380,11 +380,11 @@
 
           - `model: string`
 
-            生成此结果的审核模型。
+            生成该结果的审核模型。
 
           - `type: "moderation_result"`
 
-            对象类型，过去始终为 `moderation_result` 用于成功的审核结果。
+            对象类型，始终为 `moderation_result` 表示成功的审核结果。
 
             - `"moderation_result"`
 
@@ -414,15 +414,15 @@
 
   - `service_tier: optional "auto" or "default" or "flex" or 3 more or null`
 
-    指定用于处理该请求的处理类型。
+    指定用于处理该请求的服务等级。
 
-    - 如果设置为 'auto'，则请求将使用项目设置中配置的服务层级进行处理。除非另行配置，项目将使用 'default'。
-    - 如果设置为 'default'，则请求将使用所选模型的标准定价和性能进行处理。
-    - 如果设置为 '[flex](/docs/guides/flex-processing)'，则请求将使用 Flex Processing 服务层级进行处理。
-    - 若要在请求级别启用 [快速模式](/api/docs/guides/fast-mode) ，请在 Responses 或 Chat Completions 请求中包含 `service_tier=fast` 或 `service_tier=priority` 参数。响应中将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
+    - 如果设置为 'auto'，则请求将使用项目设置中配置的服务等级进行处理。除非另行配置，项目将使用 'default'。
+    - 如果设置为 'default'，则请求将按所选模型的标准定价和性能进行处理。
+    - 如果设置为 '[flex](/docs/guides/flex-processing)'，则请求将使用 Flex Processing 服务等级进行处理。
+    - 若要在请求级别启用 [Fast mode](/api/docs/guides/fast-mode) ，请在 Responses 或 Chat Completions 中包含 `service_tier=fast` 参数。响应中将显示 `service_tier=priority` ，无论你是否在请求中指定了 `service_tier=priority` 。 `service_tier=fast` 参数。响应中将显示 `priority` 。
     - 未设置时，默认行为为 'auto'。
 
-    当 `service_tier` 参数已设置时，响应体将包含基于实际用于处理该请求的处理模式的 `service_tier` 值。该响应值可能与该参数中设置的值不同。
+    当 `service_tier` 参数已设置时，响应体中将包含根据实际用于处理该请求的处理模式得出的 `service_tier` 值。此响应值可能与该参数中设置的值不同。
 
     - `"auto"`
 
@@ -438,7 +438,7 @@
 
   - `system_fingerprint: optional string`
 
-    该指纹表示模型运行所使用的前端配置。
+    此指纹表示模型运行所使用的前后端配置。
 
     可与 `seed` 请求参数结合使用，以了解何时发生了可能影响确定性的后端更改。
 
@@ -448,48 +448,48 @@
 
     - `completion_tokens: number`
 
-      生成的补全中的 token 数量。
+      生成的补全中的令牌数量。
 
     - `prompt_tokens: number`
 
-      提示中的 token 数量。
+      提示中的令牌数量。
 
     - `total_tokens: number`
 
-      请求中使用的 token 总数（提示 + 补全）。
+      请求中使用的令牌总数（提示 + 补全）。
 
     - `completion_tokens_details: optional object { accepted_prediction_tokens, audio_tokens, reasoning_tokens, 2 more }`
 
-      补全中使用的 token 明细。
+      补全中使用的令牌细分。
 
       - `accepted_prediction_tokens: optional number`
 
         使用 Predicted Outputs 时，
-        中出现在补全里的预测部分的 token 数量。
+        预测中出现在补全里的令牌数量。
 
       - `audio_tokens: optional number`
 
-        模型生成的音频输入 token。
+        模型生成的音频输入令牌。
 
       - `reasoning_tokens: optional number`
 
-        模型生成的用于推理的 token。
+        模型为推理生成的令牌。
 
       - `rejected_prediction_tokens: optional number`
 
         使用 Predicted Outputs 时，
-        中未出现在补全里的预测部分的 token 数量。但是，与
-        推理 token 一样，这些 token 仍会计入用于计费、输出和上下文窗口的
-        总补全 token 中，包括
+        预测中未出现在补全里的令牌。但是，与
+        推理令牌一样，这些令牌仍会计入用于计费、输出和上下文窗口限制的
+        补全令牌总数中。
         限制。
 
       - `text_tokens: optional number`
 
-        模型生成的文本输出 token。
+        模型生成的文本输出令牌。
 
     - `prompt_tokens_details: optional object { audio_tokens, cache_write_tokens, cached_tokens, 2 more }`
 
-      提示中使用的 token 明细。
+      提示中使用的令牌细分。
 
       - `audio_tokens: optional number`
 
@@ -497,7 +497,7 @@
 
       - `cache_write_tokens: optional number`
 
-        写入缓存的未调整提示 token 数。
+        写入缓存的未调整的提示 token 数量。
 
       - `cached_tokens: optional number`
 
@@ -505,7 +505,7 @@
 
       - `image_tokens: optional number`
 
-        提示中存在的图片输入 token。
+        提示中存在的图像输入 token。
 
       - `text_tokens: optional number`
 
@@ -693,7 +693,7 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 {
   "object": "chat.completion",
   "id": "chatcmpl-abc123",
-  "model": "gpt-5.6-sol",
+  "model": "gpt-6-astra",
   "created": 1738960610,
   "request_id": "req_ded8ab984ec4bf840f37566c1011c417",
   "tool_choice": null,
