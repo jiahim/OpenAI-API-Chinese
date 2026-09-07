@@ -698,17 +698,27 @@ test("continuation conflicts stop before publishing and disallowed code never ge
   }
 });
 
-test("English snapshot produces one release commit and an empty sync does not create a branch", async (t) => {
-  for (const changed of [false, true]) {
+test("English snapshot publishes article changes but not manifest-only churn", async (t) => {
+  for (const change of ["none", "metadata", "article"] as const) {
     const fixture = await localWriterFixture(t);
     await fixture.runStep("Prepare the verified automation branch");
-    if (changed) await writeFile(join(fixture.root, "docs/en/a.md"), "# Updated English\n");
+    if (change === "article") await writeFile(join(fixture.root, "docs/en/a.md"), "# Updated English\n");
+    if (change === "metadata") {
+      const manifestPath = join(fixture.root, "docs/en/.source-manifest.json");
+      const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+      manifest.generatedAt = "2026-09-07T00:00:00.000Z";
+      const [sourceUrl] = Object.keys(manifest.pages);
+      assert.ok(sourceUrl);
+      manifest.pages[sourceUrl].sourceLastModified = "Sun, 06 Sep 2026 18:02:03 GMT";
+      await writeFile(manifestPath, JSON.stringify(manifest));
+    }
     const run = yamlLiteral(await writerStep("Synchronize English and publish the batch release"), /^        run: \|$/);
     fixture.output("bash", ["-e", "-o", "pipefail", "-c", run]);
     const releasePath = (await readFile(join(fixture.runnerTemp, "release-path.txt"), "utf8")).trim();
     const release = JSON.parse(await readFile(releasePath, "utf8"));
+    const changed = change === "article";
     assert.deepEqual(release.modified.map((entry: { path: string }) => entry.path), changed ? ["docs/en/a.md"] : []);
-    assert.equal(fixture.git("rev-list", "--count", "origin/main..HEAD"), changed ? "1" : "0");
+    assert.equal(fixture.git("rev-list", "--count", "origin/main..HEAD"), changed ? "1" : "0", change);
     const tracked = fixture.git("diff", "--name-only", "origin/main...HEAD");
     assert.doesNotMatch(tracked, /translation-result|release-path/);
     if (changed) {
@@ -719,6 +729,32 @@ test("English snapshot produces one release commit and an empty sync does not cr
       assert.equal(fixture.git("ls-remote", "--heads", "origin", `refs/heads/${expectedHeadRef}`), "");
     }
   }
+});
+
+test("a continuation removes an unpublished empty release before publishing translations", async (t) => {
+  const fixture = await localWriterFixture(t);
+  useBotIdentity(fixture);
+  fixture.git("checkout", "-b", expectedHeadRef);
+  const emptyRelease = "docs/updates/2026-09-07T00-00-00-000Z.json";
+  await writeFile(join(fixture.root, emptyRelease), JSON.stringify({
+    id: "2026-09-07T00-00-00-000Z",
+    generatedAt: "2026-09-07T00:00:00.000Z",
+    added: [], modified: [], removed: [],
+  }));
+  await writeFile(join(fixture.root, "docs/zh/a.md"), "# Completed translation\n");
+  fixture.git("add", "--", emptyRelease, "docs/zh/a.md");
+  fixture.git("commit", "-m", "[AI] docs: 更新本轮 OpenAI 中文翻译");
+  const sha = fixture.git("rev-parse", "HEAD");
+  fixture.git("push", "origin", expectedHeadRef);
+  fixture.git("checkout", "main");
+  fixture.git("branch", "-D", expectedHeadRef);
+  const pull = automationPull();
+  pull.head.sha = sha;
+  await fixture.runStep("Prepare the verified automation branch", [pull]);
+  fixture.output("bash", ["-e", "-o", "pipefail", "-c", yamlLiteral(await writerStep("Synchronize English and publish the batch release"), /^        run: \|$/)]);
+  assert.notEqual(fixture.output("git", ["cat-file", "-e", `HEAD:${emptyRelease}`], true).exitCode, 0);
+  assert.notEqual(fixture.output("git", ["cat-file", "-e", `origin/${expectedHeadRef}:${emptyRelease}`], true).exitCode, 0);
+  assert.equal(fixture.git("show", `origin/${expectedHeadRef}:docs/zh/a.md`), "# Completed translation");
 });
 
 test("completed translations are committed with a normal push and a concurrent remote head is preserved", async (t) => {
