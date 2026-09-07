@@ -460,6 +460,7 @@ async function runWriterApiStep(name: string, options: {
   pull?: WriterPull;
   existing?: boolean;
   staleOnFetch?: number;
+  staleFetches?: number;
   expectedSha?: string;
   createFailure?: boolean;
   events?: Array<{ kind: string; data: Record<string, unknown> }>;
@@ -480,7 +481,9 @@ async function runWriterApiStep(name: string, options: {
           record("get", request);
           fetches++;
           if (options.staleOnFetch === fetches) pull.head.sha = "f".repeat(40);
-          return { data: structuredClone(pull) };
+          const response = structuredClone(pull);
+          if (fetches <= (options.staleFetches ?? 0)) response.head.sha = "f".repeat(40);
+          return { data: response };
         },
         create: async (request: Record<string, unknown>) => {
           record("create", request);
@@ -506,7 +509,7 @@ async function runWriterApiStep(name: string, options: {
   };
   const script = yamlLiteral(await writerStep(name), /^          script: \|$/);
   const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
-  const run = new AsyncFunction("github", "context", "core", "process", "require", script);
+  const run = new AsyncFunction("github", "context", "core", "process", "require", "setTimeout", script);
   await run(github, { repo: { owner: "openai", repo: "docs" } }, {
     setOutput: (key: string, value: unknown) => record("output", { key, value }),
     notice: () => {},
@@ -518,7 +521,7 @@ async function runWriterApiStep(name: string, options: {
   } }, (name: string) => {
     assert.equal(name, "node:fs/promises");
     return { readFile: async () => "required_complete=false\n本轮已翻译" };
-  });
+  }, (callback: () => void) => { callback(); return 0; });
   return events;
 }
 
@@ -549,6 +552,14 @@ test("PR lifecycle rejects closed or foreign identities and refetches the pushed
     await assert.rejects(runWriterApiStep("Create or update the unified pull request", { pull }), /identity|open|trusted/i);
   }
   await assert.rejects(runWriterApiStep("Create or update the unified pull request", { staleOnFetch: 2 }), /head/i);
+});
+
+test("writer tolerates transient PR head propagation but rejects persistent drift", async () => {
+  for (const name of ["Create or recover the draft before translation", "Create or update the unified pull request"]) {
+    const recovered = await runWriterApiStep(name, { staleFetches: 1 });
+    assert.ok(recovered.filter((event) => event.kind === "get").length >= 2, name);
+    await assert.rejects(runWriterApiStep(name, { staleOnFetch: 1 }), /head/i, name);
+  }
 });
 
 test("CI dispatch sends exactly the recorded PR identity and refuses a changed head", async () => {
