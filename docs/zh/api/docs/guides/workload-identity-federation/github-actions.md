@@ -1,12 +1,12 @@
 # 为 GitHub Actions 配置工作负载身份联合
 
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需完整文档索引,请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取文档页面的 Markdown 版本。
 
-将 GitHub Actions 用作 Workload Identity Provider，通过交换 GitHub 签发的 OIDC 令牌来获取一个短期有效的 OpenAI 访问令牌。这使得工作流能够在 GitHub secrets 中不存储长期有效的 OpenAI 密钥的情况下，向 API API 进行身份验证。
+将 GitHub Actions 用作 Workload Identity Provider，通过将 GitHub 颁发的 OIDC 令牌交换为短期 OpenAI 访问令牌。这样，工作流可以在不在 GitHub 密钥中存储长期 API 密钥的情况下，向 OpenAI API 进行身份验证。
 
-对于 Codex，使用此页面获取并检查 GitHub 令牌，然后 [配置 Codex 工作负载身份](https://developers.openai.com/codex/enterprise/workload-identity) 将该令牌写入文件并指向 Codex。本页面中的服务账号映射与 SDK 示例同样适用于 OpenAI API。
+对于 Codex，使用此页面获取并检查 GitHub 令牌。然后 [配置 Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) 将该令牌写入文件并让 Codex 指向它。本页面中的服务账号映射和 SDK 示例适用于 OpenAI API。
 
-GitHub 可以为一个已配置相应 `id-token: write` 权限并请求身份令牌的 工作流 任务签发一个已签名的 OIDC JWT。OpenAI 会在签发 OpenAI 访问令牌之前，校验令牌的颁发者、受众、签名以及映射属性。
+GitHub 可以为拥有相应权限并请求身份令牌的 工作流 任务签发一个已签名的 OIDC JWT。 `id-token: write` 在颁发 OpenAI 访问令牌之前，OpenAI 会验证令牌的颁发者、受众、签名以及映射属性。
 
 ## 设置 GitHub Actions
 
@@ -18,9 +18,9 @@ permissions:
   contents: read
 ```
 
-该 `id-token: write` 权限允许该作业请求 OIDC JWT，但不会授予仓库内容的写权限。 `contents: read` 权限是 `actions/checkout`.
+该 `id-token: write` 权限允许作业请求 OIDC JWT。它不会授予对仓库内容的写访问权限。 `contents: read` 权限是 `actions/checkout`.
 
-使用你在 OpenAI Workload Identity Provider 中配置的精确 audience 来请求令牌。自定义 JavaScript 操作可以调用 `core.getIDToken("your-wif-audience")`；shell 步骤可以直接调用 GitHub 的 OIDC 请求 URL。包含保留 URL 字符的 audience 值，例如 `https://api.openai.com/v1`，应在附加到请求 URL 之前进行 URL 编码：
+所必需的。使用你的 OpenAI Workload Identity Provider 中配置的精确受众（audience）来请求令牌。自定义 JavaScript 动作可以调用 `core.getIDToken("your-wif-audience")`；shell 步骤可以直接调用 GitHub 的 OIDC 请求 URL。包含保留 URL 字符的受众值（例如 `https://api.openai.com/v1`)应在附加到请求 URL 之前进行 URL 编码：
 
 ```bash
 AUDIENCE="https://api.openai.com/v1"
@@ -33,37 +33,319 @@ export TOKEN
 
 重要的 GitHub OIDC 声明包括：
 
-- `iss`：令牌颁发者。对于 GitHub Actions 来说，该值为 `https://token.actions.githubusercontent.com`.
-- `aud`：工作流请求的 audience 值。请将 OpenAI 配置为要求完全匹配你所请求的值，例如 `your-wif-audience` 或 `https://api.openai.com/v1`.
-- `sub`：主体 subject 字符串。GitHub 会根据工作流的元数据（例如仓库、分支、标签、拉取请求或环境）来构造它。
-- `repository`：运行该工作流的仓库，例如 `my-org/my-repo`.
-- `repository_owner`：拥有该仓库的组织或用户，例如 `my-org`.
-- `ref`：触发该工作流的 Git 引用，例如 `refs/heads/main` 或 `refs/tags/v1.0.0`.
-- `workflow`：工作流声明。请使用 GitHub 实际发出的声明值，例如 `deploy` ，如果这就是你作业中的工作流声明。
-- `workflow_ref`：工作流文件路径及引用，例如 `my-org/my-repo/.github/workflows/deploy.yml@refs/heads/main`.
-- `environment`：GitHub 环境名称，例如 `production`，当作业使用了某个环境时。
-- `run_id`, `run_number`, `run_attempt`，以及 `job_workflow_ref`：可用于审计或更高级信任规则的运行和作业标识符。
+- `iss`: 令牌颁发者。对于 GitHub Actions,这是 `https://token.actions.githubusercontent.com`.
+- `aud`: 工作流 请求的受众值。请将 OpenAI 配置为要求你请求的精确值,例如 `your-wif-audience` 或 `https://api.openai.com/v1`.
+- `sub`: 主要主体字符串。GitHub 根据 工作流 元数据(如仓库、分支、标签、拉取请求或环境)构建该字段。
+- `repository`: 运行 工作流 的仓库,例如 `my-org/my-repo`.
+- `repository_owner`: 拥有该仓库的组织或用户,例如 `my-org`.
+- `ref`: 触发 工作流 的 Git 引用,例如 `refs/heads/main` 或 `refs/tags/v1.0.0`.
+- `workflow`: 工作流 声明。请使用 GitHub 实际发出的声明值,例如 `deploy` 如果这正是你任务中的 工作流 声明。
+- `workflow_ref`: 工作流 文件路径与引用,例如 `my-org/my-repo/.github/workflows/deploy.yml@refs/heads/main`.
+- `environment`: GitHub 环境名称,例如 `production`,前提是该任务使用了环境。
+- `run_id`, `run_number`, `run_attempt`，以及 `job_workflow_ref`: 可用于审计或更高级信任规则的运行与任务标识符。
 
-有关完整的声明列表和主题格式，请参阅 GitHub 的 [OpenID Connect 参考](https://docs.github.com/en/actions/reference/security/oidc).
+如需完整的声明列表和主题格式，请参阅 GitHub 的 [OpenID Connect 参考](https://docs.github.com/en/actions/reference/security/oidc).
 
 ## 验证令牌
 
-在配置工作负载身份联合之前，请将 GitHub OIDC 令牌导出为 `TOKEN`，然后在该工作流 运行器中运行以下脚本来检查其声明：
+在配置工作负载身份联合之前，将 GitHub OIDC 令牌导出为 `TOKEN`，然后在该 工作流 运行器中运行以下脚本来检查其声明：
+
+```javascript
+const parts = process.env.TOKEN?.split(".") ?? [];
+if (parts.length !== 3) {
+  throw new Error("Expected a compact JWT with three segments");
+}
+if (!/^[A-Za-z0-9_-]+$/.test(parts[1]) || parts[1].length % 4 === 1) {
+  throw new Error("JWT payload is not valid Base64URL");
+}
+
+const bytes = Buffer.from(parts[1], "base64url");
+if (bytes.toString("base64url") !== parts[1]) {
+  throw new Error("JWT payload is not valid Base64URL");
+}
+const decoded = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+const claims = JSON.parse(decoded);
+if (claims === null || Array.isArray(claims) || typeof claims !== "object") {
+  throw new Error("JWT payload is not a JSON object");
+}
+console.log(decoded);
+```
 
 ```python
 import base64
 import json
 import os
+import re
 
-payload = os.environ["TOKEN"].split(".")[1]
-payload += "=" * (-len(payload) % 4)
-print(json.dumps(json.loads(base64.urlsafe_b64decode(payload)), indent=2))
+
+def reject_non_json_constant(value):
+    raise ValueError(f"JWT payload contains non-JSON constant: {value}")
+
+
+parts = os.environ.get("TOKEN", "").split(".")
+if len(parts) != 3:
+    raise ValueError("Expected a compact JWT with three segments")
+
+payload = parts[1]
+if re.fullmatch(r"[A-Za-z0-9_-]+", payload) is None or len(payload) % 4 == 1:
+    raise ValueError("JWT payload is not valid Base64URL")
+padded_payload = payload + "=" * (-len(payload) % 4)
+decoded = base64.b64decode(padded_payload, altchars=b"-_", validate=True)
+if base64.urlsafe_b64encode(decoded).rstrip(b"=").decode("ascii") != payload:
+    raise ValueError("JWT payload is not valid Base64URL")
+decoded_text = decoded.decode("utf-8")
+claims = json.loads(decoded_text, parse_constant=reject_non_json_constant)
+if not isinstance(claims, dict):
+    raise ValueError("JWT payload is not a JSON object")
+print(decoded_text)
+```
+
+```go
+package main
+
+import (
+	"bytes"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"os"
+	"strings"
+	"unicode/utf8"
+)
+
+func decodeSegment(segment string) (json.RawMessage, error) {
+	if !isBase64URLSegment(segment) {
+		return nil, fmt.Errorf("JWT segment is not valid Base64URL")
+	}
+	decoded, err := base64.RawURLEncoding.DecodeString(segment)
+	if err != nil {
+		return nil, err
+	}
+	if base64.RawURLEncoding.EncodeToString(decoded) != segment {
+		return nil, fmt.Errorf("JWT segment is not valid Base64URL")
+	}
+	if !utf8.Valid(decoded) {
+		return nil, fmt.Errorf("JWT segment is not valid UTF-8")
+	}
+
+	var value json.RawMessage
+	if err := json.Unmarshal(decoded, &value); err != nil {
+		return nil, err
+	}
+	if trimmed := bytes.TrimSpace(value); len(trimmed) == 0 || trimmed[0] != '{' {
+		return nil, fmt.Errorf("JWT segment is not a JSON object")
+	}
+	return value, nil
+}
+
+func isBase64URLSegment(segment string) bool {
+	if segment == "" || len(segment)%4 == 1 {
+		return false
+	}
+	for _, character := range segment {
+		if !('A' <= character && character <= 'Z') &&
+			!('a' <= character && character <= 'z') &&
+			!('0' <= character && character <= '9') &&
+			character != '-' &&
+			character != '_' {
+			return false
+		}
+	}
+	return true
+}
+
+func main() {
+	parts := strings.Split(os.Getenv("TOKEN"), ".")
+	if len(parts) != 3 {
+		panic("Expected a compact JWT with three segments")
+	}
+
+	payload, err := decodeSegment(parts[1])
+	if err != nil {
+		panic(err)
+	}
+	formatted, err := json.MarshalIndent(payload, "", "  ")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(string(formatted))
+}
+```
+
+```java
+// Add Jackson (com.fasterxml.jackson.core:jackson-databind) to your project.
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
+public final class DecodeJwtPayloadExample {
+  private static final ObjectMapper JSON =
+      new ObjectMapper().enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+
+  private DecodeJwtPayloadExample() {}
+
+  static String decodeUtf8(byte[] bytes) throws IOException {
+    try {
+      return StandardCharsets.UTF_8
+          .newDecoder()
+          .onMalformedInput(CodingErrorAction.REPORT)
+          .onUnmappableCharacter(CodingErrorAction.REPORT)
+          .decode(ByteBuffer.wrap(bytes))
+          .toString();
+    } catch (CharacterCodingException exception) {
+      throw new IOException("JWT segment is not valid UTF-8", exception);
+    }
+  }
+
+  static String decodeSegment(String segment) throws IOException {
+    if (!isBase64UrlSegment(segment)) {
+      throw new IllegalArgumentException("JWT segment is not valid Base64URL");
+    }
+    byte[] bytes = Base64.getUrlDecoder().decode(segment);
+    if (!Base64.getUrlEncoder().withoutPadding().encodeToString(bytes).equals(segment)) {
+      throw new IllegalArgumentException("JWT segment is not valid Base64URL");
+    }
+    String decoded = decodeUtf8(bytes);
+    JsonNode value = JSON.readTree(decoded);
+    if (value == null || value.isMissingNode() || !value.isObject()) {
+      throw new IOException("JWT segment is not a JSON object");
+    }
+    return decoded;
+  }
+
+  static boolean isBase64UrlSegment(String segment) {
+    if (segment.isEmpty() || segment.length() % 4 == 1) {
+      return false;
+    }
+    return segment
+        .chars()
+        .allMatch(
+            character ->
+                character >= 'A' && character <= 'Z'
+                    || character >= 'a' && character <= 'z'
+                    || character >= '0' && character <= '9'
+                    || character == '-'
+                    || character == '_');
+  }
+
+  static String[] requireCompactJwt(String token) {
+    if (token == null) {
+      throw new IllegalArgumentException("Expected a compact JWT with three segments");
+    }
+    String[] parts = token.split("\\.", -1);
+    if (parts.length != 3) {
+      throw new IllegalArgumentException("Expected a compact JWT with three segments");
+    }
+    return parts;
+  }
+
+  public static void main(String[] args) throws IOException {
+    String[] parts = requireCompactJwt(System.getenv("TOKEN"));
+    System.out.println(decodeSegment(parts[1]));
+  }
+}
+```
+
+```csharp
+using System.Text;
+using System.Text.Json;
+
+static string DecodeSegment(string segment)
+{
+    if (
+        segment.Length % 4 == 1 ||
+        segment.Any(
+            character =>
+                !(
+                    character is >= 'A' and <= 'Z' ||
+                    character is >= 'a' and <= 'z' ||
+                    character is >= '0' and <= '9' ||
+                    character is '-' or '_'
+                )
+        )
+    )
+    {
+        throw new FormatException("JWT segment is not valid Base64URL");
+    }
+
+    byte[] decoded = Convert.FromBase64String(
+        segment.Replace('-', '+').Replace('_', '/') +
+        new string('=', (4 - segment.Length % 4) % 4)
+    );
+    string canonicalSegment = Convert
+        .ToBase64String(decoded)
+        .TrimEnd('=')
+        .Replace('+', '-')
+        .Replace('/', '_');
+    if (canonicalSegment != segment)
+    {
+        throw new FormatException("JWT segment is not valid Base64URL");
+    }
+    string decodedJson = new UTF8Encoding(false, true).GetString(decoded);
+    using JsonDocument document = JsonDocument.Parse(decodedJson);
+    if (document.RootElement.ValueKind is not JsonValueKind.Object)
+    {
+        throw new FormatException("JWT segment is not a JSON object");
+    }
+    return decodedJson;
+}
+
+string? token = Environment.GetEnvironmentVariable("TOKEN");
+if (token is null)
+{
+    throw new InvalidOperationException(
+        "Expected a compact JWT with three segments"
+    );
+}
+string[] parts = token.Split('.');
+if (parts.Length != 3)
+{
+    throw new InvalidOperationException(
+        "Expected a compact JWT with three segments"
+    );
+}
+
+Console.WriteLine(DecodeSegment(parts[1]));
+```
+
+```ruby
+require "base64"
+require "json"
+
+parts = ENV.fetch("TOKEN", "").split(".", -1)
+raise "Expected a compact JWT with three segments" unless parts.length == 3
+
+unless parts[1].match?(/\A[A-Za-z0-9_-]+\z/) && parts[1].length % 4 != 1
+  raise "JWT payload is not valid Base64URL"
+end
+
+begin
+  payload = Base64.urlsafe_decode64(parts[1].ljust((parts[1].length + 3) & ~3, "="))
+rescue ArgumentError
+  raise "JWT payload is not valid Base64URL"
+end
+unless Base64.urlsafe_encode64(payload, padding: false) == parts[1]
+  raise "JWT payload is not valid Base64URL"
+end
+payload.force_encoding(Encoding::UTF_8)
+raise "JWT payload is not valid UTF-8" unless payload.valid_encoding?
+
+claims = JSON.parse(payload)
+raise "JWT payload is not a JSON object" unless claims.is_a?(Hash)
+
+puts(payload)
 ```
 
 
-此命令会解码 JWT 负载，但不验证令牌签名。对于生产令牌，请使用本地解码器，并避免将生产令牌粘贴到第三方工具中。切勿记录原始的 GitHub OIDC 令牌或交换后得到的 OpenAI 访问令牌。
+此命令在验证令牌签名之前会先解码 JWT 有效负载。对于生产令牌，请使用本地解码器，并避免将生产令牌粘贴到第三方工具中。切勿记录原始的 GitHub OIDC 令牌或已交换的 OpenAI 访问令牌。
 
-一个解码后的 GitHub Actions OIDC 令牌看起来类似于：
+已解码的 GitHub Actions OIDC 令牌将类似于：
 
 ```json
 {
@@ -81,29 +363,29 @@ print(json.dumps(json.loads(base64.urlsafe_b64decode(payload)), indent=2))
 }
 ```
 
-使用解码后的负载，比较你收到的令牌与在 OpenAI 中配置的 issuer、audience 和映射值。大多数配置问题都可在交换令牌之前的 `iss`, `aud`, `repository`, `ref`，和 `workflow_ref` 声明中看到。
+使用已解码的有效负载，将你收到的令牌与 OpenAI 中配置的颁发者、受众和映射值进行比较。大多数配置问题都会在 `iss`, `aud`, `repository`, `ref`，和 `workflow_ref` 声明中显现出来，然后再交换令牌。
 
 ## 设置工作负载身份联合
 
-在 OpenAI 中为 GitHub Actions 创建工作负载身份提供方，然后添加与你要信任的 GitHub 工作流 声明相匹配的服务账号映射。
+在 OpenAI 中为 GitHub Actions 创建工作负载身份提供程序，然后添加与可信 GitHub 工作流 声明匹配的服务账号映射。
 
-先配置工作负载身份提供方，再创建服务账号映射。
+先配置工作负载身份提供程序，然后创建服务账号映射。
 
 ### 设置 Workload Identity Provider
 
-1. **创建 Workload Identity Provider。** 将 **Name** 设置为唯一值，例如 `github-actions-prod`。使用 **Description**，例如 `Production GitHub Actions workflows`，以帮助管理员识别该提供方。
+1. **创建工作负载身份提供方。** 将 **Name** 设置为唯一值，例如 `github-actions-prod`。使用 **Description**，例如 `Production GitHub Actions workflows`，以便管理员识别该提供方。
 
-2. **设置 issuer 和 audience。** 将 **OIDC Issuer URL** 设置为 `https://token.actions.githubusercontent.com`。将 **Audience** 设置为你的 工作流 请求所指定的具体 audience，例如 `your-wif-audience` 或 `https://api.openai.com/v1`.
+2. **设置 issuer 和 audience。** 将 **OIDC Issuer URL** 为 `https://token.actions.githubusercontent.com`。将 **Audience** 设置为你的 工作流 请求所使用的精确 audience，例如 `your-wif-audience` 或 `https://api.openai.com/v1`.
 
-3. **使用 GitHub OIDC 发现。** 保持 **Use uploaded JWKS for token verification** 为关闭状态。OpenAI 会使用 GitHub 的 OIDC 发现元数据和 JWKS 来验证 GitHub 签名的令牌。
+3. **使用 GitHub OIDC 发现。** 将 **Use uploaded JWKS for token verification** 保持禁用。OpenAI 使用 GitHub 的 OIDC 发现元数据和 JWKS 来验证 GitHub 签名的 token。
 
-4. **仅当你需要派生映射属性时，才添加属性转换。** 原始的 GitHub 声明，例如 `repository`, `ref`，以及 `workflow` 可在映射断言中直接使用。如果创建派生属性，仪表板会自动添加 `openai.` 前缀；例如，输入 `github_repository` 配合表达式 `assertion.repository` 可创建 `openai.github_repository`。已以 `openai.` 开头的原始 token 声明在 `openai.` 映射键时被忽略，除非配置了匹配转换。
+4. **仅在需要派生映射属性时添加属性转换。** 原始 GitHub 声明，例如 `repository`, `ref`，以及 `workflow` 可直接在映射断言中使用。如果你创建派生属性，仪表板会自动应用 `openai.` 前缀；例如，输入 `github_repository` 配合表达式 `assertion.repository` 来创建 `openai.github_repository`。已经以 `openai.` 开头的原始令牌声明在用于 `openai.` 映射键时会被忽略，除非配置了匹配的转换。
 
 ### 设置服务账号映射
 
-1. **创建一个服务账号映射。** 将 **Name** 为 Workload Identity Provider 中的唯一值，例如 `github-actions-main-deploy`。使用 **Description**，例如 `Production deploy workflow on main`，以说明哪个工作流可以使用该映射。
+1. **创建一个服务账号映射。** 将 **Name** 为 Workload Identity Provider 中的唯一值，例如 `github-actions-main-deploy`。使用 **Description**，例如 `Production deploy workflow on main`，以说明哪些工作流可以使用该映射。
 
-2. **添加精确的声明断言。** 添加一个 **键** 和 **值** 行，每个必须匹配的 GitHub 声明各占一行。OpenAI 要求所有已配置的行都匹配后才会签发访问令牌。对于生产部署的工作流，请使用如下断言：
+2. **添加精确的声明断言。** 添加一行 **Key** 和 **Value** ，针对每个必须匹配的 GitHub 声明。OpenAI 要求每个已配置的行都匹配后才签发访问令牌。对于生产部署的工作流，可使用如下断言：
 
 ```text
    iss == "https://token.actions.githubusercontent.com"
@@ -113,23 +395,23 @@ print(json.dumps(json.loads(base64.urlsafe_b64decode(payload)), indent=2))
    workflow_ref == "my-org/my-repo/.github/workflows/deploy.yml@refs/heads/main"
 ```
 
-   建议优先 `workflow_ref` 使用 `workflow` 进行特权映射，因为管理员通常希望信任特定的工作流文件路径和 ref。工作流名称可以被重命名，并且多个工作流文件可以共享相同的名称。
+   优先 `workflow_ref` 使用 `workflow` ，以映射特权映射，因为管理员通常希望信任特定的工作流文件路径和 ref。工作流名称可以被重命名，并且多个工作流文件可以共用相同的名称。
 
-   在映射界面中，将这些作为键/值行输入，例如 **键** `repository` 与 **值** `my-org/my-repo`, **键** `ref` 与 **值** `refs/heads/main`，和 **键** `workflow_ref` 与 **值** `my-org/my-repo/.github/workflows/deploy.yml@refs/heads/main`。如果任务使用了 GitHub 环境，还需要添加 **键** `environment` 与 **值** `production`.
+   在映射界面中，将这些作为键/值行输入，例如 **Key** `repository` 对应 **Value** `my-org/my-repo`, **Key** `ref` 对应 **Value** `refs/heads/main`，和 **Key** `workflow_ref` 对应 **Value** `my-org/my-repo/.github/workflows/deploy.yml@refs/heads/main`。如果该任务使用了 GitHub 环境，还需添加 **Key** `environment` 对应 **Value** `production`.
 
-   > **注意：** 避免过于宽泛的映射，例如仅信任 `repository_owner == "my-org"`，除非该所有者命名空间下的每个代码仓库都应该能够生成 OpenAI 访问令牌。
+   > **注意：** 避免过于宽泛的映射，例如仅信任 `repository_owner == "my-org"`，除非该所有者命名空间下的每个仓库都应该能够生成 OpenAI 访问令牌。
 
-3. **选择 OpenAI 目标。** 将 **Project** 设置为拥有该目标服务账号的 OpenAI 项目。 **Service account** 设置为 GitHub 工作流 可以使用的 OpenAI 服务账号，例如 `github-actions-prod-deploy`.
+3. **选择 OpenAI 目标。** 将 **Project** 设为拥有目标服务账号的 OpenAI 项目。 **Service account** 设为 GitHub 工作流 可使用的 OpenAI 服务账号，例如 `github-actions-prod-deploy`.
 
-4. **如需要，收窄 API 权限。** 选择合适的 **Permissions** 例如 `api.model.request` 和 `api.vector_store.read` 以进一步收窄从此映射生成的访问令牌的范围。将权限留空可避免添加 WIF 特定的 scope 限制；该令牌仍然以映射的服务账号身份授权。
+4. **根据需要收窄 API 权限。** 选择合适的 **Permissions** ，例如 `api.model.request` 和 `api.vector_store.read` ，以进一步收窄从此映射生成的访问令牌范围。将权限留空可避免添加 WIF 专属的作用域限制；该令牌仍会以映射后的服务账号身份进行授权。
 
-## 在工作流中使用该令牌
+## 在工作流中使用 token
 
-配置你的OpenAI SDK 客户端以请求 GitHub OIDC 令牌，并将其兑换为 OpenAI 颁发的访问令牌。
+配置你的 OpenAI SDK 客户端以请求 GitHub OIDC 令牌，并将其交换为 OpenAI 颁发的访问令牌。
 
-工作流 必须授予 `id-token: write` 相应权限，并将工作负载身份联合配置传递给 SDK 代码。SDK 从 GitHub 向任务暴露的 `ACTIONS_ID_TOKEN_REQUEST_URL` 和 `ACTIONS_ID_TOKEN_REQUEST_TOKEN` 环境变量中请求 GitHub OIDC 令牌，然后使用兑换得到的 OpenAI 访问令牌对 API 请求进行身份验证。
+该 工作流 必须授予 `id-token: write` 权限，并将工作负载身份联合配置传递给 SDK 代码。SDK 从 `ACTIONS_ID_TOKEN_REQUEST_URL` 和 `ACTIONS_ID_TOKEN_REQUEST_TOKEN` 环境变量（GitHub 向该任务暴露的）中请求 GitHub OIDC 令牌，然后使用交换得到的 OpenAI 访问令牌对 API 请求进行身份验证。
 
-例如，像这样从工作流运行你的应用代码：
+例如，可按如下方式在 工作流 中运行你的应用代码：
 
 ```yaml
 name: deploy
@@ -159,11 +441,11 @@ jobs:
         run: node ./scripts/call-openai.js
 ```
 
-将它们存储 `OPENAI_WIF_AUDIENCE`, `OPENAI_IDENTITY_PROVIDER_ID`，和 `OPENAI_SERVICE_ACCOUNT_ID` 为 GitHub Actions 变量。它们标识提供方和服务账户，但不是持有者凭据。
+存储 `OPENAI_WIF_AUDIENCE`, `OPENAI_IDENTITY_PROVIDER_ID`，和 `OPENAI_SERVICE_ACCOUNT_ID` 作为 GitHub Actions 变量。它们用于标识提供方和服务账号，但不是持有者凭据。
 
-以下示例使用自定义 subject token provider 初始化一个 OpenAI 客户端。该 provider 会为配置的 audience 请求 GitHub OIDC token，并将其用作 workload identity federation 的 subject token。
+以下示例使用自定义 subject token provider 初始化一个 OpenAI 客户端。该 provider 为所配置的 audience 请求 GitHub OIDC 令牌，并将其用作工作负载身份联合的 subject token。
 
-使用 GitHub Actions OIDC token 进行身份验证
+通过 GitHub Actions OIDC 令牌进行身份验证
 
 ```javascript
 import OpenAI from "openai";
@@ -607,11 +889,11 @@ puts(response.output_text)
 
 ## GitHub Actions 最佳实践
 
-- 对生产部署使用环境保护。要求在工作流访问生产 OpenAI 资源前进行审批或施加分支限制。
-- 按仓库限制映射。尽可能基于仓库特定的声明进行匹配，避免允许组织内所有仓库访问。
-- 按分支或 工作流 限制映射。考虑匹配诸如 `repository`, `ref`, `environment`，或 `workflow_ref` 等声明，以限制令牌签发。
-- 为 CI/CD 和生产工作负载使用单独的 OpenAI 服务账号。构建流水线通常需要与已部署应用不同的权限。
-- 避免向来自不受信任 fork 的拉取请求授予访问权限。Fork 拉取请求可能执行攻击者控制的代码，不应获取生产凭据。
-- 使用短期交换。GitHub OIDC 令牌用于临时身份验证，只在需要时进行交换。
-- 审计仓库所有权变更。仓库转让、重命名和权限变更可能影响现有映射背后的安全假设。
-- 优先进行精确声明匹配。基于诸如 `repository`, `ref`，以及 `environment` 等声明进行匹配，而不是依赖组织范围内的信任关系。
+- 为生产部署使用环境保护措施。在工作流可以访问生产 OpenAI 资源之前，要求审批或分支限制。
+- 按代码仓库限制映射。尽可能根据特定代码仓库的声明进行匹配，而不是允许组织内所有代码仓库的访问。
+- 按分支或 工作流 限制映射。考虑匹配如下声明 `repository`, `ref`, `environment`，或 `workflow_ref` 以限制令牌发放。
+- 为 CI/CD 和生产工作负载使用独立的 OpenAI 服务账号。构建流水线通常需要与已部署应用不同的权限。
+- 避免授予来自不受信任的 fork 的拉取请求的访问权限。Fork 拉取请求可能会执行攻击者控制的代码，不应获得生产凭据。
+- 使用短期交换。GitHub OIDC 令牌用于临时身份验证，仅在需要时才应进行交换。
+- 审计代码仓库所有权变更。代码仓库的转让、重命名和权限变更可能会影响现有映射背后的安全假设。
+- 优先使用精确的声明匹配。根据如下声明进行匹配 `repository`, `ref`，以及 `environment` 而不是依赖组织范围的信任关系。

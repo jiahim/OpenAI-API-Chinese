@@ -1,12 +1,12 @@
 # 模型
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 末尾追加 `.md` 。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加以下内容获取文档页面的 Markdown 版本： `.md` ，即可获取该页面的 Markdown 版本。
 
 ## 删除微调模型
 
 **delete** `/models/{model}`
 
-删除已微调的模型。你必须在组织中拥有 Owner 角色才能删除模型。
+删除一个微调模型。你必须在你的组织中拥有 Owner 角色才能删除模型。
 
 ### 路径参数
 
@@ -74,7 +74,7 @@ curl https://api.openai.com/v1/models/ft:gpt-4o-mini:acemeco:suffix:abc123 \
 
   - `created: number`
 
-    模型创建时的 Unix 时间戳（以秒为单位）。
+    模型创建时的 Unix 时间戳（单位为秒）。
 
   - `object: "model"`
 
@@ -156,11 +156,11 @@ curl https://api.openai.com/v1/models \
 }
 ```
 
-## Retrieve model
+## 检索模型
 
 **get** `/models/{model}`
 
-检索模型实例，提供关于该模型的基本信息，例如所有者和权限设置。
+检索模型实例，提供有关模型的基本信息，例如所有者和权限。
 
 ### 路径参数
 
@@ -178,7 +178,7 @@ curl https://api.openai.com/v1/models \
 
   - `created: number`
 
-    模型创建时的 Unix 时间戳（以秒为单位）。
+    模型创建时的 Unix 时间戳（单位为秒）。
 
   - `object: "model"`
 
@@ -216,7 +216,7 @@ curl https://api.openai.com/v1/models/$MODEL \
 ### 示例
 
 ```http
-curl https://api.openai.com/v1/models/gpt-5.6-sol \
+curl https://api.openai.com/v1/models/gpt-6-astra \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
@@ -224,7 +224,7 @@ curl https://api.openai.com/v1/models/gpt-5.6-sol \
 
 ```json
 {
-  "id": "gpt-5.6-sol",
+  "id": "gpt-6-astra",
   "object": "model",
   "created": 1686935002,
   "owned_by": "openai",
@@ -246,7 +246,7 @@ curl https://api.openai.com/v1/models/gpt-5.6-sol \
 
   - `created: number`
 
-    模型创建时的 Unix 时间戳（以秒为单位）。
+    模型创建时的 Unix 时间戳（单位为秒）。
 
   - `object: "model"`
 

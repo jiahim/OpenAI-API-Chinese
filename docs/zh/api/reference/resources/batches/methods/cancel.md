@@ -1,16 +1,16 @@
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整的文档索引请参见 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
-## 取消批处理
+## 取消批量任务
 
 **post** `/batches/{batch_id}/cancel`
 
-取消正在进行的批量任务。批量任务将处于 `cancelling` 状态最长 10 分钟，然后变为 `cancelled`，状态，届时其输出文件中将提供部分结果（如果有）。
+取消进行中的批量任务。批量任务将进入 status `cancelling` 状态，持续最多 10 分钟，然后变为 `cancelled`，届时输出文件中将包含部分结果（如果有）。
 
 ### 路径参数
 
 - `batch_id: string`
 
-### 返回值
+### 返回
 
 - `Batch object { id, completion_window, created_at, 19 more }`
 
@@ -18,7 +18,7 @@
 
   - `completion_window: string`
 
-    应在该时间窗口内处理该批量任务。
+    批量任务应在该时间窗口内完成处理。
 
   - `created_at: number`
 
@@ -26,11 +26,11 @@
 
   - `endpoint: string`
 
-    该批量任务所使用的 OpenAI API 端点。
+    批量任务所使用的 OpenAI API 端点。
 
   - `input_file_id: string`
 
-    该批量任务的输入文件 ID。
+    批量任务的输入文件 ID。
 
   - `object: "batch"`
 
@@ -40,7 +40,7 @@
 
   - `status: "validating" or "failed" or "in_progress" or 5 more`
 
-    该批量任务的当前状态。
+    批量任务的当前状态。
 
     - `"validating"`
 
@@ -88,7 +88,7 @@
 
       - `message: optional string`
 
-        提供有关错误更多详情的人工可读消息。
+        提供有关错误详情的人工可读消息。
 
       - `param: optional string or null`
 
@@ -112,7 +112,7 @@
 
   - `finalizing_at: optional number`
 
-    批量任务开始终态化时的 Unix 时间戳（以秒为单位）。
+    批量任务开始进入最终处理阶段的 Unix 时间戳（以秒为单位）。
 
   - `in_progress_at: optional number`
 
@@ -120,23 +120,23 @@
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象的 16 个键值对。这可以
-    可用于以结构化格式存储关于对象的附加信息，并通过 API 或仪表板查询对象。
-    通过 接口 或仪表板查询对象。
+    可附加到对象的 16 组键值对。可用于
+    用于以结构化格式存储对象的附加信息，以及通过
+    API 或仪表板查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串，最大长度为 512 个字符。
+    键是字符串，最大长度为 64 个字符。值是字符串
     最大长度为 512 个字符。
 
   - `model: optional string`
 
-    用于处理该批次的模型 ID，例如 `gpt-5.6-sol`。OpenAI
-    提供了多种具有不同能力、性能特征和定价的模型。请参阅
-    模型 [指南
-    指南](/docs/models) 以浏览和比较可用的模型。
+    用于处理该批次的模型 ID，例如 `gpt-6-astra`。OpenAI
+    提供了一系列具有不同能力、性能
+    特性和价格的模型。请参阅 [模型
+    指南](/docs/models) 以浏览和比较可用模型。
 
   - `output_file_id: optional string`
 
-    包含已成功执行请求输出的文件的 ID。
+    包含成功执行请求输出内容的文件 ID。
 
   - `request_counts: optional BatchRequestCounts`
 
@@ -144,34 +144,34 @@
 
     - `completed: number`
 
-      已成功完成的请求数量。
+      已成功完成的请求数。
 
     - `failed: number`
 
-      已失败的请求数量。
+      已失败的请求数。
 
     - `total: number`
 
-      该批次中的请求总数。
+      批次中的请求总数。
 
   - `usage: optional BatchUsage`
 
-    表示 token 使用详情，包括输入 token、输出 token、输出 token 的细分以及使用的总 token。仅在
-    总 token。仅在 2025 年 9 月 7 日之后创建的批次上填充。
-    2025 年 9 月 7 日之后创建的批次上填充。
+    表示令牌使用详情，包括输入令牌、输出令牌、
+    输出令牌的细分以及所使用的令牌总数。仅填充于
+    2025 年 9 月 7 日之后创建的批次。
 
     - `input_tokens: number`
 
-      输入 token 的数量。
+      输入令牌的数量。
 
     - `input_tokens_details: object { cached_tokens }`
 
-      输入令牌的详细明细。
+      输入令牌的详细细分。
 
       - `cached_tokens: number`
 
         从缓存中检索到的令牌数量。 [了解更多
-        提示缓存](/docs/guides/prompt-caching).
+        提示词缓存](/docs/guides/prompt-caching).
 
     - `output_tokens: number`
 
@@ -179,7 +179,7 @@
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      输出令牌的详细明细。
+      输出令牌的详细细分。
 
       - `reasoning_tokens: number`
 
