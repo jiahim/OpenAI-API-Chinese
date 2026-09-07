@@ -264,17 +264,26 @@ jobs:
             const { readFile } = require("node:fs/promises");
             const { owner, repo } = context.repo;
             const body = `<!-- required_complete=false -->\n\n翻译待完成；本轮保持 draft。\n\n${await readFile(process.env.SYNC_SUMMARY_PATH, "utf8")}`;
-            const assertCurrent = (pull) => {
+            const assertIdentity = (pull) => {
               if (pull.state !== "open" || pull.user.login !== "github-actions[bot]" ||
                   pull.base.ref !== "main" || pull.title !== process.env.PR_TITLE ||
                   pull.head.ref !== process.env.UPDATE_BRANCH || pull.head.repo?.full_name !== `${owner}/${repo}`) {
                 throw new Error("Automation PR identity is no longer trusted and open");
               }
-              if (pull.head.sha !== process.env.PUSHED_HEAD_SHA) throw new Error("Automation PR head changed after publishing");
+            };
+            const fetchCurrent = async (number) => {
+              let current;
+              for (let attempt = 0; attempt < 6; attempt += 1) {
+                ({ data: current } = await github.rest.pulls.get({ owner, repo, pull_number: number }));
+                assertIdentity(current);
+                if (current.head.sha === process.env.PUSHED_HEAD_SHA) return current;
+                if (attempt < 5) await new Promise((resolve) => setTimeout(resolve, 2000));
+              }
+              throw new Error("Automation PR head changed after publishing");
             };
             let pull;
             if (process.env.PR_NUMBER) {
-              ({ data: pull } = await github.rest.pulls.get({ owner, repo, pull_number: Number(process.env.PR_NUMBER) }));
+              pull = { number: Number(process.env.PR_NUMBER) };
             } else {
               const existing = await github.paginate(github.rest.pulls.list, {
                 owner, repo, head: `${owner}:${process.env.UPDATE_BRANCH}`, state: "open", per_page: 100,
@@ -286,14 +295,12 @@ jobs:
                 title: process.env.PR_TITLE, body, draft: true,
               }));
             }
-            ({ data: pull } = await github.rest.pulls.get({ owner, repo, pull_number: pull.number }));
-            assertCurrent(pull);
+            pull = await fetchCurrent(pull.number);
             if (!pull.draft) await github.graphql(`mutation($pullRequestId: ID!) {
               convertPullRequestToDraft(input: { pullRequestId: $pullRequestId }) { pullRequest { id } }
             }`, { pullRequestId: pull.node_id });
             await github.rest.pulls.update({ owner, repo, pull_number: pull.number, body });
-            ({ data: pull } = await github.rest.pulls.get({ owner, repo, pull_number: pull.number }));
-            assertCurrent(pull);
+            pull = await fetchCurrent(pull.number);
             if (!pull.draft) throw new Error("Published batch must be draft before translation");
             core.setOutput("number", String(pull.number));
 
@@ -480,18 +487,26 @@ jobs:
             const { owner, repo } = context.repo;
             const complete = process.env.BATCH_COMPLETE === "true";
             const body = await readFile(process.env.PR_BODY_PATH, "utf8");
-            const assertCurrent = (pull) => {
+            const assertIdentity = (pull) => {
               if (pull.state !== "open" || pull.user.login !== "github-actions[bot]" ||
                   pull.base.ref !== "main" || pull.title !== process.env.PR_TITLE ||
                   pull.head.ref !== process.env.UPDATE_BRANCH || pull.head.repo?.full_name !== `${owner}/${repo}`) {
                 throw new Error("Automation PR identity is no longer trusted and open");
               }
-              if (pull.head.sha !== process.env.PUSHED_HEAD_SHA) throw new Error("Automation PR head changed after publishing");
+            };
+            const fetchCurrent = async (number) => {
+              let current;
+              for (let attempt = 0; attempt < 6; attempt += 1) {
+                ({ data: current } = await github.rest.pulls.get({ owner, repo, pull_number: number }));
+                assertIdentity(current);
+                if (current.head.sha === process.env.PUSHED_HEAD_SHA) return current;
+                if (attempt < 5) await new Promise((resolve) => setTimeout(resolve, 2000));
+              }
+              throw new Error("Automation PR head changed after publishing");
             };
             let pull;
             if (process.env.PR_NUMBER) {
-              ({ data: pull } = await github.rest.pulls.get({ owner, repo, pull_number: Number(process.env.PR_NUMBER) }));
-              assertCurrent(pull);
+              pull = await fetchCurrent(Number(process.env.PR_NUMBER));
               await github.rest.pulls.update({ owner, repo, pull_number: pull.number, title: process.env.PR_TITLE, body });
             } else {
               const existing = await github.paginate(github.rest.pulls.list, {
@@ -503,8 +518,7 @@ jobs:
                 title: process.env.PR_TITLE, body, draft: true,
               }));
             }
-            ({ data: pull } = await github.rest.pulls.get({ owner, repo, pull_number: pull.number }));
-            assertCurrent(pull);
+            pull = await fetchCurrent(pull.number);
             if (!complete && !pull.draft) {
               await github.graphql(`mutation($pullRequestId: ID!) {
                 convertPullRequestToDraft(input: { pullRequestId: $pullRequestId }) { pullRequest { id } }
@@ -514,8 +528,7 @@ jobs:
                 markPullRequestReadyForReview(input: { pullRequestId: $pullRequestId }) { pullRequest { id } }
               }`, { pullRequestId: pull.node_id });
             }
-            ({ data: pull } = await github.rest.pulls.get({ owner, repo, pull_number: pull.number }));
-            assertCurrent(pull);
+            pull = await fetchCurrent(pull.number);
             if (pull.draft === complete) throw new Error("Automation PR draft state does not match batch completeness");
             core.setOutput("number", String(pull.number));
             core.notice(`Unified docs PR #${pull.number}`);
