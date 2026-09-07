@@ -177,6 +177,39 @@ jobs:
         env:
           ALLOW_LARGE_PRUNE: ${{ github.event_name == 'workflow_dispatch' && inputs.allow_large_prune == true }}
         run: |
+          # Remove only unpublished, structurally valid empty releases left by an interrupted older run.
+          node --input-type=module <<'NODE'
+          import { execFileSync } from "node:child_process";
+          import { lstat, readFile, unlink } from "node:fs/promises";
+          const paths = execFileSync("git", [
+            "diff", "--name-only", "-z", "--diff-filter=A", "origin/main...HEAD", "--", "docs/updates",
+          ]).toString().split("\0").filter(Boolean);
+          for (const path of paths) {
+            if (!/^docs\/updates\/[0-9TZ-]+\.json$/u.test(path)) {
+              throw new Error(`Unexpected unpublished release path: ${path}`);
+            }
+            const stat = await lstat(path);
+            if (stat.isSymbolicLink() || !stat.isFile()) {
+              throw new Error(`Unpublished release is not a regular file: ${path}`);
+            }
+            const release = JSON.parse(await readFile(path, "utf8"));
+            const keys = Object.keys(release).sort().join(",");
+            if (keys !== "added,generatedAt,id,modified,removed" ||
+                !Array.isArray(release.added) || !Array.isArray(release.modified) || !Array.isArray(release.removed)) {
+              throw new Error(`Unpublished release has an invalid shape: ${path}`);
+            }
+            const timestamp = new Date(release.generatedAt);
+            const expectedId = Number.isFinite(timestamp.valueOf())
+              ? timestamp.toISOString().replace(/[.:]/gu, "-")
+              : "";
+            if (release.id !== expectedId || path !== `docs/updates/${expectedId}.json`) {
+              throw new Error(`Unpublished release identity does not match its path: ${path}`);
+            }
+            if (release.added.length === 0 && release.modified.length === 0 && release.removed.length === 0) {
+              await unlink(path);
+            }
+          }
+          NODE
           prune_args=(--prune)
           if [[ "$ALLOW_LARGE_PRUNE" == true ]]; then
             prune_args+=(--allow-large-prune)
@@ -186,18 +219,17 @@ jobs:
           # The summary CLI reads commits. A temporary snapshot lets English and its release share one published commit.
           snapshot=$(git commit-tree "$(git write-tree)" -p HEAD -m "[AI] docs: 临时同步快照")
           release_dir=docs/updates
-          if git diff --quiet "origin/main...$snapshot" -- docs/en; then
-            # An empty batch must not overwrite a historical release with the same manifest timestamp.
+          if git diff --quiet "origin/main...$snapshot" -- ':(glob)docs/en/**/*.md'; then
+            # Response-header churn is not an article update and must not publish an empty batch.
             release_dir="$RUNNER_TEMP/empty-batch"
+            git restore --source=origin/main --staged --worktree -- docs/en/.source-manifest.json
           fi
           node scripts/sync-pr-summary.ts \
             --base-ref origin/main --head-ref "$snapshot" \
             --output "$RUNNER_TEMP/sync-summary.md" \
             --release-dir "$release_dir" \
             --release-output "$RUNNER_TEMP/release-path.txt"
-          if [[ "$release_dir" == docs/updates ]]; then
-            git add -- docs/updates
-          fi
+          git add -- docs/updates
           node --input-type=module <<'NODE'
           import { execFileSync } from "node:child_process";
           import { writeFileSync } from "node:fs";
