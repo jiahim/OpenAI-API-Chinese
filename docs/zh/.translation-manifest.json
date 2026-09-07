@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-07T02:50:11.860Z",
+  "generatedAt": "2026-09-07T06:43:02.519Z",
   "pages": {
     "https://developers.openai.com/api/docs/actions/actions-library.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
@@ -350,6 +350,16 @@
       "targetPath": "docs/zh/api/docs/guides/amazon-bedrock.md",
       "targetSha256": "0b96e0625e009366c0a5a04289633889e20661b8fde17993b72cbb9d411964a6",
       "translatedAt": "2026-09-06T08:33:32.895Z"
+    },
+    "https://developers.openai.com/api/docs/guides/async-tool-calling.md": {
+      "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
+      "reviewStatus": "machine",
+      "sourcePath": "docs/en/api/docs/guides/async-tool-calling.md",
+      "sourceSha256": "792ea9c33f6784803d32d25b45e0187ae13f24a05cb9064072862a75e1dce335",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/async-tool-calling.md",
+      "targetPath": "docs/zh/api/docs/guides/async-tool-calling.md",
+      "targetSha256": "34cff7c5659ef720a756a8ecc652514aabf78e993000c95fc77f25b320cf47c5",
+      "translatedAt": "2026-09-07T06:36:35.039Z"
     },
     "https://developers.openai.com/api/docs/guides/audio.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
@@ -821,6 +831,16 @@
       "targetSha256": "62de2ec063b358ae7f02c68840fc0bcd1ae5a88141d89469db0e99c1d943295d",
       "translatedAt": "2026-09-02T04:28:11.997Z"
     },
+    "https://developers.openai.com/api/docs/guides/latest-model/gpt-6-astra.md": {
+      "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
+      "reviewStatus": "machine",
+      "sourcePath": "docs/en/api/docs/guides/latest-model/gpt-6-astra.md",
+      "sourceSha256": "2a59b26078e001a4e4e3da10693e80ad5ee1c02cbe472afa6b682308f27b8b22",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/latest-model/gpt-6-astra.md",
+      "targetPath": "docs/zh/api/docs/guides/latest-model/gpt-6-astra.md",
+      "targetSha256": "13a106d8484da35e4baee7c26c89bb69a45fc2ea2616ae3ebabad0aa30234806",
+      "translatedAt": "2026-09-07T06:38:05.478Z"
+    },
     "https://developers.openai.com/api/docs/guides/migrate-to-responses.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
@@ -1231,6 +1251,16 @@
       "targetSha256": "488676069a2907f07b46ae972d7284db20207879633eb6f70878de04b610a9da",
       "translatedAt": "2026-08-29T17:27:53.981Z"
     },
+    "https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring.md": {
+      "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
+      "reviewStatus": "machine",
+      "sourcePath": "docs/en/api/docs/guides/safety-checks/misalignment-monitoring.md",
+      "sourceSha256": "099b74a67ea13a497225e9b2e258270c055c6b7a0d7f336ea71304c5bc0cfa38",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring.md",
+      "targetPath": "docs/zh/api/docs/guides/safety-checks/misalignment-monitoring.md",
+      "targetSha256": "464187dcb7259f0f179daecfb1643d945484980681c466d4e578cbfa1bc01711",
+      "translatedAt": "2026-09-07T06:39:02.340Z"
+    },
     "https://developers.openai.com/api/docs/guides/safety-checks/under-18-api-guidance.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
@@ -1270,6 +1300,16 @@
       "targetPath": "docs/zh/api/docs/guides/spend-limits.md",
       "targetSha256": "6ae7000cf4c42d0b463c4593b23192d61f0067899b413def2b800fdf146edfaa",
       "translatedAt": "2026-08-29T16:36:18.715Z"
+    },
+    "https://developers.openai.com/api/docs/guides/steering.md": {
+      "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
+      "reviewStatus": "machine",
+      "sourcePath": "docs/en/api/docs/guides/steering.md",
+      "sourceSha256": "2099dbf84ed50499dca28a7f9208500d19b3408f7ef4e6c1a4612c8759c0b945",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/steering.md",
+      "targetPath": "docs/zh/api/docs/guides/steering.md",
+      "targetSha256": "61f765543ef82cb135f0ac52923cbf1796a3fb886cb1a5b71badcf39661cf776",
+      "translatedAt": "2026-09-07T06:39:50.254Z"
     },
     "https://developers.openai.com/api/docs/guides/streaming-responses.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
@@ -1410,6 +1450,16 @@
       "targetPath": "docs/zh/api/docs/guides/tools-code-interpreter.md",
       "targetSha256": "568492eaa4b576e50550bb32f61535404229da75ce6c06752d0d6ca0954bf748",
       "translatedAt": "2026-09-05T19:01:25.625Z"
+    },
+    "https://developers.openai.com/api/docs/guides/tools-computer-use-integration.md": {
+      "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
+      "reviewStatus": "machine",
+      "sourcePath": "docs/en/api/docs/guides/tools-computer-use-integration.md",
+      "sourceSha256": "47b8cbef745ba1a3ab345de90bc2b581edbd877168a2e7c5100039669af94f77",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-computer-use-integration.md",
+      "targetPath": "docs/zh/api/docs/guides/tools-computer-use-integration.md",
+      "targetSha256": "00922d7833704197f829ff003280f259f11a2728e37cca729541f95a72a49f7a",
+      "translatedAt": "2026-09-07T06:42:40.294Z"
     },
     "https://developers.openai.com/api/docs/guides/tools-computer-use.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
@@ -1920,6 +1970,16 @@
       "targetPath": "docs/zh/api/reference/resources/audio/subresources/transcriptions/methods/create.md",
       "targetSha256": "7f4cb30eb7e709915e82e1a4f0e9c4aaead63841c3e6789b830652823d6dd497",
       "translatedAt": "2026-09-02T04:56:07.799Z"
+    },
+    "https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/streaming-events.md": {
+      "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
+      "reviewStatus": "machine",
+      "sourcePath": "docs/en/api/reference/resources/audio/subresources/transcriptions/streaming-events.md",
+      "sourceSha256": "e72cc5998514396ee06ffb91400f5b41dc0ef96642a48e871510f0fb50197ede",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/streaming-events.md",
+      "targetPath": "docs/zh/api/reference/resources/audio/subresources/transcriptions/streaming-events.md",
+      "targetSha256": "92af9b9f881124b510517cd1727b89a72369237cff050ad4db72e030b9971283",
+      "translatedAt": "2026-09-07T06:43:02.519Z"
     },
     "https://developers.openai.com/api/reference/resources/audio/subresources/translations/methods/create.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
@@ -3875,41 +3935,41 @@
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
       "sourcePath": "docs/en/api/reference/resources/responses/streaming-events.md",
-      "sourceSha256": "594814d77b79059d7af8c63cf3e3efc25da19feebdb009438c6c37f14943c7d2",
+      "sourceSha256": "ceadf346e07a406aa3c9b99bb89acefc80d2c2402210066624c067cf35226ce5",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/streaming-events.md",
       "targetPath": "docs/zh/api/reference/resources/responses/streaming-events.md",
-      "targetSha256": "560fa64de049aff5fea180b5bbd556fc2c6936fa6ffd2efd17dc8a6dd80cebcc",
-      "translatedAt": "2026-09-04T20:05:55.846Z"
+      "targetSha256": "e53f2f850823fbf1023cd42ba7d52b73b41fda85fa059042686ceafa2047124a",
+      "translatedAt": "2026-09-07T06:19:40.212Z"
     },
     "https://developers.openai.com/api/reference/resources/responses/subresources/input_items/methods/list.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
       "sourcePath": "docs/en/api/reference/resources/responses/subresources/input_items/methods/list.md",
-      "sourceSha256": "d44a14cde6b7a8ce9119308e9c195e0a383897c47f0d7b95ccb640828804c9d2",
+      "sourceSha256": "1e919f02d86642bcd0cff6caae5bf0e3f101f8ec17116817163a037c9bbbf113",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/subresources/input_items/methods/list.md",
       "targetPath": "docs/zh/api/reference/resources/responses/subresources/input_items/methods/list.md",
-      "targetSha256": "c431fd1f24012ab75a98556dede13e191690a2b99f81a48c4c2c9402a7757282",
-      "translatedAt": "2026-09-02T09:04:34.700Z"
+      "targetSha256": "f855e92ac9067a4848e7b91639576ebdbcdf2869374f75ecd98a851ad6b99f57",
+      "translatedAt": "2026-09-07T06:23:02.839Z"
     },
     "https://developers.openai.com/api/reference/resources/responses/subresources/input_tokens.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
       "sourcePath": "docs/en/api/reference/resources/responses/subresources/input_tokens.md",
-      "sourceSha256": "0635afe1c7e050a362f5289190f3c78202880dc438a877361f17cc5f760f870c",
+      "sourceSha256": "190483394c037508b008641e21017e90ce4efd80f879ed384af39f85bbdabb8f",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/subresources/input_tokens.md",
       "targetPath": "docs/zh/api/reference/resources/responses/subresources/input_tokens.md",
-      "targetSha256": "5578f7030c98973ab619f4b35427e019c557af1416d462c9a517adb12ff2e4d9",
-      "translatedAt": "2026-09-02T04:06:11.095Z"
+      "targetSha256": "dc57ec886b5fe859807f75d65fdd7c551c63d8d37cce151b3d5294964c5f6cd8",
+      "translatedAt": "2026-09-07T06:27:15.166Z"
     },
     "https://developers.openai.com/api/reference/resources/responses/websocket-events.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
       "sourcePath": "docs/en/api/reference/resources/responses/websocket-events.md",
-      "sourceSha256": "b2467046f3a789b8cca4b5a90a5b39da9913069c31ca9b2a2a7328b2cae98c0a",
+      "sourceSha256": "d82ad8085dd940a6d01a7c6c4450e48c12fbc3fd7fb412e0086d69eb2ebef9bc",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/websocket-events.md",
       "targetPath": "docs/zh/api/reference/resources/responses/websocket-events.md",
-      "targetSha256": "222dd3eaec580f692f098944ead51a17b3497538ca1494e495c3febbb33d99b9",
-      "translatedAt": "2026-09-04T20:09:48.500Z"
+      "targetSha256": "769e75fe72a96265296824b208fa29ae7512b75623cf2f23a93dfc97f0cad7ca",
+      "translatedAt": "2026-09-07T06:33:01.936Z"
     },
     "https://developers.openai.com/api/reference/resources/uploads.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
@@ -4145,21 +4205,21 @@
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
       "sourcePath": "docs/en/api/reference/resources/videos.md",
-      "sourceSha256": "168054916de41d8b661acbf6b476293945b879a5e8da2af99a3e0b967f92cdca",
+      "sourceSha256": "3af5e8e8cb34ccea8dcd22c8298ef4604264a093913b185b4331f047db60e4c4",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/videos.md",
       "targetPath": "docs/zh/api/reference/resources/videos.md",
-      "targetSha256": "c9961b4a71943c2e4e77d8ba6ff7b0c1c2617cbad3a660737a38a791a8ed9faa",
-      "translatedAt": "2026-09-02T09:12:44.494Z"
+      "targetSha256": "06e16e4d2aa378da2b53a0c6b91641e9c2e04eb2aed6ae422a13fdec6dc61a2a",
+      "translatedAt": "2026-09-07T06:34:47.049Z"
     },
     "https://developers.openai.com/api/reference/resources/videos/methods/create.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
       "sourcePath": "docs/en/api/reference/resources/videos/methods/create.md",
-      "sourceSha256": "c13213f435aa73f3473cc499bd1c0037b8eb213f9cba12f078dd4dc97ee4b6ba",
+      "sourceSha256": "f69c7cb8cca5cc24782be4f6dda27da716e2bb6db28895d6d4154ecfc8fc9638",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/videos/methods/create.md",
       "targetPath": "docs/zh/api/reference/resources/videos/methods/create.md",
-      "targetSha256": "dea45315c1e6cd8547278c5f9bc3286086a3b0bc9b2e1724461a30a6db94deea",
-      "translatedAt": "2026-08-31T07:50:54.309Z"
+      "targetSha256": "c682f3eb781ba9abae7ba2d44168ac56e6bfa2ec7a1edcfb5b898287fd519dd2",
+      "translatedAt": "2026-09-07T06:35:08.511Z"
     },
     "https://developers.openai.com/api/reference/resources/videos/methods/delete.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
@@ -4175,21 +4235,21 @@
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
       "sourcePath": "docs/en/api/reference/resources/videos/methods/list.md",
-      "sourceSha256": "02d4b2d82ce2ee7a4af8c57c4350941e00179decab6b981b8d68c5c50122be03",
+      "sourceSha256": "b3bde108c509dff5d3e1c01b8f3bfcdf27ee59026cd96d322e3bbc97a0a9d618",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/videos/methods/list.md",
       "targetPath": "docs/zh/api/reference/resources/videos/methods/list.md",
-      "targetSha256": "82b52a8410354a8e8da1ba496b2b6ffb69a65abbdc332b931ef1a8dd002d5224",
-      "translatedAt": "2026-08-31T07:51:50.585Z"
+      "targetSha256": "6c7717edefb598fb0c5e6e872e034d2a54d3e9ffb2a1c120851c3d0c58610a5d",
+      "translatedAt": "2026-09-07T06:35:29.124Z"
     },
     "https://developers.openai.com/api/reference/resources/videos/methods/retrieve.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
       "sourcePath": "docs/en/api/reference/resources/videos/methods/retrieve.md",
-      "sourceSha256": "1825ff80f068b885da46a71c310148e045912607c271b812e658d7dc65bd0141",
+      "sourceSha256": "3dd6257fd208807c050931015c18f2cd6400018762e6a60b9ff767038165b2e4",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/videos/methods/retrieve.md",
       "targetPath": "docs/zh/api/reference/resources/videos/methods/retrieve.md",
-      "targetSha256": "5f59c7fd68b6f867a8c6e76b6db21636c5fd3384a2cd64c900793e1ac5013a86",
-      "translatedAt": "2026-08-31T07:52:06.457Z"
+      "targetSha256": "e1b99c954aece48790401f86ab6372f150ec9474b34e649c5e21f4e25040badc",
+      "translatedAt": "2026-09-07T06:35:49.570Z"
     },
     "https://developers.openai.com/api/reference/resources/webhooks.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",

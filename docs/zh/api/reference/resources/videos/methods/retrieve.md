@@ -1,4 +1,4 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。如需文档页面的 Markdown 版本，可在页面 URL 末尾添加 `.md` 获取。
 
 ## Retrieve video
 
@@ -10,7 +10,7 @@
 
 - `video_id: string`
 
-### 返回值
+### 返回
 
 - `Video object { id, completed_at, created_at, 10 more }`
 
@@ -30,7 +30,7 @@
 
   - `error: VideoCreateError or null`
 
-    解释生成失败原因的错误负载，如果适用。
+    解释生成失败原因的错误载荷（如适用）。
 
     - `code: string`
 
@@ -40,9 +40,41 @@
 
       返回的错误的人类可读描述。
 
+    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+
+      - `detailed_explanation: optional string`
+
+        针对此阻止的公开说明。
+
+      - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+        可选的分类；客户端必须接受其他取值。
+
+        - `string`
+
+        - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
+
+          可选的分类；客户端必须接受其他取值。
+
+          - `"potentially_unintended_data_transfer"`
+
+          - `"potentially_unintended_data_access"`
+
+          - `"potentially_unintended_destructive_activity"`
+
+          - `"other"`
+
+      - `steer: optional object { message }`
+
+        可选的公开延续指令。
+
+        - `message: string`
+
+          公开的延续指令。
+
   - `expires_at: number or null`
 
-    可下载资源过期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源到期时的 Unix 时间戳（秒），如果已设置。
 
   - `model: VideoModel`
 
@@ -74,15 +106,15 @@
 
   - `prompt: string or null`
 
-    用于生成视频的提示词。
+    用于生成该视频的提示词。
 
   - `remixed_from_video_id: string or null`
 
-    如果该视频为混剪版本，则为源视频的标识符。
+    若此视频为再混合，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成片段的时长（秒）。对于扩展版本，这是拼接后的总时长。
+    生成片段的时长（秒）。对于扩展，这是拼接后的总时长。
 
   - `size: VideoSize`
 
@@ -124,7 +156,14 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
   "created_at": 0,
   "error": {
     "code": "code",
-    "message": "message"
+    "message": "message",
+    "misalignment": {
+      "detailed_explanation": "detailed_explanation",
+      "error_type": "potentially_unintended_data_transfer",
+      "steer": {
+        "message": "message"
+      }
+    }
   },
   "expires_at": 0,
   "model": "sora-2",
