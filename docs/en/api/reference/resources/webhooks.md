@@ -2809,7 +2809,7 @@ Schema name: `WebhookRealtimeCallIncoming`
     "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/data/properties/call_id",
     "deprecated": false,
     "key": "call_id",
-    "docstring": "The Transceiver `rtc_...` ID of the pending SIP session. The same\nvalue appears as `session_id` in `live.call.incoming`.\n",
+    "docstring": "The Transceiver `rtc_...` ID of the pending SIP session. The paired\n`live.call.incoming` event derives its `session_id` by replacing the\n`rtc_` prefix with `live_`. Use the ID returned by the event with the\ncorresponding Realtime or Live API.\n",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -3067,7 +3067,7 @@ Schema name: `WebhookLiveCallIncoming`
     "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/data/properties/session_id",
     "deprecated": false,
     "key": "session_id",
-    "docstring": "The Transceiver `rtc_...` ID of the pending SIP session. The same\nvalue appears as `call_id` in `realtime.call.incoming`.\n",
+    "docstring": "The `live_...` ID of the pending SIP session. Forward this value\nunchanged when accepting or rejecting the call through the Live API.\n",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -3159,7 +3159,7 @@ Schema name: `WebhookLiveCallIncoming`
   "type": "live.call.incoming",
   "created_at": 1719168000,
   "data": {
-    "session_id": "rtc_479a275623b54bdb9b6fbae2f7cbd408",
+    "session_id": "live_u0_479a275623b54bdb9b6fbae2f7cbd408",
     "sip_headers": [
       {"name": "Max-Forwards", "value": "63"},
       {"name": "CSeq", "value": "851287 INVITE"},

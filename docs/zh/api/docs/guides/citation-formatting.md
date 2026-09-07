@@ -1,50 +1,50 @@
-# Citation Formatting
+# 引用格式
 
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后添加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 来获取。
 
-可靠的引用有助于建立信任，并帮助读者核实回复的准确性。本指南提供实用建议，介绍如何准备可引用的资料并指示模型有效地格式化引用，所采用的模式对 OpenAI 模型而言是熟悉的。
+可靠的引用能够建立信任，并帮助读者核实回答的准确性。本指南提供了实用的指导，介绍如何准备可被引用的资料，以及如何指示模型按照 OpenAI 模型熟悉的方式有效地格式化引用。
 
 ## 概述
 
-引用系统包含多个部分：你需要确定哪些内容可以被引用，清晰地表示这些材料，指导模型如何引用它们，以及在结果呈现给用户之前进行验证。
+引用系统由多个部分组成：你决定哪些内容可以被引用、清晰地表征这些材料、指导模型如何进行引用，并在结果渲染给用户之前进行校验。
 
-本指南涵盖模型直接体验的五个核心要素：
+本指南涵盖模型直接体验到的五个核心要素：
 
-1. 可引用的单元：定义模型允许引用的内容。
-2. 素材呈现：以清晰、结构化的格式呈现源材料。
-3. 引用格式：指定模型在引用时应使用的确切格式。
+1. 可引用的单元：定义模型可以引用的内容。
+2. 材料表示：以清晰、结构化的格式呈现源材料。
+3. 引用格式：指定模型应使用的引用格式。
 4. 提示指令：告诉模型何时引用以及如何正确引用。
-5. 引用解析：从模型的响应中提取引用，以便后续使用。
+5. 引用解析：从模型的响应中提取引用，以便下游使用。
 
 ## 选择可引用的单元
 
-在编写提示之前，清楚地定义模型可以引用的内容。常见的选项包括：
+在编写提示词之前，先明确定义模型可以引用的内容。常见选项包括：
 
-| 可引用的最小单位  | 最佳适用场景                                              | 不足之处                          | 示例                                                                                         |
+| 可引用单元  | 最适用场景                                              | 缺点                          | 示例                                                                                         |
 | ------------- | ---------------------------------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------- |
-| 文档      | 你只需要展示答案来自哪份文档。 | 精确度不高。                 | 在你只需要说明哪份文档支持该说法时，引用整本员工手册。 |
-| 块 / 片段 | 你希望在简洁性和精确性之间取得良好平衡。  | 仍然无法精确到具体行。 | 引用包含该条款的具体合同段落或检索到的片段。               |
-| 行范围    | 你需要展示精确的支持文本。                | 对模型来说难度更大。     | 引用行 `L42-L47` 当用户需要核对精确段落时。                         |
+| 文档      | 你只需要展示答案来自哪一份文档。 | 精确度不高。                 | 当只需展示哪份文档支持该声明时，引用整本员工手册。 |
+| 段落 / 分块 | 你希望在简洁性和精确性之间取得良好平衡。  | 仍然无法精确到行。 | 引用包含该条款的特定合同段落或检索到的分块。               |
+| 行范围    | 你需要展示精确的支持文本。                | 对模型来说更困难。     | 引用行 `L42-L47` 当用户需要核实精确段落时。                         |
 
-一个良好的可引用单元应当具备以下特征：
+一个良好的可引用单元应满足：
 
 - 一致性：同一来源在多次运行中应保持相同的 ID。
-- 易于查看：阅读者应能通过它理解周围的上下文。
-- 规模适中：足够大以表达完整含义，但足够小以保持精确。
+- 易于查看：人员应能够读取它并理解其周围的上下文。
+- 规模适中：足够大以表达清楚，又足够小以保持精确。
 
-对于大多数系统而言，块级引用是最佳默认选择。它们通常比行级引用对模型更友好，也比对文档级引用对用户更有用。
+对于大多数系统而言,块级引用是最佳默认选择。它们通常比行级引用更易于模型处理,也比文档级引用对用户更有用。
 
 ## 表示可引用的材料
 
-模型无法引用未清晰呈现的内容。无论材料来自工具还是直接注入，都需确保其具备：
+模型无法引用未清晰呈现的内容。无论材料来自工具还是直接注入，都需要确保其具备以下要素：
 
-- 稳定的源 ID：例如这样的统一标识符 `file1` 或 `block1`.
-- 易读文本：格式清晰的源材料。
+- 稳定的源 ID：例如一致的标识符 `file1` 或 `block1`.
+- 可读的文本：格式清晰的源材料。
 - 元数据（可选）：URL、时间戳、标题及类似上下文。
 
 
 
-### 示例可引用材料
+### 可引用的示例材料
 
 
 
@@ -63,39 +63,39 @@ Updated: 2026-03-01
 
 
 
-**Source ID 与定位符：** source ID 是一个由模型生成的稳定，
-  标识符，例如 `block1`。定位符是
-  UI 中精确渲染的高亮，例如 `lines L8-L13` 或 
-  `Paragraph 21`。通常情况下，模型应输出 source ID，
-  而由你的系统解析或渲染定位符。过早将二者混用
+**源 ID 与定位符：** 源 ID 是一个稳定的、
+  由模型生成的标识符，例如 `block1`。定位符是
+  精确的 UI 渲染高亮，例如 `lines L8-L13` 或 
+  `Paragraph 21`。通常情况下，模型应输出源 ID，
+  而由你的系统解析或渲染定位符。过早地混用两者
   往往会增加格式错误。
 
 ## 定义引用格式
 
-你需要定义模型将生成的引用格式。使用
-显式、一致且便于模型可靠复现的格式
-。
+你需要定义模型将生成的引用格式。请使用一种
+明确、一致且易于模型可靠复现的格式。
+可靠地复现。
 
-下面是我们推荐的引用格式以及我们建议使用的标记。这些
-引用标记是强烈推荐的，因为它们与我们模型训练时所使用的标记非常接近。如果你选择不同的标记值，请尽量保持整体的引用格式相近。
-我们的模型在训练时所使用的标记非常接近。如果你选择不同的标记值，请尽量保持整体的引用格式相近。
+以下是我们推荐的引用格式以及我们推荐的标记。
+这些引用标记被强烈推荐，因为它们与我们模型训练时所使用的标记高度一致。如果你选择不同的标记值，请
+尽量保持整体引用格式尽可能相似。
 
-| 片段                | 作用                                                                                        | 是否推荐                              |
+| 片段                | 作用                                                                                        | 建议                              |
 | -------------------- | --------------------------------------------------------------------------------------------------- | ---------------------------------------- |
 | `CITATION_START`     | 打开引用标记。                                                                          | `\ue200`                                 |
-| 引用族      | 标识引用类型。请使用 `cite` 以覆盖所有受支持的来源。                                 | `cite`                                   |
-| `CITATION_DELIMITER` | 用于分隔标记内的各个字段。                                                                 | `\ue202`                                 |
+| 引用系列      | 标识引用类型。 `cite` 用于所有支持的来源。                                 | `cite`                                   |
+| `CITATION_DELIMITER` | 分隔标记内的字段。                                                                 | `\ue202`                                 |
 | 来源 ID            | 标识被引用的单元。 `turn#` 是轮次编号。 `item#` 是具体的文件、块或 URL。 | `turn0file1`, `turn0block1`, `turn0url1` |
-| 定位符（可选）   | 将引用精确收窄到特定区间。                                                             | `L8-L13`                                 |
+| 定位符（可选）   | 将引用收窄到精确的范围。                                                             | `L8-L13`                                 |
 | `CITATION_STOP`      | 关闭引用标记。                                                                         | `\ue201`                                 |
 
-对于工具调用， `turnN` 每次工具调用递增一次，而不是
-  每个单独结果递增一次。在单次调用中，来源通过
-  后缀区分，例如 `file0`, `file1`、
-  等。在单次响应系统中，所有引用仅在模型在 
-  `turn0...` 回答之前恰好调用一次工具时
-  才会出现。如果模型进行了多次工具调用，你可能会看到形如
-  的引用 `turn0fileX`, `turn1fileX`，等等。
+对于工具调用， `turnN` 每次工具调用自增一次，而不是
+  每次单个结果自增一次。在同一次调用中，来源通过
+  后缀（例如 `file0`, `file1`）等区分，
+  依此类推。在单响应系统中，所有引用仅在模型在 
+  `turn0...` 作答之前恰好执行一次工具调用时才会出现
+  。如果模型执行了多次工具调用，你可能会看到形如
+  的引用， `turn0fileX`, `turn1fileX`，依此类推。
 
 ### 模板
 
@@ -109,7 +109,7 @@ Updated: 2026-03-01
 {CITATION_START}cite{CITATION_DELIMITER}turn0file1{CITATION_DELIMITER}L8-L13{CITATION_STOP}
 ```
 
-如果你的系统不使用定位符，请省略该字段：
+如果你的系统不使用定位器，则省略该字段：
 
 ```text
 {CITATION_START}cite{CITATION_DELIMITER}turn0file1{CITATION_STOP}
@@ -117,29 +117,29 @@ Updated: 2026-03-01
 
 ## 编写有效的引用说明
 
-为保持最高的准确度，请采用熟悉的引用格式。自定义或不熟悉的格式会增加模型的认知负担，从而导致引用错误，尤其是在以下场景中：
+为了保持最高准确性，请使用熟悉的引用格式。自定义或不熟悉的格式会增加模型的认知负担，从而导致引用错误，尤其是在以下情况中：
 
-- 低推理投入，此时模型在格式错误后可用于恢复的预算较少。
-- 高复杂度任务，此时大部分推理预算都花在解决任务本身上，而不是清理引文语法。
+- 低推理投入，此时模型在格式错误后用于恢复的预算较少。
+- 高复杂度任务，此时大部分推理预算都花在解决任务本身上，而不是整理引用语法。
 
-下面，我们推荐一种引用格式，它接近模型熟悉的模式。你可以原样使用，也可以根据自己的系统进行调整。
+下面，我们推荐一种引用格式，它接近模型熟悉的模式。你可以直接使用，也可以根据你的系统进行调整。
 
-如果需要自定义提示，请定义：
+如果你想定义自己的提示，请定义：
 
-- 确切的书签语法。
+- 确切的标记语法。
 - 引用应放在何处。
-- 何时需要引用，何时无需引用。
-- 如何引用多个支持材料。
-- 哪些格式被禁止使用。
-- 缺少支持材料时的处理方法。
+- 何时应添加引用，何时不应添加引用。
+- 如何为多个支持项添加引用。
+- 哪些格式是不允许的。
+- 当缺少支持项时应如何处理。
 
 
 
-### 推荐的提示说明
+### 推荐的提示词说明
 
 
 
-使用以下格式明确指示模型：
+使用以下格式清楚地指示模型：
 
 ```md
 ## Citations
@@ -162,14 +162,14 @@ You must NOT write reference ID turn\d+\w+\d+ verbatim in the response text with
 - Citations must not be put in a line or paragraph with nothing else but the citations themselves.
 ```
 
-如果你还希望模型输出定位符，例如行号（`L1-L22`），可以在提示中这样指定：
+如果你还希望模型输出行号等定位符（`L1-L22`），可以在提示词中这样指定：
 
 ```text
 You *must* cite any results you use from this tool using the:
 `\ue200cite\ue202turn0file0\ue202L8-L13\ue201` format ONLY if the item has a corresponding citation marker.
 ```
 
-- 不要尝试引用没有对应引用标记的内容,因为它们不应被引用。
+- 不要尝试引用没有对应引用标记的项，因为它们不应被引用。
 - 你必须在引用中包含行号范围。
 
 
@@ -178,11 +178,11 @@ You *must* cite any results you use from this tool using the:
 
 
 
-### 可选的提升检索质量的指令
+### 用于更高质量 grounding 的可选指令
 
 
 
-当你需要更高质量的接入表现时，通常值得加入以下规则。请根据你的用例需求调整本节内容。
+当你需要更高质量的上下文检索行为时，通常值得包含以下规则。根据你的用例需求调整本节内容。
 
 ```xml
 <extra_considerations_for_citations>
@@ -206,16 +206,16 @@ Remember, the quality of a domain/source depends on the context.
 
 ## 解析引用
 
-一旦模型输出引用标注，你就需要从响应文本中提取它们
-，以便解析来源 ID、渲染链接，或在向用户展示答案之前去除原始标记。
-showing the answer to users.
+模型输出引用后，你需要从响应文本中提取它们
+以便解析来源 ID、渲染链接，或在向用户展示答案前
+移除原始标记。
 
-下面的辅助函数可以直接复制到你的应用中使用。它
-会解析单来源引用、多来源引用以及可选的行号范围
+下面的辅助函数可以直接复制到你的应用中。它
+解析单源引用、多源引用以及可选的行范围
 定位符，同时保留原始文本中的字符偏移量。
 
-本示例仅支持行号定位符，如果你的系统使用了不同的定位符格式，
-请进行相应调整。
+本示例仅支持行定位符，如果你的系统使用不同的定位符格式，应进行相应调整。
+则需要相应修改。
 
 
 
@@ -413,30 +413,80 @@ def strip_citations(text: str, citations: Iterable[Citation]) -> str:
     return clean_text
 ```
 
+```ruby
+CITATION_START = "\u{E200}"
+CITATION_DELIMITER = "\u{E202}"
+CITATION_STOP = "\u{E201}"
+
+SOURCE_ID_RE = /\A[A-Za-z0-9_-]+\z/
+LINE_LOCATOR_RE = /\AL\d+(?:-L\d+)?\z/
+
+def extract_citations(text, families: ["cite"])
+  return [] if families.empty?
+
+  family_pattern = families.map { |family| Regexp.escape(family) }.join("|")
+  token_re = Regexp.new(
+    "#{Regexp.escape(CITATION_START)}" \
+      "(?<family>#{family_pattern})" \
+      "#{Regexp.escape(CITATION_DELIMITER)}" \
+      "(?<body>.*?)" \
+      "#{Regexp.escape(CITATION_STOP)}",
+    Regexp::MULTILINE
+  )
+
+  text.enum_for(:scan, token_re).map do
+    match = Regexp.last_match
+    next unless match
+
+    body = match[:body]
+    next unless body
+
+    parts = body.split(CITATION_DELIMITER).map(&:strip).reject(&:empty?)
+    locator = parts.pop if parts.last&.match?(LINE_LOCATOR_RE)
+    next if parts.empty? || parts.any? { |part| !part.match?(SOURCE_ID_RE) }
+
+    {
+      raw: match[0],
+      family: match[:family],
+      source_ids: parts,
+      locator: locator,
+      start: match.begin(0),
+      end: match.end(0)
+    }
+  end.compact
+end
+
+def strip_citations(text, citations)
+  citations.sort_by { |citation| -citation.fetch(:start) }.each_with_object(text.dup) do |citation, clean|
+    clean[citation.fetch(:start)...citation.fetch(:end)] = ""
+  end
+end
+```
 
 
 
 
 
-如果你的源 ID 使用不同的格式，请更新 `SOURCE_ID_RE` 以匹配你的
+
+如果你的源 ID 使用了不同的格式，请更新 `SOURCE_ID_RE` 以匹配你的
 系统。
 
 ## 示例
 
-以下示例展示两种常见的引用模式：
+下面的示例展示了两种常见的引用模式：
 
-- 检索到的工具上下文，其中工具会返回可引用的材料和 ID。
-- 注入的上下文，其中你直接在提示中提供可引用的块。
+- 检索到的工具上下文，由你的工具返回可引用的素材和 ID。
+- 注入的上下文，由你在提示中直接提供可引用的块。
 
 ### 为检索到的工具上下文格式化引用
 
-当模型通过工具检索上下文并在回答中引用该检索到的上下文时，请使用此模式。
+当模型通过工具检索上下文并在回答中引用所检索的上下文时，请使用此模式。
 
 #### 定义可引用的单元
 
-你应根据用例所需的精度来选择可引用的单元。下面的示例展示了几种可能的工具输出。
+你应根据自身用例所需的精确度来选择可引用的单元。下面的示例展示了几种可能的工具输出。
 
-下面的示例展示了几种推荐的工具输出格式。底层工具可能因应用而异，但最重要的是，输出应以清晰、稳定的结构呈现，如这些示例所示。
+下面的示例展示了几种推荐的工具输出格式。底层工具可能因应用而异，但最重要的是，输出应以清晰、稳定的结构呈现，例如这些示例所示。
 
 
 
@@ -444,7 +494,7 @@ def strip_citations(text: str, citations: Iterable[Citation]) -> str:
 
 
 
-以下是工具调用输出的一个示例：
+以下是工具调用输出的示例：
 
 ```text
 Citation Marker: {CITATION_START}cite{CITATION_DELIMITER}turn0file0{CITATION_STOP}
@@ -456,7 +506,7 @@ Citation Marker: {CITATION_START}cite{CITATION_DELIMITER}turn0file1{CITATION_STO
 ...
 ```
 
-此处， `turn0file0` 是稳定的源 ID。行号就是定位符。
+这里， `turn0file0` 是稳定的源 ID。行号是定位符。
 
 
 
@@ -468,7 +518,7 @@ Citation Marker: {CITATION_START}cite{CITATION_DELIMITER}turn0file1{CITATION_STO
 
 
 
-以下是工具调用输出的一个示例：
+以下是工具调用输出的示例：
 
 ```text
 Citation Marker: {CITATION_START}cite{CITATION_DELIMITER}turn0file0{CITATION_STOP}
@@ -482,7 +532,7 @@ Citation Marker: {CITATION_START}cite{CITATION_DELIMITER}turn0file1{CITATION_STO
 ...
 ```
 
-如果你想要块级引用而不是行级引用，推荐的做法是为每个检索到的块设置一个稳定的 source ID，并仍然使用相同的两字段 cite 形式进行引用，例如 `{CITATION_START}cite{CITATION_DELIMITER}turn0file0{CITATION_STOP}`，而不是另造一套完全不同的引用体系。
+如果你想要块级引用而非行级引用，推荐的做法是将每个检索到的块作为独立的稳定来源 ID，并仍使用相同的两字段 cite 结构来引用，例如 `{CITATION_START}cite{CITATION_DELIMITER}turn0file0{CITATION_STOP}`，而不是另造一套完全不同的引用体系。
 
 
 
@@ -523,11 +573,11 @@ The on-call handoff process is documented in the weekly support sync notes. \ue2
 
 ### 为注入的上下文格式化引用
 
-当你在请求之前预先检索或准备上下文，并将其直接注入到提示中时，可以使用这种模式。
+当你提前检索或准备上下文并将其直接注入提示时，使用此模式。
 
 #### 定义可引用的单元
 
-对于注入的上下文，一种常见的做法是使用具有稳定引用 ID 的显式标签来包裹源片段。
+对于注入的上下文，常见的做法是用具有稳定引用 ID 的显式标签包裹源片段。
 
 ```xml
 
@@ -546,7 +596,7 @@ Syllabus
 ...
 ```
 
-这使得可引用的单元更加明确，便于模型引用。
+这使得可引用的单元显式化，便于模型引用。
 
 #### 编写提示指令
 
@@ -588,8 +638,8 @@ You must NOT write block IDs verbatim in the response text without putting them 
 The Court held that the District Court lacked personal jurisdiction over the petitioner. \ue200cite\ue202block5\ue201
 ```
 
-**注意：** OpenAI 托管的工具（例如网页搜索）会提供
-  自动的内联引用。如果你希望改用托管工具，请参阅 
+**注意：** OpenAI 托管的工具（如 网页搜索）提供
+  自动的内联引用。如果你想改用托管工具，请参阅 
   [工具概览](https://developers.openai.com/api/docs/guides/tools), 
-  [网页搜索指南](https://developers.openai.com/api/docs/guides/tools-web-search)、 
-  [文件搜索指南](https://developers.openai.com/api/docs/guides/tools-file-search).
+  [网页搜索 指南](https://developers.openai.com/api/docs/guides/tools-web-search)）等区分， 
+  [文件搜索 指南](https://developers.openai.com/api/docs/guides/tools-file-search).

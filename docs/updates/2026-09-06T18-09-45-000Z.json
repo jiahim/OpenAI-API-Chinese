@@ -1,0 +1,14 @@
+{
+  "id": "2026-09-06T18-09-45-000Z",
+  "generatedAt": "2026-09-06T18:09:45Z",
+  "added": [],
+  "modified": [
+    {
+      "path": "docs/en/api/reference/resources/webhooks.md",
+      "route": "/api/reference/resources/webhooks",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/webhooks.md",
+      "title": "Webhooks events"
+    }
+  ],
+  "removed": []
+}

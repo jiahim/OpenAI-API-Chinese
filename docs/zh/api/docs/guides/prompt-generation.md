@@ -1,29 +1,29 @@
-# Prompt generation
+# 提示生成
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-该 **生成** 按钮，位于 [Playground](https://platform.openai.com/chat/edit) 可让你根据任务描述生成提示、 [函数](https://developers.openai.com/api/docs/guides/function-calling)，和 [架构](https://developers.openai.com/api/docs/guides/structured-outputs#supported-schemas) 。本指南将详细讲解其具体工作原理。
+该 **Generate** button in the [Playground](https://platform.openai.com/chat/edit) 可让你根据任务描述生成提示词、 [functions](https://developers.openai.com/api/docs/guides/function-calling)，以及 [schemas](https://developers.openai.com/api/docs/guides/structured-outputs#supported-schemas) 。本指南将逐步介绍其具体工作原理。
 
 ## 概述
 
-从零开始创建提示和模式可能很耗时，因此生成它们可以帮助你快速上手。Generate 按钮主要使用两种方法：
+从零开始创建提示词和模式可能比较耗时，因此生成它们可以帮助你快速入门。生成按钮主要采用两种方法：
 
-1. **提示词：** 我们使用 **元提示词** ，结合最佳实践来生成或改进提示词。
-1. **模式：** 我们使用 **元模式** ，用于生成合法的 JSON 和函数语法。
+1. **提示词：** 我们使用 **元提示词** 来融入最佳实践，以生成或改进提示词。
+1. **模式：** 我们使用 **元模式** 以生成有效的 JSON 和函数语法。
 
-虽然我们目前使用元提示和模式，但未来可能会集成更先进的技术，例如 [DSPy](https://arxiv.org/abs/2310.03714) 和 ["梯度下降"](https://arxiv.org/abs/2305.03495).
+虽然我们目前使用元提示和 schema，但我们将来可能会集成更先进的技术，例如 [DSPy](https://arxiv.org/abs/2310.03714) 和 ["Gradient Descent"](https://arxiv.org/abs/2305.03495).
 
-## Prompts
+## 提示词
 
-一个 **meta-prompt** 指示模型根据你的任务描述创建一个好的提示，或改进现有的提示。Playground 中的 meta-prompt 源自我们的 [prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering) 最佳实践以及与用户的实际经验。
+一个 **meta-prompt** 指示模型根据你的任务描述创建一个好的提示，或改进现有的提示。Playground 中的 meta-prompt 基于我们的 [prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering) 最佳实践以及与用户的实际经验。
 
 我们针对不同的输出类型（如音频）使用特定的 meta-prompt，以确保生成的提示符合预期格式。
 
-### Meta-prompts
+### 元提示
 
 
 
-文本输出
+Text-out
 
     Text meta-prompt
 
@@ -78,7 +78,7 @@ The final prompt you output should adhere to the following structure below. Do n
 
 async function generatePrompt(taskOrPrompt) {
   const completion = await client.chat.completions.create({
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     messages: [
       { role: "system", content: metaPrompt },
       {
@@ -150,7 +150,7 @@ The final prompt you output should adhere to the following structure below. Do n
 
 def generate_prompt(task_or_prompt: str):
     completion = client.chat.completions.create(
-        model="gpt-5.6",
+        model="gpt-6-astra",
         messages=[
             {
                 "role": "system",
@@ -221,7 +221,7 @@ String metaPrompt =
 
 ChatCompletionCreateParams params =
     ChatCompletionCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .addSystemMessage(metaPrompt)
         .addUserMessage(
             "Task, Goal, or Current Prompt:\nWrite a concise product launch announcement.")
@@ -284,7 +284,7 @@ PROMPT
 
 def generate_prompt(client, meta_prompt, task_or_prompt)
   completion = client.chat.completions.create(
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     messages: [
       {role: :system, content: meta_prompt},
       {
@@ -305,7 +305,7 @@ puts(generate_prompt(client, meta_prompt, "Write a concise product launch announ
   
 
     
-音频输出
+Audio-out
 
     Audio meta-prompt
 
@@ -351,7 +351,7 @@ The final prompt you output should adhere to the following structure below. Do n
 
 async function generatePrompt(taskOrPrompt) {
   const completion = await client.chat.completions.create({
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     messages: [
       { role: "system", content: metaPrompt },
       {
@@ -414,7 +414,7 @@ The final prompt you output should adhere to the following structure below. Do n
 
 def generate_prompt(task_or_prompt: str):
     completion = client.chat.completions.create(
-        model="gpt-5.6",
+        model="gpt-6-astra",
         messages=[
             {
                 "role": "system",
@@ -476,7 +476,7 @@ String metaPrompt =
 
 ChatCompletionCreateParams params =
     ChatCompletionCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .addSystemMessage(metaPrompt)
         .addUserMessage(
             "Task, Goal, or Current Prompt:\n"
@@ -531,7 +531,7 @@ PROMPT
 
 def generate_prompt(client, meta_prompt, task_or_prompt)
   completion = client.chat.completions.create(
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     messages: [
       {role: :system, content: meta_prompt},
       {
@@ -551,11 +551,11 @@ puts(generate_prompt(client, meta_prompt, "Create a friendly voice assistant for
 
 ### 提示词编辑
 
-为了编辑提示词，我们使用一个稍作修改的元提示词。虽然直接修改比较容易应用，但识别开放式修订所需的必要更改可能具有挑战性。为了解决这个问题，我们在响应开头包含一个 **推理部分** 。该部分通过评估现有提示词的清晰度、思维链顺序、整体结构和具体性等因素，引导模型确定需要做哪些修改。推理部分会提出改进建议，然后从最终响应中解析出来。
+为了编辑提示词，我们使用一个稍作修改的元提示词。虽然直接编辑易于应用，但识别开放式修订所需的必要更改可能具有挑战性。为了解决这个问题，我们加入了一个 **推理部分** 位于响应开头。该部分通过评估现有提示的清晰度、思维链排序、整体结构和具体性等因素，来引导模型确定需要进行哪些更改。推理部分会提出改进建议，然后从最终响应中解析出去。
 
 
 
-文本输出
+Text-out
 
     Text meta-prompt for edits
 
@@ -629,7 +629,7 @@ The final prompt you output should adhere to the following structure below. Do n
 
 async function generatePrompt(taskOrPrompt) {
   const completion = await client.chat.completions.create({
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     messages: [
       { role: "system", content: metaPrompt },
       {
@@ -720,7 +720,7 @@ The final prompt you output should adhere to the following structure below. Do n
 
 def generate_prompt(task_or_prompt: str):
     completion = client.chat.completions.create(
-        model="gpt-5.6",
+        model="gpt-6-astra",
         messages=[
             {
                 "role": "system",
@@ -810,7 +810,7 @@ String metaPrompt =
 
 ChatCompletionCreateParams params =
     ChatCompletionCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .addSystemMessage(metaPrompt)
         .addUserMessage(
             "Task, Goal, or Current Prompt:\nMake this product launch announcement clearer and more concise.")
@@ -892,7 +892,7 @@ PROMPT
 
 def generate_prompt(client, meta_prompt, task_or_prompt)
   completion = client.chat.completions.create(
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     messages: [
       {role: :system, content: meta_prompt},
       {
@@ -913,7 +913,7 @@ puts(generate_prompt(client, meta_prompt, "Make this support prompt more concise
   
 
     
-音频输出
+Audio-out
 
     Audio meta-prompt for edits
 
@@ -978,7 +978,7 @@ The final prompt you output should adhere to the following structure below. Do n
 
 async function generatePrompt(taskOrPrompt) {
   const completion = await client.chat.completions.create({
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     messages: [
       { role: "system", content: metaPrompt },
       {
@@ -1062,7 +1062,7 @@ The final prompt you output should adhere to the following structure below. Do n
 
 def generate_prompt(task_or_prompt: str):
     completion = client.chat.completions.create(
-        model="gpt-5.6",
+        model="gpt-6-astra",
         messages=[
             {
                 "role": "system",
@@ -1143,7 +1143,7 @@ String metaPrompt =
 
 ChatCompletionCreateParams params =
     ChatCompletionCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .addSystemMessage(metaPrompt)
         .addUserMessage(
             "Task, Goal, or Current Prompt:\nMake this voice assistant prompt warmer and more direct.")
@@ -1216,7 +1216,7 @@ PROMPT
 
 def generate_prompt(client, meta_prompt, task_or_prompt)
   completion = client.chat.completions.create(
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     messages: [
       {role: :system, content: meta_prompt},
       {
@@ -1236,59 +1236,59 @@ puts(generate_prompt(client, meta_prompt, "Make this voice assistant prompt warm
 
 ## Schemas
 
-[Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) schema 和 function schema 本身都是 JSON 对象，因此我们借助 Structured Outputs 来生成它们。
-这需要为期望的输出定义一个 schema，而这里期望的输出本身就是一个 schema。为此，我们使用一个自描述 schema —— 一个 **meta-schema**.
+[Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) schema 和函数 schema 本身都是 JSON 对象，因此我们利用 Structured Outputs 来生成它们。
+这需要为期望的输出定义一个 schema，而此处该输出本身也是一个 schema。为此，我们使用一个自描述的 schema —— 一个 **meta-schema**.
 
-由于 function schema 中的 `parameters` 字段本身也是一个 schema，我们使用同一个 meta-schema 来生成函数。
+因为函数 schema 中的 `parameters` 字段本身就是一个 schema，我们使用同一个 meta-schema 来生成函数。
 
-### 定义受限的元架构
+### 定义受限的元模式
 
-[Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) 支持两种模式： `strict=true` 和 `strict=false`。两种模式都使用同一模型训练以遵循所提供的 schema，但只有“严格模式”能通过受约束采样保证完全遵循。
+[Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) 支持两种模式： `strict=true` 和 `strict=false`。两种模式都使用同一个经过训练以遵循所提供 schema 的模型，但只有“严格模式”能通过受限采样保证完美遵循。
 
-我们的目标是使用严格模式本身来为严格模式生成 schema。然而， [JSON Schema 规范](https://json-schema.org/specification#meta-schemas) 官方提供的元 schema 依赖 [严格模式下暂不支持](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported) 的特性，这对输入和输出 schema 都带来了挑战。
+我们的目标是使用严格模式本身来为严格模式生成 schema。然而，由 [JSON Schema 规范](https://json-schema.org/specification#meta-schemas) 依赖严格模式中 [目前尚不支持的特性](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported) 。这带来了同时影响输入和输出 schema 的挑战。
 
-1. **输入架构：** 我们无法使用 [不受支持的功能](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported) 来描述输入架构中的输出架构。
-2. **输出架构：** 生成的架构不得包含 [不受支持的功能](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported).
+1. **输入架构：** 无法使用 [不支持的特性](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported) 在输入架构中描述输出架构。
+2. **输出架构：** 生成的架构不得包含 [不支持的特性](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported).
 
-因为我们需要在输出 schema 中生成新的键，输入元 schema 必须使用 `additionalProperties`。这意味着我们目前无法使用 strict 模式来生成 schema。不过，我们仍然希望生成的 schema 能够符合 strict 模式的约束。
+由于需要在输出架构中生成新的键，输入元架构必须使用 `additionalProperties`。这意味着我们目前无法使用严格模式来生成架构。不过，我们仍希望生成的架构符合严格模式的约束。
 
-为了克服这一限制，我们定义了一个 **伪元 schema** ——一种使用了 strict 模式不支持的特性、仅用来描述 strict 模式所支持特性的元 schema。本质上，这种方法在元 schema 定义中跳出了 strict 模式，同时仍然确保生成的 schema 遵循 strict 模式的约束。
+为了克服这一限制，我们定义了一个 **伪元架构** ——一种使用严格模式不支持的功能、仅描述严格模式所支持功能的元架构。从本质上讲，这种方法在定义元架构时跳出严格模式，同时仍确保生成的架构遵循严格模式的约束。
 
 
 
-构建一个受限制的元 schema 是一项具有挑战性的任务，因此我们借助模型来帮忙。
+构建受约束的元架构是一项具有挑战性的任务，因此我们借助模型来完成。
 
-我们首先让 `o1-preview` 和 `gpt-4o` 在 JSON 模式下根据 Structured Outputs 文档给出对我们目标的描述。
-经过几次迭代后，我们开发出了第一个可用的元 schema。
+我们首先 `o1-preview` 和 `gpt-4o` 在 JSON 模式下提供目标说明，并结合 Structured Outputs 文档。
+经过几次迭代，我们开发出了第一个可用的元架构。
 
-然后我们使用 `gpt-4o` 配合 Structured Outputs，并向其提供 _那个初始 schema_ 以及我们的任务描述和文档，以生成更好的候选方案。每一次迭代，我们都使用一个更好的 schema 来生成下一个，直到最终仔细地进行人工审核。
+随后，我们使用 `gpt-4o` 配合 Structured Outputs，并提供 _该初始架构_ 以及任务说明和文档，以生成更好的候选架构。每次迭代，我们都使用更好的架构来生成下一个架构，直到最终由人工仔细审查。
 
-最后，在清理输出之后，我们根据一组针对 schema 和函数的评估对生成的 schema 进行了验证。
+最后，在清理输出后，我们针对一组架构和函数评测对架构进行了验证。
 
 
 
 ### 输出清理
 
-严格模式可以保证完全遵循 schema。然而，由于我们在生成过程中无法使用它，因此需要在生成完成后对输出进行校验和转换。
+严格模式可保证完全遵循 schema。但由于我们在生成时无法使用它，因此需要在生成完成后对输出进行校验和转换。
 
 生成 schema 后，我们会执行以下步骤：
 
-1. **将 `additionalProperties` 设置为 `false`** ，适用于所有对象。
+1. **Set `additionalProperties` to `false`** for all objects.
 1. **将所有属性标记为必填**.
-1. **对于结构化输出 schema**，请将它们包裹在 [`json_schema`](https://developers.openai.com/api/docs/guides/structured-outputs?context=without_parse#how-to-use) 对象中。
-1. **对于函数**，请将它们包裹在 [`function`](https://developers.openai.com/api/docs/guides/function-calling#defining-functions) 对象中。
+1. **对于结构化输出 schema**，将它们包装在 [`json_schema`](https://developers.openai.com/api/docs/guides/structured-outputs?context=without_parse#how-to-use) object 中。
+1. **对于函数**，将它们包装在 [`function`](https://developers.openai.com/api/docs/guides/function-calling#defining-functions) object 中。
 
 Realtime API
   [函数](https://developers.openai.com/api/docs/guides/realtime-conversations#function-calling) 对象
-  与 Chat Completions API 略有差异，但使用相同的架构。
+  与 Chat Completions API 略有不同，但使用相同的架构。
 
-### 元模式
+### 元架构
 
-每个元数据 schema 都附带一个包含少样本示例的提示词。结合 Structured Outputs 的可靠性 —— 即便不使用严格模式 —— 我们也能成功生成 schema。
+每个元架构都有一个对应的提示，其中包含少样本示例。借助 Structured Outputs 的可靠性——即使不启用严格模式——我们也能够生成架构。
 
 
 
-结构化输出 schema
+结构化输出架构
 
     Structured output meta-schema
 
@@ -2186,7 +2186,7 @@ client.chat().completions().create(params).choices().stream()
   
 
     
-函数 schema
+函数架构
 
     Structured output meta-schema
 

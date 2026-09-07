@@ -1,18 +1,18 @@
-# 从提示对象迁移
+# 从 prompt 对象迁移
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。你可以通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-OpenAI 即将弃用 API 中的可复用提示对象。提示创建功能将
-  自 2026 年 6 月 3 日起逐步弱化,并且 `v1/prompts` 计划于
-  2026 年 11 月 30 日下线。详见 [弃用
-  页面](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 用于当前
-  时间线。
+OpenAI 正在弃用 API 中可复用的 prompt 对象。Prompt 创建功能
+  将于 2026 年 6 月 3 日起被弱化，并 `v1/prompts` 计划于
+  2026 年 11 月 30 日关闭。详见 [弃用
+  页面](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 以了解当前的
+  时间表。
 
-若要从 **Prompts** 平台迁出，请将提示内容从托管的 OpenAI API `prompt` 对象中移出，并转移到你的应用代码中。这样你可以更好地掌控审阅、测试、部署和版本管理。
+要从 **Prompts** 迁出 OpenAI API 平台，请将 prompt 内容从托管 `prompt` 对象移至你的应用代码中。这样你可以更灵活地控制审核、测试、部署和版本管理。
 
 ## Before：使用 Prompt 对象
 
-使用提示对象
+使用 prompt 对象
 
 ```javascript
 import OpenAI from "openai";
@@ -149,7 +149,7 @@ curl https://api.openai.com/v1/responses \
 
 ## After：在代码中内联提示词
 
-将提示内联在代码中
+在代码中内联该提示词
 
 ```javascript
 import OpenAI from "openai";
@@ -157,7 +157,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "system",
@@ -181,7 +181,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "system",
@@ -211,7 +211,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
 			responses.ResponseInputItemParamOfMessage("You are a helpful support assistant. Be concise, accurate, and friendly.", responses.EasyInputMessageRoleSystem),
 			responses.ResponseInputItemParamOfMessage("Customer name: Acme. Issue: billing question. Write a response to the customer.", responses.EasyInputMessageRoleUser),
@@ -234,7 +234,7 @@ import java.util.List;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .inputOfResponse(
             List.of(
                 ResponseInputItem.ofEasyInputMessage(
@@ -266,7 +266,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     [
         ResponseItem.CreateSystemMessageItem(
             "You are a helpful support assistant. Be concise, accurate, and friendly."
@@ -286,7 +286,7 @@ require "openai"
 client = OpenAI::Client.new
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: :system,
@@ -307,7 +307,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "input": [
       {
         "role": "system",
@@ -324,7 +324,7 @@ curl https://api.openai.com/v1/responses \
 
 ## 使用 Codex 进行迁移
 
-使用 [OpenAI Developers 插件](https://developers.openai.com/learn/developers-codex-plugin) 和 [OpenAI Docs 技能](https://github.com/openai/skills/tree/main/skills/.curated/openai-docs) 来自动化你的迁移，并加速使用 OpenAI API 进行构建。
+使用 [OpenAI Developers 插件](https://developers.openai.com/learn/developers-codex-plugin) 和 [OpenAI Docs 技能](https://github.com/openai/skills/tree/main/skills/.curated/openai-docs) 自动化迁移并加速基于 OpenAI API 的开发。
 
 ```text
 $openai-docs update this project to store prompts in code instead of using a prompts object
@@ -332,17 +332,17 @@ $openai-docs update this project to store prompts in code instead of using a pro
 
 ## 变更内容
 
-你无需在 API 请求中引用已保存的提示对象，而是将提示文本存放在代码库中，并把生成的消息直接作为 `input` 传入 Responses API 调用。
+不要从API请求中引用已保存的提示对象，而是将提示文本存储在代码库中，并将生成的消息直接作为 `input` 参数传递给 Responses API 调用。
 
-- **将提示内容移入源代码** 这样提示变更就能和产品逻辑走相同的评审与发布流程。
-- **用函数参数替代提示变量** 让动态值在你的应用中显式且类型化。
-- **通过 Responses API 调用传递 `input`** 消息，而不是使用 `prompt` 对象。
-- **将版本管理迁移到你的代码仓库** 借助 git 提交、PR 评审以及测试或评估。
-- **静态内容放前面、动态内容放后面** 以保留提示缓存带来的收益，因为缓存命中依赖于精确的前缀匹配。
+- **将提示词内容移入源代码** 以便提示词的变更与产品逻辑遵循相同的评审和发布流程。
+- **将提示词变量替换为函数参数** 以便动态值在你的应用中显式声明并带有类型。
+- **在调用 Responses API 时传递消息， `input`** 而不是使用该对象 `prompt` （object）。
+- **将版本管理迁移到你的代码仓库** 使用 git 提交、PR 评审以及测试或评估。
+- **将静态内容放在前面，动态内容放在后面** 以保留提示词缓存带来的收益，因为缓存命中依赖于精确的前缀匹配。
 
 ## 示例
 
-使用辅助函数构建提示词
+使用辅助函数构建提示
 
 ```javascript
 import OpenAI from "openai";
@@ -365,7 +365,7 @@ function buildSupportPrompt({ customerName, issue }) {
 }
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: buildSupportPrompt({
     customerName: "Acme",
     issue: "billing question",
@@ -393,7 +393,7 @@ def build_support_prompt(customer_name, issue):
 
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=build_support_prompt(
         customer_name="Acme",
         issue="billing question",
@@ -415,7 +415,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: buildSupportPrompt("Acme", "billing question")},
 	})
 	if err != nil {
@@ -462,7 +462,7 @@ private static List<ResponseInputItem> buildSupportPrompt(String customerName, S
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-6-astra")
         .inputOfResponse(buildSupportPrompt("Acme", "billing question"))
         .build();
 
@@ -491,7 +491,7 @@ static ResponseItem[] BuildSupportPrompt(string customerName, string issue) =>
 ];
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     BuildSupportPrompt("Acme", "billing question")
 );
 Console.WriteLine(response.GetOutputText());
@@ -516,7 +516,7 @@ end
 client = OpenAI::Client.new
 
 response = client.responses.create(
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: build_support_prompt("Acme", "billing question")
 )
 
@@ -526,6 +526,6 @@ puts(response.output_text)
 
 ## 你能获得什么
 
-你可以获得更精细的工程控制：提示词与产品代码一起管理，更改通过 PR 流程进行，测试和评估可以在 CI 中运行，上线或实验可以通过你自己的配置或功能开关来管理。
+你将获得更精细的工程控制：提示与产品代码放在一起，变更通过 PR 流程进行，测试和评估可以在 CI 中运行，上线或实验可以通过你自己的配置或功能开关来管理。
 
-不要把提示词分散内联在代码库的各处。创建一个小的 `prompts/` 模块，把每个提示词作为命名构建函数保存，并添加轻量级的评估 fixture，使提示词的修改像产品逻辑一样接受评审。
+不要把提示零散地散落在代码库各处。创建一个小的 `prompts/` 模块，把每个提示作为命名的构建函数，并加入轻量的评估固件，使提示的变更能像产品逻辑一样被评审。
