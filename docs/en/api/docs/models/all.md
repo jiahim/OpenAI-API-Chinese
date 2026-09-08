@@ -85,6 +85,8 @@ See [how OpenAI uses your data](/api/docs/guides/your-data.md) and review [depre
 - [GPT-Image-1 Mini](/api/docs/models/gpt-image-1-mini.md): A cost-efficient version of GPT Image 1
 - [GPT-Image-1.5](/api/docs/models/gpt-image-1.5.md): Our previous image generation model
 - [GPT-Image-2](/api/docs/models/gpt-image-2.md): State-of-the-art image generation model
+- [GPT-Image-2.5 Flare](/api/docs/models/gpt-image-2.5-flare.md): Fast, high-quality everyday image generation
+- [GPT-Image-2.5 Sunburst](/api/docs/models/gpt-image-2.5-sunburst.md): Our most capable model for image generation and editing
 - [GPT-Live-Transcribe](/api/docs/models/gpt-live-transcribe.md): Low-latency speech-to-text model for realtime transcription
 - [gpt-oss-120b](/api/docs/models/gpt-oss-120b.md): Most powerful open-weight model, fits into an H100 GPU
 - [gpt-oss-20b](/api/docs/models/gpt-oss-20b.md): Medium-sized open-weight model for low latency

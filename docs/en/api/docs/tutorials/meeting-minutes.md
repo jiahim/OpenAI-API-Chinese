@@ -2,39 +2,34 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-In this tutorial, we'll harness the power of OpenAI's Whisper and GPT models to develop an automated meeting minutes generator. The application transcribes audio from a meeting, provides a summary of the discussion, extracts key points and action items, and performs a sentiment analysis.
+In this tutorial, you'll build an automated meeting minutes generator. The application transcribes a meeting recording, summarizes the discussion, extracts key points and action items, analyzes sentiment, and saves the result as a Word document.
 
 ## Getting started
 
-This tutorial assumes a basic understanding of Python and an [OpenAI API key](https://platform.openai.com/settings/organization/api-keys). You can use the audio file provided with this tutorial or your own.
+This tutorial assumes familiarity with one of the supported languages and an [OpenAI API key](https://platform.openai.com/settings/organization/api-keys). You can use the short smoke-test audio file or your own recording of up to 25 MB.
 
-Additionally, you will need to install the [python-docx](https://python-docx.readthedocs.io/en/latest/) and [OpenAI](https://developers.openai.com/api/docs/libraries) libraries. You can create a new Python environment and install the required packages with the following commands:
+Install the [OpenAI SDK](https://developers.openai.com/api/docs/libraries) and a DOCX library for your language:
 
-```bash
-python -m venv env
+- JavaScript: [`docx`](https://docx.js.org/)
+- Python: [`python-docx`](https://python-docx.readthedocs.io/en/latest/)
+- Go: [`godocx`](https://github.com/gomutex/godocx)
+- Java: [Apache POI XWPF](https://poi.apache.org/components/document/quick-guide-xwpf.html)
+- Ruby: [`caracal`](https://github.com/urvin-compliance/caracal)
 
-source env/bin/activate
-
-pip install openai
-pip install python-docx
-```
-
-## Transcribing audio with Whisper
+## Transcribing audio
 
 
 
   
 
-    The first step in transcribing the audio from a meeting is to pass the
-      audio file of the meeting into our 
-      [/v1/audio API](https://developers.openai.com/api/reference/resources/audio). Whisper, the
-      model that powers the audio API, is capable of converting spoken language
-      into written text. To start, we will avoid passing a 
+    The first step is to pass the meeting recording to the 
+      [/v1/audio API](https://developers.openai.com/api/reference/resources/audio). The current
+      file transcription model converts spoken language into written text. To
+      start, omit the optional 
       [prompt](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create#audio/createTranscription-prompt) 
-      or 
+      and 
       [temperature](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create#audio/createTranscription-temperature-4) 
-      (optional parameters to control the model's output) and stick with the
-      default values.
+      parameters and use their default values.
     
 
     
@@ -54,132 +49,486 @@ Download sample audio
 
 
 
-Next, we import the required packages and define a function that uses the Whisper model to take in the audio file and
-transcribe it:
+Save the downloaded file as `meeting.wav` in the directory from which you run the example, or replace `meeting.wav` with the path to your recording. The short downloadable clip verifies the workflow; use an actual meeting recording of up to 25 MB to generate useful summaries and action items.
+
+Define a helper that opens the recording and sends the file contents to [`gpt-transcribe`](https://developers.openai.com/api/docs/models/gpt-transcribe):
+
+```javascript
+import fs from "node:fs";
+
+import { Document, HeadingLevel, Packer, Paragraph, TextRun } from "docx";
+import OpenAI from "openai";
+
+const openai = new OpenAI();
+
+async function transcribeAudio(audioFilePath) {
+  const transcription = await openai.audio.transcriptions.create({
+    file: fs.createReadStream(audioFilePath),
+    model: "gpt-transcribe",
+  });
+  return transcription.text;
+}
+```
 
 ```python
+from pathlib import Path
+
 from docx import Document
 from openai import OpenAI
 
 client = OpenAI()
 
 
-def transcribe_audio(audio_file_path):
-    with open(audio_file_path, "rb") as audio_file:
+def transcribe_audio(audio_file_path: str | Path) -> str:
+    with Path(audio_file_path).open("rb") as audio_file:
         transcription = client.audio.transcriptions.create(
             file=audio_file,
-            model="whisper-1",
+            model="gpt-transcribe",
         )
     return transcription.text
 ```
 
+```go
+package main
 
-In this function, `audio_file_path` is the path to the audio file you want to transcribe. The function opens this file and passes it to the Whisper ASR model (`whisper-1`) for transcription. The result is returned as raw text. It’s important to note that the `openai.Audio.transcribe` function requires the actual audio file to be passed in, not just the path to the file locally or on a remote server. This means that if you are running this code on a server where you might not also be storing your audio files, you will need to have a preprocessing step that first downloads the audio files onto that device.
+import (
+	"context"
+	"fmt"
+	"os"
+	"strings"
 
-## Summarizing and analyzing the transcript with a GPT model
+	"github.com/gomutex/godocx"
+	"github.com/openai/openai-go/v3"
+)
 
-Having obtained the transcript, we now pass it to a GPT model via the [Chat Completions API](https://developers.openai.com/api/reference/resources/chat). The snippets below use a tested model to generate a summary, extract key points, action items, and perform sentiment analysis. For new projects, start with [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra).
+type meetingMinutes struct {
+	AbstractSummary string
+	KeyPoints       string
+	ActionItems     string
+	Sentiment       string
+}
 
-This tutorial uses distinct functions for each task we want the model to perform. This is not the most efficient way to do this task - you can put these instructions into one function, however, splitting them up can lead to higher quality summarization.
+var client = openai.NewClient()
 
-To split the tasks up, we define the `meeting_minutes` function which will serve as the main function of this application:
+func transcribeAudio(ctx context.Context, audioFilePath string) (string, error) {
+	audioFile, err := os.Open(audioFilePath)
+	if err != nil {
+		return "", err
+	}
+	defer audioFile.Close()
 
-```python
-def meeting_minutes(transcription):
-    abstract_summary = abstract_summary_extraction(transcription)
-    key_points = key_points_extraction(transcription)
-    action_items = action_item_extraction(transcription)
-    sentiment = sentiment_analysis(transcription)
-    return {
-        "abstract_summary": abstract_summary,
-        "key_points": key_points,
-        "action_items": action_items,
-        "sentiment": sentiment,
-    }
+	transcription, err := client.Audio.Transcriptions.New(ctx, openai.AudioTranscriptionNewParams{
+		File:  audioFile,
+		Model: "gpt-transcribe",
+	})
+	if err != nil {
+		return "", err
+	}
+	return transcription.Text, nil
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.audio.transcriptions.TranscriptionCreateParams;
+import com.openai.models.chat.completions.ChatCompletionCreateParams;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFStyle;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyle;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STStyleType;
+
+public final class TutorialMeetingMinutesExample {
+  private TutorialMeetingMinutesExample() {}
+
+  record MeetingMinutes(
+      String abstractSummary, String keyPoints, String actionItems, String sentiment) {}
+
+  private static final class ClientHolder {
+    private static final OpenAIClient INSTANCE = OpenAIOkHttpClient.fromEnv();
+  }
+
+  private static OpenAIClient client() {
+    return ClientHolder.INSTANCE;
+  }
+
+  static String transcribeAudio(Path audioFilePath) {
+    var transcription =
+        client()
+            .audio()
+            .transcriptions()
+            .create(
+                TranscriptionCreateParams.builder()
+                    .file(audioFilePath)
+                    .model("gpt-transcribe")
+                    .build());
+    return transcription.asTranscription().text();
+  }
+```
+
+```ruby
+require "caracal"
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+
+def transcribe_audio(client, audio_file_path)
+  transcription = client.audio.transcriptions.create(
+    file: Pathname(audio_file_path),
+    model: "gpt-transcribe"
+  )
+  transcription.text
+end
 ```
 
 
-In this function, `transcription` is the text we obtained from Whisper. The transcription can be passed to the four other functions, each designed to perform a specific task: `abstract_summary_extraction` generates a summary of the meeting, `key_points_extraction` extracts the main points, `action_item_extraction` identifies the action items, and `sentiment_analysis performs` a sentiment analysis. If there are other capabilities you want, you can add those in as well using the same framework shown above.
+The helper accepts a local audio path, opens the file with the language's standard file API, and passes the file contents to the transcription model. The transcription endpoint needs the audio bytes, not a local path or remote URL. If your server stores recordings elsewhere, download or stream the recording into the request before creating the transcription.
+
+## Summarizing and analyzing the transcript with a GPT model
+
+Pass the transcript to a GPT model through the [Chat Completions API](https://developers.openai.com/api/reference/resources/chat). This tutorial demonstrates the still-supported Chat Completions path for existing integrations. For new projects, use the [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) and start with [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra). The snippets below use a tested model to generate a summary, extract key points and action items, and analyze sentiment.
+
+This tutorial uses a separate model call for each task. You can combine the instructions into one request to reduce calls, but separate prompts make each result easier to tune.
+
+Define the shared helper that sends the transcript and task-specific instructions to the model:
+
+```javascript
+async function complete(transcription, instructions) {
+  const response = await openai.chat.completions.create({
+    model: "gpt-5.5",
+    messages: [
+      { role: "system", content: instructions },
+      { role: "user", content: transcription },
+    ],
+  });
+  return response.choices[0].message.content ?? "";
+}
+```
+
+```python
+def complete(transcription: str, instructions: str) -> str:
+    response = client.chat.completions.create(
+        model="gpt-5.5",
+        messages=[
+            {"role": "system", "content": instructions},
+            {"role": "user", "content": transcription},
+        ],
+    )
+    return response.choices[0].message.content or ""
+```
+
+```go
+func complete(ctx context.Context, transcription, instructions string) (string, error) {
+	response, err := client.Chat.Completions.New(ctx, openai.ChatCompletionNewParams{
+		Model: "gpt-5.5",
+		Messages: []openai.ChatCompletionMessageParamUnion{
+			openai.SystemMessage(instructions),
+			openai.UserMessage(transcription),
+		},
+	})
+	if err != nil {
+		return "", err
+	}
+	return response.Choices[0].Message.Content, nil
+}
+```
+
+```java
+private static String complete(String transcription, String instructions) {
+  var response =
+      client()
+          .chat()
+          .completions()
+          .create(
+              ChatCompletionCreateParams.builder()
+                  .model("gpt-5.5")
+                  .addSystemMessage(instructions)
+                  .addUserMessage(transcription)
+                  .build());
+  return response.choices().get(0).message().content().orElse("");
+}
+```
+
+```ruby
+def complete(client, transcription, instructions)
+  response = client.chat.completions.create(
+    model: "gpt-5.5",
+    messages: [
+      {role: :system, content: instructions},
+      {role: :user, content: transcription}
+    ]
+  )
+  response.choices.first.message.content || ""
+end
+```
+
+
+Define an orchestration helper that returns the four sections of the meeting minutes:
+
+```javascript
+async function buildMeetingMinutes(transcription) {
+  return {
+    "Abstract summary": await extractAbstractSummary(transcription),
+    "Key points": await extractKeyPoints(transcription),
+    "Action items": await extractActionItems(transcription),
+    Sentiment: await analyzeSentiment(transcription),
+  };
+}
+```
+
+```python
+def meeting_minutes(transcription: str) -> dict[str, str]:
+    return {
+        "Abstract summary": abstract_summary_extraction(transcription),
+        "Key points": key_points_extraction(transcription),
+        "Action items": action_item_extraction(transcription),
+        "Sentiment": sentiment_analysis(transcription),
+    }
+```
+
+```go
+func buildMeetingMinutes(ctx context.Context, transcription string) (meetingMinutes, error) {
+	summary, err := extractAbstractSummary(ctx, transcription)
+	if err != nil {
+		return meetingMinutes{}, err
+	}
+	keyPoints, err := extractKeyPoints(ctx, transcription)
+	if err != nil {
+		return meetingMinutes{}, err
+	}
+	actionItems, err := extractActionItems(ctx, transcription)
+	if err != nil {
+		return meetingMinutes{}, err
+	}
+	sentiment, err := analyzeSentiment(ctx, transcription)
+	if err != nil {
+		return meetingMinutes{}, err
+	}
+	return meetingMinutes{summary, keyPoints, actionItems, sentiment}, nil
+}
+```
+
+```java
+static MeetingMinutes buildMeetingMinutes(String transcription) {
+  return new MeetingMinutes(
+      extractAbstractSummary(transcription),
+      extractKeyPoints(transcription),
+      extractActionItems(transcription),
+      analyzeSentiment(transcription));
+}
+```
+
+```ruby
+def build_meeting_minutes(client, transcription)
+  {
+    "Abstract summary" => extract_abstract_summary(client, transcription),
+    "Key points" => extract_key_points(client, transcription),
+    "Action items" => extract_action_items(client, transcription),
+    "Sentiment" => analyze_sentiment(client, transcription)
+  }
+end
+```
+
+
+The helper passes the transcript to four focused helpers: one each for the summary, key points, action items, and sentiment. Add another helper and output section if your application needs more analysis.
 
 Here is how each of these functions works:
 
 ### Summary extraction
 
-The `abstract_summary_extraction` function takes the transcription and summarizes it into a concise abstract paragraph with the aim to retain the most important points while avoiding unnecessary details or tangential points. The main mechanism to enable this process is the system message as shown below. There are many different possible ways of achieving similar results through the process commonly referred to as prompt engineering. You can read our [prompt engineering guide](https://developers.openai.com/api/docs/guides/prompt-engineering) which gives in depth advice on how to do this most effectively.
+The summary helper asks the model for one concise paragraph that preserves important decisions and context while omitting tangents. The system message controls this behavior. For more ways to shape the result, see the [prompt engineering guide](https://developers.openai.com/api/docs/guides/prompt-engineering).
+
+```javascript
+async function extractAbstractSummary(transcription) {
+  return complete(
+    transcription,
+    "Summarize the meeting transcript in one concise paragraph. Keep the most important decisions and context, and omit tangents."
+  );
+}
+```
 
 ```python
-def abstract_summary_extraction(transcription):
-    response = client.chat.completions.create(
-        model="gpt-5.5",
-        messages=[
-            {
-                "role": "system",
-                "content": "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the following text and summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the discussion without needing to read the entire text. Please avoid unnecessary details or tangential points.",
-            },
-            {"role": "user", "content": transcription},
-        ],
+def abstract_summary_extraction(transcription: str) -> str:
+    return complete(
+        transcription,
+        "Summarize the meeting transcript in one concise paragraph. "
+        "Keep the most important decisions and context, and omit tangents.",
     )
-    return response.choices[0].message.content or ""
+```
+
+```go
+func extractAbstractSummary(ctx context.Context, transcription string) (string, error) {
+	return complete(ctx, transcription, "Summarize the meeting transcript in one concise paragraph. Keep the most important decisions and context, and omit tangents.")
+}
+```
+
+```java
+static String extractAbstractSummary(String transcription) {
+  return complete(
+      transcription,
+      "Summarize the meeting transcript in one concise paragraph. "
+          + "Keep the most important decisions and context, and omit tangents.");
+}
+```
+
+```ruby
+def extract_abstract_summary(client, transcription)
+  complete(
+    client,
+    transcription,
+    "Summarize the meeting transcript in one concise paragraph. Keep the most important decisions and context, and omit tangents."
+  )
+end
 ```
 
 
 ### Key points extraction
 
-The `key_points_extraction` function identifies and lists the main points discussed in the meeting. These points should represent the most important ideas, findings, or topics crucial to the essence of the discussion. Again, the main mechanism for controlling the way these points are identified is the system message. You might want to give some additional context here around the way your project or company runs such as “We are a company that sells race cars to consumers. We do XYZ with the goal of XYZ”. This additional context could dramatically improve the models ability to extract information that is relevant.
+The key-points helper lists the important ideas, findings, and topics discussed in the meeting. Add relevant project or company context to the system message when it helps the model identify what matters to your audience.
+
+```javascript
+async function extractKeyPoints(transcription) {
+  return complete(
+    transcription,
+    "List the most important ideas, findings, and topics from the meeting. Use concise bullet points."
+  );
+}
+```
 
 ```python
-def key_points_extraction(transcription):
-    response = client.chat.completions.create(
-        model="gpt-5.5",
-        messages=[
-            {
-                "role": "system",
-                "content": "You are a proficient AI with a specialty in distilling information into key points. Based on the following text, identify and list the main points that were discussed or brought up. These should be the most important ideas, findings, or topics that are crucial to the essence of the discussion. Your goal is to provide a list that someone could read to quickly understand what was talked about.",
-            },
-            {"role": "user", "content": transcription},
-        ],
+def key_points_extraction(transcription: str) -> str:
+    return complete(
+        transcription,
+        "List the most important ideas, findings, and topics from the meeting. "
+        "Use concise bullet points.",
     )
-    return response.choices[0].message.content or ""
+```
+
+```go
+func extractKeyPoints(ctx context.Context, transcription string) (string, error) {
+	return complete(ctx, transcription, "List the most important ideas, findings, and topics from the meeting. Use concise bullet points.")
+}
+```
+
+```java
+static String extractKeyPoints(String transcription) {
+  return complete(
+      transcription,
+      "List the most important ideas, findings, and topics from the meeting. "
+          + "Use concise bullet points.");
+}
+```
+
+```ruby
+def extract_key_points(client, transcription)
+  complete(
+    client,
+    transcription,
+    "List the most important ideas, findings, and topics from the meeting. Use concise bullet points."
+  )
+end
 ```
 
 
 ### Action item extraction
 
-The `action_item_extraction` function identifies tasks, assignments, or actions agreed upon or mentioned during the meeting. These could be tasks assigned to specific individuals or general actions the group decided to take. While not covered in this tutorial, the Chat Completions API provides a [function calling capability](https://developers.openai.com/api/docs/guides/function-calling) which would allow you to build in the ability to automatically create tasks in your task management software and assign it to the relevant person.
+The action-items helper identifies tasks and follow-ups, including owners and deadlines when the transcript provides them. To create and assign tasks in another system, connect this step to [function calling](https://developers.openai.com/api/docs/guides/function-calling).
+
+```javascript
+async function extractActionItems(transcription) {
+  return complete(
+    transcription,
+    "List every task or follow-up agreed to in the meeting. Include the owner and deadline when the transcript provides them."
+  );
+}
+```
 
 ```python
-def action_item_extraction(transcription):
-    response = client.chat.completions.create(
-        model="gpt-5.5",
-        messages=[
-            {
-                "role": "system",
-                "content": "You are an AI expert in analyzing conversations and extracting action items. Please review the text and identify any tasks, assignments, or actions that were agreed upon or mentioned as needing to be done. These could be tasks assigned to specific individuals, or general actions that the group has decided to take. Please list these action items clearly and concisely.",
-            },
-            {"role": "user", "content": transcription},
-        ],
+def action_item_extraction(transcription: str) -> str:
+    return complete(
+        transcription,
+        "List every task or follow-up agreed to in the meeting. "
+        "Include the owner and deadline when the transcript provides them.",
     )
-    return response.choices[0].message.content or ""
+```
+
+```go
+func extractActionItems(ctx context.Context, transcription string) (string, error) {
+	return complete(ctx, transcription, "List every task or follow-up agreed to in the meeting. Include the owner and deadline when the transcript provides them.")
+}
+```
+
+```java
+static String extractActionItems(String transcription) {
+  return complete(
+      transcription,
+      "List every task or follow-up agreed to in the meeting. "
+          + "Include the owner and deadline when the transcript provides them.");
+}
+```
+
+```ruby
+def extract_action_items(client, transcription)
+  complete(
+    client,
+    transcription,
+    "List every task or follow-up agreed to in the meeting. Include the owner and deadline when the transcript provides them."
+  )
+end
 ```
 
 
 ### Sentiment analysis
 
-The `sentiment_analysis` function analyzes the overall sentiment of the discussion. It considers the tone, the emotions conveyed by the language used, and the context in which words and phrases are used. For less complicated tasks, it may also be worthwhile to try [`gpt-5.6-terra`](https://developers.openai.com/api/docs/models/gpt-5.6-terra) to see if you can get a similar level of performance at lower cost and latency. It might also be useful to experiment with taking the results of the `sentiment_analysis` function and passing it to the other functions to see how having the sentiment of the conversation impacts the other attributes.
+The sentiment helper classifies the discussion as positive, negative, or neutral and explains the assessment. For simpler tasks, try [`gpt-5.6-terra`](https://developers.openai.com/api/docs/models/gpt-5.6-terra) to see whether it meets your quality target with lower cost and latency.
+
+```javascript
+async function analyzeSentiment(transcription) {
+  return complete(
+    transcription,
+    "Describe the meeting's overall sentiment as positive, negative, or neutral, and briefly explain the assessment."
+  );
+}
+```
 
 ```python
-def sentiment_analysis(transcription):
-    response = client.chat.completions.create(
-        model="gpt-5.5",
-        messages=[
-            {
-                "role": "system",
-                "content": "As an AI with expertise in language and emotion analysis, your task is to analyze the sentiment of the following text. Please consider the overall tone of the discussion, the emotion conveyed by the language used, and the context in which words and phrases are used. Indicate whether the sentiment is generally positive, negative, or neutral, and provide brief explanations for your analysis where possible.",
-            },
-            {"role": "user", "content": transcription},
-        ],
+def sentiment_analysis(transcription: str) -> str:
+    return complete(
+        transcription,
+        "Describe the meeting's overall sentiment as positive, negative, or "
+        "neutral, and briefly explain the assessment.",
     )
-    return response.choices[0].message.content or ""
+```
+
+```go
+func analyzeSentiment(ctx context.Context, transcription string) (string, error) {
+	return complete(ctx, transcription, "Describe the meeting's overall sentiment as positive, negative, or neutral, and briefly explain the assessment.")
+}
+```
+
+```java
+static String analyzeSentiment(String transcription) {
+  return complete(
+      transcription,
+      "Describe the meeting's overall sentiment as positive, negative, or neutral, "
+          + "and briefly explain the assessment.");
+}
+```
+
+```ruby
+def analyze_sentiment(client, transcription)
+  complete(
+    client,
+    transcription,
+    "Describe the meeting's overall sentiment as positive, negative, or neutral, and briefly explain the assessment."
+  )
+end
 ```
 
 
@@ -189,12 +538,11 @@ def sentiment_analysis(transcription):
 
   
 
-    Once we've generated the meeting minutes, it's beneficial to save them
-      into a readable format that can be easily distributed. One common format
-      for such reports is Microsoft Word. The Python docx library is a popular
-      open source library for creating Word documents. If you wanted to build an
-      end-to-end meeting minute application, you might consider removing this
-      export step in favor of sending the summary inline as an email followup.
+    Save the meeting minutes in a readable format that you can distribute.
+      Microsoft Word is a common choice for this kind of report. The examples
+      use a DOCX library suited to each language. In an end-to-end application,
+      you could send the result in an email or write it to another system
+      instead.
     
 
   
@@ -205,36 +553,161 @@ def sentiment_analysis(transcription):
 
 </br>
 
-To handle the exporting process, define a function `save_as_docx` that converts the raw text to a Word document:
+Define a helper that writes each result section to a Word document:
+
+```javascript
+async function saveAsDocx(minutes, filename) {
+  const children = Object.entries(minutes).flatMap(([heading, content]) => [
+    new Paragraph({ text: heading, heading: HeadingLevel.HEADING_1 }),
+    new Paragraph({
+      children: content
+        .split(/\r\n?|\n/)
+        .flatMap((line, index) => [
+          ...(index > 0 ? [new TextRun({ break: 1 })] : []),
+          new TextRun(line),
+        ]),
+    }),
+  ]);
+  const document = new Document({ sections: [{ children }] });
+  await fs.promises.writeFile(filename, await Packer.toBuffer(document));
+}
+```
 
 ```python
-def save_as_docx(minutes, filename):
-    doc = Document()
-    for key, value in minutes.items():
-        # Replace underscores with spaces and capitalize each word for the heading
-        heading = " ".join(word.capitalize() for word in key.split("_"))
-        doc.add_heading(heading, level=1)
-        doc.add_paragraph(value)
-        # Add a line break between sections
-        doc.add_paragraph()
-    doc.save(filename)
+def save_as_docx(minutes: dict[str, str], filename: Path) -> None:
+    document = Document()
+    for heading, content in minutes.items():
+        document.add_heading(heading, level=1)
+        document.add_paragraph(content)
+    document.save(filename)
+```
+
+```go
+func saveAsDocx(minutes meetingMinutes, filename string) error {
+	document, err := godocx.NewDocument()
+	if err != nil {
+		return err
+	}
+	for _, section := range []struct{ heading, content string }{
+		{"Abstract summary", minutes.AbstractSummary},
+		{"Key points", minutes.KeyPoints},
+		{"Action items", minutes.ActionItems},
+		{"Sentiment", minutes.Sentiment},
+	} {
+		document.AddHeading(section.heading, 1)
+		for _, line := range strings.Split(strings.ReplaceAll(section.content, "\r\n", "\n"), "\n") {
+			document.AddParagraph(line)
+		}
+	}
+	return document.SaveTo(filename)
+}
+```
+
+```java
+static void saveAsDocx(MeetingMinutes minutes, Path filename) throws IOException {
+  try (var document = new XWPFDocument();
+      OutputStream output = Files.newOutputStream(filename)) {
+    addHeadingStyle(document);
+    addSection(document, "Abstract summary", minutes.abstractSummary());
+    addSection(document, "Key points", minutes.keyPoints());
+    addSection(document, "Action items", minutes.actionItems());
+    addSection(document, "Sentiment", minutes.sentiment());
+    document.write(output);
+  }
+}
+
+private static void addHeadingStyle(XWPFDocument document) {
+  var headingStyle = CTStyle.Factory.newInstance();
+  headingStyle.setStyleId("Heading1");
+  headingStyle.addNewName().setVal("Heading 1");
+  headingStyle.setType(STStyleType.PARAGRAPH);
+  headingStyle.addNewPPr().addNewOutlineLvl().setVal(BigInteger.ZERO);
+  document.createStyles().addStyle(new XWPFStyle(headingStyle));
+}
+
+private static void addSection(XWPFDocument document, String heading, String content) {
+  var headingParagraph = document.createParagraph();
+  headingParagraph.setStyle("Heading1");
+  var headingRun = headingParagraph.createRun();
+  headingRun.setBold(true);
+  headingRun.setFontSize(16);
+  headingRun.setText(heading);
+  var contentRun = document.createParagraph().createRun();
+  String[] lines = content.split("\\R", -1);
+  for (int index = 0; index < lines.length; index += 1) {
+    if (index > 0) contentRun.addBreak();
+    contentRun.setText(lines[index]);
+  }
+}
+```
+
+```ruby
+def save_as_docx(minutes, filename)
+  Caracal::Document.save(filename) do |document|
+    minutes.each do |heading, content|
+      document.h1(heading)
+      content.split(/\r\n?|\n/, -1).each { |line| document.p(line) }
+    end
+  end
+end
 ```
 
 
-In this function, minutes is a dictionary containing the abstract summary, key points, action items, and sentiment analysis from the meeting. Filename is the name of the Word document file to be created. The function creates a new Word document, adds headings and content for each part of the minutes, and then saves the document to the current working directory.
+The helper receives the generated sections and an output filename, adds a heading and paragraph for each section, and saves the document to the current working directory.
 
-Finally, you can put it all together and generate the meeting minutes from an audio file:
+Finally, combine the steps to generate meeting minutes from an audio file:
+
+```javascript
+const transcription = await transcribeAudio("meeting.wav");
+const minutes = await buildMeetingMinutes(transcription);
+console.log(minutes);
+await saveAsDocx(minutes, "meeting_minutes.docx");
+```
 
 ```python
-audio_file_path = "Earningscall.wav"
+audio_file_path = Path("meeting.wav")
 transcription = transcribe_audio(audio_file_path)
 minutes = meeting_minutes(transcription)
 print(minutes)
+save_as_docx(minutes, Path("meeting_minutes.docx"))
+```
 
+```go
+func main() {
+	ctx := context.Background()
+	transcription, err := transcribeAudio(ctx, "meeting.wav")
+	if err != nil {
+		panic(err)
+	}
+	minutes, err := buildMeetingMinutes(ctx, transcription)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("%+v\n", minutes)
+	if err := saveAsDocx(minutes, "meeting_minutes.docx"); err != nil {
+		panic(err)
+	}
+}
+```
+
+```java
+public static void main(String[] args) throws IOException {
+    String transcription = transcribeAudio(Path.of("meeting.wav"));
+    MeetingMinutes minutes = buildMeetingMinutes(transcription);
+    System.out.println(minutes);
+    saveAsDocx(minutes, Path.of("meeting_minutes.docx"));
+  }
+}
+```
+
+```ruby
+transcription = transcribe_audio(client, "meeting.wav")
+minutes = build_meeting_minutes(client, transcription)
+puts minutes
 save_as_docx(minutes, "meeting_minutes.docx")
 ```
 
 
-This code will transcribe the audio file `Earningscall.wav`, generates the meeting minutes, prints them, and then saves them into a Word document called `meeting_minutes.docx`.
+This code resolves `meeting.wav` from the process working directory, generates and prints the meeting minutes, and saves them as `meeting_minutes.docx`.
 
-Now that you have the basic meeting minutes processing setup, consider trying to optimize the performance with [prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering) or build an end-to-end system with native [function calling](https://developers.openai.com/api/docs/guides/function-calling).
+Now that you have a basic meeting minutes workflow, tune the prompts with [prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering) or build an end-to-end system with [function calling](https://developers.openai.com/api/docs/guides/function-calling).

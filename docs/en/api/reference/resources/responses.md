@@ -1886,11 +1886,13 @@ the `background` parameter set to `true` can be cancelled.
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -1919,20 +1921,24 @@ the `background` parameter set to `true` can be cancelled.
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -1944,6 +1950,14 @@ the `background` parameter set to `true` can be cancelled.
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -1972,10 +1986,12 @@ the `background` parameter set to `true` can be cancelled.
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -1983,17 +1999,21 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -2920,11 +2940,13 @@ the `background` parameter set to `true` can be cancelled.
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -2953,20 +2975,24 @@ the `background` parameter set to `true` can be cancelled.
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -2978,6 +3004,14 @@ the `background` parameter set to `true` can be cancelled.
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -3006,10 +3040,12 @@ the `background` parameter set to `true` can be cancelled.
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -3017,17 +3053,21 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -5656,11 +5696,13 @@ the `background` parameter set to `true` can be cancelled.
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -5689,20 +5731,24 @@ the `background` parameter set to `true` can be cancelled.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -5714,6 +5760,14 @@ the `background` parameter set to `true` can be cancelled.
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -5742,10 +5796,12 @@ the `background` parameter set to `true` can be cancelled.
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -5753,17 +5809,21 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -6536,11 +6596,13 @@ the `background` parameter set to `true` can be cancelled.
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -6569,20 +6631,24 @@ the `background` parameter set to `true` can be cancelled.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -6594,6 +6660,14 @@ the `background` parameter set to `true` can be cancelled.
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -6622,10 +6696,12 @@ the `background` parameter set to `true` can be cancelled.
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -6633,17 +6709,21 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -8419,11 +8499,13 @@ the `background` parameter set to `true` can be cancelled.
 
       - `background: optional "transparent" or "opaque" or "auto"`
 
-        Set the background of the generated image. One of `transparent`,
-        `opaque`, or `auto`. Transparent backgrounds are available for
-        supported GPT Image models. For `gpt-image-2` and
-        `gpt-image-2-2026-04-21`, this support is in preview. When using
-        `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+        Set the background of the generated image. One of `transparent`, `opaque`,
+        or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+        their `2026-09-08` snapshots, support `opaque` and `transparent`
+        backgrounds. Transparent backgrounds are available for supported GPT Image
+        models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+        preview. When using `transparent`, set the output format to `png` or `webp`.
+        Default: `auto`.
 
         - `"transparent"`
 
@@ -8452,20 +8534,24 @@ the `background` parameter set to `true` can be cancelled.
 
           Base64-encoded mask image.
 
-      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
         The image generation model to use. One of `gpt-image-1`,
         `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-        `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+        `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+        `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+        `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
         `gpt-image-1`.
 
         - `string`
 
-        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `"gpt-image-1"`
@@ -8477,6 +8563,14 @@ the `background` parameter set to `true` can be cancelled.
           - `"gpt-image-2"`
 
           - `"gpt-image-2-2026-04-21"`
+
+          - `"gpt-image-2.5-sunburst"`
+
+          - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+          - `"gpt-image-2.5-flare"`
+
+          - `"gpt-image-2.5-flare-2026-09-08"`
 
       - `moderation: optional "auto" or "low"`
 
@@ -8505,10 +8599,12 @@ the `background` parameter set to `true` can be cancelled.
 
         Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-      - `quality: optional "low" or "medium" or "high" or "auto"`
+      - `quality: optional "low" or "medium" or "high" or 3 more`
 
-        The quality of the generated image. One of `low`, `medium`, `high`,
-        or `auto`. Default: `auto`.
+        The quality of the generated image. The GPT image models support `low`,
+        `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+        including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+        Default: `auto`.
 
         - `"low"`
 
@@ -8516,17 +8612,21 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"high"`
 
+        - `"xhigh"`
+
+        - `"max"`
+
         - `"auto"`
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `"1024x1024"`
 
@@ -11619,11 +11719,13 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -11652,20 +11754,24 @@ Learn when and how to compact long-running conversations in the [conversation st
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -11677,6 +11783,14 @@ Learn when and how to compact long-running conversations in the [conversation st
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -11705,10 +11819,12 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -11716,17 +11832,21 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -12653,11 +12773,13 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -12686,20 +12808,24 @@ Learn when and how to compact long-running conversations in the [conversation st
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -12711,6 +12837,14 @@ Learn when and how to compact long-running conversations in the [conversation st
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -12739,10 +12873,12 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -12750,17 +12886,21 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -15266,11 +15406,13 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -15299,20 +15441,24 @@ Learn when and how to compact long-running conversations in the [conversation st
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -15324,6 +15470,14 @@ Learn when and how to compact long-running conversations in the [conversation st
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -15352,10 +15506,12 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -15363,17 +15519,21 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -16296,11 +16456,13 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -16329,20 +16491,24 @@ Learn when and how to compact long-running conversations in the [conversation st
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -16354,6 +16520,14 @@ Learn when and how to compact long-running conversations in the [conversation st
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -16382,10 +16556,12 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -16393,17 +16569,21 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -20206,11 +20386,13 @@ as input for the model's response.
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -20239,20 +20421,24 @@ as input for the model's response.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -20264,6 +20450,14 @@ as input for the model's response.
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -20292,10 +20486,12 @@ as input for the model's response.
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -20303,17 +20499,21 @@ as input for the model's response.
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -21240,11 +21440,13 @@ as input for the model's response.
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -21273,20 +21475,24 @@ as input for the model's response.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -21298,6 +21504,14 @@ as input for the model's response.
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -21326,10 +21540,12 @@ as input for the model's response.
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -21337,17 +21553,21 @@ as input for the model's response.
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -23896,11 +24116,13 @@ as input for the model's response.
 
     - `background: optional "transparent" or "opaque" or "auto"`
 
-      Set the background of the generated image. One of `transparent`,
-      `opaque`, or `auto`. Transparent backgrounds are available for
-      supported GPT Image models. For `gpt-image-2` and
-      `gpt-image-2-2026-04-21`, this support is in preview. When using
-      `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+      Set the background of the generated image. One of `transparent`, `opaque`,
+      or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+      their `2026-09-08` snapshots, support `opaque` and `transparent`
+      backgrounds. Transparent backgrounds are available for supported GPT Image
+      models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+      preview. When using `transparent`, set the output format to `png` or `webp`.
+      Default: `auto`.
 
       - `"transparent"`
 
@@ -23929,20 +24151,24 @@ as input for the model's response.
 
         Base64-encoded mask image.
 
-    - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+    - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
       The image generation model to use. One of `gpt-image-1`,
       `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-      `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+      `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+      `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+      `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
       `gpt-image-1`.
 
       - `string`
 
-      - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+      - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
         The image generation model to use. One of `gpt-image-1`,
         `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-        `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+        `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+        `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+        `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
         `gpt-image-1`.
 
         - `"gpt-image-1"`
@@ -23954,6 +24180,14 @@ as input for the model's response.
         - `"gpt-image-2"`
 
         - `"gpt-image-2-2026-04-21"`
+
+        - `"gpt-image-2.5-sunburst"`
+
+        - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+        - `"gpt-image-2.5-flare"`
+
+        - `"gpt-image-2.5-flare-2026-09-08"`
 
     - `moderation: optional "auto" or "low"`
 
@@ -23982,10 +24216,12 @@ as input for the model's response.
 
       Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-    - `quality: optional "low" or "medium" or "high" or "auto"`
+    - `quality: optional "low" or "medium" or "high" or 3 more`
 
-      The quality of the generated image. One of `low`, `medium`, `high`,
-      or `auto`. Default: `auto`.
+      The quality of the generated image. The GPT image models support `low`,
+      `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+      including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+      Default: `auto`.
 
       - `"low"`
 
@@ -23993,17 +24229,21 @@ as input for the model's response.
 
       - `"high"`
 
+      - `"xhigh"`
+
+      - `"max"`
+
       - `"auto"`
 
     - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-      The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+      The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
       - `string`
 
       - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
         - `"1024x1024"`
 
@@ -26189,11 +26429,13 @@ as input for the model's response.
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -26222,20 +26464,24 @@ as input for the model's response.
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -26247,6 +26493,14 @@ as input for the model's response.
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -26275,10 +26529,12 @@ as input for the model's response.
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -26286,17 +26542,21 @@ as input for the model's response.
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -27223,11 +27483,13 @@ as input for the model's response.
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -27256,20 +27518,24 @@ as input for the model's response.
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -27281,6 +27547,14 @@ as input for the model's response.
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -27309,10 +27583,12 @@ as input for the model's response.
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -27320,17 +27596,21 @@ as input for the model's response.
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -29959,11 +30239,13 @@ as input for the model's response.
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -29992,20 +30274,24 @@ as input for the model's response.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -30017,6 +30303,14 @@ as input for the model's response.
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -30045,10 +30339,12 @@ as input for the model's response.
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -30056,17 +30352,21 @@ as input for the model's response.
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -30839,11 +31139,13 @@ as input for the model's response.
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -30872,20 +31174,24 @@ as input for the model's response.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -30897,6 +31203,14 @@ as input for the model's response.
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -30925,10 +31239,12 @@ as input for the model's response.
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -30936,17 +31252,21 @@ as input for the model's response.
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -32722,11 +33042,13 @@ as input for the model's response.
 
       - `background: optional "transparent" or "opaque" or "auto"`
 
-        Set the background of the generated image. One of `transparent`,
-        `opaque`, or `auto`. Transparent backgrounds are available for
-        supported GPT Image models. For `gpt-image-2` and
-        `gpt-image-2-2026-04-21`, this support is in preview. When using
-        `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+        Set the background of the generated image. One of `transparent`, `opaque`,
+        or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+        their `2026-09-08` snapshots, support `opaque` and `transparent`
+        backgrounds. Transparent backgrounds are available for supported GPT Image
+        models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+        preview. When using `transparent`, set the output format to `png` or `webp`.
+        Default: `auto`.
 
         - `"transparent"`
 
@@ -32755,20 +33077,24 @@ as input for the model's response.
 
           Base64-encoded mask image.
 
-      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
         The image generation model to use. One of `gpt-image-1`,
         `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-        `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+        `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+        `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+        `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
         `gpt-image-1`.
 
         - `string`
 
-        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `"gpt-image-1"`
@@ -32780,6 +33106,14 @@ as input for the model's response.
           - `"gpt-image-2"`
 
           - `"gpt-image-2-2026-04-21"`
+
+          - `"gpt-image-2.5-sunburst"`
+
+          - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+          - `"gpt-image-2.5-flare"`
+
+          - `"gpt-image-2.5-flare-2026-09-08"`
 
       - `moderation: optional "auto" or "low"`
 
@@ -32808,10 +33142,12 @@ as input for the model's response.
 
         Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-      - `quality: optional "low" or "medium" or "high" or "auto"`
+      - `quality: optional "low" or "medium" or "high" or 3 more`
 
-        The quality of the generated image. One of `low`, `medium`, `high`,
-        or `auto`. Default: `auto`.
+        The quality of the generated image. The GPT image models support `low`,
+        `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+        including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+        Default: `auto`.
 
         - `"low"`
 
@@ -32819,17 +33155,21 @@ as input for the model's response.
 
         - `"high"`
 
+        - `"xhigh"`
+
+        - `"max"`
+
         - `"auto"`
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `"1024x1024"`
 
@@ -36618,11 +36958,13 @@ Retrieves a model response with the given ID.
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -36651,20 +36993,24 @@ Retrieves a model response with the given ID.
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -36676,6 +37022,14 @@ Retrieves a model response with the given ID.
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -36704,10 +37058,12 @@ Retrieves a model response with the given ID.
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -36715,17 +37071,21 @@ Retrieves a model response with the given ID.
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -37652,11 +38012,13 @@ Retrieves a model response with the given ID.
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -37685,20 +38047,24 @@ Retrieves a model response with the given ID.
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -37710,6 +38076,14 @@ Retrieves a model response with the given ID.
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -37738,10 +38112,12 @@ Retrieves a model response with the given ID.
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -37749,17 +38125,21 @@ Retrieves a model response with the given ID.
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -40388,11 +40768,13 @@ Retrieves a model response with the given ID.
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -40421,20 +40803,24 @@ Retrieves a model response with the given ID.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -40446,6 +40832,14 @@ Retrieves a model response with the given ID.
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -40474,10 +40868,12 @@ Retrieves a model response with the given ID.
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -40485,17 +40881,21 @@ Retrieves a model response with the given ID.
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -41268,11 +41668,13 @@ Retrieves a model response with the given ID.
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -41301,20 +41703,24 @@ Retrieves a model response with the given ID.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -41326,6 +41732,14 @@ Retrieves a model response with the given ID.
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -41354,10 +41768,12 @@ Retrieves a model response with the given ID.
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -41365,17 +41781,21 @@ Retrieves a model response with the given ID.
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -43151,11 +43571,13 @@ Retrieves a model response with the given ID.
 
       - `background: optional "transparent" or "opaque" or "auto"`
 
-        Set the background of the generated image. One of `transparent`,
-        `opaque`, or `auto`. Transparent backgrounds are available for
-        supported GPT Image models. For `gpt-image-2` and
-        `gpt-image-2-2026-04-21`, this support is in preview. When using
-        `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+        Set the background of the generated image. One of `transparent`, `opaque`,
+        or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+        their `2026-09-08` snapshots, support `opaque` and `transparent`
+        backgrounds. Transparent backgrounds are available for supported GPT Image
+        models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+        preview. When using `transparent`, set the output format to `png` or `webp`.
+        Default: `auto`.
 
         - `"transparent"`
 
@@ -43184,20 +43606,24 @@ Retrieves a model response with the given ID.
 
           Base64-encoded mask image.
 
-      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
         The image generation model to use. One of `gpt-image-1`,
         `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-        `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+        `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+        `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+        `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
         `gpt-image-1`.
 
         - `string`
 
-        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `"gpt-image-1"`
@@ -43209,6 +43635,14 @@ Retrieves a model response with the given ID.
           - `"gpt-image-2"`
 
           - `"gpt-image-2-2026-04-21"`
+
+          - `"gpt-image-2.5-sunburst"`
+
+          - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+          - `"gpt-image-2.5-flare"`
+
+          - `"gpt-image-2.5-flare-2026-09-08"`
 
       - `moderation: optional "auto" or "low"`
 
@@ -43237,10 +43671,12 @@ Retrieves a model response with the given ID.
 
         Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-      - `quality: optional "low" or "medium" or "high" or "auto"`
+      - `quality: optional "low" or "medium" or "high" or 3 more`
 
-        The quality of the generated image. One of `low`, `medium`, `high`,
-        or `auto`. Default: `auto`.
+        The quality of the generated image. The GPT image models support `low`,
+        `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+        including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+        Default: `auto`.
 
         - `"low"`
 
@@ -43248,17 +43684,21 @@ Retrieves a model response with the given ID.
 
         - `"high"`
 
+        - `"xhigh"`
+
+        - `"max"`
+
         - `"auto"`
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `"1024x1024"`
 
@@ -45535,11 +45975,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -45568,20 +46010,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -45593,6 +46039,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -45621,10 +46075,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -45632,17 +46088,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -46565,11 +47025,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -46598,20 +47060,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -46623,6 +47089,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -46651,10 +47125,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -46662,17 +47138,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -51284,11 +51764,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -51317,20 +51799,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -51342,6 +51828,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -51370,10 +51864,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -51381,17 +51877,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -52318,11 +52818,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -52351,20 +52853,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -52376,6 +52882,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -52404,10 +52918,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -52415,17 +52931,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -55054,11 +55574,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -55087,20 +55609,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -55112,6 +55638,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -55140,10 +55674,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -55151,17 +55687,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -55934,11 +56474,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -55967,20 +56509,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -55992,6 +56538,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -56020,10 +56574,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -56031,17 +56587,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -57817,11 +58377,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
       - `background: optional "transparent" or "opaque" or "auto"`
 
-        Set the background of the generated image. One of `transparent`,
-        `opaque`, or `auto`. Transparent backgrounds are available for
-        supported GPT Image models. For `gpt-image-2` and
-        `gpt-image-2-2026-04-21`, this support is in preview. When using
-        `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+        Set the background of the generated image. One of `transparent`, `opaque`,
+        or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+        their `2026-09-08` snapshots, support `opaque` and `transparent`
+        backgrounds. Transparent backgrounds are available for supported GPT Image
+        models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+        preview. When using `transparent`, set the output format to `png` or `webp`.
+        Default: `auto`.
 
         - `"transparent"`
 
@@ -57850,20 +58412,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           Base64-encoded mask image.
 
-      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
         The image generation model to use. One of `gpt-image-1`,
         `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-        `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+        `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+        `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+        `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
         `gpt-image-1`.
 
         - `string`
 
-        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `"gpt-image-1"`
@@ -57875,6 +58441,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
           - `"gpt-image-2"`
 
           - `"gpt-image-2-2026-04-21"`
+
+          - `"gpt-image-2.5-sunburst"`
+
+          - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+          - `"gpt-image-2.5-flare"`
+
+          - `"gpt-image-2.5-flare-2026-09-08"`
 
       - `moderation: optional "auto" or "low"`
 
@@ -57903,10 +58477,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-      - `quality: optional "low" or "medium" or "high" or "auto"`
+      - `quality: optional "low" or "medium" or "high" or 3 more`
 
-        The quality of the generated image. One of `low`, `medium`, `high`,
-        or `auto`. Default: `auto`.
+        The quality of the generated image. The GPT image models support `low`,
+        `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+        including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+        Default: `auto`.
 
         - `"low"`
 
@@ -57914,17 +58490,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `"high"`
 
+        - `"xhigh"`
+
+        - `"max"`
+
         - `"auto"`
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `"1024x1024"`
 
@@ -60864,11 +61444,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `background: optional "transparent" or "opaque" or "auto"`
 
-                Set the background of the generated image. One of `transparent`,
-                `opaque`, or `auto`. Transparent backgrounds are available for
-                supported GPT Image models. For `gpt-image-2` and
-                `gpt-image-2-2026-04-21`, this support is in preview. When using
-                `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                Set the background of the generated image. One of `transparent`, `opaque`,
+                or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                their `2026-09-08` snapshots, support `opaque` and `transparent`
+                backgrounds. Transparent backgrounds are available for supported GPT Image
+                models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                preview. When using `transparent`, set the output format to `png` or `webp`.
+                Default: `auto`.
 
                 - `"transparent"`
 
@@ -60897,20 +61479,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Base64-encoded mask image.
 
-              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `string`
 
-                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `"gpt-image-1"`
@@ -60922,6 +61508,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                   - `"gpt-image-2"`
 
                   - `"gpt-image-2-2026-04-21"`
+
+                  - `"gpt-image-2.5-sunburst"`
+
+                  - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                  - `"gpt-image-2.5-flare"`
+
+                  - `"gpt-image-2.5-flare-2026-09-08"`
 
               - `moderation: optional "auto" or "low"`
 
@@ -60950,10 +61544,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-              - `quality: optional "low" or "medium" or "high" or "auto"`
+              - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                The quality of the generated image. One of `low`, `medium`, `high`,
-                or `auto`. Default: `auto`.
+                The quality of the generated image. The GPT image models support `low`,
+                `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                Default: `auto`.
 
                 - `"low"`
 
@@ -60961,17 +61557,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"high"`
 
+                - `"xhigh"`
+
+                - `"max"`
+
                 - `"auto"`
 
               - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `string`
 
                 - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `"1024x1024"`
 
@@ -61898,11 +62498,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `background: optional "transparent" or "opaque" or "auto"`
 
-                Set the background of the generated image. One of `transparent`,
-                `opaque`, or `auto`. Transparent backgrounds are available for
-                supported GPT Image models. For `gpt-image-2` and
-                `gpt-image-2-2026-04-21`, this support is in preview. When using
-                `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                Set the background of the generated image. One of `transparent`, `opaque`,
+                or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                their `2026-09-08` snapshots, support `opaque` and `transparent`
+                backgrounds. Transparent backgrounds are available for supported GPT Image
+                models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                preview. When using `transparent`, set the output format to `png` or `webp`.
+                Default: `auto`.
 
                 - `"transparent"`
 
@@ -61931,20 +62533,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Base64-encoded mask image.
 
-              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `string`
 
-                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `"gpt-image-1"`
@@ -61956,6 +62562,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                   - `"gpt-image-2"`
 
                   - `"gpt-image-2-2026-04-21"`
+
+                  - `"gpt-image-2.5-sunburst"`
+
+                  - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                  - `"gpt-image-2.5-flare"`
+
+                  - `"gpt-image-2.5-flare-2026-09-08"`
 
               - `moderation: optional "auto" or "low"`
 
@@ -61984,10 +62598,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-              - `quality: optional "low" or "medium" or "high" or "auto"`
+              - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                The quality of the generated image. One of `low`, `medium`, `high`,
-                or `auto`. Default: `auto`.
+                The quality of the generated image. The GPT image models support `low`,
+                `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                Default: `auto`.
 
                 - `"low"`
 
@@ -61995,17 +62611,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"high"`
 
+                - `"xhigh"`
+
+                - `"max"`
+
                 - `"auto"`
 
               - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `string`
 
                 - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `"1024x1024"`
 
@@ -64634,11 +65254,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -64667,20 +65289,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -64692,6 +65318,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -64720,10 +65354,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -64731,17 +65367,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -65514,11 +66154,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -65547,20 +66189,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -65572,6 +66218,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -65600,10 +66254,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -65611,17 +66267,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -67397,11 +68057,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          Set the background of the generated image. One of `transparent`,
-          `opaque`, or `auto`. Transparent backgrounds are available for
-          supported GPT Image models. For `gpt-image-2` and
-          `gpt-image-2-2026-04-21`, this support is in preview. When using
-          `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+          Set the background of the generated image. One of `transparent`, `opaque`,
+          or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+          their `2026-09-08` snapshots, support `opaque` and `transparent`
+          backgrounds. Transparent backgrounds are available for supported GPT Image
+          models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+          preview. When using `transparent`, set the output format to `png` or `webp`.
+          Default: `auto`.
 
           - `"transparent"`
 
@@ -67430,20 +68092,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `"gpt-image-1"`
@@ -67455,6 +68121,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
             - `"gpt-image-2"`
 
             - `"gpt-image-2-2026-04-21"`
+
+            - `"gpt-image-2.5-sunburst"`
+
+            - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+            - `"gpt-image-2.5-flare"`
+
+            - `"gpt-image-2.5-flare-2026-09-08"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -67483,10 +68157,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or "auto"`
+        - `quality: optional "low" or "medium" or "high" or 3 more`
 
-          The quality of the generated image. One of `low`, `medium`, `high`,
-          or `auto`. Default: `auto`.
+          The quality of the generated image. The GPT image models support `low`,
+          `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+          including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+          Default: `auto`.
 
           - `"low"`
 
@@ -67494,17 +68170,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `"high"`
 
+          - `"xhigh"`
+
+          - `"max"`
+
           - `"auto"`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `"1024x1024"`
 
@@ -70953,11 +71633,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `background: optional "transparent" or "opaque" or "auto"`
 
-                Set the background of the generated image. One of `transparent`,
-                `opaque`, or `auto`. Transparent backgrounds are available for
-                supported GPT Image models. For `gpt-image-2` and
-                `gpt-image-2-2026-04-21`, this support is in preview. When using
-                `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                Set the background of the generated image. One of `transparent`, `opaque`,
+                or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                their `2026-09-08` snapshots, support `opaque` and `transparent`
+                backgrounds. Transparent backgrounds are available for supported GPT Image
+                models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                preview. When using `transparent`, set the output format to `png` or `webp`.
+                Default: `auto`.
 
                 - `"transparent"`
 
@@ -70986,20 +71668,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Base64-encoded mask image.
 
-              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `string`
 
-                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `"gpt-image-1"`
@@ -71011,6 +71697,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                   - `"gpt-image-2"`
 
                   - `"gpt-image-2-2026-04-21"`
+
+                  - `"gpt-image-2.5-sunburst"`
+
+                  - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                  - `"gpt-image-2.5-flare"`
+
+                  - `"gpt-image-2.5-flare-2026-09-08"`
 
               - `moderation: optional "auto" or "low"`
 
@@ -71039,10 +71733,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-              - `quality: optional "low" or "medium" or "high" or "auto"`
+              - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                The quality of the generated image. One of `low`, `medium`, `high`,
-                or `auto`. Default: `auto`.
+                The quality of the generated image. The GPT image models support `low`,
+                `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                Default: `auto`.
 
                 - `"low"`
 
@@ -71050,17 +71746,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"high"`
 
+                - `"xhigh"`
+
+                - `"max"`
+
                 - `"auto"`
 
               - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `string`
 
                 - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `"1024x1024"`
 
@@ -71987,11 +72687,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `background: optional "transparent" or "opaque" or "auto"`
 
-                Set the background of the generated image. One of `transparent`,
-                `opaque`, or `auto`. Transparent backgrounds are available for
-                supported GPT Image models. For `gpt-image-2` and
-                `gpt-image-2-2026-04-21`, this support is in preview. When using
-                `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                Set the background of the generated image. One of `transparent`, `opaque`,
+                or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                their `2026-09-08` snapshots, support `opaque` and `transparent`
+                backgrounds. Transparent backgrounds are available for supported GPT Image
+                models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                preview. When using `transparent`, set the output format to `png` or `webp`.
+                Default: `auto`.
 
                 - `"transparent"`
 
@@ -72020,20 +72722,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Base64-encoded mask image.
 
-              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `string`
 
-                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `"gpt-image-1"`
@@ -72045,6 +72751,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                   - `"gpt-image-2"`
 
                   - `"gpt-image-2-2026-04-21"`
+
+                  - `"gpt-image-2.5-sunburst"`
+
+                  - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                  - `"gpt-image-2.5-flare"`
+
+                  - `"gpt-image-2.5-flare-2026-09-08"`
 
               - `moderation: optional "auto" or "low"`
 
@@ -72073,10 +72787,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-              - `quality: optional "low" or "medium" or "high" or "auto"`
+              - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                The quality of the generated image. One of `low`, `medium`, `high`,
-                or `auto`. Default: `auto`.
+                The quality of the generated image. The GPT image models support `low`,
+                `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                Default: `auto`.
 
                 - `"low"`
 
@@ -72084,17 +72800,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"high"`
 
+                - `"xhigh"`
+
+                - `"max"`
+
                 - `"auto"`
 
               - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `string`
 
                 - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `"1024x1024"`
 
@@ -74723,11 +75443,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -74756,20 +75478,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -74781,6 +75507,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -74809,10 +75543,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -74820,17 +75556,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -75603,11 +76343,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -75636,20 +76378,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -75661,6 +76407,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -75689,10 +76443,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -75700,17 +76456,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -77486,11 +78246,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          Set the background of the generated image. One of `transparent`,
-          `opaque`, or `auto`. Transparent backgrounds are available for
-          supported GPT Image models. For `gpt-image-2` and
-          `gpt-image-2-2026-04-21`, this support is in preview. When using
-          `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+          Set the background of the generated image. One of `transparent`, `opaque`,
+          or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+          their `2026-09-08` snapshots, support `opaque` and `transparent`
+          backgrounds. Transparent backgrounds are available for supported GPT Image
+          models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+          preview. When using `transparent`, set the output format to `png` or `webp`.
+          Default: `auto`.
 
           - `"transparent"`
 
@@ -77519,20 +78281,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `"gpt-image-1"`
@@ -77544,6 +78310,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
             - `"gpt-image-2"`
 
             - `"gpt-image-2-2026-04-21"`
+
+            - `"gpt-image-2.5-sunburst"`
+
+            - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+            - `"gpt-image-2.5-flare"`
+
+            - `"gpt-image-2.5-flare-2026-09-08"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -77572,10 +78346,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or "auto"`
+        - `quality: optional "low" or "medium" or "high" or 3 more`
 
-          The quality of the generated image. One of `low`, `medium`, `high`,
-          or `auto`. Default: `auto`.
+          The quality of the generated image. The GPT image models support `low`,
+          `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+          including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+          Default: `auto`.
 
           - `"low"`
 
@@ -77583,17 +78359,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `"high"`
 
+          - `"xhigh"`
+
+          - `"max"`
+
           - `"auto"`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `"1024x1024"`
 
@@ -80515,11 +81295,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `background: optional "transparent" or "opaque" or "auto"`
 
-                Set the background of the generated image. One of `transparent`,
-                `opaque`, or `auto`. Transparent backgrounds are available for
-                supported GPT Image models. For `gpt-image-2` and
-                `gpt-image-2-2026-04-21`, this support is in preview. When using
-                `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                Set the background of the generated image. One of `transparent`, `opaque`,
+                or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                their `2026-09-08` snapshots, support `opaque` and `transparent`
+                backgrounds. Transparent backgrounds are available for supported GPT Image
+                models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                preview. When using `transparent`, set the output format to `png` or `webp`.
+                Default: `auto`.
 
                 - `"transparent"`
 
@@ -80548,20 +81330,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Base64-encoded mask image.
 
-              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `string`
 
-                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `"gpt-image-1"`
@@ -80573,6 +81359,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                   - `"gpt-image-2"`
 
                   - `"gpt-image-2-2026-04-21"`
+
+                  - `"gpt-image-2.5-sunburst"`
+
+                  - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                  - `"gpt-image-2.5-flare"`
+
+                  - `"gpt-image-2.5-flare-2026-09-08"`
 
               - `moderation: optional "auto" or "low"`
 
@@ -80601,10 +81395,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-              - `quality: optional "low" or "medium" or "high" or "auto"`
+              - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                The quality of the generated image. One of `low`, `medium`, `high`,
-                or `auto`. Default: `auto`.
+                The quality of the generated image. The GPT image models support `low`,
+                `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                Default: `auto`.
 
                 - `"low"`
 
@@ -80612,17 +81408,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"high"`
 
+                - `"xhigh"`
+
+                - `"max"`
+
                 - `"auto"`
 
               - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `string`
 
                 - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `"1024x1024"`
 
@@ -81549,11 +82349,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `background: optional "transparent" or "opaque" or "auto"`
 
-                Set the background of the generated image. One of `transparent`,
-                `opaque`, or `auto`. Transparent backgrounds are available for
-                supported GPT Image models. For `gpt-image-2` and
-                `gpt-image-2-2026-04-21`, this support is in preview. When using
-                `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                Set the background of the generated image. One of `transparent`, `opaque`,
+                or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                their `2026-09-08` snapshots, support `opaque` and `transparent`
+                backgrounds. Transparent backgrounds are available for supported GPT Image
+                models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                preview. When using `transparent`, set the output format to `png` or `webp`.
+                Default: `auto`.
 
                 - `"transparent"`
 
@@ -81582,20 +82384,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Base64-encoded mask image.
 
-              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `string`
 
-                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `"gpt-image-1"`
@@ -81607,6 +82413,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                   - `"gpt-image-2"`
 
                   - `"gpt-image-2-2026-04-21"`
+
+                  - `"gpt-image-2.5-sunburst"`
+
+                  - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                  - `"gpt-image-2.5-flare"`
+
+                  - `"gpt-image-2.5-flare-2026-09-08"`
 
               - `moderation: optional "auto" or "low"`
 
@@ -81635,10 +82449,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-              - `quality: optional "low" or "medium" or "high" or "auto"`
+              - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                The quality of the generated image. One of `low`, `medium`, `high`,
-                or `auto`. Default: `auto`.
+                The quality of the generated image. The GPT image models support `low`,
+                `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                Default: `auto`.
 
                 - `"low"`
 
@@ -81646,17 +82462,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"high"`
 
+                - `"xhigh"`
+
+                - `"max"`
+
                 - `"auto"`
 
               - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `string`
 
                 - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `"1024x1024"`
 
@@ -84285,11 +85105,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -84318,20 +85140,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -84343,6 +85169,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -84371,10 +85205,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -84382,17 +85218,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -85165,11 +86005,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -85198,20 +86040,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -85223,6 +86069,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -85251,10 +86105,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -85262,17 +86118,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -87048,11 +87908,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          Set the background of the generated image. One of `transparent`,
-          `opaque`, or `auto`. Transparent backgrounds are available for
-          supported GPT Image models. For `gpt-image-2` and
-          `gpt-image-2-2026-04-21`, this support is in preview. When using
-          `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+          Set the background of the generated image. One of `transparent`, `opaque`,
+          or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+          their `2026-09-08` snapshots, support `opaque` and `transparent`
+          backgrounds. Transparent backgrounds are available for supported GPT Image
+          models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+          preview. When using `transparent`, set the output format to `png` or `webp`.
+          Default: `auto`.
 
           - `"transparent"`
 
@@ -87081,20 +87943,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `"gpt-image-1"`
@@ -87106,6 +87972,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
             - `"gpt-image-2"`
 
             - `"gpt-image-2-2026-04-21"`
+
+            - `"gpt-image-2.5-sunburst"`
+
+            - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+            - `"gpt-image-2.5-flare"`
+
+            - `"gpt-image-2.5-flare-2026-09-08"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -87134,10 +88008,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or "auto"`
+        - `quality: optional "low" or "medium" or "high" or 3 more`
 
-          The quality of the generated image. One of `low`, `medium`, `high`,
-          or `auto`. Default: `auto`.
+          The quality of the generated image. The GPT image models support `low`,
+          `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+          including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+          Default: `auto`.
 
           - `"low"`
 
@@ -87145,17 +88021,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `"high"`
 
+          - `"xhigh"`
+
+          - `"max"`
+
           - `"auto"`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `"1024x1024"`
 
@@ -90304,11 +91184,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `background: optional "transparent" or "opaque" or "auto"`
 
-                Set the background of the generated image. One of `transparent`,
-                `opaque`, or `auto`. Transparent backgrounds are available for
-                supported GPT Image models. For `gpt-image-2` and
-                `gpt-image-2-2026-04-21`, this support is in preview. When using
-                `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                Set the background of the generated image. One of `transparent`, `opaque`,
+                or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                their `2026-09-08` snapshots, support `opaque` and `transparent`
+                backgrounds. Transparent backgrounds are available for supported GPT Image
+                models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                preview. When using `transparent`, set the output format to `png` or `webp`.
+                Default: `auto`.
 
                 - `"transparent"`
 
@@ -90337,20 +91219,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Base64-encoded mask image.
 
-              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `string`
 
-                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `"gpt-image-1"`
@@ -90362,6 +91248,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                   - `"gpt-image-2"`
 
                   - `"gpt-image-2-2026-04-21"`
+
+                  - `"gpt-image-2.5-sunburst"`
+
+                  - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                  - `"gpt-image-2.5-flare"`
+
+                  - `"gpt-image-2.5-flare-2026-09-08"`
 
               - `moderation: optional "auto" or "low"`
 
@@ -90390,10 +91284,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-              - `quality: optional "low" or "medium" or "high" or "auto"`
+              - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                The quality of the generated image. One of `low`, `medium`, `high`,
-                or `auto`. Default: `auto`.
+                The quality of the generated image. The GPT image models support `low`,
+                `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                Default: `auto`.
 
                 - `"low"`
 
@@ -90401,17 +91297,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"high"`
 
+                - `"xhigh"`
+
+                - `"max"`
+
                 - `"auto"`
 
               - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `string`
 
                 - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `"1024x1024"`
 
@@ -91338,11 +92238,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `background: optional "transparent" or "opaque" or "auto"`
 
-                Set the background of the generated image. One of `transparent`,
-                `opaque`, or `auto`. Transparent backgrounds are available for
-                supported GPT Image models. For `gpt-image-2` and
-                `gpt-image-2-2026-04-21`, this support is in preview. When using
-                `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                Set the background of the generated image. One of `transparent`, `opaque`,
+                or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                their `2026-09-08` snapshots, support `opaque` and `transparent`
+                backgrounds. Transparent backgrounds are available for supported GPT Image
+                models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                preview. When using `transparent`, set the output format to `png` or `webp`.
+                Default: `auto`.
 
                 - `"transparent"`
 
@@ -91371,20 +92273,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Base64-encoded mask image.
 
-              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `string`
 
-                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `"gpt-image-1"`
@@ -91396,6 +92302,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                   - `"gpt-image-2"`
 
                   - `"gpt-image-2-2026-04-21"`
+
+                  - `"gpt-image-2.5-sunburst"`
+
+                  - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                  - `"gpt-image-2.5-flare"`
+
+                  - `"gpt-image-2.5-flare-2026-09-08"`
 
               - `moderation: optional "auto" or "low"`
 
@@ -91424,10 +92338,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-              - `quality: optional "low" or "medium" or "high" or "auto"`
+              - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                The quality of the generated image. One of `low`, `medium`, `high`,
-                or `auto`. Default: `auto`.
+                The quality of the generated image. The GPT image models support `low`,
+                `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                Default: `auto`.
 
                 - `"low"`
 
@@ -91435,17 +92351,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"high"`
 
+                - `"xhigh"`
+
+                - `"max"`
+
                 - `"auto"`
 
               - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `string`
 
                 - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `"1024x1024"`
 
@@ -94074,11 +94994,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -94107,20 +95029,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -94132,6 +95058,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -94160,10 +95094,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -94171,17 +95107,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -94954,11 +95894,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -94987,20 +95929,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -95012,6 +95958,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -95040,10 +95994,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -95051,17 +96007,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -96837,11 +97797,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          Set the background of the generated image. One of `transparent`,
-          `opaque`, or `auto`. Transparent backgrounds are available for
-          supported GPT Image models. For `gpt-image-2` and
-          `gpt-image-2-2026-04-21`, this support is in preview. When using
-          `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+          Set the background of the generated image. One of `transparent`, `opaque`,
+          or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+          their `2026-09-08` snapshots, support `opaque` and `transparent`
+          backgrounds. Transparent backgrounds are available for supported GPT Image
+          models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+          preview. When using `transparent`, set the output format to `png` or `webp`.
+          Default: `auto`.
 
           - `"transparent"`
 
@@ -96870,20 +97832,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `"gpt-image-1"`
@@ -96895,6 +97861,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
             - `"gpt-image-2"`
 
             - `"gpt-image-2-2026-04-21"`
+
+            - `"gpt-image-2.5-sunburst"`
+
+            - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+            - `"gpt-image-2.5-flare"`
+
+            - `"gpt-image-2.5-flare-2026-09-08"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -96923,10 +97897,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or "auto"`
+        - `quality: optional "low" or "medium" or "high" or 3 more`
 
-          The quality of the generated image. One of `low`, `medium`, `high`,
-          or `auto`. Default: `auto`.
+          The quality of the generated image. The GPT image models support `low`,
+          `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+          including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+          Default: `auto`.
 
           - `"low"`
 
@@ -96934,17 +97910,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `"high"`
 
+          - `"xhigh"`
+
+          - `"max"`
+
           - `"auto"`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `"1024x1024"`
 
@@ -99729,11 +100709,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `background: optional "transparent" or "opaque" or "auto"`
 
-                Set the background of the generated image. One of `transparent`,
-                `opaque`, or `auto`. Transparent backgrounds are available for
-                supported GPT Image models. For `gpt-image-2` and
-                `gpt-image-2-2026-04-21`, this support is in preview. When using
-                `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                Set the background of the generated image. One of `transparent`, `opaque`,
+                or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                their `2026-09-08` snapshots, support `opaque` and `transparent`
+                backgrounds. Transparent backgrounds are available for supported GPT Image
+                models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                preview. When using `transparent`, set the output format to `png` or `webp`.
+                Default: `auto`.
 
                 - `"transparent"`
 
@@ -99762,20 +100744,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Base64-encoded mask image.
 
-              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `string`
 
-                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `"gpt-image-1"`
@@ -99787,6 +100773,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                   - `"gpt-image-2"`
 
                   - `"gpt-image-2-2026-04-21"`
+
+                  - `"gpt-image-2.5-sunburst"`
+
+                  - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                  - `"gpt-image-2.5-flare"`
+
+                  - `"gpt-image-2.5-flare-2026-09-08"`
 
               - `moderation: optional "auto" or "low"`
 
@@ -99815,10 +100809,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-              - `quality: optional "low" or "medium" or "high" or "auto"`
+              - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                The quality of the generated image. One of `low`, `medium`, `high`,
-                or `auto`. Default: `auto`.
+                The quality of the generated image. The GPT image models support `low`,
+                `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                Default: `auto`.
 
                 - `"low"`
 
@@ -99826,17 +100822,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"high"`
 
+                - `"xhigh"`
+
+                - `"max"`
+
                 - `"auto"`
 
               - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `string`
 
                 - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `"1024x1024"`
 
@@ -100763,11 +101763,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `background: optional "transparent" or "opaque" or "auto"`
 
-                Set the background of the generated image. One of `transparent`,
-                `opaque`, or `auto`. Transparent backgrounds are available for
-                supported GPT Image models. For `gpt-image-2` and
-                `gpt-image-2-2026-04-21`, this support is in preview. When using
-                `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                Set the background of the generated image. One of `transparent`, `opaque`,
+                or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                their `2026-09-08` snapshots, support `opaque` and `transparent`
+                backgrounds. Transparent backgrounds are available for supported GPT Image
+                models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                preview. When using `transparent`, set the output format to `png` or `webp`.
+                Default: `auto`.
 
                 - `"transparent"`
 
@@ -100796,20 +101798,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Base64-encoded mask image.
 
-              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `string`
 
-                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `"gpt-image-1"`
@@ -100821,6 +101827,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                   - `"gpt-image-2"`
 
                   - `"gpt-image-2-2026-04-21"`
+
+                  - `"gpt-image-2.5-sunburst"`
+
+                  - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                  - `"gpt-image-2.5-flare"`
+
+                  - `"gpt-image-2.5-flare-2026-09-08"`
 
               - `moderation: optional "auto" or "low"`
 
@@ -100849,10 +101863,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-              - `quality: optional "low" or "medium" or "high" or "auto"`
+              - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                The quality of the generated image. One of `low`, `medium`, `high`,
-                or `auto`. Default: `auto`.
+                The quality of the generated image. The GPT image models support `low`,
+                `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                Default: `auto`.
 
                 - `"low"`
 
@@ -100860,17 +101876,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"high"`
 
+                - `"xhigh"`
+
+                - `"max"`
+
                 - `"auto"`
 
               - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `string`
 
                 - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `"1024x1024"`
 
@@ -103499,11 +104519,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -103532,20 +104554,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -103557,6 +104583,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -103585,10 +104619,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -103596,17 +104632,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -104379,11 +105419,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -104412,20 +105454,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -104437,6 +105483,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -104465,10 +105519,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -104476,17 +105532,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -106262,11 +107322,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          Set the background of the generated image. One of `transparent`,
-          `opaque`, or `auto`. Transparent backgrounds are available for
-          supported GPT Image models. For `gpt-image-2` and
-          `gpt-image-2-2026-04-21`, this support is in preview. When using
-          `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+          Set the background of the generated image. One of `transparent`, `opaque`,
+          or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+          their `2026-09-08` snapshots, support `opaque` and `transparent`
+          backgrounds. Transparent backgrounds are available for supported GPT Image
+          models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+          preview. When using `transparent`, set the output format to `png` or `webp`.
+          Default: `auto`.
 
           - `"transparent"`
 
@@ -106295,20 +107357,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `"gpt-image-1"`
@@ -106320,6 +107386,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
             - `"gpt-image-2"`
 
             - `"gpt-image-2-2026-04-21"`
+
+            - `"gpt-image-2.5-sunburst"`
+
+            - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+            - `"gpt-image-2.5-flare"`
+
+            - `"gpt-image-2.5-flare-2026-09-08"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -106348,10 +107422,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or "auto"`
+        - `quality: optional "low" or "medium" or "high" or 3 more`
 
-          The quality of the generated image. One of `low`, `medium`, `high`,
-          or `auto`. Default: `auto`.
+          The quality of the generated image. The GPT image models support `low`,
+          `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+          including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+          Default: `auto`.
 
           - `"low"`
 
@@ -106359,17 +107435,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `"high"`
 
+          - `"xhigh"`
+
+          - `"max"`
+
           - `"auto"`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `"1024x1024"`
 
@@ -109827,11 +110907,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          Set the background of the generated image. One of `transparent`,
-          `opaque`, or `auto`. Transparent backgrounds are available for
-          supported GPT Image models. For `gpt-image-2` and
-          `gpt-image-2-2026-04-21`, this support is in preview. When using
-          `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+          Set the background of the generated image. One of `transparent`, `opaque`,
+          or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+          their `2026-09-08` snapshots, support `opaque` and `transparent`
+          backgrounds. Transparent backgrounds are available for supported GPT Image
+          models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+          preview. When using `transparent`, set the output format to `png` or `webp`.
+          Default: `auto`.
 
           - `"transparent"`
 
@@ -109860,20 +110942,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `"gpt-image-1"`
@@ -109885,6 +110971,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
             - `"gpt-image-2"`
 
             - `"gpt-image-2-2026-04-21"`
+
+            - `"gpt-image-2.5-sunburst"`
+
+            - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+            - `"gpt-image-2.5-flare"`
+
+            - `"gpt-image-2.5-flare-2026-09-08"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -109913,10 +111007,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or "auto"`
+        - `quality: optional "low" or "medium" or "high" or 3 more`
 
-          The quality of the generated image. One of `low`, `medium`, `high`,
-          or `auto`. Default: `auto`.
+          The quality of the generated image. The GPT image models support `low`,
+          `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+          including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+          Default: `auto`.
 
           - `"low"`
 
@@ -109924,17 +111020,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `"high"`
 
+          - `"xhigh"`
+
+          - `"max"`
+
           - `"auto"`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `"1024x1024"`
 
@@ -110857,11 +111957,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          Set the background of the generated image. One of `transparent`,
-          `opaque`, or `auto`. Transparent backgrounds are available for
-          supported GPT Image models. For `gpt-image-2` and
-          `gpt-image-2-2026-04-21`, this support is in preview. When using
-          `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+          Set the background of the generated image. One of `transparent`, `opaque`,
+          or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+          their `2026-09-08` snapshots, support `opaque` and `transparent`
+          backgrounds. Transparent backgrounds are available for supported GPT Image
+          models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+          preview. When using `transparent`, set the output format to `png` or `webp`.
+          Default: `auto`.
 
           - `"transparent"`
 
@@ -110890,20 +111992,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `"gpt-image-1"`
@@ -110915,6 +112021,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
             - `"gpt-image-2"`
 
             - `"gpt-image-2-2026-04-21"`
+
+            - `"gpt-image-2.5-sunburst"`
+
+            - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+            - `"gpt-image-2.5-flare"`
+
+            - `"gpt-image-2.5-flare-2026-09-08"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -110943,10 +112057,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or "auto"`
+        - `quality: optional "low" or "medium" or "high" or 3 more`
 
-          The quality of the generated image. One of `low`, `medium`, `high`,
-          or `auto`. Default: `auto`.
+          The quality of the generated image. The GPT image models support `low`,
+          `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+          including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+          Default: `auto`.
 
           - `"low"`
 
@@ -110954,17 +112070,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `"high"`
 
+          - `"xhigh"`
+
+          - `"max"`
+
           - `"auto"`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `"1024x1024"`
 
@@ -113833,11 +114953,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -113866,20 +114988,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -113891,6 +115017,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -113919,10 +115053,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -113930,17 +115066,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -114863,11 +116003,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -114896,20 +116038,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -114921,6 +116067,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -114949,10 +116103,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -114960,17 +116116,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -117850,11 +119010,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -117883,20 +119045,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -117908,6 +119074,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -117936,10 +119110,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -117947,17 +119123,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -118880,11 +120060,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -118913,20 +120095,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -118938,6 +120124,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -118966,10 +120160,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -118977,17 +120173,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -122633,11 +123833,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `background: optional "transparent" or "opaque" or "auto"`
 
-                Set the background of the generated image. One of `transparent`,
-                `opaque`, or `auto`. Transparent backgrounds are available for
-                supported GPT Image models. For `gpt-image-2` and
-                `gpt-image-2-2026-04-21`, this support is in preview. When using
-                `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                Set the background of the generated image. One of `transparent`, `opaque`,
+                or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                their `2026-09-08` snapshots, support `opaque` and `transparent`
+                backgrounds. Transparent backgrounds are available for supported GPT Image
+                models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                preview. When using `transparent`, set the output format to `png` or `webp`.
+                Default: `auto`.
 
                 - `"transparent"`
 
@@ -122666,20 +123868,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Base64-encoded mask image.
 
-              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `string`
 
-                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `"gpt-image-1"`
@@ -122691,6 +123897,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                   - `"gpt-image-2"`
 
                   - `"gpt-image-2-2026-04-21"`
+
+                  - `"gpt-image-2.5-sunburst"`
+
+                  - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                  - `"gpt-image-2.5-flare"`
+
+                  - `"gpt-image-2.5-flare-2026-09-08"`
 
               - `moderation: optional "auto" or "low"`
 
@@ -122719,10 +123933,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-              - `quality: optional "low" or "medium" or "high" or "auto"`
+              - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                The quality of the generated image. One of `low`, `medium`, `high`,
-                or `auto`. Default: `auto`.
+                The quality of the generated image. The GPT image models support `low`,
+                `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                Default: `auto`.
 
                 - `"low"`
 
@@ -122730,17 +123946,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"high"`
 
+                - `"xhigh"`
+
+                - `"max"`
+
                 - `"auto"`
 
               - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `string`
 
                 - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `"1024x1024"`
 
@@ -123667,11 +124887,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `background: optional "transparent" or "opaque" or "auto"`
 
-                Set the background of the generated image. One of `transparent`,
-                `opaque`, or `auto`. Transparent backgrounds are available for
-                supported GPT Image models. For `gpt-image-2` and
-                `gpt-image-2-2026-04-21`, this support is in preview. When using
-                `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                Set the background of the generated image. One of `transparent`, `opaque`,
+                or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                their `2026-09-08` snapshots, support `opaque` and `transparent`
+                backgrounds. Transparent backgrounds are available for supported GPT Image
+                models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                preview. When using `transparent`, set the output format to `png` or `webp`.
+                Default: `auto`.
 
                 - `"transparent"`
 
@@ -123700,20 +124922,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Base64-encoded mask image.
 
-              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `string`
 
-                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `"gpt-image-1"`
@@ -123725,6 +124951,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                   - `"gpt-image-2"`
 
                   - `"gpt-image-2-2026-04-21"`
+
+                  - `"gpt-image-2.5-sunburst"`
+
+                  - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                  - `"gpt-image-2.5-flare"`
+
+                  - `"gpt-image-2.5-flare-2026-09-08"`
 
               - `moderation: optional "auto" or "low"`
 
@@ -123753,10 +124987,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-              - `quality: optional "low" or "medium" or "high" or "auto"`
+              - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                The quality of the generated image. One of `low`, `medium`, `high`,
-                or `auto`. Default: `auto`.
+                The quality of the generated image. The GPT image models support `low`,
+                `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                Default: `auto`.
 
                 - `"low"`
 
@@ -123764,17 +125000,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"high"`
 
+                - `"xhigh"`
+
+                - `"max"`
+
                 - `"auto"`
 
               - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `string`
 
                 - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `"1024x1024"`
 
@@ -126403,11 +127643,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -126436,20 +127678,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -126461,6 +127707,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -126489,10 +127743,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -126500,17 +127756,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -127283,11 +128543,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -127316,20 +128578,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -127341,6 +128607,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -127369,10 +128643,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -127380,17 +128656,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -129166,11 +130446,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          Set the background of the generated image. One of `transparent`,
-          `opaque`, or `auto`. Transparent backgrounds are available for
-          supported GPT Image models. For `gpt-image-2` and
-          `gpt-image-2-2026-04-21`, this support is in preview. When using
-          `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+          Set the background of the generated image. One of `transparent`, `opaque`,
+          or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+          their `2026-09-08` snapshots, support `opaque` and `transparent`
+          backgrounds. Transparent backgrounds are available for supported GPT Image
+          models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+          preview. When using `transparent`, set the output format to `png` or `webp`.
+          Default: `auto`.
 
           - `"transparent"`
 
@@ -129199,20 +130481,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `"gpt-image-1"`
@@ -129224,6 +130510,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
             - `"gpt-image-2"`
 
             - `"gpt-image-2-2026-04-21"`
+
+            - `"gpt-image-2.5-sunburst"`
+
+            - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+            - `"gpt-image-2.5-flare"`
+
+            - `"gpt-image-2.5-flare-2026-09-08"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -129252,10 +130546,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or "auto"`
+        - `quality: optional "low" or "medium" or "high" or 3 more`
 
-          The quality of the generated image. One of `low`, `medium`, `high`,
-          or `auto`. Default: `auto`.
+          The quality of the generated image. The GPT image models support `low`,
+          `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+          including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+          Default: `auto`.
 
           - `"low"`
 
@@ -129263,17 +130559,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `"high"`
 
+          - `"xhigh"`
+
+          - `"max"`
+
           - `"auto"`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `"1024x1024"`
 
@@ -133948,11 +135248,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `background: optional "transparent" or "opaque" or "auto"`
 
-                  Set the background of the generated image. One of `transparent`,
-                  `opaque`, or `auto`. Transparent backgrounds are available for
-                  supported GPT Image models. For `gpt-image-2` and
-                  `gpt-image-2-2026-04-21`, this support is in preview. When using
-                  `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                  Set the background of the generated image. One of `transparent`, `opaque`,
+                  or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                  their `2026-09-08` snapshots, support `opaque` and `transparent`
+                  backgrounds. Transparent backgrounds are available for supported GPT Image
+                  models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                  preview. When using `transparent`, set the output format to `png` or `webp`.
+                  Default: `auto`.
 
                   - `"transparent"`
 
@@ -133981,20 +135283,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                     Base64-encoded mask image.
 
-                - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `string`
 
-                  - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                  - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                     The image generation model to use. One of `gpt-image-1`,
                     `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                    `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                    `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                    `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                    `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                     `gpt-image-1`.
 
                     - `"gpt-image-1"`
@@ -134006,6 +135312,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                     - `"gpt-image-2"`
 
                     - `"gpt-image-2-2026-04-21"`
+
+                    - `"gpt-image-2.5-sunburst"`
+
+                    - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                    - `"gpt-image-2.5-flare"`
+
+                    - `"gpt-image-2.5-flare-2026-09-08"`
 
                 - `moderation: optional "auto" or "low"`
 
@@ -134034,10 +135348,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-                - `quality: optional "low" or "medium" or "high" or "auto"`
+                - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                  The quality of the generated image. One of `low`, `medium`, `high`,
-                  or `auto`. Default: `auto`.
+                  The quality of the generated image. The GPT image models support `low`,
+                  `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                  including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                  Default: `auto`.
 
                   - `"low"`
 
@@ -134045,17 +135361,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   - `"high"`
 
+                  - `"xhigh"`
+
+                  - `"max"`
+
                   - `"auto"`
 
                 - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `string`
 
                   - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                    The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                    The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                     - `"1024x1024"`
 
@@ -134982,11 +136302,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `background: optional "transparent" or "opaque" or "auto"`
 
-                  Set the background of the generated image. One of `transparent`,
-                  `opaque`, or `auto`. Transparent backgrounds are available for
-                  supported GPT Image models. For `gpt-image-2` and
-                  `gpt-image-2-2026-04-21`, this support is in preview. When using
-                  `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                  Set the background of the generated image. One of `transparent`, `opaque`,
+                  or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                  their `2026-09-08` snapshots, support `opaque` and `transparent`
+                  backgrounds. Transparent backgrounds are available for supported GPT Image
+                  models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                  preview. When using `transparent`, set the output format to `png` or `webp`.
+                  Default: `auto`.
 
                   - `"transparent"`
 
@@ -135015,20 +136337,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                     Base64-encoded mask image.
 
-                - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `string`
 
-                  - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                  - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                     The image generation model to use. One of `gpt-image-1`,
                     `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                    `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                    `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                    `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                    `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                     `gpt-image-1`.
 
                     - `"gpt-image-1"`
@@ -135040,6 +136366,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                     - `"gpt-image-2"`
 
                     - `"gpt-image-2-2026-04-21"`
+
+                    - `"gpt-image-2.5-sunburst"`
+
+                    - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                    - `"gpt-image-2.5-flare"`
+
+                    - `"gpt-image-2.5-flare-2026-09-08"`
 
                 - `moderation: optional "auto" or "low"`
 
@@ -135068,10 +136402,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-                - `quality: optional "low" or "medium" or "high" or "auto"`
+                - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                  The quality of the generated image. One of `low`, `medium`, `high`,
-                  or `auto`. Default: `auto`.
+                  The quality of the generated image. The GPT image models support `low`,
+                  `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                  including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                  Default: `auto`.
 
                   - `"low"`
 
@@ -135079,17 +136415,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   - `"high"`
 
+                  - `"xhigh"`
+
+                  - `"max"`
+
                   - `"auto"`
 
                 - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `string`
 
                   - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                    The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                    The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                     - `"1024x1024"`
 
@@ -137718,11 +139058,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `background: optional "transparent" or "opaque" or "auto"`
 
-                Set the background of the generated image. One of `transparent`,
-                `opaque`, or `auto`. Transparent backgrounds are available for
-                supported GPT Image models. For `gpt-image-2` and
-                `gpt-image-2-2026-04-21`, this support is in preview. When using
-                `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                Set the background of the generated image. One of `transparent`, `opaque`,
+                or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                their `2026-09-08` snapshots, support `opaque` and `transparent`
+                backgrounds. Transparent backgrounds are available for supported GPT Image
+                models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                preview. When using `transparent`, set the output format to `png` or `webp`.
+                Default: `auto`.
 
                 - `"transparent"`
 
@@ -137751,20 +139093,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Base64-encoded mask image.
 
-              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `string`
 
-                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `"gpt-image-1"`
@@ -137776,6 +139122,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                   - `"gpt-image-2"`
 
                   - `"gpt-image-2-2026-04-21"`
+
+                  - `"gpt-image-2.5-sunburst"`
+
+                  - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                  - `"gpt-image-2.5-flare"`
+
+                  - `"gpt-image-2.5-flare-2026-09-08"`
 
               - `moderation: optional "auto" or "low"`
 
@@ -137804,10 +139158,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-              - `quality: optional "low" or "medium" or "high" or "auto"`
+              - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                The quality of the generated image. One of `low`, `medium`, `high`,
-                or `auto`. Default: `auto`.
+                The quality of the generated image. The GPT image models support `low`,
+                `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                Default: `auto`.
 
                 - `"low"`
 
@@ -137815,17 +139171,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"high"`
 
+                - `"xhigh"`
+
+                - `"max"`
+
                 - `"auto"`
 
               - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `string`
 
                 - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `"1024x1024"`
 
@@ -138598,11 +139958,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `background: optional "transparent" or "opaque" or "auto"`
 
-                Set the background of the generated image. One of `transparent`,
-                `opaque`, or `auto`. Transparent backgrounds are available for
-                supported GPT Image models. For `gpt-image-2` and
-                `gpt-image-2-2026-04-21`, this support is in preview. When using
-                `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                Set the background of the generated image. One of `transparent`, `opaque`,
+                or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                their `2026-09-08` snapshots, support `opaque` and `transparent`
+                backgrounds. Transparent backgrounds are available for supported GPT Image
+                models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                preview. When using `transparent`, set the output format to `png` or `webp`.
+                Default: `auto`.
 
                 - `"transparent"`
 
@@ -138631,20 +139993,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Base64-encoded mask image.
 
-              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `string`
 
-                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `"gpt-image-1"`
@@ -138656,6 +140022,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                   - `"gpt-image-2"`
 
                   - `"gpt-image-2-2026-04-21"`
+
+                  - `"gpt-image-2.5-sunburst"`
+
+                  - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                  - `"gpt-image-2.5-flare"`
+
+                  - `"gpt-image-2.5-flare-2026-09-08"`
 
               - `moderation: optional "auto" or "low"`
 
@@ -138684,10 +140058,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-              - `quality: optional "low" or "medium" or "high" or "auto"`
+              - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                The quality of the generated image. One of `low`, `medium`, `high`,
-                or `auto`. Default: `auto`.
+                The quality of the generated image. The GPT image models support `low`,
+                `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                Default: `auto`.
 
                 - `"low"`
 
@@ -138695,17 +140071,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"high"`
 
+                - `"xhigh"`
+
+                - `"max"`
+
                 - `"auto"`
 
               - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `string`
 
                 - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `"1024x1024"`
 
@@ -140481,11 +141861,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -140514,20 +141896,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -140539,6 +141925,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -140567,10 +141961,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -140578,17 +141974,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -145224,11 +146624,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `background: optional "transparent" or "opaque" or "auto"`
 
-                Set the background of the generated image. One of `transparent`,
-                `opaque`, or `auto`. Transparent backgrounds are available for
-                supported GPT Image models. For `gpt-image-2` and
-                `gpt-image-2-2026-04-21`, this support is in preview. When using
-                `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                Set the background of the generated image. One of `transparent`, `opaque`,
+                or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                their `2026-09-08` snapshots, support `opaque` and `transparent`
+                backgrounds. Transparent backgrounds are available for supported GPT Image
+                models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                preview. When using `transparent`, set the output format to `png` or `webp`.
+                Default: `auto`.
 
                 - `"transparent"`
 
@@ -145257,20 +146659,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Base64-encoded mask image.
 
-              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `string`
 
-                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `"gpt-image-1"`
@@ -145282,6 +146688,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                   - `"gpt-image-2"`
 
                   - `"gpt-image-2-2026-04-21"`
+
+                  - `"gpt-image-2.5-sunburst"`
+
+                  - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                  - `"gpt-image-2.5-flare"`
+
+                  - `"gpt-image-2.5-flare-2026-09-08"`
 
               - `moderation: optional "auto" or "low"`
 
@@ -145310,10 +146724,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-              - `quality: optional "low" or "medium" or "high" or "auto"`
+              - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                The quality of the generated image. One of `low`, `medium`, `high`,
-                or `auto`. Default: `auto`.
+                The quality of the generated image. The GPT image models support `low`,
+                `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                Default: `auto`.
 
                 - `"low"`
 
@@ -145321,17 +146737,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"high"`
 
+                - `"xhigh"`
+
+                - `"max"`
+
                 - `"auto"`
 
               - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `string`
 
                 - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `"1024x1024"`
 
@@ -146258,11 +147678,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `background: optional "transparent" or "opaque" or "auto"`
 
-                Set the background of the generated image. One of `transparent`,
-                `opaque`, or `auto`. Transparent backgrounds are available for
-                supported GPT Image models. For `gpt-image-2` and
-                `gpt-image-2-2026-04-21`, this support is in preview. When using
-                `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+                Set the background of the generated image. One of `transparent`, `opaque`,
+                or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+                their `2026-09-08` snapshots, support `opaque` and `transparent`
+                backgrounds. Transparent backgrounds are available for supported GPT Image
+                models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+                preview. When using `transparent`, set the output format to `png` or `webp`.
+                Default: `auto`.
 
                 - `"transparent"`
 
@@ -146291,20 +147713,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   Base64-encoded mask image.
 
-              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `string`
 
-                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+                - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                   The image generation model to use. One of `gpt-image-1`,
                   `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                  `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                  `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                  `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                  `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                   `gpt-image-1`.
 
                   - `"gpt-image-1"`
@@ -146316,6 +147742,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
                   - `"gpt-image-2"`
 
                   - `"gpt-image-2-2026-04-21"`
+
+                  - `"gpt-image-2.5-sunburst"`
+
+                  - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                  - `"gpt-image-2.5-flare"`
+
+                  - `"gpt-image-2.5-flare-2026-09-08"`
 
               - `moderation: optional "auto" or "low"`
 
@@ -146344,10 +147778,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-              - `quality: optional "low" or "medium" or "high" or "auto"`
+              - `quality: optional "low" or "medium" or "high" or 3 more`
 
-                The quality of the generated image. One of `low`, `medium`, `high`,
-                or `auto`. Default: `auto`.
+                The quality of the generated image. The GPT image models support `low`,
+                `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+                including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+                Default: `auto`.
 
                 - `"low"`
 
@@ -146355,17 +147791,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"high"`
 
+                - `"xhigh"`
+
+                - `"max"`
+
                 - `"auto"`
 
               - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `string`
 
                 - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                   - `"1024x1024"`
 
@@ -148924,11 +150364,13 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          Set the background of the generated image. One of `transparent`,
-          `opaque`, or `auto`. Transparent backgrounds are available for
-          supported GPT Image models. For `gpt-image-2` and
-          `gpt-image-2-2026-04-21`, this support is in preview. When using
-          `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+          Set the background of the generated image. One of `transparent`, `opaque`,
+          or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+          their `2026-09-08` snapshots, support `opaque` and `transparent`
+          backgrounds. Transparent backgrounds are available for supported GPT Image
+          models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+          preview. When using `transparent`, set the output format to `png` or `webp`.
+          Default: `auto`.
 
           - `"transparent"`
 
@@ -148957,20 +150399,24 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `"gpt-image-1"`
@@ -148982,6 +150428,14 @@ curl https://api.openai.com/v1/responses/resp_123 \
             - `"gpt-image-2"`
 
             - `"gpt-image-2-2026-04-21"`
+
+            - `"gpt-image-2.5-sunburst"`
+
+            - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+            - `"gpt-image-2.5-flare"`
+
+            - `"gpt-image-2.5-flare-2026-09-08"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -149010,10 +150464,12 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or "auto"`
+        - `quality: optional "low" or "medium" or "high" or 3 more`
 
-          The quality of the generated image. One of `low`, `medium`, `high`,
-          or `auto`. Default: `auto`.
+          The quality of the generated image. The GPT image models support `low`,
+          `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+          including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+          Default: `auto`.
 
           - `"low"`
 
@@ -149021,17 +150477,21 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `"high"`
 
+          - `"xhigh"`
+
+          - `"max"`
+
           - `"auto"`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `"1024x1024"`
 
@@ -152649,11 +154109,13 @@ Returns a list of input items for a given response.
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -152682,20 +154144,24 @@ Returns a list of input items for a given response.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -152707,6 +154173,14 @@ Returns a list of input items for a given response.
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -152735,10 +154209,12 @@ Returns a list of input items for a given response.
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -152746,17 +154222,21 @@ Returns a list of input items for a given response.
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -153679,11 +155159,13 @@ Returns a list of input items for a given response.
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -153712,20 +155194,24 @@ Returns a list of input items for a given response.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -153737,6 +155223,14 @@ Returns a list of input items for a given response.
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -153765,10 +155259,12 @@ Returns a list of input items for a given response.
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -153776,17 +155272,21 @@ Returns a list of input items for a given response.
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -156841,11 +158341,13 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -156874,20 +158376,24 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -156899,6 +158405,14 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -156927,10 +158441,12 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -156938,17 +158454,21 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -157871,11 +159391,13 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -157904,20 +159426,24 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -157929,6 +159455,14 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -157957,10 +159491,12 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -157968,17 +159504,21 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -161095,11 +162635,13 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -161128,20 +162670,24 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -161153,6 +162699,14 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -161181,10 +162735,12 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -161192,17 +162748,21 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -162129,11 +163689,13 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -162162,20 +163724,24 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -162187,6 +163753,14 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -162215,10 +163789,12 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -162226,17 +163802,21 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -164368,11 +165948,13 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
     - `background: optional "transparent" or "opaque" or "auto"`
 
-      Set the background of the generated image. One of `transparent`,
-      `opaque`, or `auto`. Transparent backgrounds are available for
-      supported GPT Image models. For `gpt-image-2` and
-      `gpt-image-2-2026-04-21`, this support is in preview. When using
-      `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+      Set the background of the generated image. One of `transparent`, `opaque`,
+      or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+      their `2026-09-08` snapshots, support `opaque` and `transparent`
+      backgrounds. Transparent backgrounds are available for supported GPT Image
+      models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+      preview. When using `transparent`, set the output format to `png` or `webp`.
+      Default: `auto`.
 
       - `"transparent"`
 
@@ -164401,20 +165983,24 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
         Base64-encoded mask image.
 
-    - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+    - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
       The image generation model to use. One of `gpt-image-1`,
       `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-      `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+      `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+      `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+      `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
       `gpt-image-1`.
 
       - `string`
 
-      - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+      - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
         The image generation model to use. One of `gpt-image-1`,
         `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-        `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+        `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+        `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+        `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
         `gpt-image-1`.
 
         - `"gpt-image-1"`
@@ -164426,6 +166012,14 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
         - `"gpt-image-2"`
 
         - `"gpt-image-2-2026-04-21"`
+
+        - `"gpt-image-2.5-sunburst"`
+
+        - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+        - `"gpt-image-2.5-flare"`
+
+        - `"gpt-image-2.5-flare-2026-09-08"`
 
     - `moderation: optional "auto" or "low"`
 
@@ -164454,10 +166048,12 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
       Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-    - `quality: optional "low" or "medium" or "high" or "auto"`
+    - `quality: optional "low" or "medium" or "high" or 3 more`
 
-      The quality of the generated image. One of `low`, `medium`, `high`,
-      or `auto`. Default: `auto`.
+      The quality of the generated image. The GPT image models support `low`,
+      `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+      including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+      Default: `auto`.
 
       - `"low"`
 
@@ -164465,17 +166061,21 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
       - `"high"`
 
+      - `"xhigh"`
+
+      - `"max"`
+
       - `"auto"`
 
     - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-      The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+      The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
       - `string`
 
       - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
         - `"1024x1024"`
 

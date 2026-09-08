@@ -52,9 +52,9 @@ Creates a variation of a given image. This endpoint only supports `dall-e-2`.
 
     - `"jpeg"`
 
-  - `quality: optional "low" or "medium" or "high"`
+  - `quality: optional "low" or "medium" or "high" or 2 more`
 
-    The quality of the image generated. Either `low`, `medium`, or `high`.
+    The quality of the image generated. One of `low`, `medium`, `high`, `xhigh`, or `max`.
 
     - `"low"`
 
@@ -62,15 +62,25 @@ Creates a variation of a given image. This endpoint only supports `dall-e-2`.
 
     - `"high"`
 
-  - `size: optional "1024x1024" or "1024x1536" or "1536x1024"`
+    - `"xhigh"`
 
-    The size of the image generated. Either `1024x1024`, `1024x1536`, or `1536x1024`.
+    - `"max"`
 
-    - `"1024x1024"`
+  - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024"`
 
-    - `"1024x1536"`
+    The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
 
-    - `"1536x1024"`
+    - `string`
+
+    - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `"1024x1024"`
+
+      - `"1024x1536"`
+
+      - `"1536x1024"`
 
   - `usage: optional object { input_tokens, input_tokens_details, output_tokens, 2 more }`
 
@@ -187,7 +197,7 @@ curl https://api.openai.com/v1/images/variations \
 
 **post** `/images/edits`
 
-Creates an edited or extended image given one or more source images and a prompt. This endpoint supports GPT Image models (`gpt-image-1.5`, `gpt-image-1`, `gpt-image-1-mini`, and `chatgpt-image-latest`) and `dall-e-2`.
+Creates an edited or extended image given one or more source images and a prompt. This endpoint supports GPT Image models and `dall-e-2`.
 
 ### Body Parameters
 
@@ -210,7 +220,7 @@ Creates an edited or extended image given one or more source images and a prompt
 
 - `background: optional "transparent" or "opaque" or "auto" or null`
 
-  Set the background of the generated image output. Transparent backgrounds are available for supported GPT Image models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in preview. When using `transparent`, set the output format to `png` or `webp`.
+  Set the background of the generated image output. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including their `2026-09-08` snapshots, support `opaque` and `transparent` backgrounds. Transparent backgrounds are available for supported GPT Image models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in preview. When using `transparent`, set the output format to `png` or `webp`.
 
   - `"transparent"`
 
@@ -239,21 +249,29 @@ Creates an edited or extended image given one or more source images and a prompt
 
     A fully qualified URL or base64-encoded data URL.
 
-- `model: optional string or "gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 3 more or null`
+- `model: optional string or "gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 7 more or null`
 
-  The GPT image model to use for image editing, including `gpt-image-2` and its dated snapshot `gpt-image-2-2026-04-21`.
+  The GPT image model to use for image editing, including `gpt-image-2`, its dated snapshot `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`.
 
   - `string`
 
-  - `"gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 3 more`
+  - `"gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 7 more`
 
-    The GPT image model to use for image editing, including `gpt-image-2` and its dated snapshot `gpt-image-2-2026-04-21`.
+    The GPT image model to use for image editing, including `gpt-image-2`, its dated snapshot `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`.
 
     - `"gpt-image-1.5"`
 
     - `"gpt-image-2"`
 
     - `"gpt-image-2-2026-04-21"`
+
+    - `"gpt-image-2.5-sunburst"`
+
+    - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+    - `"gpt-image-2.5-flare"`
+
+    - `"gpt-image-2.5-flare-2026-09-08"`
 
     - `"gpt-image-1"`
 
@@ -296,9 +314,11 @@ Creates an edited or extended image given one or more source images and a prompt
   Note that the final image may be sent before the full number of partial images
   are generated if the full image is generated more quickly.
 
-- `quality: optional "low" or "medium" or "high" or "auto" or null`
+- `quality: optional "low" or "medium" or "high" or 3 more or null`
 
-  Output quality for GPT image models.
+  Output quality for GPT image models. The GPT image models support `low`, `medium`,
+  and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including their
+  `2026-09-08` snapshots, also support `xhigh` and `max`. Defaults to `auto`.
 
   - `"low"`
 
@@ -306,19 +326,29 @@ Creates an edited or extended image given one or more source images and a prompt
 
   - `"high"`
 
-  - `"auto"`
+  - `"xhigh"`
 
-- `size: optional "auto" or "1024x1024" or "1536x1024" or "1024x1536" or null`
-
-  Requested output image size.
+  - `"max"`
 
   - `"auto"`
 
-  - `"1024x1024"`
+- `size: optional string or "auto" or "1024x1024" or "1536x1024" or "1024x1536" or null`
 
-  - `"1536x1024"`
+  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
-  - `"1024x1536"`
+  - `string`
+
+  - `"auto" or "1024x1024" or "1536x1024" or "1024x1536"`
+
+    The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
+
+    - `"auto"`
+
+    - `"1024x1024"`
+
+    - `"1536x1024"`
+
+    - `"1024x1536"`
 
 - `stream: optional boolean or null`
 
@@ -373,9 +403,9 @@ Creates an edited or extended image given one or more source images and a prompt
 
     - `"jpeg"`
 
-  - `quality: optional "low" or "medium" or "high"`
+  - `quality: optional "low" or "medium" or "high" or 2 more`
 
-    The quality of the image generated. Either `low`, `medium`, or `high`.
+    The quality of the image generated. One of `low`, `medium`, `high`, `xhigh`, or `max`.
 
     - `"low"`
 
@@ -383,15 +413,25 @@ Creates an edited or extended image given one or more source images and a prompt
 
     - `"high"`
 
-  - `size: optional "1024x1024" or "1024x1536" or "1536x1024"`
+    - `"xhigh"`
 
-    The size of the image generated. Either `1024x1024`, `1024x1536`, or `1536x1024`.
+    - `"max"`
 
-    - `"1024x1024"`
+  - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024"`
 
-    - `"1024x1536"`
+    The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
 
-    - `"1536x1024"`
+    - `string`
+
+    - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `"1024x1024"`
+
+      - `"1024x1536"`
+
+      - `"1536x1024"`
 
   - `usage: optional object { input_tokens, input_tokens_details, output_tokens, 2 more }`
 
@@ -537,14 +577,16 @@ Creates an image given a prompt. [Learn more](/docs/guides/images).
 
 - `background: optional "transparent" or "opaque" or "auto" or null`
 
-  Set the background of the generated image(s). This parameter is only
-  supported for the GPT image models. Must be one of `transparent`, `opaque`,
-  or `auto` (default value). When `auto` is used, the model will automatically
-  determine the best background for the image.
+  Set the background of the generated image(s). This parameter is only supported for
+  the GPT image models. Must be one of `transparent`, `opaque`, or `auto` (default
+  value). When `auto` is used, the model will automatically determine the best
+  background for the image.
 
-  Transparent backgrounds are available for supported GPT Image models. For
-  `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in preview. When
-  using `transparent`, set the output format to `png` or `webp`.
+  `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including their `2026-09-08`
+  snapshots, support `opaque` and `transparent` backgrounds. Transparent backgrounds
+  are available for supported GPT Image models. For `gpt-image-2` and
+  `gpt-image-2-2026-04-21`, this support is in preview. When using `transparent`,
+  set the output format to `png` or `webp`.
 
   - `"transparent"`
 
@@ -554,17 +596,25 @@ Creates an image given a prompt. [Learn more](/docs/guides/images).
 
 - `model: optional string or ImageModel or null`
 
-  The model to use for image generation. One of `dall-e-2`, `dall-e-3`, or a GPT image model (`gpt-image-1`, `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, `gpt-image-2-2026-04-21`). Defaults to `dall-e-2` unless a parameter specific to the GPT image models is used.
+  The model to use for image generation. One of `dall-e-2`, `dall-e-3`, or a GPT image model (`gpt-image-1`, `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, `gpt-image-2.5-flare-2026-09-08`). Defaults to `dall-e-2` unless a parameter specific to the GPT image models is used.
 
   - `string`
 
-  - `ImageModel = "gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 4 more`
+  - `ImageModel = "gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 8 more`
 
     - `"gpt-image-1.5"`
 
     - `"gpt-image-2"`
 
     - `"gpt-image-2-2026-04-21"`
+
+    - `"gpt-image-2.5-sunburst"`
+
+    - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+    - `"gpt-image-2.5-flare"`
+
+    - `"gpt-image-2.5-flare-2026-09-08"`
 
     - `"dall-e-2"`
 
@@ -609,12 +659,15 @@ Creates an image given a prompt. [Learn more](/docs/guides/images).
   Note that the final image may be sent before the full number of partial images
   are generated if the full image is generated more quickly.
 
-- `quality: optional "standard" or "hd" or "low" or 3 more or null`
+- `quality: optional "standard" or "hd" or "low" or 5 more or null`
 
   The quality of the image that will be generated.
 
-  - `auto` (default value) will automatically select the best quality for the given model.
+  - `auto` (default value) will automatically select the best quality for the given
+    model.
   - `high`, `medium` and `low` are supported for the GPT image models.
+  - `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including their `2026-09-08`
+    snapshots, also support `xhigh` and `max`.
   - `hd` and `standard` are supported for `dall-e-3`.
   - `standard` is the only option for `dall-e-2`.
 
@@ -628,6 +681,10 @@ Creates an image given a prompt. [Learn more](/docs/guides/images).
 
   - `"high"`
 
+  - `"xhigh"`
+
+  - `"max"`
+
   - `"auto"`
 
 - `response_format: optional "url" or "b64_json" or null`
@@ -640,13 +697,13 @@ Creates an image given a prompt. [Learn more](/docs/guides/images).
 
 - `size: optional string or "auto" or "1024x1024" or "1536x1024" or 5 more or null`
 
-  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
   - `string`
 
   - `"auto" or "1024x1024" or "1536x1024" or 5 more`
 
-    The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+    The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
     - `"auto"`
 
@@ -726,9 +783,9 @@ Creates an image given a prompt. [Learn more](/docs/guides/images).
 
     - `"jpeg"`
 
-  - `quality: optional "low" or "medium" or "high"`
+  - `quality: optional "low" or "medium" or "high" or 2 more`
 
-    The quality of the image generated. Either `low`, `medium`, or `high`.
+    The quality of the image generated. One of `low`, `medium`, `high`, `xhigh`, or `max`.
 
     - `"low"`
 
@@ -736,15 +793,25 @@ Creates an image given a prompt. [Learn more](/docs/guides/images).
 
     - `"high"`
 
-  - `size: optional "1024x1024" or "1024x1536" or "1536x1024"`
+    - `"xhigh"`
 
-    The size of the image generated. Either `1024x1024`, `1024x1536`, or `1536x1024`.
+    - `"max"`
 
-    - `"1024x1024"`
+  - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024"`
 
-    - `"1024x1536"`
+    The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
 
-    - `"1536x1024"`
+    - `string`
+
+    - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `"1024x1024"`
+
+      - `"1024x1536"`
+
+      - `"1536x1024"`
 
   - `usage: optional object { input_tokens, input_tokens_details, output_tokens, 2 more }`
 
@@ -955,7 +1022,7 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
     - `"jpeg"`
 
-  - `quality: "low" or "medium" or "high" or "auto"`
+  - `quality: "low" or "medium" or "high" or 3 more`
 
     The quality setting for the edited image.
 
@@ -965,19 +1032,29 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
     - `"high"`
 
-    - `"auto"`
+    - `"xhigh"`
 
-  - `size: "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
-
-    The size of the edited image.
-
-    - `"1024x1024"`
-
-    - `"1024x1536"`
-
-    - `"1536x1024"`
+    - `"max"`
 
     - `"auto"`
+
+  - `size: string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+    The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+    - `string`
+
+    - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `"1024x1024"`
+
+      - `"1024x1536"`
+
+      - `"1536x1024"`
+
+      - `"auto"`
 
   - `type: "image_edit.completed"`
 
@@ -1051,7 +1128,7 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
     0-based index for the partial image (streaming).
 
-  - `quality: "low" or "medium" or "high" or "auto"`
+  - `quality: "low" or "medium" or "high" or 3 more`
 
     The quality setting for the requested edited image.
 
@@ -1061,19 +1138,29 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
     - `"high"`
 
-    - `"auto"`
+    - `"xhigh"`
 
-  - `size: "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
-
-    The size of the requested edited image.
-
-    - `"1024x1024"`
-
-    - `"1024x1536"`
-
-    - `"1536x1024"`
+    - `"max"`
 
     - `"auto"`
+
+  - `size: string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+    The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+    - `string`
+
+    - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `"1024x1024"`
+
+      - `"1024x1536"`
+
+      - `"1536x1024"`
+
+      - `"auto"`
 
   - `type: "image_edit.partial_image"`
 
@@ -1123,7 +1210,7 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
       0-based index for the partial image (streaming).
 
-    - `quality: "low" or "medium" or "high" or "auto"`
+    - `quality: "low" or "medium" or "high" or 3 more`
 
       The quality setting for the requested edited image.
 
@@ -1133,19 +1220,29 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
       - `"high"`
 
-      - `"auto"`
+      - `"xhigh"`
 
-    - `size: "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
-
-      The size of the requested edited image.
-
-      - `"1024x1024"`
-
-      - `"1024x1536"`
-
-      - `"1536x1024"`
+      - `"max"`
 
       - `"auto"`
+
+    - `size: string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `string`
+
+      - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+        The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+        - `"1024x1024"`
+
+        - `"1024x1536"`
+
+        - `"1536x1024"`
+
+        - `"auto"`
 
     - `type: "image_edit.partial_image"`
 
@@ -1185,7 +1282,7 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
       - `"jpeg"`
 
-    - `quality: "low" or "medium" or "high" or "auto"`
+    - `quality: "low" or "medium" or "high" or 3 more`
 
       The quality setting for the edited image.
 
@@ -1195,19 +1292,29 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
       - `"high"`
 
-      - `"auto"`
+      - `"xhigh"`
 
-    - `size: "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
-
-      The size of the edited image.
-
-      - `"1024x1024"`
-
-      - `"1024x1536"`
-
-      - `"1536x1024"`
+      - `"max"`
 
       - `"auto"`
+
+    - `size: string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `string`
+
+      - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+        The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+        - `"1024x1024"`
+
+        - `"1024x1536"`
+
+        - `"1536x1024"`
+
+        - `"auto"`
 
     - `type: "image_edit.completed"`
 
@@ -1277,7 +1384,7 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
     - `"jpeg"`
 
-  - `quality: "low" or "medium" or "high" or "auto"`
+  - `quality: "low" or "medium" or "high" or 3 more`
 
     The quality setting for the generated image.
 
@@ -1287,19 +1394,29 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
     - `"high"`
 
-    - `"auto"`
+    - `"xhigh"`
 
-  - `size: "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
-
-    The size of the generated image.
-
-    - `"1024x1024"`
-
-    - `"1024x1536"`
-
-    - `"1536x1024"`
+    - `"max"`
 
     - `"auto"`
+
+  - `size: string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+    The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+    - `string`
+
+    - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `"1024x1024"`
+
+      - `"1024x1536"`
+
+      - `"1536x1024"`
+
+      - `"auto"`
 
   - `type: "image_generation.completed"`
 
@@ -1373,7 +1490,7 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
     0-based index for the partial image (streaming).
 
-  - `quality: "low" or "medium" or "high" or "auto"`
+  - `quality: "low" or "medium" or "high" or 3 more`
 
     The quality setting for the requested image.
 
@@ -1383,19 +1500,29 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
     - `"high"`
 
-    - `"auto"`
+    - `"xhigh"`
 
-  - `size: "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
-
-    The size of the requested image.
-
-    - `"1024x1024"`
-
-    - `"1024x1536"`
-
-    - `"1536x1024"`
+    - `"max"`
 
     - `"auto"`
+
+  - `size: string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+    The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+    - `string`
+
+    - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `"1024x1024"`
+
+      - `"1024x1536"`
+
+      - `"1536x1024"`
+
+      - `"auto"`
 
   - `type: "image_generation.partial_image"`
 
@@ -1445,7 +1572,7 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
       0-based index for the partial image (streaming).
 
-    - `quality: "low" or "medium" or "high" or "auto"`
+    - `quality: "low" or "medium" or "high" or 3 more`
 
       The quality setting for the requested image.
 
@@ -1455,19 +1582,29 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
       - `"high"`
 
-      - `"auto"`
+      - `"xhigh"`
 
-    - `size: "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
-
-      The size of the requested image.
-
-      - `"1024x1024"`
-
-      - `"1024x1536"`
-
-      - `"1536x1024"`
+      - `"max"`
 
       - `"auto"`
+
+    - `size: string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `string`
+
+      - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+        The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+        - `"1024x1024"`
+
+        - `"1024x1536"`
+
+        - `"1536x1024"`
+
+        - `"auto"`
 
     - `type: "image_generation.partial_image"`
 
@@ -1507,7 +1644,7 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
       - `"jpeg"`
 
-    - `quality: "low" or "medium" or "high" or "auto"`
+    - `quality: "low" or "medium" or "high" or 3 more`
 
       The quality setting for the generated image.
 
@@ -1517,19 +1654,29 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
       - `"high"`
 
-      - `"auto"`
+      - `"xhigh"`
 
-    - `size: "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
-
-      The size of the generated image.
-
-      - `"1024x1024"`
-
-      - `"1024x1536"`
-
-      - `"1536x1024"`
+      - `"max"`
 
       - `"auto"`
+
+    - `size: string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `string`
+
+      - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+        The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+        - `"1024x1024"`
+
+        - `"1024x1536"`
+
+        - `"1536x1024"`
+
+        - `"auto"`
 
     - `type: "image_generation.completed"`
 
@@ -1567,13 +1714,21 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
 ### Image Model
 
-- `ImageModel = "gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 4 more`
+- `ImageModel = "gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 8 more`
 
   - `"gpt-image-1.5"`
 
   - `"gpt-image-2"`
 
   - `"gpt-image-2-2026-04-21"`
+
+  - `"gpt-image-2.5-sunburst"`
+
+  - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+  - `"gpt-image-2.5-flare"`
+
+  - `"gpt-image-2.5-flare-2026-09-08"`
 
   - `"dall-e-2"`
 
@@ -1627,9 +1782,9 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
     - `"jpeg"`
 
-  - `quality: optional "low" or "medium" or "high"`
+  - `quality: optional "low" or "medium" or "high" or 2 more`
 
-    The quality of the image generated. Either `low`, `medium`, or `high`.
+    The quality of the image generated. One of `low`, `medium`, `high`, `xhigh`, or `max`.
 
     - `"low"`
 
@@ -1637,15 +1792,25 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
     - `"high"`
 
-  - `size: optional "1024x1024" or "1024x1536" or "1536x1024"`
+    - `"xhigh"`
 
-    The size of the image generated. Either `1024x1024`, `1024x1536`, or `1536x1024`.
+    - `"max"`
 
-    - `"1024x1024"`
+  - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024"`
 
-    - `"1024x1536"`
+    The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
 
-    - `"1536x1024"`
+    - `string`
+
+    - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `"1024x1024"`
+
+      - `"1024x1536"`
+
+      - `"1536x1024"`
 
   - `usage: optional object { input_tokens, input_tokens_details, output_tokens, 2 more }`
 

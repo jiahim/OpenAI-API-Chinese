@@ -8,6 +8,14 @@ Upcoming deprecations are listed on the [deprecations page](/api/docs/deprecatio
 
 ## September, 2026
 
+### Sep 8
+
+Feature · Model: gpt-image-2.5-sunburst · Model: gpt-image-2.5-flare · API: v1/images · API: v1/responses
+
+Released [GPT Image 2.5 Sunburst](https://developers.openai.com/api/docs/models/gpt-image-2.5-sunburst) and [GPT Image 2.5 Flare](https://developers.openai.com/api/docs/models/gpt-image-2.5-flare) for image generation and editing through the Image API and the Responses API image generation tool.
+
+Use Sunburst for workflows where editing precision matters most, or Flare for fast, high-quality everyday image generation. Both models support the new `xhigh` and `max` quality settings and use GPT Image 2 token rates. See the [image generation guide](https://developers.openai.com/api/docs/guides/image-generation) and [pricing](https://developers.openai.com/api/docs/pricing#image-generation).
+
 ### Sep 3
 
 Feature · Model: gpt-6-astra · API: v1/responses · API: v1/chat/completions
