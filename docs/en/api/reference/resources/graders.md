@@ -604,7 +604,7 @@
           Reducing reasoning effort can result in faster responses and fewer tokens
           used on reasoning in a response. Not all reasoning models support every
           value. See the
-          [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+          [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
           - `"none"`
@@ -968,7 +968,7 @@
       Reducing reasoning effort can result in faster responses and fewer tokens
       used on reasoning in a response. Not all reasoning models support every
       value. See the
-      [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+      [reasoning guide](/api/docs/guides/reasoning)
       for model-specific support.
 
       - `"none"`

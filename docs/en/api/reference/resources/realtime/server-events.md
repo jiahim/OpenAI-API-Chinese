@@ -24391,7 +24391,7 @@ Schema name: `RealtimeServerEventSessionCreated`
     "oasRef": "#/components/schemas/RealtimeSessionCreateResponseGA/properties/prompt",
     "deprecated": false,
     "key": "prompt",
-    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).\n",
+    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsePrompt",
@@ -25055,7 +25055,7 @@ Schema name: `RealtimeServerEventSessionCreated`
   "(resource) responses > (model) response_prompt > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Prompt",
-    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).\n",
+    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).\n",
     "ident": "ResponsePrompt",
     "type": {
       "kind": "HttpTypeObject",
@@ -25259,7 +25259,7 @@ Schema name: `RealtimeServerEventSessionCreated`
   "(resource) realtime.client_secrets > (model) realtime_session_create_response > (schema) > (property) tools > (items) > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeSessionCreateResponseGA/properties/tools/items/oneOf/1",
-    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).\n",
+    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).\n",
     "ident": "McpTool",
     "type": {
       "kind": "HttpTypeObject",
@@ -25586,7 +25586,7 @@ Schema name: `RealtimeServerEventSessionCreated`
     "oasRef": "#/components/schemas/RealtimeSessionCreateResponseGA/properties/audio/properties/input/properties/transcription",
     "deprecated": false,
     "key": "transcription",
-    "docstring": "Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n",
+    "docstring": "Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -26022,7 +26022,7 @@ Schema name: `RealtimeServerEventSessionCreated`
   "(resource) responses > (model) response_input_image > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/InputImageContent",
-    "docstring": "An image input to the model. Learn about [image inputs](/docs/guides/vision).",
+    "docstring": "An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).",
     "ident": "ResponseInputImage",
     "type": {
       "kind": "HttpTypeObject",
@@ -26476,7 +26476,7 @@ Schema name: `RealtimeServerEventSessionCreated`
     "oasRef": "#/components/schemas/MCPTool/properties/connector_id",
     "deprecated": false,
     "key": "connector_id",
-    "docstring": "Identifier for service connectors, like those available in ChatGPT. One of\n`server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more\nabout service connectors [here](/docs/guides/tools-remote-mcp#connectors).\n\nCurrently supported `connector_id` values are:\n\n- Dropbox: `connector_dropbox`\n- Gmail: `connector_gmail`\n- Google Calendar: `connector_googlecalendar`\n- Google Drive: `connector_googledrive`\n- Microsoft Teams: `connector_microsoftteams`\n- Outlook Calendar: `connector_outlookcalendar`\n- Outlook Email: `connector_outlookemail`\n- SharePoint: `connector_sharepoint`\n",
+    "docstring": "Identifier for service connectors, like those available in ChatGPT. One of\n`server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more\nabout service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).\n\nCurrently supported `connector_id` values are:\n\n- Dropbox: `connector_dropbox`\n- Gmail: `connector_gmail`\n- Google Calendar: `connector_googlecalendar`\n- Google Drive: `connector_googledrive`\n- Microsoft Teams: `connector_microsoftteams`\n- Outlook Calendar: `connector_outlookcalendar`\n- Outlook Email: `connector_outlookemail`\n- SharePoint: `connector_sharepoint`\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/MCPTool/properties/connector_id",
@@ -29744,7 +29744,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
     "oasRef": "#/components/schemas/RealtimeSessionCreateResponseGA/properties/prompt",
     "deprecated": false,
     "key": "prompt",
-    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).\n",
+    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsePrompt",
@@ -30408,7 +30408,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
   "(resource) responses > (model) response_prompt > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Prompt",
-    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).\n",
+    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).\n",
     "ident": "ResponsePrompt",
     "type": {
       "kind": "HttpTypeObject",
@@ -30612,7 +30612,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
   "(resource) realtime.client_secrets > (model) realtime_session_create_response > (schema) > (property) tools > (items) > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeSessionCreateResponseGA/properties/tools/items/oneOf/1",
-    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).\n",
+    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).\n",
     "ident": "McpTool",
     "type": {
       "kind": "HttpTypeObject",
@@ -30939,7 +30939,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
     "oasRef": "#/components/schemas/RealtimeSessionCreateResponseGA/properties/audio/properties/input/properties/transcription",
     "deprecated": false,
     "key": "transcription",
-    "docstring": "Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n",
+    "docstring": "Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -31375,7 +31375,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
   "(resource) responses > (model) response_input_image > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/InputImageContent",
-    "docstring": "An image input to the model. Learn about [image inputs](/docs/guides/vision).",
+    "docstring": "An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).",
     "ident": "ResponseInputImage",
     "type": {
       "kind": "HttpTypeObject",
@@ -31829,7 +31829,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
     "oasRef": "#/components/schemas/MCPTool/properties/connector_id",
     "deprecated": false,
     "key": "connector_id",
-    "docstring": "Identifier for service connectors, like those available in ChatGPT. One of\n`server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more\nabout service connectors [here](/docs/guides/tools-remote-mcp#connectors).\n\nCurrently supported `connector_id` values are:\n\n- Dropbox: `connector_dropbox`\n- Gmail: `connector_gmail`\n- Google Calendar: `connector_googlecalendar`\n- Google Drive: `connector_googledrive`\n- Microsoft Teams: `connector_microsoftteams`\n- Outlook Calendar: `connector_outlookcalendar`\n- Outlook Email: `connector_outlookemail`\n- SharePoint: `connector_sharepoint`\n",
+    "docstring": "Identifier for service connectors, like those available in ChatGPT. One of\n`server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more\nabout service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).\n\nCurrently supported `connector_id` values are:\n\n- Dropbox: `connector_dropbox`\n- Gmail: `connector_gmail`\n- Google Calendar: `connector_googlecalendar`\n- Google Drive: `connector_googledrive`\n- Microsoft Teams: `connector_microsoftteams`\n- Outlook Calendar: `connector_outlookcalendar`\n- Outlook Email: `connector_outlookemail`\n- SharePoint: `connector_sharepoint`\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/MCPTool/properties/connector_id",
@@ -34529,7 +34529,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
 **WebRTC/SIP Only:** Emitted when the server begins streaming audio to the client. This event is
 emitted after an audio content part has been added (`response.content_part.added`)
 to the response.
-[Learn more](https://developers.openai.com/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
+[Learn more](https://developers.openai.com/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
 ### Schema
 
@@ -34540,7 +34540,7 @@ Schema name: `(resource) realtime > (model) realtime_server_event > (schema) > (
   "(resource) realtime > (model) realtime_server_event > (schema) > (variant) 31": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeServerEvent/anyOf/31",
-    "docstring": "**WebRTC/SIP Only:** Emitted when the server begins streaming audio to the client. This event is\nemitted after an audio content part has been added (`response.content_part.added`)\nto the response.\n[Learn more](/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).\n",
+    "docstring": "**WebRTC/SIP Only:** Emitted when the server begins streaming audio to the client. This event is\nemitted after an audio content part has been added (`response.content_part.added`)\nto the response.\n[Learn more](/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).\n",
     "ident": "OutputAudioBufferStarted",
     "type": {
       "kind": "HttpTypeObject",
@@ -34636,7 +34636,7 @@ Schema name: `(resource) realtime > (model) realtime_server_event > (schema) > (
 **WebRTC/SIP Only:** Emitted when the output audio buffer has been completely drained on the server,
 and no more audio is forthcoming. This event is emitted after the full response
 data has been sent to the client (`response.done`).
-[Learn more](https://developers.openai.com/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
+[Learn more](https://developers.openai.com/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
 ### Schema
 
@@ -34647,7 +34647,7 @@ Schema name: `(resource) realtime > (model) realtime_server_event > (schema) > (
   "(resource) realtime > (model) realtime_server_event > (schema) > (variant) 32": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeServerEvent/anyOf/32",
-    "docstring": "**WebRTC/SIP Only:** Emitted when the output audio buffer has been completely drained on the server,\nand no more audio is forthcoming. This event is emitted after the full response\ndata has been sent to the client (`response.done`).\n[Learn more](/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).\n",
+    "docstring": "**WebRTC/SIP Only:** Emitted when the output audio buffer has been completely drained on the server,\nand no more audio is forthcoming. This event is emitted after the full response\ndata has been sent to the client (`response.done`).\n[Learn more](/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).\n",
     "ident": "OutputAudioBufferStopped",
     "type": {
       "kind": "HttpTypeObject",
@@ -34744,7 +34744,7 @@ Schema name: `(resource) realtime > (model) realtime_server_event > (schema) > (
 mode when the user has interrupted (`input_audio_buffer.speech_started`),
 or when the client has emitted the `output_audio_buffer.clear` event to manually
 cut off the current audio response.
-[Learn more](https://developers.openai.com/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
+[Learn more](https://developers.openai.com/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
 ### Schema
 
@@ -34755,7 +34755,7 @@ Schema name: `(resource) realtime > (model) realtime_server_event > (schema) > (
   "(resource) realtime > (model) realtime_server_event > (schema) > (variant) 33": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeServerEvent/anyOf/33",
-    "docstring": "**WebRTC/SIP Only:** Emitted when the output audio buffer is cleared. This happens either in VAD\nmode when the user has interrupted (`input_audio_buffer.speech_started`),\nor when the client has emitted the `output_audio_buffer.clear` event to manually\ncut off the current audio response.\n[Learn more](/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).\n",
+    "docstring": "**WebRTC/SIP Only:** Emitted when the output audio buffer is cleared. This happens either in VAD\nmode when the user has interrupted (`input_audio_buffer.speech_started`),\nor when the client has emitted the `output_audio_buffer.clear` event to manually\ncut off the current audio response.\n[Learn more](/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).\n",
     "ident": "OutputAudioBufferCleared",
     "type": {
       "kind": "HttpTypeObject",

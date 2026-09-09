@@ -81,7 +81,7 @@ handle it.
 
     - `transcription: optional AudioTranscription`
 
-      Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+      Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
       - `delay: optional "minimal" or "low" or "medium" or 2 more`
 
@@ -143,7 +143,7 @@ handle it.
 
         An optional text to guide the model's style or continue a previous audio
         segment.
-        For `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting).
+        For `whisper-1`, the [prompt is a list of keywords](/api/docs/guides/speech-to-text#prompting).
         For `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example "expect words related to technology".
         Prompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.
 
@@ -391,7 +391,7 @@ handle it.
 - `prompt: optional ResponsePrompt or null`
 
   Reference to a prompt template and its variables.
-  [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+  [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
   - `id: string`
 
@@ -431,7 +431,7 @@ handle it.
 
     - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-      An image input to the model. Learn about [image inputs](/docs/guides/vision).
+      An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
       - `detail: ImageDetail`
 
@@ -621,7 +621,7 @@ handle it.
   - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
     Give the model access to additional tools via remote Model Context Protocol
-    (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+    (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
     - `server_label: string`
 
@@ -673,7 +673,7 @@ handle it.
 
       Identifier for service connectors, like those available in ChatGPT. One of
       `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-      about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+      about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
       Currently supported `connector_id` values are:
 

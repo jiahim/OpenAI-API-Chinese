@@ -3273,7 +3273,27 @@ Responses API requests include the mainline model's token usage in addition to i
 
 Both GPT Image 2.5 models use the same token rates: $8 per million image input tokens, $2 per million cached image input tokens, $30 per million image output tokens, $5 per million text input tokens, and $1.25 per million cached text input tokens. See [pricing](https://developers.openai.com/api/docs/pricing#image-generation).
 
-Use the response's `usage` to measure token consumption for your prompts, sizes, and quality settings. Equal token rates don't mean equal cost per image: token consumption can differ by model and quality setting. For older-model calculators and pricing examples, see [Earlier GPT Image models](#earlier-gpt-image-models).
+Use the response's `usage` to measure token consumption for your prompts, sizes, and quality settings. Equal token rates don't mean equal cost per image: token consumption can differ by model and quality setting. For older-model pricing examples, see [Earlier GPT Image models](#earlier-gpt-image-models).
+
+
+
+
+### GPT Image 2.5 and GPT Image 2 output tokens
+
+Select a model, quality, and size to estimate output tokens and image output cost.
+For `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, the quality options are `low`, `medium`, `high`, `xhigh`, and `max`.
+For `gpt-image-2`, the options are `low`, `medium`, and `high`.
+The models can use different token counts for the same quality setting and share the same price per image output token.
+Use explicit quality and size values for this estimate; `auto` depends on the generated image.
+
+<GptImageTokenCalculator
+  client:load
+  outputPricePerMillion={Number(
+    pricing.latest.subsections
+      .find((section) => section.price_type === "Image tokens")
+      ?.items.find((item) => item.name === "gpt-image-2")?.values.main.output
+  )}
+/>
 
 ### Partial images cost
 
@@ -3377,11 +3397,7 @@ Because `gpt-image-2` always processes image inputs at high fidelity, image
 </details>
 
 <details>
-<summary>Older-model calculators and pricing examples</summary>
-
-### `gpt-image-2` output tokens
-
-For `gpt-image-2`, use the calculator to estimate output tokens from the requested `quality` and `size`:
+<summary>Older-model pricing examples</summary>
 
 ### Models prior to `gpt-image-2`
 

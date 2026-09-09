@@ -68,7 +68,7 @@
 
     An optional text to guide the model's style or continue a previous audio
     segment.
-    For `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting).
+    For `whisper-1`, the [prompt is a list of keywords](/api/docs/guides/speech-to-text#prompting).
     For `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example "expect words related to technology".
     Prompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.
 
@@ -3182,7 +3182,7 @@
   stop generating audio and emit a `output_audio_buffer.cleared` event. This
   event should be preceded by a `response.cancel` client event to stop the
   generation of the current response.
-  [Learn more](/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
+  [Learn more](/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
   - `type: "output_audio_buffer.clear"`
 
@@ -3301,7 +3301,7 @@
 
     - `transcription: optional AudioTranscription`
 
-      Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+      Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
       - `delay: optional "minimal" or "low" or "medium" or 2 more`
 
@@ -3363,7 +3363,7 @@
 
         An optional text to guide the model's style or continue a previous audio
         segment.
-        For `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting).
+        For `whisper-1`, the [prompt is a list of keywords](/api/docs/guides/speech-to-text#prompting).
         For `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example "expect words related to technology".
         Prompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.
 
@@ -3578,7 +3578,7 @@
 
   - `transcription: optional AudioTranscription`
 
-    Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+    Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
     - `delay: optional "minimal" or "low" or "medium" or 2 more`
 
@@ -3640,7 +3640,7 @@
 
       An optional text to guide the model's style or continue a previous audio
       segment.
-      For `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting).
+      For `whisper-1`, the [prompt is a list of keywords](/api/docs/guides/speech-to-text#prompting).
       For `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example "expect words related to technology".
       Prompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.
 
@@ -4566,7 +4566,7 @@
     stop generating audio and emit a `output_audio_buffer.cleared` event. This
     event should be preceded by a `response.cancel` client event to stop the
     generation of the current response.
-    [Learn more](/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
+    [Learn more](/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
     - `type: "output_audio_buffer.clear"`
 
@@ -4857,7 +4857,7 @@
       - `prompt: optional ResponsePrompt or null`
 
         Reference to a prompt template and its variables.
-        [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+        [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
         - `id: string`
 
@@ -4897,7 +4897,7 @@
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            An image input to the model. Learn about [image inputs](/docs/guides/vision).
+            An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
             - `detail: ImageDetail`
 
@@ -5087,7 +5087,7 @@
         - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -5139,7 +5139,7 @@
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -5292,7 +5292,7 @@
 
             - `transcription: optional AudioTranscription`
 
-              Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+              Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
               - `delay: optional "minimal" or "low" or "medium" or 2 more`
 
@@ -5354,7 +5354,7 @@
 
                 An optional text to guide the model's style or continue a previous audio
                 segment.
-                For `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting).
+                For `whisper-1`, the [prompt is a list of keywords](/api/docs/guides/speech-to-text#prompting).
                 For `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example "expect words related to technology".
                 Prompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.
 
@@ -5602,7 +5602,7 @@
         - `prompt: optional ResponsePrompt or null`
 
           Reference to a prompt template and its variables.
-          [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+          [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
         - `reasoning: optional RealtimeReasoning`
 
@@ -5641,7 +5641,7 @@
           - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
             Give the model access to additional tools via remote Model Context Protocol
-            (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+            (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
             - `server_label: string`
 
@@ -5693,7 +5693,7 @@
 
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-              about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+              about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
               Currently supported `connector_id` values are:
 
@@ -5898,7 +5898,7 @@
 
             - `transcription: optional AudioTranscription`
 
-              Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+              Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
             - `turn_detection: optional RealtimeTranscriptionSessionAudioInputTurnDetection or null`
 
@@ -7990,7 +7990,7 @@
   - `prompt: optional ResponsePrompt or null`
 
     Reference to a prompt template and its variables.
-    [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+    [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
     - `id: string`
 
@@ -8030,7 +8030,7 @@
 
       - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-        An image input to the model. Learn about [image inputs](/docs/guides/vision).
+        An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
         - `detail: ImageDetail`
 
@@ -8220,7 +8220,7 @@
     - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
       Give the model access to additional tools via remote Model Context Protocol
-      (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+      (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
       - `server_label: string`
 
@@ -8272,7 +8272,7 @@
 
         Identifier for service connectors, like those available in ChatGPT. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-        about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+        about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
         Currently supported `connector_id` values are:
 
@@ -10345,7 +10345,7 @@
 
             - `transcription: optional object { language, languages, model, prompt }`
 
-              Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+              Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
               - `language: optional string`
 
@@ -10625,7 +10625,7 @@
         - `prompt: optional ResponsePrompt or null`
 
           Reference to a prompt template and its variables.
-          [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+          [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
           - `id: string`
 
@@ -10665,7 +10665,7 @@
 
             - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-              An image input to the model. Learn about [image inputs](/docs/guides/vision).
+              An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
               - `detail: ImageDetail`
 
@@ -10855,7 +10855,7 @@
           - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
             Give the model access to additional tools via remote Model Context Protocol
-            (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+            (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
             - `server_label: string`
 
@@ -10907,7 +10907,7 @@
 
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-              about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+              about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
               Currently supported `connector_id` values are:
 
@@ -11235,7 +11235,7 @@
     **WebRTC/SIP Only:** Emitted when the server begins streaming audio to the client. This event is
     emitted after an audio content part has been added (`response.content_part.added`)
     to the response.
-    [Learn more](/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
+    [Learn more](/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
     - `event_id: string`
 
@@ -11256,7 +11256,7 @@
     **WebRTC/SIP Only:** Emitted when the output audio buffer has been completely drained on the server,
     and no more audio is forthcoming. This event is emitted after the full response
     data has been sent to the client (`response.done`).
-    [Learn more](/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
+    [Learn more](/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
     - `event_id: string`
 
@@ -11278,7 +11278,7 @@
     mode when the user has interrupted (`input_audio_buffer.speech_started`),
     or when the client has emitted the `output_audio_buffer.clear` event to manually
     cut off the current audio response.
-    [Learn more](/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
+    [Learn more](/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
     - `event_id: string`
 
@@ -11662,7 +11662,7 @@
 
   - `input_audio_transcription: optional object { language, languages, model, prompt }  or null`
 
-    Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](https://platform.openai.com/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+    Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
     - `language: optional string`
 
@@ -11801,7 +11801,7 @@
   - `prompt: optional ResponsePrompt or null`
 
     Reference to a prompt template and its variables.
-    [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+    [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
     - `id: string`
 
@@ -11841,7 +11841,7 @@
 
       - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-        An image input to the model. Learn about [image inputs](/docs/guides/vision).
+        An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
         - `detail: ImageDetail`
 
@@ -12207,7 +12207,7 @@
 
       - `transcription: optional AudioTranscription`
 
-        Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+        Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
         - `delay: optional "minimal" or "low" or "medium" or 2 more`
 
@@ -12269,7 +12269,7 @@
 
           An optional text to guide the model's style or continue a previous audio
           segment.
-          For `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting).
+          For `whisper-1`, the [prompt is a list of keywords](/api/docs/guides/speech-to-text#prompting).
           For `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example "expect words related to technology".
           Prompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.
 
@@ -12517,7 +12517,7 @@
   - `prompt: optional ResponsePrompt or null`
 
     Reference to a prompt template and its variables.
-    [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+    [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
     - `id: string`
 
@@ -12557,7 +12557,7 @@
 
       - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-        An image input to the model. Learn about [image inputs](/docs/guides/vision).
+        An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
         - `detail: ImageDetail`
 
@@ -12747,7 +12747,7 @@
     - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
       Give the model access to additional tools via remote Model Context Protocol
-      (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+      (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
       - `server_label: string`
 
@@ -12799,7 +12799,7 @@
 
         Identifier for service connectors, like those available in ChatGPT. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-        about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+        about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
         Currently supported `connector_id` values are:
 
@@ -13059,7 +13059,7 @@
   - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
     Give the model access to additional tools via remote Model Context Protocol
-    (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+    (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
     - `server_label: string`
 
@@ -13111,7 +13111,7 @@
 
       Identifier for service connectors, like those available in ChatGPT. One of
       `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-      about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+      about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
       Currently supported `connector_id` values are:
 
@@ -13216,7 +13216,7 @@
 - `RealtimeToolsConfigUnion = RealtimeFunctionTool or object { server_label, type, allowed_callers, 9 more }`
 
   Give the model access to additional tools via remote Model Context Protocol
-  (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+  (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
   - `RealtimeFunctionTool object { description, name, parameters, type }`
 
@@ -13243,7 +13243,7 @@
   - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
     Give the model access to additional tools via remote Model Context Protocol
-    (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+    (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
     - `server_label: string`
 
@@ -13295,7 +13295,7 @@
 
       Identifier for service connectors, like those available in ChatGPT. One of
       `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-      about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+      about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
       Currently supported `connector_id` values are:
 
@@ -13494,7 +13494,7 @@
 
     - `transcription: optional AudioTranscription`
 
-      Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+      Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
       - `delay: optional "minimal" or "low" or "medium" or 2 more`
 
@@ -13556,7 +13556,7 @@
 
         An optional text to guide the model's style or continue a previous audio
         segment.
-        For `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting).
+        For `whisper-1`, the [prompt is a list of keywords](/api/docs/guides/speech-to-text#prompting).
         For `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example "expect words related to technology".
         Prompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.
 
@@ -13716,7 +13716,7 @@
 
   - `transcription: optional AudioTranscription`
 
-    Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+    Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
     - `delay: optional "minimal" or "low" or "medium" or 2 more`
 
@@ -13778,7 +13778,7 @@
 
       An optional text to guide the model's style or continue a previous audio
       segment.
-      For `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting).
+      For `whisper-1`, the [prompt is a list of keywords](/api/docs/guides/speech-to-text#prompting).
       For `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example "expect words related to technology".
       Prompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.
 
@@ -14050,7 +14050,7 @@
 
       - `transcription: optional AudioTranscription`
 
-        Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+        Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
         - `delay: optional "minimal" or "low" or "medium" or 2 more`
 
@@ -14112,7 +14112,7 @@
 
           An optional text to guide the model's style or continue a previous audio
           segment.
-          For `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting).
+          For `whisper-1`, the [prompt is a list of keywords](/api/docs/guides/speech-to-text#prompting).
           For `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example "expect words related to technology".
           Prompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.
 
@@ -16190,7 +16190,7 @@
     - `prompt: optional ResponsePrompt or null`
 
       Reference to a prompt template and its variables.
-      [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+      [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
       - `id: string`
 
@@ -16230,7 +16230,7 @@
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision).
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `detail: ImageDetail`
 
@@ -16420,7 +16420,7 @@
       - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
         Give the model access to additional tools via remote Model Context Protocol
-        (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+        (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
@@ -16472,7 +16472,7 @@
 
           Identifier for service connectors, like those available in ChatGPT. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-          about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+          about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
           Currently supported `connector_id` values are:
 
@@ -19284,7 +19284,7 @@
 
           - `transcription: optional object { language, languages, model, prompt }`
 
-            Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+            Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
             - `language: optional string`
 
@@ -19564,7 +19564,7 @@
       - `prompt: optional ResponsePrompt or null`
 
         Reference to a prompt template and its variables.
-        [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+        [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
         - `id: string`
 
@@ -19604,7 +19604,7 @@
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            An image input to the model. Learn about [image inputs](/docs/guides/vision).
+            An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
             - `detail: ImageDetail`
 
@@ -19794,7 +19794,7 @@
         - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -19846,7 +19846,7 @@
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -20233,7 +20233,7 @@
 
           - `transcription: optional AudioTranscription`
 
-            Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+            Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
             - `delay: optional "minimal" or "low" or "medium" or 2 more`
 
@@ -20295,7 +20295,7 @@
 
               An optional text to guide the model's style or continue a previous audio
               segment.
-              For `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting).
+              For `whisper-1`, the [prompt is a list of keywords](/api/docs/guides/speech-to-text#prompting).
               For `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example "expect words related to technology".
               Prompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.
 
@@ -20543,7 +20543,7 @@
       - `prompt: optional ResponsePrompt or null`
 
         Reference to a prompt template and its variables.
-        [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+        [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
         - `id: string`
 
@@ -20583,7 +20583,7 @@
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            An image input to the model. Learn about [image inputs](/docs/guides/vision).
+            An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
             - `detail: ImageDetail`
 
@@ -20773,7 +20773,7 @@
         - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -20825,7 +20825,7 @@
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -21030,7 +21030,7 @@
 
           - `transcription: optional AudioTranscription`
 
-            Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+            Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
           - `turn_detection: optional RealtimeTranscriptionSessionAudioInputTurnDetection or null`
 
@@ -21243,7 +21243,7 @@
 
           - `transcription: optional object { language, languages, model, prompt }`
 
-            Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+            Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
             - `language: optional string`
 
@@ -21523,7 +21523,7 @@
       - `prompt: optional ResponsePrompt or null`
 
         Reference to a prompt template and its variables.
-        [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+        [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
         - `id: string`
 
@@ -21563,7 +21563,7 @@
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            An image input to the model. Learn about [image inputs](/docs/guides/vision).
+            An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
             - `detail: ImageDetail`
 
@@ -21753,7 +21753,7 @@
         - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -21805,7 +21805,7 @@
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -22208,7 +22208,7 @@
 
         An optional text to guide the model's style or continue a previous audio
         segment.
-        For `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting).
+        For `whisper-1`, the [prompt is a list of keywords](/api/docs/guides/speech-to-text#prompting).
         For `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example "expect words related to technology".
         Prompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.
 
@@ -22455,7 +22455,7 @@ handle it.
 
     - `transcription: optional AudioTranscription`
 
-      Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+      Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
       - `delay: optional "minimal" or "low" or "medium" or 2 more`
 
@@ -22517,7 +22517,7 @@ handle it.
 
         An optional text to guide the model's style or continue a previous audio
         segment.
-        For `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting).
+        For `whisper-1`, the [prompt is a list of keywords](/api/docs/guides/speech-to-text#prompting).
         For `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example "expect words related to technology".
         Prompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.
 
@@ -22765,7 +22765,7 @@ handle it.
 - `prompt: optional ResponsePrompt or null`
 
   Reference to a prompt template and its variables.
-  [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+  [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
   - `id: string`
 
@@ -22805,7 +22805,7 @@ handle it.
 
     - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-      An image input to the model. Learn about [image inputs](/docs/guides/vision).
+      An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
       - `detail: ImageDetail`
 
@@ -22995,7 +22995,7 @@ handle it.
   - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
     Give the model access to additional tools via remote Model Context Protocol
-    (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+    (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
     - `server_label: string`
 
@@ -23047,7 +23047,7 @@ handle it.
 
       Identifier for service connectors, like those available in ChatGPT. One of
       `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-      about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+      about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
       Currently supported `connector_id` values are:
 
@@ -23407,7 +23407,7 @@ You can also attach session configuration options to the client secret, which wi
 applied to any sessions created using that client secret, but these can also be overridden
 by the client connection.
 
-[Learn more about authentication with client secrets over WebRTC](/docs/guides/realtime-webrtc).
+[Learn more about authentication with client secrets over WebRTC](/api/docs/guides/realtime-webrtc).
 
 Returns the created client secret and the effective session object. The client secret is a string that looks like `ek_1234`.
 
@@ -23507,7 +23507,7 @@ Returns the created client secret and the effective session object. The client s
 
         - `transcription: optional AudioTranscription`
 
-          Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+          Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
           - `delay: optional "minimal" or "low" or "medium" or 2 more`
 
@@ -23569,7 +23569,7 @@ Returns the created client secret and the effective session object. The client s
 
             An optional text to guide the model's style or continue a previous audio
             segment.
-            For `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting).
+            For `whisper-1`, the [prompt is a list of keywords](/api/docs/guides/speech-to-text#prompting).
             For `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example "expect words related to technology".
             Prompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.
 
@@ -23817,7 +23817,7 @@ Returns the created client secret and the effective session object. The client s
     - `prompt: optional ResponsePrompt or null`
 
       Reference to a prompt template and its variables.
-      [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+      [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
       - `id: string`
 
@@ -23857,7 +23857,7 @@ Returns the created client secret and the effective session object. The client s
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision).
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `detail: ImageDetail`
 
@@ -24047,7 +24047,7 @@ Returns the created client secret and the effective session object. The client s
       - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
         Give the model access to additional tools via remote Model Context Protocol
-        (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+        (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
@@ -24099,7 +24099,7 @@ Returns the created client secret and the effective session object. The client s
 
           Identifier for service connectors, like those available in ChatGPT. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-          about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+          about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
           Currently supported `connector_id` values are:
 
@@ -24304,7 +24304,7 @@ Returns the created client secret and the effective session object. The client s
 
         - `transcription: optional AudioTranscription`
 
-          Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+          Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
         - `turn_detection: optional RealtimeTranscriptionSessionAudioInputTurnDetection or null`
 
@@ -24502,7 +24502,7 @@ Returns the created client secret and the effective session object. The client s
 
         - `transcription: optional object { language, languages, model, prompt }`
 
-          Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+          Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
           - `language: optional string`
 
@@ -24782,7 +24782,7 @@ Returns the created client secret and the effective session object. The client s
     - `prompt: optional ResponsePrompt or null`
 
       Reference to a prompt template and its variables.
-      [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+      [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
       - `id: string`
 
@@ -24822,7 +24822,7 @@ Returns the created client secret and the effective session object. The client s
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision).
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `detail: ImageDetail`
 
@@ -25012,7 +25012,7 @@ Returns the created client secret and the effective session object. The client s
       - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
         Give the model access to additional tools via remote Model Context Protocol
-        (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+        (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
@@ -25064,7 +25064,7 @@ Returns the created client secret and the effective session object. The client s
 
           Identifier for service connectors, like those available in ChatGPT. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-          about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+          about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
           Currently supported `connector_id` values are:
 
@@ -25613,7 +25613,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
           - `transcription: optional object { language, languages, model, prompt }`
 
-            Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+            Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
             - `language: optional string`
 
@@ -25893,7 +25893,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
       - `prompt: optional ResponsePrompt or null`
 
         Reference to a prompt template and its variables.
-        [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+        [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
         - `id: string`
 
@@ -25933,7 +25933,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            An image input to the model. Learn about [image inputs](/docs/guides/vision).
+            An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
             - `detail: ImageDetail`
 
@@ -26123,7 +26123,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
         - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -26175,7 +26175,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -26553,7 +26553,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
       - `transcription: optional object { language, languages, model, prompt }`
 
-        Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+        Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
         - `language: optional string`
 
@@ -26833,7 +26833,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
   - `prompt: optional ResponsePrompt or null`
 
     Reference to a prompt template and its variables.
-    [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+    [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
     - `id: string`
 
@@ -26873,7 +26873,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
       - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-        An image input to the model. Learn about [image inputs](/docs/guides/vision).
+        An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
         - `detail: ImageDetail`
 
@@ -27063,7 +27063,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
     - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
       Give the model access to additional tools via remote Model Context Protocol
-      (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+      (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
       - `server_label: string`
 
@@ -27115,7 +27115,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
         Identifier for service connectors, like those available in ChatGPT. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-        about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+        about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
         Currently supported `connector_id` values are:
 
@@ -27559,7 +27559,7 @@ Returns the created Realtime session object, plus an ephemeral key.
 - `prompt: optional ResponsePrompt or null`
 
   Reference to a prompt template and its variables.
-  [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+  [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
   - `id: string`
 
@@ -27599,7 +27599,7 @@ Returns the created Realtime session object, plus an ephemeral key.
 
     - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-      An image input to the model. Learn about [image inputs](/docs/guides/vision).
+      An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
       - `detail: ImageDetail`
 
@@ -28711,7 +28711,7 @@ Returns the created Realtime transcription session object, plus an ephemeral key
 
     An optional text to guide the model's style or continue a previous audio
     segment.
-    For `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting).
+    For `whisper-1`, the [prompt is a list of keywords](/api/docs/guides/speech-to-text#prompting).
     For `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example "expect words related to technology".
     Prompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.
 

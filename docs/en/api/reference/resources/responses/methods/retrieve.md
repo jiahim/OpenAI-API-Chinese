@@ -51,7 +51,7 @@ Retrieves a model response with the given ID.
 
   If set to true, the model response data will be streamed to the client
   as it is generated using [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format).
-  See the [Streaming section below](/docs/api-reference/responses-streaming)
+  See the [Streaming section below](/api/reference/resources/responses/streaming-events)
   for more information.
 
   - `false`
@@ -239,7 +239,7 @@ Retrieves a model response with the given ID.
 
             - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-              An image input to the model. Learn about [image inputs](/docs/guides/vision).
+              An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
               - `detail: ImageDetail`
 
@@ -582,7 +582,7 @@ Retrieves a model response with the given ID.
       - `FileSearchCall object { id, queries, status, 2 more }`
 
         The results of a file search tool call. See the
-        [file search guide](/docs/guides/tools-file-search) for more information.
+        [file search guide](/api/docs/guides/tools-file-search) for more information.
 
         - `id: string`
 
@@ -650,7 +650,7 @@ Retrieves a model response with the given ID.
       - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
         A tool call to a computer use tool. See the
-        [computer use guide](/docs/guides/tools-computer-use) for more information.
+        [computer use guide](/api/docs/guides/tools-computer-use) for more information.
 
         - `id: string`
 
@@ -995,7 +995,7 @@ Retrieves a model response with the given ID.
       - `WebSearchCall object { id, action, status, type }`
 
         The results of a web search tool call. See the
-        [web search guide](/docs/guides/tools-web-search) for more information.
+        [web search guide](/api/docs/guides/tools-web-search) for more information.
 
         - `id: string`
 
@@ -1093,7 +1093,7 @@ Retrieves a model response with the given ID.
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
         A tool call to run a function. See the
-        [function calling guide](/docs/guides/function-calling) for more information.
+        [function calling guide](/api/docs/guides/function-calling) for more information.
 
         - `arguments: string`
 
@@ -1198,7 +1198,7 @@ Retrieves a model response with the given ID.
 
             - `ResponseInputImageContent object { type, detail, file_id, 2 more }`
 
-              An image input to the model. Learn about [image inputs](/docs/guides/vision)
+              An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision)
 
               - `type: "input_image"`
 
@@ -1376,7 +1376,7 @@ Retrieves a model response with the given ID.
 
           - `Function object { name, parameters, strict, 6 more }`
 
-            Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+            Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
             - `name: string`
 
@@ -1420,7 +1420,7 @@ Retrieves a model response with the given ID.
 
           - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
             - `type: "file_search"`
 
@@ -1545,7 +1545,7 @@ Retrieves a model response with the given ID.
 
           - `Computer object { type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `type: "computer"`
 
@@ -1555,7 +1555,7 @@ Retrieves a model response with the given ID.
 
           - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `display_height: number`
 
@@ -1588,7 +1588,7 @@ Retrieves a model response with the given ID.
           - `WebSearch object { type, external_web_access, filters, 2 more }`
 
             Search the Internet for sources related to the prompt. Learn more about the
-            [web search tool](/docs/guides/tools-web-search).
+            [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -1652,7 +1652,7 @@ Retrieves a model response with the given ID.
           - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
             Give the model access to additional tools via remote Model Context Protocol
-            (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+            (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
             - `server_label: string`
 
@@ -1704,7 +1704,7 @@ Retrieves a model response with the given ID.
 
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-              about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+              about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
               Currently supported `connector_id` values are:
 
@@ -2221,7 +2221,7 @@ Retrieves a model response with the given ID.
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -2343,7 +2343,7 @@ Retrieves a model response with the given ID.
 
               - `Custom object { name, type, allowed_callers, 4 more }`
 
-                A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+                A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
                 - `name: string`
 
@@ -2413,7 +2413,7 @@ Retrieves a model response with the given ID.
 
           - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -2529,7 +2529,7 @@ Retrieves a model response with the given ID.
 
           - `Function object { name, parameters, strict, 6 more }`
 
-            Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+            Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
             - `name: string`
 
@@ -2573,7 +2573,7 @@ Retrieves a model response with the given ID.
 
           - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
             - `type: "file_search"`
 
@@ -2631,7 +2631,7 @@ Retrieves a model response with the given ID.
 
           - `Computer object { type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `type: "computer"`
 
@@ -2641,7 +2641,7 @@ Retrieves a model response with the given ID.
 
           - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `display_height: number`
 
@@ -2674,7 +2674,7 @@ Retrieves a model response with the given ID.
           - `WebSearch object { type, external_web_access, filters, 2 more }`
 
             Search the Internet for sources related to the prompt. Learn more about the
-            [web search tool](/docs/guides/tools-web-search).
+            [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -2738,7 +2738,7 @@ Retrieves a model response with the given ID.
           - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
             Give the model access to additional tools via remote Model Context Protocol
-            (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+            (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
             - `server_label: string`
 
@@ -2790,7 +2790,7 @@ Retrieves a model response with the given ID.
 
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-              about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+              about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
               Currently supported `connector_id` values are:
 
@@ -3157,7 +3157,7 @@ Retrieves a model response with the given ID.
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -3247,7 +3247,7 @@ Retrieves a model response with the given ID.
 
               - `Custom object { name, type, allowed_callers, 4 more }`
 
-                A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+                A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
                 - `name: string`
 
@@ -3317,7 +3317,7 @@ Retrieves a model response with the given ID.
 
           - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -3441,7 +3441,7 @@ Retrieves a model response with the given ID.
         A description of the chain of thought used by a reasoning model while generating
         a response. Be sure to include these items in your `input` to the Responses API
         for subsequent turns of a conversation if you are manually
-        [managing context](/docs/guides/conversation-state).
+        [managing context](/api/docs/guides/conversation-state).
 
         - `id: string`
 
@@ -3506,7 +3506,7 @@ Retrieves a model response with the given ID.
 
       - `Compaction object { encrypted_content, type, id }`
 
-        A compaction item generated by the [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+        A compaction item generated by the [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
 
         - `encrypted_content: string`
 
@@ -3522,7 +3522,7 @@ Retrieves a model response with the given ID.
 
           The ID of the compaction item.
 
-      - `ImageGenerationCall object { id, result, status, type }`
+      - `ImageGenerationCall object { id, result, status, 3 more }`
 
         An image generation request made by the model.
 
@@ -3551,6 +3551,38 @@ Retrieves a model response with the given ID.
           The type of the image generation call. Always `image_generation_call`.
 
           - `"image_generation_call"`
+
+        - `quality: optional "low" or "medium" or "high" or 3 more or null`
+
+          The quality of the image generated by the image generation tool call. One of `low`, `medium`, `high`, `xhigh`, `max`, or `auto`.
+
+          - `"low"`
+
+          - `"medium"`
+
+          - `"high"`
+
+          - `"xhigh"`
+
+          - `"max"`
+
+          - `"auto"`
+
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or null`
+
+          The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+          - `string`
+
+          - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+            The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+            - `"1024x1024"`
+
+            - `"1024x1536"`
+
+            - `"1536x1024"`
 
       - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -4239,7 +4271,7 @@ Retrieves a model response with the given ID.
 
             - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-              An image input to the model. Learn about [image inputs](/docs/guides/vision).
+              An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
             - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -4426,7 +4458,7 @@ Retrieves a model response with the given ID.
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
-    characteristics, and price points. Refer to the [model guide](/docs/models)
+    characteristics, and price points. Refer to the [model guide](/api/docs/models)
     to browse and compare available models.
 
     - `string`
@@ -4665,7 +4697,7 @@ Retrieves a model response with the given ID.
     - `FileSearchCall object { id, queries, status, 2 more }`
 
       The results of a file search tool call. See the
-      [file search guide](/docs/guides/tools-file-search) for more information.
+      [file search guide](/api/docs/guides/tools-file-search) for more information.
 
       - `id: string`
 
@@ -4733,7 +4765,7 @@ Retrieves a model response with the given ID.
     - `FunctionCall object { arguments, call_id, name, 6 more }`
 
       A tool call to run a function. See the
-      [function calling guide](/docs/guides/function-calling) for more information.
+      [function calling guide](/api/docs/guides/function-calling) for more information.
 
       - `arguments: string`
 
@@ -4821,7 +4853,7 @@ Retrieves a model response with the given ID.
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            An image input to the model. Learn about [image inputs](/docs/guides/vision).
+            An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -4887,7 +4919,7 @@ Retrieves a model response with the given ID.
     - `WebSearchCall object { id, action, status, type }`
 
       The results of a web search tool call. See the
-      [web search guide](/docs/guides/tools-web-search) for more information.
+      [web search guide](/api/docs/guides/tools-web-search) for more information.
 
       - `id: string`
 
@@ -4985,7 +5017,7 @@ Retrieves a model response with the given ID.
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
       A tool call to a computer use tool. See the
-      [computer use guide](/docs/guides/tools-computer-use) for more information.
+      [computer use guide](/api/docs/guides/tools-computer-use) for more information.
 
       - `id: string`
 
@@ -5096,7 +5128,7 @@ Retrieves a model response with the given ID.
       A description of the chain of thought used by a reasoning model while generating
       a response. Be sure to include these items in your `input` to the Responses API
       for subsequent turns of a conversation if you are manually
-      [managing context](/docs/guides/conversation-state).
+      [managing context](/api/docs/guides/conversation-state).
 
       - `id: string`
 
@@ -5285,7 +5317,7 @@ Retrieves a model response with the given ID.
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+          Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -5329,7 +5361,7 @@ Retrieves a model response with the given ID.
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -5387,7 +5419,7 @@ Retrieves a model response with the given ID.
 
         - `Computer object { type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -5397,7 +5429,7 @@ Retrieves a model response with the given ID.
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -5430,7 +5462,7 @@ Retrieves a model response with the given ID.
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
           Search the Internet for sources related to the prompt. Learn more about the
-          [web search tool](/docs/guides/tools-web-search).
+          [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -5494,7 +5526,7 @@ Retrieves a model response with the given ID.
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -5546,7 +5578,7 @@ Retrieves a model response with the given ID.
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -5913,7 +5945,7 @@ Retrieves a model response with the given ID.
 
         - `Custom object { name, type, allowed_callers, 4 more }`
 
-          A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+          A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -6003,7 +6035,7 @@ Retrieves a model response with the given ID.
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
-              A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+              A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -6073,7 +6105,7 @@ Retrieves a model response with the given ID.
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -6185,7 +6217,7 @@ Retrieves a model response with the given ID.
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+          Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -6229,7 +6261,7 @@ Retrieves a model response with the given ID.
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -6287,7 +6319,7 @@ Retrieves a model response with the given ID.
 
         - `Computer object { type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -6297,7 +6329,7 @@ Retrieves a model response with the given ID.
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -6330,7 +6362,7 @@ Retrieves a model response with the given ID.
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
           Search the Internet for sources related to the prompt. Learn more about the
-          [web search tool](/docs/guides/tools-web-search).
+          [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -6394,7 +6426,7 @@ Retrieves a model response with the given ID.
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -6446,7 +6478,7 @@ Retrieves a model response with the given ID.
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -6813,7 +6845,7 @@ Retrieves a model response with the given ID.
 
         - `Custom object { name, type, allowed_callers, 4 more }`
 
-          A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+          A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -6903,7 +6935,7 @@ Retrieves a model response with the given ID.
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
-              A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+              A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -6973,7 +7005,7 @@ Retrieves a model response with the given ID.
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -7051,7 +7083,7 @@ Retrieves a model response with the given ID.
 
     - `Compaction object { id, encrypted_content, type, created_by }`
 
-      A compaction item generated by the [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+      A compaction item generated by the [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
 
       - `id: string`
 
@@ -7071,7 +7103,7 @@ Retrieves a model response with the given ID.
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, type }`
+    - `ImageGenerationCall object { id, result, status, 3 more }`
 
       An image generation request made by the model.
 
@@ -7100,6 +7132,38 @@ Retrieves a model response with the given ID.
         The type of the image generation call. Always `image_generation_call`.
 
         - `"image_generation_call"`
+
+      - `quality: optional "low" or "medium" or "high" or 3 more or null`
+
+        The quality of the image generated by the image generation tool call. One of `low`, `medium`, `high`, `xhigh`, `max`, or `auto`.
+
+        - `"low"`
+
+        - `"medium"`
+
+        - `"high"`
+
+        - `"xhigh"`
+
+        - `"max"`
+
+        - `"auto"`
+
+      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or null`
+
+        The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+        - `string`
+
+        - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+          The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+          - `"1024x1024"`
+
+          - `"1024x1536"`
+
+          - `"1536x1024"`
 
     - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -7836,7 +7900,7 @@ Retrieves a model response with the given ID.
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            An image input to the model. Learn about [image inputs](/docs/guides/vision).
+            An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -7959,12 +8023,12 @@ Retrieves a model response with the given ID.
     - `ToolChoiceTypes object { type }`
 
       Indicates that the model should use a built-in tool to generate a response.
-      [Learn more about built-in tools](/docs/guides/tools).
+      [Learn more about built-in tools](/api/docs/guides/tools).
 
       - `type: "file_search" or "web_search_preview" or "computer" or 5 more`
 
         The type of hosted tool the model should to use. Learn more about
-        [built-in tools](/docs/guides/tools).
+        [built-in tools](/api/docs/guides/tools).
 
         Allowed values are:
 
@@ -8074,21 +8138,21 @@ Retrieves a model response with the given ID.
     We support the following categories of tools:
 
     - **Built-in tools**: Tools that are provided by OpenAI that extend the
-      model's capabilities, like [web search](/docs/guides/tools-web-search)
-      or [file search](/docs/guides/tools-file-search). Learn more about
-      [built-in tools](/docs/guides/tools).
+      model's capabilities, like [web search](/api/docs/guides/tools-web-search)
+      or [file search](/api/docs/guides/tools-file-search). Learn more about
+      [built-in tools](/api/docs/guides/tools).
     - **MCP Tools**: Integrations with third-party systems via custom MCP servers
       or predefined connectors such as Google Drive and SharePoint. Learn more about
-      [MCP Tools](/docs/guides/tools-connectors-mcp).
+      [MCP Tools](/api/docs/guides/tools-connectors-mcp).
     - **Function calls (custom tools)**: Functions that are defined by you,
       enabling the model to call your own code with strongly typed arguments
       and outputs. Learn more about
-      [function calling](/docs/guides/function-calling). You can also use
+      [function calling](/api/docs/guides/function-calling). You can also use
       custom tools to call your own code.
 
     - `Function object { name, parameters, strict, 6 more }`
 
-      Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+      Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
       - `name: string`
 
@@ -8132,7 +8196,7 @@ Retrieves a model response with the given ID.
 
     - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-      A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+      A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
       - `type: "file_search"`
 
@@ -8190,7 +8254,7 @@ Retrieves a model response with the given ID.
 
     - `Computer object { type }`
 
-      A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+      A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
       - `type: "computer"`
 
@@ -8200,7 +8264,7 @@ Retrieves a model response with the given ID.
 
     - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-      A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+      A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
       - `display_height: number`
 
@@ -8233,7 +8297,7 @@ Retrieves a model response with the given ID.
     - `WebSearch object { type, external_web_access, filters, 2 more }`
 
       Search the Internet for sources related to the prompt. Learn more about the
-      [web search tool](/docs/guides/tools-web-search).
+      [web search tool](/api/docs/guides/tools-web-search).
 
       - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -8297,7 +8361,7 @@ Retrieves a model response with the given ID.
     - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
       Give the model access to additional tools via remote Model Context Protocol
-      (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+      (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
       - `server_label: string`
 
@@ -8349,7 +8413,7 @@ Retrieves a model response with the given ID.
 
         Identifier for service connectors, like those available in ChatGPT. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-        about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+        about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
         Currently supported `connector_id` values are:
 
@@ -8716,7 +8780,7 @@ Retrieves a model response with the given ID.
 
     - `Custom object { name, type, allowed_callers, 4 more }`
 
-      A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+      A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
       - `name: string`
 
@@ -8806,7 +8870,7 @@ Retrieves a model response with the given ID.
 
         - `Custom object { name, type, allowed_callers, 4 more }`
 
-          A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+          A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -8876,7 +8940,7 @@ Retrieves a model response with the given ID.
 
     - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-      This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+      This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
       - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -8958,7 +9022,7 @@ Retrieves a model response with the given ID.
   - `background: optional boolean or null`
 
     Whether to run the model response in the background.
-    [Learn more](/docs/guides/background).
+    [Learn more](/api/docs/guides/background).
 
   - `completed_at: optional number or null`
 
@@ -8975,7 +9039,7 @@ Retrieves a model response with the given ID.
 
   - `max_output_tokens: optional number or null`
 
-    An upper bound for the number of tokens that can be generated for a response, including visible output tokens and [reasoning tokens](/docs/guides/reasoning).
+    An upper bound for the number of tokens that can be generated for a response, including visible output tokens and [reasoning tokens](/api/docs/guides/reasoning).
 
   - `max_tool_calls: optional number or null`
 
@@ -9107,12 +9171,12 @@ Retrieves a model response with the given ID.
 
     The unique ID of the previous response to the model. Use this to
     create multi-turn conversations. Learn more about
-    [conversation state](/docs/guides/conversation-state). Cannot be used in conjunction with `conversation`.
+    [conversation state](/api/docs/guides/conversation-state). Cannot be used in conjunction with `conversation`.
 
   - `prompt: optional ResponsePrompt or null`
 
     Reference to a prompt template and its variables.
-    [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+    [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
     - `id: string`
 
@@ -9132,7 +9196,7 @@ Retrieves a model response with the given ID.
 
       - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-        An image input to the model. Learn about [image inputs](/docs/guides/vision).
+        An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
       - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -9202,7 +9266,7 @@ Retrieves a model response with the given ID.
 
   - `prompt_cache_key: optional string or null`
 
-    Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
+    Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/api/docs/guides/prompt-caching).
 
   - `prompt_cache_options: optional object { mode, ttl, comparison_response_id }`
 
@@ -9230,7 +9294,7 @@ Retrieves a model response with the given ID.
 
     Deprecated. Use `prompt_cache_options.ttl` instead.
 
-    The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/docs/guides/prompt-caching#prompt-cache-retention).
+    The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/api/docs/guides/prompt-caching#prompt-cache-retention).
     This field expresses a maximum retention policy, while
     `prompt_cache_options.ttl` expresses a minimum cache lifetime. The two
     fields are independent and do not interact.
@@ -9248,7 +9312,7 @@ Retrieves a model response with the given ID.
   - `reasoning: optional Reasoning or null`
 
     Configuration options for
-    [reasoning models](https://platform.openai.com/docs/guides/reasoning).
+    [reasoning models](/api/docs/guides/reasoning).
 
     - `context: optional "auto" or "current_turn" or "all_turns" or null`
 
@@ -9273,7 +9337,7 @@ Retrieves a model response with the given ID.
       Reducing reasoning effort can result in faster responses and fewer tokens
       used on reasoning in a response. Not all reasoning models support every
       value. See the
-      [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+      [reasoning guide](/api/docs/guides/reasoning)
       for model-specific support.
 
     - `generate_summary: optional "auto" or "concise" or "detailed" or null`
@@ -9325,7 +9389,7 @@ Retrieves a model response with the given ID.
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](/docs/guides/safety-best-practices#safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional ServiceTier or null`
 
@@ -9333,7 +9397,7 @@ Retrieves a model response with the given ID.
 
     - If set to 'auto', then the request will be processed with the service tier configured in the Project settings. Unless otherwise configured, the Project will use 'default'.
     - If set to 'default', then the request will be processed with the standard pricing and performance for the selected model.
-    - If set to '[flex](/docs/guides/flex-processing)', then the request will be processed with the Flex Processing service tier.
+    - If set to '[flex](/api/docs/guides/flex-processing)', then the request will be processed with the Flex Processing service tier.
     - To opt-in to [Fast mode](/api/docs/guides/fast-mode) at the request level, include the `service_tier=fast` or `service_tier=priority` parameter for Responses or Chat Completions. The response will show `service_tier=priority` regardless of if you specify `service_tier=fast` or `priority` in your request.
     - If set to 'ultrafast', then the request will be processed with the access-controlled Ultrafast Processing service tier. This tier is currently available for `gpt-5.6-sol`; a response served through it will show `service_tier=ultrafast`.
     - When not set, the default behavior is 'auto'.
@@ -9376,8 +9440,8 @@ Retrieves a model response with the given ID.
     Configuration options for a text response from the model. Can be plain
     text or structured JSON data. Learn more:
 
-    - [Text inputs and outputs](/docs/guides/text)
-    - [Structured Outputs](/docs/guides/structured-outputs)
+    - [Text inputs and outputs](/api/docs/guides/text)
+    - [Structured Outputs](/api/docs/guides/structured-outputs)
 
     - `format: optional ResponseFormatTextConfig`
 
@@ -9385,7 +9449,7 @@ Retrieves a model response with the given ID.
 
       Configuring `{ "type": "json_schema" }` enables Structured Outputs,
       which ensures the model will match your supplied JSON schema. Learn more in the
-      [Structured Outputs guide](/docs/guides/structured-outputs).
+      [Structured Outputs guide](/api/docs/guides/structured-outputs).
 
       The default format is `{ "type": "text" }` with no additional options.
 
@@ -9408,7 +9472,7 @@ Retrieves a model response with the given ID.
       - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
         JSON Schema response format. Used to generate structured JSON responses.
-        Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+        Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
         - `name: string`
 
@@ -9437,7 +9501,7 @@ Retrieves a model response with the given ID.
           If set to true, the model will always follow the exact schema defined
           in the `schema` field. Only a subset of JSON Schema is supported when
           `strict` is `true`. To learn more, read the [Structured Outputs
-          guide](/docs/guides/structured-outputs).
+          guide](/api/docs/guides/structured-outputs).
 
       - `ResponseFormatJSONObject object { type }`
 
@@ -9506,7 +9570,7 @@ Retrieves a model response with the given ID.
       - `cached_tokens: number`
 
         The number of tokens that were retrieved from the cache.
-        [More on prompt caching](/docs/guides/prompt-caching).
+        [More on prompt caching](/api/docs/guides/prompt-caching).
 
     - `output_tokens: number`
 
@@ -9528,7 +9592,7 @@ Retrieves a model response with the given ID.
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
-    Used to boost cache hit rates by better bucketing similar requests and  to help OpenAI detect and prevent abuse. [Learn more](/docs/guides/safety-best-practices#safety-identifiers).
+    Used to boost cache hit rates by better bucketing similar requests and  to help OpenAI detect and prevent abuse. [Learn more](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
 ### Example
 

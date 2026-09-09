@@ -42,7 +42,7 @@ Returns the Upload object with status `cancelled`.
 
   - `purpose: string`
 
-    The intended purpose of the file. [Please refer here](/docs/api-reference/files/object#files/object-purpose) for acceptable values.
+    The intended purpose of the file. [Please refer here](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) for acceptable values.
 
   - `status: "pending" or "completed" or "cancelled" or "expired"`
 
@@ -185,9 +185,9 @@ curl https://api.openai.com/v1/uploads/upload_abc123/cancel
 
 **post** `/uploads/{upload_id}/complete`
 
-Completes the [Upload](/docs/api-reference/uploads/object).
+Completes the [Upload](/api/reference/resources/uploads).
 
-Within the returned Upload object, there is a nested [File](/docs/api-reference/files/object) object that is ready to use in the rest of the platform.
+Within the returned Upload object, there is a nested [File](/api/reference/resources/files) object that is ready to use in the rest of the platform.
 
 You can specify the order of the Parts by passing in an ordered list of the Part IDs.
 
@@ -236,7 +236,7 @@ Returns the Upload object with status `completed`, including an additional `file
 
   - `purpose: string`
 
-    The intended purpose of the file. [Please refer here](/docs/api-reference/files/object#files/object-purpose) for acceptable values.
+    The intended purpose of the file. [Please refer here](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) for acceptable values.
 
   - `status: "pending" or "completed" or "cancelled" or "expired"`
 
@@ -396,23 +396,23 @@ curl https://api.openai.com/v1/uploads/upload_abc123/complete
 
 **post** `/uploads`
 
-Creates an intermediate [Upload](/docs/api-reference/uploads/object) object
-that you can add [Parts](/docs/api-reference/uploads/part-object) to.
+Creates an intermediate [Upload](/api/reference/resources/uploads) object
+that you can add [Parts](/api/reference/resources/uploads/subresources/parts) to.
 Currently, an Upload can accept at most 8 GB in total and expires after an
 hour after you create it.
 
 Once you complete the Upload, we will create a
-[File](/docs/api-reference/files/object) object that contains all the parts
+[File](/api/reference/resources/files) object that contains all the parts
 you uploaded. This File is usable in the rest of our platform as a regular
 File object.
 
 For certain `purpose` values, the correct `mime_type` must be specified.
 Please refer to documentation for the
-[supported MIME types for your use case](/docs/assistants/tools/file-search#supported-files).
+[supported MIME types for your use case](/api/docs/guides/tools-file-search#supported-files).
 
 For guidance on the proper filename extensions for each purpose, please
 follow the documentation on [creating a
-File](/docs/api-reference/files/create).
+File](/api/reference/resources/files/methods/create).
 
 Returns the Upload object with status `pending`.
 
@@ -438,7 +438,7 @@ Returns the Upload object with status `pending`.
   The intended purpose of the uploaded file.
 
   See the [documentation on File
-  purposes](/docs/api-reference/files/create#files-create-purpose).
+  purposes](/api/reference/resources/files/methods/create#%28resource%29%20files%20%3E%20%28method%29%20create%20%3E%20%28params%29%200%20%3E%20%28param%29%20purpose%20%3E%20%28schema%29).
 
   - `"assistants"`
 
@@ -490,7 +490,7 @@ Returns the Upload object with status `pending`.
 
   - `purpose: string`
 
-    The intended purpose of the file. [Please refer here](/docs/api-reference/files/object#files/object-purpose) for acceptable values.
+    The intended purpose of the file. [Please refer here](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) for acceptable values.
 
   - `status: "pending" or "completed" or "cancelled" or "expired"`
 
@@ -676,7 +676,7 @@ curl https://api.openai.com/v1/uploads \
 
   - `purpose: string`
 
-    The intended purpose of the file. [Please refer here](/docs/api-reference/files/object#files/object-purpose) for acceptable values.
+    The intended purpose of the file. [Please refer here](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) for acceptable values.
 
   - `status: "pending" or "completed" or "cancelled" or "expired"`
 
@@ -766,11 +766,11 @@ curl https://api.openai.com/v1/uploads \
 
 **post** `/uploads/{upload_id}/parts`
 
-Adds a [Part](/docs/api-reference/uploads/part-object) to an [Upload](/docs/api-reference/uploads/object) object. A Part represents a chunk of bytes from the file you are trying to upload.
+Adds a [Part](/api/reference/resources/uploads/subresources/parts) to an [Upload](/api/reference/resources/uploads) object. A Part represents a chunk of bytes from the file you are trying to upload.
 
 Each Part can be at most 64 MB, and you can add Parts until you hit the Upload maximum of 8 GB.
 
-It is possible to add multiple Parts in parallel. You can decide the intended order of the Parts when you [complete the Upload](/docs/api-reference/uploads/complete).
+It is possible to add multiple Parts in parallel. You can decide the intended order of the Parts when you [complete the Upload](/api/reference/resources/uploads/methods/complete).
 
 ### Path Parameters
 

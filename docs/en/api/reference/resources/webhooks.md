@@ -5,7 +5,7 @@
 Webhooks are HTTP requests sent by OpenAI to a URL you specify when certain
 events happen during the course of API usage.
 
-[Learn more about webhooks](https://developers.openai.com/docs/guides/webhooks).
+[Learn more about webhooks](https://developers.openai.com/api/docs/guides/webhooks).
 
 ## response.completed
 
@@ -2823,7 +2823,7 @@ Schema name: `WebhookRealtimeCallIncoming`
     "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/data/properties/sip_headers",
     "deprecated": false,
     "key": "sip_headers",
-    "docstring": "Headers from the SIP Invite.\n",
+    "docstring": "Headers from the SIP INVITE, excluding SIP authorization headers.\nRetained names, values, repeated entries, and order are preserved.\nTreat these values as untrusted call metadata.\n",
     "type": {
       "kind": "HttpTypeArray",
       "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/data/properties/sip_headers",
@@ -2905,7 +2905,7 @@ Schema name: `WebhookRealtimeCallIncoming`
     "sip_headers": [
       {"name": "Max-Forwards", "value": "63"},
       {"name": "CSeq", "value": "851287 INVITE"},
-      {"name": "Content-Type", "value": "application/sdp"},
+      {"name": "Content-Type", "value": "application/sdp"}
     ]
   }
 }
@@ -3081,7 +3081,7 @@ Schema name: `WebhookLiveCallIncoming`
     "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/data/properties/sip_headers",
     "deprecated": false,
     "key": "sip_headers",
-    "docstring": "Headers from the SIP Invite.\n",
+    "docstring": "Headers from the SIP INVITE, excluding SIP authorization headers.\nRetained names, values, repeated entries, and order are preserved.\nTreat these values as untrusted call metadata.\n",
     "type": {
       "kind": "HttpTypeArray",
       "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/data/properties/sip_headers",
@@ -3161,9 +3161,9 @@ Schema name: `WebhookLiveCallIncoming`
   "data": {
     "session_id": "live_u0_479a275623b54bdb9b6fbae2f7cbd408",
     "sip_headers": [
-      {"name": "Max-Forwards", "value": "63"},
-      {"name": "CSeq", "value": "851287 INVITE"},
-      {"name": "Content-Type", "value": "application/sdp"},
+      {"name": "From", "value": "<sip:alice@example.com>;tag=abc123"},
+      {"name": "To", "value": "<sip:recipient@example.com>"},
+      {"name": "Call-ID", "value": "call-123@example.com"}
     ]
   }
 }

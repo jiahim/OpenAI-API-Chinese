@@ -92,7 +92,7 @@ https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123/content \
 
 **post** `/vector_stores/{vector_store_id}/files`
 
-Create a vector store file by attaching a [File](/docs/api-reference/files) to a [vector store](/docs/api-reference/vector-stores/object).
+Create a vector store file by attaching a [File](/api/reference/resources/files) to a [vector store](/api/reference/resources/vector_stores).
 
 ### Path Parameters
 
@@ -102,7 +102,7 @@ Create a vector store file by attaching a [File](/docs/api-reference/files) to a
 
 - `file_id: string`
 
-  A [File](/docs/api-reference/files) ID that the vector store should use. Useful for tools like `file_search` that can access files. For multi-file ingestion, we recommend [`file_batches`](/docs/api-reference/vector-stores-file-batches/createBatch) to minimize per-vector-store write requests.
+  A [File](/api/reference/resources/files) ID that the vector store should use. Useful for tools like `file_search` that can access files. For multi-file ingestion, we recommend [`file_batches`](/api/reference/resources/vector_stores/subresources/file_batches/methods/create) to minimize per-vector-store write requests.
 
 - `attributes: optional map[string or number or boolean] or null`
 
@@ -210,7 +210,7 @@ Create a vector store file by attaching a [File](/docs/api-reference/files) to a
 
   - `vector_store_id: string`
 
-    The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to.
+    The ID of the [vector store](/api/reference/resources/vector_stores) that the [File](/api/reference/resources/files) is attached to.
 
   - `attributes: optional map[string or number or boolean] or null`
 
@@ -329,7 +329,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files \
 
 **delete** `/vector_stores/{vector_store_id}/files/{file_id}`
 
-Delete a vector store file. This will remove the file from the vector store but the file itself will not be deleted. To delete the file, use the [delete file](/docs/api-reference/files/delete) endpoint.
+Delete a vector store file. This will remove the file from the vector store but the file itself will not be deleted. To delete the file, use the [delete file](/api/reference/resources/files/methods/delete) endpoint.
 
 ### Path Parameters
 
@@ -486,7 +486,7 @@ Returns a list of vector store files.
 
   - `vector_store_id: string`
 
-    The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to.
+    The ID of the [vector store](/api/reference/resources/vector_stores) that the [File](/api/reference/resources/files) is attached to.
 
   - `attributes: optional map[string or number or boolean] or null`
 
@@ -689,7 +689,7 @@ Retrieves a vector store file.
 
   - `vector_store_id: string`
 
-    The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to.
+    The ID of the [vector store](/api/reference/resources/vector_stores) that the [File](/api/reference/resources/files) is attached to.
 
   - `attributes: optional map[string or number or boolean] or null`
 
@@ -880,7 +880,7 @@ Update attributes on a vector store file.
 
   - `vector_store_id: string`
 
-    The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to.
+    The ID of the [vector store](/api/reference/resources/vector_stores) that the [File](/api/reference/resources/files) is attached to.
 
   - `attributes: optional map[string or number or boolean] or null`
 
@@ -1066,7 +1066,7 @@ curl https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id} \
 
   - `vector_store_id: string`
 
-    The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to.
+    The ID of the [vector store](/api/reference/resources/vector_stores) that the [File](/api/reference/resources/files) is attached to.
 
   - `attributes: optional map[string or number or boolean] or null`
 

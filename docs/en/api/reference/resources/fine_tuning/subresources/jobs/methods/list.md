@@ -109,7 +109,7 @@ List your organization's fine-tuning jobs
 
   - `result_files: array of string`
 
-    The compiled results file ID(s) for the fine-tuning job. You can retrieve the results with the [Files API](/docs/api-reference/files/retrieve-contents).
+    The compiled results file ID(s) for the fine-tuning job. You can retrieve the results with the [Files API](/api/reference/resources/files/methods/content).
 
   - `seed: number`
 
@@ -137,11 +137,11 @@ List your organization's fine-tuning jobs
 
   - `training_file: string`
 
-    The file ID used for training. You can retrieve the training data with the [Files API](/docs/api-reference/files/retrieve-contents).
+    The file ID used for training. You can retrieve the training data with the [Files API](/api/reference/resources/files/methods/content).
 
   - `validation_file: string or null`
 
-    The file ID used for validation. You can retrieve the validation results with the [Files API](/docs/api-reference/files/retrieve-contents).
+    The file ID used for validation. You can retrieve the validation results with the [Files API](/api/reference/resources/files/methods/content).
 
   - `estimated_finish: optional number or null`
 
@@ -564,7 +564,7 @@ List your organization's fine-tuning jobs
               Reducing reasoning effort can result in faster responses and fewer tokens
               used on reasoning in a response. Not all reasoning models support every
               value. See the
-              [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+              [reasoning guide](/api/docs/guides/reasoning)
               for model-specific support.
 
               - `"none"`
