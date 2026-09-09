@@ -1,16 +1,16 @@
 # Chat Completions 流式事件
 
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。每个文档页面都提供 Markdown 版本，可通过在页面 URL 末尾追加 `.md` 来获取。
 
-实时流式 Chat Completions。通过服务端发送事件接收模型返回的补全分块。
-实时流式 Chat Completions。通过服务端发送事件接收模型返回的补全分块。
-[了解更多](https://developers.openai.com/docs/guides/streaming-responses?api-mode=chat).
+实时流式传输 Chat Completions。通过服务端发送的事件接收模型返回的补全块。
+了解更多。
+[了解更多](https://developers.openai.com/api/docs/guides/streaming-responses).
 
 ## chat.completion.chunk
 
 表示基于所提供的输入由模型返回的聊天补全响应的流式分块。
 by the model, based on the provided input.
-[了解更多](https://developers.openai.com/docs/guides/streaming-responses).
+[了解更多](https://developers.openai.com/api/docs/guides/streaming-responses).
 
 ### Schema
 
@@ -21,7 +21,7 @@ Schema name: `CreateChatCompletionStreamResponse`
   "(resource) chat.completions > (model) chat_completion_chunk > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse",
-    "docstring": "Represents a streamed chunk of a chat completion response returned\nby the model, based on the provided input. \n[Learn more](/docs/guides/streaming-responses).\n",
+    "docstring": "Represents a streamed chunk of a chat completion response returned\nby the model, based on the provided input.\n[Learn more](/api/docs/guides/streaming-responses).\n",
     "ident": "ChatCompletionChunk",
     "type": {
       "kind": "HttpTypeObject",
@@ -224,7 +224,7 @@ Schema name: `CreateChatCompletionStreamResponse`
     "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/service_tier",
     "deprecated": false,
     "key": "service_tier",
-    "docstring": "Specifies the processing type used for serving the request.\n  - If set to 'auto', then the request will be processed with the service tier configured in the Project settings. Unless otherwise configured, the Project will use 'default'.\n  - If set to 'default', then the request will be processed with the standard pricing and performance for the selected model.\n  - If set to '[flex](/docs/guides/flex-processing)', then the request will be processed with the Flex Processing service tier.\n  - To opt-in to [Fast mode](/api/docs/guides/fast-mode) at the request level, include the `service_tier=fast` or `service_tier=priority` parameter for Responses or Chat Completions. The response will show `service_tier=priority` regardless of if you specify `service_tier=fast` or `priority` in your request.\n  - When not set, the default behavior is 'auto'.\n\n  When the `service_tier` parameter is set, the response body will include the `service_tier` value based on the processing mode actually used to serve the request. This response value may be different from the value set in the parameter.\n",
+    "docstring": "Specifies the processing type used for serving the request.\n  - If set to 'auto', then the request will be processed with the service tier configured in the Project settings. Unless otherwise configured, the Project will use 'default'.\n  - If set to 'default', then the request will be processed with the standard pricing and performance for the selected model.\n  - If set to '[flex](/api/docs/guides/flex-processing)', then the request will be processed with the Flex Processing service tier.\n  - To opt-in to [Fast mode](/api/docs/guides/fast-mode) at the request level, include the `service_tier=fast` or `service_tier=priority` parameter for Responses or Chat Completions. The response will show `service_tier=priority` regardless of if you specify `service_tier=fast` or `priority` in your request.\n  - When not set, the default behavior is 'auto'.\n\n  When the `service_tier` parameter is set, the response body will include the `service_tier` value based on the processing mode actually used to serve the request. This response value may be different from the value set in the parameter.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/service_tier",
