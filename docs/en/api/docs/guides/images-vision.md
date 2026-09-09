@@ -27,7 +27,7 @@ To learn more about the input and output modalities supported by our models, ref
 
 ## Generate or edit images
 
-With the Images API, choose `gpt-image-2` to generate images from text or edit existing images. With the Responses API, choose a mainline model that supports the image generation tool; the tool handles GPT Image model selection.
+With the Images API, choose `gpt-image-2.5-sunburst` to generate images from text or edit existing images. With the Responses API, choose a mainline model that supports the image generation tool; the tool handles GPT Image model selection.
 
 
 

@@ -18170,7 +18170,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -18260,7 +18260,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -18291,6 +18291,22 @@ Schema name: `BetaResponseCreatedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -18413,7 +18429,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -18432,6 +18448,14 @@ Schema name: `BetaResponseCreatedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -18445,7 +18469,9 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -18453,7 +18479,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -31346,7 +31372,7 @@ Schema name: `BetaResponseCreatedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -31371,6 +31397,22 @@ Schema name: `BetaResponseCreatedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -31380,7 +31422,11 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -31443,6 +31489,20 @@ Schema name: `BetaResponseCreatedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -31458,7 +31518,7 @@ Schema name: `BetaResponseCreatedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -39515,7 +39575,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -39605,7 +39665,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -39636,6 +39696,22 @@ Schema name: `BetaResponseCreatedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -39758,7 +39834,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -39777,6 +39853,14 @@ Schema name: `BetaResponseCreatedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -39790,7 +39874,9 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -39798,7 +39884,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -41599,7 +41685,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -41689,7 +41775,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -41720,6 +41806,22 @@ Schema name: `BetaResponseCreatedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -41842,7 +41944,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -41861,6 +41963,14 @@ Schema name: `BetaResponseCreatedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -41874,7 +41984,9 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -41882,7 +41994,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -44001,6 +44113,34 @@ Schema name: `BetaResponseCreatedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -46876,7 +47016,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -46966,7 +47106,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -46997,6 +47137,22 @@ Schema name: `BetaResponseCreatedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -47119,7 +47275,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -47138,6 +47294,14 @@ Schema name: `BetaResponseCreatedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -47151,7 +47315,9 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -47159,7 +47325,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -48960,7 +49126,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -49050,7 +49216,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -49081,6 +49247,22 @@ Schema name: `BetaResponseCreatedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -49203,7 +49385,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -49222,6 +49404,14 @@ Schema name: `BetaResponseCreatedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -49235,7 +49425,9 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -49243,7 +49435,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -52060,7 +52252,7 @@ Schema name: `BetaResponseCreatedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -52085,6 +52277,22 @@ Schema name: `BetaResponseCreatedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -52094,7 +52302,11 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -52157,6 +52369,20 @@ Schema name: `BetaResponseCreatedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -52172,7 +52398,7 @@ Schema name: `BetaResponseCreatedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -53270,7 +53496,7 @@ Schema name: `BetaResponseCreatedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -53295,6 +53521,22 @@ Schema name: `BetaResponseCreatedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -53304,7 +53546,11 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -53367,6 +53613,20 @@ Schema name: `BetaResponseCreatedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -53382,7 +53642,7 @@ Schema name: `BetaResponseCreatedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -55869,7 +56129,7 @@ Schema name: `BetaResponseCreatedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -55894,6 +56154,22 @@ Schema name: `BetaResponseCreatedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -55903,7 +56179,11 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -55966,6 +56246,20 @@ Schema name: `BetaResponseCreatedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -55981,7 +56275,7 @@ Schema name: `BetaResponseCreatedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -57079,7 +57373,7 @@ Schema name: `BetaResponseCreatedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -57104,6 +57398,22 @@ Schema name: `BetaResponseCreatedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -57113,7 +57423,11 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -57176,6 +57490,20 @@ Schema name: `BetaResponseCreatedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -57191,7 +57519,7 @@ Schema name: `BetaResponseCreatedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -58344,6 +58672,34 @@ Schema name: `BetaResponseCreatedEvent`
       "literal": "gpt-image-2-2026-04-21"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -59284,6 +59640,34 @@ Schema name: `BetaResponseCreatedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -60750,6 +61134,34 @@ Schema name: `BetaResponseCreatedEvent`
       "literal": "gpt-image-2-2026-04-21"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -61690,6 +62102,34 @@ Schema name: `BetaResponseCreatedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -83879,7 +84319,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -83969,7 +84409,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -84000,6 +84440,22 @@ Schema name: `BetaResponseInProgressEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -84122,7 +84578,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -84141,6 +84597,14 @@ Schema name: `BetaResponseInProgressEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -84154,7 +84618,9 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -84162,7 +84628,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -97055,7 +97521,7 @@ Schema name: `BetaResponseInProgressEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -97080,6 +97546,22 @@ Schema name: `BetaResponseInProgressEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -97089,7 +97571,11 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -97152,6 +97638,20 @@ Schema name: `BetaResponseInProgressEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -97167,7 +97667,7 @@ Schema name: `BetaResponseInProgressEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -105224,7 +105724,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -105314,7 +105814,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -105345,6 +105845,22 @@ Schema name: `BetaResponseInProgressEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -105467,7 +105983,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -105486,6 +106002,14 @@ Schema name: `BetaResponseInProgressEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -105499,7 +106023,9 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -105507,7 +106033,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -107308,7 +107834,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -107398,7 +107924,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -107429,6 +107955,22 @@ Schema name: `BetaResponseInProgressEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -107551,7 +108093,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -107570,6 +108112,14 @@ Schema name: `BetaResponseInProgressEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -107583,7 +108133,9 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -107591,7 +108143,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -109710,6 +110262,34 @@ Schema name: `BetaResponseInProgressEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -112585,7 +113165,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -112675,7 +113255,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -112706,6 +113286,22 @@ Schema name: `BetaResponseInProgressEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -112828,7 +113424,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -112847,6 +113443,14 @@ Schema name: `BetaResponseInProgressEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -112860,7 +113464,9 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -112868,7 +113474,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -114669,7 +115275,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -114759,7 +115365,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -114790,6 +115396,22 @@ Schema name: `BetaResponseInProgressEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -114912,7 +115534,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -114931,6 +115553,14 @@ Schema name: `BetaResponseInProgressEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -114944,7 +115574,9 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -114952,7 +115584,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -117769,7 +118401,7 @@ Schema name: `BetaResponseInProgressEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -117794,6 +118426,22 @@ Schema name: `BetaResponseInProgressEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -117803,7 +118451,11 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -117866,6 +118518,20 @@ Schema name: `BetaResponseInProgressEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -117881,7 +118547,7 @@ Schema name: `BetaResponseInProgressEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -118979,7 +119645,7 @@ Schema name: `BetaResponseInProgressEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -119004,6 +119670,22 @@ Schema name: `BetaResponseInProgressEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -119013,7 +119695,11 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -119076,6 +119762,20 @@ Schema name: `BetaResponseInProgressEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -119091,7 +119791,7 @@ Schema name: `BetaResponseInProgressEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -121578,7 +122278,7 @@ Schema name: `BetaResponseInProgressEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -121603,6 +122303,22 @@ Schema name: `BetaResponseInProgressEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -121612,7 +122328,11 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -121675,6 +122395,20 @@ Schema name: `BetaResponseInProgressEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -121690,7 +122424,7 @@ Schema name: `BetaResponseInProgressEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -122788,7 +123522,7 @@ Schema name: `BetaResponseInProgressEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -122813,6 +123547,22 @@ Schema name: `BetaResponseInProgressEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -122822,7 +123572,11 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -122885,6 +123639,20 @@ Schema name: `BetaResponseInProgressEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -122900,7 +123668,7 @@ Schema name: `BetaResponseInProgressEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -124053,6 +124821,34 @@ Schema name: `BetaResponseInProgressEvent`
       "literal": "gpt-image-2-2026-04-21"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -124993,6 +125789,34 @@ Schema name: `BetaResponseInProgressEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -126459,6 +127283,34 @@ Schema name: `BetaResponseInProgressEvent`
       "literal": "gpt-image-2-2026-04-21"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -127399,6 +128251,34 @@ Schema name: `BetaResponseInProgressEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -149588,7 +150468,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -149678,7 +150558,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -149709,6 +150589,22 @@ Schema name: `BetaResponseCompletedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -149831,7 +150727,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -149850,6 +150746,14 @@ Schema name: `BetaResponseCompletedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -149863,7 +150767,9 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -149871,7 +150777,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -162764,7 +163670,7 @@ Schema name: `BetaResponseCompletedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -162789,6 +163695,22 @@ Schema name: `BetaResponseCompletedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -162798,7 +163720,11 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -162861,6 +163787,20 @@ Schema name: `BetaResponseCompletedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -162876,7 +163816,7 @@ Schema name: `BetaResponseCompletedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -170933,7 +171873,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -171023,7 +171963,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -171054,6 +171994,22 @@ Schema name: `BetaResponseCompletedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -171176,7 +172132,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -171195,6 +172151,14 @@ Schema name: `BetaResponseCompletedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -171208,7 +172172,9 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -171216,7 +172182,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -173017,7 +173983,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -173107,7 +174073,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -173138,6 +174104,22 @@ Schema name: `BetaResponseCompletedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -173260,7 +174242,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -173279,6 +174261,14 @@ Schema name: `BetaResponseCompletedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -173292,7 +174282,9 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -173300,7 +174292,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -175419,6 +176411,34 @@ Schema name: `BetaResponseCompletedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -178294,7 +179314,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -178384,7 +179404,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -178415,6 +179435,22 @@ Schema name: `BetaResponseCompletedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -178537,7 +179573,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -178556,6 +179592,14 @@ Schema name: `BetaResponseCompletedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -178569,7 +179613,9 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -178577,7 +179623,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -180378,7 +181424,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -180468,7 +181514,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -180499,6 +181545,22 @@ Schema name: `BetaResponseCompletedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -180621,7 +181683,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -180640,6 +181702,14 @@ Schema name: `BetaResponseCompletedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -180653,7 +181723,9 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -180661,7 +181733,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -183478,7 +184550,7 @@ Schema name: `BetaResponseCompletedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -183503,6 +184575,22 @@ Schema name: `BetaResponseCompletedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -183512,7 +184600,11 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -183575,6 +184667,20 @@ Schema name: `BetaResponseCompletedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -183590,7 +184696,7 @@ Schema name: `BetaResponseCompletedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -184688,7 +185794,7 @@ Schema name: `BetaResponseCompletedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -184713,6 +185819,22 @@ Schema name: `BetaResponseCompletedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -184722,7 +185844,11 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -184785,6 +185911,20 @@ Schema name: `BetaResponseCompletedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -184800,7 +185940,7 @@ Schema name: `BetaResponseCompletedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -187287,7 +188427,7 @@ Schema name: `BetaResponseCompletedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -187312,6 +188452,22 @@ Schema name: `BetaResponseCompletedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -187321,7 +188477,11 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -187384,6 +188544,20 @@ Schema name: `BetaResponseCompletedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -187399,7 +188573,7 @@ Schema name: `BetaResponseCompletedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -188497,7 +189671,7 @@ Schema name: `BetaResponseCompletedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -188522,6 +189696,22 @@ Schema name: `BetaResponseCompletedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -188531,7 +189721,11 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -188594,6 +189788,20 @@ Schema name: `BetaResponseCompletedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -188609,7 +189817,7 @@ Schema name: `BetaResponseCompletedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -189762,6 +190970,34 @@ Schema name: `BetaResponseCompletedEvent`
       "literal": "gpt-image-2-2026-04-21"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -190702,6 +191938,34 @@ Schema name: `BetaResponseCompletedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -192168,6 +193432,34 @@ Schema name: `BetaResponseCompletedEvent`
       "literal": "gpt-image-2-2026-04-21"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -193108,6 +194400,34 @@ Schema name: `BetaResponseCompletedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -215314,7 +216634,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -215404,7 +216724,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -215435,6 +216755,22 @@ Schema name: `BetaResponseFailedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -215557,7 +216893,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -215576,6 +216912,14 @@ Schema name: `BetaResponseFailedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -215589,7 +216933,9 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -215597,7 +216943,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -228490,7 +229836,7 @@ Schema name: `BetaResponseFailedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -228515,6 +229861,22 @@ Schema name: `BetaResponseFailedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -228524,7 +229886,11 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -228587,6 +229953,20 @@ Schema name: `BetaResponseFailedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -228602,7 +229982,7 @@ Schema name: `BetaResponseFailedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -236659,7 +238039,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -236749,7 +238129,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -236780,6 +238160,22 @@ Schema name: `BetaResponseFailedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -236902,7 +238298,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -236921,6 +238317,14 @@ Schema name: `BetaResponseFailedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -236934,7 +238338,9 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -236942,7 +238348,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -238743,7 +240149,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -238833,7 +240239,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -238864,6 +240270,22 @@ Schema name: `BetaResponseFailedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -238986,7 +240408,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -239005,6 +240427,14 @@ Schema name: `BetaResponseFailedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -239018,7 +240448,9 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -239026,7 +240458,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -241145,6 +242577,34 @@ Schema name: `BetaResponseFailedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -244020,7 +245480,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -244110,7 +245570,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -244141,6 +245601,22 @@ Schema name: `BetaResponseFailedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -244263,7 +245739,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -244282,6 +245758,14 @@ Schema name: `BetaResponseFailedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -244295,7 +245779,9 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -244303,7 +245789,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -246104,7 +247590,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -246194,7 +247680,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -246225,6 +247711,22 @@ Schema name: `BetaResponseFailedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -246347,7 +247849,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -246366,6 +247868,14 @@ Schema name: `BetaResponseFailedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -246379,7 +247889,9 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -246387,7 +247899,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -249204,7 +250716,7 @@ Schema name: `BetaResponseFailedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -249229,6 +250741,22 @@ Schema name: `BetaResponseFailedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -249238,7 +250766,11 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -249301,6 +250833,20 @@ Schema name: `BetaResponseFailedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -249316,7 +250862,7 @@ Schema name: `BetaResponseFailedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -250414,7 +251960,7 @@ Schema name: `BetaResponseFailedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -250439,6 +251985,22 @@ Schema name: `BetaResponseFailedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -250448,7 +252010,11 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -250511,6 +252077,20 @@ Schema name: `BetaResponseFailedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -250526,7 +252106,7 @@ Schema name: `BetaResponseFailedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -253013,7 +254593,7 @@ Schema name: `BetaResponseFailedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -253038,6 +254618,22 @@ Schema name: `BetaResponseFailedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -253047,7 +254643,11 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -253110,6 +254710,20 @@ Schema name: `BetaResponseFailedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -253125,7 +254739,7 @@ Schema name: `BetaResponseFailedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -254223,7 +255837,7 @@ Schema name: `BetaResponseFailedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -254248,6 +255862,22 @@ Schema name: `BetaResponseFailedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -254257,7 +255887,11 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -254320,6 +255954,20 @@ Schema name: `BetaResponseFailedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -254335,7 +255983,7 @@ Schema name: `BetaResponseFailedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -255488,6 +257136,34 @@ Schema name: `BetaResponseFailedEvent`
       "literal": "gpt-image-2-2026-04-21"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -256428,6 +258104,34 @@ Schema name: `BetaResponseFailedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -257894,6 +259598,34 @@ Schema name: `BetaResponseFailedEvent`
       "literal": "gpt-image-2-2026-04-21"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -258834,6 +260566,34 @@ Schema name: `BetaResponseFailedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -281025,7 +282785,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -281115,7 +282875,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -281146,6 +282906,22 @@ Schema name: `BetaResponseIncompleteEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -281268,7 +283044,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -281287,6 +283063,14 @@ Schema name: `BetaResponseIncompleteEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -281300,7 +283084,9 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -281308,7 +283094,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -294201,7 +295987,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -294226,6 +296012,22 @@ Schema name: `BetaResponseIncompleteEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -294235,7 +296037,11 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -294298,6 +296104,20 @@ Schema name: `BetaResponseIncompleteEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -294313,7 +296133,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -302370,7 +304190,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -302460,7 +304280,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -302491,6 +304311,22 @@ Schema name: `BetaResponseIncompleteEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -302613,7 +304449,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -302632,6 +304468,14 @@ Schema name: `BetaResponseIncompleteEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -302645,7 +304489,9 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -302653,7 +304499,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -304454,7 +306300,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -304544,7 +306390,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -304575,6 +306421,22 @@ Schema name: `BetaResponseIncompleteEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -304697,7 +306559,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -304716,6 +306578,14 @@ Schema name: `BetaResponseIncompleteEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -304729,7 +306599,9 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -304737,7 +306609,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -306856,6 +308728,34 @@ Schema name: `BetaResponseIncompleteEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -309731,7 +311631,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -309821,7 +311721,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -309852,6 +311752,22 @@ Schema name: `BetaResponseIncompleteEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -309974,7 +311890,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -309993,6 +311909,14 @@ Schema name: `BetaResponseIncompleteEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -310006,7 +311930,9 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -310014,7 +311940,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -311815,7 +313741,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -311905,7 +313831,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -311936,6 +313862,22 @@ Schema name: `BetaResponseIncompleteEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -312058,7 +314000,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -312077,6 +314019,14 @@ Schema name: `BetaResponseIncompleteEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -312090,7 +314040,9 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -312098,7 +314050,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -314915,7 +316867,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -314940,6 +316892,22 @@ Schema name: `BetaResponseIncompleteEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -314949,7 +316917,11 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -315012,6 +316984,20 @@ Schema name: `BetaResponseIncompleteEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -315027,7 +317013,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -316125,7 +318111,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -316150,6 +318136,22 @@ Schema name: `BetaResponseIncompleteEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -316159,7 +318161,11 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -316222,6 +318228,20 @@ Schema name: `BetaResponseIncompleteEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -316237,7 +318257,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -318724,7 +320744,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -318749,6 +320769,22 @@ Schema name: `BetaResponseIncompleteEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -318758,7 +320794,11 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -318821,6 +320861,20 @@ Schema name: `BetaResponseIncompleteEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -318836,7 +320890,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -319934,7 +321988,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -319959,6 +322013,22 @@ Schema name: `BetaResponseIncompleteEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -319968,7 +322038,11 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -320031,6 +322105,20 @@ Schema name: `BetaResponseIncompleteEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -320046,7 +322134,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -321199,6 +323287,34 @@ Schema name: `BetaResponseIncompleteEvent`
       "literal": "gpt-image-2-2026-04-21"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -322139,6 +324255,34 @@ Schema name: `BetaResponseIncompleteEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -323605,6 +325749,34 @@ Schema name: `BetaResponseIncompleteEvent`
       "literal": "gpt-image-2-2026-04-21"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -324545,6 +326717,34 @@ Schema name: `BetaResponseIncompleteEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -344310,7 +346510,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -344400,7 +346600,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -344431,6 +346631,22 @@ Schema name: `BetaResponseOutputItemAddedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -344553,7 +346769,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -344572,6 +346788,14 @@ Schema name: `BetaResponseOutputItemAddedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -344585,7 +346809,9 @@ Schema name: `BetaResponseOutputItemAddedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -344593,7 +346819,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -346394,7 +348620,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -346484,7 +348710,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -346515,6 +348741,22 @@ Schema name: `BetaResponseOutputItemAddedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -346637,7 +348879,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -346656,6 +348898,14 @@ Schema name: `BetaResponseOutputItemAddedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -346669,7 +348919,9 @@ Schema name: `BetaResponseOutputItemAddedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -346677,7 +348929,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -349771,7 +352023,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -349796,6 +352048,22 @@ Schema name: `BetaResponseOutputItemAddedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -349805,7 +352073,11 @@ Schema name: `BetaResponseOutputItemAddedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -349868,6 +352140,20 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -349883,7 +352169,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -351056,7 +353342,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -351081,6 +353367,22 @@ Schema name: `BetaResponseOutputItemAddedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -351090,7 +353392,11 @@ Schema name: `BetaResponseOutputItemAddedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -351153,6 +353459,20 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -351168,7 +353488,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -352377,6 +354697,34 @@ Schema name: `BetaResponseOutputItemAddedEvent`
       "literal": "gpt-image-2-2026-04-21"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -353557,6 +355905,34 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -372063,7 +374439,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -372153,7 +374529,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -372184,6 +374560,22 @@ Schema name: `BetaResponseOutputItemDoneEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -372306,7 +374698,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -372325,6 +374717,14 @@ Schema name: `BetaResponseOutputItemDoneEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -372338,7 +374738,9 @@ Schema name: `BetaResponseOutputItemDoneEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -372346,7 +374748,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -374147,7 +376549,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -374237,7 +376639,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -374268,6 +376670,22 @@ Schema name: `BetaResponseOutputItemDoneEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -374390,7 +376808,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -374409,6 +376827,14 @@ Schema name: `BetaResponseOutputItemDoneEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -374422,7 +376848,9 @@ Schema name: `BetaResponseOutputItemDoneEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -374430,7 +376858,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -377524,7 +379952,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -377549,6 +379977,22 @@ Schema name: `BetaResponseOutputItemDoneEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -377558,7 +380002,11 @@ Schema name: `BetaResponseOutputItemDoneEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -377621,6 +380069,20 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -377636,7 +380098,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -378809,7 +381271,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -378834,6 +381296,22 @@ Schema name: `BetaResponseOutputItemDoneEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -378843,7 +381321,11 @@ Schema name: `BetaResponseOutputItemDoneEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -378906,6 +381388,20 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -378921,7 +381417,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -380130,6 +382626,34 @@ Schema name: `BetaResponseOutputItemDoneEvent`
       "literal": "gpt-image-2-2026-04-21"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -381310,6 +383834,34 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -412239,7 +414791,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -412329,7 +414881,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -412360,6 +414912,22 @@ Schema name: `BetaResponseQueuedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -412482,7 +415050,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -412501,6 +415069,14 @@ Schema name: `BetaResponseQueuedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -412514,7 +415090,9 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -412522,7 +415100,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -425415,7 +427993,7 @@ Schema name: `BetaResponseQueuedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -425440,6 +428018,22 @@ Schema name: `BetaResponseQueuedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -425449,7 +428043,11 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -425512,6 +428110,20 @@ Schema name: `BetaResponseQueuedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -425527,7 +428139,7 @@ Schema name: `BetaResponseQueuedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -433584,7 +436196,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -433674,7 +436286,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -433705,6 +436317,22 @@ Schema name: `BetaResponseQueuedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -433827,7 +436455,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -433846,6 +436474,14 @@ Schema name: `BetaResponseQueuedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -433859,7 +436495,9 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -433867,7 +436505,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -435668,7 +438306,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -435758,7 +438396,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -435789,6 +438427,22 @@ Schema name: `BetaResponseQueuedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -435911,7 +438565,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -435930,6 +438584,14 @@ Schema name: `BetaResponseQueuedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -435943,7 +438605,9 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -435951,7 +438615,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -438070,6 +440734,34 @@ Schema name: `BetaResponseQueuedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -440945,7 +443637,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -441035,7 +443727,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -441066,6 +443758,22 @@ Schema name: `BetaResponseQueuedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -441188,7 +443896,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -441207,6 +443915,14 @@ Schema name: `BetaResponseQueuedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -441220,7 +443936,9 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -441228,7 +443946,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -443029,7 +445747,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
     "deprecated": false,
     "key": "background",
-    "docstring": "Set the background of the generated image. One of `transparent`,\n`opaque`, or `auto`. Transparent backgrounds are available for\nsupported GPT Image models. For `gpt-image-2` and\n`gpt-image-2-2026-04-21`, this support is in preview. When using\n`transparent`, set the output format to `png` or `webp`. Default: `auto`.\n",
+    "docstring": "Set the background of the generated image. One of `transparent`, `opaque`,\nor `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including\ntheir `2026-09-08` snapshots, support `opaque` and `transparent`\nbackgrounds. Transparent backgrounds are available for supported GPT Image\nmodels. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in\npreview. When using `transparent`, set the output format to `png` or `webp`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/background",
@@ -443119,7 +445837,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
     "deprecated": false,
     "key": "model",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/model",
@@ -443150,6 +445868,22 @@ Schema name: `BetaResponseQueuedEvent`
             {
               "kind": "HttpTypeLiteral",
               "literal": "gpt-image-2-2026-04-21"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-sunburst-2026-09-08"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "gpt-image-2.5-flare-2026-09-08"
             }
           ]
         }
@@ -443272,7 +446006,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
     "deprecated": false,
     "key": "quality",
-    "docstring": "The quality of the generated image. One of `low`, `medium`, `high`,\nor `auto`. Default: `auto`.\n",
+    "docstring": "The quality of the generated image. The GPT image models support `low`,\n`medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,\nincluding their `2026-09-08` snapshots, also support `xhigh` and `max`.\nDefault: `auto`.\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/quality",
@@ -443291,6 +446025,14 @@ Schema name: `BetaResponseQueuedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -443304,7 +446046,9 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 2",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 3",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size": {
@@ -443312,7 +446056,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenTool/properties/size",
@@ -446129,7 +448873,7 @@ Schema name: `BetaResponseQueuedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -446154,6 +448898,22 @@ Schema name: `BetaResponseQueuedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -446163,7 +448923,11 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -446226,6 +448990,20 @@ Schema name: `BetaResponseQueuedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -446241,7 +449019,7 @@ Schema name: `BetaResponseQueuedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -447339,7 +450117,7 @@ Schema name: `BetaResponseQueuedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -447364,6 +450142,22 @@ Schema name: `BetaResponseQueuedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -447373,7 +450167,11 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -447436,6 +450234,20 @@ Schema name: `BetaResponseQueuedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -447451,7 +450263,7 @@ Schema name: `BetaResponseQueuedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -449938,7 +452750,7 @@ Schema name: `BetaResponseQueuedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -449963,6 +452775,22 @@ Schema name: `BetaResponseQueuedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -449972,7 +452800,11 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -450035,6 +452867,20 @@ Schema name: `BetaResponseQueuedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -450050,7 +452896,7 @@ Schema name: `BetaResponseQueuedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -451148,7 +453994,7 @@ Schema name: `BetaResponseQueuedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/model/anyOf/1",
-    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
+    "docstring": "The image generation model to use. One of `gpt-image-1`,\n`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,\n`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,\n`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,\n`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:\n`gpt-image-1`.\n",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -451173,6 +454019,22 @@ Schema name: `BetaResponseQueuedEvent`
         {
           "kind": "HttpTypeLiteral",
           "literal": "gpt-image-2-2026-04-21"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-sunburst-2026-09-08"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "gpt-image-2.5-flare-2026-09-08"
         }
       ]
     },
@@ -451182,7 +454044,11 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 1",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 2",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 3",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 4",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) moderation > (member) 0": {
@@ -451245,6 +454111,20 @@ Schema name: `BetaResponseQueuedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
+      "literal": "xhigh"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 4": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "max"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) quality > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
@@ -451260,7 +454140,7 @@ Schema name: `BetaResponseQueuedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaImageGenTool/properties/size/anyOf/1",
-    "docstring": "The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    "docstring": "The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -452413,6 +455293,34 @@ Schema name: `BetaResponseQueuedEvent`
       "literal": "gpt-image-2-2026-04-21"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -453353,6 +456261,34 @@ Schema name: `BetaResponseQueuedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
@@ -454819,6 +457755,34 @@ Schema name: `BetaResponseQueuedEvent`
       "literal": "gpt-image-2-2026-04-21"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 13 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -455759,6 +458723,34 @@ Schema name: `BetaResponseQueuedEvent`
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "gpt-image-2-2026-04-21"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 5": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 6": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-sunburst-2026-09-08"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 7": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) model > (variant) 1 > (member) 8": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "gpt-image-2.5-flare-2026-09-08"
     }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 8 > (property) size > (variant) 1 > (member) 0": {

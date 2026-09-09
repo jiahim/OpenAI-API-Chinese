@@ -306,6 +306,10 @@ Standard
 
 | Model | Modality | Input | Cached input | Output |
 | --- | --- | --- | --- | --- |
+| gpt-image-2.5-sunburst | Image | $8.00 | $2.00 | $30.00 |
+| gpt-image-2.5-sunburst | Text | $5.00 | $1.25 | - |
+| gpt-image-2.5-flare | Image | $8.00 | $2.00 | $30.00 |
+| gpt-image-2.5-flare | Text | $5.00 | $1.25 | - |
 | gpt-image-2 | Image | $8.00 | $2.00 | $30.00 |
 | gpt-image-2 | Text | $5.00 | $1.25 | - |
 | gpt-image-1.5 | Image | $8.00 | $2.00 | $32.00 |

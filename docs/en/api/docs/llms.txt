@@ -94,6 +94,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Image generation](https://developers.openai.com/api/docs/guides/image-generation.md): Learn how to generate or edit images with the OpenAI API and image generation models.
 - [Image generation](https://developers.openai.com/api/docs/guides/tools-image-generation.md): Allow models to generate or edit images.
 - [Image input token and cost calculator](https://developers.openai.com/api/docs/guides/image-cost-calculator.md): Estimate image input tokens and API costs for OpenAI vision models by model, image dimensions, and detail level.
+- [Image prompting](https://developers.openai.com/api/docs/guides/image-prompting.md): Explore GPT Image prompting techniques and illustrated generation and editing examples.
 - [Images and vision](https://developers.openai.com/api/docs/guides/images-vision.md): Learn how to understand or generate images with the OpenAI API.
 - [Import and reconcile OpenAI resources](https://developers.openai.com/api/docs/guides/terraform/import-and-reconcile.md): Import existing OpenAI resources into Terraform, inspect current state, reconcile drift, and understand removal behavior.
 - [Integrations and observability](https://developers.openai.com/api/docs/guides/agents/integrations-observability.md): Learn how to integrate MCP into Agents SDK workflows and how to trace and debug runs.
@@ -219,5 +220,5 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Supported countries and territories](https://developers.openai.com/api/docs/supported-countries.md): Countries and territories that currently support access to our API services.
 
 ## Tutorials
-- [Meeting minutes](https://developers.openai.com/api/docs/tutorials/meeting-minutes.md): Create an automated meeting minutes generator with Whisper and a GPT model.
+- [Meeting minutes](https://developers.openai.com/api/docs/tutorials/meeting-minutes.md): Create an automated meeting minutes generator with speech-to-text and a GPT model.
 - [Web QA with embeddings](https://developers.openai.com/api/docs/tutorials/web-qa-embeddings.md): How to build an AI that can answer questions about your website.

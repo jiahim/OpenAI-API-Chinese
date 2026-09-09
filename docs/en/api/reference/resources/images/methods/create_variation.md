@@ -50,9 +50,9 @@ Creates a variation of a given image. This endpoint only supports `dall-e-2`.
 
     - `"jpeg"`
 
-  - `quality: optional "low" or "medium" or "high"`
+  - `quality: optional "low" or "medium" or "high" or 2 more`
 
-    The quality of the image generated. Either `low`, `medium`, or `high`.
+    The quality of the image generated. One of `low`, `medium`, `high`, `xhigh`, or `max`.
 
     - `"low"`
 
@@ -60,15 +60,25 @@ Creates a variation of a given image. This endpoint only supports `dall-e-2`.
 
     - `"high"`
 
-  - `size: optional "1024x1024" or "1024x1536" or "1536x1024"`
+    - `"xhigh"`
 
-    The size of the image generated. Either `1024x1024`, `1024x1536`, or `1536x1024`.
+    - `"max"`
 
-    - `"1024x1024"`
+  - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024"`
 
-    - `"1024x1536"`
+    The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
 
-    - `"1536x1024"`
+    - `string`
+
+    - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `"1024x1024"`
+
+      - `"1024x1536"`
+
+      - `"1536x1024"`
 
   - `usage: optional object { input_tokens, input_tokens_details, output_tokens, 2 more }`
 
