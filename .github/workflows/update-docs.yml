@@ -30,7 +30,7 @@ env:
   BASE_BRANCH: main
   UPDATE_BRANCH: automation/update-openai-docs
   PR_TITLE: "[AI] docs: 同步并翻译 OpenAI 官方文档"
-  AUTO_MERGE_ROLLOUT: canary
+  AUTO_MERGE_ROLLOUT: enabled
 
 jobs:
   update:
