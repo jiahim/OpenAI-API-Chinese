@@ -674,10 +674,22 @@ Schema name: `BetaResponseCreatedEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "action"
+                  },
+                  {
                     "ident": "agent"
                   },
                   {
+                    "ident": "background"
+                  },
+                  {
+                    "ident": "output_format"
+                  },
+                  {
                     "ident": "quality"
+                  },
+                  {
+                    "ident": "revised_prompt"
                   },
                   {
                     "ident": "size"
@@ -3511,10 +3523,22 @@ Schema name: `BetaResponseCreatedEvent`
                 "ident": "type"
               },
               {
+                "ident": "action"
+              },
+              {
                 "ident": "agent"
               },
               {
+                "ident": "background"
+              },
+              {
+                "ident": "output_format"
+              },
+              {
                 "ident": "quality"
+              },
+              {
+                "ident": "revised_prompt"
               },
               {
                 "ident": "size"
@@ -5267,7 +5291,7 @@ Schema name: `BetaResponseCreatedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaOutputItem/oneOf/17",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -5285,10 +5309,22 @@ Schema name: `BetaResponseCreatedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
           "ident": "agent"
         },
         {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -5301,8 +5337,12 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) result",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) status",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) type",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) revised_prompt",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size"
     ]
   },
@@ -6315,10 +6355,22 @@ Schema name: `BetaResponseCreatedEvent`
               "ident": "type"
             },
             {
+              "ident": "action"
+            },
+            {
               "ident": "agent"
             },
             {
+              "ident": "background"
+            },
+            {
+              "ident": "output_format"
+            },
+            {
               "ident": "quality"
+            },
+            {
+              "ident": "revised_prompt"
             },
             {
               "ident": "size"
@@ -9466,7 +9518,7 @@ Schema name: `BetaResponseCreatedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaItem/oneOf/17",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -9484,10 +9536,22 @@ Schema name: `BetaResponseCreatedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
           "ident": "agent"
         },
         {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -9500,8 +9564,12 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) result",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) status",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) revised_prompt",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size"
     ]
   },
@@ -14483,7 +14551,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -14497,7 +14565,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -14511,7 +14579,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
@@ -14550,7 +14618,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
@@ -14567,6 +14635,40 @@ Schema name: `BetaResponseCreatedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent": {
@@ -14589,6 +14691,74 @@ Schema name: `BetaResponseCreatedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent > (property) agent_name"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality": {
@@ -14640,6 +14810,20 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality > (member) 5"
     ]
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size",
@@ -14655,7 +14839,7 @@ Schema name: `BetaResponseCreatedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -23361,7 +23545,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -23375,7 +23559,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -23389,7 +23573,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
@@ -23428,7 +23612,7 @@ Schema name: `BetaResponseCreatedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
@@ -23445,6 +23629,40 @@ Schema name: `BetaResponseCreatedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent": {
@@ -23467,6 +23685,74 @@ Schema name: `BetaResponseCreatedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent > (property) agent_name"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality": {
@@ -23518,6 +23804,20 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality > (member) 5"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size",
@@ -23533,7 +23833,7 @@ Schema name: `BetaResponseCreatedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -29440,6 +29740,27 @@ Schema name: `BetaResponseCreatedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent > (property) agent_name": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaAgentTag/properties/agent_name",
@@ -29453,6 +29774,48 @@ Schema name: `BetaResponseCreatedEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
@@ -29498,7 +29861,7 @@ Schema name: `BetaResponseCreatedEvent`
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -29507,12 +29870,12 @@ Schema name: `BetaResponseCreatedEvent`
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -35993,6 +36356,27 @@ Schema name: `BetaResponseCreatedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent > (property) agent_name": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaAgentTag/properties/agent_name",
@@ -36006,6 +36390,48 @@ Schema name: `BetaResponseCreatedEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
@@ -36051,7 +36477,7 @@ Schema name: `BetaResponseCreatedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -36060,12 +36486,12 @@ Schema name: `BetaResponseCreatedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -67243,10 +67669,22 @@ Schema name: `BetaResponseInProgressEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "action"
+                  },
+                  {
                     "ident": "agent"
                   },
                   {
+                    "ident": "background"
+                  },
+                  {
+                    "ident": "output_format"
+                  },
+                  {
                     "ident": "quality"
+                  },
+                  {
+                    "ident": "revised_prompt"
                   },
                   {
                     "ident": "size"
@@ -70080,10 +70518,22 @@ Schema name: `BetaResponseInProgressEvent`
                 "ident": "type"
               },
               {
+                "ident": "action"
+              },
+              {
                 "ident": "agent"
               },
               {
+                "ident": "background"
+              },
+              {
+                "ident": "output_format"
+              },
+              {
                 "ident": "quality"
+              },
+              {
+                "ident": "revised_prompt"
               },
               {
                 "ident": "size"
@@ -71836,7 +72286,7 @@ Schema name: `BetaResponseInProgressEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaOutputItem/oneOf/17",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -71854,10 +72304,22 @@ Schema name: `BetaResponseInProgressEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
           "ident": "agent"
         },
         {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -71870,8 +72332,12 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) result",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) status",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) type",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) revised_prompt",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size"
     ]
   },
@@ -72884,10 +73350,22 @@ Schema name: `BetaResponseInProgressEvent`
               "ident": "type"
             },
             {
+              "ident": "action"
+            },
+            {
               "ident": "agent"
             },
             {
+              "ident": "background"
+            },
+            {
+              "ident": "output_format"
+            },
+            {
               "ident": "quality"
+            },
+            {
+              "ident": "revised_prompt"
             },
             {
               "ident": "size"
@@ -76035,7 +76513,7 @@ Schema name: `BetaResponseInProgressEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaItem/oneOf/17",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -76053,10 +76531,22 @@ Schema name: `BetaResponseInProgressEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
           "ident": "agent"
         },
         {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -76069,8 +76559,12 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) result",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) status",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) revised_prompt",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size"
     ]
   },
@@ -81052,7 +81546,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -81066,7 +81560,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -81080,7 +81574,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
@@ -81119,7 +81613,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
@@ -81136,6 +81630,40 @@ Schema name: `BetaResponseInProgressEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent": {
@@ -81158,6 +81686,74 @@ Schema name: `BetaResponseInProgressEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent > (property) agent_name"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality": {
@@ -81209,6 +81805,20 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality > (member) 5"
     ]
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size",
@@ -81224,7 +81834,7 @@ Schema name: `BetaResponseInProgressEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -89930,7 +90540,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -89944,7 +90554,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -89958,7 +90568,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
@@ -89997,7 +90607,7 @@ Schema name: `BetaResponseInProgressEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
@@ -90014,6 +90624,40 @@ Schema name: `BetaResponseInProgressEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent": {
@@ -90036,6 +90680,74 @@ Schema name: `BetaResponseInProgressEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent > (property) agent_name"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality": {
@@ -90087,6 +90799,20 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality > (member) 5"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size",
@@ -90102,7 +90828,7 @@ Schema name: `BetaResponseInProgressEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -96009,6 +96735,27 @@ Schema name: `BetaResponseInProgressEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent > (property) agent_name": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaAgentTag/properties/agent_name",
@@ -96022,6 +96769,48 @@ Schema name: `BetaResponseInProgressEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
@@ -96067,7 +96856,7 @@ Schema name: `BetaResponseInProgressEvent`
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -96076,12 +96865,12 @@ Schema name: `BetaResponseInProgressEvent`
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -102562,6 +103351,27 @@ Schema name: `BetaResponseInProgressEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent > (property) agent_name": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaAgentTag/properties/agent_name",
@@ -102575,6 +103385,48 @@ Schema name: `BetaResponseInProgressEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
@@ -102620,7 +103472,7 @@ Schema name: `BetaResponseInProgressEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -102629,12 +103481,12 @@ Schema name: `BetaResponseInProgressEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -133812,10 +134664,22 @@ Schema name: `BetaResponseCompletedEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "action"
+                  },
+                  {
                     "ident": "agent"
                   },
                   {
+                    "ident": "background"
+                  },
+                  {
+                    "ident": "output_format"
+                  },
+                  {
                     "ident": "quality"
+                  },
+                  {
+                    "ident": "revised_prompt"
                   },
                   {
                     "ident": "size"
@@ -136649,10 +137513,22 @@ Schema name: `BetaResponseCompletedEvent`
                 "ident": "type"
               },
               {
+                "ident": "action"
+              },
+              {
                 "ident": "agent"
               },
               {
+                "ident": "background"
+              },
+              {
+                "ident": "output_format"
+              },
+              {
                 "ident": "quality"
+              },
+              {
+                "ident": "revised_prompt"
               },
               {
                 "ident": "size"
@@ -138405,7 +139281,7 @@ Schema name: `BetaResponseCompletedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaOutputItem/oneOf/17",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -138423,10 +139299,22 @@ Schema name: `BetaResponseCompletedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
           "ident": "agent"
         },
         {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -138439,8 +139327,12 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) result",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) status",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) type",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) revised_prompt",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size"
     ]
   },
@@ -139453,10 +140345,22 @@ Schema name: `BetaResponseCompletedEvent`
               "ident": "type"
             },
             {
+              "ident": "action"
+            },
+            {
               "ident": "agent"
             },
             {
+              "ident": "background"
+            },
+            {
+              "ident": "output_format"
+            },
+            {
               "ident": "quality"
+            },
+            {
+              "ident": "revised_prompt"
             },
             {
               "ident": "size"
@@ -142604,7 +143508,7 @@ Schema name: `BetaResponseCompletedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaItem/oneOf/17",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -142622,10 +143526,22 @@ Schema name: `BetaResponseCompletedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
           "ident": "agent"
         },
         {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -142638,8 +143554,12 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) result",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) status",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) revised_prompt",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size"
     ]
   },
@@ -147621,7 +148541,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -147635,7 +148555,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -147649,7 +148569,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
@@ -147688,7 +148608,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
@@ -147705,6 +148625,40 @@ Schema name: `BetaResponseCompletedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent": {
@@ -147727,6 +148681,74 @@ Schema name: `BetaResponseCompletedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent > (property) agent_name"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality": {
@@ -147778,6 +148800,20 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality > (member) 5"
     ]
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size",
@@ -147793,7 +148829,7 @@ Schema name: `BetaResponseCompletedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -156499,7 +157535,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -156513,7 +157549,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -156527,7 +157563,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
@@ -156566,7 +157602,7 @@ Schema name: `BetaResponseCompletedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
@@ -156583,6 +157619,40 @@ Schema name: `BetaResponseCompletedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent": {
@@ -156605,6 +157675,74 @@ Schema name: `BetaResponseCompletedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent > (property) agent_name"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality": {
@@ -156656,6 +157794,20 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality > (member) 5"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size",
@@ -156671,7 +157823,7 @@ Schema name: `BetaResponseCompletedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -162578,6 +163730,27 @@ Schema name: `BetaResponseCompletedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent > (property) agent_name": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaAgentTag/properties/agent_name",
@@ -162591,6 +163764,48 @@ Schema name: `BetaResponseCompletedEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
@@ -162636,7 +163851,7 @@ Schema name: `BetaResponseCompletedEvent`
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -162645,12 +163860,12 @@ Schema name: `BetaResponseCompletedEvent`
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -169131,6 +170346,27 @@ Schema name: `BetaResponseCompletedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent > (property) agent_name": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaAgentTag/properties/agent_name",
@@ -169144,6 +170380,48 @@ Schema name: `BetaResponseCompletedEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
@@ -169189,7 +170467,7 @@ Schema name: `BetaResponseCompletedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -169198,12 +170476,12 @@ Schema name: `BetaResponseCompletedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -200398,10 +201676,22 @@ Schema name: `BetaResponseFailedEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "action"
+                  },
+                  {
                     "ident": "agent"
                   },
                   {
+                    "ident": "background"
+                  },
+                  {
+                    "ident": "output_format"
+                  },
+                  {
                     "ident": "quality"
+                  },
+                  {
+                    "ident": "revised_prompt"
                   },
                   {
                     "ident": "size"
@@ -203235,10 +204525,22 @@ Schema name: `BetaResponseFailedEvent`
                 "ident": "type"
               },
               {
+                "ident": "action"
+              },
+              {
                 "ident": "agent"
               },
               {
+                "ident": "background"
+              },
+              {
+                "ident": "output_format"
+              },
+              {
                 "ident": "quality"
+              },
+              {
+                "ident": "revised_prompt"
               },
               {
                 "ident": "size"
@@ -204991,7 +206293,7 @@ Schema name: `BetaResponseFailedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaOutputItem/oneOf/17",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -205009,10 +206311,22 @@ Schema name: `BetaResponseFailedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
           "ident": "agent"
         },
         {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -205025,8 +206339,12 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) result",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) status",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) type",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) revised_prompt",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size"
     ]
   },
@@ -206039,10 +207357,22 @@ Schema name: `BetaResponseFailedEvent`
               "ident": "type"
             },
             {
+              "ident": "action"
+            },
+            {
               "ident": "agent"
             },
             {
+              "ident": "background"
+            },
+            {
+              "ident": "output_format"
+            },
+            {
               "ident": "quality"
+            },
+            {
+              "ident": "revised_prompt"
             },
             {
               "ident": "size"
@@ -209190,7 +210520,7 @@ Schema name: `BetaResponseFailedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaItem/oneOf/17",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -209208,10 +210538,22 @@ Schema name: `BetaResponseFailedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
           "ident": "agent"
         },
         {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -209224,8 +210566,12 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) result",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) status",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) revised_prompt",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size"
     ]
   },
@@ -214207,7 +215553,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -214221,7 +215567,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -214235,7 +215581,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
@@ -214274,7 +215620,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
@@ -214291,6 +215637,40 @@ Schema name: `BetaResponseFailedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent": {
@@ -214313,6 +215693,74 @@ Schema name: `BetaResponseFailedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent > (property) agent_name"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality": {
@@ -214364,6 +215812,20 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality > (member) 5"
     ]
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size",
@@ -214379,7 +215841,7 @@ Schema name: `BetaResponseFailedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -223085,7 +224547,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -223099,7 +224561,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -223113,7 +224575,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
@@ -223152,7 +224614,7 @@ Schema name: `BetaResponseFailedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
@@ -223169,6 +224631,40 @@ Schema name: `BetaResponseFailedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent": {
@@ -223191,6 +224687,74 @@ Schema name: `BetaResponseFailedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent > (property) agent_name"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality": {
@@ -223242,6 +224806,20 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality > (member) 5"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size",
@@ -223257,7 +224835,7 @@ Schema name: `BetaResponseFailedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -229164,6 +230742,27 @@ Schema name: `BetaResponseFailedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent > (property) agent_name": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaAgentTag/properties/agent_name",
@@ -229177,6 +230776,48 @@ Schema name: `BetaResponseFailedEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
@@ -229222,7 +230863,7 @@ Schema name: `BetaResponseFailedEvent`
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -229231,12 +230872,12 @@ Schema name: `BetaResponseFailedEvent`
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -235717,6 +237358,27 @@ Schema name: `BetaResponseFailedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent > (property) agent_name": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaAgentTag/properties/agent_name",
@@ -235730,6 +237392,48 @@ Schema name: `BetaResponseFailedEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
@@ -235775,7 +237479,7 @@ Schema name: `BetaResponseFailedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -235784,12 +237488,12 @@ Schema name: `BetaResponseFailedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -266969,10 +268673,22 @@ Schema name: `BetaResponseIncompleteEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "action"
+                  },
+                  {
                     "ident": "agent"
                   },
                   {
+                    "ident": "background"
+                  },
+                  {
+                    "ident": "output_format"
+                  },
+                  {
                     "ident": "quality"
+                  },
+                  {
+                    "ident": "revised_prompt"
                   },
                   {
                     "ident": "size"
@@ -269806,10 +271522,22 @@ Schema name: `BetaResponseIncompleteEvent`
                 "ident": "type"
               },
               {
+                "ident": "action"
+              },
+              {
                 "ident": "agent"
               },
               {
+                "ident": "background"
+              },
+              {
+                "ident": "output_format"
+              },
+              {
                 "ident": "quality"
+              },
+              {
+                "ident": "revised_prompt"
               },
               {
                 "ident": "size"
@@ -271562,7 +273290,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaOutputItem/oneOf/17",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -271580,10 +273308,22 @@ Schema name: `BetaResponseIncompleteEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
           "ident": "agent"
         },
         {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -271596,8 +273336,12 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) result",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) status",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) type",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) revised_prompt",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size"
     ]
   },
@@ -272610,10 +274354,22 @@ Schema name: `BetaResponseIncompleteEvent`
               "ident": "type"
             },
             {
+              "ident": "action"
+            },
+            {
               "ident": "agent"
             },
             {
+              "ident": "background"
+            },
+            {
+              "ident": "output_format"
+            },
+            {
               "ident": "quality"
+            },
+            {
+              "ident": "revised_prompt"
             },
             {
               "ident": "size"
@@ -275761,7 +277517,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaItem/oneOf/17",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -275779,10 +277535,22 @@ Schema name: `BetaResponseIncompleteEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
           "ident": "agent"
         },
         {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -275795,8 +277563,12 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) result",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) status",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) revised_prompt",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size"
     ]
   },
@@ -280778,7 +282550,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -280792,7 +282564,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -280806,7 +282578,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
@@ -280845,7 +282617,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
@@ -280862,6 +282634,40 @@ Schema name: `BetaResponseIncompleteEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent": {
@@ -280884,6 +282690,74 @@ Schema name: `BetaResponseIncompleteEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent > (property) agent_name"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality": {
@@ -280935,6 +282809,20 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality > (member) 5"
     ]
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size",
@@ -280950,7 +282838,7 @@ Schema name: `BetaResponseIncompleteEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -289656,7 +291544,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -289670,7 +291558,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -289684,7 +291572,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
@@ -289723,7 +291611,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
@@ -289740,6 +291628,40 @@ Schema name: `BetaResponseIncompleteEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent": {
@@ -289762,6 +291684,74 @@ Schema name: `BetaResponseIncompleteEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent > (property) agent_name"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality": {
@@ -289813,6 +291803,20 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality > (member) 5"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size",
@@ -289828,7 +291832,7 @@ Schema name: `BetaResponseIncompleteEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -295735,6 +297739,27 @@ Schema name: `BetaResponseIncompleteEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent > (property) agent_name": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaAgentTag/properties/agent_name",
@@ -295748,6 +297773,48 @@ Schema name: `BetaResponseIncompleteEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
@@ -295793,7 +297860,7 @@ Schema name: `BetaResponseIncompleteEvent`
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -295802,12 +297869,12 @@ Schema name: `BetaResponseIncompleteEvent`
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -302288,6 +304355,27 @@ Schema name: `BetaResponseIncompleteEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent > (property) agent_name": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaAgentTag/properties/agent_name",
@@ -302301,6 +304389,48 @@ Schema name: `BetaResponseIncompleteEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
@@ -302346,7 +304476,7 @@ Schema name: `BetaResponseIncompleteEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -302355,12 +304485,12 @@ Schema name: `BetaResponseIncompleteEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -333715,7 +335845,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaOutputItem/oneOf/17",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -333733,10 +335863,22 @@ Schema name: `BetaResponseOutputItemAddedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
           "ident": "agent"
         },
         {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -333749,8 +335891,12 @@ Schema name: `BetaResponseOutputItemAddedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) result",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) status",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) type",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) revised_prompt",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size"
     ]
   },
@@ -334763,10 +336909,22 @@ Schema name: `BetaResponseOutputItemAddedEvent`
               "ident": "type"
             },
             {
+              "ident": "action"
+            },
+            {
               "ident": "agent"
             },
             {
+              "ident": "background"
+            },
+            {
+              "ident": "output_format"
+            },
+            {
               "ident": "quality"
+            },
+            {
+              "ident": "revised_prompt"
             },
             {
               "ident": "size"
@@ -338693,7 +340851,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -338707,7 +340865,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -338721,7 +340879,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
@@ -338760,7 +340918,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
@@ -338777,6 +340935,40 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent": {
@@ -338799,6 +340991,74 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent > (property) agent_name"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality": {
@@ -338850,6 +341110,20 @@ Schema name: `BetaResponseOutputItemAddedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality > (member) 5"
     ]
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size",
@@ -338865,7 +341139,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -344493,6 +346767,27 @@ Schema name: `BetaResponseOutputItemAddedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent > (property) agent_name": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaAgentTag/properties/agent_name",
@@ -344506,6 +346801,48 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
@@ -344551,7 +346888,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -344560,12 +346897,12 @@ Schema name: `BetaResponseOutputItemAddedEvent`
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -361851,7 +364188,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaOutputItem/oneOf/17",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -361869,10 +364206,22 @@ Schema name: `BetaResponseOutputItemDoneEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
           "ident": "agent"
         },
         {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -361885,8 +364234,12 @@ Schema name: `BetaResponseOutputItemDoneEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) result",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) status",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) type",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) revised_prompt",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size"
     ]
   },
@@ -362899,10 +365252,22 @@ Schema name: `BetaResponseOutputItemDoneEvent`
               "ident": "type"
             },
             {
+              "ident": "action"
+            },
+            {
               "ident": "agent"
             },
             {
+              "ident": "background"
+            },
+            {
+              "ident": "output_format"
+            },
+            {
               "ident": "quality"
+            },
+            {
+              "ident": "revised_prompt"
             },
             {
               "ident": "size"
@@ -366829,7 +369194,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -366843,7 +369208,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -366857,7 +369222,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
@@ -366896,7 +369261,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
@@ -366913,6 +369278,40 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent": {
@@ -366935,6 +369334,74 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent > (property) agent_name"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality": {
@@ -366986,6 +369453,20 @@ Schema name: `BetaResponseOutputItemDoneEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality > (member) 5"
     ]
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size",
@@ -367001,7 +369482,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -372629,6 +375110,27 @@ Schema name: `BetaResponseOutputItemDoneEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent > (property) agent_name": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaAgentTag/properties/agent_name",
@@ -372642,6 +375144,48 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
@@ -372687,7 +375231,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -372696,12 +375240,12 @@ Schema name: `BetaResponseOutputItemDoneEvent`
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -399809,10 +402353,22 @@ Schema name: `BetaResponseQueuedEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "action"
+                  },
+                  {
                     "ident": "agent"
                   },
                   {
+                    "ident": "background"
+                  },
+                  {
+                    "ident": "output_format"
+                  },
+                  {
                     "ident": "quality"
+                  },
+                  {
+                    "ident": "revised_prompt"
                   },
                   {
                     "ident": "size"
@@ -402646,10 +405202,22 @@ Schema name: `BetaResponseQueuedEvent`
                 "ident": "type"
               },
               {
+                "ident": "action"
+              },
+              {
                 "ident": "agent"
               },
               {
+                "ident": "background"
+              },
+              {
+                "ident": "output_format"
+              },
+              {
                 "ident": "quality"
+              },
+              {
+                "ident": "revised_prompt"
               },
               {
                 "ident": "size"
@@ -404402,7 +406970,7 @@ Schema name: `BetaResponseQueuedEvent`
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaOutputItem/oneOf/17",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -404420,10 +406988,22 @@ Schema name: `BetaResponseQueuedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
           "ident": "agent"
         },
         {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -404436,8 +407016,12 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) result",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) status",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) type",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) revised_prompt",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size"
     ]
   },
@@ -405450,10 +408034,22 @@ Schema name: `BetaResponseQueuedEvent`
               "ident": "type"
             },
             {
+              "ident": "action"
+            },
+            {
               "ident": "agent"
             },
             {
+              "ident": "background"
+            },
+            {
+              "ident": "output_format"
+            },
+            {
               "ident": "quality"
+            },
+            {
+              "ident": "revised_prompt"
             },
             {
               "ident": "size"
@@ -408601,7 +411197,7 @@ Schema name: `BetaResponseQueuedEvent`
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/BetaItem/oneOf/17",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -408619,10 +411215,22 @@ Schema name: `BetaResponseQueuedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
           "ident": "agent"
         },
         {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -408635,8 +411243,12 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) result",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) status",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) type",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) revised_prompt",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size"
     ]
   },
@@ -413618,7 +416230,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -413632,7 +416244,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -413646,7 +416258,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
@@ -413685,7 +416297,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
@@ -413702,6 +416314,40 @@ Schema name: `BetaResponseQueuedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent": {
@@ -413724,6 +416370,74 @@ Schema name: `BetaResponseQueuedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent > (property) agent_name"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 0",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 1",
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality": {
@@ -413775,6 +416489,20 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality > (member) 5"
     ]
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size",
@@ -413790,7 +416518,7 @@ Schema name: `BetaResponseQueuedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -422496,7 +425224,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -422510,7 +425238,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -422524,7 +425252,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/status",
@@ -422563,7 +425291,7 @@ Schema name: `BetaResponseQueuedEvent`
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/type",
@@ -422580,6 +425308,40 @@ Schema name: `BetaResponseQueuedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent": {
@@ -422602,6 +425364,74 @@ Schema name: `BetaResponseQueuedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent > (property) agent_name"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 0",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 1",
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 2"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality": {
@@ -422653,6 +425483,20 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality > (member) 5"
     ]
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size",
@@ -422668,7 +425512,7 @@ Schema name: `BetaResponseQueuedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -428575,6 +431419,27 @@ Schema name: `BetaResponseQueuedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) agent > (property) agent_name": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaAgentTag/properties/agent_name",
@@ -428588,6 +431453,48 @@ Schema name: `BetaResponseQueuedEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
@@ -428633,7 +431540,7 @@ Schema name: `BetaResponseQueuedEvent`
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -428642,12 +431549,12 @@ Schema name: `BetaResponseQueuedEvent`
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 17 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -435128,6 +438035,27 @@ Schema name: `BetaResponseQueuedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) agent > (property) agent_name": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaAgentTag/properties/agent_name",
@@ -435141,6 +438069,48 @@ Schema name: `BetaResponseQueuedEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
@@ -435186,7 +438156,7 @@ Schema name: `BetaResponseQueuedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -435195,12 +438165,12 @@ Schema name: `BetaResponseQueuedEvent`
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 18 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/BetaImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",

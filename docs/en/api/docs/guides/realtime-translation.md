@@ -458,13 +458,13 @@ If your use case depends on exact names or domain terms, build a golden set befo
 
 
 
-      Connect browser media to a realtime session.](https://developers.openai.com/api/docs/guides/realtime-webrtc)
+      Connect browser media to a realtime session.](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime)
 
 [WebSocket connection
 
 
 
-      Stream raw audio through a server-side media pipeline.](https://developers.openai.com/api/docs/guides/realtime-websocket)
+      Stream raw audio through a server-side media pipeline.](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime)
 
 [Realtime transcription
 

@@ -2,23 +2,32 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-Voice agents turn the same agent concepts into spoken, low-latency interactions. The key design choice is deciding whether the model should work directly with live audio or whether your application should explicitly chain speech-to-text, text reasoning, and text-to-speech.
+Voice agents let users ask questions and complete tasks by speaking with your application. The key design choice is how speech connects to reasoning and tools: a continuous conversation with a separate backend, a single voice model, or a pipeline you control stage by stage.
 
 ## Choose the right architecture
 
-| Architecture                              | Best for                                                  | Why                                                                                   |
-| ----------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| Speech-to-speech with live audio sessions | Natural, low-latency conversations                        | The model handles live audio input and output directly                                |
-| Chained voice pipeline                    | Predictable workflows or extending an existing text agent | Your app keeps explicit control over transcription, text reasoning, and speech output |
+| Architecture           | Best for                                          | Why choose it                                                                                           |
+| ---------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| GPT-Live               | Full-duplex conversations with a separate backend | Keep your existing text workflow and choose its backend independently while the conversation continues. |
+| Realtime API           | Speech, reasoning, and tool use in one session    | Use one model to interpret audio, decide what to do, and respond in speech.                             |
+| Chained voice pipeline | Control over each speech and text stage           | Inspect or transform intermediate text and replace each component independently.                        |
 
-Voice workflows are an SDK-first surface. If you're migrating a related Agent Builder project, see [Migrate from Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder/migrate-from-agent-builder) for the current transition path.
 
-## Recommended starting points
 
-The examples below are intentionally different architectures, not matching language tabs. The JavaScript and Python libraries expose different voice helpers today:
 
-- In JavaScript, the fastest path to a browser-based voice assistant is a `RealtimeAgent` and `RealtimeSession`.
-- In Python, the simplest path to extending an existing text agent into voice is a chained `VoicePipeline`.
+
+## Build a full-duplex voice agent
+
+GPT-Live can listen and speak at the same time, a capability called **full duplex**. The live model handles the spoken interaction and delegates reasoning and tool use to a separate backend. Users can keep talking while backend work runs.
+
+You can keep your existing text workflow, including its business logic and tools, and add GPT-Live as the voice interface. Your **delegation mode** determines who runs the backend work and supplies its conversation context:
+
+- **Client delegation:** Connect your own agent or workflow, using the backend model and provider you choose. Your application runs the work and returns results to GPT-Live.
+- **Responses delegation:** Choose an OpenAI-hosted Responses model for backend reasoning and tool use. GPT-Live supplies conversation context and manages calls to that model; your application still runs custom functions.
+
+In both modes, your application controls permissions and business records. Keep speaking behavior in the live model's prompt and business rules in the backend prompt.
+
+Start with [Getting started with GPT-Live](https://developers.openai.com/api/docs/guides/live). See [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation) for backend setup and [Prompting voice models](https://developers.openai.com/api/docs/guides/live-prompting) for speaking behavior.
 
 
 
@@ -26,52 +35,15 @@ The examples below are intentionally different architectures, not matching langu
 
 ## Build a speech-to-speech voice agent
 
-Use the live audio API path when the interaction should feel conversational and immediate. This is the best starting point for voice agents that need barge-in, low first-audio latency, natural turn taking, and realtime tool use.
-
-The usual browser flow is:
-
-1. Your application server creates an ephemeral client secret for the live audio session.
-2. Your frontend creates a `RealtimeSession`.
-3. The session connects over WebRTC in the browser or WebSocket on the server.
-4. The agent handles audio turns, tools, interruptions, and handoffs inside that session.
-
-Start a realtime voice session
-
-```javascript
-import { RealtimeAgent, RealtimeSession } from "@openai/agents/realtime";
-
-const agent = new RealtimeAgent({
-  name: "Assistant",
-  instructions: "You are a helpful voice assistant.",
-});
-
-const session = new RealtimeSession(agent, {
-  model: "gpt-realtime-2.1",
-});
-
-await session.connect({
-  apiKey: "ek_...(ephemeral key from your server)",
-});
-```
-
-
-From there, attach tools, handoffs, and guardrails to the `RealtimeAgent` the same way you would attach them to a text agent. Keep audio transport concerns in the session layer, and keep business logic in the agent definition.
-
-Start with the transport docs when you need lower-level control:
-
-- [Realtime and audio overview](https://developers.openai.com/api/docs/guides/realtime)
-- [Live audio API with WebRTC](https://developers.openai.com/api/docs/guides/realtime-webrtc)
-- [Live audio API with WebSocket](https://developers.openai.com/api/docs/guides/realtime-websocket)
+For the Realtime API, a `RealtimeAgent` and `RealtimeSession` provide a browser-first starting point. The session handles audio turns, tools, interruptions, and handoffs. The complete starter now lives in [Realtime API getting started](https://developers.openai.com/api/docs/guides/realtime#build-a-speech-to-speech-voice-agent).
 
 ## Build a chained voice workflow
 
-Use the chained path when you want stronger control over intermediate text, existing text-agent reuse, or a simpler extension path from a non-voice workflow. In that design, your application explicitly manages:
+Use the chained path when you want to inspect or transform text between speech recognition, your agent, and speech generation. Your application manages three stages:
 
-1. speech-to-text
-2. the agent workflow itself
-3. text-to-speech
-
-This is often the better fit for support flows, approval-heavy flows, or cases where you want durable transcripts and deterministic logic between each stage.
+1. Speech-to-text
+2. The agent workflow itself
+3. Text-to-speech
 
 Run a chained voice pipeline
 
@@ -113,6 +85,60 @@ if __name__ == "__main__":
 
 Use this path when each stage needs to be visible or replaceable. For example, you might store the transcript, run policy checks before the text agent responds, call internal systems, then generate speech only after the workflow reaches an approved answer.
 
+## Evaluate your voice agent
+
+Test conversation quality and task outcomes separately. A natural-sounding response does not prove that a tool ran or that application state changed.
+
+1. Choose representative scenarios with expected outcomes, tool calls, and permissions.
+2. Save the audio, events, tool results, and application state needed to verify each outcome. Distinguish a failed evaluation run from a valid run in which the agent fails the task.
+3. Repeat scenarios and compare task completion, audible response latency, interruptions, and unwanted silence. Keep the caller, model configuration, tools, and transport consistent when comparing changes.
+
+For GPT-Live, measure these dimensions independently:
+
+- **Task and tool outcomes:** Check intent preservation, delegated work, tool arguments, permissions, and final application state. Verify that spoken confirmations match completed actions.
+- **Conversational timing:** Measure [audible response timing](#measure-latency), unwanted silence, overlap, and yielding to interruptions, including corrections while backend work runs.
+- **Speech and language:** Test input recognition across accents, background noise, language switches, names, and numbers. Assess output intelligibility and language choice separately from recognition.
+- **Session reliability:** Track connection failures, dropped audio, timeouts, and incomplete sessions separately from task scores.
+
+Use **Crawl, Walk, and Run** to add complexity in stages:
+
+1. **Crawl:** Use synthetic speech for controlled, single-turn requests. Keep the generated audio, application context, and expected outcome fixed for repeatable comparisons.
+2. **Walk:** Replay representative human recordings of single-turn requests to test how voices, microphones, pauses, and acoustic conditions affect behavior.
+3. **Run:** Use an independent simulated caller for continuous, multi-turn conversations. Test clarification, changing requirements, interruptions, and recovery while conversation and backend work overlap.
+
+Complement automated scores with human listening to assess pronunciation, naturalness, and whether the conversation feels appropriately paced.
+
+For a GPT-Live evaluation harness, see the [voice agent evaluation Cookbook](https://developers.openai.com/cookbook/examples/audio/voice_agent_evaluation).
+
+For a Realtime evaluation harness and worked examples, use the [Realtime evaluation guide in the OpenAI Cookbook](https://developers.openai.com/cookbook/examples/realtime_eval_guide). The Cookbook owns the runnable evaluation recipes; this page provides the shared testing checklist.
+
+### Measure latency
+
+Define an observed start and end event for every latency metric. Time to first
+audible response, time to delegation, interruption yield, backend completion,
+and verified task completion measure different boundaries. Use one monotonic
+timeline and report the eligible population, median, and tail latency. Do not
+substitute a backend-only timer for end-to-end response time.
+
+Keep the caller, recording, backend model, prompt, transport, audio cadence, and
+grader fixed when comparing frontend models.
+
+For GPT-Live, record the stages your application can observe: delegation receipt,
+backend request start, first useful result, tool start and end, result submission,
+audio arrival, and client playback. Client delegation gives your application
+direct visibility into its backend requests; Responses delegation exposes nested
+response events and the custom tools your application runs.
+
+Use the intervals to locate delays in connection setup, model work, tools,
+application buffering, and playback. Measure the first useful spoken answer
+separately from an acknowledgment such as “I'm checking.” An earlier
+acknowledgment does not show that the requested result arrived sooner.
+
+Change one factor at a time and repeat the same scenarios. Compare median and
+tail time to useful spoken responses alongside task success, tool correctness,
+and interruptions. See [Reduce backend latency](https://developers.openai.com/api/docs/guides/live-delegation#reduce-backend-latency)
+for implementation guidance.
+
 ## Voice agents still use the same core agent building blocks
 
 The voice surface changes the transport and audio loop, but the core workflow decisions are the same:
@@ -127,11 +153,11 @@ The practical rule is: choose the audio architecture first, then design the rest
 
 ## Next steps
 
-[Realtime and audio overview
+[Audio and voice overview
 
 
 
-      Choose the right realtime or audio guide for your use case.](https://developers.openai.com/api/docs/guides/realtime)
+      Choose the right realtime or audio guide for your use case.](https://developers.openai.com/api/docs/guides/audio)
 
 [Managing conversations
 
@@ -143,10 +169,10 @@ The practical rule is: choose the audio architecture first, then design the rest
 
 
 
-      Connect browser and mobile audio directly to a Realtime session.](https://developers.openai.com/api/docs/guides/realtime-webrtc)
+      Connect browser and mobile audio directly to a Realtime session.](https://developers.openai.com/api/docs/guides/voice-webrtc)
 
 [Realtime prompting guide
 
 
 
-      Tune reasoning, preambles, tools, entity capture, and voice behavior.](https://developers.openai.com/api/docs/guides/realtime-models-prompting)
+      Tune reasoning, preambles, tools, entity capture, and voice behavior.](https://developers.openai.com/api/docs/guides/voice-prompting)

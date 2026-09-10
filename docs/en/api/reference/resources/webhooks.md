@@ -3069,7 +3069,7 @@ Schema name: `WebhookLiveCallIncoming`
     "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/data/properties/session_id",
     "deprecated": false,
     "key": "session_id",
-    "docstring": "The `live_...` ID of the pending SIP session. Forward this value\nunchanged when accepting or rejecting the call through the Live API.\n",
+    "docstring": "The `live_...` ID of the pending SIP session. Pass this value unchanged\nto Live call controls and sideband connections. The corresponding\n`realtime.call.incoming` event uses a separate `rtc_...` call ID.\n",
     "type": {
       "kind": "HttpTypeString"
     },

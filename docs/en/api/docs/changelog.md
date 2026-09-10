@@ -8,6 +8,16 @@ Upcoming deprecations are listed on the [deprecations page](/api/docs/deprecatio
 
 ## September, 2026
 
+### Sep 10
+
+Feature · Model: gpt-live-1 · API: v1/live/sessions
+
+[GPT-Live 1](https://developers.openai.com/api/docs/models/gpt-live-1) is now generally available in the API. Build full-duplex voice conversations that can continue while a backend model or agent handles reasoning and tools.
+
+Use Responses delegation with an OpenAI model, or client delegation to connect your own backend. Voice sessions cost $0.05 per minute, billed per second; backend model and tool usage is charged separately.
+
+Start with [GPT-Live](https://developers.openai.com/api/docs/guides/live), [prompting](https://developers.openai.com/api/docs/guides/live-prompting), and [migration guidance](https://developers.openai.com/api/docs/guides/live-migration). See [pricing](https://developers.openai.com/api/docs/pricing) for details.
+
 ### Sep 8
 
 Feature · API: v1/responses
@@ -303,7 +313,7 @@ Feature · Model: gpt-realtime-2 · Model: gpt-realtime-translate · Model: gpt-
 
 Released [GPT-Realtime-2](https://developers.openai.com/api/docs/models/gpt-realtime-2), a new realtime voice model with configurable reasoning for speech-to-speech agents, along with [GPT-Realtime-Translate](https://developers.openai.com/api/docs/models/gpt-realtime-translate) for streaming speech translation and [GPT-Realtime-Whisper](https://developers.openai.com/api/docs/models/gpt-realtime-whisper) for streaming speech-to-text.
 
-Updated the [Realtime and audio guide](https://developers.openai.com/api/docs/guides/realtime), added a dedicated [Realtime translation guide](https://developers.openai.com/api/docs/guides/realtime-translation), refreshed [Realtime transcription](https://developers.openai.com/api/docs/guides/realtime-transcription) for streaming transcripts, and moved realtime prompting guidance into [Using realtime models](https://developers.openai.com/api/docs/guides/realtime-models-prompting).
+Updated the [Realtime and audio guide](https://developers.openai.com/api/docs/guides/realtime), added a dedicated [Realtime translation guide](https://developers.openai.com/api/docs/guides/realtime-translation), refreshed [Realtime transcription](https://developers.openai.com/api/docs/guides/realtime-transcription) for streaming transcripts, and moved realtime prompting guidance into [Using realtime models](https://developers.openai.com/api/docs/guides/voice-prompting).
 
 ### May 7
 
@@ -503,7 +513,7 @@ Released `gpt-5.2-codex` to the Responses API. GPT-5.2-Codex is a version of GPT
 
 Feature · API: v1/realtime
 
-Added dedicated SIP IP ranges for Realtime API. `sip.api.openai.com` does GeoIP routing, and will direct SIP traffic to the closest region. [Learn more](https://developers.openai.com/api/docs/guides/realtime-sip#dedicated-sip-ip-ranges).
+Added dedicated SIP IP ranges for Realtime API. `sip.api.openai.com` does GeoIP routing, and will direct SIP traffic to the closest region. [Learn more](https://developers.openai.com/api/docs/guides/voice-sip?voice-api=realtime#dedicated-sip-ip-ranges).
 
 ### Jan 13
 
