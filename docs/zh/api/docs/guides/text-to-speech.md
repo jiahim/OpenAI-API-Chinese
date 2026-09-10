@@ -1,30 +1,30 @@
 # Text to speech
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt). 文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 后追加 `.md` 即可。
 
 Audio API 提供一个 [`speech`](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create) 端点，基于我们的 [GPT-4o mini TTS（文本转语音）模型](https://developers.openai.com/api/docs/models/gpt-4o-mini-tts)。它内置 11 种语音，可用于：
 
-- 朗读一篇书面博客文章
-- 以多种语言生成口语音频
-- 使用流式传输提供实时音频输出
+- 叙述一篇书面博客文章
+- 以多种语言生成语音音频
+- 通过流式传输提供实时音频输出
 
-下面是一个 `alloy` voice:
+下面是 `alloy` 声音：
 
 我们的 [使用政策](https://openai.com/policies/usage-policies) 要求你
-  向最终用户提供明确披露，说明他们听到的 TTS 语音
-  是 AI 生成的，而非人类语音。
+  向最终用户清楚披露他们正在听到的 TTS 声音
+  是 AI 生成的，而非真人声音。
 
 ## 快速入门
 
-该 `speech` endpoint 接受三个关键输入：
+该 `speech` 端点接受三个关键输入：
 
-1. 该 [model](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create#audio-createspeech-model) 你正在使用的
-1. 该 [text](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create#audio-createspeech-input) 待转换为音频的
-1. 该 [voice](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create#audio-createspeech-voice) 将朗读输出内容的
+1. 该 [model](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create#audio-createspeech-model) 你正在使用
+1. 该 [text](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create#audio-createspeech-input) 将被转换为音频的
+1. 该 [voice](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create#audio-createspeech-voice) 将用于朗读输出内容
 
 下面是一个简单的请求示例：
 
-根据输入文本生成语音音频
+根据输入文本生成口语音频
 
 ```javascript
 import fs from "fs";
@@ -179,11 +179,11 @@ openai audio:speech create \
 ```
 
 
-默认情况下，该接口会输出一段 MP3 格式的语音音频，但你也可以将其配置为输出其他任何 [支持的格式](#supported-output-formats).
+默认情况下，该接口会输出 MP3 格式的口语音频，但你也可以将其配置为输出任何 [受支持的格式](#supported-output-formats).
 
 ### Text-to-speech models
 
-对于智能实时应用，请使用 `gpt-4o-mini-tts` 模型，它是我们最新且最可靠的文本转语音模型。你可以提示模型来控制语音的多个方面，包括：
+如需构建智能实时应用，请使用 `gpt-4o-mini-tts` 模型，这是我们最新且最可靠的文本转语音模型。你可以通过提示词控制模型的语音表现，包括：
 
 - 口音
 - 情感范围
@@ -191,13 +191,13 @@ openai audio:speech create \
 - 印象
 - 语速
 - 语气
-- 耳语
+- 低语
 
-我们的其他文本转语音模型有 `tts-1` 和 `tts-1-hd`。该 `tts-1` 模型延迟更低，但质量低于 `tts-1-hd` 模型。
+我们的其他文本转语音模型包括 `tts-1` 和 `tts-1-hd`。该 `tts-1` 模型延迟更低，但质量低于 `tts-1-hd` 模型。
 
 ### Voice options
 
-TTS 端点提供 13 种内置语音，用于控制如何将文本渲染为语音。 **可在 [OpenAI.fm](https://openai.fm)，中试听并体验这些音色，这是我们用于在 OpenAI API 中试用最新文本转语音模型的交互式演示**。目前音色已针对英文进行了优化。
+TTS 端点提供 13 种内置语音，用于控制如何从文本合成语音。 **在以下交互式演示中试听并体验这些语音： [OpenAI.fm](https://openai.fm)，这是我们用于在 OpenAI API 中试用最新文本转语音模型的交互式演示。**。目前这些语音针对英语进行了优化。
 
 - `alloy`
 - `ash`
@@ -215,15 +215,15 @@ TTS 端点提供 13 种内置语音，用于控制如何将文本渲染为语音
 
 为获得最佳质量，我们建议使用 `marin` 或 `cedar`.
 
-音色可用性取决于模型。以下 `tts-1` 和 `tts-1-hd` 模型支持较少的音色： `alloy`, `ash`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`，和 `shimmer`.
+语音可用性取决于模型。 `tts-1` 和 `tts-1-hd` 模型支持的语音集合较小： `alloy`, `ash`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`，以及 `shimmer`.
 
-如果你正在使用 [Realtime API](https://developers.openai.com/api/docs/guides/realtime)，请注意可用的音色集合略有不同——请参阅 [实时对话指南](https://developers.openai.com/api/docs/guides/realtime-conversations#voice-options) 了解当前的实时音色。
+如果你使用的是 [Realtime API](https://developers.openai.com/api/docs/guides/realtime)，请注意可用的语音集合略有不同——请参阅 [实时对话指南](https://developers.openai.com/api/docs/guides/realtime-conversations#voice-options) 以了解当前的实时语音。
 
 ### 流式实时音频
 
-Speech API 提供使用以下协议的实时音频流式传输支持 [分块传输编码](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Transfer-Encoding)。这意味着音频可以在完整文件生成并可访问之前开始播放。
+Speech API 支持使用 [分块传输编码](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Transfer-Encoding)。这意味着音频可以在完整文件生成并可用之前就开始播放。
 
-将输入文本的语音音频直接流式传输到你的扬声器
+将输入文本转换为语音音频流，直接输出到你的扬声器
 
 ```javascript
 import OpenAI from "openai";
@@ -375,175 +375,45 @@ curl https://api.openai.com/v1/audio/speech \
 ```
 
 
-为了获得最快的响应速度，我们建议使用 `wav` 或 `pcm` 作为响应格式。
+为了获得最快的响应速度，我们推荐使用 `wav` 或 `pcm` 作为响应格式。
 
-## 受支持的输出格式
+## 支持输出格式
 
-默认响应格式为 `mp3`，但也支持其他格式，例如 `opus` 和 `wav` 。
+默认的响应格式为 `mp3`，但也支持其他格式，例如 `opus` 和 `wav` 。
 
-- **MP3**：适用于一般用途的默认响应格式。
+- **MP3**：通用场景下的默认响应格式。
 - **Opus**：用于网络流媒体和实时通信，低延迟。
-- **AAC**：用于数字音频压缩，是 YouTube、Android、iOS 首选的格式。
-- **FLAC**：用于无损音频压缩，受到音频爱好者青睐，常用于音频存档。
-- **WAV**：未压缩的 WAV 音频，适合对延迟敏感的应用，以避免解码开销。
-- **PCM**：与 WAV 类似，但包含 24kHz 的原始采样（16 位有符号、低字节序），不含文件头。
+- **AAC**：用于数字音频压缩，YouTube、Android、iOS 优先采用。
+- **FLAC**：用于无损音频压缩，受音频爱好者青睐用于归档。
+- **WAV**：未压缩的 WAV 音频，适合低延迟场景，以避免解码开销。
+- **PCM**：与 WAV 类似，但仅包含 24kHz（16 位有符号、小端）原始采样数据，不带文件头。
 
 ## 支持的语言
 
-TTS 模型在语言支持方面通常与 Whisper 模型保持一致。Whisper [支持以下语言](https://github.com/openai/whisper#available-models-and-languages) 且表现良好，尽管语音针对英语进行了优化：
+TTS 模型在语言支持方面通常沿用 Whisper 模型。Whisper [支持以下语言](https://github.com/openai/whisper#available-models-and-languages) ,尽管语音针对英语进行了优化,但在这些语言上表现仍然良好:
 
-南非语、阿拉伯语、亚美尼亚语、阿塞拜疆语、白俄罗斯语、波斯尼亚语、保加利亚语、加泰罗尼亚语、中文、克罗地亚语、捷克语、丹麦语、荷兰语、英语、爱沙尼亚语、芬兰语、法语、加利西亚语、德语、希腊语、希伯来语、印地语、匈牙利语、冰岛语、印尼语、意大利语、日语、卡纳达语、哈萨克语、韩语、拉脱维亚语、立陶宛语、马其顿语、马来语、马拉地语、毛利语、尼泊尔语、挪威语、波斯语、波兰语、葡萄牙语、罗马尼亚语、俄语、塞尔维亚语、斯洛伐克语、斯洛文尼亚语、西班牙语、斯瓦希里语、瑞典语、他加禄语、泰米尔语、泰语、土耳其语、乌克兰语、乌尔都语、越南语和威尔士语。
+南非语、阿拉伯语、亚美尼亚语、阿塞拜疆语、白俄罗斯语、波斯尼亚语、保加利亚语、加泰罗尼亚语、中文、克罗地亚语、捷克语、丹麦语、荷兰语、英语、爱沙尼亚语、芬兰语、法语、加利西亚语、德语、希腊语、希伯来语、印地语、匈牙利语、冰岛语、印度尼西亚语、意大利语、日语、卡纳达语、哈萨克语、韩语、拉脱维亚语、立陶宛语、马其顿语、马来语、马拉地语、毛利语、尼泊尔语、挪威语、波斯语、波兰语、葡萄牙语、罗马尼亚语、俄语、塞尔维亚语、斯洛伐克语、斯洛文尼亚语、西班牙语、斯瓦希里语、瑞典语、塔加洛语、泰米尔语、泰语、土耳其语、乌克兰语、乌尔都语、越南语和威尔士语。
 
 你可以通过提供所选语言的输入文本来生成这些语言的口语音频。
 
 ## 自定义语音
 
-自定义语音可让你的智能体或应用拥有独特的声音。这些语音可用于以下场景的音频输出： [Text to Speech API](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create)、 [Realtime API](https://developers.openai.com/api/reference/resources/realtime)，或 [Chat Completions API（带音频输出）](https://developers.openai.com/api/docs/guides/audio).
+根据说话人的同意录音和匹配的音频样本创建已批准的自定义语音
+。请参阅 [自定义语音](https://developers.openai.com/api/docs/guides/custom-voices) 了解资格要求、
+录音要求、同意用语以及 API 请求。
 
-要创建自定义语音，你需要提供一段简短的参考音频样本，模型会尝试复刻该声音。
+#### 创建语音
 
-自定义语音仅向符合条件的客户提供。请联系我们的 [销售
-  团队](https://openai.com/contact-sales/) 了解详情。为你的组织启用后，你将可以访问
-  Audio 下的
-  [Voices](https://platform.openai.com/audio/voices) 标签页。
-
-#### Creating a voice
-
-目前，语音必须通过 API 请求创建。请参阅 API 参考文档，了解完整的 API 操作集。
-
-创建一个语音需要两段独立的音频录制：
-
-1. **Consent recording** — 此录音用于捕捉配音演员同意创建其声音相似度的过程。演员必须朗读下方提供的某一句同意用语。
-2. **Sample recording** — 模型将尝试遵循的实际音频样本。该声音必须与 consent recording 一致。
-
-**创建高质量语音的技巧**
-
-自定义语音的质量在很大程度上取决于你所提供样本的质量。优化录音质量可以带来显著的提升。
-
-- 在安静、回声极少的空间里录音。
-- 使用专业的 XLR 麦克风。
-- 与麦克风保持约 7–8 英寸的距离，中间放置防喷罩，并保持该距离一致。
-- 模型会原样复制你提供的内容——语气、节奏、能量、停顿、习惯——因此请录制你真正想要的声音。在整段录音中保持能量、风格和口音的一致。
-- 音频样本中的细微差异会影响生成声音的质量，值得尝试多个示例以找到最佳匹配。
-
-**要求与限制**
-
-- 每个组织最多可创建 20 个语音。
-- 音频样本时长不得超过 30 秒。
-- 音频样本必须为以下类型之一： `mpeg`, `wav`, `ogg`, `aac`, `flac`, `webm`，或 `mp4`.
-
-有关其他使用条款，请参阅文本转语音补充协议。
-
-**创建语音同意**
-
-同意音频录音只能包含以下其中一种措辞。任何偏离脚本的内容都将导致失败。
-
-| 语言 | 短语                                                                                                                                                |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `de`     | Ich bin der Eigentümer dieser Stimme und bin damit einverstanden, dass OpenAI diese Stimme zur Erstellung eines synthetischen Stimmmodells verwendet. |
-| `en`     | I am the owner of this voice and I consent to OpenAI using this voice to create a synthetic voice model.                                              |
-| `es`     | Soy el propietario de esta voz y doy mi consentimiento para que OpenAI la utilice para crear un modelo de voz sintética.                              |
-| `fr`     | Je suis le propriétaire de cette voix et j'autorise OpenAI à utiliser cette voix pour créer un modèle de voix synthétique.                            |
-| `hi`     | मैं इस आवाज का मालिक हूं और मैं सिंथेटिक आवाज मॉडल बनाने के लिए OpenAI को इस आवाज का उपयोग करने की सहमति देता हूं                                     |
-| `id`     | Saya adalah pemilik suara ini dan saya memberikan persetujuan kepada OpenAI untuk menggunakan suara ini guna membuat model suara sintetis.            |
-| `it`     | Sono il proprietario di questa voce e acconsento che OpenAI la utilizzi per creare un modello di voce sintetica.                                      |
-| `ja`     | 私はこの音声の所有者であり、OpenAIがこの音声を使用して音声合成 モデルを作成することを承認します。                                                     |
-| `ko`     | 나는 이 음성의 소유자이며 OpenAI가 이 음성을 사용하여 음성 합성 모델을 생성할 것을 허용합니다.                                                        |
-| `nl`     | Ik ben de eigenaar van deze stem en ik geef OpenAI toestemming om deze stem te gebruiken om een synthetisch stemmodel te maken.                       |
-| `pl`     | Jestem właścicielem tego głosu i wyrażam zgodę na wykorzystanie go przez OpenAI w celu utworzenia syntetycznego modelu głosu.                         |
-| `pt`     | Eu sou o proprietário desta voz e autorizo o OpenAI a usá-la para criar um modelo de voz sintética.                                                   |
-| `ru`     | Я являюсь владельцем этого голоса и даю согласие OpenAI на использование этого голоса для создания модели синтетического голоса.                      |
-| `uk`     | Я є власником цього голосу і даю згоду OpenAI використовувати цей голос для створення синтетичної голосової моделі.                                   |
-| `vi`     | Tôi là chủ sở hữu giọng nói này và tôi đồng ý cho OpenAI sử dụng giọng nói này để tạo mô hình giọng nói tổng hợp.                                     |
-| `zh`     | 我是此声音的拥有者并授权OpenAI使用此声音创建语音合成模型                                                                                              |
-
-然后通过 API 上传录音。上传成功后会返回同意录音 ID，后续将引用该 ID。注意，如果同一配音演员进行多次尝试，该同意录音可用于多个不同的语音创建。
-
-```bash
-curl https://api.openai.com/v1/audio/voice_consents \
-  -X POST \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -F "name=test_consent" \
-  -F "language=en" \
-  -F "recording=@$HOME/tmp/voice_consent/consent_recording.wav;type=audio/x-wav"
-```
-
-
-**创建语音**
-
-接下来，你将通过引用同意录音 ID 并提供语音样本来创建实际的语音。
-
-```bash
-curl https://api.openai.com/v1/audio/voices \
-  -X POST \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -F "name=test_voice" \
-  -F "audio_sample=@$HOME/tmp/voice_consent/audio_sample_recording.wav;type=audio/x-wav" \
-  -F "consent=cons_123abc"
-```
-
-
-如果成功，创建的语音将列在 [Audio 选项卡](https://platform.openai.com/audio/voices).
+Follow [创建自定义语音](https://developers.openai.com/api/docs/guides/custom-voices#creating-a-voice).
 
 #### 在语音生成过程中使用语音
 
-语音生成功能将照常使用。只需在 `voice` 参数中指定语音的 ID， [创建语音](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create)，时，或者在启动 [实时会话](https://developers.openai.com/api/reference/resources/realtime/subresources/calls/methods/create#realtime_create_call-session-audio-output-voice).
-
-**文字转语音示例**
-
-```bash
-curl https://api.openai.com/v1/audio/speech \
-  -X POST \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "gpt-4o-mini-tts",
-    "voice": {
-      "id": "voice_123abc"
-    },
-    "input": "Maple est le meilleur golden retriever du monde entier.",
-    "language": "fr",
-    "format": "wav"
-  }' \
-  --output sample.wav
-```
-
-
-**Realtime API 示例**
-
-对于 Ruby，运行示例前请将 `OPENAI_VOICE_ID` 设置为你的自定义语音 ID。
-
-```javascript
-const sessionConfig = JSON.stringify({
-  session: {
-    type: "realtime",
-    model: "gpt-realtime-2",
-    audio: {
-      output: {
-        voice: { id: "voice_123abc" },
-      },
-    },
-  },
-});
-```
-
-```ruby
-require "json"
-
-session_config = JSON.generate(
-  session: {
-    type: "realtime",
-    model: "gpt-realtime-2",
-    audio: {output: {voice: {id: ENV.fetch("OPENAI_VOICE_ID")}}}
-  }
-)
-puts(session_config)
-```
-
+生成语音时传入已创建的声音 ID。请参阅
+[语音生成示例](https://developers.openai.com/api/docs/guides/custom-voices#using-a-voice-during-speech-generation).
 
 ## 相关指南
 
-[实时与音频概述
+[Realtime 和音频概述
 
 
 
