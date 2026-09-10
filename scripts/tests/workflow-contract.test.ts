@@ -369,7 +369,7 @@ async function writerStep(name: string): Promise<string> {
 
 test("writer verifies trusted main and paths before exposing provider secrets", async () => {
   const writer = await readFile(writerPath, "utf8");
-  assert.match(writer, /^  AUTO_MERGE_ROLLOUT: canary$/m);
+  assert.match(writer, /^  AUTO_MERGE_ROLLOUT: enabled$/m);
   assert.match(writer, /^  UPDATE_BRANCH: automation\/update-openai-docs$/m);
   assert.match(writer, /^    if: github.ref == 'refs\/heads\/main'$/m);
   assert.match(writer, /^    environment: translation-production$/m);
@@ -419,7 +419,7 @@ test("writer persists completed pages before validation and reports failures aft
   assert.match(await writerStep("Report failure after preserving the draft pull request"), /exit 1/);
 });
 
-test("CI dispatch and auto merge require complete state and the canary opt-in", async () => {
+test("CI dispatch and auto merge require complete state and an enabled rollout", async () => {
   assert.doesNotMatch(workflow, /createWorkflowDispatch|update-docs\.yml/);
   const dispatch = await writerStep("Dispatch CI for the exact completed head");
   assert.match(dispatch, /if: .*steps.status.outputs.complete == 'true'/);
