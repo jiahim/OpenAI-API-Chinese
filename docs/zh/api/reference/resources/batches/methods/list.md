@@ -1,22 +1,22 @@
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
 ## 列出批次
 
 **get** `/batches`
 
-列出你所在组织的批量任务。
+列出你所在组织的批次。
 
 ### 查询参数
 
 - `after: optional string`
 
-  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起一次列表请求并收到 100 个对象，以 obj_foo 结尾，那么你下一次调用可以包含 after=obj_foo，以获取列表的下一页。
+  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么你可以在后续调用中包含 after=obj_foo 以获取列表的下一页。
 
 - `limit: optional number`
 
-  返回对象数量的上限。Limit 的取值范围为 1 到 100，默认值为 20。
+  要返回的对象数量的上限。Limit 的取值范围为 1 到 100，默认值为 20。
 
-### 返回值
+### Returns
 
 - `data: array of Batch`
 
@@ -24,7 +24,7 @@
 
   - `completion_window: string`
 
-    该批次应在其中完成处理的时间范围。
+    处理该批次的时间窗口。
 
   - `created_at: number`
 
@@ -32,7 +32,7 @@
 
   - `endpoint: string`
 
-    该批次使用的 OpenAI API 端点。
+    该批次所使用的OpenAI API 端点。
 
   - `input_file_id: string`
 
@@ -40,13 +40,13 @@
 
   - `object: "batch"`
 
-    对象类型，始终为 `batch`.
+    对象类型，固定为 `batch`.
 
     - `"batch"`
 
   - `status: "validating" or "failed" or "in_progress" or 5 more`
 
-    该批次的当前状态。
+    该批次当前的状态。
 
     - `"validating"`
 
@@ -78,7 +78,7 @@
 
   - `error_file_id: optional string`
 
-    包含请求输出中错误的文件 ID。
+    包含请求错误输出的文件 ID。
 
   - `errors: optional object { data, object }`
 
@@ -90,11 +90,11 @@
 
       - `line: optional number or null`
 
-        发生错误的输入文件中的行号（如果适用）。
+        发生错误的输入文件行号（如果适用）。
 
       - `message: optional string`
 
-        提供更多错误详情的人类可读消息。
+        提供有关错误更多详情的人类可读消息。
 
       - `param: optional string or null`
 
@@ -102,7 +102,7 @@
 
     - `object: optional string`
 
-      对象类型，始终为 `list`.
+      对象类型，固定为 `list`.
 
   - `expired_at: optional number`
 
@@ -118,7 +118,7 @@
 
   - `finalizing_at: optional number`
 
-    该批次开始最终化时的 Unix 时间戳（以秒为单位）。
+    该批次开始进入最终化阶段的 Unix 时间戳（以秒为单位）。
 
   - `in_progress_at: optional number`
 
@@ -126,27 +126,27 @@
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象的 16 组键值对。这可以
-    可用于以结构化方式存储对象的附加信息
-    格式，并通过 API 或控制台查询对象。
+    可附加到对象的 16 组键值对。可用于
+    用于以结构化格式存储有关对象的附加信息，并通过 API 或控制台查询对象。
+    格式，并通过 接口 或控制台查询对象。
 
-    键为字符串，最长 64 个字符。值为字符串
-    最长 512 个字符。
+    键为字符串，最大长度为 64 个字符。值为字符串，
+    最大长度为 512 个字符。
 
   - `model: optional string`
 
-    用于处理该批次的模型 ID，例如 `gpt-6-astra`。OpenAI
-    提供多种具备不同能力、性能
-    特性和价格的模型。请参阅 [模型
-    指南](/docs/models) 浏览和对比可用模型。
+    用于处理该批处理的模型 ID，例如 `gpt-6-astra`。OpenAI
+    提供了一系列具有不同能力、性能
+    特征和定价的模型。请参阅 [模型
+    指南](/api/docs/models) 以浏览和比较可用的模型。
 
   - `output_file_id: optional string`
 
-    包含已成功执行的请求输出文件的 ID。
+    包含已成功执行请求的输出文件的 ID。
 
   - `request_counts: optional BatchRequestCounts`
 
-    该批次中不同状态的请求计数。
+    批处理中不同状态的请求计数。
 
     - `completed: number`
 
@@ -158,26 +158,26 @@
 
     - `total: number`
 
-      该批次中的请求总数。
+      批处理中的请求总数。
 
   - `usage: optional BatchUsage`
 
-    表示包括输入令牌、输出令牌、输出令
-    牌细分以及所使用的总令牌在内的令牌使用情况详情。仅填充于
-    2025 年 9 月 7 日之后创建的批次。
+    表示令牌使用详情，包括输入令牌、输出令牌、
+    输出令牌的细分以及所使用的令牌总数。仅在
+    2025 年 9 月 7 日之后创建的批处理中填充。
 
     - `input_tokens: number`
 
-      输入令牌数量。
+      输入令牌的数量。
 
     - `input_tokens_details: object { cached_tokens }`
 
-      输入令牌的详细明细。
+      输入令牌的详细分类。
 
       - `cached_tokens: number`
 
-        从缓存中检索到的令牌数量。 [了解更多
-        prompt caching](/docs/guides/prompt-caching).
+        从缓存中检索到的令牌数量。 [详细了解
+        prompt caching](/api/docs/guides/prompt-caching).
 
     - `output_tokens: number`
 
@@ -185,7 +185,7 @@
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      输出令牌的详细明细。
+      输出令牌的详细分类。
 
       - `reasoning_tokens: number`
 

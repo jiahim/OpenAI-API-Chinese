@@ -1,0 +1,465 @@
+{
+  "id": "2026-09-09T19-11-07-000Z",
+  "generatedAt": "2026-09-09T19:11:07Z",
+  "added": [
+    {
+      "path": "docs/en/api/docs/guides/prompt-caching/diagnostics.md",
+      "route": "/api/docs/guides/prompt-caching/diagnostics",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/prompt-caching/diagnostics.md",
+      "title": "Prompt cache diagnostics"
+    }
+  ],
+  "modified": [
+    {
+      "path": "docs/en/api/docs/changelog.md",
+      "route": "/api/docs/changelog",
+      "sourceUrl": "https://developers.openai.com/api/docs/changelog.md",
+      "title": "API changelog"
+    },
+    {
+      "path": "docs/en/api/docs/guides/image-generation.md",
+      "route": "/api/docs/guides/image-generation",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/image-generation.md",
+      "title": "Image generation"
+    },
+    {
+      "path": "docs/en/api/docs/guides/prompt-caching.md",
+      "route": "/api/docs/guides/prompt-caching",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/prompt-caching.md",
+      "title": "Prompt caching"
+    },
+    {
+      "path": "docs/en/api/docs/guides/secure-mcp-tunnels.md",
+      "route": "/api/docs/guides/secure-mcp-tunnels",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/secure-mcp-tunnels.md",
+      "title": "Secure MCP Tunnel"
+    },
+    {
+      "path": "docs/en/api/docs/libraries.md",
+      "route": "/api/docs/libraries",
+      "sourceUrl": "https://developers.openai.com/api/docs/libraries.md",
+      "title": "SDKs and CLI"
+    },
+    {
+      "path": "docs/en/api/docs/quickstart.md",
+      "route": "/api/docs/quickstart",
+      "sourceUrl": "https://developers.openai.com/api/docs/quickstart.md",
+      "title": "Developer quickstart"
+    },
+    {
+      "path": "docs/en/api/reference/resources/audio.md",
+      "route": "/api/reference/resources/audio",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/audio.md",
+      "title": "Audio"
+    },
+    {
+      "path": "docs/en/api/reference/resources/audio/subresources/speech/methods/create.md",
+      "route": "/api/reference/resources/audio/subresources/speech/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create.md",
+      "title": "Audio Speech — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/audio/subresources/transcriptions/streaming-events.md",
+      "route": "/api/reference/resources/audio/subresources/transcriptions/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/streaming-events.md",
+      "title": "Transcription streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/batches.md",
+      "route": "/api/reference/resources/batches",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/batches.md",
+      "title": "Batches"
+    },
+    {
+      "path": "docs/en/api/reference/resources/batches/methods/cancel.md",
+      "route": "/api/reference/resources/batches/methods/cancel",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/batches/methods/cancel.md",
+      "title": "Batches — Cancel"
+    },
+    {
+      "path": "docs/en/api/reference/resources/batches/methods/create.md",
+      "route": "/api/reference/resources/batches/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/batches/methods/create.md",
+      "title": "Batches — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/batches/methods/list.md",
+      "route": "/api/reference/resources/batches/methods/list",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/batches/methods/list.md",
+      "title": "Batches — List"
+    },
+    {
+      "path": "docs/en/api/reference/resources/batches/methods/retrieve.md",
+      "route": "/api/reference/resources/batches/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/batches/methods/retrieve.md",
+      "title": "Batches — Retrieve"
+    },
+    {
+      "path": "docs/en/api/reference/resources/beta/subresources/responses/streaming-events.md",
+      "route": "/api/reference/resources/beta/subresources/responses/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/responses/streaming-events.md",
+      "title": "Beta Responses streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/beta/subresources/responses/websocket-events.md",
+      "route": "/api/reference/resources/beta/subresources/responses/websocket-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/responses/websocket-events.md",
+      "title": "Beta Responses WebSocket events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/chat.md",
+      "route": "/api/reference/resources/chat",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/chat.md",
+      "title": "Chat"
+    },
+    {
+      "path": "docs/en/api/reference/resources/chat/subresources/completions/methods/retrieve.md",
+      "route": "/api/reference/resources/chat/subresources/completions/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/retrieve.md",
+      "title": "Chat Completions — Retrieve"
+    },
+    {
+      "path": "docs/en/api/reference/resources/chat/subresources/completions/streaming-events.md",
+      "route": "/api/reference/resources/chat/subresources/completions/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/chat/subresources/completions/streaming-events.md",
+      "title": "Chat Completions streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/completions.md",
+      "route": "/api/reference/resources/completions",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/completions.md",
+      "title": "Completions"
+    },
+    {
+      "path": "docs/en/api/reference/resources/completions/methods/create.md",
+      "route": "/api/reference/resources/completions/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/completions/methods/create.md",
+      "title": "Completions — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/conversations.md",
+      "route": "/api/reference/resources/conversations",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/conversations.md",
+      "title": "Conversations"
+    },
+    {
+      "path": "docs/en/api/reference/resources/conversations/methods/create.md",
+      "route": "/api/reference/resources/conversations/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/conversations/methods/create.md",
+      "title": "Conversations — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/conversations/subresources/items/methods/list.md",
+      "route": "/api/reference/resources/conversations/subresources/items/methods/list",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/conversations/subresources/items/methods/list.md",
+      "title": "Conversations Items — List"
+    },
+    {
+      "path": "docs/en/api/reference/resources/embeddings.md",
+      "route": "/api/reference/resources/embeddings",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/embeddings.md",
+      "title": "Embeddings"
+    },
+    {
+      "path": "docs/en/api/reference/resources/embeddings/methods/create.md",
+      "route": "/api/reference/resources/embeddings/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/embeddings/methods/create.md",
+      "title": "Embeddings — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/evals.md",
+      "route": "/api/reference/resources/evals",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/evals.md",
+      "title": "Evals"
+    },
+    {
+      "path": "docs/en/api/reference/resources/evals/methods/create.md",
+      "route": "/api/reference/resources/evals/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/evals/methods/create.md",
+      "title": "Evals — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/evals/subresources/runs/methods/cancel.md",
+      "route": "/api/reference/resources/evals/subresources/runs/methods/cancel",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/evals/subresources/runs/methods/cancel.md",
+      "title": "Evals Runs — Cancel"
+    },
+    {
+      "path": "docs/en/api/reference/resources/files.md",
+      "route": "/api/reference/resources/files",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/files.md",
+      "title": "Files"
+    },
+    {
+      "path": "docs/en/api/reference/resources/files/methods/create.md",
+      "route": "/api/reference/resources/files/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/files/methods/create.md",
+      "title": "Files — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/fine_tuning.md",
+      "route": "/api/reference/resources/fine_tuning",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/fine_tuning.md",
+      "title": "Fine Tuning"
+    },
+    {
+      "path": "docs/en/api/reference/resources/fine_tuning/subresources/checkpoints/subresources/permissions/methods/create.md",
+      "route": "/api/reference/resources/fine_tuning/subresources/checkpoints/subresources/permissions/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/fine_tuning/subresources/checkpoints/subresources/permissions/methods/create.md",
+      "title": "Fine Tuning Checkpoints Permissions — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/fine_tuning/subresources/checkpoints/subresources/permissions/methods/delete.md",
+      "route": "/api/reference/resources/fine_tuning/subresources/checkpoints/subresources/permissions/methods/delete",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/fine_tuning/subresources/checkpoints/subresources/permissions/methods/delete.md",
+      "title": "Fine Tuning Checkpoints Permissions — Delete"
+    },
+    {
+      "path": "docs/en/api/reference/resources/fine_tuning/subresources/jobs/methods/list.md",
+      "route": "/api/reference/resources/fine_tuning/subresources/jobs/methods/list",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/fine_tuning/subresources/jobs/methods/list.md",
+      "title": "Fine Tuning Jobs — List"
+    },
+    {
+      "path": "docs/en/api/reference/resources/graders.md",
+      "route": "/api/reference/resources/graders",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/graders.md",
+      "title": "Graders"
+    },
+    {
+      "path": "docs/en/api/reference/resources/images.md",
+      "route": "/api/reference/resources/images",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/images.md",
+      "title": "Images"
+    },
+    {
+      "path": "docs/en/api/reference/resources/images/edit-streaming-events.md",
+      "route": "/api/reference/resources/images/edit-streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/images/edit-streaming-events.md",
+      "title": "Image edit streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/images/generation-streaming-events.md",
+      "route": "/api/reference/resources/images/generation-streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/images/generation-streaming-events.md",
+      "title": "Image generation streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/moderations.md",
+      "route": "/api/reference/resources/moderations",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/moderations.md",
+      "title": "Moderations"
+    },
+    {
+      "path": "docs/en/api/reference/resources/moderations/methods/create.md",
+      "route": "/api/reference/resources/moderations/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/moderations/methods/create.md",
+      "title": "Moderations — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/realtime.md",
+      "route": "/api/reference/resources/realtime",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/realtime.md",
+      "title": "Realtime"
+    },
+    {
+      "path": "docs/en/api/reference/resources/realtime/client-events.md",
+      "route": "/api/reference/resources/realtime/client-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/realtime/client-events.md",
+      "title": "Realtime client events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/realtime/server-events.md",
+      "route": "/api/reference/resources/realtime/server-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/realtime/server-events.md",
+      "title": "Realtime server events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/realtime/subresources/calls.md",
+      "route": "/api/reference/resources/realtime/subresources/calls",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/realtime/subresources/calls.md",
+      "title": "Realtime Calls"
+    },
+    {
+      "path": "docs/en/api/reference/resources/realtime/subresources/calls/methods/accept.md",
+      "route": "/api/reference/resources/realtime/subresources/calls/methods/accept",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/realtime/subresources/calls/methods/accept.md",
+      "title": "Realtime Calls — Accept"
+    },
+    {
+      "path": "docs/en/api/reference/resources/realtime/subresources/client_secrets.md",
+      "route": "/api/reference/resources/realtime/subresources/client_secrets",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets.md",
+      "title": "Realtime Client Secrets"
+    },
+    {
+      "path": "docs/en/api/reference/resources/realtime/subresources/client_secrets/methods/create.md",
+      "route": "/api/reference/resources/realtime/subresources/client_secrets/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets/methods/create.md",
+      "title": "Realtime Client Secrets — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses.md",
+      "route": "/api/reference/resources/responses",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses.md",
+      "title": "Responses"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/cancel.md",
+      "route": "/api/reference/resources/responses/methods/cancel",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/cancel.md",
+      "title": "Responses — Cancel"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/compact.md",
+      "route": "/api/reference/resources/responses/methods/compact",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/compact.md",
+      "title": "Responses — Compact"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/create.md",
+      "route": "/api/reference/resources/responses/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/create.md",
+      "title": "Responses — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/retrieve.md",
+      "route": "/api/reference/resources/responses/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/retrieve.md",
+      "title": "Responses — Retrieve"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/streaming-events.md",
+      "route": "/api/reference/resources/responses/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/streaming-events.md",
+      "title": "Responses streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/subresources/input_items/methods/list.md",
+      "route": "/api/reference/resources/responses/subresources/input_items/methods/list",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/subresources/input_items/methods/list.md",
+      "title": "Responses Input Items — List"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/subresources/input_tokens.md",
+      "route": "/api/reference/resources/responses/subresources/input_tokens",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/subresources/input_tokens.md",
+      "title": "Responses Input Tokens"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/websocket-events.md",
+      "route": "/api/reference/resources/responses/websocket-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/websocket-events.md",
+      "title": "Responses WebSocket events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/uploads.md",
+      "route": "/api/reference/resources/uploads",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/uploads.md",
+      "title": "Uploads"
+    },
+    {
+      "path": "docs/en/api/reference/resources/uploads/methods/cancel.md",
+      "route": "/api/reference/resources/uploads/methods/cancel",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/uploads/methods/cancel.md",
+      "title": "Uploads — Cancel"
+    },
+    {
+      "path": "docs/en/api/reference/resources/uploads/methods/create.md",
+      "route": "/api/reference/resources/uploads/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/uploads/methods/create.md",
+      "title": "Uploads — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/uploads/subresources/parts/methods/create.md",
+      "route": "/api/reference/resources/uploads/subresources/parts/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/uploads/subresources/parts/methods/create.md",
+      "title": "Uploads Parts — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/vector_stores.md",
+      "route": "/api/reference/resources/vector_stores",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/vector_stores.md",
+      "title": "Vector Stores"
+    },
+    {
+      "path": "docs/en/api/reference/resources/vector_stores/methods/create.md",
+      "route": "/api/reference/resources/vector_stores/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/vector_stores/methods/create.md",
+      "title": "Vector Stores — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/vector_stores/subresources/file_batches.md",
+      "route": "/api/reference/resources/vector_stores/subresources/file_batches",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches.md",
+      "title": "Vector Stores File Batches"
+    },
+    {
+      "path": "docs/en/api/reference/resources/vector_stores/subresources/file_batches/methods/cancel.md",
+      "route": "/api/reference/resources/vector_stores/subresources/file_batches/methods/cancel",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches/methods/cancel.md",
+      "title": "Vector Stores File Batches — Cancel"
+    },
+    {
+      "path": "docs/en/api/reference/resources/vector_stores/subresources/file_batches/methods/create.md",
+      "route": "/api/reference/resources/vector_stores/subresources/file_batches/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches/methods/create.md",
+      "title": "Vector Stores File Batches — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/vector_stores/subresources/file_batches/methods/list_files.md",
+      "route": "/api/reference/resources/vector_stores/subresources/file_batches/methods/list_files",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches/methods/list_files.md",
+      "title": "Vector Stores File Batches — List Files"
+    },
+    {
+      "path": "docs/en/api/reference/resources/vector_stores/subresources/file_batches/methods/retrieve.md",
+      "route": "/api/reference/resources/vector_stores/subresources/file_batches/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches/methods/retrieve.md",
+      "title": "Vector Stores File Batches — Retrieve"
+    },
+    {
+      "path": "docs/en/api/reference/resources/vector_stores/subresources/files.md",
+      "route": "/api/reference/resources/vector_stores/subresources/files",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/vector_stores/subresources/files.md",
+      "title": "Vector Stores Files"
+    },
+    {
+      "path": "docs/en/api/reference/resources/vector_stores/subresources/files/methods/create.md",
+      "route": "/api/reference/resources/vector_stores/subresources/files/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/create.md",
+      "title": "Vector Stores Files — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/vector_stores/subresources/files/methods/delete.md",
+      "route": "/api/reference/resources/vector_stores/subresources/files/methods/delete",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/delete.md",
+      "title": "Vector Stores Files — Delete"
+    },
+    {
+      "path": "docs/en/api/reference/resources/vector_stores/subresources/files/methods/list.md",
+      "route": "/api/reference/resources/vector_stores/subresources/files/methods/list",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/list.md",
+      "title": "Vector Stores Files — List"
+    },
+    {
+      "path": "docs/en/api/reference/resources/vector_stores/subresources/files/methods/retrieve.md",
+      "route": "/api/reference/resources/vector_stores/subresources/files/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/retrieve.md",
+      "title": "Vector Stores Files — Retrieve"
+    },
+    {
+      "path": "docs/en/api/reference/resources/vector_stores/subresources/files/methods/update.md",
+      "route": "/api/reference/resources/vector_stores/subresources/files/methods/update",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/update.md",
+      "title": "Vector Stores Files — Update"
+    },
+    {
+      "path": "docs/en/api/reference/resources/webhooks.md",
+      "route": "/api/reference/resources/webhooks",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/webhooks.md",
+      "title": "Webhooks events"
+    }
+  ],
+  "removed": []
+}

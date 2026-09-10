@@ -1,66 +1,63 @@
 # 图像生成
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
+> 完整的文档索引请参见 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 获取。
 
 ## 概述
 
-OpenAI API 让你使用 GPT Image 模型根据文本提示生成和编辑图像，包括我们最新的模型， `gpt-image-2`。你可以通过两个 API 使用图像生成功能：
+API 可让你根据文本提示生成和编辑图像，使用 `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`。在编辑精度最为重要的工作流中选择 Sunburst，而在需要快速、高质量的日常图像生成时选择 Flare。你可以通过两个 API 访问图像生成功能：
 
-### Image API
+### 图像 API
 
-从 `gpt-image-1` 及更高版本的模型起，该 [Image API](https://developers.openai.com/api/reference/resources/images) 提供了两个端点，每个端点都有不同的能力：
+该 [图像 API](https://developers.openai.com/api/reference/resources/images) 提供了两个端点，每个端点具有不同的能力：
 
-- **生成**: [生成图像](#generate-images) 根据文本提示从头开始生成
-- **编辑**: [修改现有图像](#edit-images) 使用新的提示进行部分或整体修改
+- **生成**: [生成图像](#generate-images) 根据文本提示从零生成
+- **编辑**: [修改现有图像](#edit-images) 使用新提示进行局部或整体修改
 
 ### Responses API
 
-该 [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-tools) 允许你在对话或多步骤流程中生成图像。它支持将图像生成作为 [内置工具](https://developers.openai.com/api/docs/guides/tools?api-mode=responses)，并在上下文中接受图像输入和输出。
+该 [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-tools) 允许你在对话或多步骤流程中生成图像。它将图像生成作为 [内置工具](https://developers.openai.com/api/docs/guides/tools?api-mode=responses)，并在上下文内接受图像输入和输出。
 
 与图像 API 相比，它新增了：
 
-- **多轮编辑**: 通过提示迭代地对图像进行高保真编辑
-- **灵活的输入**: 接受图像 [文件](https://developers.openai.com/api/reference/resources/files) ID 作为输入图像，而不仅仅是字节
+- **Multi-turn editing**：通过提示迭代地对图像进行高保真编辑
+- **灵活的输入**：接受图像 [File](https://developers.openai.com/api/reference/resources/files) ID 作为输入图像，而不仅仅是字节
 
-Responses API 图像生成工具使用其自有的 GPT Image 模型选择。有关支持调用此工具的主流模型的详细信息,请参阅 [支持的模型](#supported-models) 部分。
+对于可以调用图像生成工具的主流模型，请参阅 [支持的模型](#supported-models).
 
 ### 选择合适的 API
 
-- 如果你只需要根据一条提示词生成或编辑单张图像，图像 API 是最佳选择。
-- 如果你想使用 GPT Image 构建可对话、可编辑的图像体验，请选择 Responses API。
+- 如果你只需要根据一条提示生成或编辑单张图片，Image API 是最佳选择。
+- 如果你想使用 GPT Image 构建可对话、可编辑的图片体验，请选择 Responses API。
 
-使用 Image API 时，你可以直接选择 GPT Image 模型。使用 Responses API 时，你选择的是一个支持图像生成工具的主流模型；该工具负责选择 GPT Image 模型。Responses API 请求的计费除了图像生成费用外，还包含主流模型的 token 用量。
+使用 Image API时，设置 `model` 为 `gpt-image-2.5-sunburst` 或 `gpt-image-2.5-flare` 即可。使用 Responses API 时，在顶层选择一个受支持的主流模型，并在 `gpt-image-2.5-sunburst` 或 `gpt-image-2.5-flare` 的图像生成工具中指定 `model` 字段。
 
-两种 API 都允许你 [自定义输出](#customize-image-output) ，例如调整质量、尺寸、格式和压缩方式。透明背景取决于模型是否支持。
+两个 API 都允许你 [自定义输出](#customize-image-output) ，调整质量、尺寸、格式和压缩方式。
 
-本指南重点介绍 GPT Image。
-
-为确保这些模型被负责任地使用，你可能需要完成 [API
+为确保这些模型的负责任使用，你可能需要先完成 [API
   组织
   验证](https://help.openai.com/en/articles/10910291-api-organization-verification)
   ，从你的 [开发者
-  控制台](https://platform.openai.com/settings/organization/general) 完成
-  后再使用 GPT Image 模型，包括 `gpt-image-2`, `gpt-image-1.5`,
-  `gpt-image-1`，以及 `gpt-image-1-mini`.
+  控制台](https://platform.openai.com/settings/organization/general) 中
+  使用 GPT Image 模型。
 
 <div
   className="not-prose"
   style={{ float: "right", margin: "10px 0 10px 10px" }}
 >
-  <img src="https://cdn.openai.com/API/docs/images/mug.png"
+  <img src="https://developers.openai.com/images/image-25-article/mug.png"
     alt="A beige coffee mug on a wooden table"
     style={{ height: "180px", width: "auto", borderRadius: "8px" }}
   />
 
 
 
-## 生成图片
+## Generate Images
 
-你可以使用 [图像生成端点](https://developers.openai.com/api/reference/resources/images) 根据文本提示创建图像，也可以使用 [图像生成工具](https://developers.openai.com/api/docs/guides/tools?api-mode=responses) 在 Responses API 中在对话过程中生成图像。
+你可以使用 [图像生成端点](https://developers.openai.com/api/reference/resources/images) 根据文本提示创建图像,或在 [图像生成工具](https://developers.openai.com/api/docs/guides/tools?api-mode=responses) 的 Responses API 中生成作为对话一部分的图像。
 
-要详细了解如何自定义输出（尺寸、质量、格式、压缩），请参阅 [自定义图像输出](#customize-image-output) 部分。
+要详细了解如何自定义输出(尺寸、质量、格式、压缩),请参阅 [自定义图像输出](#customize-image-output) 章节。
 
-你可以设置 `n` 参数，在单次请求中一次生成多张图像（默认情况下，API 返回单张图像）。
+你可以设置 `n` 参数,在单个请求中一次生成多张图像(默认情况下,API 返回单张图像)。
 
 
 
@@ -79,7 +76,7 @@ listen to the heartbeat of a baby otter.
 `;
 
 const result = await openai.images.generate({
-  model: "gpt-image-2",
+  model: "gpt-image-2.5-sunburst",
   prompt,
 });
 
@@ -100,7 +97,7 @@ A children's book drawing of a veterinarian using a stethoscope to
 listen to the heartbeat of a baby otter.
 """
 
-result = client.images.generate(model="gpt-image-2", prompt=prompt)
+result = client.images.generate(model="gpt-image-2.5-sunburst", prompt=prompt)
 
 image_base64 = result.data[0].b64_json
 image_bytes = base64.b64decode(image_base64)
@@ -124,7 +121,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	result, err := client.Images.Generate(context.Background(), openai.ImageGenerateParams{
-		Model: openai.ImageModel("gpt-image-2"),
+		Model: openai.ImageModel("gpt-image-2.5-sunburst"),
 		Prompt: "A children's book drawing of a veterinarian using a stethoscope to " +
 			"listen to the heartbeat of a baby otter.",
 	})
@@ -155,7 +152,7 @@ var images =
         .images()
         .generate(
             ImageGenerateParams.builder()
-                .model("gpt-image-2")
+                .model("gpt-image-2.5-sunburst")
                 .prompt("A watercolor robot reading in a library")
                 .build());
 
@@ -168,7 +165,7 @@ Files.write(
 using OpenAI.Images;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-string model = "gpt-image-2";
+string model = "gpt-image-2.5-sunburst";
 ImageClient client = new(model, key);
 
 GeneratedImage image = await client.GenerateImageAsync(
@@ -185,7 +182,7 @@ require "openai"
 
 client = OpenAI::Client.new
 result = client.images.generate(
-  model: "gpt-image-2",
+  model: "gpt-image-2.5-sunburst",
   prompt: "A watercolor robot reading in a library"
 )
 generated_image = result.data&.first or raise "No image returned"
@@ -200,14 +197,14 @@ curl -X POST "https://api.openai.com/v1/images/generations" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -H "Content-type: application/json" \
     -d '{
-        "model": "gpt-image-2",
+        "model": "gpt-image-2.5-sunburst",
         "prompt": "A children'\''s book drawing of a veterinarian using a stethoscope to listen to the heartbeat of a baby otter."
     }' | jq -r '.data[0].b64_json' | base64 --decode > otter.png
 ```
 
 ```bash
 openai images generate \
-  --model gpt-image-2 \
+  --model gpt-image-2.5-sunburst \
   --prompt "A children's book drawing of a veterinarian using a stethoscope to listen to the heartbeat of a baby otter." \
   --raw-output \
   --transform 'data.0.b64_json' | base64 --decode > otter.png
@@ -230,7 +227,7 @@ const response = await openai.responses.create({
   model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
-  tools: [{ type: "image_generation" }],
+  tools: [{ type: "image_generation", model: "gpt-image-2.5-sunburst" }],
 });
 
 // Save the image to a file
@@ -254,7 +251,7 @@ client = OpenAI()
 response = client.responses.create(
     model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
-    tools=[{"type": "image_generation"}],
+    tools=[{"type": "image_generation", "model": "gpt-image-2.5-sunburst"}],
 )
 
 # Save the image to a file
@@ -289,7 +286,7 @@ func main() {
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Generate an image of gray tabby cat hugging an otter with an orange scarf"),
 		},
-		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{}}},
+		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{Model: "gpt-image-2.5-sunburst"}}},
 	})
 	if err != nil {
 		panic(err)
@@ -354,7 +351,7 @@ options.InputItems.Add(
         "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
     )
 );
-options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2.5-sunburst"));
 
 ResponseResult response = await client.CreateResponseAsync(options);
 ImageGenerationCallResponseItem image = response
@@ -372,7 +369,7 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
-  tools: [{type: :image_generation}]
+  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
 )
 
 image_call = response.output.find do |item|
@@ -390,10 +387,10 @@ File.binwrite("otter.png", Base64.strict_decode64(encoded_image))
 
 ### 多轮图像生成
 
-使用 Responses API，你可以通过在上下文中提供图像生成调用的输出（也可以直接使用图像 ID），或者通过使用 [`previous_response_id` 参数](https://developers.openai.com/api/docs/guides/conversation-state?api-mode=responses#openai-apis-for-conversation-state).
-这让你可以在多轮对话中迭代优化图像——调整提示词、应用新的指令，并随着对话推进不断演进视觉效果。
+使用 Responses API 时，你可以通过在上下文中提供图像生成调用的输出（也可以直接使用图像 ID），或者通过使用 [`previous_response_id` 参数](https://developers.openai.com/api/docs/guides/conversation-state?api-mode=responses#openai-apis-for-conversation-state).
+这样你可以在多轮对话中迭代图像——随着对话推进，逐步打磨提示词、应用新指令并完善视觉输出。
 
-使用 Responses API 图像生成工具时，支持的工具模型可以选择是生成新图像还是编辑对话中已有的图像。可选的 `action` 参数控制此行为：保留为 `action: "auto"` 可让模型自行决定，设置为 `action: "generate"` 则始终创建新图像，或者设置为 `action: "edit"` 可在上下文中存在图像时强制进行编辑。
+使用 Responses API 的图像生成工具时，受支持的工具模型可以选择生成新图像或编辑对话中已有的图像。可选的 `action` 参数控制此行为：设为 `action: "auto"` 让模型自行决定，设为 `action: "generate"` 则始终创建新图像，设为 `action: "edit"` 则当上下文中存在图像时强制进行编辑。
 
 使用 action 强制创建图像
 
@@ -405,7 +402,9 @@ const response = await openai.responses.create({
   model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
-  tools: [{ type: "image_generation", action: "generate" }],
+  tools: [
+    { type: "image_generation", model: "gpt-image-2.5-sunburst", action: "generate" },
+  ],
 });
 
 // Save the image to a file
@@ -429,7 +428,9 @@ client = OpenAI()
 response = client.responses.create(
     model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
-    tools=[{"type": "image_generation", "action": "generate"}],
+    tools=[
+        {"type": "image_generation", "model": "gpt-image-2.5-sunburst", "action": "generate"}
+    ],
 )
 
 # Save the image to a file
@@ -464,7 +465,7 @@ func main() {
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Generate an image of gray tabby cat hugging an otter with an orange scarf"),
 		},
-		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{Action: "generate"}}},
+		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{Model: "gpt-image-2.5-sunburst", Action: "generate"}}},
 	})
 	if err != nil {
 		panic(err)
@@ -530,7 +531,7 @@ options.InputItems.Add(
 );
 options.Tools.Add(
     ResponseTool.CreateImageGenerationTool(
-        model: "gpt-image-2",
+        model: "gpt-image-2.5-sunburst",
         action: ImageGenerationToolAction.Generate
     )
 );
@@ -551,7 +552,7 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
-  tools: [{type: :image_generation, action: :generate}]
+  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst", action: :generate}]
 )
 
 image_call = response.output.find do |item|
@@ -568,11 +569,11 @@ puts(output_path)
 ```
 
 
-如果在上下文中没有提供图像却强制 `edit` ，该调用将返回错误。将 `action` 设为 `auto` 可让模型自行决定何时生成或编辑。
+如果在未在上下文中提供图像的情况下强制 `edit` ，该调用将返回错误。将 `action` 设为 `auto` ，让模型自行决定何时生成或编辑。
 
 
 
-使用上一次响应 ID
+使用 previous response ID
 
     Multi-turn image generation
 
@@ -584,7 +585,7 @@ const response = await openai.responses.create({
   model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
-  tools: [{ type: "image_generation" }],
+  tools: [{ type: "image_generation", model: "gpt-image-2.5-sunburst" }],
 });
 
 const imageData = response.output
@@ -603,7 +604,7 @@ const response_fwup = await openai.responses.create({
   model: "gpt-6-astra",
   previous_response_id: response.id,
   input: "Now make it look realistic",
-  tools: [{ type: "image_generation" }],
+  tools: [{ type: "image_generation", model: "gpt-image-2.5-sunburst" }],
 });
 
 const imageData_fwup = response_fwup.output
@@ -629,7 +630,7 @@ client = OpenAI()
 response = client.responses.create(
     model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
-    tools=[{"type": "image_generation"}],
+    tools=[{"type": "image_generation", "model": "gpt-image-2.5-sunburst"}],
 )
 
 image_data = [
@@ -651,7 +652,7 @@ response_fwup = client.responses.create(
     model="gpt-6-astra",
     previous_response_id=response.id,
     input="Now make it look realistic",
-    tools=[{"type": "image_generation"}],
+    tools=[{"type": "image_generation", "model": "gpt-image-2.5-sunburst"}],
 )
 
 image_data_fwup = [
@@ -685,7 +686,7 @@ func main() {
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Generate an image of gray tabby cat hugging an otter with an orange scarf"),
 		},
-		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{}}},
+		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{Model: "gpt-image-2.5-sunburst"}}},
 	})
 	if err != nil {
 		panic(err)
@@ -698,7 +699,7 @@ func main() {
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Now make it look realistic"),
 		},
-		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{}}},
+		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{Model: "gpt-image-2.5-sunburst"}}},
 	})
 	if err != nil {
 		panic(err)
@@ -789,7 +790,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 CreateResponseOptions options = new() { Model = "gpt-6-astra" };
-options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2.5-sunburst"));
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem(
         "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
@@ -807,7 +808,7 @@ CreateResponseOptions followUp = new()
     Model = "gpt-6-astra",
     PreviousResponseId = first.Id,
 };
-followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2.5-sunburst"));
 followUp.InputItems.Add(ResponseItem.CreateUserMessageItem("Now make it look realistic."));
 
 ResponseResult second = await client.CreateResponseAsync(followUp);
@@ -828,7 +829,7 @@ client = OpenAI::Client.new
 first = client.responses.create(
   model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
-  tools: [{type: :image_generation}]
+  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
 )
 
 first_image = first.output.find do |item|
@@ -845,7 +846,7 @@ follow_up = client.responses.create(
   model: "gpt-6-astra",
   input: "Now make it look realistic.",
   previous_response_id: first.id,
-  tools: [{type: :image_generation}]
+  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
 )
 
 follow_up_image = follow_up.output.find do |item|
@@ -864,7 +865,7 @@ File.binwrite("cat_and_otter_realistic.png", Base64.strict_decode64(encoded_imag
   
 
     
-使用图像 ID
+使用 image ID
 
     Multi-turn image generation
 
@@ -876,7 +877,7 @@ const response = await openai.responses.create({
   model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
-  tools: [{ type: "image_generation" }],
+  tools: [{ type: "image_generation", model: "gpt-image-2.5-sunburst" }],
 });
 
 const imageGenerationCalls = response.output.filter(
@@ -905,7 +906,7 @@ const response_fwup = await openai.responses.create({
       id: imageGenerationCalls[0].id,
     },
   ],
-  tools: [{ type: "image_generation" }],
+  tools: [{ type: "image_generation", model: "gpt-image-2.5-sunburst" }],
 });
 
 const imageData_fwup = response_fwup.output
@@ -929,7 +930,7 @@ import base64
 response = openai.responses.create(
     model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
-    tools=[{"type": "image_generation"}],
+    tools=[{"type": "image_generation", "model": "gpt-image-2.5-sunburst"}],
 )
 
 image_generation_calls = [
@@ -959,7 +960,7 @@ response_fwup = openai.responses.create(
             "id": image_generation_calls[0].id,
         },
     ],
-    tools=[{"type": "image_generation"}],
+    tools=[{"type": "image_generation", "model": "gpt-image-2.5-sunburst"}],
 )
 
 image_data_fwup = [
@@ -994,7 +995,7 @@ func main() {
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Generate an image of gray tabby cat hugging an otter with an orange scarf"),
 		},
-		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{}}},
+		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{Model: "gpt-image-2.5-sunburst"}}},
 	})
 	if err != nil {
 		panic(err)
@@ -1010,7 +1011,7 @@ func main() {
 	followUp, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
 		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: input},
-		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{}}},
+		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{Model: "gpt-image-2.5-sunburst"}}},
 	})
 	if err != nil {
 		panic(err)
@@ -1127,7 +1128,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 CreateResponseOptions options = new() { Model = "gpt-6-astra" };
-options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2.5-sunburst"));
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem(
         "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
@@ -1141,7 +1142,7 @@ ImageGenerationCallResponseItem initialImage = first
 await File.WriteAllBytesAsync("cat_and_otter.png", initialImage.ImageResultBytes.ToArray());
 
 CreateResponseOptions followUp = new() { Model = "gpt-6-astra" };
-followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2.5-sunburst"));
 followUp.InputItems.Add(ResponseItem.CreateUserMessageItem("Now make it look realistic."));
 followUp.InputItems.Add(ResponseItem.CreateReferenceItem(initialImage.Id));
 
@@ -1163,7 +1164,7 @@ client = OpenAI::Client.new
 first = client.responses.create(
   model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
-  tools: [{type: :image_generation}]
+  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
 )
 
 first_image = first.output.find do |item|
@@ -1185,7 +1186,7 @@ follow_up = client.responses.create(
     },
     {type: :image_generation_call, id: first_image.id}
   ],
-  tools: [{type: :image_generation}]
+  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
 )
 
 follow_up_image = follow_up.output.find do |item|
@@ -1201,7 +1202,7 @@ File.binwrite("cat_and_otter_realistic.png", Base64.strict_decode64(encoded_imag
 
 
 
-#### 结果
+#### Result
 
 
 
@@ -1219,7 +1220,7 @@ File.binwrite("cat_and_otter_realistic.png", Base64.strict_decode64(encoded_imag
             paddingBottom: "16px",
           }}
         >
-          <img src="https://cdn.openai.com/API/docs/images/cat_and_otter.png"
+          <img src="https://developers.openai.com/images/image-25-article/cat_and_otter.png"
             alt="A cat and an otter"
             style={{ width: "200px", borderRadius: "8px" }}
           />
@@ -1230,7 +1231,7 @@ File.binwrite("cat_and_otter_realistic.png", Base64.strict_decode64(encoded_imag
           "Now make it look realistic"
         </td>
         <td style={{ textAlign: "right", verticalAlign: "top" }}>
-          <img src="https://cdn.openai.com/API/docs/images/cat_and_otter_realistic.png"
+          <img src="https://developers.openai.com/images/image-25-article/cat_and_otter_realistic.png"
             alt="A cat and an otter"
             style={{ width: "200px", borderRadius: "8px" }}
           />
@@ -1243,12 +1244,12 @@ File.binwrite("cat_and_otter_realistic.png", Base64.strict_decode64(encoded_imag
 
 ### 流式传输
 
-Responses API 和 Image API 支持流式图像生成。你可以在 API 生成图像的同时流式接收部分图像，从而获得更具交互性的体验。
+Responses API 和 Image API 支持流式图像生成。你可以在 API 生成图像时流式接收部分图像，从而获得更具交互性的体验。
 
-你可以调整 `partial_images` 参数以接收 0-3 张部分图像。
+你可以通过调整该 `partial_images` 参数来接收 0-3 张部分图像。
 
-- 如果你将 `partial_images` 设置为 0，你将只会收到最终图像。
-- 对于大于零的值，如果完整图像生成得更快，你可能无法收到你请求的全部部分图像数量。
+- 如果将 `partial_images` 设置为 0，则只会收到最终图像。
+- 对于大于零的值，如果完整图像生成得更快，你可能无法收到所请求的全部部分图像。
 
 
 
@@ -1271,7 +1272,9 @@ const stream = await openai.responses.create({
   input:
     "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
   stream: true,
-  tools: [{ type: "image_generation", partial_images: 2 }],
+  tools: [
+    { type: "image_generation", model: "gpt-image-2.5-sunburst", partial_images: 2 },
+  ],
 });
 
 for await (const event of stream) {
@@ -1307,7 +1310,9 @@ stream = client.responses.create(
     model="gpt-6-astra",
     input="Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
     stream=True,
-    tools=[{"type": "image_generation", "partial_images": 2}],
+    tools=[
+        {"type": "image_generation", "model": "gpt-image-2.5-sunburst", "partial_images": 2}
+    ],
 )
 
 for event in stream:
@@ -1345,7 +1350,7 @@ func main() {
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape"),
 		},
-		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{PartialImages: openai.Int(2)}}},
+		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{Model: "gpt-image-2.5-sunburst", PartialImages: openai.Int(2)}}},
 	})
 	for stream.Next() {
 		event := stream.Current()
@@ -1433,7 +1438,7 @@ client = OpenAI::Client.new
 stream = client.responses.stream(
   model: "gpt-6-astra",
   input: "Generate an image of a river made of white owl feathers.",
-  tools: [{type: :image_generation, partial_images: 2}]
+  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst", partial_images: 2}]
 )
 
 stream.each do |event|
@@ -1474,7 +1479,7 @@ const prompt =
   "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape";
 const stream = await openai.images.generate({
   prompt: prompt,
-  model: "gpt-image-2",
+  model: "gpt-image-2.5-sunburst",
   stream: true,
   partial_images: 2,
 });
@@ -1497,7 +1502,7 @@ client = OpenAI()
 
 stream = client.images.generate(
     prompt="Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
-    model="gpt-image-2",
+    model="gpt-image-2.5-sunburst",
     stream=True,
     partial_images=2,
 )
@@ -1526,7 +1531,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	stream := client.Images.GenerateStreaming(context.Background(), openai.ImageGenerateParams{
-		Model:         openai.ImageModel("gpt-image-2"),
+		Model:         openai.ImageModel("gpt-image-2.5-sunburst"),
 		Prompt:        "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
 		PartialImages: openai.Int(2),
 	})
@@ -1560,7 +1565,7 @@ require "openai"
 
 client = OpenAI::Client.new
 stream = client.images.generate_stream_raw(
-  model: "gpt-image-2",
+  model: "gpt-image-2.5-sunburst",
   prompt: "A river made of white owl feathers in a winter landscape",
   partial_images: 2
 )
@@ -1575,14 +1580,14 @@ end
 
 
 
-#### 结果
+#### Result
 
 
 
 
-| Partial 1                                                                                                                       | Partial 2                                                                                                                       | 最终图像                                                                                                                     |
-| ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/imgen1p5-streaming1.png" alt="1st partial" /> | <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/imgen1p5-streaming2.png" alt="2nd partial" /> | <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/imgen1p5-streaming3.png" alt="3rd partial" /> |
+| 部分 1                                                                                                     | 部分 2                                                                                                     | 最终图像                                                                                               |
+| ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| <img className="images-example-image" src="https://developers.openai.com/images/image-25-article/river-partial-0.png" alt="1st partial" /> | <img className="images-example-image" src="https://developers.openai.com/images/image-25-article/river-partial-1.png" alt="2nd partial" /> | <img className="images-example-image" src="https://developers.openai.com/images/image-25-article/river-final.png" alt="Final image" /> |
 
 
 
@@ -1594,13 +1599,13 @@ end
 
 
 
-### 修订后的提示词
+### 修订后的提示
 
-在使用 Responses API 的图像生成工具时，主线模型（例如， `gpt-5.5`）会自动修订你的提示以提升效果。
+在 Responses API 中使用图像生成工具时，主线模型（例如， `gpt-5.5`）会自动修改你的提示以提升效果。
 
-你可以在图像生成调用的 `revised_prompt` 字段中访问修订后的提示：
+你可以在 `revised_prompt` 字段中访问修改后的提示：
 
-修订后的提示响应
+修改后的提示响应
 
 ```json
 {
@@ -1613,28 +1618,28 @@ end
 ```
 
 
-## 编辑图片
+## Edit Images
 
-该 [image edits](https://developers.openai.com/api/reference/resources/images) 端点可用于：
+该 [图片编辑](https://developers.openai.com/api/reference/resources/images) 端点可让你：
 
 - 编辑现有图像
 - 使用其他图像作为参考生成新图像
-- 通过上传图像和遮罩来标识需要替换的区域，从而编辑图像的某些部分
+- 通过上传图像和标识待替换区域的蒙版来编辑图像的某些部分
 
-### 使用图像参考创建新图像
+### 使用图像引用创建新图像
 
 你可以使用一张或多张图片作为参考来生成新图片。
 
-在本例中，我们将使用 4 张输入图片来生成一个新图片，内容是一个包含参考图片中物品的礼篮。
+在本示例中，我们将使用 4 张输入图片来生成一张新的图片，展示一个包含参考图片中物品的礼品篮。
 
 Responses API
 
     
 
-通过 Responses API，你可以通过 3 种不同的方式提供输入图片：
+使用 Responses API 时，你可以通过 3 种不同的方式提供输入图片：
 
 - 通过提供完全限定的 URL
-- 通过提供 Base64 编码的图片 data URL
+- 通过将图像作为 Base64 编码的数据 URL 提供
 - 通过提供文件 ID（使用 [Files API](https://developers.openai.com/api/reference/resources/files))
 
 #### Create a File
@@ -1736,7 +1741,7 @@ puts(file.id)
 
 #### 创建 base64 编码的图像
 
-创建一个经过 base64 编码的图像
+创建 base64 编码的图像
 
 ```javascript
 import fs from "fs";
@@ -1842,7 +1847,7 @@ const response = await openai.responses.create({
       ],
     },
   ],
-  tools: [{ type: "image_generation" }],
+  tools: [{ type: "image_generation", model: "gpt-image-2.5-sunburst" }],
 });
 
 const imageData = response.output
@@ -1910,7 +1915,7 @@ response = client.responses.create(
             ],
         }
     ],
-    tools=[{"type": "image_generation"}],
+    tools=[{"type": "image_generation", "model": "gpt-image-2.5-sunburst"}],
 )
 
 image_generation_calls = [
@@ -1958,7 +1963,7 @@ func main() {
 				responses.EasyInputMessageRoleUser,
 			),
 		}},
-		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{}}},
+		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{Model: "gpt-image-2.5-sunburst"}}},
 	})
 	if err != nil {
 		panic(err)
@@ -2120,7 +2125,7 @@ response = client.responses.create(
       end
     ]
   }],
-  tools: [{type: :image_generation}]
+  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
 )
 
 image_call = response.output.find do |item|
@@ -2172,7 +2177,7 @@ const images = await Promise.all(
 );
 
 const response = await client.images.edit({
-  model: "gpt-image-2",
+  model: "gpt-image-2.5-sunburst",
   image: images,
   prompt,
 });
@@ -2196,7 +2201,7 @@ containing all the items in the reference pictures.
 """
 
 result = client.images.edit(
-    model="gpt-image-2",
+    model="gpt-image-2.5-sunburst",
     image=[
         open("body-lotion.png", "rb"),
         open("bath-bomb.png", "rb"),
@@ -2237,7 +2242,7 @@ func main() {
 	defer closeFiles()
 
 	response, err := client.Images.Edit(context.Background(), openai.ImageEditParams{
-		Model: openai.ImageModel("gpt-image-2"),
+		Model: openai.ImageModel("gpt-image-2.5-sunburst"),
 		Image: openai.ImageEditParamsImageUnion{OfFileArray: files},
 		Prompt: "Generate a photorealistic image of a gift basket on a white background " +
 			"labeled 'Relax & Unwind' with a ribbon and handwriting-like font, containing all the items in the reference pictures.",
@@ -2307,7 +2312,7 @@ try (InputStream lotionImage = Files.newInputStream(lotion);
           .images()
           .edit(
               ImageEditParams.builder()
-                  .model("gpt-image-2")
+                  .model("gpt-image-2.5-sunburst")
                   .image(
                       MultipartField.<ImageEditParams.Image>builder()
                           .value(
@@ -2341,7 +2346,7 @@ images = %w[body-lotion.png bath-bomb.png incense-kit.png soap.png].map do |path
 end
 result = client.images.edit(
   image: images,
-  model: "gpt-image-2",
+  model: "gpt-image-2.5-sunburst",
   prompt: <<~PROMPT
     Generate a photorealistic image of a gift basket on a white background
     labeled 'Relax & Unwind' with a ribbon and handwriting-like font,
@@ -2357,7 +2362,7 @@ curl -s -D >(grep -i x-request-id >&2) \
   -o >(jq -r '.data[0].b64_json' | base64 --decode > gift-basket.png) \
   -X POST "https://api.openai.com/v1/images/edits" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -F "model=gpt-image-2" \
+  -F "model=gpt-image-2.5-sunburst" \
   -F "image[]=@body-lotion.png" \
   -F "image[]=@bath-bomb.png" \
   -F "image[]=@incense-kit.png" \
@@ -2367,7 +2372,7 @@ curl -s -D >(grep -i x-request-id >&2) \
 
 ```bash
 openai images edit \
-  --model gpt-image-2 \
+  --model gpt-image-2.5-sunburst \
   --image body-lotion.png \
   --image bath-bomb.png \
   --image incense-kit.png \
@@ -2379,14 +2384,14 @@ openai images edit \
 
 
 
-### 使用遮罩编辑图像
+### 使用蒙版编辑图像
 
-你可以提供一个遮罩（mask），用于指定图像中需要编辑的部分。
+你可以提供一个遮罩（mask），用于指定图像中需要进行编辑的区域。
 
-在使用 GPT Image 的遮罩时，额外的指令会一并发送给模型，以引导其完成相应的编辑过程。
+在使用 GPT Image 的遮罩时，会向模型发送额外的指令，以相应地引导编辑过程。
 
-使用 GPT Image 进行遮罩处理完全基于提示（prompt）。模型会将遮罩作为
-  参考，但不一定能精确地遵循其形状。
+使用 GPT Image 进行遮罩处理完全基于提示。模型会将遮罩作为
+  参考，但不一定能以完全精确的方式遵循其具体形状。
 
 如果你提供多张输入图像，遮罩将应用于第一张图像。
 
@@ -2434,6 +2439,7 @@ const response = await openai.responses.create({
   tools: [
     {
       type: "image_generation",
+      model: "gpt-image-2.5-sunburst",
       quality: "high",
       input_image_mask: {
         file_id: maskId,
@@ -2488,6 +2494,7 @@ response = client.responses.create(
     tools=[
         {
             "type": "image_generation",
+            "model": "gpt-image-2.5-sunburst",
             "quality": "high",
             "input_image_mask": {
                 "file_id": maskId,
@@ -2536,6 +2543,7 @@ func main() {
 			),
 		}},
 		Tools: []responses.ToolUnionParam{{OfImageGeneration: &responses.ToolImageGenerationParam{
+			Model:          "gpt-image-2.5-sunburst",
 			Quality:        "high",
 			InputImageMask: responses.ToolImageGenerationInputImageMaskParam{FileID: openai.String(maskID)},
 		}}},
@@ -2664,7 +2672,7 @@ response = client.responses.create(
     ]
   }],
   tools: [{
-    type: :image_generation,
+    type: :image_generation, model: "gpt-image-2.5-sunburst",
     input_image_mask: {file_id: mask.id}
   }]
 )
@@ -2695,7 +2703,7 @@ import OpenAI, { toFile } from "openai";
 const client = new OpenAI();
 
 const rsp = await client.images.edit({
-  model: "gpt-image-2",
+  model: "gpt-image-2.5-sunburst",
   image: await toFile(fs.createReadStream("fixtures/sunlit_lounge.png"), null, {
     type: "image/png",
   }),
@@ -2718,7 +2726,7 @@ import base64
 client = OpenAI()
 
 result = client.images.edit(
-    model="gpt-image-2",
+    model="gpt-image-2.5-sunburst",
     image=open("sunlit_lounge.png", "rb"),
     mask=open("mask.png", "rb"),
     prompt="A sunlit indoor lounge area with a pool containing a flamingo",
@@ -2757,7 +2765,7 @@ func main() {
 	defer mask.Close()
 
 	response, err := client.Images.Edit(context.Background(), openai.ImageEditParams{
-		Model:  openai.ImageModel("gpt-image-2"),
+		Model:  openai.ImageModel("gpt-image-2.5-sunburst"),
 		Image:  openai.ImageEditParamsImageUnion{OfFile: openai.File(image, "sunlit_lounge.png", "image/png")},
 		Mask:   openai.File(mask, "mask.png", "image/png"),
 		Prompt: "A sunlit indoor lounge area with a pool containing a flamingo",
@@ -2795,7 +2803,7 @@ try (InputStream image = Files.newInputStream(imagePath);
           .images()
           .edit(
               ImageEditParams.builder()
-                  .model("gpt-image-2")
+                  .model("gpt-image-2.5-sunburst")
                   .image(
                       MultipartField.<ImageEditParams.Image>builder()
                           .value(ImageEditParams.Image.ofInputStream(image))
@@ -2828,7 +2836,7 @@ mask = Pathname("mask.png")
 result = client.images.edit(
   image: image,
   mask: mask,
-  model: "gpt-image-2",
+  model: "gpt-image-2.5-sunburst",
   prompt: "A sunlit indoor lounge area with a pool containing a flamingo"
 )
 generated_image = result.data&.first or raise "No image returned"
@@ -2840,7 +2848,7 @@ curl -s -D >(grep -i x-request-id >&2) \
   -o >(jq -r '.data[0].b64_json' | base64 --decode > lounge.png) \
   -X POST "https://api.openai.com/v1/images/edits" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -F "model=gpt-image-2" \
+  -F "model=gpt-image-2.5-sunburst" \
   -F "mask=@mask.png" \
   -F "image[]=@sunlit_lounge.png" \
   -F 'prompt=A sunlit indoor lounge area with a pool containing a flamingo'
@@ -2848,7 +2856,7 @@ curl -s -D >(grep -i x-request-id >&2) \
 
 ```bash
 openai images edit \
-  --model gpt-image-2 \
+  --model gpt-image-2.5-sunburst \
   --image sunlit_lounge.png \
   --mask mask.png \
   --prompt "A sunlit indoor lounge area with a pool containing a flamingo" \
@@ -2861,24 +2869,24 @@ openai images edit \
 
 
 
-| 图像                                                                                                                                 | 掩码                                                                                                                            | 输出                                                                                                                                                                                |
-| ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/sunlit_lounge.png" alt="A pink room with a pool" /> | <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/mask.png" alt="A mask in part of the pool" /> | <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/sunlit_lounge_result.png" alt="The original pool with an inflatable flamingo replacing the mask" /> |
+| Image                                                                                                                                 | Mask                                                                                                                            | Output                                                                                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/sunlit_lounge.png" alt="A pink room with a pool" /> | <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/mask.png" alt="A mask in part of the pool" /> | <img className="images-example-image" src="https://developers.openai.com/images/image-25-article/sunlit_lounge_result.png" alt="The original pool with an inflatable flamingo replacing the mask" /> |
 
 
 
 
 
 
-  提示词：一个阳光充足的室内休闲区，内含一个泳池，池中有一只火烈鸟
+  Prompt：一个阳光充足的室内休息区，区域内有一个泳池，池中有一只火烈鸟
 
 
 
-#### 掩码要求
+#### 遮蔽要求
 
-待编辑的图像与遮罩必须是相同的格式和尺寸（大小小于 50MB）。
+要编辑的图像和遮罩必须具有相同的格式和尺寸（大小小于 50MB）。
 
-遮罩图像也必须包含 alpha 通道。如果你使用图像编辑工具创建遮罩，请确保将遮罩保存为包含 alpha 通道的格式。
+遮罩图像也必须包含 alpha 通道。如果你使用图像编辑工具创建遮罩，请确保保存的遮罩带有 alpha 通道。
 
 你可以通过编程方式修改黑白图像以添加 alpha 通道。
 
@@ -2952,16 +2960,6 @@ func main() {
 ```
 
 
-### 图像输入保真度
-
-该 `input_fidelity` 参数控制模型在编辑和参考图像工作流中保留输入图像细节的程度。对于 `gpt-image-2`，请省略此参数；API 不允许更改它，因为模型会自动以高保真度处理每个图像输入。
-
-由于 `gpt-image-2` 始终以高保真度处理图像输入，因此对于
-  包含参考图像的编辑请求，图像输入 token 数可能会更高。若要
-  了解费用影响，请参阅 [vision
-  费用](https://developers.openai.com/api/docs/guides/images-vision?api-mode=responses#calculating-costs)
-  部分。
-
 ## 自定义图像输出
 
 你可以配置以下输出选项：
@@ -2972,15 +2970,343 @@ func main() {
 - **压缩**：JPEG 和 WebP 格式的压缩级别（0-100%）
 - **背景**：透明、不透明或自动
 
-`size`, `quality`，以及 `background` 支持 `auto` 选项，模型将根据提示自动选择最佳选项。
+`size`, `quality`，以及 `background` 支持 `auto` 选项，模型会根据提示自动选择最佳选项。
 
-透明背景预览版可用于 `gpt-image-2`。设置
-  `background: "transparent"` 以请求一个。使用 `png` （默认）或 `webp`;
-  `jpeg` 不支持透明背景。
+### 尺寸与质量选项
 
-### 尺寸和质量选项
+`gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare` add `xhigh` 和 `max` quality settings. Both default to `auto`. Earlier GPT Image models support quality settings up to `high`.
 
-`gpt-image-2` 接受任何满足以下约束的 `size` 参数分辨率。正方形图像通常生成速度最快。
+| 设置           | 选项                                                               |
+| ----------------- | --------------------------------------------------------------------- |
+| 推荐尺寸 | `1024x1024` （方形）， `1536x1024` （横版）， `1024x1536` （竖版） |
+| 质量           | `low`, `medium`, `high`, `xhigh`, `max`, `auto`                       |
+
+两个模型也都支持以字符串形式指定自定义尺寸，例如 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度必须是 16 的倍数，宽高比必须在 1:3 到 3:1 之间，且任一边长不得超过 3840 像素。总像素数必须在 655,360 到 8,294,400（4K）之间。高于 `2560x1440` 的分辨率为实验性功能。
+
+若要使用任一模型生成透明背景，请设置 `background: "transparent"` 并使用 `output_format: "png"` 或 `"webp"`.
+
+使用 `quality: "low"` 可快速生成草稿。对于最终成品，请比较更高质量的设置，以在细节、延迟和成本之间找到合适的平衡。
+
+### 输出格式
+
+Image API 会返回 base64 编码的图像数据。
+默认格式为 `png`，但你也可以请求 `jpeg` 或 `webp`.
+
+如果使用 `jpeg` 或 `webp`，你还可以指定 `output_compression` 参数来控制压缩级别（0-100%）。例如， `output_compression=50` 会将图像压缩 50%。
+
+使用 `jpeg` 比 `png`，更快，因此如果
+  延迟是关注点，
+
+## 限制
+
+GPT Image 模型是强大且多用途的图像生成模型，但仍存在一些需要注意的局限性：
+
+- **延迟：** 复杂提示的处理时间可能长达 2 分钟。
+- **文本渲染：** 尽管已有显著改进，模型在精确的文字排版和清晰度方面仍可能存在不足。
+- **一致性：** 虽然能够生成风格一致的图像，但模型在多次生成过程中，偶尔难以在反复出现的角色或品牌元素上保持视觉一致性。
+- **构图控制：** 尽管指令遵循能力有所提升，模型在结构化或对布局敏感的构图中，仍可能难以精确放置元素。
+
+### 内容审核
+
+所有提示词和生成的图像都会按照我们的 [内容政策](https://openai.com/policies/usage-policies/).
+
+对于使用 GPT Image 模型生成图像的场景，你可以通过以下参数控制审核严格程度： `moderation` 参数。该参数支持两个取值：
+
+- `auto` (default): 标准过滤，旨在限制生成某些类别的潜在不适合特定年龄段的内容。
+- `low`: 限制较少的过滤。
+
+### 处理被阻止的请求及其他错误
+
+以处理其他 API 错误的方式来处理图像生成失败：检查 HTTP 状态码或 SDK 异常类型，记录请求 ID，并参阅 [错误代码指南](https://developers.openai.com/api/docs/guides/error-codes) ，了解认证、配额、速率限制和服务器故障。对暂时性的速率限制和服务器失败采用退避策略后重试。对于配额错误或需要修改请求的图像生成用户错误，不要自动重试。
+
+部分图像生成失败可由用户自行修正，并可能返回 `error.type = "image_generation_user_error"`。在未修改提示词或输入图像的情况下，不要自动重试这些错误。如需以编程方式处理，请使用 `error.code` 作为稳定的判别字段。
+
+当 `error.code = "moderation_blocked"`，时，错误中还可能包含一个可选的 `error.moderation_details` 对象：
+
+```json
+{
+  "error": {
+    "type": "image_generation_user_error",
+    "code": "moderation_blocked",
+    "moderation_details": {
+      "moderation_stage": "input",
+      "categories": ["harassment"]
+    }
+  }
+}
+```
+
+该 `moderation_details` 对象提供粗粒度的调试上下文，但不会暴露内部分类器的标签或分数。
+
+`moderation_stage` 可以是：
+
+- `input`: 该块来自提示或请求输入。
+- `output`: 该块来自生成的图像或下游输出审核阶段。
+- `unknown`: 当来源难以确定时的罕见回退情况。
+
+`categories` 包含粗粒度的公开标签。例如，你可能会看到类似这样的值 `harassment`, `self-harm`, `sexual`，或 `violence`.
+
+对于大多数应用，主终端用户消息应保持通用。可使用 `moderation_details` 用于开发者日志、支持工作流、分析以及轻量修复提示。
+
+处理被审核拦截的图像生成错误
+
+```javascript
+import OpenAI from "openai";
+
+const openai = new OpenAI();
+
+try {
+  // The same error handling pattern applies to image generation requests,
+  // image edits, and Responses API tool calls that generate images.
+  await openai.images.generate({
+    model: "gpt-image-2.5-sunburst",
+    prompt: "Create a poster humiliating my coworker with insulting captions",
+  });
+} catch (error) {
+  if (error?.code !== "moderation_blocked") {
+    throw error;
+  }
+
+  const moderationDetails = error.error?.moderation_details;
+  const categories = moderationDetails?.categories ?? [];
+  const stage = moderationDetails?.moderation_stage;
+
+  let hint =
+    "This request could not be completed because it did not meet safety requirements.";
+
+  if (categories.includes("harassment")) {
+    hint =
+      "Try removing abusive or targeting language and focus on neutral visual details instead.";
+  } else if (stage === "input") {
+    hint =
+      "Try revising the prompt or input images and submit the request again.";
+  } else if (stage === "output") {
+    hint =
+      "The generated result was blocked by a safety check. Try changing the prompt and generating again.";
+  }
+
+  console.error("Image generation blocked", {
+    request_id: error?.requestID,
+    code: error?.code,
+    moderation_details: moderationDetails,
+  });
+
+  console.log(hint);
+}
+```
+
+```python
+import openai
+from openai import OpenAI
+
+client = OpenAI()
+
+try:
+    # The same error handling pattern applies to image generation requests,
+    # image edits, and Responses API tool calls that generate images.
+    client.images.generate(
+        model="gpt-image-2.5-sunburst",
+        prompt="Create a poster humiliating my coworker with insulting captions",
+    )
+except openai.BadRequestError as error:
+    if error.code != "moderation_blocked":
+        raise
+
+    error_body = error.body if isinstance(error.body, dict) else {}
+    moderation_details = error_body.get("moderation_details") or {}
+    categories = moderation_details.get("categories") or []
+    stage = moderation_details.get("moderation_stage")
+
+    hint = "This request could not be completed because it did not meet safety requirements."
+
+    if "harassment" in categories:
+        hint = "Try removing abusive or targeting language and focus on neutral visual details instead."
+    elif stage == "input":
+        hint = "Try revising the prompt or input images and submit the request again."
+    elif stage == "output":
+        hint = "The generated result was blocked by a safety check. Try changing the prompt and generating again."
+
+    print(
+        "Image generation blocked",
+        {
+            "request_id": error.request_id,
+            "code": error.code,
+            "moderation_details": moderation_details,
+        },
+    )
+
+    print(hint)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"slices"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	client := openai.NewClient()
+	_, err := client.Images.Generate(context.Background(), openai.ImageGenerateParams{
+		Model:  openai.ImageModel("gpt-image-2.5-sunburst"),
+		Prompt: "Create a poster humiliating my coworker with insulting captions",
+	})
+	if err == nil {
+		return
+	}
+
+	var apiError *openai.Error
+	if !errors.As(err, &apiError) || apiError.Code != "moderation_blocked" {
+		panic(err)
+	}
+
+	var body struct {
+		ModerationDetails struct {
+			Categories      []string `json:"categories"`
+			ModerationStage string   `json:"moderation_stage"`
+		} `json:"moderation_details"`
+	}
+	if err := json.Unmarshal([]byte(apiError.RawJSON()), &body); err != nil {
+		panic(err)
+	}
+
+	hint := "This request could not be completed because it did not meet safety requirements."
+	if slices.Contains(body.ModerationDetails.Categories, "harassment") {
+		hint = "Try removing abusive or targeting language and focus on neutral visual details instead."
+	} else if body.ModerationDetails.ModerationStage == "input" {
+		hint = "Try revising the prompt or input images and submit the request again."
+	} else if body.ModerationDetails.ModerationStage == "output" {
+		hint = "The generated result was blocked by a safety check. Try changing the prompt and generating again."
+	}
+
+	fmt.Printf("Image generation blocked (%s): %s\n", apiError.Code, hint)
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.errors.BadRequestException;
+import com.openai.models.images.ImageGenerateParams;
+import java.util.List;
+import java.util.Map;
+
+try {
+  var images =
+      client
+          .images()
+          .generate(
+              ImageGenerateParams.builder()
+                  .model("gpt-image-2.5-sunburst")
+                  .prompt("Create a poster humiliating my coworker with insulting captions")
+                  .build());
+
+  System.out.println(images.data().orElseThrow().get(0).b64Json().orElseThrow());
+} catch (BadRequestException error) {
+  if (!error.code().orElse("").equals("moderation_blocked")) {
+    throw error;
+  }
+  Map<?, ?> body = error.body().convert(Map.class);
+  Object detailsValue = body.get("moderation_details");
+  Map<?, ?> details = detailsValue instanceof Map<?, ?> values ? values : Map.of();
+  Object categories = details.get("categories");
+  Object stage = details.get("moderation_stage");
+
+  String hint = "This request did not meet safety requirements.";
+  if (categories instanceof List<?> values && values.contains("harassment")) {
+    hint = "Remove abusive or targeting language and focus on neutral visual details.";
+  } else if ("input".equals(stage)) {
+    hint = "Revise the prompt or input images, then submit the request again.";
+  } else if ("output".equals(stage)) {
+    hint = "Change the prompt and generate again; the generated result was blocked.";
+  }
+  System.err.println("Image generation blocked (" + error.code().orElseThrow() + "): " + hint);
+}
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+begin
+  client.images.generate(
+    model: "gpt-image-2.5-sunburst",
+    prompt: "Create a poster humiliating my coworker with insulting captions"
+  )
+rescue OpenAI::Errors::BadRequestError => error
+  raise unless error.code == "moderation_blocked"
+
+  body = Hash.try_convert(error.body) || {}
+  moderation_details = body[:moderation_details] || body["moderation_details"] || {}
+  categories = moderation_details[:categories] || moderation_details["categories"] || []
+  stage = moderation_details[:moderation_stage] || moderation_details["moderation_stage"]
+
+  hint = "This request did not meet safety requirements."
+  if categories.include?("harassment")
+    hint = "Remove abusive or targeting language and focus on neutral visual details."
+  elsif stage == "input"
+    hint = "Revise the prompt or input images, then submit the request again."
+  elsif stage == "output"
+    hint = "Change the prompt and generate again; the generated result was blocked."
+  end
+
+  warn("Image generation blocked (#{error.code}): #{hint}")
+end
+```
+
+
+### 支持的模型
+
+在使用 Responses API 进行图像生成时， `gpt-5` 以及更新的模型应当支持图像生成工具。 [请查看你所使用模型的详情页面](https://developers.openai.com/api/docs/models) 以确认你所需的模型是否可以使用图像生成工具。
+
+## 成本与延迟
+
+### GPT Image 2.5 成本
+
+Responses API 请求除了包含图像生成费用外，还包含主线模型的 token 用量。
+
+GPT Image 2.5 两个模型使用相同的 token 费率：图像输入 token 每百万 8 美元，缓存图像输入 token 每百万 2 美元，图像输出 token 每百万 30 美元，文本输入 token 每百万 5 美元，缓存文本输入 token 每百万 1.25 美元。详见 [pricing](https://developers.openai.com/api/docs/pricing#image-generation).
+
+使用响应的 `usage` 来衡量不同提示、尺寸和质量设置的 token 消耗。相同的 token 费率并不意味着每张图像的成本相同：不同模型和质量设置的 token 消耗可能不同。有关旧模型的定价示例，请参阅 [Earlier GPT Image models](#earlier-gpt-image-models).
+
+
+
+
+### GPT Image 2.5 和 GPT Image 2 输出 token
+
+选择一个模型、质量和尺寸，以估算输出 token 和图片输出成本。
+对于 `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`,质量选项包括 `low`, `medium`, `high`, `xhigh`，以及 `max`.
+对于 `gpt-image-2`,选项包括 `low`, `medium`，以及 `high`.
+这些模型对相同的质量设置可以使用不同的 token 数,并且共享相同的每图片输出 token 价格。
+在此估算中使用明确的质量和尺寸数值; `auto` 取决于生成的图片。
+
+<GptImageTokenCalculator
+  client:load
+  outputPricePerMillion={Number(
+    pricing.latest.subsections
+      .find((section) => section.price_type === "Image tokens")
+      ?.items.find((item) => item.name === "gpt-image-2")?.values.main.output
+  )}
+/>
+
+### 部分图像费用
+
+如果你希望 [流式生成图像](#streaming) 使用 `partial_images` 参数，每个部分图像将额外产生 100 个图像输出 token。
+
+## 较早的 GPT Image 模型
+
+以下详细信息适用于较早的模型，而不适用于 Sunburst 或 Flare。对于新集成，请使用上文所述的 GPT Image 2.5 模型之一。
+
+<details>
+<summary>GPT Image 2 settings and input fidelity</summary>
+
+`gpt-image-2` accepts any resolution in the `size` 参数，前提是该参数满足以下约束条件。正方形图像通常生成速度最快。
 
 <table>
   <tbody>
@@ -3058,335 +3384,57 @@ func main() {
   </tbody>
 </table>
 
-使用 `quality: "low"` 进行快速草稿、缩略图和快速迭代。它是
-  最快的选项，适用于许多常见用例，适合在你转向
-  `medium` 或 `high` 生成最终资源之前使用。
+### 图像输入保真度
 
-输出包含超过 `2560x1440` (`3,686,400`) 总像素的图像，
-  通常称为 2K，被视为实验性。
+该 `input_fidelity` 参数控制模型在编辑和参考图像工作流中保留输入图像细节的强度。 `gpt-image-2`，时，请省略此参数；API 不允许更改它，因为模型会自动以高保真度处理每个输入图像。
 
-### 输出格式
+由于 `gpt-image-2` 始终以高保真度处理输入图像，图像
+  输入 token 在包含参考图像的编辑请求中可能会更高。要
+  了解费用影响，请参阅 [视觉
+  费用](https://developers.openai.com/api/docs/guides/images-vision?api-mode=responses#calculating-costs)
+  部分。
 
-Image API 返回 base64 编码的图像数据。
-默认格式为 `png`，但你也可以请求 `jpeg` 或 `webp`.
+</details>
 
-如果使用 `jpeg` 或 `webp`，你还可以指定 `output_compression` 参数来控制压缩级别（0-100%）。例如， `output_compression=50` 会将图像压缩 50%。
+<details>
+<summary>Older-model pricing examples</summary>
 
-使用 `jpeg` 比 `png`，更快，因此如果
-  延迟是个关注点，则应优先使用该格式。
+### Models prior to `gpt-image-2`
 
-## 限制
-
-GPT Image 模型（`gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`，以及 `gpt-image-1-mini`）功能强大且用途广泛，但仍存在一些需要注意的限制：
-
-- **延迟：** 复杂的提示词处理时间最长可达 2 分钟。
-- **文本渲染：** 尽管已有显著改进，该模型在精确的文字排版和清晰度方面仍可能存在不足。
-- **一致性：** 虽然能够生成一致的图像，但在多次生成中，模型偶尔可能难以在重复出现的角色或品牌元素上保持视觉一致性。
-- **构图控制：** 尽管指令遵循能力有所提升，但在结构化或对布局敏感的构图中，模型可能难以精确放置元素。
-
-### 内容审核
-
-所有提示词和生成的图像都会按照我们的 [内容政策](https://openai.com/policies/usage-policies/).
-
-对于使用 GPT Image 模型（`gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`，以及 `gpt-image-1-mini`）进行图像生成，你可以通过该 `moderation` 参数控制审核严格程度。该参数支持两个值：
-
-- `auto` (默认)：标准过滤，旨在限制生成某些类别的潜在不适合特定年龄段的内容。
-- `low`：限制较少的过滤。
-
-### 处理被阻止的请求和其他错误
-
-以处理其他 API 错误的方式处理图像生成失败：检查 HTTP 状态码或 SDK 异常类型，记录请求 ID，并参阅 [错误代码指南](https://developers.openai.com/api/docs/guides/error-codes) 了解身份验证、配额、速率限制和服务端失败。可以对 `429` 等 `5xx`，瞬时失败进行重试，但不要对需要修改请求的图像生成用户错误进行重试。
-
-某些图像生成失败属于用户可纠正的错误，可能会返回 `error.type = "image_generation_user_error"`。在没有修改提示词或输入图像的情况下，请勿自动重试这些错误。若要编程式处理，请使用 `error.code` 作为稳定的判别依据。
-
-当 `error.code = "moderation_blocked"`，时，错误还可能包含一个可选的 `error.moderation_details` 对象：
-
-```json
-{
-  "error": {
-    "type": "image_generation_user_error",
-    "code": "moderation_blocked",
-    "moderation_details": {
-      "moderation_stage": "input",
-      "categories": ["harassment"]
-    }
-  }
-}
-```
-
-该 `moderation_details` 对象提供粗粒度的调试上下文，但不会暴露内部分类器的标签或分数。
-
-`moderation_stage` 可以是：
-
-- `input`: 该块来自提示或请求输入。
-- `output`: 该块来自生成的图像或下游输出审核阶段。
-- `unknown`: 当来源难以确定时的罕见回退情况。
-
-`categories` 包含粗粒度的公开标签。例如，你可能会看到类似以下的值 `harassment`, `self-harm`, `sexual`，或者 `violence`.
-
-对于大多数应用来说，请保持主要面向最终用户的消息通用。使用 `moderation_details` 用于开发者日志、支持工作流、分析和轻量修复提示。
-
-例如，如果出现 `harassment` ，建议删除辱骂性或针对性内容。如果拦截发生在 `input` 阶段，引导用户修改提示词。如果发生在 `output` 阶段，将其视为生成结果的安全拦截，并在日志中加以区分。始终优先根据 `error.code = "moderation_blocked"` 进行分支判断，并将 `moderation_details` 作为可选的额外上下文。
-
-处理被审核拦截的图像生成错误
-
-```javascript
-import OpenAI from "openai";
-
-const openai = new OpenAI();
-
-try {
-  // The same error handling pattern applies to image generation requests,
-  // image edits, and Responses API tool calls that generate images.
-  await openai.images.generate({
-    model: "gpt-image-2",
-    prompt: "Create a poster humiliating my coworker with insulting captions",
-  });
-} catch (error) {
-  if (error?.code !== "moderation_blocked") {
-    throw error;
-  }
-
-  const moderationDetails = error.error?.moderation_details;
-  const categories = moderationDetails?.categories ?? [];
-  const stage = moderationDetails?.moderation_stage;
-
-  let hint =
-    "This request could not be completed because it did not meet safety requirements.";
-
-  if (categories.includes("harassment")) {
-    hint =
-      "Try removing abusive or targeting language and focus on neutral visual details instead.";
-  } else if (stage === "input") {
-    hint =
-      "Try revising the prompt or input images and submit the request again.";
-  } else if (stage === "output") {
-    hint =
-      "The generated result was blocked by a safety check. Try changing the prompt and generating again.";
-  }
-
-  console.error("Image generation blocked", {
-    request_id: error?.requestID,
-    code: error?.code,
-    moderation_details: moderationDetails,
-  });
-
-  console.log(hint);
-}
-```
-
-```python
-import openai
-from openai import OpenAI
-
-client = OpenAI()
-
-try:
-    # The same error handling pattern applies to image generation requests,
-    # image edits, and Responses API tool calls that generate images.
-    client.images.generate(
-        model="gpt-image-2",
-        prompt="Create a poster humiliating my coworker with insulting captions",
-    )
-except openai.BadRequestError as error:
-    if error.code != "moderation_blocked":
-        raise
-
-    error_body = error.body if isinstance(error.body, dict) else {}
-    moderation_details = error_body.get("moderation_details") or {}
-    categories = moderation_details.get("categories") or []
-    stage = moderation_details.get("moderation_stage")
-
-    hint = "This request could not be completed because it did not meet safety requirements."
-
-    if "harassment" in categories:
-        hint = "Try removing abusive or targeting language and focus on neutral visual details instead."
-    elif stage == "input":
-        hint = "Try revising the prompt or input images and submit the request again."
-    elif stage == "output":
-        hint = "The generated result was blocked by a safety check. Try changing the prompt and generating again."
-
-    print(
-        "Image generation blocked",
-        {
-            "request_id": error.request_id,
-            "code": error.code,
-            "moderation_details": moderation_details,
-        },
-    )
-
-    print(hint)
-```
-
-```go
-package main
-
-import (
-	"context"
-	"encoding/json"
-	"errors"
-	"fmt"
-	"slices"
-
-	"github.com/openai/openai-go/v3"
-)
-
-func main() {
-	client := openai.NewClient()
-	_, err := client.Images.Generate(context.Background(), openai.ImageGenerateParams{
-		Model:  openai.ImageModel("gpt-image-2"),
-		Prompt: "Create a poster humiliating my coworker with insulting captions",
-	})
-	if err == nil {
-		return
-	}
-
-	var apiError *openai.Error
-	if !errors.As(err, &apiError) || apiError.Code != "moderation_blocked" {
-		panic(err)
-	}
-
-	var body struct {
-		ModerationDetails struct {
-			Categories      []string `json:"categories"`
-			ModerationStage string   `json:"moderation_stage"`
-		} `json:"moderation_details"`
-	}
-	if err := json.Unmarshal([]byte(apiError.RawJSON()), &body); err != nil {
-		panic(err)
-	}
-
-	hint := "This request could not be completed because it did not meet safety requirements."
-	if slices.Contains(body.ModerationDetails.Categories, "harassment") {
-		hint = "Try removing abusive or targeting language and focus on neutral visual details instead."
-	} else if body.ModerationDetails.ModerationStage == "input" {
-		hint = "Try revising the prompt or input images and submit the request again."
-	} else if body.ModerationDetails.ModerationStage == "output" {
-		hint = "The generated result was blocked by a safety check. Try changing the prompt and generating again."
-	}
-
-	fmt.Printf("Image generation blocked (%s): %s\n", apiError.Code, hint)
-}
-```
-
-```java
-import com.openai.client.OpenAIClient;
-import com.openai.client.okhttp.OpenAIOkHttpClient;
-import com.openai.errors.BadRequestException;
-import com.openai.models.images.ImageGenerateParams;
-import java.util.List;
-import java.util.Map;
-
-try {
-  var images =
-      client
-          .images()
-          .generate(
-              ImageGenerateParams.builder()
-                  .model("gpt-image-2")
-                  .prompt("Create a poster humiliating my coworker with insulting captions")
-                  .build());
-
-  System.out.println(images.data().orElseThrow().get(0).b64Json().orElseThrow());
-} catch (BadRequestException error) {
-  if (!error.code().orElse("").equals("moderation_blocked")) {
-    throw error;
-  }
-  Map<?, ?> body = error.body().convert(Map.class);
-  Object detailsValue = body.get("moderation_details");
-  Map<?, ?> details = detailsValue instanceof Map<?, ?> values ? values : Map.of();
-  Object categories = details.get("categories");
-  Object stage = details.get("moderation_stage");
-
-  String hint = "This request did not meet safety requirements.";
-  if (categories instanceof List<?> values && values.contains("harassment")) {
-    hint = "Remove abusive or targeting language and focus on neutral visual details.";
-  } else if ("input".equals(stage)) {
-    hint = "Revise the prompt or input images, then submit the request again.";
-  } else if ("output".equals(stage)) {
-    hint = "Change the prompt and generate again; the generated result was blocked.";
-  }
-  System.err.println("Image generation blocked (" + error.code().orElseThrow() + "): " + hint);
-}
-```
-
-```ruby
-require "openai"
-
-client = OpenAI::Client.new
-begin
-  client.images.generate(
-    model: "gpt-image-2",
-    prompt: "Create a poster humiliating my coworker with insulting captions"
-  )
-rescue OpenAI::Errors::BadRequestError => error
-  raise unless error.code == "moderation_blocked"
-
-  body = Hash.try_convert(error.body) || {}
-  moderation_details = body[:moderation_details] || body["moderation_details"] || {}
-  categories = moderation_details[:categories] || moderation_details["categories"] || []
-  stage = moderation_details[:moderation_stage] || moderation_details["moderation_stage"]
-
-  hint = "This request did not meet safety requirements."
-  if categories.include?("harassment")
-    hint = "Remove abusive or targeting language and focus on neutral visual details."
-  elsif stage == "input"
-    hint = "Revise the prompt or input images, then submit the request again."
-  elsif stage == "output"
-    hint = "Change the prompt and generate again; the generated result was blocked."
-  end
-
-  warn("Image generation blocked (#{error.code}): #{hint}")
-end
-```
-
-
-### 支持的模型
-
-当在 Responses API 中使用图像生成时， `gpt-5` 以及更新的模型应支持图像生成工具。 [查看模型的详情页面](https://developers.openai.com/api/docs/models) 以确认你所需的模型是否可以使用图像生成工具。
-
-## 成本与延迟
-
-### `gpt-image-2` 输出 token
-
-若要 `gpt-image-2`，请使用计算器根据请求的输入估算输出 token 数 `quality` 等 `size`:
-
-### 在此之前的模型 `gpt-image-2`
-
-早于 `gpt-image-2` 的 GPT Image 模型通过首先生成专门的图像 token 来生成图像。延迟和最终成本都与渲染图像所需的 token 数量成正比——更大的图像尺寸和更高的质量设置会导致更多 token。
+GPT Image models prior to `gpt-image-2` 生成图像的方式是首先生成专门的图像 token。延迟和最终成本都与渲染图像所需的 token 数量成正比——更大的图像尺寸和更高的质量设置会产生更多的 token。
 
 生成的 token 数量取决于图像尺寸和质量：
 
-| 质量 | 方形 (1024×1024) | 纵向 (1024×1536) | 横向 (1536×1024) |
+| 质量 | 方形 (1024×1024) | 竖版 (1024×1536) | 横版 (1536×1024) |
 | ------- | ------------------ | -------------------- | --------------------- |
 | 低     | 272 tokens         | 408 tokens           | 400 tokens            |
 | 中  | 1056 tokens        | 1584 tokens          | 1568 tokens           |
 | 高    | 4160 tokens        | 6240 tokens          | 6208 tokens           |
 
-请注意，你还需要考虑 [输入 token](https://developers.openai.com/api/docs/guides/images-vision?api-mode=responses#calculating-costs)：用于提示词的文本 token，以及编辑图像时输入图像的图像 token。
-由于 `gpt-image-2` 始终以高保真度处理图像输入，包含参考图像的编辑请求可能会使用更多的输入 token。
+请注意，你还需要将 [输入 tokens](https://developers.openai.com/api/docs/guides/images-vision?api-mode=responses#calculating-costs):提示词对应的文本 tokens，以及输入图像对应的图像 tokens（如果是编辑图像）。
+由于 `gpt-image-2` 总是以高保真度处理图像输入，包含参考图像的编辑请求会使用更多的输入 tokens。
 
 请参阅 [定价页面](https://developers.openai.com/api/docs/pricing#image-generation) 了解当前的
-文本和图像 token 价格，并使用 [成本计算](#calculating-costs)
+文本和图像 token 价格，并使用下面的 [成本计算](#calculating-costs)
 部分来估算请求成本。
 
-最终成本是以下各项之和：
+最终费用是以下各项的总和：
 
-- 输入文本 token
-- 如果使用 edits 端点，则为输入图像 token
-- 图像输出 token
+- 输入文本 tokens
+- 使用编辑端点时的输入图像 tokens
+- 图像输出 tokens
 
 ### 计算成本
 
-使用下方的定价计算器估算 GPT Image 模型的请求费用。
-`gpt-image-2` 支持上千种有效分辨率；下表列出了与之前 GPT Image 模型相同
-的尺寸以供对比。对于 GPT Image 1.5、
-GPT Image 1 和 GPT Image 1 Mini，下方也列出了旧的按张
-计费输出定价表。在估算单次请求的总成本时，你仍需将文本和图像
-输入 token 计入其中。
+使用下方定价计算器估算 GPT Image 模型的请求费用。
+`gpt-image-2` 支持数千种有效分辨率；下表列出了与之前 GPT Image
+模型相同的尺寸以便比较。对于 GPT Image 1.5、GPT Image，
+1 和 GPT Image 1 Mini，旧的每张图像输出定价表也
+在下方列出。在估算请求的总成本时，你仍需考虑文本和图
+像输入 token。
 
-在相同质量设置下，更大的非正方形分辨率有时会比更小或正方形分辨率
-  生成更少的输出 token。
+在相同的质量设置下，较大的非方形分辨率有时会比较小
+  的或方形的分辨率生成更少的输出 token。
 
 <table
   style={{ borderCollapse: "collapse", tableLayout: "fixed", width: "100%" }}
@@ -3409,7 +3457,7 @@ GPT Image 1 和 GPT Image 1 Mini，下方也列出了旧的按张
         
 
         
-其他可选尺寸
+其他可用尺寸
 
       </td>
       <td style={{ padding: "8px" }}>Low</td>
@@ -3499,6 +3547,4 @@ GPT Image 1 和 GPT Image 1 Mini，下方也列出了旧的按张
   </tbody>
 </table>
 
-### Partial images cost
-
-如果你希望 [流式图像生成](#streaming) 使用 `partial_images` 参数，每个部分图像将额外产生 100 个图像输出 token。
+</details>

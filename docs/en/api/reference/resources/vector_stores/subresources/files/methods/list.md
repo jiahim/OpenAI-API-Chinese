@@ -98,7 +98,7 @@ Returns a list of vector store files.
 
   - `vector_store_id: string`
 
-    The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to.
+    The ID of the [vector store](/api/reference/resources/vector_stores) that the [File](/api/reference/resources/files) is attached to.
 
   - `attributes: optional map[string or number or boolean] or null`
 

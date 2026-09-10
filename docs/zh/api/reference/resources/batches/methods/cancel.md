@@ -1,10 +1,10 @@
-> 完整的文档索引请参见 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾添加 `.md` 来获取。
 
-## 取消批量任务
+## 取消批处理
 
 **post** `/batches/{batch_id}/cancel`
 
-取消进行中的批量任务。批量任务将进入 status `cancelling` 状态，持续最多 10 分钟，然后变为 `cancelled`，届时输出文件中将包含部分结果（如果有）。
+取消正在进行的批量任务。批量任务的状态将为 `cancelling` 最多持续 10 分钟,然后变更为 `cancelled`,此时输出文件中将包含可用的部分结果(如果有)。
 
 ### 路径参数
 
@@ -18,19 +18,19 @@
 
   - `completion_window: string`
 
-    批量任务应在该时间窗口内完成处理。
+    批次应在该时间窗口内完成处理。
 
   - `created_at: number`
 
-    批量任务创建时的 Unix 时间戳（以秒为单位）。
+    批次创建时的 Unix 时间戳（以秒为单位）。
 
   - `endpoint: string`
 
-    批量任务所使用的 OpenAI API 端点。
+    批次所使用的 OpenAI API 端点。
 
   - `input_file_id: string`
 
-    批量任务的输入文件 ID。
+    批次输入文件的 ID。
 
   - `object: "batch"`
 
@@ -40,7 +40,7 @@
 
   - `status: "validating" or "failed" or "in_progress" or 5 more`
 
-    批量任务的当前状态。
+    批次的当前状态。
 
     - `"validating"`
 
@@ -60,15 +60,15 @@
 
   - `cancelled_at: optional number`
 
-    批量任务被取消时的 Unix 时间戳（以秒为单位）。
+    批次被取消时的 Unix 时间戳（以秒为单位）。
 
   - `cancelling_at: optional number`
 
-    批量任务开始取消时的 Unix 时间戳（以秒为单位）。
+    批次开始取消时的 Unix 时间戳（以秒为单位）。
 
   - `completed_at: optional number`
 
-    批量任务完成时的 Unix 时间戳（以秒为单位）。
+    批次完成时的 Unix 时间戳（以秒为单位）。
 
   - `error_file_id: optional string`
 
@@ -88,7 +88,7 @@
 
       - `message: optional string`
 
-        提供有关错误详情的人工可读消息。
+        提供更多错误详情的人类可读消息。
 
       - `param: optional string or null`
 
@@ -100,39 +100,39 @@
 
   - `expired_at: optional number`
 
-    批量任务过期时的 Unix 时间戳（以秒为单位）。
+    批次过期时的 Unix 时间戳（以秒为单位）。
 
   - `expires_at: optional number`
 
-    批量任务将要过期的 Unix 时间戳（以秒为单位）。
+    批次将要过期时的 Unix 时间戳（以秒为单位）。
 
   - `failed_at: optional number`
 
-    批量任务失败时的 Unix 时间戳（以秒为单位）。
+    批次失败时的 Unix 时间戳（以秒为单位）。
 
   - `finalizing_at: optional number`
 
-    批量任务开始进入最终处理阶段的 Unix 时间戳（以秒为单位）。
+    批次开始完成（finalize）时的 Unix 时间戳（以秒为单位）。
 
   - `in_progress_at: optional number`
 
-    批量任务开始处理时的 Unix 时间戳（以秒为单位）。
+    批次开始处理时的 Unix 时间戳（以秒为单位）。
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象的 16 组键值对。可用于
-    用于以结构化格式存储对象的附加信息，以及通过
-    API 或仪表板查询对象。
+    可附加到对象的 16 组键值对。可以
+    以结构化格式存储对象的附加信息，
+    并通过 API 或控制台查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串
+    键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
   - `model: optional string`
 
     用于处理该批次的模型 ID，例如 `gpt-6-astra`。OpenAI
-    提供了一系列具有不同能力、性能
-    特性和价格的模型。请参阅 [模型
-    指南](/docs/models) 以浏览和比较可用模型。
+    提供多种具备不同能力、性能
+    特性和价格的模型。可参阅 [模型
+    指南](/api/docs/models) 浏览并比较可用模型。
 
   - `output_file_id: optional string`
 
@@ -144,21 +144,21 @@
 
     - `completed: number`
 
-      已成功完成的请求数。
+      已成功完成的请求数量。
 
     - `failed: number`
 
-      已失败的请求数。
+      已失败的请求数量。
 
     - `total: number`
 
-      批次中的请求总数。
+      该批次中的请求总数。
 
   - `usage: optional BatchUsage`
 
-    表示令牌使用详情，包括输入令牌、输出令牌、
-    输出令牌的细分以及所使用的令牌总数。仅填充于
-    2025 年 9 月 7 日之后创建的批次。
+    表示令牌使用详情，包括输入令牌、输出令牌、输出令牌的
+    细分以及所使用的总令牌。仅在
+    2025 年 9 月 7 日之后创建的批次上填充。
 
     - `input_tokens: number`
 
@@ -166,12 +166,12 @@
 
     - `input_tokens_details: object { cached_tokens }`
 
-      输入令牌的详细细分。
+      输入令牌的详细明细。
 
       - `cached_tokens: number`
 
         从缓存中检索到的令牌数量。 [了解更多
-        提示词缓存](/docs/guides/prompt-caching).
+        prompt caching](/api/docs/guides/prompt-caching).
 
     - `output_tokens: number`
 
@@ -179,7 +179,7 @@
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      输出令牌的详细细分。
+      输出令牌的详细明细。
 
       - `reasoning_tokens: number`
 

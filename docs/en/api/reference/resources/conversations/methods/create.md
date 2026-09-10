@@ -60,7 +60,7 @@ Create a conversation.
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision).
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `detail: ImageDetail`
 
@@ -403,7 +403,7 @@ Create a conversation.
   - `FileSearchCall object { id, queries, status, 2 more }`
 
     The results of a file search tool call. See the
-    [file search guide](/docs/guides/tools-file-search) for more information.
+    [file search guide](/api/docs/guides/tools-file-search) for more information.
 
     - `id: string`
 
@@ -471,7 +471,7 @@ Create a conversation.
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
     A tool call to a computer use tool. See the
-    [computer use guide](/docs/guides/tools-computer-use) for more information.
+    [computer use guide](/api/docs/guides/tools-computer-use) for more information.
 
     - `id: string`
 
@@ -816,7 +816,7 @@ Create a conversation.
   - `WebSearchCall object { id, action, status, type }`
 
     The results of a web search tool call. See the
-    [web search guide](/docs/guides/tools-web-search) for more information.
+    [web search guide](/api/docs/guides/tools-web-search) for more information.
 
     - `id: string`
 
@@ -914,7 +914,7 @@ Create a conversation.
   - `FunctionCall object { arguments, call_id, name, 6 more }`
 
     A tool call to run a function. See the
-    [function calling guide](/docs/guides/function-calling) for more information.
+    [function calling guide](/api/docs/guides/function-calling) for more information.
 
     - `arguments: string`
 
@@ -1019,7 +1019,7 @@ Create a conversation.
 
         - `ResponseInputImageContent object { type, detail, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision)
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision)
 
           - `type: "input_image"`
 
@@ -1197,7 +1197,7 @@ Create a conversation.
 
       - `Function object { name, parameters, strict, 6 more }`
 
-        Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+        Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
         - `name: string`
 
@@ -1241,7 +1241,7 @@ Create a conversation.
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -1366,7 +1366,7 @@ Create a conversation.
 
       - `Computer object { type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -1376,7 +1376,7 @@ Create a conversation.
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
@@ -1409,7 +1409,7 @@ Create a conversation.
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
         Search the Internet for sources related to the prompt. Learn more about the
-        [web search tool](/docs/guides/tools-web-search).
+        [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -1473,7 +1473,7 @@ Create a conversation.
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
         Give the model access to additional tools via remote Model Context Protocol
-        (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+        (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
@@ -1525,7 +1525,7 @@ Create a conversation.
 
           Identifier for service connectors, like those available in ChatGPT. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-          about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+          about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
           Currently supported `connector_id` values are:
 
@@ -2042,7 +2042,7 @@ Create a conversation.
 
       - `Custom object { name, type, allowed_callers, 4 more }`
 
-        A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+        A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -2164,7 +2164,7 @@ Create a conversation.
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -2234,7 +2234,7 @@ Create a conversation.
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -2350,7 +2350,7 @@ Create a conversation.
 
       - `Function object { name, parameters, strict, 6 more }`
 
-        Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+        Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
         - `name: string`
 
@@ -2394,7 +2394,7 @@ Create a conversation.
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -2452,7 +2452,7 @@ Create a conversation.
 
       - `Computer object { type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -2462,7 +2462,7 @@ Create a conversation.
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
@@ -2495,7 +2495,7 @@ Create a conversation.
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
         Search the Internet for sources related to the prompt. Learn more about the
-        [web search tool](/docs/guides/tools-web-search).
+        [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -2559,7 +2559,7 @@ Create a conversation.
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
         Give the model access to additional tools via remote Model Context Protocol
-        (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+        (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
@@ -2611,7 +2611,7 @@ Create a conversation.
 
           Identifier for service connectors, like those available in ChatGPT. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-          about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+          about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
           Currently supported `connector_id` values are:
 
@@ -2978,7 +2978,7 @@ Create a conversation.
 
       - `Custom object { name, type, allowed_callers, 4 more }`
 
-        A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+        A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -3068,7 +3068,7 @@ Create a conversation.
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -3138,7 +3138,7 @@ Create a conversation.
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -3262,7 +3262,7 @@ Create a conversation.
     A description of the chain of thought used by a reasoning model while generating
     a response. Be sure to include these items in your `input` to the Responses API
     for subsequent turns of a conversation if you are manually
-    [managing context](/docs/guides/conversation-state).
+    [managing context](/api/docs/guides/conversation-state).
 
     - `id: string`
 
@@ -3327,7 +3327,7 @@ Create a conversation.
 
   - `Compaction object { encrypted_content, type, id }`
 
-    A compaction item generated by the [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+    A compaction item generated by the [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
 
     - `encrypted_content: string`
 
@@ -3343,7 +3343,7 @@ Create a conversation.
 
       The ID of the compaction item.
 
-  - `ImageGenerationCall object { id, result, status, type }`
+  - `ImageGenerationCall object { id, result, status, 3 more }`
 
     An image generation request made by the model.
 
@@ -3372,6 +3372,38 @@ Create a conversation.
       The type of the image generation call. Always `image_generation_call`.
 
       - `"image_generation_call"`
+
+    - `quality: optional "low" or "medium" or "high" or 3 more or null`
+
+      The quality of the image generated by the image generation tool call. One of `low`, `medium`, `high`, `xhigh`, `max`, or `auto`.
+
+      - `"low"`
+
+      - `"medium"`
+
+      - `"high"`
+
+      - `"xhigh"`
+
+      - `"max"`
+
+      - `"auto"`
+
+    - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or null`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `string`
+
+      - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+        The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+        - `"1024x1024"`
+
+        - `"1024x1536"`
+
+        - `"1536x1024"`
 
   - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -4060,7 +4092,7 @@ Create a conversation.
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision).
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 

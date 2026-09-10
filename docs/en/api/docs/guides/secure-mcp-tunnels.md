@@ -139,6 +139,30 @@ Go to [ChatGPT Plugins](https://chatgpt.com/plugins), select the plus button to 
 
 If the tunnel does not appear in ChatGPT, verify that the tunnel is associated with the target ChatGPT workspace, not only with a Platform organization, and that the app creator has Tunnels **Read** + **Use**.
 
+## Connect from the Responses API
+
+Pass the tunnel identifier as `tunnel_id` in the MCP tool definition. Do not pass the OpenAI-hosted tunnel endpoint as `server_url`; use `server_url` only for an MCP server that the Responses API can reach directly.
+
+Use Secure MCP Tunnel with the Responses API
+
+```bash
+curl https://api.openai.com/v1/responses \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -d '{
+    "model": "gpt-6-astra",
+    "input": "Use the private MCP server to answer my request.",
+    "tools": [
+      {
+        "type": "mcp",
+        "server_label": "private_mcp",
+        "tunnel_id": "tunnel_0123456789abcdef0123456789abcdef"
+      }
+    ]
+  }'
+```
+
+
 ## Security and networking
 
 <figure className="not-prose my-8">

@@ -10,7 +10,7 @@ Creates an embedding vector representing the input text.
 
 - `input: string or array of string or array of number or array of array of number`
 
-  Input text to embed, encoded as a string or array of tokens. To embed multiple inputs in a single request, pass an array of strings or array of token arrays. The input must not exceed the max input tokens for the model (8192 tokens for all embedding models), cannot be an empty string, and any array must be 2048 dimensions or less. [Example Python code](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) for counting tokens. In addition to the per-input token limit, all embedding  models enforce a maximum of 300,000 tokens summed across all inputs in a  single request.
+  Input text to embed, encoded as a string or array of tokens. To embed multiple inputs in a single request, pass an array of strings or array of token arrays. The input must not exceed the max input tokens for the model (8192 tokens for all embedding models), cannot be an empty string, and any array must be 2048 dimensions or less. [Example Python code](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) for counting tokens. In addition to the per-input token limit, all embedding models enforce a maximum of 300,000 tokens summed across all inputs in a single request.
 
   - `String = string`
 
@@ -30,7 +30,7 @@ Creates an embedding vector representing the input text.
 
 - `model: string or EmbeddingModel`
 
-  ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
+  ID of the model to use. You can use the [List models](/api/reference/resources/models/methods/list) API to see all of your available models, or see our [Model overview](/api/docs/models) for descriptions of them.
 
   - `string`
 
@@ -56,7 +56,7 @@ Creates an embedding vector representing the input text.
 
 - `user: optional string`
 
-  A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices#end-user-ids).
+  A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
 ### Returns
 
@@ -68,7 +68,7 @@ Creates an embedding vector representing the input text.
 
     - `embedding: array of number`
 
-      The embedding vector, which is a list of floats. The length of vector depends on the model as listed in the [embedding guide](/docs/guides/embeddings).
+      The embedding vector, which is a list of floats. The length of vector depends on the model as listed in the [embedding guide](/api/docs/guides/embeddings).
 
     - `index: number`
 

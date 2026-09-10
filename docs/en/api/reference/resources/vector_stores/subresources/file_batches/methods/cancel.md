@@ -68,7 +68,7 @@ Cancel a vector store file batch. This attempts to cancel the processing of file
 
   - `vector_store_id: string`
 
-    The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to.
+    The ID of the [vector store](/api/reference/resources/vector_stores) that the [File](/api/reference/resources/files) is attached to.
 
 ### Example
 

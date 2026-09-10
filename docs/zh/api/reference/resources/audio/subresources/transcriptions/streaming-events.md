@@ -1,10 +1,10 @@
 # 转录流式事件
 
-> 完整的文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
 
 ## transcript.text.segment
 
-当分段转写结果返回一个包含说话人信息的已完成分段时触发。仅当你 [创建转写任务](https://developers.openai.com/docs/api-reference/audio/create-transcription) 时 `stream` 设置为 `true` 并且 `response_format` 设置为 `diarized_json`.
+当分段转写返回包含说话人信息的已完成片段时发出。仅在你 [创建转写](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) 时 `stream` 设置为 `true` 且 `response_format` 设置为 `diarized_json`.
 
 ### Schema
 
@@ -15,7 +15,7 @@ Schema name: `TranscriptTextSegmentEvent`
   "(resource) audio.transcriptions > (model) transcription_text_segment_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/TranscriptTextSegmentEvent",
-    "docstring": "Emitted when a diarized transcription returns a completed segment with speaker information. Only emitted when you [create a transcription](/docs/api-reference/audio/create-transcription) with `stream` set to `true` and `response_format` set to `diarized_json`.\n",
+    "docstring": "Emitted when a diarized transcription returns a completed segment with speaker information. Only emitted when you [create a transcription](/api/reference/resources/audio/subresources/transcriptions/methods/create) with `stream` set to `true` and `response_format` set to `diarized_json`.\n",
     "ident": "TranscriptionTextSegmentEvent",
     "type": {
       "kind": "HttpTypeObject",
@@ -175,7 +175,7 @@ Schema name: `TranscriptTextSegmentEvent`
 
 ## transcript.text.delta
 
-当存在额外的文本增量时发出。这也是转录开始时发出的第一个事件。仅在你 [创建转写任务](https://developers.openai.com/docs/api-reference/audio/create-transcription) 使用 `Stream` 参数设置为 `true`.
+当存在额外的文本增量时会发出。这也是转录开始时发出的第一个事件。仅当你 [创建转写](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) 使用 `Stream` parameter set to `true`.
 
 ### Schema
 
@@ -186,7 +186,7 @@ Schema name: `TranscriptTextDeltaEvent`
   "(resource) audio.transcriptions > (model) transcription_text_delta_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/TranscriptTextDeltaEvent",
-    "docstring": "Emitted when there is an additional text delta. This is also the first event emitted when the transcription starts. Only emitted when you [create a transcription](/docs/api-reference/audio/create-transcription) with the `Stream` parameter set to `true`.",
+    "docstring": "Emitted when there is an additional text delta. This is also the first event emitted when the transcription starts. Only emitted when you [create a transcription](/api/reference/resources/audio/subresources/transcriptions/methods/create) with the `Stream` parameter set to `true`.",
     "ident": "TranscriptionTextDeltaEvent",
     "type": {
       "kind": "HttpTypeObject",
@@ -256,7 +256,7 @@ Schema name: `TranscriptTextDeltaEvent`
     "oasRef": "#/components/schemas/TranscriptTextDeltaEvent/properties/logprobs",
     "deprecated": false,
     "key": "logprobs",
-    "docstring": "The log probabilities of the delta. Only included if you [create a transcription](/docs/api-reference/audio/create-transcription) with the `include[]` parameter set to `logprobs`.\n",
+    "docstring": "The log probabilities of the delta. Only included if you [create a transcription](/api/reference/resources/audio/subresources/transcriptions/methods/create) with the `include[]` parameter set to `logprobs`.\n",
     "type": {
       "kind": "HttpTypeArray",
       "oasRef": "#/components/schemas/TranscriptTextDeltaEvent/properties/logprobs",
@@ -366,7 +366,7 @@ Schema name: `TranscriptTextDeltaEvent`
 
 ## transcript.text.done
 
-当转录完成时发出。包含完整的转录文本。仅当你在 [创建转写任务](https://developers.openai.com/docs/api-reference/audio/create-transcription) 使用 `Stream` 参数设置为 `true`.
+在转录完成时发出。包含完整的转录文本。仅在你 [创建转写](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) 使用 `Stream` parameter set to `true`.
 
 ### Schema
 
@@ -377,7 +377,7 @@ Schema name: `TranscriptTextDoneEvent`
   "(resource) audio.transcriptions > (model) transcription_text_done_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/TranscriptTextDoneEvent",
-    "docstring": "Emitted when the transcription is complete. Contains the complete transcription text. Only emitted when you [create a transcription](/docs/api-reference/audio/create-transcription) with the `Stream` parameter set to `true`.",
+    "docstring": "Emitted when the transcription is complete. Contains the complete transcription text. Only emitted when you [create a transcription](/api/reference/resources/audio/subresources/transcriptions/methods/create) with the `Stream` parameter set to `true`.",
     "ident": "TranscriptionTextDoneEvent",
     "type": {
       "kind": "HttpTypeObject",
@@ -474,7 +474,7 @@ Schema name: `TranscriptTextDoneEvent`
     "oasRef": "#/components/schemas/TranscriptTextDoneEvent/properties/logprobs",
     "deprecated": false,
     "key": "logprobs",
-    "docstring": "The log probabilities of the individual tokens in the transcription. Only included if you [create a transcription](/docs/api-reference/audio/create-transcription) with the `include[]` parameter set to `logprobs`.\n",
+    "docstring": "The log probabilities of the individual tokens in the transcription. Only included if you [create a transcription](/api/reference/resources/audio/subresources/transcriptions/methods/create) with the `include[]` parameter set to `logprobs`.\n",
     "type": {
       "kind": "HttpTypeArray",
       "oasRef": "#/components/schemas/TranscriptTextDoneEvent/properties/logprobs",

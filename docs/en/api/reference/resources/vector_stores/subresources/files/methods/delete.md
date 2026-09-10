@@ -4,7 +4,7 @@
 
 **delete** `/vector_stores/{vector_store_id}/files/{file_id}`
 
-Delete a vector store file. This will remove the file from the vector store but the file itself will not be deleted. To delete the file, use the [delete file](/docs/api-reference/files/delete) endpoint.
+Delete a vector store file. This will remove the file from the vector store but the file itself will not be deleted. To delete the file, use the [delete file](/api/reference/resources/files/methods/delete) endpoint.
 
 ### Path Parameters
 

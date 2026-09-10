@@ -567,7 +567,7 @@ data: {"type":"image_edit.completed","b64_json":"...","usage":{"total_tokens":10
 
 **post** `/images/generations`
 
-Creates an image given a prompt. [Learn more](/docs/guides/images).
+Creates an image given a prompt. [Learn more](/api/docs/guides/images-vision).
 
 ### Body Parameters
 
@@ -724,7 +724,7 @@ Creates an image given a prompt. [Learn more](/docs/guides/images).
 - `stream: optional boolean or null`
 
   Generate the image in streaming mode. Defaults to `false`. See the
-  [Image generation guide](/docs/guides/image-generation) for more information.
+  [Image generation guide](/api/docs/guides/image-generation) for more information.
   This parameter is only supported for the GPT image models.
 
 - `style: optional "vivid" or "natural" or null`
@@ -737,7 +737,7 @@ Creates an image given a prompt. [Learn more](/docs/guides/images).
 
 - `user: optional string`
 
-  A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices#end-user-ids).
+  A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
 ### Returns
 

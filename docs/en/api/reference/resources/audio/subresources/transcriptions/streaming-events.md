@@ -4,7 +4,7 @@
 
 ## transcript.text.segment
 
-Emitted when a diarized transcription returns a completed segment with speaker information. Only emitted when you [create a transcription](https://developers.openai.com/docs/api-reference/audio/create-transcription) with `stream` set to `true` and `response_format` set to `diarized_json`.
+Emitted when a diarized transcription returns a completed segment with speaker information. Only emitted when you [create a transcription](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) with `stream` set to `true` and `response_format` set to `diarized_json`.
 
 ### Schema
 
@@ -15,7 +15,7 @@ Schema name: `TranscriptTextSegmentEvent`
   "(resource) audio.transcriptions > (model) transcription_text_segment_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/TranscriptTextSegmentEvent",
-    "docstring": "Emitted when a diarized transcription returns a completed segment with speaker information. Only emitted when you [create a transcription](/docs/api-reference/audio/create-transcription) with `stream` set to `true` and `response_format` set to `diarized_json`.\n",
+    "docstring": "Emitted when a diarized transcription returns a completed segment with speaker information. Only emitted when you [create a transcription](/api/reference/resources/audio/subresources/transcriptions/methods/create) with `stream` set to `true` and `response_format` set to `diarized_json`.\n",
     "ident": "TranscriptionTextSegmentEvent",
     "type": {
       "kind": "HttpTypeObject",
@@ -175,7 +175,7 @@ Schema name: `TranscriptTextSegmentEvent`
 
 ## transcript.text.delta
 
-Emitted when there is an additional text delta. This is also the first event emitted when the transcription starts. Only emitted when you [create a transcription](https://developers.openai.com/docs/api-reference/audio/create-transcription) with the `Stream` parameter set to `true`.
+Emitted when there is an additional text delta. This is also the first event emitted when the transcription starts. Only emitted when you [create a transcription](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) with the `Stream` parameter set to `true`.
 
 ### Schema
 
@@ -186,7 +186,7 @@ Schema name: `TranscriptTextDeltaEvent`
   "(resource) audio.transcriptions > (model) transcription_text_delta_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/TranscriptTextDeltaEvent",
-    "docstring": "Emitted when there is an additional text delta. This is also the first event emitted when the transcription starts. Only emitted when you [create a transcription](/docs/api-reference/audio/create-transcription) with the `Stream` parameter set to `true`.",
+    "docstring": "Emitted when there is an additional text delta. This is also the first event emitted when the transcription starts. Only emitted when you [create a transcription](/api/reference/resources/audio/subresources/transcriptions/methods/create) with the `Stream` parameter set to `true`.",
     "ident": "TranscriptionTextDeltaEvent",
     "type": {
       "kind": "HttpTypeObject",
@@ -256,7 +256,7 @@ Schema name: `TranscriptTextDeltaEvent`
     "oasRef": "#/components/schemas/TranscriptTextDeltaEvent/properties/logprobs",
     "deprecated": false,
     "key": "logprobs",
-    "docstring": "The log probabilities of the delta. Only included if you [create a transcription](/docs/api-reference/audio/create-transcription) with the `include[]` parameter set to `logprobs`.\n",
+    "docstring": "The log probabilities of the delta. Only included if you [create a transcription](/api/reference/resources/audio/subresources/transcriptions/methods/create) with the `include[]` parameter set to `logprobs`.\n",
     "type": {
       "kind": "HttpTypeArray",
       "oasRef": "#/components/schemas/TranscriptTextDeltaEvent/properties/logprobs",
@@ -366,7 +366,7 @@ Schema name: `TranscriptTextDeltaEvent`
 
 ## transcript.text.done
 
-Emitted when the transcription is complete. Contains the complete transcription text. Only emitted when you [create a transcription](https://developers.openai.com/docs/api-reference/audio/create-transcription) with the `Stream` parameter set to `true`.
+Emitted when the transcription is complete. Contains the complete transcription text. Only emitted when you [create a transcription](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) with the `Stream` parameter set to `true`.
 
 ### Schema
 
@@ -377,7 +377,7 @@ Schema name: `TranscriptTextDoneEvent`
   "(resource) audio.transcriptions > (model) transcription_text_done_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/TranscriptTextDoneEvent",
-    "docstring": "Emitted when the transcription is complete. Contains the complete transcription text. Only emitted when you [create a transcription](/docs/api-reference/audio/create-transcription) with the `Stream` parameter set to `true`.",
+    "docstring": "Emitted when the transcription is complete. Contains the complete transcription text. Only emitted when you [create a transcription](/api/reference/resources/audio/subresources/transcriptions/methods/create) with the `Stream` parameter set to `true`.",
     "ident": "TranscriptionTextDoneEvent",
     "type": {
       "kind": "HttpTypeObject",
@@ -474,7 +474,7 @@ Schema name: `TranscriptTextDoneEvent`
     "oasRef": "#/components/schemas/TranscriptTextDoneEvent/properties/logprobs",
     "deprecated": false,
     "key": "logprobs",
-    "docstring": "The log probabilities of the individual tokens in the transcription. Only included if you [create a transcription](/docs/api-reference/audio/create-transcription) with the `include[]` parameter set to `logprobs`.\n",
+    "docstring": "The log probabilities of the individual tokens in the transcription. Only included if you [create a transcription](/api/reference/resources/audio/subresources/transcriptions/methods/create) with the `include[]` parameter set to `logprobs`.\n",
     "type": {
       "kind": "HttpTypeArray",
       "oasRef": "#/components/schemas/TranscriptTextDoneEvent/properties/logprobs",

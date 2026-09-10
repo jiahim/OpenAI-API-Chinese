@@ -64,7 +64,7 @@ Create a vector store.
 
 - `file_ids: optional array of string`
 
-  A list of [File](/docs/api-reference/files) IDs that the vector store should use. Useful for tools like `file_search` that can access files.
+  A list of [File](/api/reference/resources/files) IDs that the vector store should use. Useful for tools like `file_search` that can access files.
 
 - `metadata: optional Metadata or null`
 

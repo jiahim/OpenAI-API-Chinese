@@ -545,7 +545,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/prompt",
     "deprecated": false,
     "key": "prompt",
-    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).\n",
+    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsePrompt",
@@ -1075,7 +1075,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   "(resource) responses > (model) response_prompt > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Prompt",
-    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).\n",
+    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).\n",
     "ident": "ResponsePrompt",
     "type": {
       "kind": "HttpTypeObject",
@@ -1234,7 +1234,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   "(resource) realtime > (model) realtime_tools_config_union > (schema) > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tools/items/oneOf/1",
-    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).\n",
+    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).\n",
     "ident": "McpTool",
     "type": {
       "kind": "HttpTypeObject",
@@ -1601,7 +1601,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/audio/properties/input/properties/transcription",
     "deprecated": false,
     "key": "transcription",
-    "docstring": "Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n",
+    "docstring": "Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "AudioTranscription",
@@ -2048,7 +2048,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   "(resource) responses > (model) response_input_image > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/InputImageContent",
-    "docstring": "An image input to the model. Learn about [image inputs](/docs/guides/vision).",
+    "docstring": "An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).",
     "ident": "ResponseInputImage",
     "type": {
       "kind": "HttpTypeObject",
@@ -2609,7 +2609,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "oasRef": "#/components/schemas/MCPTool/properties/connector_id",
     "deprecated": false,
     "key": "connector_id",
-    "docstring": "Identifier for service connectors, like those available in ChatGPT. One of\n`server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more\nabout service connectors [here](/docs/guides/tools-remote-mcp#connectors).\n\nCurrently supported `connector_id` values are:\n\n- Dropbox: `connector_dropbox`\n- Gmail: `connector_gmail`\n- Google Calendar: `connector_googlecalendar`\n- Google Drive: `connector_googledrive`\n- Microsoft Teams: `connector_microsoftteams`\n- Outlook Calendar: `connector_outlookcalendar`\n- Outlook Email: `connector_outlookemail`\n- SharePoint: `connector_sharepoint`\n",
+    "docstring": "Identifier for service connectors, like those available in ChatGPT. One of\n`server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more\nabout service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).\n\nCurrently supported `connector_id` values are:\n\n- Dropbox: `connector_dropbox`\n- Gmail: `connector_gmail`\n- Google Calendar: `connector_googlecalendar`\n- Google Drive: `connector_googledrive`\n- Microsoft Teams: `connector_microsoftteams`\n- Outlook Calendar: `connector_outlookcalendar`\n- Outlook Email: `connector_outlookemail`\n- SharePoint: `connector_sharepoint`\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/MCPTool/properties/connector_id",
@@ -2796,7 +2796,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   "(resource) realtime > (model) realtime_tools_config_union > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tools/items",
-    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).\n",
+    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).\n",
     "ident": "RealtimeToolsConfigUnion",
     "type": {
       "kind": "HttpTypeUnion",
@@ -3033,7 +3033,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "oasRef": "#/components/schemas/RealtimeTranscriptionSessionCreateRequestGA/properties/audio/properties/input/properties/transcription",
     "deprecated": false,
     "key": "transcription",
-    "docstring": "Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n",
+    "docstring": "Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "AudioTranscription",
@@ -3392,7 +3392,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "oasRef": "#/components/schemas/AudioTranscription/properties/prompt",
     "deprecated": false,
     "key": "prompt",
-    "docstring": "An optional text to guide the model's style or continue a previous audio\nsegment.\nFor `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting).\nFor `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example \"expect words related to technology\".\nPrompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.\n",
+    "docstring": "An optional text to guide the model's style or continue a previous audio\nsegment.\nFor `whisper-1`, the [prompt is a list of keywords](/api/docs/guides/speech-to-text#prompting).\nFor `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example \"expect words related to technology\".\nPrompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.\n",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -9384,7 +9384,7 @@ Schema name: `RealtimeClientEventResponseCreate`
     "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/prompt",
     "deprecated": false,
     "key": "prompt",
-    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).\n",
+    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsePrompt",
@@ -10038,7 +10038,7 @@ Schema name: `RealtimeClientEventResponseCreate`
   "(resource) responses > (model) response_prompt > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Prompt",
-    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).\n",
+    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).\n",
     "ident": "ResponsePrompt",
     "type": {
       "kind": "HttpTypeObject",
@@ -10242,7 +10242,7 @@ Schema name: `RealtimeClientEventResponseCreate`
   "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/tools/items/oneOf/1",
-    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).\n",
+    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).\n",
     "ident": "McpTool",
     "type": {
       "kind": "HttpTypeObject",
@@ -12010,7 +12010,7 @@ Schema name: `RealtimeClientEventResponseCreate`
   "(resource) responses > (model) response_input_image > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/InputImageContent",
-    "docstring": "An image input to the model. Learn about [image inputs](/docs/guides/vision).",
+    "docstring": "An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).",
     "ident": "ResponseInputImage",
     "type": {
       "kind": "HttpTypeObject",
@@ -12464,7 +12464,7 @@ Schema name: `RealtimeClientEventResponseCreate`
     "oasRef": "#/components/schemas/MCPTool/properties/connector_id",
     "deprecated": false,
     "key": "connector_id",
-    "docstring": "Identifier for service connectors, like those available in ChatGPT. One of\n`server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more\nabout service connectors [here](/docs/guides/tools-remote-mcp#connectors).\n\nCurrently supported `connector_id` values are:\n\n- Dropbox: `connector_dropbox`\n- Gmail: `connector_gmail`\n- Google Calendar: `connector_googlecalendar`\n- Google Drive: `connector_googledrive`\n- Microsoft Teams: `connector_microsoftteams`\n- Outlook Calendar: `connector_outlookcalendar`\n- Outlook Email: `connector_outlookemail`\n- SharePoint: `connector_sharepoint`\n",
+    "docstring": "Identifier for service connectors, like those available in ChatGPT. One of\n`server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more\nabout service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).\n\nCurrently supported `connector_id` values are:\n\n- Dropbox: `connector_dropbox`\n- Gmail: `connector_gmail`\n- Google Calendar: `connector_googlecalendar`\n- Google Drive: `connector_googledrive`\n- Microsoft Teams: `connector_microsoftteams`\n- Outlook Calendar: `connector_outlookcalendar`\n- Outlook Email: `connector_outlookemail`\n- SharePoint: `connector_sharepoint`\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/MCPTool/properties/connector_id",
@@ -14916,7 +14916,7 @@ Schema name: `RealtimeClientEventResponseCancel`
 stop generating audio and emit a `output_audio_buffer.cleared` event. This
 event should be preceded by a `response.cancel` client event to stop the
 generation of the current response.
-[Learn more](https://developers.openai.com/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
+[Learn more](https://developers.openai.com/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
 ### Schema
 
@@ -14927,7 +14927,7 @@ Schema name: `RealtimeClientEventOutputAudioBufferClear`
   "(resource) realtime > (model) output_audio_buffer_clear_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeClientEventOutputAudioBufferClear",
-    "docstring": "**WebRTC/SIP Only:** Emit to cut off the current audio response. This will trigger the server to\nstop generating audio and emit a `output_audio_buffer.cleared` event. This\nevent should be preceded by a `response.cancel` client event to stop the\ngeneration of the current response.\n[Learn more](/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).\n",
+    "docstring": "**WebRTC/SIP Only:** Emit to cut off the current audio response. This will trigger the server to\nstop generating audio and emit a `output_audio_buffer.cleared` event. This\nevent should be preceded by a `response.cancel` client event to stop the\ngeneration of the current response.\n[Learn more](/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).\n",
     "ident": "OutputAudioBufferClearEvent",
     "type": {
       "kind": "HttpTypeObject",

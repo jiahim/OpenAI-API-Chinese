@@ -8,7 +8,7 @@
 
 Create the structure of an evaluation that can be used to test a model's performance.
 An evaluation is a set of testing criteria and the config for a data source, which dictates the schema of the data used in the evaluation. After creating an evaluation, you can run it on different models and model parameters. We support several types of graders and datasources.
-For more information, see the [Evals guide](/docs/guides/evals).
+For more information, see the [Evals guide](/api/docs/guides/evals).
 
 ### Body Parameters
 
@@ -4137,7 +4137,7 @@ Cancel an ongoing evaluation run.
 
                 - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-                  An image input to the model. Learn about [image inputs](/docs/guides/vision).
+                  An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
                   - `detail: ImageDetail`
 
@@ -4430,7 +4430,7 @@ Cancel an ongoing evaluation run.
         Reducing reasoning effort can result in faster responses and fewer tokens
         used on reasoning in a response. Not all reasoning models support every
         value. See the
-        [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+        [reasoning guide](/api/docs/guides/reasoning)
         for model-specific support.
 
         - `"none"`
@@ -4454,7 +4454,7 @@ Cancel an ongoing evaluation run.
         Setting to `{ "type": "json_schema", "json_schema": {...} }` enables
         Structured Outputs which ensures the model will match your supplied JSON
         schema. Learn more in the [Structured Outputs
-        guide](/docs/guides/structured-outputs).
+        guide](/api/docs/guides/structured-outputs).
 
         Setting to `{ "type": "json_object" }` enables the older JSON mode, which
         ensures the message the model generates is valid JSON. Using `json_schema`
@@ -4473,7 +4473,7 @@ Cancel an ongoing evaluation run.
         - `ResponseFormatJSONSchema object { json_schema, type }`
 
           JSON Schema response format. Used to generate structured JSON responses.
-          Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+          Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
           - `json_schema: object { name, description, schema, strict }`
 
@@ -4500,7 +4500,7 @@ Cancel an ongoing evaluation run.
               If set to true, the model will always follow the exact schema defined
               in the `schema` field. Only a subset of JSON Schema is supported when
               `strict` is `true`. To learn more, read the [Structured Outputs
-              guide](/docs/guides/structured-outputs).
+              guide](/api/docs/guides/structured-outputs).
 
           - `type: "json_schema"`
 
@@ -4545,13 +4545,13 @@ Cancel an ongoing evaluation run.
 
           - `parameters: optional FunctionParameters`
 
-            The parameters the functions accepts, described as a JSON Schema object. See the [guide](/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
+            The parameters the functions accepts, described as a JSON Schema object. See the [guide](/api/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
 
             Omitting `parameters` defines a function with an empty parameter list.
 
           - `strict: optional boolean or null`
 
-            Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
+            Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
         - `type: "function"`
 
@@ -4636,7 +4636,7 @@ Cancel an ongoing evaluation run.
           Reducing reasoning effort can result in faster responses and fewer tokens
           used on reasoning in a response. Not all reasoning models support every
           value. See the
-          [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+          [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
         - `temperature: optional number or null`
@@ -4796,7 +4796,7 @@ Cancel an ongoing evaluation run.
         Reducing reasoning effort can result in faster responses and fewer tokens
         used on reasoning in a response. Not all reasoning models support every
         value. See the
-        [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+        [reasoning guide](/api/docs/guides/reasoning)
         for model-specific support.
 
       - `seed: optional number`
@@ -4812,8 +4812,8 @@ Cancel an ongoing evaluation run.
         Configuration options for a text response from the model. Can be plain
         text or structured JSON data. Learn more:
 
-        - [Text inputs and outputs](/docs/guides/text)
-        - [Structured Outputs](/docs/guides/structured-outputs)
+        - [Text inputs and outputs](/api/docs/guides/text)
+        - [Structured Outputs](/api/docs/guides/structured-outputs)
 
         - `format: optional ResponseFormatTextConfig`
 
@@ -4821,7 +4821,7 @@ Cancel an ongoing evaluation run.
 
           Configuring `{ "type": "json_schema" }` enables Structured Outputs,
           which ensures the model will match your supplied JSON schema. Learn more in the
-          [Structured Outputs guide](/docs/guides/structured-outputs).
+          [Structured Outputs guide](/api/docs/guides/structured-outputs).
 
           The default format is `{ "type": "text" }` with no additional options.
 
@@ -4838,7 +4838,7 @@ Cancel an ongoing evaluation run.
           - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
             JSON Schema response format. Used to generate structured JSON responses.
-            Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+            Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
             - `name: string`
 
@@ -4867,7 +4867,7 @@ Cancel an ongoing evaluation run.
               If set to true, the model will always follow the exact schema defined
               in the `schema` field. Only a subset of JSON Schema is supported when
               `strict` is `true`. To learn more, read the [Structured Outputs
-              guide](/docs/guides/structured-outputs).
+              guide](/api/docs/guides/structured-outputs).
 
           - `ResponseFormatJSONObject object { type }`
 
@@ -4884,16 +4884,16 @@ Cancel an ongoing evaluation run.
         The two categories of tools you can provide the model are:
 
         - **Built-in tools**: Tools that are provided by OpenAI that extend the
-          model's capabilities, like [web search](/docs/guides/tools-web-search)
-          or [file search](/docs/guides/tools-file-search). Learn more about
-          [built-in tools](/docs/guides/tools).
+          model's capabilities, like [web search](/api/docs/guides/tools-web-search)
+          or [file search](/api/docs/guides/tools-file-search). Learn more about
+          [built-in tools](/api/docs/guides/tools).
         - **Function calls (custom tools)**: Functions that are defined by you,
           enabling the model to call your own code. Learn more about
-          [function calling](/docs/guides/function-calling).
+          [function calling](/api/docs/guides/function-calling).
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+          Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -4937,7 +4937,7 @@ Cancel an ongoing evaluation run.
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -5062,7 +5062,7 @@ Cancel an ongoing evaluation run.
 
         - `Computer object { type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -5072,7 +5072,7 @@ Cancel an ongoing evaluation run.
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -5105,7 +5105,7 @@ Cancel an ongoing evaluation run.
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
           Search the Internet for sources related to the prompt. Learn more about the
-          [web search tool](/docs/guides/tools-web-search).
+          [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -5169,7 +5169,7 @@ Cancel an ongoing evaluation run.
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -5221,7 +5221,7 @@ Cancel an ongoing evaluation run.
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -5738,7 +5738,7 @@ Cancel an ongoing evaluation run.
 
         - `Custom object { name, type, allowed_callers, 4 more }`
 
-          A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+          A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -5860,7 +5860,7 @@ Cancel an ongoing evaluation run.
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
-              A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+              A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -5930,7 +5930,7 @@ Cancel an ongoing evaluation run.
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -6534,7 +6534,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-                  An image input to the model. Learn about [image inputs](/docs/guides/vision).
+                  An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
                   - `detail: ImageDetail`
 
@@ -6827,7 +6827,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         Reducing reasoning effort can result in faster responses and fewer tokens
         used on reasoning in a response. Not all reasoning models support every
         value. See the
-        [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+        [reasoning guide](/api/docs/guides/reasoning)
         for model-specific support.
 
         - `"none"`
@@ -6851,7 +6851,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         Setting to `{ "type": "json_schema", "json_schema": {...} }` enables
         Structured Outputs which ensures the model will match your supplied JSON
         schema. Learn more in the [Structured Outputs
-        guide](/docs/guides/structured-outputs).
+        guide](/api/docs/guides/structured-outputs).
 
         Setting to `{ "type": "json_object" }` enables the older JSON mode, which
         ensures the message the model generates is valid JSON. Using `json_schema`
@@ -6870,7 +6870,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         - `ResponseFormatJSONSchema object { json_schema, type }`
 
           JSON Schema response format. Used to generate structured JSON responses.
-          Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+          Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
           - `json_schema: object { name, description, schema, strict }`
 
@@ -6897,7 +6897,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
               If set to true, the model will always follow the exact schema defined
               in the `schema` field. Only a subset of JSON Schema is supported when
               `strict` is `true`. To learn more, read the [Structured Outputs
-              guide](/docs/guides/structured-outputs).
+              guide](/api/docs/guides/structured-outputs).
 
           - `type: "json_schema"`
 
@@ -6942,13 +6942,13 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           - `parameters: optional FunctionParameters`
 
-            The parameters the functions accepts, described as a JSON Schema object. See the [guide](/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
+            The parameters the functions accepts, described as a JSON Schema object. See the [guide](/api/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
 
             Omitting `parameters` defines a function with an empty parameter list.
 
           - `strict: optional boolean or null`
 
-            Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
+            Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
         - `type: "function"`
 
@@ -7033,7 +7033,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
           Reducing reasoning effort can result in faster responses and fewer tokens
           used on reasoning in a response. Not all reasoning models support every
           value. See the
-          [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+          [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
         - `temperature: optional number or null`
@@ -7193,7 +7193,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         Reducing reasoning effort can result in faster responses and fewer tokens
         used on reasoning in a response. Not all reasoning models support every
         value. See the
-        [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+        [reasoning guide](/api/docs/guides/reasoning)
         for model-specific support.
 
       - `seed: optional number`
@@ -7209,8 +7209,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         Configuration options for a text response from the model. Can be plain
         text or structured JSON data. Learn more:
 
-        - [Text inputs and outputs](/docs/guides/text)
-        - [Structured Outputs](/docs/guides/structured-outputs)
+        - [Text inputs and outputs](/api/docs/guides/text)
+        - [Structured Outputs](/api/docs/guides/structured-outputs)
 
         - `format: optional ResponseFormatTextConfig`
 
@@ -7218,7 +7218,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           Configuring `{ "type": "json_schema" }` enables Structured Outputs,
           which ensures the model will match your supplied JSON schema. Learn more in the
-          [Structured Outputs guide](/docs/guides/structured-outputs).
+          [Structured Outputs guide](/api/docs/guides/structured-outputs).
 
           The default format is `{ "type": "text" }` with no additional options.
 
@@ -7235,7 +7235,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
           - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
             JSON Schema response format. Used to generate structured JSON responses.
-            Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+            Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
             - `name: string`
 
@@ -7264,7 +7264,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
               If set to true, the model will always follow the exact schema defined
               in the `schema` field. Only a subset of JSON Schema is supported when
               `strict` is `true`. To learn more, read the [Structured Outputs
-              guide](/docs/guides/structured-outputs).
+              guide](/api/docs/guides/structured-outputs).
 
           - `ResponseFormatJSONObject object { type }`
 
@@ -7281,16 +7281,16 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         The two categories of tools you can provide the model are:
 
         - **Built-in tools**: Tools that are provided by OpenAI that extend the
-          model's capabilities, like [web search](/docs/guides/tools-web-search)
-          or [file search](/docs/guides/tools-file-search). Learn more about
-          [built-in tools](/docs/guides/tools).
+          model's capabilities, like [web search](/api/docs/guides/tools-web-search)
+          or [file search](/api/docs/guides/tools-file-search). Learn more about
+          [built-in tools](/api/docs/guides/tools).
         - **Function calls (custom tools)**: Functions that are defined by you,
           enabling the model to call your own code. Learn more about
-          [function calling](/docs/guides/function-calling).
+          [function calling](/api/docs/guides/function-calling).
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+          Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -7334,7 +7334,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -7459,7 +7459,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
         - `Computer object { type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -7469,7 +7469,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -7502,7 +7502,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
           Search the Internet for sources related to the prompt. Learn more about the
-          [web search tool](/docs/guides/tools-web-search).
+          [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -7566,7 +7566,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -7618,7 +7618,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -8135,7 +8135,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
         - `Custom object { name, type, allowed_callers, 4 more }`
 
-          A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+          A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -8257,7 +8257,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
-              A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+              A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -8327,7 +8327,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -8605,7 +8605,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-                  An image input to the model. Learn about [image inputs](/docs/guides/vision).
+                  An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
                   - `detail: ImageDetail`
 
@@ -8898,7 +8898,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         Reducing reasoning effort can result in faster responses and fewer tokens
         used on reasoning in a response. Not all reasoning models support every
         value. See the
-        [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+        [reasoning guide](/api/docs/guides/reasoning)
         for model-specific support.
 
         - `"none"`
@@ -8922,7 +8922,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         Setting to `{ "type": "json_schema", "json_schema": {...} }` enables
         Structured Outputs which ensures the model will match your supplied JSON
         schema. Learn more in the [Structured Outputs
-        guide](/docs/guides/structured-outputs).
+        guide](/api/docs/guides/structured-outputs).
 
         Setting to `{ "type": "json_object" }` enables the older JSON mode, which
         ensures the message the model generates is valid JSON. Using `json_schema`
@@ -8941,7 +8941,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         - `ResponseFormatJSONSchema object { json_schema, type }`
 
           JSON Schema response format. Used to generate structured JSON responses.
-          Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+          Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
           - `json_schema: object { name, description, schema, strict }`
 
@@ -8968,7 +8968,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
               If set to true, the model will always follow the exact schema defined
               in the `schema` field. Only a subset of JSON Schema is supported when
               `strict` is `true`. To learn more, read the [Structured Outputs
-              guide](/docs/guides/structured-outputs).
+              guide](/api/docs/guides/structured-outputs).
 
           - `type: "json_schema"`
 
@@ -9013,13 +9013,13 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           - `parameters: optional FunctionParameters`
 
-            The parameters the functions accepts, described as a JSON Schema object. See the [guide](/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
+            The parameters the functions accepts, described as a JSON Schema object. See the [guide](/api/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
 
             Omitting `parameters` defines a function with an empty parameter list.
 
           - `strict: optional boolean or null`
 
-            Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
+            Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
         - `type: "function"`
 
@@ -9104,7 +9104,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
           Reducing reasoning effort can result in faster responses and fewer tokens
           used on reasoning in a response. Not all reasoning models support every
           value. See the
-          [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+          [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
         - `temperature: optional number or null`
@@ -9264,7 +9264,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         Reducing reasoning effort can result in faster responses and fewer tokens
         used on reasoning in a response. Not all reasoning models support every
         value. See the
-        [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+        [reasoning guide](/api/docs/guides/reasoning)
         for model-specific support.
 
       - `seed: optional number`
@@ -9280,8 +9280,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         Configuration options for a text response from the model. Can be plain
         text or structured JSON data. Learn more:
 
-        - [Text inputs and outputs](/docs/guides/text)
-        - [Structured Outputs](/docs/guides/structured-outputs)
+        - [Text inputs and outputs](/api/docs/guides/text)
+        - [Structured Outputs](/api/docs/guides/structured-outputs)
 
         - `format: optional ResponseFormatTextConfig`
 
@@ -9289,7 +9289,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           Configuring `{ "type": "json_schema" }` enables Structured Outputs,
           which ensures the model will match your supplied JSON schema. Learn more in the
-          [Structured Outputs guide](/docs/guides/structured-outputs).
+          [Structured Outputs guide](/api/docs/guides/structured-outputs).
 
           The default format is `{ "type": "text" }` with no additional options.
 
@@ -9306,7 +9306,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
           - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
             JSON Schema response format. Used to generate structured JSON responses.
-            Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+            Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
             - `name: string`
 
@@ -9335,7 +9335,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
               If set to true, the model will always follow the exact schema defined
               in the `schema` field. Only a subset of JSON Schema is supported when
               `strict` is `true`. To learn more, read the [Structured Outputs
-              guide](/docs/guides/structured-outputs).
+              guide](/api/docs/guides/structured-outputs).
 
           - `ResponseFormatJSONObject object { type }`
 
@@ -9352,16 +9352,16 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         The two categories of tools you can provide the model are:
 
         - **Built-in tools**: Tools that are provided by OpenAI that extend the
-          model's capabilities, like [web search](/docs/guides/tools-web-search)
-          or [file search](/docs/guides/tools-file-search). Learn more about
-          [built-in tools](/docs/guides/tools).
+          model's capabilities, like [web search](/api/docs/guides/tools-web-search)
+          or [file search](/api/docs/guides/tools-file-search). Learn more about
+          [built-in tools](/api/docs/guides/tools).
         - **Function calls (custom tools)**: Functions that are defined by you,
           enabling the model to call your own code. Learn more about
-          [function calling](/docs/guides/function-calling).
+          [function calling](/api/docs/guides/function-calling).
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+          Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -9405,7 +9405,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -9530,7 +9530,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
         - `Computer object { type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -9540,7 +9540,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -9573,7 +9573,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
           Search the Internet for sources related to the prompt. Learn more about the
-          [web search tool](/docs/guides/tools-web-search).
+          [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -9637,7 +9637,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -9689,7 +9689,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -10206,7 +10206,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
         - `Custom object { name, type, allowed_callers, 4 more }`
 
-          A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+          A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -10328,7 +10328,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
-              A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+              A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -10398,7 +10398,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -11035,7 +11035,7 @@ Get a list of runs for an evaluation.
 
                   - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-                    An image input to the model. Learn about [image inputs](/docs/guides/vision).
+                    An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
                     - `detail: ImageDetail`
 
@@ -11328,7 +11328,7 @@ Get a list of runs for an evaluation.
           Reducing reasoning effort can result in faster responses and fewer tokens
           used on reasoning in a response. Not all reasoning models support every
           value. See the
-          [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+          [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
           - `"none"`
@@ -11352,7 +11352,7 @@ Get a list of runs for an evaluation.
           Setting to `{ "type": "json_schema", "json_schema": {...} }` enables
           Structured Outputs which ensures the model will match your supplied JSON
           schema. Learn more in the [Structured Outputs
-          guide](/docs/guides/structured-outputs).
+          guide](/api/docs/guides/structured-outputs).
 
           Setting to `{ "type": "json_object" }` enables the older JSON mode, which
           ensures the message the model generates is valid JSON. Using `json_schema`
@@ -11371,7 +11371,7 @@ Get a list of runs for an evaluation.
           - `ResponseFormatJSONSchema object { json_schema, type }`
 
             JSON Schema response format. Used to generate structured JSON responses.
-            Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+            Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
             - `json_schema: object { name, description, schema, strict }`
 
@@ -11398,7 +11398,7 @@ Get a list of runs for an evaluation.
                 If set to true, the model will always follow the exact schema defined
                 in the `schema` field. Only a subset of JSON Schema is supported when
                 `strict` is `true`. To learn more, read the [Structured Outputs
-                guide](/docs/guides/structured-outputs).
+                guide](/api/docs/guides/structured-outputs).
 
             - `type: "json_schema"`
 
@@ -11443,13 +11443,13 @@ Get a list of runs for an evaluation.
 
             - `parameters: optional FunctionParameters`
 
-              The parameters the functions accepts, described as a JSON Schema object. See the [guide](/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
+              The parameters the functions accepts, described as a JSON Schema object. See the [guide](/api/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
 
               Omitting `parameters` defines a function with an empty parameter list.
 
             - `strict: optional boolean or null`
 
-              Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
+              Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
           - `type: "function"`
 
@@ -11534,7 +11534,7 @@ Get a list of runs for an evaluation.
             Reducing reasoning effort can result in faster responses and fewer tokens
             used on reasoning in a response. Not all reasoning models support every
             value. See the
-            [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+            [reasoning guide](/api/docs/guides/reasoning)
             for model-specific support.
 
           - `temperature: optional number or null`
@@ -11694,7 +11694,7 @@ Get a list of runs for an evaluation.
           Reducing reasoning effort can result in faster responses and fewer tokens
           used on reasoning in a response. Not all reasoning models support every
           value. See the
-          [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+          [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
         - `seed: optional number`
@@ -11710,8 +11710,8 @@ Get a list of runs for an evaluation.
           Configuration options for a text response from the model. Can be plain
           text or structured JSON data. Learn more:
 
-          - [Text inputs and outputs](/docs/guides/text)
-          - [Structured Outputs](/docs/guides/structured-outputs)
+          - [Text inputs and outputs](/api/docs/guides/text)
+          - [Structured Outputs](/api/docs/guides/structured-outputs)
 
           - `format: optional ResponseFormatTextConfig`
 
@@ -11719,7 +11719,7 @@ Get a list of runs for an evaluation.
 
             Configuring `{ "type": "json_schema" }` enables Structured Outputs,
             which ensures the model will match your supplied JSON schema. Learn more in the
-            [Structured Outputs guide](/docs/guides/structured-outputs).
+            [Structured Outputs guide](/api/docs/guides/structured-outputs).
 
             The default format is `{ "type": "text" }` with no additional options.
 
@@ -11736,7 +11736,7 @@ Get a list of runs for an evaluation.
             - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
               JSON Schema response format. Used to generate structured JSON responses.
-              Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+              Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
               - `name: string`
 
@@ -11765,7 +11765,7 @@ Get a list of runs for an evaluation.
                 If set to true, the model will always follow the exact schema defined
                 in the `schema` field. Only a subset of JSON Schema is supported when
                 `strict` is `true`. To learn more, read the [Structured Outputs
-                guide](/docs/guides/structured-outputs).
+                guide](/api/docs/guides/structured-outputs).
 
             - `ResponseFormatJSONObject object { type }`
 
@@ -11782,16 +11782,16 @@ Get a list of runs for an evaluation.
           The two categories of tools you can provide the model are:
 
           - **Built-in tools**: Tools that are provided by OpenAI that extend the
-            model's capabilities, like [web search](/docs/guides/tools-web-search)
-            or [file search](/docs/guides/tools-file-search). Learn more about
-            [built-in tools](/docs/guides/tools).
+            model's capabilities, like [web search](/api/docs/guides/tools-web-search)
+            or [file search](/api/docs/guides/tools-file-search). Learn more about
+            [built-in tools](/api/docs/guides/tools).
           - **Function calls (custom tools)**: Functions that are defined by you,
             enabling the model to call your own code. Learn more about
-            [function calling](/docs/guides/function-calling).
+            [function calling](/api/docs/guides/function-calling).
 
           - `Function object { name, parameters, strict, 6 more }`
 
-            Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+            Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
             - `name: string`
 
@@ -11835,7 +11835,7 @@ Get a list of runs for an evaluation.
 
           - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
             - `type: "file_search"`
 
@@ -11960,7 +11960,7 @@ Get a list of runs for an evaluation.
 
           - `Computer object { type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `type: "computer"`
 
@@ -11970,7 +11970,7 @@ Get a list of runs for an evaluation.
 
           - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `display_height: number`
 
@@ -12003,7 +12003,7 @@ Get a list of runs for an evaluation.
           - `WebSearch object { type, external_web_access, filters, 2 more }`
 
             Search the Internet for sources related to the prompt. Learn more about the
-            [web search tool](/docs/guides/tools-web-search).
+            [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -12067,7 +12067,7 @@ Get a list of runs for an evaluation.
           - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
             Give the model access to additional tools via remote Model Context Protocol
-            (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+            (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
             - `server_label: string`
 
@@ -12119,7 +12119,7 @@ Get a list of runs for an evaluation.
 
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-              about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+              about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
               Currently supported `connector_id` values are:
 
@@ -12636,7 +12636,7 @@ Get a list of runs for an evaluation.
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -12758,7 +12758,7 @@ Get a list of runs for an evaluation.
 
               - `Custom object { name, type, allowed_callers, 4 more }`
 
-                A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+                A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
                 - `name: string`
 
@@ -12828,7 +12828,7 @@ Get a list of runs for an evaluation.
 
           - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -13402,7 +13402,7 @@ Get an evaluation run by ID.
 
                 - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-                  An image input to the model. Learn about [image inputs](/docs/guides/vision).
+                  An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
                   - `detail: ImageDetail`
 
@@ -13695,7 +13695,7 @@ Get an evaluation run by ID.
         Reducing reasoning effort can result in faster responses and fewer tokens
         used on reasoning in a response. Not all reasoning models support every
         value. See the
-        [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+        [reasoning guide](/api/docs/guides/reasoning)
         for model-specific support.
 
         - `"none"`
@@ -13719,7 +13719,7 @@ Get an evaluation run by ID.
         Setting to `{ "type": "json_schema", "json_schema": {...} }` enables
         Structured Outputs which ensures the model will match your supplied JSON
         schema. Learn more in the [Structured Outputs
-        guide](/docs/guides/structured-outputs).
+        guide](/api/docs/guides/structured-outputs).
 
         Setting to `{ "type": "json_object" }` enables the older JSON mode, which
         ensures the message the model generates is valid JSON. Using `json_schema`
@@ -13738,7 +13738,7 @@ Get an evaluation run by ID.
         - `ResponseFormatJSONSchema object { json_schema, type }`
 
           JSON Schema response format. Used to generate structured JSON responses.
-          Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+          Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
           - `json_schema: object { name, description, schema, strict }`
 
@@ -13765,7 +13765,7 @@ Get an evaluation run by ID.
               If set to true, the model will always follow the exact schema defined
               in the `schema` field. Only a subset of JSON Schema is supported when
               `strict` is `true`. To learn more, read the [Structured Outputs
-              guide](/docs/guides/structured-outputs).
+              guide](/api/docs/guides/structured-outputs).
 
           - `type: "json_schema"`
 
@@ -13810,13 +13810,13 @@ Get an evaluation run by ID.
 
           - `parameters: optional FunctionParameters`
 
-            The parameters the functions accepts, described as a JSON Schema object. See the [guide](/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
+            The parameters the functions accepts, described as a JSON Schema object. See the [guide](/api/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
 
             Omitting `parameters` defines a function with an empty parameter list.
 
           - `strict: optional boolean or null`
 
-            Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
+            Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
         - `type: "function"`
 
@@ -13901,7 +13901,7 @@ Get an evaluation run by ID.
           Reducing reasoning effort can result in faster responses and fewer tokens
           used on reasoning in a response. Not all reasoning models support every
           value. See the
-          [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+          [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
         - `temperature: optional number or null`
@@ -14061,7 +14061,7 @@ Get an evaluation run by ID.
         Reducing reasoning effort can result in faster responses and fewer tokens
         used on reasoning in a response. Not all reasoning models support every
         value. See the
-        [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+        [reasoning guide](/api/docs/guides/reasoning)
         for model-specific support.
 
       - `seed: optional number`
@@ -14077,8 +14077,8 @@ Get an evaluation run by ID.
         Configuration options for a text response from the model. Can be plain
         text or structured JSON data. Learn more:
 
-        - [Text inputs and outputs](/docs/guides/text)
-        - [Structured Outputs](/docs/guides/structured-outputs)
+        - [Text inputs and outputs](/api/docs/guides/text)
+        - [Structured Outputs](/api/docs/guides/structured-outputs)
 
         - `format: optional ResponseFormatTextConfig`
 
@@ -14086,7 +14086,7 @@ Get an evaluation run by ID.
 
           Configuring `{ "type": "json_schema" }` enables Structured Outputs,
           which ensures the model will match your supplied JSON schema. Learn more in the
-          [Structured Outputs guide](/docs/guides/structured-outputs).
+          [Structured Outputs guide](/api/docs/guides/structured-outputs).
 
           The default format is `{ "type": "text" }` with no additional options.
 
@@ -14103,7 +14103,7 @@ Get an evaluation run by ID.
           - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
             JSON Schema response format. Used to generate structured JSON responses.
-            Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+            Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
             - `name: string`
 
@@ -14132,7 +14132,7 @@ Get an evaluation run by ID.
               If set to true, the model will always follow the exact schema defined
               in the `schema` field. Only a subset of JSON Schema is supported when
               `strict` is `true`. To learn more, read the [Structured Outputs
-              guide](/docs/guides/structured-outputs).
+              guide](/api/docs/guides/structured-outputs).
 
           - `ResponseFormatJSONObject object { type }`
 
@@ -14149,16 +14149,16 @@ Get an evaluation run by ID.
         The two categories of tools you can provide the model are:
 
         - **Built-in tools**: Tools that are provided by OpenAI that extend the
-          model's capabilities, like [web search](/docs/guides/tools-web-search)
-          or [file search](/docs/guides/tools-file-search). Learn more about
-          [built-in tools](/docs/guides/tools).
+          model's capabilities, like [web search](/api/docs/guides/tools-web-search)
+          or [file search](/api/docs/guides/tools-file-search). Learn more about
+          [built-in tools](/api/docs/guides/tools).
         - **Function calls (custom tools)**: Functions that are defined by you,
           enabling the model to call your own code. Learn more about
-          [function calling](/docs/guides/function-calling).
+          [function calling](/api/docs/guides/function-calling).
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+          Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -14202,7 +14202,7 @@ Get an evaluation run by ID.
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -14327,7 +14327,7 @@ Get an evaluation run by ID.
 
         - `Computer object { type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -14337,7 +14337,7 @@ Get an evaluation run by ID.
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -14370,7 +14370,7 @@ Get an evaluation run by ID.
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
           Search the Internet for sources related to the prompt. Learn more about the
-          [web search tool](/docs/guides/tools-web-search).
+          [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -14434,7 +14434,7 @@ Get an evaluation run by ID.
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -14486,7 +14486,7 @@ Get an evaluation run by ID.
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -15003,7 +15003,7 @@ Get an evaluation run by ID.
 
         - `Custom object { name, type, allowed_callers, 4 more }`
 
-          A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+          A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -15125,7 +15125,7 @@ Get an evaluation run by ID.
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
-              A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+              A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -15195,7 +15195,7 @@ Get an evaluation run by ID.
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -15743,7 +15743,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-                An image input to the model. Learn about [image inputs](/docs/guides/vision).
+                An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
                 - `detail: ImageDetail`
 
@@ -16036,7 +16036,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
       Reducing reasoning effort can result in faster responses and fewer tokens
       used on reasoning in a response. Not all reasoning models support every
       value. See the
-      [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+      [reasoning guide](/api/docs/guides/reasoning)
       for model-specific support.
 
       - `"none"`
@@ -16060,7 +16060,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
       Setting to `{ "type": "json_schema", "json_schema": {...} }` enables
       Structured Outputs which ensures the model will match your supplied JSON
       schema. Learn more in the [Structured Outputs
-      guide](/docs/guides/structured-outputs).
+      guide](/api/docs/guides/structured-outputs).
 
       Setting to `{ "type": "json_object" }` enables the older JSON mode, which
       ensures the message the model generates is valid JSON. Using `json_schema`
@@ -16079,7 +16079,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
       - `ResponseFormatJSONSchema object { json_schema, type }`
 
         JSON Schema response format. Used to generate structured JSON responses.
-        Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+        Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
         - `json_schema: object { name, description, schema, strict }`
 
@@ -16106,7 +16106,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             If set to true, the model will always follow the exact schema defined
             in the `schema` field. Only a subset of JSON Schema is supported when
             `strict` is `true`. To learn more, read the [Structured Outputs
-            guide](/docs/guides/structured-outputs).
+            guide](/api/docs/guides/structured-outputs).
 
         - `type: "json_schema"`
 
@@ -16151,13 +16151,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `parameters: optional FunctionParameters`
 
-          The parameters the functions accepts, described as a JSON Schema object. See the [guide](/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
+          The parameters the functions accepts, described as a JSON Schema object. See the [guide](/api/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
 
           Omitting `parameters` defines a function with an empty parameter list.
 
         - `strict: optional boolean or null`
 
-          Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
+          Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
       - `type: "function"`
 
@@ -16422,7 +16422,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-                    An image input to the model. Learn about [image inputs](/docs/guides/vision).
+                    An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
                     - `detail: ImageDetail`
 
@@ -16715,7 +16715,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           Reducing reasoning effort can result in faster responses and fewer tokens
           used on reasoning in a response. Not all reasoning models support every
           value. See the
-          [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+          [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
           - `"none"`
@@ -16739,7 +16739,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           Setting to `{ "type": "json_schema", "json_schema": {...} }` enables
           Structured Outputs which ensures the model will match your supplied JSON
           schema. Learn more in the [Structured Outputs
-          guide](/docs/guides/structured-outputs).
+          guide](/api/docs/guides/structured-outputs).
 
           Setting to `{ "type": "json_object" }` enables the older JSON mode, which
           ensures the message the model generates is valid JSON. Using `json_schema`
@@ -16758,7 +16758,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           - `ResponseFormatJSONSchema object { json_schema, type }`
 
             JSON Schema response format. Used to generate structured JSON responses.
-            Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+            Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
             - `json_schema: object { name, description, schema, strict }`
 
@@ -16785,7 +16785,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 If set to true, the model will always follow the exact schema defined
                 in the `schema` field. Only a subset of JSON Schema is supported when
                 `strict` is `true`. To learn more, read the [Structured Outputs
-                guide](/docs/guides/structured-outputs).
+                guide](/api/docs/guides/structured-outputs).
 
             - `type: "json_schema"`
 
@@ -16830,13 +16830,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `parameters: optional FunctionParameters`
 
-              The parameters the functions accepts, described as a JSON Schema object. See the [guide](/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
+              The parameters the functions accepts, described as a JSON Schema object. See the [guide](/api/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
 
               Omitting `parameters` defines a function with an empty parameter list.
 
             - `strict: optional boolean or null`
 
-              Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
+              Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
           - `type: "function"`
 
@@ -16921,7 +16921,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             Reducing reasoning effort can result in faster responses and fewer tokens
             used on reasoning in a response. Not all reasoning models support every
             value. See the
-            [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+            [reasoning guide](/api/docs/guides/reasoning)
             for model-specific support.
 
           - `temperature: optional number or null`
@@ -17081,7 +17081,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           Reducing reasoning effort can result in faster responses and fewer tokens
           used on reasoning in a response. Not all reasoning models support every
           value. See the
-          [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+          [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
         - `seed: optional number`
@@ -17097,8 +17097,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           Configuration options for a text response from the model. Can be plain
           text or structured JSON data. Learn more:
 
-          - [Text inputs and outputs](/docs/guides/text)
-          - [Structured Outputs](/docs/guides/structured-outputs)
+          - [Text inputs and outputs](/api/docs/guides/text)
+          - [Structured Outputs](/api/docs/guides/structured-outputs)
 
           - `format: optional ResponseFormatTextConfig`
 
@@ -17106,7 +17106,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             Configuring `{ "type": "json_schema" }` enables Structured Outputs,
             which ensures the model will match your supplied JSON schema. Learn more in the
-            [Structured Outputs guide](/docs/guides/structured-outputs).
+            [Structured Outputs guide](/api/docs/guides/structured-outputs).
 
             The default format is `{ "type": "text" }` with no additional options.
 
@@ -17123,7 +17123,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
               JSON Schema response format. Used to generate structured JSON responses.
-              Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+              Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
               - `name: string`
 
@@ -17152,7 +17152,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 If set to true, the model will always follow the exact schema defined
                 in the `schema` field. Only a subset of JSON Schema is supported when
                 `strict` is `true`. To learn more, read the [Structured Outputs
-                guide](/docs/guides/structured-outputs).
+                guide](/api/docs/guides/structured-outputs).
 
             - `ResponseFormatJSONObject object { type }`
 
@@ -17169,16 +17169,16 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           The two categories of tools you can provide the model are:
 
           - **Built-in tools**: Tools that are provided by OpenAI that extend the
-            model's capabilities, like [web search](/docs/guides/tools-web-search)
-            or [file search](/docs/guides/tools-file-search). Learn more about
-            [built-in tools](/docs/guides/tools).
+            model's capabilities, like [web search](/api/docs/guides/tools-web-search)
+            or [file search](/api/docs/guides/tools-file-search). Learn more about
+            [built-in tools](/api/docs/guides/tools).
           - **Function calls (custom tools)**: Functions that are defined by you,
             enabling the model to call your own code. Learn more about
-            [function calling](/docs/guides/function-calling).
+            [function calling](/api/docs/guides/function-calling).
 
           - `Function object { name, parameters, strict, 6 more }`
 
-            Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+            Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
             - `name: string`
 
@@ -17222,7 +17222,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
             - `type: "file_search"`
 
@@ -17347,7 +17347,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `Computer object { type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `type: "computer"`
 
@@ -17357,7 +17357,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `display_height: number`
 
@@ -17390,7 +17390,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           - `WebSearch object { type, external_web_access, filters, 2 more }`
 
             Search the Internet for sources related to the prompt. Learn more about the
-            [web search tool](/docs/guides/tools-web-search).
+            [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -17454,7 +17454,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
             Give the model access to additional tools via remote Model Context Protocol
-            (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+            (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
             - `server_label: string`
 
@@ -17506,7 +17506,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-              about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+              about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
               Currently supported `connector_id` values are:
 
@@ -18023,7 +18023,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -18145,7 +18145,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `Custom object { name, type, allowed_callers, 4 more }`
 
-                A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+                A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
                 - `name: string`
 
@@ -18215,7 +18215,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -18595,7 +18595,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-                    An image input to the model. Learn about [image inputs](/docs/guides/vision).
+                    An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
                     - `detail: ImageDetail`
 
@@ -18888,7 +18888,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           Reducing reasoning effort can result in faster responses and fewer tokens
           used on reasoning in a response. Not all reasoning models support every
           value. See the
-          [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+          [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
           - `"none"`
@@ -18912,7 +18912,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           Setting to `{ "type": "json_schema", "json_schema": {...} }` enables
           Structured Outputs which ensures the model will match your supplied JSON
           schema. Learn more in the [Structured Outputs
-          guide](/docs/guides/structured-outputs).
+          guide](/api/docs/guides/structured-outputs).
 
           Setting to `{ "type": "json_object" }` enables the older JSON mode, which
           ensures the message the model generates is valid JSON. Using `json_schema`
@@ -18931,7 +18931,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           - `ResponseFormatJSONSchema object { json_schema, type }`
 
             JSON Schema response format. Used to generate structured JSON responses.
-            Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+            Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
             - `json_schema: object { name, description, schema, strict }`
 
@@ -18958,7 +18958,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 If set to true, the model will always follow the exact schema defined
                 in the `schema` field. Only a subset of JSON Schema is supported when
                 `strict` is `true`. To learn more, read the [Structured Outputs
-                guide](/docs/guides/structured-outputs).
+                guide](/api/docs/guides/structured-outputs).
 
             - `type: "json_schema"`
 
@@ -19003,13 +19003,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `parameters: optional FunctionParameters`
 
-              The parameters the functions accepts, described as a JSON Schema object. See the [guide](/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
+              The parameters the functions accepts, described as a JSON Schema object. See the [guide](/api/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
 
               Omitting `parameters` defines a function with an empty parameter list.
 
             - `strict: optional boolean or null`
 
-              Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
+              Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
           - `type: "function"`
 
@@ -19094,7 +19094,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             Reducing reasoning effort can result in faster responses and fewer tokens
             used on reasoning in a response. Not all reasoning models support every
             value. See the
-            [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+            [reasoning guide](/api/docs/guides/reasoning)
             for model-specific support.
 
           - `temperature: optional number or null`
@@ -19254,7 +19254,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           Reducing reasoning effort can result in faster responses and fewer tokens
           used on reasoning in a response. Not all reasoning models support every
           value. See the
-          [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+          [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
         - `seed: optional number`
@@ -19270,8 +19270,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           Configuration options for a text response from the model. Can be plain
           text or structured JSON data. Learn more:
 
-          - [Text inputs and outputs](/docs/guides/text)
-          - [Structured Outputs](/docs/guides/structured-outputs)
+          - [Text inputs and outputs](/api/docs/guides/text)
+          - [Structured Outputs](/api/docs/guides/structured-outputs)
 
           - `format: optional ResponseFormatTextConfig`
 
@@ -19279,7 +19279,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             Configuring `{ "type": "json_schema" }` enables Structured Outputs,
             which ensures the model will match your supplied JSON schema. Learn more in the
-            [Structured Outputs guide](/docs/guides/structured-outputs).
+            [Structured Outputs guide](/api/docs/guides/structured-outputs).
 
             The default format is `{ "type": "text" }` with no additional options.
 
@@ -19296,7 +19296,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
               JSON Schema response format. Used to generate structured JSON responses.
-              Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+              Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
               - `name: string`
 
@@ -19325,7 +19325,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 If set to true, the model will always follow the exact schema defined
                 in the `schema` field. Only a subset of JSON Schema is supported when
                 `strict` is `true`. To learn more, read the [Structured Outputs
-                guide](/docs/guides/structured-outputs).
+                guide](/api/docs/guides/structured-outputs).
 
             - `ResponseFormatJSONObject object { type }`
 
@@ -19342,16 +19342,16 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           The two categories of tools you can provide the model are:
 
           - **Built-in tools**: Tools that are provided by OpenAI that extend the
-            model's capabilities, like [web search](/docs/guides/tools-web-search)
-            or [file search](/docs/guides/tools-file-search). Learn more about
-            [built-in tools](/docs/guides/tools).
+            model's capabilities, like [web search](/api/docs/guides/tools-web-search)
+            or [file search](/api/docs/guides/tools-file-search). Learn more about
+            [built-in tools](/api/docs/guides/tools).
           - **Function calls (custom tools)**: Functions that are defined by you,
             enabling the model to call your own code. Learn more about
-            [function calling](/docs/guides/function-calling).
+            [function calling](/api/docs/guides/function-calling).
 
           - `Function object { name, parameters, strict, 6 more }`
 
-            Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+            Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
             - `name: string`
 
@@ -19395,7 +19395,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
             - `type: "file_search"`
 
@@ -19520,7 +19520,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `Computer object { type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `type: "computer"`
 
@@ -19530,7 +19530,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `display_height: number`
 
@@ -19563,7 +19563,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           - `WebSearch object { type, external_web_access, filters, 2 more }`
 
             Search the Internet for sources related to the prompt. Learn more about the
-            [web search tool](/docs/guides/tools-web-search).
+            [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -19627,7 +19627,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
             Give the model access to additional tools via remote Model Context Protocol
-            (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+            (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
             - `server_label: string`
 
@@ -19679,7 +19679,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-              about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+              about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
               Currently supported `connector_id` values are:
 
@@ -20196,7 +20196,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -20318,7 +20318,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `Custom object { name, type, allowed_callers, 4 more }`
 
-                A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+                A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
                 - `name: string`
 
@@ -20388,7 +20388,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -20778,7 +20778,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-                    An image input to the model. Learn about [image inputs](/docs/guides/vision).
+                    An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
                     - `detail: ImageDetail`
 
@@ -21071,7 +21071,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           Reducing reasoning effort can result in faster responses and fewer tokens
           used on reasoning in a response. Not all reasoning models support every
           value. See the
-          [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+          [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
           - `"none"`
@@ -21095,7 +21095,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           Setting to `{ "type": "json_schema", "json_schema": {...} }` enables
           Structured Outputs which ensures the model will match your supplied JSON
           schema. Learn more in the [Structured Outputs
-          guide](/docs/guides/structured-outputs).
+          guide](/api/docs/guides/structured-outputs).
 
           Setting to `{ "type": "json_object" }` enables the older JSON mode, which
           ensures the message the model generates is valid JSON. Using `json_schema`
@@ -21114,7 +21114,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           - `ResponseFormatJSONSchema object { json_schema, type }`
 
             JSON Schema response format. Used to generate structured JSON responses.
-            Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+            Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
             - `json_schema: object { name, description, schema, strict }`
 
@@ -21141,7 +21141,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 If set to true, the model will always follow the exact schema defined
                 in the `schema` field. Only a subset of JSON Schema is supported when
                 `strict` is `true`. To learn more, read the [Structured Outputs
-                guide](/docs/guides/structured-outputs).
+                guide](/api/docs/guides/structured-outputs).
 
             - `type: "json_schema"`
 
@@ -21186,13 +21186,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `parameters: optional FunctionParameters`
 
-              The parameters the functions accepts, described as a JSON Schema object. See the [guide](/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
+              The parameters the functions accepts, described as a JSON Schema object. See the [guide](/api/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
 
               Omitting `parameters` defines a function with an empty parameter list.
 
             - `strict: optional boolean or null`
 
-              Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
+              Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
           - `type: "function"`
 
@@ -21277,7 +21277,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             Reducing reasoning effort can result in faster responses and fewer tokens
             used on reasoning in a response. Not all reasoning models support every
             value. See the
-            [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+            [reasoning guide](/api/docs/guides/reasoning)
             for model-specific support.
 
           - `temperature: optional number or null`
@@ -21437,7 +21437,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           Reducing reasoning effort can result in faster responses and fewer tokens
           used on reasoning in a response. Not all reasoning models support every
           value. See the
-          [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+          [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
         - `seed: optional number`
@@ -21453,8 +21453,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           Configuration options for a text response from the model. Can be plain
           text or structured JSON data. Learn more:
 
-          - [Text inputs and outputs](/docs/guides/text)
-          - [Structured Outputs](/docs/guides/structured-outputs)
+          - [Text inputs and outputs](/api/docs/guides/text)
+          - [Structured Outputs](/api/docs/guides/structured-outputs)
 
           - `format: optional ResponseFormatTextConfig`
 
@@ -21462,7 +21462,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             Configuring `{ "type": "json_schema" }` enables Structured Outputs,
             which ensures the model will match your supplied JSON schema. Learn more in the
-            [Structured Outputs guide](/docs/guides/structured-outputs).
+            [Structured Outputs guide](/api/docs/guides/structured-outputs).
 
             The default format is `{ "type": "text" }` with no additional options.
 
@@ -21479,7 +21479,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
               JSON Schema response format. Used to generate structured JSON responses.
-              Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+              Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
               - `name: string`
 
@@ -21508,7 +21508,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 If set to true, the model will always follow the exact schema defined
                 in the `schema` field. Only a subset of JSON Schema is supported when
                 `strict` is `true`. To learn more, read the [Structured Outputs
-                guide](/docs/guides/structured-outputs).
+                guide](/api/docs/guides/structured-outputs).
 
             - `ResponseFormatJSONObject object { type }`
 
@@ -21525,16 +21525,16 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           The two categories of tools you can provide the model are:
 
           - **Built-in tools**: Tools that are provided by OpenAI that extend the
-            model's capabilities, like [web search](/docs/guides/tools-web-search)
-            or [file search](/docs/guides/tools-file-search). Learn more about
-            [built-in tools](/docs/guides/tools).
+            model's capabilities, like [web search](/api/docs/guides/tools-web-search)
+            or [file search](/api/docs/guides/tools-file-search). Learn more about
+            [built-in tools](/api/docs/guides/tools).
           - **Function calls (custom tools)**: Functions that are defined by you,
             enabling the model to call your own code. Learn more about
-            [function calling](/docs/guides/function-calling).
+            [function calling](/api/docs/guides/function-calling).
 
           - `Function object { name, parameters, strict, 6 more }`
 
-            Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+            Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
             - `name: string`
 
@@ -21578,7 +21578,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
             - `type: "file_search"`
 
@@ -21703,7 +21703,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `Computer object { type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `type: "computer"`
 
@@ -21713,7 +21713,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `display_height: number`
 
@@ -21746,7 +21746,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           - `WebSearch object { type, external_web_access, filters, 2 more }`
 
             Search the Internet for sources related to the prompt. Learn more about the
-            [web search tool](/docs/guides/tools-web-search).
+            [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -21810,7 +21810,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
             Give the model access to additional tools via remote Model Context Protocol
-            (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+            (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
             - `server_label: string`
 
@@ -21862,7 +21862,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-              about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+              about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
               Currently supported `connector_id` values are:
 
@@ -22379,7 +22379,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -22501,7 +22501,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `Custom object { name, type, allowed_callers, 4 more }`
 
-                A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+                A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
                 - `name: string`
 
@@ -22571,7 +22571,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -22951,7 +22951,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-                    An image input to the model. Learn about [image inputs](/docs/guides/vision).
+                    An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
                     - `detail: ImageDetail`
 
@@ -23244,7 +23244,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           Reducing reasoning effort can result in faster responses and fewer tokens
           used on reasoning in a response. Not all reasoning models support every
           value. See the
-          [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+          [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
           - `"none"`
@@ -23268,7 +23268,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           Setting to `{ "type": "json_schema", "json_schema": {...} }` enables
           Structured Outputs which ensures the model will match your supplied JSON
           schema. Learn more in the [Structured Outputs
-          guide](/docs/guides/structured-outputs).
+          guide](/api/docs/guides/structured-outputs).
 
           Setting to `{ "type": "json_object" }` enables the older JSON mode, which
           ensures the message the model generates is valid JSON. Using `json_schema`
@@ -23287,7 +23287,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           - `ResponseFormatJSONSchema object { json_schema, type }`
 
             JSON Schema response format. Used to generate structured JSON responses.
-            Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+            Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
             - `json_schema: object { name, description, schema, strict }`
 
@@ -23314,7 +23314,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 If set to true, the model will always follow the exact schema defined
                 in the `schema` field. Only a subset of JSON Schema is supported when
                 `strict` is `true`. To learn more, read the [Structured Outputs
-                guide](/docs/guides/structured-outputs).
+                guide](/api/docs/guides/structured-outputs).
 
             - `type: "json_schema"`
 
@@ -23359,13 +23359,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `parameters: optional FunctionParameters`
 
-              The parameters the functions accepts, described as a JSON Schema object. See the [guide](/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
+              The parameters the functions accepts, described as a JSON Schema object. See the [guide](/api/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
 
               Omitting `parameters` defines a function with an empty parameter list.
 
             - `strict: optional boolean or null`
 
-              Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
+              Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
           - `type: "function"`
 
@@ -23450,7 +23450,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             Reducing reasoning effort can result in faster responses and fewer tokens
             used on reasoning in a response. Not all reasoning models support every
             value. See the
-            [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+            [reasoning guide](/api/docs/guides/reasoning)
             for model-specific support.
 
           - `temperature: optional number or null`
@@ -23610,7 +23610,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           Reducing reasoning effort can result in faster responses and fewer tokens
           used on reasoning in a response. Not all reasoning models support every
           value. See the
-          [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+          [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
         - `seed: optional number`
@@ -23626,8 +23626,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           Configuration options for a text response from the model. Can be plain
           text or structured JSON data. Learn more:
 
-          - [Text inputs and outputs](/docs/guides/text)
-          - [Structured Outputs](/docs/guides/structured-outputs)
+          - [Text inputs and outputs](/api/docs/guides/text)
+          - [Structured Outputs](/api/docs/guides/structured-outputs)
 
           - `format: optional ResponseFormatTextConfig`
 
@@ -23635,7 +23635,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             Configuring `{ "type": "json_schema" }` enables Structured Outputs,
             which ensures the model will match your supplied JSON schema. Learn more in the
-            [Structured Outputs guide](/docs/guides/structured-outputs).
+            [Structured Outputs guide](/api/docs/guides/structured-outputs).
 
             The default format is `{ "type": "text" }` with no additional options.
 
@@ -23652,7 +23652,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
               JSON Schema response format. Used to generate structured JSON responses.
-              Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+              Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
               - `name: string`
 
@@ -23681,7 +23681,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 If set to true, the model will always follow the exact schema defined
                 in the `schema` field. Only a subset of JSON Schema is supported when
                 `strict` is `true`. To learn more, read the [Structured Outputs
-                guide](/docs/guides/structured-outputs).
+                guide](/api/docs/guides/structured-outputs).
 
             - `ResponseFormatJSONObject object { type }`
 
@@ -23698,16 +23698,16 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           The two categories of tools you can provide the model are:
 
           - **Built-in tools**: Tools that are provided by OpenAI that extend the
-            model's capabilities, like [web search](/docs/guides/tools-web-search)
-            or [file search](/docs/guides/tools-file-search). Learn more about
-            [built-in tools](/docs/guides/tools).
+            model's capabilities, like [web search](/api/docs/guides/tools-web-search)
+            or [file search](/api/docs/guides/tools-file-search). Learn more about
+            [built-in tools](/api/docs/guides/tools).
           - **Function calls (custom tools)**: Functions that are defined by you,
             enabling the model to call your own code. Learn more about
-            [function calling](/docs/guides/function-calling).
+            [function calling](/api/docs/guides/function-calling).
 
           - `Function object { name, parameters, strict, 6 more }`
 
-            Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+            Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
             - `name: string`
 
@@ -23751,7 +23751,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
             - `type: "file_search"`
 
@@ -23876,7 +23876,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `Computer object { type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `type: "computer"`
 
@@ -23886,7 +23886,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `display_height: number`
 
@@ -23919,7 +23919,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           - `WebSearch object { type, external_web_access, filters, 2 more }`
 
             Search the Internet for sources related to the prompt. Learn more about the
-            [web search tool](/docs/guides/tools-web-search).
+            [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -23983,7 +23983,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
             Give the model access to additional tools via remote Model Context Protocol
-            (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+            (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
             - `server_label: string`
 
@@ -24035,7 +24035,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-              about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+              about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
               Currently supported `connector_id` values are:
 
@@ -24552,7 +24552,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -24674,7 +24674,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `Custom object { name, type, allowed_callers, 4 more }`
 
-                A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+                A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
                 - `name: string`
 
@@ -24744,7 +24744,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 

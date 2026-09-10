@@ -5,7 +5,7 @@
 **post** `/moderations`
 
 Classifies if text and/or image inputs are potentially harmful. Learn
-more in the [moderation guide](/docs/guides/moderation).
+more in the [moderation guide](/api/docs/guides/moderation).
 
 ### Body Parameters
 
@@ -61,8 +61,8 @@ more in the [moderation guide](/docs/guides/moderation).
 - `model: optional string or ModerationModel`
 
   The content moderation model you would like to use. Learn more in
-  [the moderation guide](/docs/guides/moderation), and learn about
-  available models [here](/docs/models#moderation).
+  [the moderation guide](/api/docs/guides/moderation), and learn about
+  available models [here](/api/docs/guides/moderation).
 
   - `string`
 

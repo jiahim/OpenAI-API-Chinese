@@ -1,16 +1,16 @@
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取 Markdown 版本的文档页面。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 来获取。
 
-## 创建嵌入
+## Create embeddings
 
 **post** `/embeddings`
 
 创建表示输入文本的嵌入向量。
 
-### Body 参数
+### 请求体参数
 
 - `input: string or array of string or array of number or array of array of number`
 
-  用于嵌入的输入文本，编码为字符串或 token 数组。如需在单个请求中嵌入多个输入，请传入字符串数组或 token 数组的数组。输入不得超过模型的最大输入 token 数（所有嵌入模型均为 8192 个 token），不能为空字符串，且任何数组的维度必须不超过 2048。 [Python 代码示例](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) 用于计算 token 数。除了每个输入的 token 上限外，所有嵌入模型在单个请求中跨所有输入累计最多 300,000 个 token。
+  要嵌入的输入，编码为字符串或 token 数组。如需在单次请求中嵌入多个输入，请传入字符串数组或 token 数组。输入不得超过该模型的最大输入 token 数（所有嵌入模型均为 8192 个 token），不能为空字符串，且任何数组的维度不得超过 2048。 [Python 代码示例](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) 用于计算 token 数。除了每个输入的 token 上限外，所有嵌入模型还限制单次请求中所有输入的总 token 数不得超过 300,000。
 
   - `String = string`
 
@@ -26,11 +26,11 @@
 
   - `Array = array of array of number`
 
-    包含整数的数组的数组，将被转换为嵌入向量。
+    将被转换为嵌入向量的整数数组的数组。
 
 - `model: string or EmbeddingModel`
 
-  要使用的模型 ID。你可以使用 [列出模型](/docs/api-reference/models/list) API 查看所有可用模型，或参阅我们的 [模型概述](/docs/models) 了解相关描述。
+  要使用的模型 ID。你可以查看 [模型列表](/api/reference/resources/models/methods/list) API 以查看所有可用模型，或参阅我们的 [模型概述](/api/docs/models) 以了解相关描述。
 
   - `string`
 
@@ -56,7 +56,7 @@
 
 - `user: optional string`
 
-  用于标识你终端用户的唯一标识符，可帮助 OpenAI 监控和检测滥用行为。 [了解更多](/docs/guides/safety-best-practices#end-user-ids).
+  代表你最终用户的唯一标识符，可帮助 OpenAI 监控和检测滥用行为。 [了解详情](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
 ### Returns
 
@@ -68,7 +68,7 @@
 
     - `embedding: array of number`
 
-      嵌入向量，即一个浮点数列表。向量长度取决于模型，如 [embedding guide](/docs/guides/embeddings).
+      嵌入向量，即一个浮点数列表。向量的长度取决于模型，详见 [embedding guide](/api/docs/guides/embeddings).
 
     - `index: number`
 
@@ -82,7 +82,7 @@
 
   - `model: string`
 
-    用于生成该嵌入的模型名称。
+    用于生成该嵌入的模型的名称。
 
   - `object: "list"`
 
@@ -92,7 +92,7 @@
 
   - `usage: object { prompt_tokens, total_tokens }`
 
-    本次请求的使用信息。
+    本次请求的使用情况信息。
 
     - `prompt_tokens: number`
 
@@ -100,7 +100,7 @@
 
     - `total_tokens: number`
 
-      本次请求所使用的 token 总数。
+      本次请求使用的 token 总数。
 
 ### 示例
 

@@ -1,18 +1,18 @@
 # Embeddings
 
-> 完整的文档索引请参阅 [llms.txt](/llms.txt)。可在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。各文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 获取。
 
-## Create embeddings
+## 创建嵌入
 
 **post** `/embeddings`
 
-创建一个表示输入文本的嵌入向量。
+创建表示输入文本的嵌入向量。
 
-### 请求体参数
+### Body Parameters
 
 - `input: string or array of string or array of number or array of array of number`
 
-  用于嵌入的输入文本，可以编码为字符串或 token 数组。如果要在单个请求中嵌入多个输入，请传入字符串数组或 token 数组的数组。输入不得超过该模型的最大输入 token 数（所有嵌入模型均为 8192 个 token），不能为空字符串，任何数组的维度必须不超过 2048。 [Python 代码示例](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) 用于统计 token。除了每个输入的 token 上限外，所有嵌入模型还限制单个请求中所有输入的 token 总数不得超过 300,000。
+  待嵌入的输入，编码为字符串或 token 数组。如需在单次请求中嵌入多个输入，请传入字符串数组或 token 数组。输入不得超过该模型的单次最大输入 token 数（所有嵌入模型均为 8192 个 token），不能为空字符串，任何数组的维度不得超过 2048。 [Python 代码示例](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) 以计算 token。除每个输入的 token 上限外，所有嵌入模型在单次请求中对所有输入的 token 总和还设有 300,000 个 token 的上限。
 
   - `String = string`
 
@@ -28,11 +28,11 @@
 
   - `Array = array of array of number`
 
-    包含整数的数组的数组，将被转换为嵌入向量。
+    将被转换为嵌入向量的、包含整数的数组所组成的数组。
 
 - `model: string or EmbeddingModel`
 
-  要使用的模型 ID。你可以使用 [列出模型](/docs/api-reference/models/list) API 查看所有可用模型，或参阅我们的 [模型概述](/docs/models) 了解相关说明。
+  要使用的模型 ID。你可以使用 [模型列表](/api/reference/resources/models/methods/list) API 查看所有可用模型，或参阅我们的 [模型概述](/api/docs/models) 了解相关说明。
 
   - `string`
 
@@ -46,7 +46,7 @@
 
 - `dimensions: optional number`
 
-  生成的输出嵌入向量应具有的维度数。仅在 `text-embedding-3` 及更高版本的模型中受支持。
+  生成的输出嵌入向量的维度数。仅 `text-embedding-3` 及更高版本的模型支持。
 
 - `encoding_format: optional "float" or "base64"`
 
@@ -58,23 +58,23 @@
 
 - `user: optional string`
 
-  用于标识你终端用户的唯一标识符，可以帮助 OpenAI 监控和检测滥用行为。 [了解更多](/docs/guides/safety-best-practices#end-user-ids).
+  用于标识你终端用户的唯一标识符，可帮助 OpenAI 监控并检测滥用行为。 [了解更多](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
-### 返回值
+### Returns
 
 - `CreateEmbeddingResponse object { data, model, object, usage }`
 
   - `data: array of Embedding`
 
-    模型生成的嵌入列表。
+    模型生成的 embedding 列表。
 
     - `embedding: array of number`
 
-      嵌入向量，是一个浮点数列表。向量的长度取决于所使用的模型，详见 [嵌入指南](/docs/guides/embeddings).
+      embedding 向量，是一个浮点数列表。向量的长度取决于模型，详见 [embedding 指南](/api/docs/guides/embeddings).
 
     - `index: number`
 
-      嵌入在嵌入列表中的索引。
+      embedding 在 embedding 列表中的索引。
 
     - `object: "embedding"`
 
@@ -84,7 +84,7 @@
 
   - `model: string`
 
-    用于生成嵌入的模型名称。
+    用于生成 embedding 的模型名称。
 
   - `object: "list"`
 
@@ -94,11 +94,11 @@
 
   - `usage: object { prompt_tokens, total_tokens }`
 
-    本次请求的使用信息。
+    本次请求的使用量信息。
 
     - `prompt_tokens: number`
 
-      提示词使用的 token 数量。
+      提示词使用的 token 数。
 
     - `total_tokens: number`
 
@@ -118,7 +118,7 @@ curl https://api.openai.com/v1/embeddings \
         }'
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -153,7 +153,7 @@ curl https://api.openai.com/v1/embeddings \
   }'
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -180,21 +180,21 @@ curl https://api.openai.com/v1/embeddings \
 
 ## 域类型
 
-### Create Embedding 响应
+### Create Embedding Response
 
 - `CreateEmbeddingResponse object { data, model, object, usage }`
 
   - `data: array of Embedding`
 
-    模型生成的嵌入列表。
+    模型生成的 embedding 列表。
 
     - `embedding: array of number`
 
-      嵌入向量，是一个浮点数列表。向量的长度取决于所使用的模型，详见 [嵌入指南](/docs/guides/embeddings).
+      embedding 向量，是一个浮点数列表。向量的长度取决于模型，详见 [embedding 指南](/api/docs/guides/embeddings).
 
     - `index: number`
 
-      嵌入在嵌入列表中的索引。
+      embedding 在 embedding 列表中的索引。
 
     - `object: "embedding"`
 
@@ -204,7 +204,7 @@ curl https://api.openai.com/v1/embeddings \
 
   - `model: string`
 
-    用于生成嵌入的模型名称。
+    用于生成 embedding 的模型名称。
 
   - `object: "list"`
 
@@ -214,11 +214,11 @@ curl https://api.openai.com/v1/embeddings \
 
   - `usage: object { prompt_tokens, total_tokens }`
 
-    本次请求的使用信息。
+    本次请求的使用量信息。
 
     - `prompt_tokens: number`
 
-      提示词使用的 token 数量。
+      提示词使用的 token 数。
 
     - `total_tokens: number`
 
@@ -228,15 +228,15 @@ curl https://api.openai.com/v1/embeddings \
 
 - `Embedding object { embedding, index, object }`
 
-  表示由 embedding 接口返回的嵌入向量。
+  表示由嵌入端点返回的嵌入向量。
 
   - `embedding: array of number`
 
-    嵌入向量，是一个浮点数列表。向量的长度取决于所使用的模型，详见 [嵌入指南](/docs/guides/embeddings).
+    embedding 向量，是一个浮点数列表。向量的长度取决于模型，详见 [embedding 指南](/api/docs/guides/embeddings).
 
   - `index: number`
 
-    嵌入在嵌入列表中的索引。
+    embedding 在 embedding 列表中的索引。
 
   - `object: "embedding"`
 

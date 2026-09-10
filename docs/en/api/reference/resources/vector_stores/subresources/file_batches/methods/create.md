@@ -64,7 +64,7 @@ Create a vector store file batch.
 
 - `file_ids: optional array of string`
 
-  A list of [File](/docs/api-reference/files) IDs that the vector store should use. Useful for tools like `file_search` that can access files.  If `attributes` or `chunking_strategy` are provided, they will be  applied to all files in the batch. The maximum batch size is 2000 files. This endpoint is recommended for multi-file ingestion and helps reduce per-vector-store write request pressure. Mutually exclusive with `files`.
+  A list of [File](/api/reference/resources/files) IDs that the vector store should use. Useful for tools like `file_search` that can access files. If `attributes` or `chunking_strategy` are provided, they will be applied to all files in the batch. The maximum batch size is 2000 files. This endpoint is recommended for multi-file ingestion and helps reduce per-vector-store write request pressure. Mutually exclusive with `files`.
 
 - `files: optional array of object { file_id, attributes, chunking_strategy }`
 
@@ -72,7 +72,7 @@ Create a vector store file batch.
 
   - `file_id: string`
 
-    A [File](/docs/api-reference/files) ID that the vector store should use. Useful for tools like `file_search` that can access files. For multi-file ingestion, we recommend [`file_batches`](/docs/api-reference/vector-stores-file-batches/createBatch) to minimize per-vector-store write requests.
+    A [File](/api/reference/resources/files) ID that the vector store should use. Useful for tools like `file_search` that can access files. For multi-file ingestion, we recommend [`file_batches`](/api/reference/resources/vector_stores/subresources/file_batches/methods/create) to minimize per-vector-store write requests.
 
   - `attributes: optional map[string or number or boolean] or null`
 
@@ -148,7 +148,7 @@ Create a vector store file batch.
 
   - `vector_store_id: string`
 
-    The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to.
+    The ID of the [vector store](/api/reference/resources/vector_stores) that the [File](/api/reference/resources/files) is attached to.
 
 ### Example
 

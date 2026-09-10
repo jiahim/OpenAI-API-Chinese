@@ -1,22 +1,22 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取对应文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt). 可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## Create batch
 
 **post** `/batches`
 
-通过已上传的请求文件创建并执行批量任务
+从已上传的请求文件创建并执行批处理任务
 
 ### 请求体参数
 
 - `completion_window: "24h"`
 
-  批处理应该被处理的时间范围。目前仅支持 `24h` 。
+  处理该批次的时间范围。目前仅支持 `24h` 。
 
   - `"24h"`
 
 - `endpoint: "/v1/responses" or "/v1/chat/completions" or "/v1/embeddings" or 5 more`
 
-  用于该批次中所有请求的端点。目前 `/v1/responses`, `/v1/chat/completions`, `/v1/embeddings`, `/v1/completions`, `/v1/moderations`, `/v1/images/generations`, `/v1/images/edits`，和 `/v1/videos` 受支持。请注意， `/v1/embeddings` 批次在整个批次的所有请求中还限制为最多 50,000 个嵌入输入。
+  批次中所有请求所使用的端点。目前 `/v1/responses`, `/v1/chat/completions`, `/v1/embeddings`, `/v1/completions`, `/v1/moderations`, `/v1/images/generations`, `/v1/images/edits`，和 `/v1/videos` 受支持。请注意， `/v1/embeddings` 批次还限制了整个批次中所有请求的 embedding 输入最多为 50,000 个。
 
   - `"/v1/responses"`
 
@@ -38,32 +38,32 @@
 
   已上传文件的 ID，其中包含新批次的请求。
 
-  参见 [上传文件](/docs/api-reference/files/create) 了解如何上传文件。
+  请参阅 [上传文件](/api/reference/resources/files/methods/create) 了解如何上传文件。
 
-  你的输入文件必须格式化为 [JSONL 文件](/docs/api-reference/batch/request-input)，并且必须以以下用途上传： `batch`。文件最多可包含 50,000 个请求，文件大小可达 200 MB。
+  你的输入文件必须格式化为 [JSONL 文件](/api/docs/guides/batch#1-prepare-your-batch-file)，并且必须使用 purpose 参数上传 `batch`。该文件最多可包含 50,000 个请求，大小可达 200 MB。
 
 - `metadata: optional Metadata or null`
 
-  可以附加到对象的 16 个键值对集合。这可以
-  用于以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
-  格式，并通过 接口 或仪表板查询对象。
+  可附加到对象的 16 组键值对。可以用于
+  以结构化格式存储关于对象的附加信息，并通过 API 或仪表板查询对象。
+  以结构化格式存储关于对象的附加信息，并通过 接口 或仪表板查询对象。
 
-  键是字符串，最大长度为 64 个字符。值是字符串
-  ，最大长度为 512 个字符。
+  键为字符串，最长 64 个字符。值为字符串
+  ，最长 512 个字符。
 
 - `output_expires_after: optional object { anchor, seconds }`
 
-  为批次生成的输出和/或错误文件的过期策略。
+  为批次生成的和/或错误文件的过期策略。
 
   - `anchor: "created_at"`
 
-    过期策略适用的起始时间戳。支持以下起始时间： `created_at`。请注意，起始时间是文件创建时间，而不是批处理创建时间。
+    应用过期策略的锚定时间戳。支持的锚定点： `created_at`. 注意锚定点是文件创建时间，而非批处理创建时间。
 
     - `"created_at"`
 
   - `seconds: number`
 
-    距起始时间多少秒后文件过期。必须介于 3600（1 小时）和 2592000（30 天）之间。
+    文件在锚定时间之后过期的秒数。必须介于 3600（1 小时）到 2592000（30 天）之间。
 
 ### Returns
 
@@ -73,19 +73,19 @@
 
   - `completion_window: string`
 
-    批次应在此时间范围内被处理。
+    批处理应在该时间范围内完成。
 
   - `created_at: number`
 
-    批次创建时的 Unix 时间戳（以秒为单位）。
+    批处理创建时的 Unix 时间戳（以秒为单位）。
 
   - `endpoint: string`
 
-    批次使用的 OpenAI API 端点。
+    批处理使用的 OpenAI API 端点。
 
   - `input_file_id: string`
 
-    批次输入文件的 ID。
+    批处理的输入文件 ID。
 
   - `object: "batch"`
 
@@ -95,7 +95,7 @@
 
   - `status: "validating" or "failed" or "in_progress" or 5 more`
 
-    批次的当前状态。
+    批处理的当前状态。
 
     - `"validating"`
 
@@ -115,19 +115,19 @@
 
   - `cancelled_at: optional number`
 
-    批次被取消时的 Unix 时间戳（以秒为单位）。
+    批处理被取消时的 Unix 时间戳（以秒为单位）。
 
   - `cancelling_at: optional number`
 
-    批次开始取消时的 Unix 时间戳（以秒为单位）。
+    批处理开始取消时的 Unix 时间戳（以秒为单位）。
 
   - `completed_at: optional number`
 
-    批次完成时的 Unix 时间戳（以秒为单位）。
+    批处理完成时的 Unix 时间戳（以秒为单位）。
 
   - `error_file_id: optional string`
 
-    包含错误请求输出的文件 ID。
+    包含出错请求输出内容的文件 ID。
 
   - `errors: optional object { data, object }`
 
@@ -139,11 +139,11 @@
 
       - `line: optional number or null`
 
-        发生错误的输入文件所在行号（如果适用）。
+        发生错误的输入文件行号（如果适用）。
 
       - `message: optional string`
 
-        提供有关错误更多细节的人类可读消息。
+        提供有关错误更多详细信息的可读消息。
 
       - `param: optional string or null`
 
@@ -155,82 +155,82 @@
 
   - `expired_at: optional number`
 
-    批次过期时的 Unix 时间戳（以秒为单位）。
+    批处理过期时的 Unix 时间戳（以秒为单位）。
 
   - `expires_at: optional number`
 
-    批次将过期时的 Unix 时间戳（以秒为单位）。
+    批处理将过期时的 Unix 时间戳（以秒为单位）。
 
   - `failed_at: optional number`
 
-    批次失败时的 Unix 时间戳（以秒为单位）。
+    批处理失败时的 Unix 时间戳（以秒为单位）。
 
   - `finalizing_at: optional number`
 
-    批次开始完成时的 Unix 时间戳（以秒为单位）。
+    批处理开始完成最终处理时的 Unix 时间戳（以秒为单位）。
 
   - `in_progress_at: optional number`
 
-    批次开始处理时的 Unix 时间戳（以秒为单位）。
+    批处理开始处理时的 Unix 时间戳（以秒为单位）。
 
   - `metadata: optional Metadata or null`
 
-    可以附加到对象的 16 个键值对集合。这可以
-    用于以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
-    格式，并通过 接口 或仪表板查询对象。
+    可附加到对象的 16 组键值对。可以用于
+    以结构化格式存储关于对象的附加信息，并通过 API 或仪表板查询对象。
+    以结构化格式存储关于对象的附加信息，并通过 接口 或仪表板查询对象。
 
-    键是字符串，最大长度为 64 个字符。值是字符串
-    ，最大长度为 512 个字符。
+    键为字符串，最长 64 个字符。值为字符串
+    ，最长 512 个字符。
 
   - `model: optional string`
 
-    用于处理批次的模型 ID，例如 `gpt-6-astra`. OpenAI
-    提供多种不同能力、性能特征的模型，并覆盖不同的价格区间。
-    请参阅 [模型
-    指南](/docs/models) 以浏览和对比可用的模型。
+    用于处理该批处理的模型 ID，例如 `gpt-6-astra`. OpenAI
+    提供多种模型，它们在能力、性能
+    特性和价格方面各不相同。请参阅 [模型
+    指南](/api/docs/models) 以浏览和比较可用的模型。
 
   - `output_file_id: optional string`
 
-    包含成功执行请求输出结果的文件 ID。
+    包含成功执行的请求输出内容的文件 ID。
 
   - `request_counts: optional BatchRequestCounts`
 
-    批量任务中不同状态的请求计数。
+    该批次中不同状态的请求计数。
 
     - `completed: number`
 
-      已成功完成的请求数量。
+      已成功完成的请求数。
 
     - `failed: number`
 
-      已失败的请求数量。
+      已失败的请求数。
 
     - `total: number`
 
-      批量任务中的请求总数。
+      该批次中的请求总数。
 
   - `usage: optional BatchUsage`
 
-    表示 token 用量详情，包括输入 token、输出 token 的明细分解以及所使用
-    的 token 总数。仅针对 2025 年 9 月 7 日之后创建的批量任务填充。
-    的 token 总数。仅针对 2025 年 9 月 7 日之后创建的批量任务填充。
+    表示令牌使用详情，包括输入令牌、输出令牌、
+    输出令牌的细分以及使用的令牌总数。仅在
+    2025 年 9 月 7 日之后创建的批次上填充。
 
     - `input_tokens: number`
 
-      输入 token 的数量。
+      输入令牌的数量。
 
     - `input_tokens_details: object { cached_tokens }`
 
-      输入 token 的详细分解。
+      输入令牌的详细细分。
 
       - `cached_tokens: number`
 
-        从缓存中检索到的 token 数量。 [详细了解
-        提示缓存](/docs/guides/prompt-caching).
+        从缓存中检索到的令牌数量。 [详细了解
+        提示缓存](/api/docs/guides/prompt-caching).
 
     - `output_tokens: number`
 
-      输出 token 的数量。
+      输出令牌的数量。
 
     - `output_tokens_details: object { reasoning_tokens }`
 
