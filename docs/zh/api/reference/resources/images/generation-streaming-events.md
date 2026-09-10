@@ -1,13 +1,13 @@
 # 图像生成流式事件
 
-> 完整的文档索引请参见 [llms.txt](/llms.txt)。可在页面 URL 末尾附加 `.md` 来获取相应文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
 通过服务端发送事件实时流式生成和编辑图像。
-[详细了解图像流式传输](https://developers.openai.com/docs/guides/image-generation).
+[详细了解图像流式传输](https://developers.openai.com/api/docs/guides/image-generation).
 
 ## image_generation.partial_image
 
-在图像生成流式传输过程中，当部分图像可用时发出。
+在图像生成流式传输过程中，当有部分图像可用时发出。
 
 ### Schema
 
@@ -198,6 +198,14 @@ Schema name: `ImageGenPartialImageEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -210,7 +218,9 @@ Schema name: `ImageGenPartialImageEvent`
       "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 0",
       "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 1",
       "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 2",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 3"
+      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 3",
+      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 4",
+      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 5"
     ]
   },
   "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size": {
@@ -218,38 +228,45 @@ Schema name: `ImageGenPartialImageEvent`
     "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the requested image.\n",
+    "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/size",
       "types": [
         {
-          "kind": "HttpTypeLiteral",
-          "literal": "1024x1024"
+          "kind": "HttpTypeString"
         },
         {
-          "kind": "HttpTypeLiteral",
-          "literal": "1024x1536"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "1536x1024"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "auto"
+          "kind": "HttpTypeUnion",
+          "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/size/anyOf/1",
+          "types": [
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "1024x1024"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "1024x1536"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "1536x1024"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "auto"
+            }
+          ]
         }
       ]
     },
     "optional": false,
     "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
+    "schemaType": "union",
+    "childrenParentSchema": "union",
     "children": [
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (member) 0",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (member) 1",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (member) 2",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (member) 3"
+      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 0",
+      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1"
     ]
   },
   "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) type": {
@@ -343,42 +360,100 @@ Schema name: `ImageGenPartialImageEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
-      "literal": "auto"
+      "literal": "xhigh"
     }
   },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (member) 0": {
+  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 4": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
-      "literal": "1024x1024"
+      "literal": "max"
     }
   },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "1024x1536"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "1536x1024"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (member) 3": {
+  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 5": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
+  },
+  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 0": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/size/anyOf/0",
+    "ident": "UnionMember0",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "children": []
+  },
+  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/size/anyOf/1",
+    "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
+    "ident": "UnionMember1",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/size/anyOf/1",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "1024x1024"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "1024x1536"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "1536x1024"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 0",
+      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 1",
+      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 2",
+      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 3"
+    ]
   },
   "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "image_generation.partial_image"
+    }
+  },
+  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "1024x1024"
+    }
+  },
+  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "1024x1536"
+    }
+  },
+  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "1536x1024"
+    }
+  },
+  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
     }
   }
 }
@@ -401,7 +476,7 @@ Schema name: `ImageGenPartialImageEvent`
 
 ## image_generation.completed
 
-当图像生成完成且最终图像可用时发出。
+在图像生成完成且最终图像可用时发出。
 
 ### Schema
 
@@ -578,6 +653,14 @@ Schema name: `ImageGenCompletedEvent`
         },
         {
           "kind": "HttpTypeLiteral",
+          "literal": "xhigh"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "max"
+        },
+        {
+          "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
       ]
@@ -590,7 +673,9 @@ Schema name: `ImageGenCompletedEvent`
       "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 0",
       "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 1",
       "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 2",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 3"
+      "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 3",
+      "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 4",
+      "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 5"
     ]
   },
   "(resource) images > (model) image_gen_completed_event > (schema) > (property) size": {
@@ -598,38 +683,45 @@ Schema name: `ImageGenCompletedEvent`
     "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/size",
     "deprecated": false,
     "key": "size",
-    "docstring": "The size of the generated image.\n",
+    "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/size",
       "types": [
         {
-          "kind": "HttpTypeLiteral",
-          "literal": "1024x1024"
+          "kind": "HttpTypeString"
         },
         {
-          "kind": "HttpTypeLiteral",
-          "literal": "1024x1536"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "1536x1024"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "auto"
+          "kind": "HttpTypeUnion",
+          "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/size/anyOf/1",
+          "types": [
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "1024x1024"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "1024x1536"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "1536x1024"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "auto"
+            }
+          ]
         }
       ]
     },
     "optional": false,
     "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
+    "schemaType": "union",
+    "childrenParentSchema": "union",
     "children": [
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (member) 0",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (member) 1",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (member) 2",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (member) 3"
+      "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 0",
+      "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1"
     ]
   },
   "(resource) images > (model) image_gen_completed_event > (schema) > (property) type": {
@@ -757,36 +849,66 @@ Schema name: `ImageGenCompletedEvent`
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
-      "literal": "auto"
+      "literal": "xhigh"
     }
   },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (member) 0": {
+  "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 4": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
-      "literal": "1024x1024"
+      "literal": "max"
     }
   },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "1024x1536"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "1536x1024"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (member) 3": {
+  "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 5": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
+  },
+  "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 0": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/size/anyOf/0",
+    "ident": "UnionMember0",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "children": []
+  },
+  "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/size/anyOf/1",
+    "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
+    "ident": "UnionMember1",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/size/anyOf/1",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "1024x1024"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "1024x1536"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "1536x1024"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1 > (member) 0",
+      "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1 > (member) 1",
+      "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1 > (member) 2",
+      "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1 > (member) 3"
+    ]
   },
   "(resource) images > (model) image_gen_completed_event > (schema) > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
@@ -862,6 +984,34 @@ Schema name: `ImageGenCompletedEvent`
     "nullable": false,
     "schemaType": "integer",
     "children": []
+  },
+  "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1 > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "1024x1024"
+    }
+  },
+  "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1 > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "1024x1536"
+    }
+  },
+  "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1 > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "1536x1024"
+    }
+  },
+  "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
   },
   "(resource) images > (model) image_gen_completed_event > (schema) > (property) usage > (property) input_tokens_details > (property) image_tokens": {
     "kind": "HttpDeclProperty",

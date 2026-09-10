@@ -1,12 +1,12 @@
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
 
 ## 创建图像变体
 
 **post** `/images/variations`
 
-创建指定图片的变体。该接口仅支持 `dall-e-2`.
+根据给定图像创建一个变体。该端点仅支持 `dall-e-2`.
 
-### Returns
+### 返回值
 
 - `ImagesResponse object { created, background, data, 4 more }`
 
@@ -14,11 +14,11 @@
 
   - `created: number`
 
-    图像创建时的 Unix 时间戳（以秒为单位）。
+    图像创建时间的 Unix 时间戳（以秒为单位）。
 
   - `background: optional "transparent" or "opaque"`
 
-    用于图像生成的 background 参数。可以是 `transparent` 或 `opaque`.
+    用于图像生成的 background 参数。取值为 `transparent` 或 `opaque`.
 
     - `"transparent"`
 
@@ -30,19 +30,19 @@
 
     - `b64_json: optional string`
 
-      生成图像的 base64 编码 JSON。GPT 图像模型默认返回，并且仅当 `response_format` 设置为 `b64_json` 时才 `dall-e-2` 出现 `dall-e-3`.
+      生成图像的 base64 编码 JSON。默认由 GPT 图像模型返回，并且仅在 `response_format` 设置为 `b64_json` 针对 `dall-e-2` 且 `dall-e-3`.
 
     - `revised_prompt: optional string`
 
-      仅 `dall-e-3` 时，用于生成图像的修订后提示词。
+      针对 `dall-e-3` 时，用于生成图像的修订后提示词。
 
     - `url: optional string`
 
-      当使用 `dall-e-2` 或 `dall-e-3`，时，如果 `response_format` 设置为 `url` （默认值），则为生成图像的 URL。GPT 图像模型不支持。
+      当使用 `dall-e-2` 或 `dall-e-3`，时，如果 `response_format` 设置为 `url` （默认值），生成图像的 URL。GPT 图像模型不支持。
 
   - `output_format: optional "png" or "webp" or "jpeg"`
 
-    图像生成的输出格式。可以是 `png`, `webp`，或 `jpeg`.
+    图像生成的输出格式。取值为 `png`, `webp`、或 `jpeg`.
 
     - `"png"`
 
@@ -50,9 +50,9 @@
 
     - `"jpeg"`
 
-  - `quality: optional "low" or "medium" or "high"`
+  - `quality: optional "low" or "medium" or "high" or 2 more`
 
-    生成图像的质量。可以是 `low`, `medium`，或 `high`.
+    生成图像的质量。取值为 `low`, `medium`, `high`, `xhigh`、或 `max`.
 
     - `"low"`
 
@@ -60,27 +60,37 @@
 
     - `"high"`
 
-  - `size: optional "1024x1024" or "1024x1536" or "1536x1024"`
+    - `"xhigh"`
 
-    生成图像的尺寸。可以是 `1024x1024`, `1024x1536`，或 `1536x1024`.
+    - `"max"`
 
-    - `"1024x1024"`
+  - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024"`
 
-    - `"1024x1536"`
+    图像尺寸，以 `WIDTHxHEIGHT` 字符串形式表示，例如 `1536x864`.
 
-    - `"1536x1024"`
+    - `string`
+
+    - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+      图像尺寸，以 `WIDTHxHEIGHT` 字符串形式表示，例如 `1536x864`.
+
+      - `"1024x1024"`
+
+      - `"1024x1536"`
+
+      - `"1536x1024"`
 
   - `usage: optional object { input_tokens, input_tokens_details, output_tokens, 2 more }`
 
-    仅 `gpt-image-1` 时，图像生成的 token 用量信息。
+    针对 `gpt-image-1` 时，图像生成的令牌使用信息。
 
     - `input_tokens: number`
 
-      输入提示词中的 token（图像和文本）数量。
+      输入提示中的 token（图像和文本）数量。
 
     - `input_tokens_details: object { image_tokens, text_tokens }`
 
-      图像生成的输入 token 详细信息。
+      用于图像生成的输入 token 的详细信息。
 
       - `image_tokens: number`
 
@@ -96,7 +106,7 @@
 
     - `total_tokens: number`
 
-      用于图像生成的 token（图像和文本）总数量。
+      用于图像生成的 token（图像和文本）总数。
 
     - `output_tokens_details: optional object { image_tokens, text_tokens }`
 

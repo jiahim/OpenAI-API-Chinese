@@ -1,30 +1,30 @@
-> 完整的文档索引请参阅 [llms.txt](/llms.txt)。通过在页面 URL 后追加 `.md` 可获取文档页面的 Markdown 版本。
+> 有关完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 获取文档页面的 Markdown 版本。
 
 ## 创建审核
 
 **post** `/moderations`
 
-分类判断文本和/或图像输入是否具有潜在危害。详细了解请参阅
-内容审核指南 [moderation guide](/docs/guides/moderation).
+Classifies if text and/or image inputs are potentially harmful. Learn
+more in the [moderation guide](/api/docs/guides/moderation).
 
 ### 请求体参数
 
 - `input: string or array of string or array of object { image_url, type }  or object { text, type }`
 
-  用于分类的输入（可以是单个输入或多个输入）。可以是单个字符串、字符串数组，或
+  用于分类的输入（或多个输入）。可以是单个字符串、字符串数组，或
   与其他模型类似的多模态输入对象数组。
 
   - `string`
 
-    需要进行内容审核分类的文本字符串。
+    用于内容审核分类的文本字符串。
 
   - `array of string`
 
-    需要进行内容审核分类的字符串数组。
+    用于内容审核分类的字符串数组。
 
   - `array of object { image_url, type }  or object { text, type }`
 
-    提供给内容审核模型的多模态输入数组。
+    输入审核模型的多模态输入数组。
 
     - `ImageURL object { image_url, type }`
 
@@ -50,7 +50,7 @@
 
       - `text: string`
 
-        需要进行分类的文本字符串。
+        用于分类的文本字符串。
 
       - `type: "text"`
 
@@ -60,9 +60,9 @@
 
 - `model: optional string or ModerationModel`
 
-  你想要使用的内容审核模型。详情请参阅
-  [内容审核指南](/docs/guides/moderation)，并了解
-  可用模型 [此处](/docs/models#moderation).
+  希望使用的内容审核模型。详情请参阅
+  [审核指南](/api/docs/guides/moderation)，并了解
+  可用模型 [此处](/api/docs/guides/moderation).
 
   - `string`
 
@@ -80,7 +80,7 @@
 
 - `id: string`
 
-  审核请求的唯一标识符。
+  该审核请求的唯一标识符。
 
 - `model: string`
 
@@ -88,55 +88,55 @@
 
 - `results: array of Moderation`
 
-  审核对象列表。
+  审核对象的列表。
 
   - `categories: object { harassment, "harassment/threatening", hate, 10 more }`
 
-    各类别及其是否被标记的列表。
+    类别及其是否被标记的列表。
 
     - `harassment: boolean`
 
-      对任何目标表达、煽动或宣扬骚扰性语言的内容。
+      针对任何目标表达、煽动或宣扬骚扰性语言的内容。
 
     - `"harassment/threatening": boolean`
 
-      还包含对任何目标的暴力或严重伤害的骚扰内容。
+      针对任何目标包含暴力或严重伤害的骚扰内容。
 
     - `hate: boolean`
 
-      基于种族、性别、民族、宗教、国籍、性取向、残障状况或种姓表达、煽动或宣扬仇恨的内容。针对非受保护群体（例如棋手）的仇恨内容属于骚扰。
+      基于种族、性别、族裔、宗教、国籍、性取向、残障状况或种姓而表达、煽动或宣扬仇恨的内容。针对非受保护群体（例如国际象棋棋手）的仇恨内容属于骚扰。
 
     - `"hate/threatening": boolean`
 
-      还包含基于种族、性别、民族、宗教、国籍、性取向、残障状况或种姓对目标群体实施暴力或严重伤害的仇恨内容。
+      基于种族、性别、族裔、宗教、国籍、性取向、残障状况或种姓，针对目标群体同时包含暴力或严重伤害的仇恨内容。
 
     - `illicit: boolean or null`
 
-      包含有助于策划或实施违法行为的指导或建议的内容，或提供关于如何实施非法行为的建议或指导的内容。例如，“如何入店行窃”属于此类。
+      包含有助于策划或实施不法行为的指导或建议的内容，或提供关于如何实施违法行为的指导或建议的内容。例如，“如何入店行窃”就属于此类。
 
     - `"illicit/violent": boolean or null`
 
-      包含有助于策划或实施违法行为的指导或建议，且同时涉及暴力的内容，或提供关于获取任何武器的建议或指导的内容。
+      包含有助于策划或实施同时涉及暴力的不法行为的指导或建议的内容，或提供关于获取任何武器的指导或建议的内容。
 
     - `"self-harm": boolean`
 
-      宣扬、鼓励或刻画自残行为的内容，例如自杀、自残和饮食失调。
+      宣扬、鼓励或描绘自我伤害行为（例如自杀、自残和饮食失调）的内容。
 
     - `"self-harm/instructions": boolean`
 
-      鼓励实施自残行为（例如自杀、自残和饮食失调）的内容，或提供关于如何实施此类行为的指导或建议的内容。
+      鼓励实施自我伤害行为（例如自杀、自残和饮食失调），或提供关于如何实施此类行为的指导或建议的内容。
 
     - `"self-harm/intent": boolean`
 
-      说话者表达其正在或打算实施自残行为（例如自杀、自残和饮食失调）的内容。
+      说话者表示正在或意图实施自我伤害行为（例如自杀、自残和饮食失调）的内容。
 
     - `sexual: boolean`
 
-      旨在激起性兴奋的内容，例如对性行为的描述，或推广性服务的内容（不包括性教育和性健康内容）。
+      旨在唤起性兴奋的内容，例如对性行为的描述，或推广性服务的内容（不包括性教育和健康内容）。
 
     - `"sexual/minors": boolean`
 
-      涉及 18 岁以下未成年人的性内容。
+      包含未满 18 岁未成年人的性内容。
 
     - `violence: boolean`
 
@@ -144,51 +144,51 @@
 
     - `"violence/graphic": boolean`
 
-      以详细图形方式描绘死亡、暴力或人身伤害的内容。
+      以详细且生动的细节描绘死亡、暴力或人身伤害的内容。
 
   - `category_applied_input_types: object { harassment, "harassment/threatening", hate, 10 more }`
 
-    各类别及其分数所适用的输入类型列表。
+    类别及其分数所适用的输入类型列表。
 
     - `harassment: array of "text"`
 
-      类别“harassment”所应用的输入类型。
+      “harassment”类别所适用的输入类型。
 
       - `"text"`
 
     - `"harassment/threatening": array of "text"`
 
-      类别“harassment/threatening”所应用的输入类型。
+      “harassment/threatening”类别所适用的输入类型。
 
       - `"text"`
 
     - `hate: array of "text"`
 
-      类别“hate”所应用的输入类型。
+      类别 'hate' 所应用的输入类型。
 
       - `"text"`
 
     - `"hate/threatening": array of "text"`
 
-      类别“hate/threatening”所应用的输入类型。
+      类别 'hate/threatening' 所应用的输入类型。
 
       - `"text"`
 
     - `illicit: array of "text"`
 
-      类别“illicit”所应用的输入类型。
+      类别 'illicit' 所应用的输入类型。
 
       - `"text"`
 
     - `"illicit/violent": array of "text"`
 
-      类别“illicit/violent”所应用的输入类型。
+      类别 'illicit/violent' 所应用的输入类型。
 
       - `"text"`
 
     - `"self-harm": array of "text" or "image"`
 
-      类别“self-harm”所应用的输入类型。
+      类别 'self-harm' 所应用的输入类型。
 
       - `"text"`
 
@@ -196,7 +196,7 @@
 
     - `"self-harm/instructions": array of "text" or "image"`
 
-      类别“self-harm/instructions”所应用的输入类型。
+      类别 'self-harm/instructions' 所应用的输入类型。
 
       - `"text"`
 
@@ -204,7 +204,7 @@
 
     - `"self-harm/intent": array of "text" or "image"`
 
-      类别“self-harm/intent”所应用的输入类型。
+      类别 'self-harm/intent' 所应用的输入类型。
 
       - `"text"`
 
@@ -212,7 +212,7 @@
 
     - `sexual: array of "text" or "image"`
 
-      类别“sexual”所应用的输入类型。
+      类别 'sexual' 所应用的输入类型。
 
       - `"text"`
 
@@ -220,13 +220,13 @@
 
     - `"sexual/minors": array of "text"`
 
-      类别“sexual/minors”所应用的输入类型。
+      类别 'sexual/minors' 所应用的输入类型。
 
       - `"text"`
 
     - `violence: array of "text" or "image"`
 
-      类别“violence”所应用的输入类型。
+      类别 'violence' 所应用的输入类型。
 
       - `"text"`
 
@@ -234,7 +234,7 @@
 
     - `"violence/graphic": array of "text" or "image"`
 
-      类别“violence/graphic”所应用的输入类型。
+      类别 'violence/graphic' 所应用的输入类型。
 
       - `"text"`
 
@@ -242,59 +242,59 @@
 
   - `category_scores: object { harassment, "harassment/threatening", hate, 10 more }`
 
-    由模型预测的类别及其分数列表。
+    由模型预测的类别及其对应分数的列表。
 
     - `harassment: number`
 
-      类别“harassment”的分数。
+      类别 'harassment' 的分数。
 
     - `"harassment/threatening": number`
 
-      类别“harassment/threatening”的分数。
+      类别 'harassment/threatening' 的分数。
 
     - `hate: number`
 
-      类别“hate”的分数。
+      类别 'hate' 的分数。
 
     - `"hate/threatening": number`
 
-      类别“hate/threatening”的分数。
+      类别 'hate/threatening' 的分数。
 
     - `illicit: number`
 
-      类别“illicit”的分数。
+      类别 'illicit' 的分数。
 
     - `"illicit/violent": number`
 
-      类别“illicit/violent”的分数。
+      类别 'illicit/violent' 的分数。
 
     - `"self-harm": number`
 
-      类别“self-harm”的分数。
+      类别 'self-harm' 的分数。
 
     - `"self-harm/instructions": number`
 
-      类别“self-harm/instructions”的分数。
+      类别 'self-harm/instructions' 的分数。
 
     - `"self-harm/intent": number`
 
-      “self-harm/intent”类别的分数。
+      类别“self-harm/intent”的得分。
 
     - `sexual: number`
 
-      “sexual”类别的分数。
+      类别“sexual”的得分。
 
     - `"sexual/minors": number`
 
-      “sexual/minors”类别的分数。
+      类别“sexual/minors”的得分。
 
     - `violence: number`
 
-      “violence”类别的分数。
+      类别“violence”的得分。
 
     - `"violence/graphic": number`
 
-      “violence/graphic”类别的分数。
+      类别“violence/graphic”的得分。
 
   - `flagged: boolean`
 
@@ -396,7 +396,7 @@ curl https://api.openai.com/v1/moderations \
 }
 ```
 
-### 图像与文本
+### 图像和文本
 
 ```http
 curl https://api.openai.com/v1/moderations \

@@ -1,36 +1,36 @@
-> 完整的文档索引请参阅 [llms.txt](/llms.txt). 可通过在页面 URL 末尾附加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾附加 `.md` 即可获取该页面的 Markdown 版本。
 
 ## 上传文件
 
 **post** `/files`
 
-上传一个可在多个端点之间使用的文件。单个文件
+上传一个可在多个端点之间使用的文件。单文件大小
 最大可达 512 MB，每个项目最多可存储 2.5 TB 的文件
-总计。没有组织范围的总存储限制。向此
-端点的请求速率限制为每个已认证用户每分钟 1,000 次
-请求。
+总计。没有组织范围的存储限制。此端点的
+上传速率限制为每个已认证用户每分钟 1,000 次请求
+用户。
 
-- Assistants API 支持最大 200 万 token 的文件，且仅支持特定的文件类型。
-  详见 [Assistants 工具指南](/docs/assistants/tools) 。
-  详情请参阅。
-- 微调 API 仅支持 `.jsonl` 文件。输入还需采用
-  微调所要求的特定格式
-  [chat](/docs/api-reference/fine-tuning/chat-input) 或
-  [completions](/docs/api-reference/fine-tuning/completions-input) 模型。
-- Batch API 仅支持 `.jsonl` 最大 200 MB 的文件。输入还
-  需要采用特定的
-  [格式](/docs/api-reference/batch/request-input).
-- 用于检索或 `file_search` 摄入，请先将文件上传到此处。如
-  需将多个已上传的文件附加到同一向量存储，请使用
-  [`/vector_stores/{vector_store_id}/file_batches`](/docs/api-reference/vector-stores-file-batches/createBatch)
-  批量附加，而不是逐个附加。向量存储附加具有独立的
-  文件上传的限制，包括每个组织每分钟 2,000 个附加文件，每
-  组织。
+- Assistants API 支持的文件最多包含 200 万个 token，并且必须是特定的
+  文件类型。详见 [Assistants 工具指南](/api/docs/guides/tools) 。
+  。
+- 微调 API 仅支持 `.jsonl` 文件。输入数据还需要采用
+  微调所要求的特定格式，分别针对
+  [对话](/api/docs/guides/supervised-fine-tuning#formatting-your-data) 或
+  [补全](/api/docs/guides/supervised-fine-tuning#formatting-your-data) 模型。
+- Batch API 仅支持大小不超过 `.jsonl` 200 MB 的文件。其输入还必须采用特定的
+  格式，详见
+  [此处](/api/docs/guides/batch#1-prepare-your-batch-file).
+- 用于检索或 `file_search` 摄入时，请先在此处上传文件。如
+  果需要将多个已上传的文件附加到同一个向量存储，请使用
+  [`/vector_stores/{vector_store_id}/file_batches`](/api/reference/resources/vector_stores/subresources/file_batches/methods/create)
+  ，而不是逐个附加。向量存储附件具有独立的
+  文件上传的限制，包括每个每分钟 2,000 个附加文件
+  organization。
 
-请 [联系我们](https://help.openai.com/) 如果你需要提高这些
+请 [联系我们](https://help.openai.com/) ，如果你需要提高这些
 存储限制。
 
-### 返回值
+### 返回
 
 - `FileObject object { id, bytes, created_at, 6 more }`
 
@@ -42,7 +42,7 @@
 
   - `bytes: number`
 
-    文件的大小，以字节为单位。
+    文件大小（以字节为单位）。
 
   - `created_at: number`
 
@@ -80,7 +80,7 @@
 
   - `status: "uploaded" or "processed" or "error"`
 
-    已弃用。文件的当前状态，可为 `uploaded`, `processed`，或 `error`.
+    已弃用。文件的当前状态，可以是 `uploaded`, `processed`，或 `error`.
 
     - `"uploaded"`
 
@@ -94,7 +94,7 @@
 
   - `status_details: optional string`
 
-    已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段，位于 `fine_tuning.job`.
+    已弃用。有关微调训练文件验证失败的原因的详细信息，请参阅 `error` 字段，位于 `fine_tuning.job`.
 
 ### 示例
 
@@ -106,7 +106,7 @@ curl https://api.openai.com/v1/files \
     -F purpose=assistants
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -133,7 +133,7 @@ curl https://api.openai.com/v1/files \
   -F expires_after[seconds]=2592000
 ```
 
-#### 响应
+#### Response
 
 ```json
 {

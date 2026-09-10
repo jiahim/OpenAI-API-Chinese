@@ -1,54 +1,54 @@
 # 使用 GPT-5.1
 
-> 完整文档索引请参见 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
+> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取该页面的 Markdown 版本。
 
 ## 简介
 
-GPT-5.1 旨在为各种智能体和编码任务平衡智能与速度，同时引入一种新的 `none` 面向低延迟交互的推理模式。GPT-5.1 在 GPT-5 的优势基础上，对提示难度的校准更为精准：在较低复杂度的输入上消耗的 token 远更少，在处理高难度输入时也更加高效。此外，GPT-5.1 在个性、语气和输出格式方面也更加可控。
+GPT-5.1 旨在为多种智能体和编码任务平衡智能与速度，同时引入一种新的 `none` 面向低延迟交互的推理模式。在 GPT-5 的优势基础上，GPT-5.1 针对提示难度进行了更优的校准，在较低复杂度的输入上消耗的 tokens 远少于以往，并能更高效地处理高难度输入。除这些优势之外，GPT-5.1 在个性、语气和输出格式方面也更具可引导性。
 
-虽然 GPT-5.1 开箱即用即可在大多数应用中表现出色，但本指南重点关注可在实际部署中最大化性能的提示模式。这些技巧源自大量的内部测试以及与那些正在构建生产级智能体的合作伙伴的协作——在这些场景中，提示上微小的改动常常会带来可靠性和用户体验上的大幅提升。我们希望本指南能作为一个起点：提示工程是迭代式的，最佳结果来自于将这些模式适配到你自己特定的工具和工作流中。
+虽然 GPT-5.1 开箱即用即可在大多数应用中表现良好，但本指南重点介绍可在实际部署中最大化性能的提示模式。这些技巧来自广泛的内部测试，以及与正在构建生产 智能体 的合作伙伴的协作——在这些场景中，提示上的细微改动往往能带来可靠性和用户体验方面的大幅提升。我们期望本指南可作为一个起点：提示工程是迭代式的，最佳结果将来自于把这些模式适配到你自身的工具和工作流中。
 
-## 新增功能
+## 新增内容
 
-- 新增 `none` 用于低延迟交互的推理模式
-- 在低复杂度和高难度输入下，推理 token 的使用经过更精细校准
-- 更可控的个性、语气和输出格式
-- 为编码智能体应用 patch 与 shell 工具指南
+- 新增 `none` 面向低延迟交互的推理模式
+- 在低复杂度与高难度输入下，推理 token 使用量得到更优的校准
+- 更可控的个性、语气与输出格式
+- 为编码 智能体 应用 patch 与 shell 工具指引
 
 ## 迁移快速入门
 
-对于使用 GPT-4.1、GPT-5.1 且 `none` 的开发者，reasoning effort（推理投入度）应当能自然适用于大多数不需要推理的低延迟用例。
+对于使用 GPT-4.1、GPT-5.1 的开发者，使用 `none` reasoning effort 的应当能自然契合大多数无需推理的低延迟用例。
 
-对于使用 GPT-5 的开发者，我们发现遵循以下几条关键建议的客户都取得了显著成效：
+对于使用 GPT-5 的开发者，我们观察到遵循若干关键建议的客户取得了显著成效：
 
-1. **Persistence（持续性）：** GPT-5.1 现在拥有经过更好校准的推理 token 消耗，但有时会偏向过度简洁，从而牺牲答案的完整性。在提示中强调持续性和完整性的重要性会有所帮助。
-2. **输出格式与详略程度：** 虽然整体上更为详尽，但 GPT-5.1 偶尔会过于冗长，因此在指令中明确说明期望的输出详细程度是值得的。
-3. **编码 智能体：** 如果你正在开发编码 智能体，请将你的 `apply_patch` tool 迁移到我们全新的具名实现。
-4. **指令遵循：** 对于其他行为问题，GPT-5.1 在指令遵循方面表现出色，你应当可以通过检查是否存在相互冲突的指令并保持清晰来显著塑造其行为。
+1. **持久性：** GPT-5.1 现在对推理 token 的消耗进行了更好的校准，但有时会偏向过于简洁，从而影响答案的完整性。你可以通过提示强调持久性和完整性的重要性，这通常会有所帮助。
+2. **输出格式与详细程度：** 虽然总体上更详细，但 GPT-5.1 有时会比较啰嗦，因此在指令中明确说明期望的输出详细程度是值得的。
+3. **编码 智能体：** 如果你正在开发编码 智能体，请将你的 `apply_patch` 工具迁移到我们新的、已命名的实现。
+4. **指令遵循：** 对于其他行为问题，GPT-5.1 在指令遵循方面表现出色，你应该能够通过检查是否存在冲突指令并保持清晰来显著塑造其行为。
 
-我们还发布了 GPT-5.1-Codex。该模型的行为与 GPT-5.1 不同；参见 [Codex 提示指南](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide) 以了解更多信息。如需了解 API 中后续 Codex 模型的指导，请参见 [使用 GPT-5.3 Codex](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.3-codex).
+我们还发布了 GPT-5.1-Codex。该模型的行为与 GPT-5.1 不同；详见 [Codex 提示指南](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide) 。如需关于 API 中后续 Codex 模型的指南，请参阅 [使用 GPT-5.3 Codex](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.3-codex).
 
-## 模型、API 以及功能更新
+## 模型、API 与功能更新
 
 - `gpt-5.1` 在 Responses API 和 Chat Completions API 中可用。
 - `reasoning.effort` 支持 `none` （默认）， `low`, `medium`，以及 `high`.
 - 该模型支持函数调用和 OpenAI 托管工具，包括 网页搜索、文件搜索、图像生成、代码解释器和 apply patch。
-- GPT-5.1-Codex 变体分别为智能体编码工作流进行了单独优化。
+- GPT-5.1-Codex 变体针对智能体编码工作流进行了单独优化。
 
 
-## 提示词最佳实践
+## 提示最佳实践
 
 ### 智能体的可控性
 
-GPT-5.1 是一个可操控性极强的模型，允许你对智能体的行为、个性和沟通频率进行稳健的控制。
+GPT-5.1 是一个高度可引导的模型，允许对你的智能体行为、个性和沟通频率进行强大的控制。
 
 #### 塑造你的智能体的个性
 
-GPT-5.1 的个性和回答风格可以根据你的使用场景进行调整。除了可以通过专用参数控制冗长程度外， `verbosity` 你还可以通过提示塑造整体风格、语气和节奏。
+GPT-5.1 的个性和回复风格可以根据你的用例进行调整。虽然可以通过专用 `verbosity` 参数来控制详细程度，你也可以通过提示来塑造整体风格、语气和节奏。
 
-我们发现，在定义清晰的智能体角色后，个性和风格才能发挥最佳效果。对于面向客户的智能体，这一点尤其重要，因为它们需要展现情绪智能，以应对各种用户情境和互动动态。在实践中，这意味着要根据对话进展调整温度感和简洁度，并避免过度使用“知道了”或“谢谢你”之类的确认语。
+我们发现，当你定义一个清晰的智能体人设时，个性和风格的效果最佳。这对于面向客户的智能体尤为重要，因为它们需要展现情商来处理各种用户情况和动态。实际上，这意味着要根据对话状态调整温暖感和简洁度，并避免使用“got it”或“thank you”等过多的确认语。
 
-下面的示例提示展示了我们如何塑造客户支持智能体的个性，重点是在解决问题时平衡恰当的直接程度和温度感。
+下面的示例提示展示了我们如何为客户支持智能体塑造个性，重点是在解决问题时平衡恰当的直接性和温暖度。
 
 ```text
 <final_answer_formatting>
@@ -75,7 +75,7 @@ You value clarity, momentum, and respect measured by usefulness rather than plea
 </final_answer_formatting>
 ```
 
-在下面的提示中，我们加入了相关部分，将编码智能体的回答限制为：小型更改使用简短回答，更详细的查询使用较长回答。我们还指定了最终回答中允许的代码量，以避免出现大段代码。
+在下面的提示中，我们加入了相关章节，用于将编码智能体的回复约束为：小改动时简短回复，详细查询时则给出更长回复。我们还规定了最终回复中允许的代码量，以避免出现大段代码块。
 
 ```text
 <final_answer_formatting>
@@ -97,7 +97,7 @@ You value clarity, momentum, and respect measured by usefulness rather than plea
 </final_answer_formatting>
 ```
 
-可以通过调整冗长程度参数来缓解输出过长的问题，也可以进一步利用提示来缩短输出，因为 GPT-5.1 能够很好地遵循明确的长度要求：
+可以通过调整详细程度参数来缓解输出过长的问题，并且由于 GPT-5.1 能很好地遵循具体的长度指引，还可以通过提示进一步缩短输出：
 
 ```text
 <output_verbosity_spec>
@@ -107,11 +107,11 @@ You value clarity, momentum, and respect measured by usefulness rather than plea
 </output_verbosity_spec>
 ```
 
-#### 引导用户更新
+#### 引出用户更新
 
-用户更新（也称为前置说明）是一种让 GPT-5.1 在执行过程中共享前期计划，并以助手消息形式提供一致进度更新。用户更新可沿四个主要维度进行调整：频率、详细程度、语气和内容。我们训练了模型，让它能够出色地通过计划、重要洞察和决策，以及关于正在做什么/为什么做的细粒度上下文来随时通知用户。这些更新有助于用户更有效地监督智能体执行过程，无论是在编码还是非编码领域。
+用户更新（也称为前言）是一种让 GPT-5.1 提前分享计划，并在执行过程中以助手消息的形式提供一致进度更新的方式。用户更新可以沿四个主要维度进行调整：频率、详细程度、语气和内容。我们训练了模型，使其擅长通过计划、重要见解和决策以及关于正在做什么/为什么做的细粒度上下文来保持用户知情。这些更新有助于用户在编码和非编码领域中更有效地监督智能体执行过程。
 
-如果时机把握得当，模型将能够分享与执行当前状态对应的实时理解。在下面的提示补充内容中，我们定义了哪些类型的前置说明会有用，哪些不会。
+如果时机恰当，模型将能够分享与执行过程当前状态相对应的实时理解。在下面的提示词补充中，我们定义了哪些类型的前言是有用的，哪些不是。
 
 ```text
 <user_updates_spec>
@@ -138,7 +138,7 @@ You'll work for stretches with tool calls — it's critical to keep the user upd
 </user_updates_spec>
 ```
 
-在长时间运行的模型执行过程中，提供一条快速的初始助手消息可以改善感知延迟和用户体验。通过清晰的提示，我们可以在 GPT-5.1 上实现这一行为。
+在运行时间较长的模型执行过程中，提供一条快速的初始助手消息可以改善感知延迟和用户体验。我们可以通过清晰的提示词让 GPT-5.1 实现这种行为。
 
 ```text
 <user_update_immediacy>
@@ -146,13 +146,13 @@ Always explain what you're doing in a commentary message FIRST, BEFORE sampling 
 </user_update_immediacy>
 ```
 
-### 优化智能与指令遵循能力
+### 优化智能与指令遵循
 
-GPT-5.1 会非常密切地关注你提供的指令，包括关于工具使用、并行性和解答完整性的指引。
+GPT-5.1 会非常仔细地遵循你提供的指令，包括关于工具使用、并行性以及解答完整性的指导。
 
 #### Encouraging complete solutions
 
-在较长的智能体任务中，我们注意到 GPT-5.1 可能过早结束，而无法得出完整解决方案，但我们发现这种行为可以通过提示来控制。在以下指令中，我们要求模型避免过早终止和不必要的追问。
+在较长的智能体任务中，我们注意到 GPT-5.1 可能过早结束，未能得出完整解决方案，但我们发现这种行为可以通过提示进行控制。在以下指令中，我们要求模型避免过早终止和不必要的追问。
 
 ```text
 <solution_persistence>
@@ -164,7 +164,7 @@ GPT-5.1 会非常密切地关注你提供的指令，包括关于工具使用、
 
 #### 工具调用格式
 
-为了让工具调用发挥最佳效果，我们建议在工具定义中描述其功能，并在提示中说明如何以及何时使用这些工具。在下面的示例中，我们定义了一个用于创建餐厅预订的工具，并简要描述了它在被调用时的功能。
+为了使工具调用达到最佳效果，我们建议在工具定义中描述其功能，并在提示中说明如何以及何时使用这些工具。在下面的示例中，我们定义了一个用于创建餐厅预订的工具，并简要描述了它在被调用时所执行的操作。
 
 ```json
 {
@@ -187,7 +187,7 @@ GPT-5.1 会非常密切地关注你提供的指令，包括关于工具使用、
 }
 ```
 
-在提示中，你可以设置一个像下面这样引用工具的部分：
+在提示中，你可以包含一个引用该工具的部分，如下所示：
 
 ```text
 <reservation_tool_usage_rules>
@@ -219,37 +219,37 @@ Assistant: “Done! Your reservation for Daniel at 6:00pm tonight is confirmed. 
 </reservation_tool_example>
 ```
 
-GPT-5.1 还能更高效地执行并行工具调用。在扫描代码库或从向量存储中检索时，启用并行工具调用并在工具描述中鼓励模型使用并行是一个很好的起点。在系统提示中，你可以通过提供一些允许并行的示例来强化对并行工具使用的引导。示例指令可能如下所示：
+GPT-5.1 还能更高效地执行并行工具调用。在扫描代码库或从向量存储中检索数据时，启用并行工具调用并在工具描述中鼓励模型使用并行性是一个不错的起点。在系统提示中，你可以通过提供一些允许并行的示例来强化对并行工具使用的引导。一条示例指令可能如下所示：
 
 ```text
 Parallelize tool calls whenever possible. Batch reads (read_file) and edits (apply_patch) to speed up the process.
 ```
 
-#### 使用 “none” 推理模式以提升效率
+#### 使用 “none” 推理模式以提高效率
 
-GPT-5.1 引入了一种新的推理模式： `none`。与 GPT-5 先前 `minimal` 设置不同， `none` 会强制模型从不使用推理 token，使其使用体验更接近 GPT-4.1、GPT-4o 以及其他非推理模型。重要的是，开发者现在可以在 [网页搜索](https://developers.openai.com/api/docs/guides/tools-web-search?api-mode=responses) 和 [文件搜索](https://developers.openai.com/api/docs/guides/tools?tool-type=file-search) 中使用托管工具， `none`，并且自定义函数调用性能也得到显著提升。考虑到这一点， [先前关于非推理模型的提示指南](https://developers.openai.com/cookbook/examples/gpt4-1_prompting_guide) （例如 GPT-4.1）同样适用于 GPT-5.1，包括使用 few-shot 提示和高质量的工具描述。
+GPT-5.1 引入了一种新的推理模式： `none`。与 GPT-5 之前的 `minimal` 设置不同， `none` 会强制模型完全不使用推理令牌，使其在使用方式上更接近 GPT-4.1、GPT-4o 以及其他非推理模型。更重要的是，开发者现在可以在 [网页搜索](https://developers.openai.com/api/docs/guides/tools-web-search?api-mode=responses) 和 [文件搜索](https://developers.openai.com/api/docs/guides/tools?tool-type=file-search) 时使用托管工具，自定义函数调用的性能也得到了显著提升。有鉴于此， `none`，先前针对非推理模型的， [提示词指南](https://developers.openai.com/cookbook/examples/gpt4-1_prompting_guide) 同样适用于 GPT-5.1，包括使用少样本提示和高质量的工具描述。
 
-尽管 GPT-5.1 在 `none`，下不使用推理 token，我们发现提示模型仔细思考它计划调用哪些函数可以提高准确率。
+虽然 GPT-5.1 在使用 `none`，时不会使用推理令牌，但我们发现提示模型仔细思考它计划调用哪些函数可以提升准确性。
 
 ```text
 You MUST plan extensively before each function call, and reflect extensively on the outcomes of the previous function calls, ensuring user's query is completely resolved. DO NOT do this entire process by making function calls only, as this can impair your ability to solve the problem and think insightfully. In addition, ensure function calls have the correct arguments.
 ```
 
-我们还观察到，在较长的模型执行过程中，鼓励模型“验证”其输出能够带来更好的工具使用指令遵循效果。下面是我们在说明工具用法时在指令中使用的一个示例。
+我们还观察到，在较长的模型执行过程中，鼓励模型“验证”其输出会带来更好的工具使用指令遵循效果。下面是我们在说明工具用法时指令中使用的一个示例。
 
 ```text
 When selecting a replacement variant, verify it meets all user constraints (cheapest, brand, spec, etc.). Quote the item-id and price back for confirmation before executing.
 ```
 
-在我们的测试中，GPT-5 先前 `minimal` 推理模式有时会导致执行过早终止。虽然其他推理模式可能更适合这些任务，但我们对使用 `none` 的 GPT-5.1 的建议也与此类似。下面是我们 Tau bench 提示中的一个片段。
+在我们的测试中，GPT-5 之前的 `minimal` 推理模式有时会导致执行过早终止。尽管其他推理模式可能更适合这些任务，但我们针对 GPT-5.1 使用 `none` 的指南与之类似。下面是我们 Tau bench 提示词中的一个片段。
 
 ```text
 Remember, you are an agent - please keep going until the user’s query is completely resolved, before ending your turn and yielding back to the user. You must be prepared to answer multiple queries and only finish the call once the user has confirmed they're done.
 ```
 
-### 从规划到执行，最大化提升编码性能
+### 从规划到执行，最大化编码性能
 
-对于长时间运行的任务，我们建议实现的一个工具是规划工具。你可能注意到推理模型会在其推理摘要中进行规划。虽然这在当时很有帮助，但可能难以追踪模型相对于查询执行进度的位置。
+我们建议针对长时间运行的任务实现的工具之一是规划工具。你可能已经注意到，推理模型会在其推理摘要中进行规划。尽管这在当时很有帮助，但要追踪模型相对于查询执行所处的位置可能会比较困难。
 
 ```text
 <plan_tool_usage>
@@ -266,7 +266,7 @@ Remember, you are an agent - please keep going until the user’s query is compl
 <plan_tool_usage>
 ```
 
-规划工具只需极少的脚手架即可使用。在我们对规划工具的实现中，我们传入一个 merge 参数以及一个待办事项列表。该列表包含简要描述、任务的当前状态以及分配给它的 ID。下面是一个示例函数调用，展示了 GPT-5.1 可能用于记录其状态的方式。
+规划工具只需极少脚手架即可使用。在我们对规划工具的实现中，我们传入一个 merge 参数以及一组待办事项列表。该列表包含简要描述、任务的当前状态，以及分配给它的 ID。下面是一个 GPT-5.1 可能调用的函数示例，用于记录其状态。
 
 ```json
 {
@@ -289,9 +289,9 @@ Remember, you are an agent - please keep going until the user’s query is compl
 }
 ```
 
-#### 设计系统约束
+#### 设计系统实施规范
 
-在构建前端界面时，可以引导 GPT-5.1 生成与你的视觉设计系统匹配的网站。我们建议使用 Tailwind 来渲染 CSS，这样你可以进一步定制以满足你的设计规范。在下面的示例中，我们定义了一个设计系统来约束 GPT-5.1 生成的颜色。
+在构建前端界面时，可以引导 GPT-5.1 生成与你视觉设计系统匹配的网站。我们建议使用 Tailwind 来渲染 CSS，你可以在此基础上进一步定制以满足你的设计规范。在下面的示例中，我们定义了一个设计系统来约束 GPT-5.1 生成的颜色。
 
 ```text
 <design_system_enforcement>
@@ -304,15 +304,15 @@ Remember, you are an agent - please keep going until the user’s query is compl
 </design_system_enforcement>
 ```
 
-### GPT-5.1 中的新工具类型
+### GPT-5.1 中新增的工具类型
 
-GPT-5.1 已针对编码场景中常用的特定工具进行了后训练。若要与环境中的文件交互，你现在可以使用预定义的 apply_patch 工具。类似地，我们新增了一个 shell 工具，让模型可以针对你的系统提出要运行的命令。
+GPT-5.1 已针对编码场景中常用的工具进行了后训练。若要与环境中的文件交互，你现在可以使用预定义的 apply_patch 工具。同样，我们新增了一个 shell 工具，允许模型为你的系统提出要运行的命令。
 
 #### Using apply_patch
 
-apply_patch 工具让 GPT-5.1 能够使用结构化 diff 在你的代码库中创建、更新和删除文件。模型不只是建议编辑，而是发出 patch 操作，由你的应用执行后再回报结果，从而支持迭代式、多步骤的代码编辑工作流。你可以在 [GPT-4.1 提示词指南](https://developers.openai.com/cookbook/examples/gpt4-1_prompting_guide#:~:text=PYTHON_TOOL_DESCRIPTION%20%3D%20%22%22%22This,an%20exclamation%20mark.).
+apply_patch 工具让 GPT-5.1 能够使用结构化 diff 在你的代码库中创建、更新和删除文件。模型不仅会建议编辑，还会发出补丁操作，由你的应用执行后再回报结果，从而支持迭代式的多步代码编辑工作流。你可以在 [GPT-4.1 prompting guide](https://developers.openai.com/cookbook/examples/gpt4-1_prompting_guide#:~:text=PYTHON_TOOL_DESCRIPTION%20%3D%20%22%22%22This,an%20exclamation%20mark.).
 
-对于 GPT-5.1，你可以直接将 apply_patch 作为新的工具类型使用，无需为该工具编写自定义描述。描述与处理逻辑由 Responses API 统一管理。在实现上，该方案使用自由格式函数调用，而非 JSON 格式。经测试，使用具名函数后 apply_patch 的失败率下降了 35%。
+使用 GPT-5.1 时，你可以将 apply_patch 作为一种新的工具类型使用，无需为其编写自定义描述。相关描述和处理逻辑由 Responses API 管理。在底层实现上，该方案使用自由格式的函数调用而非 JSON 格式。经测试，使用具名函数将 apply_patch 的失败率降低了 35%。
 
 ```python
 response = client.responses.create(
@@ -340,8 +340,14 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```ruby
+response = client.responses.create(
+  model: "gpt-5.1", input: response_input, tools: [{type: :apply_patch}]
+)
+```
 
-当模型决定执行 apply_patch 工具时，你将在响应流中收到一个 apply_patch_call 函数类型。在 operation 对象中，你会获得一个 type 字段（取值为 `create_file`, `update_file`）之一，以及要应用的 diff `delete_file`。
+
+当模型决定执行 apply_patch 工具时，你将在响应流中收到一个 apply_patch_call 函数类型。在 operation 对象中，你会收到一个 type 字段（取值为 `create_file`, `update_file`，之一）以及要执行的 diff。 `delete_file`）以及要执行的 diff。
 
 ```text
 {
@@ -365,7 +371,7 @@ client.responses().create(params).output().stream()
 
 ```
 
-[此代码仓库](https://github.com/openai/openai-cookbook/blob/main/examples/gpt-5/apply_patch.py) 中包含 apply_patch 工具可执行文件的预期实现。当你的系统完成 patch 工具的执行后，Responses API 期望收到如下形式的工具输出：
+[本仓库](https://github.com/openai/openai-cookbook/blob/main/examples/gpt-5/apply_patch.py) 包含了 apply_patch 工具可执行文件的预期实现。当你的系统完成 patch 工具的执行后，Responses API 期望收到以下形式的工具输出：
 
 ```python
 {
@@ -376,19 +382,32 @@ client.responses().create(params).output().stream()
 }
 ```
 
+```ruby
+output = {
+  type: :apply_patch_call_output,
+  call_id: call_id,
+  status: success ? :completed : :failed,
+  output: log_output
+}
+```
 
-#### Using the shell tool
 
-我们还为 GPT-5.1 构建了一个新的 shell 工具。shell 工具允许模型通过受控的命令行界面与你本地的计算机进行交互。模型提出 shell 命令，你的集成负责执行它们并返回输出。这形成了一个简单的计划-执行循环，让模型能够检查系统、运行工具并收集数据，直到完成任务。
+#### 使用 shell 工具
 
-shell 工具的调用方式与 apply_patch 相同：将其作为类型为的工具包含进去 `shell`.
+我们还为 GPT-5.1 构建了一个新的 shell 工具。shell 工具允许模型通过受控的命令行界面与你的本地计算机进行交互。模型提出 shell 命令；你的集成执行这些命令并返回输出。这形成了一个简单的“计划-执行”循环，让模型可以检查系统、运行实用工具并收集数据，直到完成任务。
+
+shell 工具的调用方式与 apply_patch 相同：将其作为类型为 `shell`.
 
 ```python
 tools = [{"type": "shell"}]
 ```
 
+```ruby
+tools = [{type: :shell}]
+```
 
-当 shell 工具调用被返回时，Responses API 会包含一个 `shell_call` 对象，其中包含超时时间、最大输出长度以及要运行的命令。
+
+当返回 shell 工具调用时，Responses API 会包含一个 `shell_call` 对象，其中带有超时、最大输出长度以及要运行的命令。
 
 ```text
 {
@@ -403,7 +422,7 @@ tools = [{"type": "shell"}]
 }
 ```
 
-执行完 shell 命令后，返回未经截断的 stdout/stderr 日志以及退出码详情。
+执行 shell 命令后，请返回未截断的 stdout/stderr 日志以及退出码的详细信息。
 
 ```json
 {
@@ -423,9 +442,9 @@ tools = [{"type": "shell"}]
 }
 ```
 
-### 如何有效地编写元提示
+### 如何有效地编写 metaprompt
 
-构建提示词可能很繁琐，但它也是你能够用来解决大多数模型行为问题的最高杠杆手段。一个微小的包含项就可能意外地让模型偏离预期方向。下面我们来看一个负责策划活动的智能体示例。在下面的提示词中，面向客户的智能体负责使用工具来回答用户关于候选场地和后勤安排的疑问。
+构建提示可能比较繁琐，但这也是解决大多数模型行为问题中杠杆最高的一环。微小的措辞差异就可能让模型意外地偏离预期方向。我们来逐条分析一个用于策划活动的智能体示例。在下面的提示中，面向客户的智能体负责使用工具来回答用户关于潜在场地和后勤安排的提问。
 
 ```text
 You are “GreenGather,” an autonomous sustainable event-planning agent. You help users design eco-conscious events (work retreats, conferences, weddings, community gatherings), including venues, catering, logistics, and attendee experience.
@@ -495,19 +514,19 @@ Avoid over-apologizing or repeating yourself. Users should feel like decisions a
 End every response with a subtle next step the user could take, phrased as a suggestion rather than a question, and avoid explicit calls for confirmation such as “Let me know if this works.”
 ```
 
-虽然这是一个不错的起始提示词，但在测试时我们还是发现了一些问题：
+尽管这是一个不错的起始提示，但在测试中我们发现了一些问题：
 
-- 小的概念性问题（比如询问 20 人的领导层晚宴）触发了不必要的工具调用，并给出了非常具体的场地建议，尽管提示允许在简单、高层次的问题上使用内部知识。
+- 小型概念性问题（例如询问 20 人的领导晚宴）会触发不必要的工具调用并给出非常具体的场地建议，尽管提示允许对简单、高层次的问题使用内部知识。
 
-- 该 智能体 在过度冗长（多天的奥斯汀外出团建变成了密集、多章节的文章）和过度犹豫（拒绝在进一步提问前提出方案）之间摇摆，并且偶尔会忽略单位规则（例如将柏林峰会用英里和 °F 来描述，而不是 km 和 °C）。
+- 该智能体在过度冗长（多天的 Austin 团建变成冗长、多段落的文章）和过度犹豫（拒绝在提出更多问题之前给出计划）之间摇摆不定，并且偶尔会忽略单位规则（例如用英里和 °F 而非 km 和 °C 来描述的柏林峰会）。
 
-与其手动猜测系统提示中的哪些行导致了这些行为，不如对 GPT-5.1 进行元提示，让它检查自身的指令和追踪。
+与其手动猜测系统提示中的哪些行导致了这些行为，我们可以元提示 GPT-5.1 来检查它自己的指令和追踪。
 
-**Step 1**：让 GPT-5.1 诊断失败
+**Step 1**: 让 GPT-5.1 诊断失败
 
-将系统提示和一小批失败示例粘贴到一个单独的分析调用中。根据你看到的评估，提供一个简短的概述，说明你预计要解决的失败模式，但将事实调查留给模型。
+将系统提示和一小批失败示例粘贴到一次单独的分析调用中。根据你所看到的评估，简要概述你预期要解决的失败模式，但把事实发现留给模型。
 
-请注意，在这个提示中，我们还没有要求给出解决方案，只是进行根本原因分析。
+请注意，在该提示中，我们暂时不要求给出解决方案，只要一个根因分析。
 
 ```text
 You are a prompt engineer tasked with debugging a system prompt for an event-planning agent that uses tools to recommend venues, logistics, and sustainable options.
@@ -545,11 +564,11 @@ failure_modes:
     - why_it_matters: ...
 ```
 
-元提示在反馈可以合理地归为一组时效果最佳。如果你提供许多失败模式，模型可能会难以把所有线索串联起来。在这个示例中，失败日志转储可能包含以下错误示例：模型在回复用户问题时过于冗长或不够详细。针对模型过度急切地调用工具，会发出一个单独的查询。
+当反馈能够被合理地分组时，元提示的效果最好。如果你提供许多失败模式，模型可能难以把所有线索串联起来。在本例中，失败日志转储可能包含这样一些错误示例：模型在回答用户问题时过于冗长或不够详细。针对模型过度热衷于调用工具的情况，则需要单独发起一次查询。
 
-**Step 2:** 询问 GPT-5.1 将如何修补提示以修复这些行为
+**Step 2:** 询问 GPT-5.1 会如何修补提示以修正这些行为
 
-获得该分析后，你可以运行第二个单独的调用，专注于实现：在不完全重写的情况下收紧提示。
+在获得该分析之后，你可以运行第二次单独的调用，专注于实现：在不完全重写提示的前提下收紧提示。
 
 ```text
 You previously analyzed this system prompt and its failure modes.
@@ -578,9 +597,9 @@ Output:
 2) revised_system_prompt: the full updated system prompt with your edits applied, ready to drop into an agent configuration.
 ```
 
-在这个示例中，第一个元提示帮助 GPT-5.1 直接定位相互矛盾的部分（例如重叠的工具规则以及自主性与澄清指导之间的冲突），第二个元提示则将该分析转化为事件规划 智能体指令的具体、清理后的版本。
+在本例中，第一次元提示帮助 GPT-5.1 直接指向相互矛盾的部分（例如重叠的工具规则以及自主性与澄清指引之间的冲突），而第二次元提示则把该分析转化为活动策划智能体指令的具体且清理过的版本。
 
-第二个提示的输出可能如下所示：
+第二次提示的输出可能类似于下面这样：
 
 ```text
 patch_notes:
@@ -595,13 +614,13 @@ revised_system_prompt:
 [...]
 ```
 
-完成这一迭代周期后，再次运行查询以观察是否有回归，并重复此过程，直到你的失败模式已被识别和分类。
+在这一轮迭代之后，再次运行这些查询以观察是否有回归，并重复该过程，直到你的失败模式被识别并完成分类。
 
-随着你持续扩展智能体系统（例如扩大范围或增加工具调用次数），考虑对你想要添加的内容进行元提示，而不是手动添加。这有助于保持每个工具的独立边界以及它们的使用时机。
+当你持续扩展智能体系统（例如扩大范围或增加工具调用数量）时，考虑通过元提示来添加你想要新增的内容，而不是手动添加。这有助于为每个工具及其使用时机保持清晰的边界。
 
 ### 下一步
 
-总结一下，GPT-5.1 在 GPT-5 奠定的基础上构建，并新增了诸多能力，例如针对简单问题的更快思考、对模型输出的可引导性、面向编码场景的新工具，以及将推理设置为 `none` 当你的任务不需要重度思考时。
+总结一下，GPT-5.1 在 GPT-5 打下的基础上进行了扩展，新增了面向简单问题的更快思考、对模型输出的可引导性、面向编码场景的新工具，以及将推理设置为 `none` 当你的任务不需要重度思考时。
 
-请参阅 [GPT-5.1 模型与 API 指南](#model-api-and-feature-updates)，或阅读 [博客文章](https://openai.com/index/gpt-5-1-for-developers/) 以了解更多。
+请参阅 [GPT-5.1 模型与 API 使用指南](#model-api-and-feature-updates)，或阅读 [博客文章](https://openai.com/index/gpt-5-1-for-developers/) 以了解更多信息。
 

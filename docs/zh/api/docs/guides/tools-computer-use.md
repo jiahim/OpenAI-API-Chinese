@@ -1,23 +1,23 @@
 # Computer use
 
-> 完整的文档索引请参阅 [llms.txt](/llms.txt). 可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt). 文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
 
-计算机使用让模型能够操作浏览器和桌面界面。你可以用它来填写表单、测试用户流程，或通过应用的 UI 来完成任务。
+Computer use 让模型可以操作浏览器和桌面界面。你可以通过它填写表单、测试用户操作流程，或在应用中通过 UI 完成各种任务。
 
-你提供运行环境并执行模型的请求。模型会根据截图和其他工具的结果来决定下一步操作。选择如何将它连接到你的应用：
+你负责提供运行环境并执行模型的请求。模型根据截图和其他工具返回的结果来决定下一步操作。你可以选择将其接入应用的方式：
 
 <a id="choose-an-integration-path"></a>
 
-- **代码执行：** 模型编写使用 PyAutoGUI 或 Playwright 等库来操作界面的代码。一次调用可以组合动作、循环或条件逻辑。
-- **计算机工具：** 模型返回结构化的鼠标和键盘动作，由你的应用程序将其转换为浏览器或桌面输入。
+- **代码执行:** 模型编写代码，使用 PyAutoGUI 或 Playwright 等库来操作界面。一次调用可以组合操作、循环或条件逻辑。
+- **计算机工具:** 模型返回结构化的鼠标和键盘动作，你的应用将其转换为浏览器或桌面输入。
 
-对于 [GPT-6 Astra](https://developers.openai.com/api/docs/models/gpt-6-astra)，我们推荐使用代码执行。该 `computer` 工具仍作为替代方案受到支持。
+对于 [GPT-6 Astra](https://developers.openai.com/api/docs/models/gpt-6-astra)，我们推荐使用代码执行。 `computer` 工具仍受支持，可作为替代方案。
 
 <a id="option-2-use-a-custom-tool-or-harness"></a>
 <a id="use-your-own-ui-tools"></a>
 <a id="use-an-existing-tool-interface"></a>
 
-如果你已经通过 [函数调用](https://developers.openai.com/api/docs/guides/function-calling) 或 [远程 MCP 工具](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)，对外暴露了 UI 操作，可以保留该接口。参见 [使用你自己的 UI 工具](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#use-your-own-ui-tools) 以了解这些集成在执行工具和返回结果方式上的差异。
+如果你已经通过 [函数调用](https://developers.openai.com/api/docs/guides/function-calling) 或 [远程 MCP 工具](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)，对外暴露了 UI 操作，可以保持该接口不变。详见 [使用你自己的 UI 工具](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#use-your-own-ui-tools) ，了解这些集成在执行工具和返回结果方式上的差异。
 
 <a id="expose-a-code-execution-tool"></a>
 <a id="option-3-use-a-code-execution-harness"></a>
@@ -25,27 +25,27 @@
 
 ## 使用代码执行
 
-代码执行集成会为模型提供一个函数工具，该工具接受一段脚本。你的应用在隔离的浏览器或桌面环境中运行该脚本，并返回其输出，包括截图。请在多次调用之间保持该环境可用，以便模型能够基于先前的工作继续构建。
+代码执行集成会为模型提供一个函数工具，该工具接受一段脚本。你的应用在隔离的浏览器或桌面环境中运行该脚本，并返回其输出，包括截图。请让该环境在多次调用之间保持可用，以便模型可以在先前工作的基础上继续构建。
 
 <a id="before-running-the-examples"></a>
 
 ### 运行示例应用
 
-该 [CUA 示例应用](https://github.com/openai/openai-cua-sample-app#first-run) 包含 JavaScript/Playwright 和 Python/PyAutoGUI 实现，并附带本地任务与共享控制台：
+该 [CUA 示例应用](https://github.com/openai/openai-cua-sample-app#first-run) 包含 JavaScript/Playwright 和 Python/PyAutoGUI 实现，附带本地任务和共享控制台：
 
-1. 在隔离环境中按照所选实现版本的设置说明进行操作。
-2. 选择一个内置场景并启动一次运行。 
-3. 查看操作、截图和最终状态，以评估任务是否成功。
+1. 在隔离环境中按所选实现的设置说明进行操作。
+2. 选择一个内置场景并开始一次运行。 
+3. 查看操作、截图和最终状态，以判断任务是否成功。
 
-请参阅应用的 README，了解安装方法、桌面权限和支持的环境。请在将其用于真实站点或账号之前审阅 [安全运行](#run-safely) ，再将其适配到真实站点或账号。
+请参阅应用的 README 了解安装方法、桌面权限以及支持的环境。开始前请先阅读 [安全运行](#run-safely) ，再将其适配到真实网站或账号。
 
 <a id="code-execution-harness-examples"></a>
 
 ### 连接你自己的运行时
 
-以下示例展示了为你提供的运行时所用的 API 循环。Python 使用 PyAutoGUI 操作桌面；JavaScript 使用 Playwright 操作浏览器。两者都对外暴露一个普通函数工具，并以原始形式返回文本或图像 `call_id`.
+以下示例展示了你所提供的运行时的API循环。Python 和 Ruby 将 Python 代码发送到一个使用 PyAutoGUI 的桌面运行时；JavaScript 使用 Playwright 来操作浏览器。每个客户端都暴露一个普通的函数工具，并以原始形式返回文本或图像 `call_id`.
 
-该 `execute_in_sandbox` 或 `executeInSandbox` 辅助函数将代码发送到你的执行环境并返回其观测结果。它必须维持浏览器或桌面会话、执行限制并应用你的权限规则。这些是集成示例，独立于运行示例应用本身。
+该 `execute_in_sandbox` 或 `executeInSandbox` 辅助程序将代码发送到你的执行环境并返回其观察结果。它必须保留浏览器或桌面会话、强制执行执行限制，并应用你的权限规则。这些是集成示例，与运行示例应用是分开的。
 
 
 
@@ -214,46 +214,96 @@ text with console.log(). The context viewport is 1440x900.`,
 }
 ```
 
+  
+
+  
+
+    
+Ruby
+
+    Run computer use with code execution
+
+```ruby
+require "json"
+require "openai"
+require "securerandom"
+
+def run_computer_use(endpoint, prompt)
+  client = OpenAI::Client.new
+  session_id = SecureRandom.uuid
+  tools = [{
+    type: :function, name: "exec_py",
+    description: "Run Python in a persistent desktop. Variables persist across calls. PyAutoGUI operations are synchronous. Available: pyautogui, time, log(value), and display(PIL_image). Inspect the screen with display(pyautogui.screenshot()) before acting. Use screenshot coordinates and check the screen after a short group of actions. Keep screenshots in memory and PyAutoGUI's fail-safe enabled.",
+    parameters: {type: :object, properties: {code: {type: :string}}, required: ["code"], additionalProperties: false},
+    strict: true
+  }]
+  next_input = []
+  next_input << {role: :user, content: prompt}
+  history = {}
+  20.times do |turn|
+    response = client.responses.create(
+      model: "gpt-6-astra", tools: tools, input: next_input, previous_response_id: history[:id]
+    )
+    raise "Response stopped with status: #{response.status}" unless response.status == OpenAI::Responses::ResponseStatus::COMPLETED
+    calls = response.output.grep(OpenAI::Responses::ResponseFunctionToolCall)
+    if calls.empty? && response.output.any? { |item| item.is_a?(OpenAI::Responses::ResponseOutputMessage) && item.phase != :commentary }
+      puts(response.output_text)
+      return response
+    end
+    raise "The task reached the 20-response limit" if turn == 19
+    next_input.clear
+    calls.each do |call|
+      raise "Unexpected tool: #{call.name}" unless call.name == "exec_py"
+      code = JSON.parse(call.arguments).fetch("code")
+      raise "Expected Python source text" unless code.is_a?(String)
+      output = execute_in_sandbox(code, session_id, endpoint)
+      next_input << {type: :function_call_output, call_id: call.call_id, output: output}
+    end
+    history[:id] = response.id
+  end
+end
+```
+
 
 
 <a id="connect-to-your-execution-service"></a>
 
-如需完整的客户端适配器以及预期的文本和图像输出格式，请参阅 [连接到你的执行服务](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#connect-to-your-execution-service)。这些示例中的服务接口属于你自己的应用，并非 OpenAI 托管的端点。
+有关完整的客户端适配器以及期望的文本和图像输出格式，请参阅 [连接到你的执行服务](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#connect-to-your-execution-service)。这些示例中的服务接口属于你的应用，并非 OpenAI 托管的端点。
 
 ### 保留状态并返回观察结果
 
-在多次调用之间保持浏览器或桌面会话处于活动状态。持久的 Python 或 JavaScript 命名空间也可以保留变量。在工具定义中描述可用的对象和辅助函数，以便模型了解可以使用哪些资源。
+在多次调用之间保持浏览器或桌面会话处于活动状态。持久化的 Python 或 JavaScript 命名空间也可以保留变量。在工具定义中描述可用的对象和辅助函数，以便模型了解可以使用哪些内容。
 
-当 UI 状态未知时，向模型提供当前截图。在执行一小组操作后，再返回一张截图，以便模型检查结果。将图像保留在内存中并使用 `detail: "original"` 以保持分辨率。如果对截图进行缩放，请在执行操作前将模型的坐标映射回环境的坐标空间。参见 [截图捕获与分辨率](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#capture-screenshots).
+当 UI 状态未知时，为模型提供当前截图。在执行一小组操作后，再返回一张截图以便模型检查结果。将图片保留在内存中，并使用 `detail: "original"` 以保留分辨率。如果你对截图进行缩小处理，请在执行操作之前将模型的坐标映射回环境的坐标空间。参见 [截图捕获与分辨率](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#capture-screenshots).
 
-API 对话与执行环境具有各自独立的状态。在对话中保留工具调用及其输出，并在你的应用程序中保持相应的环境可用。延续响应不会恢复浏览器会话、登录状态或运行时变量。
+API 对话与执行环境具有各自独立的状态。请在对话中保留工具调用及其输出，并在你的应用程序中保持相应的环境可用。延续响应不会恢复浏览器会话、登录状态或运行时变量。
 
 <a id="provide-the-environment-and-control-the-loop"></a>
 <a id="option-1-run-the-built-in-computer-use-loop"></a>
 
 ## 使用 computer 工具
 
-当你的集成需要结构化动作而非生成代码时，可使用此替代方案。关于推荐做法，请从 [代码执行](#use-code-execution).
+当你的集成期望接收结构化操作而非生成代码时，请使用此替代方案。推荐的做法是从 [代码执行](#use-code-execution).
 
-若要尝试该路径，请按照 [同一示例应用设置](https://github.com/openai/openai-cua-sample-app#first-run)，选择 **Native** 模式，并运行一个内置场景。使用支持 [computer 工具](https://developers.openai.com/api/docs/models).
+要尝试此路径，请按照 [相同的示例应用设置](https://github.com/openai/openai-cua-sample-app#first-run)，选择 **Native** 模式，并运行内置场景。使用一个支持 [computer 工具](https://developers.openai.com/api/docs/models).
 
-API 交互包含三个步骤：发送任务、执行返回的操作并返回截图。下面的代码片段使用一个包含 **Show filters** 控件和搜索字段的页面。集成该工具时，请根据你自己的界面调整该任务。
+该 API 交互包含三个步骤：发送任务、执行返回的操作，并返回截图。此处的代码片段使用了一个包含 **Show filters** 控件和搜索字段的页面。在集成该工具时，请将该任务适配为你自己的界面。
 
 <a id="prepare-a-safe-environment"></a>
 <a id="1-prepare-your-browser-or-desktop"></a>
 <a id="create-a-docker-image"></a>
 
-有关环境配置和操作处理程序，请使用 [integration recipes](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#prepare-an-environment).
+有关环境设置和操作处理，请使用 [集成示例](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#prepare-an-environment).
 
 <a id="1-send-the-first-request"></a>
 <a id="2-send-the-task"></a>
 <a id="1-send-the-task"></a>
 
-### 发送任务
+### Send the task
 
-在 `computer` 数组中 `tools` 启用并描述你希望得到的结果：
+在 `computer` 数组中启用 `tools` 并描述你想要的结果:
 
-发送一次 computer 请求
+发送计算机请求
 
 ```javascript
 import OpenAI from "openai";
@@ -347,11 +397,11 @@ puts(response.output)
 <a id="3-run-every-returned-action"></a>
 <a id="2-execute-the-requested-actions"></a>
 
-### 执行所请求的操作
+### 执行请求的操作
 
-一个 `computer_call` 包含一个有序 `actions` 数组。例如，以下调用会选中搜索字段并输入 `penguin`:
+一个 `computer_call` 包含一个有序 `actions` 数组。例如，这次调用会选中搜索字段并输入 `penguin`:
 
-单轮批量操作
+单轮中的批量操作
 
 ```json
 {
@@ -370,23 +420,23 @@ puts(response.output)
 ```
 
 
-你的动作处理器将这些请求转换为浏览器或操作系统输入。按顺序执行已允许的动作，然后截取更新后的屏幕。模型可以请求 `click`, `double_click`, `drag`, `move`, `scroll`, `keypress`, `type`, `wait`，或 `screenshot`.
+你的动作处理器将这些请求转换为浏览器或操作系统输入。按顺序执行被允许的动作，然后捕获更新后的屏幕。模型可以请求 `click`, `double_click`, `drag`, `move`, `scroll`, `keypress`, `type`, `wait`，或 `screenshot`.
 
-第一次调用可能仅包含一个 `screenshot` 动作。此时，截取当前屏幕并返回，不要更改界面。一次调用的 `status: "completed"` 表示模型已完成该次调用的生成；你的应用仍需要执行它。
+首次调用只能包含一个 `screenshot` 动作。在这种情况下，捕获当前屏幕并在不更改 UI 的情况下返回。一次调用的 `status: "completed"` 表示模型已完成该次调用的生成；你的应用仍需执行它。
 
 <a id="possible-computer-use-actions"></a>
 <a id="supported-actions"></a>
 <a id="implement-action-handlers"></a>
 
-参考 [action-handler examples](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#implement-action-handlers) ，了解按键映射、拖拽路径和修饰键。
+请参考 [action-handler examples](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#implement-action-handlers) 以了解按键映射、拖动路径和修饰键。
 
 <a id="4-capture-and-return-the-updated-screenshot"></a>
 <a id="4-return-the-updated-screen"></a>
 <a id="3-return-the-screenshot"></a>
 
-### 返回截图
+### Return the screenshot
 
-返回一个 `computer_call_output` 其 `call_id` 与你处理的调用匹配。使用 `previous_response_id` 来延续模型对话：
+返回一个 `computer_call_output` 其中 `call_id` 与你处理的调用相匹配。使用 `previous_response_id` 来延续模型对话：
 
 发送更新后的截图
 
@@ -539,27 +589,27 @@ puts(response.output)
 ```
 
 
-相同的 [截图与状态指引](#preserve-state-and-return-observations) 同样适用于这个循环。在 `previous_response_id` 延续模型对话期间保持环境可用。
+同样的 [截图和状态指导](#preserve-state-and-return-observations) 同样适用于此循环。在以下过程中保持环境可用： `previous_response_id` 延续模型对话。
 
 <a id="5-repeat-until-the-tool-stops-calling"></a>
 <a id="5-continue-and-verify-the-result"></a>
 
-持续执行，直到模型不再返回 `computer_call` 项为止。检查剩余的输出，查找答案、协助请求或其他工具调用，并在应用中验证结果。对于本例，Filters 面板应处于打开状态，且搜索字段应包含 `penguin`.
+继续，直到模型停止返回 `computer_call` 项。检查剩余输出中是否有答案、帮助请求或其他工具调用，并在应用中验证结果。对于本示例，Filters 面板应该处于打开状态，且搜索字段应包含 `penguin`.
 
-参见 [重复 computer-use 循环](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#repeat-the-computer-use-loop) ，了解循环骨架，包括其所需的操作和截图辅助函数。
+参见 [重复 computer-use 循环](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#repeat-the-computer-use-loop) 获取循环框架，包括其所必需的动作和截图辅助函数。
 
 <a id="handle-user-confirmation-and-consent"></a>
 <a id="keep-a-human-in-the-loop"></a>
 <a id="restrict-the-environment"></a>
 
-## 安全运行
+## Run safely
 
-计算机操作可能会影响真实账户和数据。请在你的应用程序和执行环境中，以及在模型的指令中，应用以下控制措施：
+计算机使用（computer use）会影响真实账户和数据。请在你的应用程序和执行环境中，以及在模型的指令中，应用以下控制措施：
 
-- **限制运行环境。** 使用隔离的浏览器或虚拟机，并维护允许访问的网站和操作清单。仅开放任务所需的访问权限。
-- **将屏幕内容视为不可信。** 页面、文档或工具结果中的文本不能授予权限，也不能覆盖用户的指令。
-- **确认具有后果的操作。** 让用户掌控购买、数据传输、破坏性更改以及其他难以撤销的操作。在表单中输入敏感信息也算作数据传输。
-- **限定并验证运行。** 设置步骤、时间或成本上限，支持取消操作，并检查实际结果，而不是仅依赖模型的最终回答。
+- **限制环境。** 使用隔离的浏览器或 VM，以及网站和操作允许列表。将访问权限限制在任务所需的范围内。
+- **将屏幕内容视为不可信内容。** 网页、文档或工具结果中的文本无法授予权限，也无法覆盖用户的指令。
+- **确认会产生重大影响的操作。** 让用户掌控购买、数据传输、破坏性变更以及其他难以撤销的操作。在表单中输入敏感信息也属于数据传输。
+- **限制并验证运行。** 设置步骤、时间或成本限制，支持取消，并检查实际结果，而不要仅依赖模型的最终答案。
 
 <a id="treat-only-direct-user-instructions-as-permission"></a>
 <a id="confirm-at-the-point-of-risk"></a>
@@ -574,13 +624,13 @@ puts(response.output)
 <a id="require-explicit-consent-before-transmitting-sensitive-data"></a>
 <a id="stop-and-escalate-when-the-model-sees-prompt-injection-or-suspicious-instructions"></a>
 
-请参阅 [确认与同意指南](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#handle-user-confirmation-and-consent) ，了解具体的审批要求、人工交接以及提示示例。
+请参阅 [确认与同意指南](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#handle-user-confirmation-and-consent) 了解具体的审批要求、人工交接以及提示示例。
 
 <a id="migration-from-computer-use-preview"></a>
 <a id="explore-more-examples"></a>
 
-## 后续步骤
+## Next steps
 
-- 使用 [集成示例](https://developers.openai.com/api/docs/guides/tools-computer-use-integration) 了解环境设置、动作处理程序、截图捕获和执行服务适配器。
-- 请参阅 [从 computer-use-preview 迁移](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#migration-from-computer-use-preview) 来更新旧版集成。
-- 浏览 [CUA 示例应用](https://github.com/openai/openai-cua-sample-app) ，查看完整的浏览器和桌面工作流。
+- 使用 [集成示例](https://developers.openai.com/api/docs/guides/tools-computer-use-integration) 完成环境配置、操作处理器、截图采集和执行服务适配器。
+- 更新旧集成时，请参阅 [从 computer-use-preview 迁移](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#migration-from-computer-use-preview) 。
+- 查看 [CUA 示例应用](https://github.com/openai/openai-cua-sample-app) ，获取完整的浏览器和桌面工作流示例。

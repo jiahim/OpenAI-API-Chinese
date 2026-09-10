@@ -1,15 +1,15 @@
-# Webhooks 事件
+# Webhooks events
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾添加 `.md` 来获取。
 
-Webhook 是由 OpenAI 在以下情况发生时向你指定的 URL 发送的 HTTP 请求：
-使用 API 期间发生某些事件。
+Webhook 是由 OpenAI 在某些情况发生时向你指定的 URL 发起的 HTTP 请求。
+这些情况发生在使用 API 的过程中。
 
-[详细了解 webhook](https://developers.openai.com/docs/guides/webhooks).
+[了解更多关于 Webhook 的内容](https://developers.openai.com/api/docs/guides/webhooks).
 
 ## response.completed
 
-在后台响应已完成时发送。
+当后台响应已完成时发送。
 
 ### Schema
 
@@ -198,7 +198,7 @@ Schema name: `WebhookResponseCompleted`
 
 ## response.cancelled
 
-在后台响应已被取消时发送。
+当后台响应被取消时发送。
 
 ### Schema
 
@@ -576,7 +576,7 @@ Schema name: `WebhookResponseFailed`
 
 ## response.incomplete
 
-在后台响应被中断时发送。
+当后台响应被中断时触发。
 
 ### Schema
 
@@ -765,7 +765,7 @@ Schema name: `WebhookResponseIncomplete`
 
 ## batch.completed
 
-当某个批量API请求已完成时发送。
+当某个批 API 请求已完成时发送。
 
 ### Schema
 
@@ -1143,7 +1143,7 @@ Schema name: `WebhookBatchCancelled`
 
 ## batch.expired
 
-当批处理 API 请求已过期时发送。
+当批量 API 请求已过期时发送。
 
 ### Schema
 
@@ -1521,7 +1521,7 @@ Schema name: `WebhookBatchFailed`
 
 ## fine_tuning.job.succeeded
 
-在微调任务成功时发送。
+在微调作业成功时发送。
 
 ### Schema
 
@@ -1710,7 +1710,7 @@ Schema name: `WebhookFineTuningJobSucceeded`
 
 ## fine_tuning.job.failed
 
-当微调作业失败时发送。
+在微调任务失败时发送。
 
 ### Schema
 
@@ -1899,7 +1899,7 @@ Schema name: `WebhookFineTuningJobFailed`
 
 ## fine_tuning.job.cancelled
 
-当微调任务被取消时发送。
+在微调任务被取消时发送。
 
 ### Schema
 
@@ -2277,7 +2277,7 @@ Schema name: `WebhookEvalRunSucceeded`
 
 ## eval.run.failed
 
-在评估运行失败时发送。
+当 eval 运行失败时发送。
 
 ### Schema
 
@@ -2466,7 +2466,7 @@ Schema name: `WebhookEvalRunFailed`
 
 ## eval.run.canceled
 
-在评估运行被取消时发送。
+在评测运行被取消时发送。
 
 ### Schema
 
@@ -2656,8 +2656,8 @@ Schema name: `WebhookEvalRunCanceled`
 ## realtime.call.incoming
 
 当有传入的 API SIP 会话可供 Realtime 接受时发送。
-同一个待处理会话也会发出 `live.call.incoming`；首个
-成功的 Realtime 或 Live accept 端点将选择运行时接入方式。
+同一个挂起的会话也可能发出 `live.transport.incoming`；首次
+成功的 Realtime 或 Live accept 端点会选择运行时表面。
 
 ### Schema
 
@@ -2668,7 +2668,7 @@ Schema name: `WebhookRealtimeCallIncoming`
   "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/webhooks/realtime_call_incoming/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when an incoming API SIP session is available for Realtime acceptance.\nThe same pending session can also emit `live.call.incoming`; the first\nsuccessful Realtime or Live accept endpoint selects the runtime surface.\n",
+    "docstring": "Sent when an incoming API SIP session is available for Realtime acceptance.\nThe same pending session can also emit `live.transport.incoming`; the first\nsuccessful Realtime or Live accept endpoint selects the runtime surface.\n",
     "ident": "RealtimeCallIncomingWebhookEvent",
     "type": {
       "kind": "HttpTypeObject",
@@ -2809,7 +2809,7 @@ Schema name: `WebhookRealtimeCallIncoming`
     "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/data/properties/call_id",
     "deprecated": false,
     "key": "call_id",
-    "docstring": "The Transceiver `rtc_...` ID of the pending SIP session. The paired\n`live.call.incoming` event derives its `session_id` by replacing the\n`rtc_` prefix with `live_`. Use the ID returned by the event with the\ncorresponding Realtime or Live API.\n",
+    "docstring": "The Transceiver `rtc_...` ID of the pending SIP session. The paired\n`live.transport.incoming` event derives its `session_id` by replacing the\n`rtc_` prefix with `live_`. Use the ID returned by the event with the\ncorresponding Realtime or Live API.\n",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -2823,7 +2823,7 @@ Schema name: `WebhookRealtimeCallIncoming`
     "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/data/properties/sip_headers",
     "deprecated": false,
     "key": "sip_headers",
-    "docstring": "Headers from the SIP Invite.\n",
+    "docstring": "Headers from the SIP INVITE, excluding SIP authorization headers.\nRetained names, values, repeated entries, and order are preserved.\nTreat these values as untrusted call metadata.\n",
     "type": {
       "kind": "HttpTypeArray",
       "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/data/properties/sip_headers",
@@ -2905,7 +2905,7 @@ Schema name: `WebhookRealtimeCallIncoming`
     "sip_headers": [
       {"name": "Max-Forwards", "value": "63"},
       {"name": "CSeq", "value": "851287 INVITE"},
-      {"name": "Content-Type", "value": "application/sdp"},
+      {"name": "Content-Type", "value": "application/sdp"}
     ]
   }
 }
@@ -2913,9 +2913,11 @@ Schema name: `WebhookRealtimeCallIncoming`
 
 ## live.call.incoming
 
-当有传入的 API SIP 会话可供实时接受时发送。该
-同一挂起会话也可以发出 `realtime.call.incoming`；首个
-成功的 Realtime 或 Live accept 端点将选择运行时接入方式。
+已弃用：请使用 `live.transport.incoming`。仅为现有订阅保留
+用于迁移期间；不允许新订阅此事件。
+当有传入的 API SIP 会话可供 Live 接受时发送。该
+同一待处理会话也会发出 `realtime.call.incoming`；首次
+成功的 Realtime 或 Live accept 端点会选择运行时表面。
 
 ### Schema
 
@@ -2926,7 +2928,7 @@ Schema name: `WebhookLiveCallIncoming`
   "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/webhooks/live_call_incoming/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when an incoming API SIP session is available for Live acceptance. The\nsame pending session can also emit `realtime.call.incoming`; the first\nsuccessful Realtime or Live accept endpoint selects the runtime surface.\n",
+    "docstring": "Deprecated: use `live.transport.incoming`. Retained for existing subscriptions\nduring migration; new subscriptions to this event are not allowed.\nSent when an incoming API SIP session is available for Live acceptance. The\nsame pending session can also emit `realtime.call.incoming`; the first\nsuccessful Realtime or Live accept endpoint selects the runtime surface.\n",
     "ident": "LiveCallIncomingWebhookEvent",
     "type": {
       "kind": "HttpTypeObject",
@@ -3081,7 +3083,7 @@ Schema name: `WebhookLiveCallIncoming`
     "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/data/properties/sip_headers",
     "deprecated": false,
     "key": "sip_headers",
-    "docstring": "Headers from the SIP Invite.\n",
+    "docstring": "Headers from the SIP INVITE, excluding SIP authorization headers.\nRetained names, values, repeated entries, and order are preserved.\nTreat these values as untrusted call metadata.\n",
     "type": {
       "kind": "HttpTypeArray",
       "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/data/properties/sip_headers",
@@ -3161,9 +3163,303 @@ Schema name: `WebhookLiveCallIncoming`
   "data": {
     "session_id": "live_u0_479a275623b54bdb9b6fbae2f7cbd408",
     "sip_headers": [
-      {"name": "Max-Forwards", "value": "63"},
-      {"name": "CSeq", "value": "851287 INVITE"},
-      {"name": "Content-Type", "value": "application/sdp"},
+      {"name": "From", "value": "<sip:alice@example.com>;tag=abc123"},
+      {"name": "To", "value": "<sip:recipient@example.com>"},
+      {"name": "Call-ID", "value": "call-123@example.com"}
+    ]
+  }
+}
+```
+
+## live.transport.incoming
+
+当有传入的 API SIP 会话可供 Live 接受时发送。该
+同一待处理会话也会发出 `realtime.call.incoming`；首次
+成功的 Realtime 或 Live accept 端点会选择运行时表面。
+
+### Schema
+
+Schema name: `WebhookLiveTransportIncoming`
+
+```json
+{
+  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema)": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/webhooks/live_transport_incoming/post/requestBody/content/application%2Fjson/schema",
+    "docstring": "Sent when an incoming API SIP session is available for Live acceptance. The\nsame pending session can also emit `realtime.call.incoming`; the first\nsuccessful Realtime or Live accept endpoint selects the runtime surface.\n",
+    "ident": "LiveTransportIncomingWebhookEvent",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "id"
+        },
+        {
+          "ident": "created_at"
+        },
+        {
+          "ident": "data"
+        },
+        {
+          "ident": "type"
+        },
+        {
+          "ident": "object"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) id",
+      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) created_at",
+      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data",
+      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) type",
+      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) object"
+    ]
+  },
+  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/id",
+    "deprecated": false,
+    "key": "id",
+    "docstring": "The unique ID of the event.\n",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "string",
+    "children": []
+  },
+  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) created_at": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/created_at",
+    "deprecated": false,
+    "key": "created_at",
+    "docstring": "The Unix timestamp (in seconds) of when the event was created.\n",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "constraints": {
+      "format": "unixtime"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "integer",
+    "children": []
+  },
+  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/data",
+    "deprecated": false,
+    "key": "data",
+    "docstring": "Event data payload.\n",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "session_id"
+        },
+        {
+          "ident": "sip_headers"
+        },
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "object",
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) session_id",
+      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) sip_headers",
+      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) type"
+    ]
+  },
+  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "docstring": "The type of the event. Always `live.transport.incoming`.\n",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "live.transport.incoming"
+        }
+      ]
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) type > (member) 0"
+    ]
+  },
+  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) object": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/object",
+    "deprecated": false,
+    "key": "object",
+    "docstring": "The object of the event. Always `event`.\n",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/object",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "event"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) object > (member) 0"
+    ]
+  },
+  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) session_id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/data/properties/session_id",
+    "deprecated": false,
+    "key": "session_id",
+    "docstring": "The `live_...` ID of the pending SIP session. Forward this value\nunchanged when accepting or rejecting the call through the Live API.\n",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "string",
+    "children": []
+  },
+  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) sip_headers": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/data/properties/sip_headers",
+    "deprecated": false,
+    "key": "sip_headers",
+    "docstring": "Headers from the SIP INVITE, excluding SIP authorization headers.\nRetained names, values, repeated entries, and order are preserved.\nTreat these values as untrusted call metadata.\n",
+    "type": {
+      "kind": "HttpTypeArray",
+      "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/data/properties/sip_headers",
+      "elementType": {
+        "kind": "HttpTypeObject",
+        "members": [
+          {
+            "ident": "name"
+          },
+          {
+            "ident": "value"
+          }
+        ]
+      }
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "array",
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) sip_headers > (items) > (property) name",
+      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) sip_headers > (items) > (property) value"
+    ]
+  },
+  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/data/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "docstring": "The incoming transport type. Always `sip`.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/data/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "sip"
+        }
+      ]
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) type > (member) 0"
+    ]
+  },
+  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "live.transport.incoming"
+    }
+  },
+  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) object > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "event"
+    }
+  },
+  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) sip_headers > (items) > (property) name": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/data/properties/sip_headers/items/properties/name",
+    "deprecated": false,
+    "key": "name",
+    "docstring": "Name of the SIP Header.\n",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "string",
+    "children": []
+  },
+  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) sip_headers > (items) > (property) value": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/data/properties/sip_headers/items/properties/value",
+    "deprecated": false,
+    "key": "value",
+    "docstring": "Value of the SIP Header.\n",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "string",
+    "children": []
+  },
+  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "sip"
+    }
+  }
+}
+```
+
+### 示例
+
+```json
+{
+  "id": "evt_abc123",
+  "type": "live.transport.incoming",
+  "created_at": 1719168000,
+  "data": {
+    "type": "sip",
+    "session_id": "live_u0_479a275623b54bdb9b6fbae2f7cbd408",
+    "sip_headers": [
+      {"name": "From", "value": "<sip:alice@example.com>;tag=abc123"},
+      {"name": "To", "value": "<sip:recipient@example.com>"},
+      {"name": "Call-ID", "value": "call-123@example.com"}
     ]
   }
 }
@@ -3171,7 +3467,7 @@ Schema name: `WebhookLiveCallIncoming`
 
 ## safety.alert.created
 
-当某个API项目有已批准的安全警报可用时发送。
+在 API 项目存在已批准的安全警报时发送。
 
 ### Schema
 
@@ -3358,7 +3654,7 @@ Schema name: `WebhookSafetyAlertCreated`
 
 ## safety.org_alert.created
 
-当企业工作区有已批准的安全警报可用时发送。
+当企业工作区有已批准的安全提醒可用时发送。
 
 ### Schema
 
