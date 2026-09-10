@@ -123,7 +123,7 @@ await pc.setRemoteDescription({
 
 Connect to the dedicated translation endpoint and select the model in the URL:
 
-Install the `ws` package for Node.js or the `websocket-client` package for Python before running this example.
+Before running this example, install `ws` for Node.js, `websocket-client` for Python, or `async-websocket` for Ruby (`gem install async-websocket`).
 
 Connect to a translation session
 
@@ -155,6 +155,28 @@ ws.connect(
 )
 ```
 
+```ruby
+require "async"
+require "async/http/endpoint"
+require "async/websocket/client"
+require "json"
+
+endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/realtime/translations?model=gpt-realtime-translate", timeout: 10, alpn_protocols: ["http/1.1"])
+headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}", "OpenAI-Safety-Identifier" => "hashed-user-id"}
+Sync do |task|
+  task.with_timeout(120) do
+    Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
+      message = connection.read or raise "Connection closed before session creation"
+      event = JSON.parse(message.to_str)
+      raise "Expected session.created: #{event}" unless event["type"] == "session.created"
+      puts(event.fetch("type"))
+    end
+  end
+end
+```
+
+
+For Ruby, insert the following configuration and audio-append snippets inside the `Async::WebSocket::Client.connect` block, after the session-created check and before the block ends. Keep the connection open while sending audio and receiving translation events.
 
 Configure the target language after the socket opens:
 
@@ -196,6 +218,11 @@ ws.send(
 )
 ```
 
+```ruby
+connection.write(JSON.generate(type: "session.update", session: {audio: {output: {language: "es"}}}))
+connection.flush
+```
+
 
 Then append audio continuously:
 
@@ -219,6 +246,17 @@ ws.send(
         }
     )
 )
+```
+
+```ruby
+require "base64"
+
+File.open("speech.pcm", "rb") do |audio|
+  while (chunk = audio.read(4_800))
+    connection.write(JSON.generate(type: "session.input_audio_buffer.append", audio: Base64.strict_encode64(chunk)))
+    connection.flush
+  end
+end
 ```
 
 

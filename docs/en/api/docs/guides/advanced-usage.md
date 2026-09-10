@@ -190,12 +190,16 @@ They work by directly modifying the logits (un-normalized log-probabilities) wit
 mu[j] = mu[j] - c[j] * alpha_frequency - float(c[j] > 0) * alpha_presence
 ```
 
+```ruby
+mu[j] = mu[j] - c[j] * alpha_frequency - ((c[j] > 0) ? alpha_presence : 0.0)
+```
+
 
 Where:
 
 - `mu[j]` is the logits of the j-th token
 - `c[j]` is how often that token was sampled prior to the current position
-- `float(c[j] > 0)` is 1 if `c[j] > 0` and 0 otherwise
+- The presence penalty subtracts `alpha_presence` if `c[j] > 0` and 0 otherwise
 - `alpha_frequency` is the frequency penalty coefficient
 - `alpha_presence` is the presence penalty coefficient
 

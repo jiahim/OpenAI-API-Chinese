@@ -511,6 +511,8 @@ curl https://api.openai.com/v1/audio/speech \
 
 **Realtime API example**
 
+For Ruby, set `OPENAI_VOICE_ID` to your custom voice ID before running the example.
+
 ```javascript
 const sessionConfig = JSON.stringify({
   session: {
@@ -523,6 +525,19 @@ const sessionConfig = JSON.stringify({
     },
   },
 });
+```
+
+```ruby
+require "json"
+
+session_config = JSON.generate(
+  session: {
+    type: "realtime",
+    model: "gpt-realtime-2",
+    audio: {output: {voice: {id: ENV.fetch("OPENAI_VOICE_ID")}}}
+  }
+)
+puts(session_config)
 ```
 
 

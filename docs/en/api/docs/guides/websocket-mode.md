@@ -14,7 +14,7 @@ Because the connection stays open and each turn sends only incremental input, We
 
 ## Connect and create responses
 
-Install the WebSocket dependencies with `pip install "openai[realtime]>=3.8.0"` for Python or `npm install openai@^7.10.0 ws` for JavaScript.
+Install the WebSocket dependencies with `pip install "openai[realtime]>=3.8.0"` for Python, `npm install openai@^7.10.0 ws` for JavaScript, or `gem install openai async-websocket` for Ruby.
 
 In WebSocket mode, start each turn by sending a `response.create` event from the client. The payload mirrors the normal [Responses create body](https://developers.openai.com/api/reference/resources/responses/methods/create), except that transport-specific fields like `stream` and `background` are not used.
 
@@ -89,6 +89,47 @@ with client.responses.connect() as connection:
             break
         if event.type in {"response.failed", "response.incomplete", "error"}:
             raise RuntimeError(event.to_json())
+```
+
+```ruby
+require "async"
+require "async/http/endpoint"
+require "async/websocket/client"
+require "json"
+
+def wait_for_response(connection)
+  while (message = connection.read)
+    event = JSON.parse(message.to_str)
+    case event.fetch("type")
+    when "response.completed" then return event.fetch("response")
+    when "response.failed", "response.incomplete", "error"
+      raise "Response failed: #{JSON.generate(event)}"
+    end
+  end
+  raise "Connection closed before the response finished"
+end
+
+def print_response(response)
+  response.fetch("output").each do |item|
+    next unless item["type"] == "message"
+    item.fetch("content").each { |part| puts(part.fetch("text")) if part["type"] == "output_text" }
+  end
+end
+
+endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
+headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+Sync do |task|
+  task.with_timeout(120) do
+    Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
+      connection.write(JSON.generate(
+        type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
+        input: [{role: "user", content: "Find fizz_buzz()"}], tools: []
+      ))
+      connection.flush
+      print_response(wait_for_response(connection))
+    end
+  end
+end
 ```
 
 
@@ -263,6 +304,70 @@ with client.responses.connect() as connection:
     print(wait_for_response(connection).output_text)
 ```
 
+```ruby
+require "async"
+require "async/http/endpoint"
+require "async/websocket/client"
+require "json"
+
+def wait_for_response(connection)
+  while (message = connection.read)
+    event = JSON.parse(message.to_str)
+    case event.fetch("type")
+    when "response.completed" then return event.fetch("response")
+    when "response.failed", "response.incomplete", "error"
+      raise "Response failed: #{JSON.generate(event)}"
+    end
+  end
+  raise "Connection closed before the response finished"
+end
+
+def print_response(response)
+  response.fetch("output").each do |item|
+    next unless item["type"] == "message"
+    item.fetch("content").each { |part| puts(part.fetch("text")) if part["type"] == "output_text" }
+  end
+end
+
+tools = [{
+  type: "function", name: "get_test_results", description: "Read the demo test results.",
+  parameters: {type: "object", properties: {}, required: [], additionalProperties: false}, strict: true
+}]
+
+endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
+headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+Sync do |task|
+  task.with_timeout(120) do
+    Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
+      connection.write(JSON.generate(
+        type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
+        input: "Find the failing test and suggest a fix.", tools: tools,
+        tool_choice: {type: "function", name: "get_test_results"}, parallel_tool_calls: false
+      ))
+      connection.flush
+      response = wait_for_response(connection)
+      call = response.fetch("output").find { |item| item["type"] == "function_call" }
+      unless call && call["name"] == "get_test_results" && JSON.parse(call.fetch("arguments")) == {}
+        raise "Expected a get_test_results call with no arguments"
+      end
+      # Demo data. Replace this with your test runner.
+      result = {test: "test_fizz_buzz", failure: 'Expected "FizzBuzz" for 15, got "Fizz".'}
+      connection.write(JSON.generate(
+        type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
+        previous_response_id: response.fetch("id"),
+        input: [
+          {type: "function_call_output", call_id: call.fetch("call_id"), output: JSON.generate(result)},
+          {role: "user", content: "Now optimize it."}
+        ],
+        tools: tools, tool_choice: "none"
+      ))
+      connection.flush
+      print_response(wait_for_response(connection))
+    end
+  end
+end
+```
+
 
 ## How continuation works
 
@@ -379,6 +484,57 @@ with client.responses.connect() as connection:
             break
         if event.type in {"response.failed", "response.incomplete", "error"}:
             raise RuntimeError(event.to_json())
+```
+
+```ruby
+require "async"
+require "async/http/endpoint"
+require "async/websocket/client"
+require "json"
+
+require "openai"
+
+def wait_for_response(connection)
+  while (message = connection.read)
+    event = JSON.parse(message.to_str)
+    case event.fetch("type")
+    when "response.completed" then return event.fetch("response")
+    when "response.failed", "response.incomplete", "error"
+      raise "Response failed: #{JSON.generate(event)}"
+    end
+  end
+  raise "Connection closed before the response finished"
+end
+
+def print_response(response)
+  response.fetch("output").each do |item|
+    next unless item["type"] == "message"
+    item.fetch("content").each { |part| puts(part.fetch("text")) if part["type"] == "output_text" }
+  end
+end
+
+client = OpenAI::Client.new
+compacted = client.responses.compact(
+  model: "gpt-6-astra",
+  input: [{role: :user, content: "Find the failing test."}]
+)
+next_input = compacted.output.map(&:to_h)
+next_input << {role: :user, content: "Continue from here."}
+
+endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
+headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+Sync do |task|
+  task.with_timeout(120) do
+    Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
+      connection.write(JSON.generate(
+        type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
+        input: next_input, tools: []
+      ))
+      connection.flush
+      print_response(wait_for_response(connection))
+    end
+  end
+end
 ```
 
 
@@ -665,6 +821,66 @@ with client.responses.connect() as connection:
         previous_response_id=planner_response_id,
     )
     drain_until_complete(connection, {"critic", "planner"})
+```
+
+```ruby
+require "async"
+require "async/http/endpoint"
+require "async/websocket/client"
+require "json"
+
+def send_create(connection, stream_id, text, previous_response_id = nil)
+  payload = {
+    type: "response.create", stream_id: stream_id, model: "gpt-6-astra", store: false,
+    input: [{role: "user", content: text}]
+  }
+  payload[:previous_response_id] = previous_response_id if previous_response_id
+  connection.write(JSON.generate(payload))
+  connection.flush
+end
+
+def read_event(connection)
+  message = connection.read or raise "Connection closed before all responses finished"
+  event = JSON.parse(message.to_str)
+  if ["response.failed", "response.incomplete", "error"].include?(event["type"])
+    raise "Response failed: #{JSON.generate(event)}"
+  end
+  event
+end
+
+def drain_responses(connection, lanes, latest_ids)
+  remaining = lanes.dup
+  until remaining.empty?
+    event = read_event(connection)
+    lane = event["stream_id"]
+    next unless remaining.include?(lane) && event["type"] == "response.completed"
+    latest_ids[lane] = event.fetch("response").fetch("id")
+    remaining.delete(lane)
+  end
+end
+
+endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
+headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+Sync do |task|
+  task.with_timeout(120) do
+    Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
+      latest_ids = {}
+      send_create(connection, "planner", "Draft a deployment plan for a stateless API service.")
+      send_create(connection, "research", "List common deployment risks for a stateless API service.")
+      drain_responses(connection, ["planner", "research"], latest_ids)
+      parent_id = latest_ids.fetch("planner")
+      send_create(connection, "critic", "Find gaps in this deployment plan.", parent_id)
+      # Let the fork load its parent before advancing the original lane's cache.
+      loop do
+        event = read_event(connection)
+        break if event["type"] == "response.in_progress" && event["stream_id"] == "critic"
+      end
+      send_create(connection, "planner", "Add rollback and monitoring steps.", parent_id)
+      drain_responses(connection, ["critic", "planner"], latest_ids)
+      puts(JSON.generate(latest_ids))
+    end
+  end
+end
 ```
 
 

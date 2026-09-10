@@ -958,6 +958,33 @@ response = client.responses.create(
 print(response.output_text)
 ```
 
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+inline_zip = Base64.strict_encode64(File.binread("csv_insights.zip"))
+base64_string = Base64.strict_encode64(File.binread("report.csv"))
+container = client.containers.create(
+  name: "inline-skill-container",
+  skills: [{
+    type: :inline,
+    name: "csv-insights",
+    description: "Summarize CSV files and produce a markdown report.",
+    source: {type: :base64, media_type: "application/zip", data: inline_zip}
+  }]
+)
+response = client.responses.create(
+  model: "gpt-6-astra",
+  tools: [{type: :shell, environment: {type: :container_reference, container_id: container.id}}],
+  input: [{role: :user, content: [
+    {type: :input_file, filename: "report.csv", file_data: "data:text/csv;base64,#{base64_string}"},
+    {type: :input_text, text: "Use the csv-insights skill to summarize report.csv."}
+  ]}]
+)
+puts(response.output_text)
+```
+
 
 For follow-up requests, pass the same `container_id` with `container_reference`. The mounted skills and existing container files remain available while the container is active.
 
