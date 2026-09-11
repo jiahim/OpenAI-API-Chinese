@@ -2,9 +2,9 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-Programmatic Tool Calling lets a model write and run JavaScript that coordinates the tools in a Responses API request. A program can call tools in parallel, use loops and conditions, and keep intermediate results in the hosted runtime. This is useful when a task needs a sequence of related tool calls or needs to process large tool outputs before returning a result.
+Programmatic Tool Calling lets a model write and run JavaScript that coordinates its tools. A program can call tools in parallel, use loops and conditions, and keep intermediate results in the hosted runtime. This is useful when a task needs a sequence of related tool calls or needs to process large tool outputs before returning a result.
 
-Your application decides whether Programmatic Tool Calling is available and which eligible tools the model can call directly, from a program, or either way. It continues to run any client-owned tool calls.
+In the Responses API, your application decides whether Programmatic Tool Calling is available and which eligible tools the model can call directly, from a program, or either way. It continues to run any client-owned tool calls. The [Agents API](#agents-api) enables Programmatic Tool Calling by default and manages the agent loop for you.
 
 Check the [model page](https://developers.openai.com/api/docs/models) before enabling Programmatic Tool Calling.
 
@@ -12,7 +12,7 @@ Check the [model page](https://developers.openai.com/api/docs/models) before ena
 
 OpenAI runs each generated program in a fresh, isolated V8 runtime. The runtime supports JavaScript with top-level `await`, but it does not provide Node.js, package installation, direct network access, a general-purpose filesystem, subprocess execution, a console, or persistent JavaScript state between program executions. Programs can interact with external systems only through tools enabled in the request and can emit output with `text(...)` or `image(...)`.
 
-Programmatic Tool Calling supports Zero Data Retention (ZDR) workflows without requiring a persistent code-execution container. ZDR must be enabled for the organization or project; setting `store: false` enables stateless continuation but does not enable ZDR by itself. Eligibility and retention depend on the complete request, including its model, tools, and third-party services; see [data controls](https://developers.openai.com/api/docs/guides/your-data).
+For Responses API requests, Programmatic Tool Calling supports Zero Data Retention (ZDR) workflows without requiring a persistent code-execution container. ZDR must be enabled for the organization or project; setting `store: false` enables stateless continuation but does not enable ZDR by itself. Eligibility and retention depend on the complete request, including its model, tools, and third-party services; see [data controls](https://developers.openai.com/api/docs/guides/your-data).
 
 ## Choose when to use Programmatic Tool Calling
 
@@ -29,7 +29,7 @@ Use Programmatic Tool Calling when a stage has predictable control flow and code
 
 ## Configure Programmatic Tool Calling
 
-Add the `programmatic_tool_calling` hosted tool to the request. Then set `allowed_callers` on each eligible tool that the program can invoke.
+For the Responses API, add the `programmatic_tool_calling` hosted tool to the request. Then set `allowed_callers` on each eligible tool that the program can invoke.
 
 Enable Programmatic Tool Calling
 
@@ -225,6 +225,7 @@ Run a programmatic tool-calling loop
 
 ```javascript
 import OpenAI from "openai";
+import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
 
 const client = new OpenAI();
 
@@ -304,8 +305,8 @@ while (true) {
     throw new Error(`Response ended with status ${response.status}`);
   }
 
-  // Preserve every output item, including program and reasoning items.
-  input.push(...response.output);
+  // Preserve replayable output, including program and reasoning items.
+  input.push(...toResponseInputItems(response.output));
 
   const calls = response.output.filter((item) => item.type === "function_call");
 
@@ -648,11 +649,17 @@ require "openai"
 client = OpenAI::Client.new
 
 def get_inventory(sku:)
-  {sku: sku, available_units: 42}
+  {
+    sku: sku,
+    available_units: 42
+  }
 end
 
 def get_demand(sku:)
-  {sku: sku, requested_units: 31}
+  {
+    sku: sku,
+    requested_units: 31
+  }
 end
 
 implementations = {
@@ -666,15 +673,15 @@ tools = [
     description: "Return an object with sku (string) and available_units (number).",
     parameters: {
       type: :object,
-      properties: {sku: {type: :string}},
+      properties: { sku: { type: :string } },
       required: ["sku"],
       additionalProperties: false
     },
     output_schema: {
       type: :object,
       properties: {
-        sku: {type: :string},
-        available_units: {type: :number}
+        sku: { type: :string },
+        available_units: { type: :number }
       },
       required: %w[sku available_units],
       additionalProperties: false
@@ -688,15 +695,15 @@ tools = [
     description: "Return an object with sku (string) and requested_units (number).",
     parameters: {
       type: :object,
-      properties: {sku: {type: :string}},
+      properties: { sku: { type: :string } },
       required: ["sku"],
       additionalProperties: false
     },
     output_schema: {
       type: :object,
       properties: {
-        sku: {type: :string},
-        requested_units: {type: :number}
+        sku: { type: :string },
+        requested_units: { type: :number }
       },
       required: %w[sku requested_units],
       additionalProperties: false
@@ -704,9 +711,14 @@ tools = [
     allowed_callers: [:programmatic],
     strict: true
   },
-  {type: :programmatic_tool_calling}
+  { type: :programmatic_tool_calling }
 ]
-input = [{role: :user, content: "Compare inventory with demand for sku_123."}]
+input = [
+  {
+    role: :user,
+    content: "Compare inventory with demand for sku_123."
+  }
+]
 
 loop do
   response = client.responses.create(
@@ -734,7 +746,7 @@ loop do
     end
     text = response.output_text
     if text.empty? &&
-        refusal.is_a?(OpenAI::Models::Responses::ResponseOutputRefusal)
+       refusal.is_a?(OpenAI::Models::Responses::ResponseOutputRefusal)
       text = refusal.refusal
     end
     puts(text)
@@ -790,6 +802,27 @@ Measure:
 - Model turns, tool calls, retries, and recovery behavior.
 - Safety outcomes, especially for side effects and approval requirements.
 - Whether the route that ran matched the intended workflow stage.
+
+## Agents API
+
+In the [Agents API](https://developers.openai.com/api/docs/guides/agents-api/overview), Programmatic Tool Calling runs in the OpenAI-managed agent harness and is enabled by default. The harness gives the agent an `exec` tool and makes its existing tools available inside generated JavaScript. You don't need to wrap those tools as command-line programs or install them in the sandbox.
+
+To disable Programmatic Tool Calling, include this entry in `agent.tools`:
+
+```json
+{
+  "type": "programmatic_tool_calling",
+  "enabled": false
+}
+```
+
+Omitting the entry or its `enabled` field leaves Programmatic Tool Calling enabled. A type-only entry, `{ "type": "programmatic_tool_calling" }`, also keeps it enabled. The `allowed_callers` configuration and Responses continuation loop above describe the Responses API integration.
+
+Programmatic Tool Calling also works in conversation-only sessions with `environment.type` set to `none`. Bash, executor MCPs, and other tools that run in a sandbox still require an [execution environment](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted).
+
+Orchestrating a tool in JavaScript doesn't change where the tool runs. A shell call runs commands in the sandbox; the JavaScript runtime doesn't start system processes itself. Executor MCPs still use the sandbox, and function tools still call your application server. The agent processes their results before deciding what enters model context.
+
+Use the routing guidance above to define which workflow stages should use code. Follow [Functions](https://developers.openai.com/api/docs/guides/agents-api/tools/functions) and [MCP connections](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp) for Agents API configuration and call handling.
 
 ## Related guides
 

@@ -524,8 +524,14 @@ response = openai.responses.create(
     {
       role: "user",
       content: [
-        {type: "input_file", file_id: file.id},
-        {type: "input_text", text: "What is the first dragon in the book?"}
+        {
+          type: "input_file",
+          file_id: file.id
+        },
+        {
+          type: "input_text",
+          text: "What is the first dragon in the book?"
+        }
       ]
     }
   ]
@@ -768,17 +774,22 @@ client = OpenAI::Client.new
 pdf_data = Base64.strict_encode64(File.binread("draconomicon.pdf"))
 response = client.responses.create(
   model: "gpt-6-astra",
-  input: [{
-    role: :user,
-    content: [
-      {
-        type: :input_file,
-        filename: "document.pdf",
-        file_data: "data:application/pdf;base64,#{pdf_data}"
-      },
-      {type: :input_text, text: "Summarize this document."}
-    ]
-  }]
+  input: [
+    {
+      role: :user,
+      content: [
+        {
+          type: :input_file,
+          filename: "document.pdf",
+          file_data: "data:application/pdf;base64,#{pdf_data}"
+        },
+        {
+          type: :input_text,
+          text: "Summarize this document."
+        }
+      ]
+    }
+  ]
 )
 
 puts(response.output_text)

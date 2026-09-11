@@ -1016,7 +1016,12 @@ tool = {
   description: APPLY_PATCH_TOOL_DESC,
   parameters: {
     type: "object",
-    properties: {input: {type: "string", description: "The apply_patch command to execute."}},
+    properties: {
+      input: {
+        type: "string",
+        description: "The apply_patch command to execute."
+      }
+    },
     required: ["input"]
   }
 }

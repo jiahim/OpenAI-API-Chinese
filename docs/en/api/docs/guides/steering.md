@@ -305,14 +305,16 @@ require "async/websocket/client"
 require "json"
 
 endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
-headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+headers = { "Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}" }
 Sync do |task|
   task.with_timeout(120) do
     Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
-      connection.write(JSON.generate(
-        type: "response.create", model: "gpt-6-astra", reasoning: {effort: "medium"},
-        input: "Draft a project plan for building a task-tracking app."
-      ))
+      connection.write(
+        JSON.generate(
+          type: "response.create", model: "gpt-6-astra", reasoning: { effort: "medium" },
+          input: "Draft a project plan for building a task-tracking app."
+        )
+      )
       connection.flush
       state = {}
       while (message = connection.read)
@@ -322,10 +324,12 @@ Sync do |task|
         when "response.created"
           if !state[:initial_id]
             state[:initial_id] = response.fetch("id")
-            connection.write(JSON.generate(
-              type: "response.steer", previous_response_id: state[:initial_id],
-              input: "Keep the scope small enough for one developer to finish in two weeks."
-            ))
+            connection.write(
+              JSON.generate(
+                type: "response.steer", previous_response_id: state[:initial_id],
+                input: "Keep the scope small enough for one developer to finish in two weeks."
+              )
+            )
             connection.flush
           else
             state[:successor_id] = response.fetch("id")
@@ -338,8 +342,10 @@ Sync do |task|
           end
         when "response.completed"
           next unless state[:successor_id] && response.fetch("id") == state[:successor_id]
+
           response.fetch("output").each do |item|
             next unless item["type"] == "message"
+
             item.fetch("content").each { |part| puts(part.fetch("text")) if part["type"] == "output_text" }
           end
           state[:completed] = true

@@ -149,9 +149,18 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: [
-    {role: :user, content: "Knock knock."},
-    {role: :assistant, content: "Who's there?"},
-    {role: :user, content: "Orange."}
+    {
+      role: :user,
+      content: "Knock knock."
+    },
+    {
+      role: :assistant,
+      content: "Who's there?"
+    },
+    {
+      role: :user,
+      content: "Orange."
+    }
   ]
 )
 
@@ -175,6 +184,7 @@ In the following example, we ask the model to tell a joke, followed by a request
 
 ```javascript
 import OpenAI from "openai";
+import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
 
 const openai = new OpenAI();
 
@@ -194,8 +204,8 @@ const response = await openai.responses.create({
 
 console.log(response.output_text);
 
-// Add all response output items, including reasoning items, to the history
-history.push(...response.output);
+// Add replayable output items, including reasoning items, to the history
+history.push(...toResponseInputItems(response.output));
 
 history.push({
   role: "user",
@@ -392,7 +402,12 @@ Console.WriteLine(second.GetOutputText());
 require "openai"
 
 client = OpenAI::Client.new
-history = [{role: :user, content: "Tell me a joke."}]
+history = [
+  {
+    role: :user,
+    content: "Tell me a joke."
+  }
+]
 
 first = client.responses.create(
   model: "gpt-6-astra",
@@ -402,7 +417,10 @@ first = client.responses.create(
 puts(first.output_text)
 
 history.concat(first.output)
-history << {role: :user, content: "Tell me another."}
+history << {
+  role: :user,
+  content: "Tell me another."
+}
 
 second = client.responses.create(
   model: "gpt-6-astra",

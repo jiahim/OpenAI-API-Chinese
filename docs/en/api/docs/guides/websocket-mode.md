@@ -112,19 +112,27 @@ end
 def print_response(response)
   response.fetch("output").each do |item|
     next unless item["type"] == "message"
+
     item.fetch("content").each { |part| puts(part.fetch("text")) if part["type"] == "output_text" }
   end
 end
 
 endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
-headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+headers = { "Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}" }
 Sync do |task|
   task.with_timeout(120) do
     Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
-      connection.write(JSON.generate(
-        type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
-        input: [{role: "user", content: "Find fizz_buzz()"}], tools: []
-      ))
+      connection.write(
+        JSON.generate(
+          type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
+          input: [
+            {
+              role: "user",
+              content: "Find fizz_buzz()"
+            }
+          ], tools: []
+        )
+      )
       connection.flush
       print_response(wait_for_response(connection))
     end
@@ -325,42 +333,71 @@ end
 def print_response(response)
   response.fetch("output").each do |item|
     next unless item["type"] == "message"
+
     item.fetch("content").each { |part| puts(part.fetch("text")) if part["type"] == "output_text" }
   end
 end
 
-tools = [{
-  type: "function", name: "get_test_results", description: "Read the demo test results.",
-  parameters: {type: "object", properties: {}, required: [], additionalProperties: false}, strict: true
-}]
+tools = [
+  {
+    type: "function",
+    name: "get_test_results",
+    description: "Read the demo test results.",
+    parameters: {
+      type: "object",
+      properties: {},
+      required: [],
+      additionalProperties: false
+    },
+    strict: true
+  }
+]
 
 endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
-headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+headers = { "Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}" }
 Sync do |task|
   task.with_timeout(120) do
     Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
-      connection.write(JSON.generate(
-        type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
-        input: "Find the failing test and suggest a fix.", tools: tools,
-        tool_choice: {type: "function", name: "get_test_results"}, parallel_tool_calls: false
-      ))
+      connection.write(
+        JSON.generate(
+          type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
+          input: "Find the failing test and suggest a fix.", tools: tools,
+          tool_choice: {
+            type: "function",
+            name: "get_test_results"
+          }, parallel_tool_calls: false
+        )
+      )
       connection.flush
       response = wait_for_response(connection)
       call = response.fetch("output").find { |item| item["type"] == "function_call" }
       unless call && call["name"] == "get_test_results" && JSON.parse(call.fetch("arguments")) == {}
         raise "Expected a get_test_results call with no arguments"
       end
+
       # Demo data. Replace this with your test runner.
-      result = {test: "test_fizz_buzz", failure: 'Expected "FizzBuzz" for 15, got "Fizz".'}
-      connection.write(JSON.generate(
-        type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
-        previous_response_id: response.fetch("id"),
-        input: [
-          {type: "function_call_output", call_id: call.fetch("call_id"), output: JSON.generate(result)},
-          {role: "user", content: "Now optimize it."}
-        ],
-        tools: tools, tool_choice: "none"
-      ))
+      result = {
+        test: "test_fizz_buzz",
+        failure: 'Expected "FizzBuzz" for 15, got "Fizz".'
+      }
+      connection.write(
+        JSON.generate(
+          type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
+          previous_response_id: response.fetch("id"),
+          input: [
+            {
+              type: "function_call_output",
+              call_id: call.fetch("call_id"),
+              output: JSON.generate(result)
+            },
+            {
+              role: "user",
+              content: "Now optimize it."
+            }
+          ],
+          tools: tools, tool_choice: "none"
+        )
+      )
       connection.flush
       print_response(wait_for_response(connection))
     end
@@ -509,6 +546,7 @@ end
 def print_response(response)
   response.fetch("output").each do |item|
     next unless item["type"] == "message"
+
     item.fetch("content").each { |part| puts(part.fetch("text")) if part["type"] == "output_text" }
   end
 end
@@ -516,20 +554,30 @@ end
 client = OpenAI::Client.new
 compacted = client.responses.compact(
   model: "gpt-6-astra",
-  input: [{role: :user, content: "Find the failing test."}]
+  input: [
+    {
+      role: :user,
+      content: "Find the failing test."
+    }
+  ]
 )
 next_input = compacted.output.map(&:to_h)
-next_input << {role: :user, content: "Continue from here."}
+next_input << {
+  role: :user,
+  content: "Continue from here."
+}
 
 endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
-headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+headers = { "Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}" }
 Sync do |task|
   task.with_timeout(120) do
     Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
-      connection.write(JSON.generate(
-        type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
-        input: next_input, tools: []
-      ))
+      connection.write(
+        JSON.generate(
+          type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
+          input: next_input, tools: []
+        )
+      )
       connection.flush
       print_response(wait_for_response(connection))
     end
@@ -831,8 +879,16 @@ require "json"
 
 def send_create(connection, stream_id, text, previous_response_id = nil)
   payload = {
-    type: "response.create", stream_id: stream_id, model: "gpt-6-astra", store: false,
-    input: [{role: "user", content: text}]
+    type: "response.create",
+    stream_id: stream_id,
+    model: "gpt-6-astra",
+    store: false,
+    input: [
+      {
+        role: "user",
+        content: text
+      }
+    ]
   }
   payload[:previous_response_id] = previous_response_id if previous_response_id
   connection.write(JSON.generate(payload))
@@ -845,6 +901,7 @@ def read_event(connection)
   if ["response.failed", "response.incomplete", "error"].include?(event["type"])
     raise "Response failed: #{JSON.generate(event)}"
   end
+
   event
 end
 
@@ -854,13 +911,14 @@ def drain_responses(connection, lanes, latest_ids)
     event = read_event(connection)
     lane = event["stream_id"]
     next unless remaining.include?(lane) && event["type"] == "response.completed"
+
     latest_ids[lane] = event.fetch("response").fetch("id")
     remaining.delete(lane)
   end
 end
 
 endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
-headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+headers = { "Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}" }
 Sync do |task|
   task.with_timeout(120) do
     Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|

@@ -1185,7 +1185,7 @@ System.out.println(file.id());
 require "openai"
 
 client = OpenAI::Client.new
-file = client.vector_stores.files.update("file_123", vector_store_id: "vs_123", attributes: {category: "policy"})
+file = client.vector_stores.files.update("file_123", vector_store_id: "vs_123", attributes: { category: "policy" })
 puts(file.id)
 ```
 
@@ -1458,7 +1458,10 @@ client = OpenAI::Client.new
 batch = client.vector_stores.file_batches.create(
   "vs_123",
   files: [
-    {file_id: "file_123", attributes: {department: "finance"}},
+    {
+      file_id: "file_123",
+      attributes: { department: "finance" }
+    },
     {
       file_id: "file_456",
       chunking_strategy: {
@@ -1791,7 +1794,7 @@ System.out.println(file.id());
 require "openai"
 
 client = OpenAI::Client.new
-file = client.vector_stores.files.create("<vector_store_id>", file_id: "file_123", attributes: {category: "policy"})
+file = client.vector_stores.files.create("<vector_store_id>", file_id: "file_123", attributes: { category: "policy" })
 puts(file.id)
 ```
 
@@ -1873,7 +1876,10 @@ require "openai"
 client = OpenAI::Client.new
 store = client.vector_stores.update(
   "vs_123",
-  expires_after: {anchor: :last_active_at, days: 7}
+  expires_after: {
+    anchor: :last_active_at,
+    days: 7
+  }
 )
 puts(store.expires_after)
 ```
@@ -2176,7 +2182,10 @@ completion = client.chat.completions.create(
       role: :developer,
       content: "Answer the query concisely using only the provided sources."
     },
-    {role: :user, content: "Sources: <sources>#{sources}</sources>\n\nQuery: #{query}"}
+    {
+      role: :user,
+      content: "Sources: <sources>#{sources}</sources>\n\nQuery: #{query}"
+    }
   ]
 )
 puts(completion.choices.fetch(0).message.content)
@@ -2258,7 +2267,7 @@ results = [
   {
     file_id: "file-12345",
     filename: "woodchuck_policy.txt",
-    content: [{text: "Each passenger may carry up to two woodchucks."}]
+    content: [{ text: "Each passenger may carry up to two woodchucks." }]
   }
 ]
 

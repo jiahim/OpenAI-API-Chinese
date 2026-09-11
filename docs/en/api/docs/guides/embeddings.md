@@ -549,7 +549,10 @@ response = client.chat.completions.create(
       role: :system,
       content: "You answer questions about the 2022 Winter Olympics."
     },
-    {role: :user, content: question}
+    {
+      role: :user,
+      content: question
+    }
   ],
   temperature: 0
 )

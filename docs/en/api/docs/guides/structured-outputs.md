@@ -242,9 +242,12 @@ client = OpenAI::Client.new
 event_schema = {
   type: :object,
   properties: {
-    name: {type: :string},
-    date: {type: :string},
-    participants: {type: :array, items: {type: :string}}
+    name: { type: :string },
+    date: { type: :string },
+    participants: {
+      type: :array,
+      items: { type: :string }
+    }
   },
   required: %w[name date participants],
   additionalProperties: false
@@ -253,8 +256,14 @@ event_schema = {
 response = client.responses.create(
   model: "gpt-6-astra",
   input: [
-    {role: :system, content: "Extract the event information."},
-    {role: :user, content: "Alice and Bob are going to a science fair on Friday."}
+    {
+      role: :system,
+      content: "Extract the event information."
+    },
+    {
+      role: :user,
+      content: "Alice and Bob are going to a science fair on Friday."
+    }
   ],
   text: {
     format: {
@@ -615,8 +624,8 @@ client = OpenAI::Client.new
 step_schema = {
   type: :object,
   properties: {
-    explanation: {type: :string},
-    output: {type: :string}
+    explanation: { type: :string },
+    output: { type: :string }
   },
   required: %w[explanation output],
   additionalProperties: false
@@ -624,8 +633,11 @@ step_schema = {
 math_schema = {
   type: :object,
   properties: {
-    steps: {type: :array, items: step_schema},
-    final_answer: {type: :string}
+    steps: {
+      type: :array,
+      items: step_schema
+    },
+    final_answer: { type: :string }
   },
   required: %w[steps final_answer],
   additionalProperties: false
@@ -638,7 +650,10 @@ response = client.responses.create(
       role: :system,
       content: "You are a helpful math tutor. Guide the user through the solution step by step."
     },
-    {role: :user, content: "How can I solve 8x + 7 = -23?"}
+    {
+      role: :user,
+      content: "How can I solve 8x + 7 = -23?"
+    }
   ],
   text: {
     format: {
@@ -1015,10 +1030,16 @@ TEXT
 paper_schema = {
   type: :object,
   properties: {
-    title: {type: :string},
-    authors: {type: :array, items: {type: :string}},
-    abstract: {type: :string},
-    keywords: {type: :array, items: {type: :string}}
+    title: { type: :string },
+    authors: {
+      type: :array,
+      items: { type: :string }
+    },
+    abstract: { type: :string },
+    keywords: {
+      type: :array,
+      items: { type: :string }
+    }
   },
   required: %w[title authors abstract keywords],
   additionalProperties: false
@@ -1031,7 +1052,10 @@ response = client.responses.create(
       role: :system,
       content: "Extract structured data from the supplied research paper text."
     },
-    {role: :user, content: research_paper}
+    {
+      role: :user,
+      content: research_paper
+    }
   ],
   text: {
     format: {
@@ -1433,15 +1457,18 @@ ui_schema = {
       type: :string,
       enum: %w[div button header section field form]
     },
-    label: {type: :string},
-    children: {type: :array, items: {"$ref" => "#"}},
+    label: { type: :string },
+    children: {
+      type: :array,
+      items: { "$ref" => "#" }
+    },
     attributes: {
       type: :array,
       items: {
         type: :object,
         properties: {
-          name: {type: :string},
-          value: {type: :string}
+          name: { type: :string },
+          value: { type: :string }
         },
         required: %w[name value],
         additionalProperties: false
@@ -1455,8 +1482,14 @@ ui_schema = {
 response = client.responses.create(
   model: "gpt-6-astra",
   input: [
-    {role: :system, content: "Convert the user request into a UI definition."},
-    {role: :user, content: "Make a user profile form."}
+    {
+      role: :system,
+      content: "Convert the user request into a UI definition."
+    },
+    {
+      role: :user,
+      content: "Make a user profile form."
+    }
   ],
   text: {
     format: {
@@ -1907,7 +1940,10 @@ response = client.responses.create(
       role: :system,
       content: "Determine whether the user input violates the guidelines and explain any violation."
     },
-    {role: :user, content: "How do I prepare for a job interview?"}
+    {
+      role: :user,
+      content: "How do I prepare for a job interview?"
+    }
   ],
   text: {
     format: {
@@ -2311,14 +2347,14 @@ math_schema = {
       items: {
         type: :object,
         properties: {
-          explanation: {type: :string},
-          output: {type: :string}
+          explanation: { type: :string },
+          output: { type: :string }
         },
         required: %w[explanation output],
         additionalProperties: false
       }
     },
-    final_answer: {type: :string}
+    final_answer: { type: :string }
   },
   required: %w[steps final_answer],
   additionalProperties: false
@@ -2331,7 +2367,10 @@ response = client.responses.create(
       role: :system,
       content: "You are a helpful math tutor. Guide the user through the solution step by step."
     },
-    {role: :user, content: "How can I solve 8x + 7 = -23?"}
+    {
+      role: :user,
+      content: "How can I solve 8x + 7 = -23?"
+    }
   ],
   text: {
     format: {
@@ -2802,8 +2841,8 @@ client = OpenAI::Client.new
 step_schema = {
   type: :object,
   properties: {
-    explanation: {type: :string},
-    output: {type: :string}
+    explanation: { type: :string },
+    output: { type: :string }
   },
   required: %w[explanation output],
   additionalProperties: false
@@ -2811,8 +2850,11 @@ step_schema = {
 math_schema = {
   type: :object,
   properties: {
-    steps: {type: :array, items: step_schema},
-    final_answer: {type: :string}
+    steps: {
+      type: :array,
+      items: step_schema
+    },
+    final_answer: { type: :string }
   },
   required: %w[steps final_answer],
   additionalProperties: false
@@ -2825,7 +2867,10 @@ response = client.responses.create(
       role: :system,
       content: "You are a helpful math tutor. Guide the user through the solution step by step."
     },
-    {role: :user, content: "How can I solve 8x + 7 = -23?"}
+    {
+      role: :user,
+      content: "How can I solve 8x + 7 = -23?"
+    }
   ],
   max_output_tokens: 1_024,
   text: {
@@ -3172,14 +3217,14 @@ math_schema = {
       items: {
         type: :object,
         properties: {
-          explanation: {type: :string},
-          output: {type: :string}
+          explanation: { type: :string },
+          output: { type: :string }
         },
         required: %w[explanation output],
         additionalProperties: false
       }
     },
-    final_answer: {type: :string}
+    final_answer: { type: :string }
   },
   required: %w[steps final_answer],
   additionalProperties: false
@@ -3192,7 +3237,10 @@ response = client.responses.create(
       role: :system,
       content: "You are a helpful math tutor. Guide the user through the solution step by step."
     },
-    {role: :user, content: "How can I solve 8x + 7 = -23?"}
+    {
+      role: :user,
+      content: "How can I solve 8x + 7 = -23?"
+    }
   ],
   text: {
     format: {
@@ -3477,9 +3525,18 @@ client = OpenAI::Client.new
 entities_schema = {
   type: :object,
   properties: {
-    attributes: {type: :array, items: {type: :string}},
-    colors: {type: :array, items: {type: :string}},
-    animals: {type: :array, items: {type: :string}}
+    attributes: {
+      type: :array,
+      items: { type: :string }
+    },
+    colors: {
+      type: :array,
+      items: { type: :string }
+    },
+    animals: {
+      type: :array,
+      items: { type: :string }
+    }
   },
   required: %w[attributes colors animals],
   additionalProperties: false
@@ -3488,7 +3545,10 @@ entities_schema = {
 stream = client.responses.stream(
   model: "gpt-6-astra",
   input: [
-    {role: :system, content: "Extract entities from the input text."},
+    {
+      role: :system,
+      content: "Extract entities from the input text."
+    },
     {
       role: :user,
       content: "The quick brown fox jumps over the lazy dog with piercing blue eyes."
@@ -4342,22 +4402,25 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: [
-    {role: :system, content: "You are a helpful assistant designed to output JSON."},
+    {
+      role: :system,
+      content: "You are a helpful assistant designed to output JSON."
+    },
     {
       role: :user,
       content: "Who won the World Series in 2020? Respond in the format {winner: ...}."
     }
   ],
-  text: {format: {type: :json_object}}
+  text: { format: { type: :json_object } }
 )
 
 if response.status == OpenAI::Responses::ResponseStatus::INCOMPLETE
   warn("The JSON response is incomplete.")
 else
   refusal = response.output
-    .grep(OpenAI::Models::Responses::ResponseOutputMessage)
-    .flat_map(&:content)
-    .find { |content| content.is_a?(OpenAI::Models::Responses::ResponseOutputRefusal) }
+                    .grep(OpenAI::Models::Responses::ResponseOutputMessage)
+                    .flat_map(&:content)
+                    .find { |content| content.is_a?(OpenAI::Models::Responses::ResponseOutputRefusal) }
 
   if refusal.is_a?(OpenAI::Models::Responses::ResponseOutputRefusal)
     puts(refusal.refusal)

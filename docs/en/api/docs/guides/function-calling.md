@@ -4,6 +4,8 @@
 
 **Function calling** (also known as **tool calling**) provides a powerful and flexible way for OpenAI models to interface with external systems and access data outside their training data. This guide shows how you can connect a model to data and actions provided by your application. We'll show how to use function tools (defined by a JSON schema) and custom tools which work with free form text inputs and outputs.
 
+For Agents API sessions, use [Functions](https://developers.openai.com/api/docs/guides/agents-api/tools/functions) to register functions and handle session action requests. The examples in this guide show the Responses API and Chat Completions integrations.
+
 If your application has many functions or large schemas, you can pair function calling with [tool search](https://developers.openai.com/api/docs/guides/tools-tool-search) to defer rarely used tools and load them only when the model needs them. Only `gpt-5.4` and later models support `tool_search`.
 
 GPT-6 Astra requires the Responses API for tool calling. The Chat Completions
@@ -112,6 +114,7 @@ Let's look at an end-to-end tool calling flow for a `get_horoscope` function tha
 
 ```javascript
 import OpenAI from "openai";
+import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
 
 const openai = new OpenAI();
 
@@ -155,7 +158,7 @@ let response = await openai.responses.create({
 });
 
 // Preserve model output for the next turn
-input.push(...response.output);
+input.push(...toResponseInputItems(response.output));
 
 for (const item of response.output) {
   if (item.type !== "function_call") continue;
@@ -421,18 +424,20 @@ require "json"
 require "openai"
 
 client = OpenAI::Client.new
-tools = [{
-  type: :function,
-  name: "get_horoscope",
-  description: "Get today's horoscope for an astrological sign.",
-  parameters: {
-    type: :object,
-    properties: {sign: {type: :string}},
-    required: ["sign"],
-    additionalProperties: false
-  },
-  strict: true
-}]
+tools = [
+  {
+    type: :function,
+    name: "get_horoscope",
+    description: "Get today's horoscope for an astrological sign.",
+    parameters: {
+      type: :object,
+      properties: { sign: { type: :string } },
+      required: ["sign"],
+      additionalProperties: false
+    },
+    strict: true
+  }
+]
 
 first_response = client.responses.create(
   model: "gpt-6-astra",
@@ -452,11 +457,13 @@ sign = arguments.fetch(:sign)
 response = client.responses.create(
   model: "gpt-6-astra",
   previous_response_id: first_response.id,
-  input: [{
-    type: :function_call_output,
-    call_id: function_call.call_id,
-    output: "#{sign}: Embrace an unexpected opportunity today."
-  }],
+  input: [
+    {
+      type: :function_call_output,
+      call_id: function_call.call_id,
+      output: "#{sign}: Embrace an unexpected opportunity today."
+    }
+  ],
   tools: tools
 )
 
@@ -476,7 +483,7 @@ Functions are usually declared in the `tools` parameter of each API request. Wit
 | Field         | Description                                                                     |
 | ------------- | ------------------------------------------------------------------------------- |
 | `type`        | This should always be `function`                                                |
-| `name`        | The function's name (e.g. `get_weather`)                                        |
+| `name`        | The function's name (for example, `get_weather`)                                |
 | `description` | Details on when and how to use the function                                     |
 | `parameters`  | [JSON schema](https://json-schema.org/) defining the function's input arguments |
 | `strict`      | Whether to enforce strict mode for the function call                            |
@@ -508,7 +515,7 @@ Here is an example function definition for a `get_weather` function
 }
 ```
 
-Because the `parameters` are defined by a [JSON schema](https://json-schema.org/), you can leverage many of its rich features like property types, enums, descriptions, nested objects, and, recursive objects.
+Because the `parameters` are defined by a [JSON schema](https://json-schema.org/), you can leverage many of its rich features like property types, enums, descriptions, nested objects, and recursive objects.
 
 ## Defining namespaces
 
@@ -566,12 +573,12 @@ If you need to give the model access to a large ecosystem of tools, you can defe
    - **For deferred tools, put detailed guidance in the function description and keep the namespace description concise.** The namespace helps the model choose what to load; the function description helps it use the loaded tool correctly.
 
 1. **Apply software engineering best practices.**
-   - **Make the functions obvious and intuitive**. ([principle of least surprise](https://en.wikipedia.org/wiki/Principle_of_least_astonishment))
-   - **Use enums** and object structure to make invalid states unrepresentable. (e.g. `toggle_light(on: bool, off: bool)` allows for invalid calls)
+   - **Make the functions predictable and intuitive**. ([principle of least surprise](https://en.wikipedia.org/wiki/Principle_of_least_astonishment))
+   - **Use enums** and object structure to prevent invalid states. For example, `toggle_light(on: bool, off: bool)` allows for invalid calls.
    - **Pass the intern test.** Can an intern/human correctly use the function given nothing but what you gave the model? (If not, what questions do they ask you? Add the answers to the prompt.)
 
 1. **Offload the burden from the model and use code where possible.**
-   - **Don't make the model fill arguments you already know.** For example, if you already have an `order_id` based on a previous menu, don't have an `order_id` param – instead, have no params `submit_refund()` and pass the `order_id` with code.
+   - **Don't make the model fill arguments you already know.** For example, if you already have an `order_id` based on a previous menu, don't include an `order_id` parameter. Instead, define `submit_refund()` with no parameters and pass the `order_id` in your code.
    - **Combine functions that are always called in sequence.** For example, if you always call `mark_location()` after `query_location()`, just move the marking logic into the query function call.
 
 1. **Keep the number of initially available functions small for higher accuracy.**
@@ -631,7 +638,9 @@ If you are using [tool search](https://developers.openai.com/api/docs/guides/too
 Execute function calls and append results
 
 ```javascript
-input.push(...response.output);
+import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
+
+input.push(...toResponseInputItems(response.output));
 
 for (const toolCall of response.output) {
   if (toolCall.type !== "function_call") {
@@ -825,7 +834,7 @@ The result you pass in the `function_call_output` message should typically be a 
 
 For functions that return images or files, you can pass an [array of image or file objects](https://developers.openai.com/api/reference/resources/responses/methods/create#responses_create-input-input_item_list-item-function_tool_call_output-output) instead of a string.
 
-If your function has no return value (e.g. `send_email`), simply return a string that indicates success or failure. (e.g. `"success"`)
+If your function has no return value (for example, `send_email`), return a string that indicates success or failure, such as `"success"`.
 
 ### Incorporating results into response
 
@@ -927,7 +936,10 @@ require "openai"
 
 client = OpenAI::Client.new
 input = [
-  {role: :user, content: "What is the weather like in Paris?"},
+  {
+    role: :user,
+    content: "What is the weather like in Paris?"
+  },
   {
     type: :function_call,
     call_id: "call_weather",
@@ -940,18 +952,20 @@ input = [
     output: '{"city":"Paris","temperature_c":18}'
   }
 ]
-tools = [{
-  type: :function,
-  name: "get_weather",
-  description: "Get the weather for a city",
-  parameters: {
-    type: :object,
-    properties: {city: {type: :string}},
-    required: ["city"],
-    additionalProperties: false
-  },
-  strict: true
-}]
+tools = [
+  {
+    type: :function,
+    name: "get_weather",
+    description: "Get the weather for a city",
+    parameters: {
+      type: :object,
+      properties: { city: { type: :string } },
+      required: ["city"],
+      additionalProperties: false
+    },
+    strict: true
+  }
+]
 response = client.responses.create(
   model: "gpt-6-astra",
   input: input,
@@ -984,7 +998,7 @@ By default the model will determine when and how many tools to use. You can forc
 1. **Allowed tools:** Restrict the tool calls the model can make to a subset of
    the tools available to the model.
 
-**When to use allowed_tools**
+**When to use `allowed_tools`**
 
 You might want to configure an `allowed_tools` list in case you want to make only
 a subset of tools available across model requests, but not modify the list of tools you pass in, so you can maximize savings from [prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
@@ -1015,7 +1029,7 @@ The model may choose to call multiple functions in a single turn. You can preven
 
 **Note:** Currently, if you are using a fine tuned model and the model calls multiple functions in one turn then [strict mode](#strict-mode) will be disabled for those calls.
 
-**Note for `gpt-4.1-nano-2025-04-14`:** This snapshot of `gpt-4.1-nano` can sometimes include multiple tools calls for the same tool if parallel tool calls are enabled. It is recommended to disable this feature when using this nano snapshot.
+**Note for `gpt-4.1-nano-2025-04-14`:** This snapshot of `gpt-4.1-nano` can sometimes include multiple tool calls for the same tool if parallel tool calls are enabled. It is recommended to disable this feature when using this snapshot.
 
 ### Strict mode
 
@@ -1299,7 +1313,20 @@ client = OpenAI::Client.new
 stream = client.responses.stream(
   model: "gpt-6-astra",
   input: "What is the weather in Paris?",
-  tools: [{type: :function, name: "get_weather", description: "Get the weather for a city", parameters: {type: :object, properties: {city: {type: :string}}, required: ["city"], additionalProperties: false}, strict: true}]
+  tools: [
+    {
+      type: :function,
+      name: "get_weather",
+      description: "Get the weather for a city",
+      parameters: {
+        type: :object,
+        properties: { city: { type: :string } },
+        required: ["city"],
+        additionalProperties: false
+      },
+      strict: true
+    }
+  ]
 )
 
 stream.each { |event| puts(event.type) }
@@ -1498,17 +1525,19 @@ client = OpenAI::Client.new
 stream = client.responses.stream(
   model: "gpt-6-astra",
   input: "What is the weather in Paris?",
-  tools: [{
-    type: :function,
-    name: "get_weather",
-    parameters: {
-      type: :object,
-      properties: {location: {type: :string}},
-      required: ["location"],
-      additionalProperties: false
-    },
-    strict: true
-  }]
+  tools: [
+    {
+      type: :function,
+      name: "get_weather",
+      parameters: {
+        type: :object,
+        properties: { location: { type: :string } },
+        required: ["location"],
+        additionalProperties: false
+      },
+      strict: true
+    }
+  ]
 )
 
 final_tool_calls = {}
@@ -1659,11 +1688,13 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Use code_exec to print hello world.",
-  tools: [{
-    type: :custom,
-    name: "code_exec",
-    description: "Executes arbitrary Python code."
-  }]
+  tools: [
+    {
+      type: :custom,
+      name: "code_exec",
+      description: "Executes arbitrary Python code."
+    }
+  ]
 )
 
 puts(response.output)
@@ -1695,7 +1726,7 @@ Just as before, the `output` array will contain a tool call generated by the mod
 
 A [context-free grammar](https://en.wikipedia.org/wiki/Context-free_grammar) (CFG) is a set of rules that define how to produce valid text in a given format. For custom tools, you can provide a CFG that will constrain the model's text input for a custom tool.
 
-You can provide a custom CFG using the `grammar` parameter when configuring a custom tool. Currently, we support two CFG syntaxes when defining grammars: `lark` and `regex`.
+You can provide a custom CFG using the `grammar` parameter when configuring a custom tool. Currently, we support two forms of CFG syntax when defining grammars: `lark` and `regex`.
 
 #### Lark CFG
 
@@ -1866,12 +1897,18 @@ LARK
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Use math_exp to add four plus four.",
-  tools: [{
-    type: :custom,
-    name: "math_exp",
-    description: "Creates valid mathematical expressions.",
-    format: {type: :grammar, syntax: :lark, definition: grammar}
-  }]
+  tools: [
+    {
+      type: :custom,
+      name: "math_exp",
+      description: "Creates valid mathematical expressions.",
+      format: {
+        type: :grammar,
+        syntax: :lark,
+        definition: grammar
+      }
+    }
+  ]
 )
 
 puts(response.output)
@@ -1910,11 +1947,13 @@ Grammars are specified using a variation of [Lark](https://lark-parser.readthedo
 
 We recommend using the [Lark IDE](https://www.lark-parser.org/ide/) to experiment with custom grammars.
 
-### Keep grammars simple
+<a id="keep-grammars-simple"></a>
 
-Try to make your grammar as simple as possible. The OpenAI API may return an error if the grammar is too complex, so you should ensure that your desired grammar is compatible before using it in the API.
+### Limit grammar complexity
 
-Lark grammars can be tricky to perfect. While simple grammars perform most reliably, complex grammars often require iteration on the grammar definition itself, the prompt, and the tool description to ensure that the model does not go out of distribution.
+Limit your grammar to the rules and patterns your tool needs. The OpenAI API may return an error if the grammar is too complex, so you should ensure that your desired grammar is compatible before using it in the API.
+
+Lark grammars can be tricky to perfect. While less complex grammars perform most reliably, complex grammars often require iteration on the grammar definition itself, the prompt, and the tool description to ensure that the model does not go out of distribution.
 
 ### Correct versus incorrect patterns
 
@@ -1936,7 +1975,7 @@ Lowercase rules don't influence how terminals are cut from the input—only term
 
 ### Terminals versus rules
 
-Lark uses terminals for lexer tokens (by convention, `UPPERCASE`) and rules for parser productions (by convention, `lowercase`). The most practical way to stay within the supported subset and avoid surprises is to keep your grammar simple and explicit, and to use terminals and rules with a clear separation of concerns.
+Lark uses terminals for lexer tokens (by convention, `UPPERCASE`) and rules for parser productions (by convention, `lowercase`). The most practical way to stay within the supported subset and avoid surprises is to keep your grammar explicit and avoid unnecessary complexity, and to use terminals and rules with a clear separation of concerns.
 
 The regex syntax used by terminals is the [Rust regex crate syntax](https://docs.rs/regex/latest/regex/#syntax), not Python's `re` [module](https://docs.python.org/3/library/re.html).
 
@@ -1948,15 +1987,15 @@ Terminals are matched by the lexer (greedily / longest match wins) before any CF
 
 **Prefer one terminal when you're carving text out of freeform spans**
 
-If you need to recognize a pattern embedded in arbitrary text (e.g., natural language with “anything” between anchors), express that as a single terminal. Do not try to interleave free‑text terminals with parser rules; the greedy lexer will not respect your intended boundaries and it is highly likely the model will go out of distribution.
+If you need to recognize a pattern embedded in arbitrary text (for example, natural language with “anything” between anchors), express that as a single terminal. Do not try to interleave free‑text terminals with parser rules; the greedy lexer will not respect your intended boundaries and it is highly likely the model will go out of distribution.
 
 **Use rules to compose discrete tokens**
 
-Rules are ideal when you're combining clearly delimited terminals (numbers, keywords, punctuation) into larger structures. They're not the right tool for constraining "the stuff in between" two terminals.
+Rules are ideal when you're combining explicitly delimited terminals (numbers, keywords, punctuation) into larger structures. They're not the right tool for constraining "the stuff in between" two terminals.
 
-**Keep terminals simple, bounded, and self-contained**
+**Keep terminals focused, bounded, and self-contained**
 
-Favor explicit character classes and bounded quantifiers (`{0,10}`, not unbounded `*` everywhere). If you need "any text up to a period", prefer something like `/[^.\n]{0,10}*\./` rather than `/.+\./` to avoid runaway growth.
+Favor explicit character classes and bounded quantifiers (`{0,10}`, not unbounded `*` everywhere). If you need "any text up to a period," prefer something like `/[^.\n]{0,10}*\./` rather than `/.+\./` to avoid runaway growth.
 
 **Use rules to combine tokens, not to steer regex internals**
 
@@ -2111,12 +2150,18 @@ grammar = "^(January|February|March|April|May|June|July|August|September|October
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Use timestamp to save August 7th 2025 at 10AM.",
-  tools: [{
-    type: :custom,
-    name: "timestamp",
-    description: "Saves a timestamp in date and time format.",
-    format: {type: :grammar, syntax: :regex, definition: grammar}
-  }]
+  tools: [
+    {
+      type: :custom,
+      name: "timestamp",
+      description: "Saves a timestamp in date and time format.",
+      format: {
+        type: :grammar,
+        syntax: :regex,
+        definition: grammar
+      }
+    }
+  ]
 )
 
 puts(response.output)

@@ -41,18 +41,24 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Advanced usage](https://developers.openai.com/api/docs/guides/advanced-usage.md): Discover advanced usage techniques for OpenAI's API, including reproducible outputs, token management, and parameter settings.
 - [Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder.md): Use the OpenAI Agent Builder to start from templates, compose nodes, preview runs, and export workflows to code.
 - [Agent definitions](https://developers.openai.com/api/docs/guides/agents/define-agents.md): Learn how to define an agent's instructions, model, tools, and local context in the OpenAI Agents SDK.
-- [Agents SDK](https://developers.openai.com/api/docs/guides/agents.md): Learn how the OpenAI Agents SDK fits together and which docs to read next.
+- [Agents](https://developers.openai.com/api/docs/guides/agents.md): Compare the Agents API, Agents SDK, and Responses API, then choose the guide for your application.
+- [Agents API](https://developers.openai.com/api/docs/guides/agents-api/overview.md): Build durable cloud agents with a managed Codex harness.
+- [Agents API quickstart](https://developers.openai.com/api/docs/guides/agents-api/quickstart.md): Create an agent that writes and runs a script in an OpenAI-hosted sandbox.
+- [Agents SDK](https://developers.openai.com/api/docs/guides/agents/sdk.md): Learn how the OpenAI Agents SDK fits together and which docs to read next.
 - [API deployment checklist](https://developers.openai.com/api/docs/guides/deployment-checklist.md): Review commonly underused Responses API design choices that improve deployment quality, speed, cost, and reliability.
 - [Apply Patch](https://developers.openai.com/api/docs/guides/tools-apply-patch.md): Allow models to propose structured diffs that your integration applies.
+- [Architecture](https://developers.openai.com/api/docs/guides/agents-api/architecture.md): Understand the harness, environment, and application server, from agents without an environment to agents that use your own compute.
 - [Async tool calling](https://developers.openai.com/api/docs/guides/async-tool-calling.md): Start asynchronous tool calls, deliver results later, and let the model wait for specific results when needed.
 - [Audio and voice](https://developers.openai.com/api/docs/guides/audio.md): Start with GPT-Live for conversational voice, or choose an API for another audio task.
 - [Audio in Chat Completions](https://developers.openai.com/api/docs/guides/audio-chat-completions.md): Add audio input and output to an existing Chat Completions application.
 - [Background mode](https://developers.openai.com/api/docs/guides/background.md): Run long running tasks asynchronously in the background.
 - [Batch API](https://developers.openai.com/api/docs/guides/batch.md): Learn how to use OpenAI's Batch API for processing jobs with asynchronous requests, increased rate limits, and cost efficiency.
+- [Blaxel](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/blaxel.md): Run an Agents API session in a Blaxel sandbox.
 - [ChatGPT Developer mode](https://developers.openai.com/api/docs/guides/developer-mode.md): Full MCP client access for apps and tools.
 - [ChatKit](https://developers.openai.com/api/docs/guides/chatkit.md): Embed a widget to build your own chat experiences.
 - [ChatKit widgets](https://developers.openai.com/api/docs/guides/chatkit-widgets.md): Learn how to design widgets in your chat experience with ChatKit.
 - [Citation Formatting](https://developers.openai.com/api/docs/guides/citation-formatting.md): Learn practical citation formatting patterns that help models generate reliable citations.
+- [Cloudflare](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/cloudflare.md): Use OpenAI webhooks to start and reconnect Cloudflare sandbox containers.
 - [Code generation](https://developers.openai.com/api/docs/guides/code-generation.md): Learn how to use OpenAI models and Codex to generate code.
 - [Code Interpreter](https://developers.openai.com/api/docs/guides/tools-code-interpreter.md): Allow models to write and run Python to solve problems.
 - [Codex federation rule reference](https://developers.openai.com/api/docs/guides/workload-identity-federation/federation-rules.md): Reference for Codex workload identity subjects, audiences, exact claims, CEL conditions, scopes, token lifetimes, and lifecycle behavior.
@@ -61,6 +67,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Computer use](https://developers.openai.com/api/docs/guides/tools-computer-use.md): Connect a code-execution harness or computer tool to operate browser and desktop interfaces through the Responses API.
 - [Computer use integration recipes](https://developers.openai.com/api/docs/guides/tools-computer-use-integration.md): Environment setup, action handlers, custom execution services, and consent guidance for computer use integrations.
 - [Configure workload identity federation with X.509 certificates](https://developers.openai.com/api/docs/guides/workload-identity-federation/x509.md): Configure an X.509 workload identity provider and exchange a TLS client certificate for a short-lived OpenAI access token.
+- [Configuring Agents](https://developers.openai.com/api/docs/guides/agents-api/configuration.md): Define an agent, reuse its configuration, and customize each session.
 - [Configuring workload identity federation for AWS](https://developers.openai.com/api/docs/guides/workload-identity-federation/aws.md): Configure AWS outbound identity federation or Amazon EKS as a workload identity federation token provider.
 - [Configuring workload identity federation for GitHub Actions](https://developers.openai.com/api/docs/guides/workload-identity-federation/github-actions.md): Configure GitHub Actions as a workload identity federation token provider.
 - [Configuring workload identity federation for Google Cloud](https://developers.openai.com/api/docs/guides/workload-identity-federation/google-cloud.md): Configure Google workload identity or GKE as a workload identity federation token provider.
@@ -77,21 +84,27 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Custom voices](https://developers.openai.com/api/docs/guides/custom-voices.md): Create an approved custom voice and use it for speech generation and voice agents.
 - [Cybersecurity checks](https://developers.openai.com/api/docs/guides/safety-checks/cybersecurity.md): Learn about API cybersecurity safeguards, authorized access, request-level checks, access restrictions, and appeals.
 - [Data controls in the OpenAI platform](https://developers.openai.com/api/docs/guides/your-data.md): Your data is your data. An overview of how OpenAI uses your data, including retention and usage policies.
+- [Daytona](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/daytona.md): Run an Agents API session in a Daytona Sandbox.
 - [Deep research](https://developers.openai.com/api/docs/guides/deep-research.md): Use deep research models for complex analysis and research tasks.
 - [Delegation and tools in GPT-Live](https://developers.openai.com/api/docs/guides/live-delegation.md): Configure GPT-Live client or Responses delegation, manage context, execute functions, and reduce backend latency.
+- [DigitalOcean](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/digitalocean.md): Connect a DigitalOcean sandbox to an Agents API session.
 - [Direct preference optimization](https://developers.openai.com/api/docs/guides/direct-preference-optimization.md): Fine-tune models for subjective decision-making by comparing model outputs.
+- [E2B](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/e2b.md): Connect an E2B sandbox to an Agents API session.
 - [Error codes](https://developers.openai.com/api/docs/guides/error-codes.md): An overview of error codes from the OpenAI API and Python library, including solutions and guidance.
 - [Evaluate agent workflows](https://developers.openai.com/api/docs/guides/agent-evals.md): Learn how to evaluate agent workflows with traces, graders, datasets, and evaluation runs on the OpenAI platform.
 - [Evaluate external models](https://developers.openai.com/api/docs/guides/external-models.md): Learn how to run evals on non-OpenAI models, using the OpenAI platform.
 - [Evaluation best practices](https://developers.openai.com/api/docs/guides/evaluation-best-practices.md): Learn best practices for designing evals to test and improve model performance in production.
+- [Events and items](https://developers.openai.com/api/docs/guides/agents-api/sessions/events.md): Consume live updates and retrieve saved work.
 - [Fast mode](https://developers.openai.com/api/docs/guides/fast-mode.md): Get up to 2.5× faster speeds in the API while retaining flexible pay-as-you-go pricing.
 - [File inputs](https://developers.openai.com/api/docs/guides/file-inputs.md): Learn how to use files as file inputs in the OpenAI API.
 - [File search](https://developers.openai.com/api/docs/guides/tools-file-search.md): Allow models to search your files for relevant information before generating a response.
 - [File transcription](https://developers.openai.com/api/docs/guides/speech-to-text.md): Learn how to transcribe recorded audio files, stream file transcripts, and use specialized speech-to-text features.
+- [Files and artifacts](https://developers.openai.com/api/docs/guides/agents-api/environments/files.md): Retrieve files from your environment and preserve published outputs.
 - [Fine-tuning best practices](https://developers.openai.com/api/docs/guides/fine-tuning-best-practices.md): Improve results with practical tips for fine-tuning.
 - [Flex processing](https://developers.openai.com/api/docs/guides/flex-processing.md): Learn how to optimize costs for asynchronous tasks with flex processing.
 - [Frontend prompt instructions](https://developers.openai.com/api/docs/guides/frontend-prompt.md): Example prompt instructions for frontend work, written for GPT-5.5.
 - [Function calling](https://developers.openai.com/api/docs/guides/function-calling.md): Learn how function calling enables large language models to connect to external data and systems.
+- [Functions](https://developers.openai.com/api/docs/guides/agents-api/tools/functions.md): Define functions, handle pending calls, and return results.
 - [Getting started with datasets](https://developers.openai.com/api/docs/guides/evaluation-getting-started.md): Learn how to get started with evals using datasets.
 - [Getting started with GPT-Live](https://developers.openai.com/api/docs/guides/live.md): Build with GPT-Live, choose a backend, and connect your first browser voice session.
 - [Getting started with the Realtime API](https://developers.openai.com/api/docs/guides/realtime.md): Build a browser voice agent with the Realtime API and Agents SDK.
@@ -113,25 +126,33 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Manage permissions in the OpenAI platform](https://developers.openai.com/api/docs/guides/rbac.md): Learn how to use role-based access control to assign permissions, create custom roles, group users, and scope access across both the OpenAI API and dashboard.
 - [Manage projects and access with Terraform](https://developers.openai.com/api/docs/guides/terraform/projects-and-access.md): Create an OpenAI project, define least-privilege roles, and manage group and user access with Terraform.
 - [Manage service accounts with Terraform](https://developers.openai.com/api/docs/guides/terraform/service-accounts.md): Create OpenAI project service accounts, assign least-privilege roles, and manage API keys outside Terraform state.
+- [Manage sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage.md): Find sessions, handle required actions, and delete saved work.
 - [Managing GPT-Live sessions](https://developers.openai.com/api/docs/guides/live-conversations.md): Configure GPT-Live sessions, provide history and context, build transcript and microphone controls, and handle long conversations, errors, and recovery.
 - [MCP and Connectors](https://developers.openai.com/api/docs/guides/tools-connectors-mcp.md): Use remote MCP servers and OpenAI-maintained connectors for popular services to give models new capabilities.
+- [MCP connections](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp.md): Connect MCP servers from OpenAI or your environment.
 - [Mid-turn steering](https://developers.openai.com/api/docs/guides/steering.md): Steer a Responses API workflow over WebSockets, follow continuations, and handle queued input and tool results.
 - [Migrate from Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder/migrate-from-agent-builder.md): Learn how to export an Agent Builder workflow and continue with ChatGPT Workspace Agents or the Agents SDK.
 - [Migrate from prompt objects](https://developers.openai.com/api/docs/guides/prompting/migrate-from-prompt-object.md): Learn how to migrate from reusable prompt objects to versioned prompts in your application code.
 - [Migrate to GPT-Live](https://developers.openai.com/api/docs/guides/live-migration.md): Adapt your voice interface, backend tools, and application state to GPT-Live, with migration paths for Realtime and existing text agents.
 - [Migrate to the Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses.md)
 - [Misalignment monitoring](https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring.md): Understand misalignment monitoring coverage, handle blocked requests, and receive project safety alerts in your application.
+- [Modal](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/modal.md): Run an Agents API session in a Modal Sandbox.
 - [Model optimization](https://developers.openai.com/api/docs/guides/model-optimization.md): Ensure quality model outputs with evals and fine-tuning in the OpenAI platform.
 - [Model selection](https://developers.openai.com/api/docs/guides/model-selection.md): Learn how to choose the right model by balancing accuracy, latency, and cost for optimal performance.
 - [Model, tool, and data controls with Terraform](https://developers.openai.com/api/docs/guides/terraform/project-controls.md): Manage OpenAI project model permissions, hosted-tool permissions, and data-retention controls with Terraform.
 - [Models and providers](https://developers.openai.com/api/docs/guides/agents/models.md): Learn how to choose models, set defaults, and think about providers and transport in the OpenAI Agents SDK.
 - [Moderation](https://developers.openai.com/api/docs/guides/moderation.md): Learn how to identify harmful content in text and images with OpenAI moderation models.
+- [Multi-agent](https://developers.openai.com/api/docs/guides/agents-api/multi-agent.md): Let an agent delegate work to independent subagents.
 - [Multi-agent](https://developers.openai.com/api/docs/guides/responses-multi-agent.md): Enable Responses API Multi-agent, handle client-side HTTP and WebSocket flows, and read Multi-agent output items.
 - [Mutual TLS](https://developers.openai.com/api/docs/guides/mutual-tls.md): Configure Mutual TLS trust, certificate verification, CEL filters, rotation, and troubleshooting for OpenAI API requests.
 - [Node reference](https://developers.openai.com/api/docs/guides/node-reference.md): Explore all available nodes for composing workflows in Agent Builder.
+- [Observability and usage](https://developers.openai.com/api/docs/guides/agents-api/observability.md): Inspect live progress, completed work, and recorded token usage.
 - [OpenAI models in Amazon Bedrock](https://developers.openai.com/api/docs/guides/amazon-bedrock.md): Learn how Amazon Bedrock availability differs from the OpenAI API, including supported capabilities, AWS-managed controls, and pricing considerations.
+- [OpenAI-hosted sandboxes](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted.md): Run code and create downloadable files without managing compute.
 - [Optimizing LLM Accuracy](https://developers.openai.com/api/docs/guides/optimizing-llm-accuracy.md): Learn strategies to enhance the accuracy of large language models using techniques like prompt engineering, retrieval-augmented generation, and fine-tuning.
+- [Oracle Cloud Infrastructure (OCI)](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/oci.md): Connect an OCI GenAI Sandbox to an Agents API session.
 - [Orchestration and handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration.md): Learn how to orchestrate multiple agents with handoffs and agents-as-tools in the OpenAI Agents SDK.
+- [Plugins](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins.md): Package skills and MCP configuration for use across sessions.
 - [Predicted Outputs](https://developers.openai.com/api/docs/guides/predicted-outputs.md): Understand how to reduce latency for model responses where much of the response is known ahead of time.
 - [Private Link](https://developers.openai.com/api/docs/guides/private-link.md): Configure Azure Private Link endpoints, DNS, health checks, and cross-region routing for the OpenAI API.
 - [Production best practices](https://developers.openai.com/api/docs/guides/production-best-practices.md): Explore best practices for transitioning your AI projects from prototype to production, including scaling, security, and cost management.
@@ -159,15 +180,21 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Reinforcement fine-tuning use cases](https://developers.openai.com/api/docs/guides/rft-use-cases.md): Explore best practices and practical use cases for reinforcement fine-tuning (RFT) with OpenAI models.
 - [Results and state](https://developers.openai.com/api/docs/guides/agents/results.md): Learn which result surfaces matter most in the OpenAI Agents SDK and how they connect to resumable workflow state.
 - [Retrieval](https://developers.openai.com/api/docs/guides/retrieval.md): Learn how to search your data using semantic similarity with the OpenAI API.
+- [Run and continue sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions.md): Start work, follow progress, and continue the conversation.
+- [Runloop](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/runloop.md): Connect a Runloop Devbox to an Agents API session.
 - [Running agents](https://developers.openai.com/api/docs/guides/agents/running-agents.md): Learn how to run agents, stream output, and choose the right conversation-state strategy in the OpenAI Agents SDK.
 - [Safety best practices](https://developers.openai.com/api/docs/guides/safety-best-practices.md): Learn how to implement safety measures like moderation, adversarial testing, human oversight, and prompt engineering to ensure responsible AI deployment.
 - [Safety classifiers](https://developers.openai.com/api/docs/guides/safety-checks.md): Learn how API safety classifiers identify potential abuse and how safety identifiers help limit disruption to other users.
 - [Safety in building agents](https://developers.openai.com/api/docs/guides/agent-builder-safety.md): Minimize prompt injections and other risks when building agent workflows with OpenAI Agent Builder.
 - [Sandbox Agents](https://developers.openai.com/api/docs/guides/agents/sandboxes.md): Learn how sandboxes fit into Agents SDK workflows, when to use them, and how orchestration stays separate from execution.
+- [Sandbox lifecycle](https://developers.openai.com/api/docs/guides/agents-api/environments/lifecycle.md): Start, reconnect, and stop your agent's environment.
+- [Sandbox security](https://developers.openai.com/api/docs/guides/agents-api/environments/security.md): Isolate workloads, restrict network access, and protect credentials.
 - [Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels.md): Connect private or on-prem MCP servers to supported OpenAI products with an outbound-only MCP tunnel, without exposing them to the public internet.
+- [Self-hosted sandboxes](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted.md): Connect your compute and files to an agent session.
 - [Server-side controls](https://developers.openai.com/api/docs/guides/voice-server-controls.md): Keep session control and private tool execution on your server.
+- [Session webhooks](https://developers.openai.com/api/docs/guides/agents-api/sessions/webhooks.md): React to agent lifecycle changes.
 - [Shell](https://developers.openai.com/api/docs/guides/tools-shell.md): Run shell commands in hosted containers or your own local runtime.
-- [Skills](https://developers.openai.com/api/docs/guides/tools-skills.md): Upload, manage, and attach reusable skills to hosted environments.
+- [Skills](https://developers.openai.com/api/docs/guides/tools-skills.md): Create reusable skills for Responses API shell tools and Agents API sandboxes.
 - [Spend limits](https://developers.openai.com/api/docs/guides/spend-limits.md): Control API spend with organization and project monthly spend limits.
 - [Streaming API responses](https://developers.openai.com/api/docs/guides/streaming-responses.md): Learn how to stream model responses from the OpenAI API using server-sent events.
 - [Structured model outputs](https://developers.openai.com/api/docs/guides/structured-outputs.md): Understand how to ensure model responses follow specific JSON Schema you define.
@@ -179,6 +206,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Theming and customization in ChatKit](https://developers.openai.com/api/docs/guides/chatkit-themes.md): Configure colors, typography, density, and component variants in your ChatKit implementation.
 - [Tool search](https://developers.openai.com/api/docs/guides/tools-tool-search.md): Use tool search to defer large tool surfaces, group related tools with namespaces, and load only the relevant functions at runtime.
 - [Trace grading](https://developers.openai.com/api/docs/guides/trace-grading.md): Use trace grading to create datasets, configure graders, and track evaluation runs for your models.
+- [Tracing](https://developers.openai.com/api/docs/guides/agents-api/tracing.md): Inspect agent turns, model responses, and tool calls in the tracing dashboard.
 - [Transcription](https://developers.openai.com/api/docs/guides/transcription.md): Choose between file transcription and realtime transcription, then start with the recommended model for your audio.
 - [Under-18 guidance](https://developers.openai.com/api/docs/guides/safety-checks/under-18-api-guidance.md): Review regulatory standards, safety standards, and best practices for API applications that serve users under 18.
 - [Upgrading to GPT-5.4](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p4.md): Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.4.
@@ -194,11 +222,14 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Using GPT-5.6](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.6.md): Learn how to use and migrate to GPT-5.6, the latest model family in the OpenAI API.
 - [Using GPT-6 Astra](https://developers.openai.com/api/docs/guides/latest-model/gpt-6-astra.md): Learn how to use GPT-6 Astra for reasoning, coding, professional work, and tool-using workflows, and how to migrate from GPT-5.6.
 - [Using tools](https://developers.openai.com/api/docs/guides/tools.md): Use powerful tools like remote MCP servers, or built-in tools like web search and file search to extend the model's capabilities.
+- [Vaults](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults.md): Store MCP credentials and attach them to agent sessions.
 - [Vector embeddings](https://developers.openai.com/api/docs/guides/embeddings.md): Learn how to turn text into numbers, unlocking use cases like search, clustering, and more with OpenAI API embeddings.
+- [Vercel](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/vercel.md): Run an Agents API session in a Vercel Sandbox.
 - [Video generation with Sora](https://developers.openai.com/api/docs/guides/video-generation.md): Learn how to generate, refine, and manage videos using the OpenAI Videos API.
 - [Vision fine-tuning](https://developers.openai.com/api/docs/guides/vision-fine-tuning.md): Fine-tune models for better image understanding.
 - [Voice activity detection (VAD)](https://developers.openai.com/api/docs/guides/realtime-vad.md): Learn about automatic voice activity detection in the Realtime API.
 - [Voice agents](https://developers.openai.com/api/docs/guides/voice-agents.md): Choose a voice architecture and connect spoken conversations to your agent workflows.
+- [Web search](https://developers.openai.com/api/docs/guides/agents-api/tools/web-search.md): Use OpenAI's built-in web search to find information.
 - [Web search](https://developers.openai.com/api/docs/guides/tools-web-search.md): Allow models to search the web for the latest information before generating a response.
 - [Webhooks](https://developers.openai.com/api/docs/guides/webhooks.md): Use webhooks to receive real-time updates from the OpenAI API.
 - [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc.md): Connect browser voice applications with WebRTC.

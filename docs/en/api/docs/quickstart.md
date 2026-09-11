@@ -190,7 +190,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.62.0</version>
+  <version>4.63.1</version>
 </dependency>
 ```
 
@@ -1048,8 +1048,14 @@ response = openai.responses.create(
     {
       role: "user",
       content: [
-        {type: "input_file", file_id: file.id},
-        {type: "input_text", text: "What is the first dragon in the book?"}
+        {
+          type: "input_file",
+          file_id: file.id
+        },
+        {
+          type: "input_text",
+          text: "What is the first dragon in the book?"
+        }
       ]
     }
   ]
@@ -1210,7 +1216,7 @@ openai = OpenAI::Client.new
 
 response = openai.responses.create(
   model: "gpt-6-astra",
-  tools: [{type: "web_search"}],
+  tools: [{ type: "web_search" }],
   input: "What was a positive news story from today?"
 )
 
@@ -1497,7 +1503,7 @@ response = openai.responses.create(
   tools: [
     {
       type: "code_interpreter",
-      container: {type: "auto"}
+      container: { type: "auto" }
     }
   ],
   input: "I need to solve the equation 3x + 11 = 14. Can you help me?"
@@ -1772,7 +1778,10 @@ tools = [
 response = openai.responses.create(
   model: "gpt-6-astra",
   input: [
-    {role: "user", content: "What is the weather like in Paris today?"}
+    {
+      role: "user",
+      content: "What is the weather like in Paris today?"
+    }
   ],
   tools: tools
 )

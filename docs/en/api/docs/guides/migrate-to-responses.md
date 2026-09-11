@@ -88,7 +88,12 @@ require "openai"
 client = OpenAI::Client.new
 completion = client.chat.completions.create(
   model: "gpt-6-astra",
-  messages: [{role: :user, content: "Write a one-sentence bedtime story about a unicorn."}]
+  messages: [
+    {
+      role: :user,
+      content: "Write a one-sentence bedtime story about a unicorn."
+    }
+  ]
 )
 puts(completion.choices.fetch(0).message.content)
 ```
@@ -366,8 +371,14 @@ require "openai"
 
 client = OpenAI::Client.new
 messages = [
-  {role: :system, content: "You are a helpful assistant."},
-  {role: :user, content: "Hello!"}
+  {
+    role: :system,
+    content: "You are a helpful assistant."
+  },
+  {
+    role: :user,
+    content: "Hello!"
+  }
 ]
 
 completion = client.chat.completions.create(
@@ -513,8 +524,14 @@ client = OpenAI::Client.new
 completion = client.chat.completions.create(
   model: "gpt-6-astra",
   messages: [
-    {role: :system, content: "You are a helpful assistant."},
-    {role: :user, content: "Hello!"}
+    {
+      role: :system,
+      content: "You are a helpful assistant."
+    },
+    {
+      role: :user,
+      content: "Hello!"
+    }
   ]
 )
 
@@ -810,16 +827,28 @@ require "openai"
 
 client = OpenAI::Client.new
 messages = [
-  {role: :system, content: "You are a helpful assistant."},
-  {role: :user, content: "What is the capital of France?"}
+  {
+    role: :system,
+    content: "You are a helpful assistant."
+  },
+  {
+    role: :user,
+    content: "What is the capital of France?"
+  }
 ]
 
 first = client.chat.completions.create(
   model: "gpt-6-astra",
   messages: messages
 )
-messages << {role: :assistant, content: first.choices.fetch(0).message.content}
-messages << {role: :user, content: "And its population?"}
+messages << {
+  role: :assistant,
+  content: first.choices.fetch(0).message.content
+}
+messages << {
+  role: :user,
+  content: "And its population?"
+}
 
 second = client.chat.completions.create(
   model: "gpt-6-astra",
@@ -842,6 +871,8 @@ Responses
     Multi-turn conversation
 
 ```javascript
+import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
+
 /** @type {OpenAI.Responses.ResponseInput} */
 let context = [{ role: "user", content: "What is the capital of France?" }];
 
@@ -851,7 +882,7 @@ const res1 = await client.responses.create({
 });
 
 // Append the first response’s output to context
-context = context.concat(res1.output);
+context = context.concat(toResponseInputItems(res1.output));
 
 // Add the next user message
 context.push({ role: "user", content: "And its population?" });
@@ -997,14 +1028,22 @@ Console.WriteLine(second.GetOutputText());
 require "openai"
 
 client = OpenAI::Client.new
-context = [{role: :user, content: "What is the capital of France?"}]
+context = [
+  {
+    role: :user,
+    content: "What is the capital of France?"
+  }
+]
 
 first = client.responses.create(
   model: "gpt-6-astra",
   input: context
 )
 context.concat(first.output)
-context << {role: :user, content: "And its population?"}
+context << {
+  role: :user,
+  content: "And its population?"
+}
 
 second = client.responses.create(
   model: "gpt-6-astra",
@@ -1452,8 +1491,15 @@ client = OpenAI::Client.new
 schema = {
   type: "object",
   properties: {
-    name: {type: "string", minLength: 1},
-    age: {type: "number", minimum: 0, maximum: 130}
+    name: {
+      type: "string",
+      minLength: 1
+    },
+    age: {
+      type: "number",
+      minimum: 0,
+      maximum: 130
+    }
   },
   required: ["name", "age"],
   additionalProperties: false
@@ -1462,10 +1508,19 @@ schema = {
 completion = client.chat.completions.create(
   model: "gpt-6-astra",
   reasoning_effort: :medium,
-  messages: [{role: :user, content: "Jane, 54 years old"}],
+  messages: [
+    {
+      role: :user,
+      content: "Jane, 54 years old"
+    }
+  ],
   response_format: {
     type: :json_schema,
-    json_schema: {name: "person", strict: true, schema: schema}
+    json_schema: {
+      name: "person",
+      strict: true,
+      schema: schema
+    }
   }
 )
 
@@ -1710,8 +1765,15 @@ client = OpenAI::Client.new
 schema = {
   type: "object",
   properties: {
-    name: {type: "string", minLength: 1},
-    age: {type: "number", minimum: 0, maximum: 130}
+    name: {
+      type: "string",
+      minLength: 1
+    },
+    age: {
+      type: "number",
+      minimum: 0,
+      maximum: 130
+    }
   },
   required: ["name", "age"],
   additionalProperties: false
@@ -1936,8 +1998,14 @@ completion = client.chat.completions.create(
   model: "gpt-5.6",
   reasoning_effort: :none,
   messages: [
-    {role: :system, content: "You are a helpful assistant."},
-    {role: :user, content: "Who is the current president of France?"}
+    {
+      role: :system,
+      content: "You are a helpful assistant."
+    },
+    {
+      role: :user,
+      content: "Who is the current president of France?"
+    }
   ],
   functions: [
     {
@@ -1945,7 +2013,7 @@ completion = client.chat.completions.create(
       description: "Search the web for information",
       parameters: {
         type: "object",
-        properties: {query: {type: "string"}},
+        properties: { query: { type: "string" } },
         required: ["query"]
       }
     }
@@ -2064,7 +2132,7 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Who is the current president of France?",
-  tools: [{type: :web_search}]
+  tools: [{ type: :web_search }]
 )
 
 puts(response.output_text)

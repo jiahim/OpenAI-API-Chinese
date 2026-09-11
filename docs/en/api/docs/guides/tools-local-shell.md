@@ -728,7 +728,7 @@ client = OpenAI::Client.new
 MAX_TIMEOUT_MS = 10_000
 response = client.responses.create(
   model: "codex-mini-latest",
-  tools: [{type: :local_shell}],
+  tools: [{ type: :local_shell }],
   parallel_tool_calls: false,
   input: "List files in the current directory."
 )
@@ -751,7 +751,7 @@ loop do
   else
     begin
       executable = action.command.fetch(0)
-      environment = {"PATH" => ENV.fetch("PATH", "")}.merge(action.env.transform_keys(&:to_s))
+      environment = { "PATH" => ENV.fetch("PATH", "") }.merge(action.env.transform_keys(&:to_s))
       status, timed_out = Open3.popen3(
         environment,
         [executable, executable],
@@ -777,10 +777,10 @@ loop do
         }
         timeout_ms = action.timeout_ms
         timeout = if timeout_ms&.positive?
-          [timeout_ms, MAX_TIMEOUT_MS].min / 1000.0
-        else
-          MAX_TIMEOUT_MS / 1000.0
-        end
+                    [timeout_ms, MAX_TIMEOUT_MS].min / 1000.0
+                  else
+                    MAX_TIMEOUT_MS / 1000.0
+                  end
         deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + timeout
 
         command_timed_out = false
@@ -839,14 +839,16 @@ loop do
 
   response = client.responses.create(
     model: "codex-mini-latest",
-    tools: [{type: :local_shell}],
+    tools: [{ type: :local_shell }],
     parallel_tool_calls: false,
     previous_response_id: response.id,
-    input: [{
-      type: :local_shell_call_output,
-      id: shell_call.call_id,
-      output: (stdout + stderr).encode("UTF-8", invalid: :replace, undef: :replace)
-    }]
+    input: [
+      {
+        type: :local_shell_call_output,
+        id: shell_call.call_id,
+        output: (stdout + stderr).encode("UTF-8", invalid: :replace, undef: :replace)
+      }
+    ]
   )
 end
 

@@ -260,8 +260,14 @@ def complete(client, transcription, instructions)
   response = client.chat.completions.create(
     model: "gpt-5.5",
     messages: [
-      {role: :system, content: instructions},
-      {role: :user, content: transcription}
+      {
+        role: :system,
+        content: instructions
+      },
+      {
+        role: :user,
+        content: transcription
+      }
     ]
   )
   response.choices.first.message.content || ""

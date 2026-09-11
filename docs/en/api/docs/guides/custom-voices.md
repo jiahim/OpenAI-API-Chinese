@@ -145,7 +145,7 @@ session_config = JSON.generate(
   session: {
     type: "realtime",
     model: "gpt-realtime-2",
-    audio: {output: {voice: {id: ENV.fetch("OPENAI_VOICE_ID")}}}
+    audio: { output: { voice: { id: ENV.fetch("OPENAI_VOICE_ID") } } }
   }
 )
 puts(session_config)

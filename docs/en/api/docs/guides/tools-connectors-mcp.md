@@ -7,7 +7,7 @@ In addition to tools you make available to the model with [function calling](htt
 - **Connectors** are OpenAI-maintained MCP wrappers for popular services like Google Workspace or Dropbox, like the connectors available in [ChatGPT](https://chatgpt.com).
 - **Remote MCP servers** can be any server on the public Internet that implements a remote [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP) server.
 
-This guide will show how to use both remote MCP servers and connectors to give the model access to new capabilities.
+This guide will show how to use both remote MCP servers and connectors with the Responses API. For Agents API sessions, see [MCP connections](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp), which covers connections from the managed service or from your sandbox.
 
 ## Secure MCP Tunnel
 
@@ -374,13 +374,15 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Summarize the Q2 earnings report.",
-  tools: [{
-    type: :mcp,
-    server_label: "Dropbox",
-    connector_id: "connector_dropbox",
-    authorization: "<oauth access token>",
-    require_approval: :never
-  }]
+  tools: [
+    {
+      type: :mcp,
+      server_label: "Dropbox",
+      connector_id: "connector_dropbox",
+      authorization: "<oauth access token>",
+      require_approval: :never
+    }
+  ]
 )
 
 puts(response.output_text)
@@ -388,7 +390,7 @@ puts(response.output_text)
 
 
 
-The API will return new items in the `output` array of the model response. If the model decides to use a Connector or MCP server, it will first make a request to list available tools from the server, which will create a `mcp_list_tools` output item. From the simple remote MCP server example above, it contains only one tool definition:
+The API will return new items in the `output` array of the model response. If the model decides to use a Connector or MCP server, it will first make a request to list available tools from the server, which will create a `mcp_list_tools` output item. From the remote MCP server example above, it contains only one tool definition:
 
 ```json
 {
@@ -435,7 +437,7 @@ Read on in the guide below to learn more about how the MCP tool works, how to fi
 
 ## How it works
 
-The MCP tool (for both remote MCP servers and connectors) is available in the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create) in most recent models. Check MCP tool compatibility for your model [here](https://developers.openai.com/api/docs/models). When you're using the MCP tool, you only pay for [tokens](https://developers.openai.com/api/docs/pricing) used when importing tool definitions or making tool calls. There are no additional fees involved per tool call.
+The MCP tool (for both remote MCP servers and connectors) is available in the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create) in most recent models. Check MCP tool compatibility for your model [here](https://developers.openai.com/api/docs/models). When you're using the MCP tool, you only pay for [tokens](https://developers.openai.com/api/docs/pricing) used when importing tool definitions or making tool calls. No additional fees apply per tool call.
 
 Below, we'll step through the process the API takes when calling an MCP tool.
 
@@ -892,25 +894,29 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   previous_response_id: "resp_682d498bdefc81918b4a6aa477bfafd904ad1e533afccbfa",
-  input: [{
-    type: :mcp_approval_response,
-    approval_request_id: "mcpr_682d498e3bd4819196a0ce1664f8e77b04ad1e533afccbfa",
-    approve: true
-  }],
-  tools: [{
-    type: :mcp,
-    server_label: "dmcp",
-    server_url: "https://dmcp-server.deno.dev/mcp",
-    server_description: "A Dungeons and Dragons MCP server.",
-    require_approval: :always
-  }]
+  input: [
+    {
+      type: :mcp_approval_response,
+      approval_request_id: "mcpr_682d498e3bd4819196a0ce1664f8e77b04ad1e533afccbfa",
+      approve: true
+    }
+  ],
+  tools: [
+    {
+      type: :mcp,
+      server_label: "dmcp",
+      server_url: "https://dmcp-server.deno.dev/mcp",
+      server_description: "A Dungeons and Dragons MCP server.",
+      require_approval: :always
+    }
+  ]
 )
 
 puts(response.output_text)
 ```
 
 
-Here we're using the `previous_response_id` parameter to chain this new Response, with the previous Response that generated the approval request. But you can also pass back the [outputs from one response, as inputs into another](https://developers.openai.com/api/docs/guides/conversation-state#manually-manage-conversation-state) for maximum control over what enter's the model's context.
+Here we're using the `previous_response_id` parameter to chain this new Response, with the previous Response that generated the approval request. But you can also pass back the [outputs from one response, as inputs into another](https://developers.openai.com/api/docs/guides/conversation-state#manually-manage-conversation-state) for maximum control over what enters the model's context.
 
 If and when you feel comfortable trusting a remote MCP server, you can choose to skip the approvals for reduced latency. To do this, you can set the `require_approval` parameter of the MCP tool to an object listing just the tools you'd like to skip approvals for like shown below, or set it to the value `'never'` to skip approvals for all tools in that remote MCP server.
 
@@ -1099,7 +1105,7 @@ response = client.responses.create(
       server_label: "deepwiki",
       server_url: "https://mcp.deepwiki.com/mcp",
       require_approval: {
-        never: {tool_names: ["ask_question", "read_wiki_structure"]}
+        never: { tool_names: ["ask_question", "read_wiki_structure"] }
       }
     }
   ]
@@ -1270,12 +1276,14 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Create a payment link for $20.",
-  tools: [{
-    type: :mcp,
-    server_label: "stripe",
-    server_url: "https://mcp.stripe.com",
-    authorization: ENV.fetch("STRIPE_OAUTH_ACCESS_TOKEN")
-  }]
+  tools: [
+    {
+      type: :mcp,
+      server_label: "stripe",
+      server_url: "https://mcp.stripe.com",
+      authorization: ENV.fetch("STRIPE_OAUTH_ACCESS_TOKEN")
+    }
+  ]
 )
 
 puts(response.output_text)
@@ -1317,7 +1325,7 @@ https://www.googleapis.com/auth/calendar.events
 
 This authorization scope will enable the API to read Google Calendar events. In the UI under "Step 1: Select and authorize APIs".
 
-After authorizing the application with your Google account, you will come to "Step 2: Exchange authorization code for tokens". This will generate an access token you can use in an API request using the Google Calendar connector:
+After authorizing the application with your Google account, you will come to **Step 2: Exchange authorization code for tokens**. This will generate an access token you can use in an API request using the Google Calendar connector:
 
 Use the Google Calendar connector
 
@@ -1477,13 +1485,15 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "What's on my Google Calendar for today?",
-  tools: [{
-    type: :mcp,
-    server_label: "google_calendar",
-    connector_id: "connector_googlecalendar",
-    authorization: "<oauth access token>",
-    require_approval: :never
-  }]
+  tools: [
+    {
+      type: :mcp,
+      server_label: "google_calendar",
+      connector_id: "connector_googlecalendar",
+      authorization: "<oauth access token>",
+      require_approval: :never
+    }
+  ]
 )
 
 puts(response.output_text)
@@ -1881,7 +1891,7 @@ Below are some best practices to consider when integrating connectors and remote
 
 #### Prompt injection
 
-[Prompt injection](https://chatgpt.com/?prompt=what%20is%20prompt%20injection?) is an important security consideration in any LLM application, and is especially true when you give the model access to MCP servers and connectors which can access sensitive data or take action. Use these tools with appropriate caution and mitigations if the prompt for the model contains user-provided content.
+[Prompt injection](https://chatgpt.com/?prompt=what%20is%20prompt%20injection?) is an important security consideration in any LLM application, and is especially true when you give the model access to MCP servers and connectors which can access sensitive data or take action. Use these tools with appropriate caution and protective measures if the prompt for the model contains user-provided content.
 
 #### Always require approval for sensitive actions
 
@@ -1893,11 +1903,11 @@ It can be dangerous to request URLs or embed image URLs provided by tool call ou
 
 #### Connecting to trusted servers
 
-Pick official servers hosted by the service providers themselves (e.g. we recommend connecting to the Stripe server hosted by Stripe themselves on mcp.stripe.com, instead of a Stripe MCP server hosted by a third party). Because there aren't too many official remote MCP servers today, you may be tempted to use a MCP server hosted by an organization that doesn't operate that server and simply proxies request to that service via your API. If you must do this, be extra careful in doing your due diligence on these "aggregators", and carefully review how they use your data.
+Pick official servers hosted by the service providers themselves (for example, we recommend connecting to the Stripe server hosted by Stripe at `mcp.stripe.com`, instead of a Stripe MCP server hosted by a third party). Because there aren't too many official remote MCP servers today, you may be tempted to use an MCP server hosted by an organization that doesn't operate that server and proxies requests to that service via your API. If you must do this, be extra careful in doing your due diligence on these "aggregators," and carefully review how they use your data.
 
 #### Log and review data being shared with third party MCP servers.
 
-Because MCP servers define their own tool definitions, they may request for data that you may not always be comfortable sharing with the host of that MCP server. Because of this, the MCP tool in the Responses API defaults to requiring approvals of each MCP tool call being made. When developing your application, review the type of data being shared with these MCP servers carefully and robustly. Once you gain confidence in your trust of this MCP server, you can skip these approvals for more performant execution.
+Because MCP servers define their own tool definitions, they may request for data that you may not always be comfortable sharing with the host of that MCP server. Because of this, the MCP tool in the Responses API defaults to requiring approvals of each MCP tool call being made. When developing your application, review the type of data being shared with these MCP servers carefully and robustly. Once you gain confidence in your trust of this MCP server, you can skip these approvals to reduce execution latency.
 
 We also recommend logging any data sent to MCP servers. If you're using the Responses API with `store=true`, these data are already logged via the API for 30 days unless Zero Data Retention is enabled for your organization. You may also want to log these data in your own systems and perform periodic reviews on this to ensure data is being shared per your expectations.
 

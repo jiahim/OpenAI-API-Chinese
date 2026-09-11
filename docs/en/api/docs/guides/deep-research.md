@@ -228,9 +228,15 @@ response = client.responses.create(
   model: "o3-deep-research",
   input: "Research the economic impact of semaglutide on global healthcare systems. Include measurable outcomes and cite primary sources.",
   tools: [
-    {type: :web_search_preview},
-    {type: :file_search, vector_store_ids: [vector_store_id]},
-    {type: :code_interpreter, container: {type: :auto}}
+    { type: :web_search_preview },
+    {
+      type: :file_search,
+      vector_store_ids: [vector_store_id]
+    },
+    {
+      type: :code_interpreter,
+      container: { type: :auto }
+    }
   ],
   background: true
 )
@@ -1158,13 +1164,15 @@ response = client.responses.create(
   model: "o3-deep-research",
   input: "What patterns appear in our closed-lost Salesforce opportunities?",
   instructions: "Produce a source-backed deep research report.",
-  reasoning: {summary: :auto},
-  tools: [{
-    type: :mcp,
-    server_label: "mycompany_mcp_server",
-    server_url: mcp_server_url,
-    require_approval: :never
-  }],
+  reasoning: { summary: :auto },
+  tools: [
+    {
+      type: :mcp,
+      server_label: "mycompany_mcp_server",
+      server_url: mcp_server_url,
+      require_approval: :never
+    }
+  ],
   background: true
 )
 

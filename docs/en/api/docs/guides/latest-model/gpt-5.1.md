@@ -342,7 +342,7 @@ client.responses().create(params).output().stream()
 
 ```ruby
 response = client.responses.create(
-  model: "gpt-5.1", input: response_input, tools: [{type: :apply_patch}]
+  model: "gpt-5.1", input: response_input, tools: [{ type: :apply_patch }]
 )
 ```
 
@@ -403,7 +403,7 @@ tools = [{"type": "shell"}]
 ```
 
 ```ruby
-tools = [{type: :shell}]
+tools = [{ type: :shell }]
 ```
 
 

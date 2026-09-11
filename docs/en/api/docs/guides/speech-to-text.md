@@ -490,9 +490,11 @@ transcript = client.audio.transcriptions.create(
   known_speaker_names: ["agent"],
   known_speaker_references: ["data:audio/wav;base64,#{speaker_reference}"]
 )
-segments = Array(transcript.to_h.fetch(:segments) do
-  raise "The transcription did not include speaker segments"
-end)
+segments = Array(
+  transcript.to_h.fetch(:segments) do
+    raise "The transcription did not include speaker segments"
+  end
+)
 segments.each do |segment|
   segment = Hash.try_convert(segment) or raise "Invalid speaker segment"
   puts(

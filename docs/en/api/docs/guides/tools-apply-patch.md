@@ -144,7 +144,7 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Rename fib() to fibonacci() in lib/fib.py and update run.py to use the new name.",
-  tools: [{type: :apply_patch}]
+  tools: [{ type: :apply_patch }]
 )
 
 patch_calls = response.output.select { |item| item.type == :apply_patch_call }
@@ -292,13 +292,15 @@ patch_call_id = ENV.fetch("OPENAI_APPLY_PATCH_CALL_ID")
 response = client.responses.create(
   model: "gpt-6-astra",
   previous_response_id: response_id,
-  input: [{
-    type: :apply_patch_call_output,
-    call_id: patch_call_id,
-    status: :completed,
-    output: "Patch applied successfully."
-  }],
-  tools: [{type: :apply_patch}]
+  input: [
+    {
+      type: :apply_patch_call_output,
+      call_id: patch_call_id,
+      status: :completed,
+      output: "Patch applied successfully."
+    }
+  ],
+  tools: [{ type: :apply_patch }]
 )
 
 puts(response.output_text)

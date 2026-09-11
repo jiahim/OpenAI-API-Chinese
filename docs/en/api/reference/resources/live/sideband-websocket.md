@@ -35337,93 +35337,6 @@ Schema name: `LiveCommentaryAppended`
 }
 ```
 
-### session.input_audio.append
-
-Input audio received from the primary transport and reflected to a Live sideband connection before model-input muting.
-
-#### Schema
-
-Schema name: `(resource) live > (model) server_event > (schema) > (variant) 7`
-
-```json
-{
-  "(resource) live > (model) server_event > (schema) > (variant) 7": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/LiveServerEvent-2/oneOf/7",
-    "docstring": "Input audio received from the primary transport and reflected to a Live sideband connection before model-input muting.",
-    "ident": "SessionInputAudioAppend",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "audio"
-        },
-        {
-          "ident": "type"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) audio",
-      "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) type"
-    ]
-  },
-  "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) audio": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/LiveInputAudioAppend/properties/audio",
-    "deprecated": false,
-    "key": "audio",
-    "docstring": "Base64-encoded raw mono PCM16LE at 24 kHz received from the primary transport, reflected to the sideband before model-input muting. This server event uses the same audio key as the client command, but is not an acknowledgment of it.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/LiveInputAudioAppend/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The event type, always `session.input_audio.append`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/LiveInputAudioAppend/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "session.input_audio.append"
-        }
-      ]
-    },
-    "default": "session.input_audio.append",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) type > (member) 0"
-    ]
-  },
-  "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "session.input_audio.append"
-    }
-  }
-}
-```
-
-#### Example
-
-```json
-{}
-```
-
 ### session.input_transcript.delta
 
 A transcript fragment for user input audio in the Live session. Accumulate fragments in delivery order; these events do not define complete turns or include a transcript-done event.
@@ -40556,13 +40469,103 @@ Schema name: `LiveInfoEvent`
 }
 ```
 
+### session.input_audio.append
+
+Input audio received from the primary transport and reflected to a Live sideband connection before model-input muting.
+
+#### Schema
+
+Schema name: `LiveInputAudioAppend`
+
+```json
+{
+  "(resource) live > (model) server_event > (schema) > (variant) 7": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/LiveServerEvent-2/oneOf/7",
+    "docstring": "Input audio received from the primary transport and reflected to a Live sideband connection before model-input muting.",
+    "ident": "SessionInputAudioAppend",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "audio"
+        },
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) audio",
+      "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) type"
+    ]
+  },
+  "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) audio": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/LiveInputAudioAppend/properties/audio",
+    "deprecated": false,
+    "key": "audio",
+    "docstring": "Base64-encoded raw mono PCM16LE at 24 kHz received from the primary transport, reflected to the sideband before model-input muting. This server event uses the same audio key as the client command, but is not an acknowledgment of it.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "string",
+    "children": []
+  },
+  "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/LiveInputAudioAppend/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "docstring": "The event type, always `session.input_audio.append`.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/LiveInputAudioAppend/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "session.input_audio.append"
+        }
+      ]
+    },
+    "default": "session.input_audio.append",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "session.input_audio.append"
+    }
+  }
+}
+```
+
+#### Example
+
+```json
+{
+  "type": "session.input_audio.append",
+  "audio": "AACAAIAAAIAAAP9/AIAAgA=="
+}
+```
+
 ### transport.dtmf.received
 
 A SIP DTMF keypress received from the caller. Delivered only to sideband observers.
 
 #### Schema
 
-Schema name: `(resource) live > (model) server_event > (schema) > (variant) 17`
+Schema name: `LiveTransportDTMFReceived`
 
 ```json
 {
@@ -40659,7 +40662,11 @@ Schema name: `(resource) live > (model) server_event > (schema) > (variant) 17`
 #### Example
 
 ```json
-{}
+{
+  "type": "transport.dtmf.received",
+  "event_id": "event_dtmf_1",
+  "event": "5"
+}
 ```
 
 ### transport.dtmf.send
@@ -40668,7 +40675,7 @@ A SIP DTMF keypress successfully sent by the hosted tool. Delivered only to side
 
 #### Schema
 
-Schema name: `(resource) live > (model) server_event > (schema) > (variant) 18`
+Schema name: `LiveTransportDTMFSend`
 
 ```json
 {
@@ -40765,7 +40772,11 @@ Schema name: `(resource) live > (model) server_event > (schema) > (variant) 18`
 #### Example
 
 ```json
-{}
+{
+  "type": "transport.dtmf.send",
+  "event_id": "event_dtmf_2",
+  "event": "#"
+}
 ```
 
 ### transport.ringing
@@ -40774,7 +40785,7 @@ The outbound SIP provider leg is ringing or providing early media. Delivered onl
 
 #### Schema
 
-Schema name: `(resource) live > (model) server_event > (schema) > (variant) 19`
+Schema name: `LiveTransportRinging`
 
 ```json
 {
@@ -40868,7 +40879,11 @@ Schema name: `(resource) live > (model) server_event > (schema) > (variant) 19`
 #### Example
 
 ```json
-{}
+{
+  "type": "transport.ringing",
+  "event_id": "event_call_1",
+  "session_id": "live_u0_123"
+}
 ```
 
 ### transport.answered
@@ -40877,7 +40892,7 @@ The outbound SIP provider leg answered and media is established. Delivered only 
 
 #### Schema
 
-Schema name: `(resource) live > (model) server_event > (schema) > (variant) 20`
+Schema name: `LiveTransportAnswered`
 
 ```json
 {
@@ -40971,7 +40986,11 @@ Schema name: `(resource) live > (model) server_event > (schema) > (variant) 20`
 #### Example
 
 ```json
-{}
+{
+  "type": "transport.answered",
+  "event_id": "event_call_2",
+  "session_id": "live_u0_123"
+}
 ```
 
 ### transport.failed
@@ -40980,7 +40999,7 @@ An asynchronous outbound SIP setup failure. Delivered only to sideband observers
 
 #### Schema
 
-Schema name: `(resource) live > (model) server_event > (schema) > (variant) 21`
+Schema name: `LiveTransportFailed`
 
 ```json
 {
@@ -41183,5 +41202,15 @@ Schema name: `(resource) live > (model) server_event > (schema) > (variant) 21`
 #### Example
 
 ```json
-{}
+{
+  "type": "transport.failed",
+  "event_id": "event_call_4",
+  "session_id": "live_u0_123",
+  "error": {
+    "type": "call_error",
+    "code": "provider_invite_failed",
+    "message": "provider rejected the call",
+    "param": ""
+  }
+}
 ```

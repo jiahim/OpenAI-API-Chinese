@@ -407,6 +407,7 @@ decode = lambda do |segment|
   unless Base64.urlsafe_encode64(decoded, padding: false) == segment
     raise "JWT segment is not valid Base64URL"
   end
+
   decoded.force_encoding(Encoding::UTF_8)
   raise "JWT segment is not valid UTF-8" unless decoded.valid_encoding?
 

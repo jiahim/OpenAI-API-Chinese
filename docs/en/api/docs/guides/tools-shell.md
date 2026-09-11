@@ -154,7 +154,12 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Run ls -lah /mnt/data, then show the Python and Node.js versions.",
-  tools: [{type: :shell, environment: {type: :container_auto}}]
+  tools: [
+    {
+      type: :shell,
+      environment: { type: :container_auto }
+    }
+  ]
 )
 
 puts(response.output_text)
@@ -278,7 +283,12 @@ System.out.println(container.id());
 require "openai"
 
 client = OpenAI::Client.new
-container = client.containers.create(name: "analysis", expires_after: {anchor: :last_active_at, minutes: 20})
+container = client.containers.create(
+  name: "analysis", expires_after: {
+    anchor: :last_active_at,
+    minutes: 20
+  }
+)
 puts(container.id)
 ```
 
@@ -403,10 +413,15 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "List files in the container and show disk usage.",
-  tools: [{
-    type: :shell,
-    environment: {type: :container_reference, container_id: "cntr_08f3d96c87a585390069118b594f7481a088b16cda7d9415fe"}
-  }]
+  tools: [
+    {
+      type: :shell,
+      environment: {
+        type: :container_reference,
+        container_id: "cntr_08f3d96c87a585390069118b594f7481a088b16cda7d9415fe"
+      }
+    }
+  ]
 )
 
 puts(response.output_text)
@@ -541,7 +556,10 @@ client = OpenAI::Client.new
 container = client.containers.create(
   name: "skill-container",
   skills: [
-    {type: :skill_reference, skill_id: "skill_4db6f1a2c9e73508b41f9da06e2c7b5f"},
+    {
+      type: :skill_reference,
+      skill_id: "skill_4db6f1a2c9e73508b41f9da06e2c7b5f"
+    },
     {
       type: :skill_reference,
       skill_id: "openai-spreadsheets",
@@ -736,16 +754,18 @@ response = client.responses.create(
   model: "gpt-6-astra",
   input: "Fetch release pages and write /mnt/data/release_digest.md.",
   tool_choice: :required,
-  tools: [{
-    type: :shell,
-    environment: {
-      type: :container_auto,
-      network_policy: {
-        type: :allowlist,
-        allowed_domains: ["pypi.org", "files.pythonhosted.org", "github.com"]
+  tools: [
+    {
+      type: :shell,
+      environment: {
+        type: :container_auto,
+        network_policy: {
+          type: :allowlist,
+          allowed_domains: ["pypi.org", "files.pythonhosted.org", "github.com"]
+        }
       }
     }
-  }]
+  ]
 )
 
 puts(response.output_text)
@@ -967,20 +987,46 @@ inline_zip = Base64.strict_encode64(File.binread("csv_insights.zip"))
 base64_string = Base64.strict_encode64(File.binread("report.csv"))
 container = client.containers.create(
   name: "inline-skill-container",
-  skills: [{
-    type: :inline,
-    name: "csv-insights",
-    description: "Summarize CSV files and produce a markdown report.",
-    source: {type: :base64, media_type: "application/zip", data: inline_zip}
-  }]
+  skills: [
+    {
+      type: :inline,
+      name: "csv-insights",
+      description: "Summarize CSV files and produce a markdown report.",
+      source: {
+        type: :base64,
+        media_type: "application/zip",
+        data: inline_zip
+      }
+    }
+  ]
 )
 response = client.responses.create(
   model: "gpt-6-astra",
-  tools: [{type: :shell, environment: {type: :container_reference, container_id: container.id}}],
-  input: [{role: :user, content: [
-    {type: :input_file, filename: "report.csv", file_data: "data:text/csv;base64,#{base64_string}"},
-    {type: :input_text, text: "Use the csv-insights skill to summarize report.csv."}
-  ]}]
+  tools: [
+    {
+      type: :shell,
+      environment: {
+        type: :container_reference,
+        container_id: container.id
+      }
+    }
+  ],
+  input: [
+    {
+      role: :user,
+      content: [
+        {
+          type: :input_file,
+          filename: "report.csv",
+          file_data: "data:text/csv;base64,#{base64_string}"
+        },
+        {
+          type: :input_text,
+          text: "Use the csv-insights skill to summarize report.csv."
+        }
+      ]
+    }
+  ]
 )
 puts(response.output_text)
 ```
@@ -1282,21 +1328,25 @@ response = client.responses.create(
   input: "Use curl to call https://httpbin.org/headers with an " \
     '"Authorization: Bearer $API_KEY" header.',
   tool_choice: :required,
-  tools: [{
-    type: :shell,
-    environment: {
-      type: :container_auto,
-      network_policy: {
-        type: :allowlist,
-        allowed_domains: ["httpbin.org"],
-        domain_secrets: [{
-          domain: "httpbin.org",
-          name: "API_KEY",
-          value: "debug-secret-123"
-        }]
+  tools: [
+    {
+      type: :shell,
+      environment: {
+        type: :container_auto,
+        network_policy: {
+          type: :allowlist,
+          allowed_domains: ["httpbin.org"],
+          domain_secrets: [
+            {
+              domain: "httpbin.org",
+              name: "API_KEY",
+              value: "debug-secret-123"
+            }
+          ]
+        }
       }
     }
-  }]
+  ]
 )
 
 puts(response.output_text)
@@ -1438,10 +1488,15 @@ response = client.responses.create(
   model: "gpt-6-astra",
   input: "Read /mnt/data/top5.csv and report the top candidate.",
   previous_response_id: "resp_2a8e5c9174d63b0f18a4c572de9f64a1b3c76d508e12f9ab47",
-  tools: [{
-    type: :shell,
-    environment: {type: :container_reference, container_id: "cntr_f19c2b51e4a06793d82d54a7be0fc9154d3361ab28ce7f6041"}
-  }]
+  tools: [
+    {
+      type: :shell,
+      environment: {
+        type: :container_reference,
+        container_id: "cntr_f19c2b51e4a06793d82d54a7be0fc9154d3361ab28ce7f6041"
+      }
+    }
+  ]
 )
 
 puts(response.output_text)
@@ -1583,7 +1638,12 @@ response = client.responses.create(
   model: "gpt-6-astra",
   instructions: "The local shell environment is macOS.",
   input: "Find the largest PDF in ~/Documents.",
-  tools: [{type: :shell, environment: {type: :local}}]
+  tools: [
+    {
+      type: :shell,
+      environment: { type: :local }
+    }
+  ]
 )
 
 puts(response.output)

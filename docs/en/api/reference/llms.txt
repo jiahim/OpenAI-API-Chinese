@@ -20,6 +20,7 @@ Each entry has a Markdown twin at `/api/reference/<slug>.md`.
 - [Realtime Beta Overview](https://developers.openai.com/api/reference/realtime-beta/overview.md)
 
 ## Resources
+- [Agents streaming events](https://developers.openai.com/api/reference/resources/beta/subresources/agents/streaming-events.md): OpenAI API streaming event reference.
 - [Audio](https://developers.openai.com/api/reference/resources/audio.md): OpenAI API endpoint reference.
 - [Audio Speech — Create](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create.md): OpenAI API endpoint method reference.
 - [Audio Transcriptions — Create](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create.md): OpenAI API endpoint method reference.

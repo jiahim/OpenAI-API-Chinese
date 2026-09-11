@@ -231,33 +231,52 @@ require "securerandom"
 def run_computer_use(endpoint, prompt)
   client = OpenAI::Client.new
   session_id = SecureRandom.uuid
-  tools = [{
-    type: :function, name: "exec_py",
-    description: "Run Python in a persistent desktop. Variables persist across calls. PyAutoGUI operations are synchronous. Available: pyautogui, time, log(value), and display(PIL_image). Inspect the screen with display(pyautogui.screenshot()) before acting. Use screenshot coordinates and check the screen after a short group of actions. Keep screenshots in memory and PyAutoGUI's fail-safe enabled.",
-    parameters: {type: :object, properties: {code: {type: :string}}, required: ["code"], additionalProperties: false},
-    strict: true
-  }]
+  tools = [
+    {
+      type: :function,
+      name: "exec_py",
+      description: "Run Python in a persistent desktop. Variables persist across calls. PyAutoGUI operations are synchronous. Available: pyautogui, time, log(value), and display(PIL_image). Inspect the screen with display(pyautogui.screenshot()) before acting. Use screenshot coordinates and check the screen after a short group of actions. Keep screenshots in memory and PyAutoGUI's fail-safe enabled.",
+      parameters: {
+        type: :object,
+        properties: { code: { type: :string } },
+        required: ["code"],
+        additionalProperties: false
+      },
+      strict: true
+    }
+  ]
   next_input = []
-  next_input << {role: :user, content: prompt}
+  next_input << {
+    role: :user,
+    content: prompt
+  }
   history = {}
   20.times do |turn|
     response = client.responses.create(
       model: "gpt-6-astra", tools: tools, input: next_input, previous_response_id: history[:id]
     )
     raise "Response stopped with status: #{response.status}" unless response.status == OpenAI::Responses::ResponseStatus::COMPLETED
+
     calls = response.output.grep(OpenAI::Responses::ResponseFunctionToolCall)
     if calls.empty? && response.output.any? { |item| item.is_a?(OpenAI::Responses::ResponseOutputMessage) && item.phase != :commentary }
       puts(response.output_text)
       return response
     end
     raise "The task reached the 20-response limit" if turn == 19
+
     next_input.clear
     calls.each do |call|
       raise "Unexpected tool: #{call.name}" unless call.name == "exec_py"
+
       code = JSON.parse(call.arguments).fetch("code")
       raise "Expected Python source text" unless code.is_a?(String)
+
       output = execute_in_sandbox(code, session_id, endpoint)
-      next_input << {type: :function_call_output, call_id: call.call_id, output: output}
+      next_input << {
+        type: :function_call_output,
+        call_id: call.call_id,
+        output: output
+      }
     end
     history[:id] = response.id
   end
@@ -385,7 +404,7 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-5.6-sol",
   input: "Open the Filters panel if needed, then search for penguin. Use the computer tool for UI interaction.",
-  tools: [{type: :computer}]
+  tools: [{ type: :computer }]
 )
 
 puts(response.output)
@@ -573,16 +592,18 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-5.6-sol",
   previous_response_id: "resp_abc123",
-  input: [{
-    type: :computer_call_output,
-    call_id: "call_abc123",
-    output: {
-      type: :computer_screenshot,
-      image_url: "data:image/png;base64,<base64 bytes here>",
-      detail: :original
+  input: [
+    {
+      type: :computer_call_output,
+      call_id: "call_abc123",
+      output: {
+        type: :computer_screenshot,
+        image_url: "data:image/png;base64,<base64 bytes here>",
+        detail: :original
+      }
     }
-  }],
-  tools: [{type: :computer}]
+  ],
+  tools: [{ type: :computer }]
 )
 
 puts(response.output)

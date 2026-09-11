@@ -123,7 +123,7 @@ openai = OpenAI::Client.new
 
 response = openai.responses.create(
   model: "gpt-6-astra",
-  tools: [{type: "web_search"}],
+  tools: [{ type: "web_search" }],
   input: "What was a positive news story from today?"
 )
 
@@ -343,7 +343,12 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "What movie won best picture in 2025?",
-  tools: [{type: :web_search, search_context_size: :low}]
+  tools: [
+    {
+      type: :web_search,
+      search_context_size: :low
+    }
+  ]
 )
 
 puts(response.output_text)
@@ -514,8 +519,13 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Research the economic impact of semaglutide on global healthcare systems. Include current figures and citations.",
-  reasoning: {effort: :xhigh},
-  tools: [{type: :web_search, return_token_budget: :unlimited}]
+  reasoning: { effort: :xhigh },
+  tools: [
+    {
+      type: :web_search,
+      return_token_budget: :unlimited
+    }
+  ]
 )
 
 puts(response.output_text)
@@ -710,7 +720,7 @@ client = OpenAI::Client.new
 
 response = client.responses.create(
   model: "gpt-6-astra",
-  reasoning: {effort: :low},
+  reasoning: { effort: :low },
   input: "Search for how semaglutide is used in the treatment of diabetes.",
   include: ["web_search_call.action.sources"],
   tools: [
@@ -732,15 +742,15 @@ response = client.responses.create(
 
 puts(response.output_text)
 response.output
-  .grep(OpenAI::Models::Responses::ResponseFunctionWebSearch)
-  .each do |search_call|
-    action = search_call.action
-    next unless action.is_a?(
-      OpenAI::Models::Responses::ResponseFunctionWebSearch::Action::Search
-    )
+        .grep(OpenAI::Models::Responses::ResponseFunctionWebSearch)
+        .each do |search_call|
+          action = search_call.action
+          next unless action.is_a?(
+            OpenAI::Models::Responses::ResponseFunctionWebSearch::Action::Search
+          )
 
-    Array(action.sources).each { |source| puts(source.url) }
-  end
+          Array(action.sources).each { |source| puts(source.url) }
+        end
 ```
 
 ```bash
@@ -921,14 +931,17 @@ client = OpenAI::Client.new
 
 response = client.responses.create(
   model: "gpt-6-astra",
-  reasoning: {effort: :low},
+  reasoning: { effort: :low },
   input: "Search for recent images and supporting text sources about the Golden Gate Bridge at sunset.",
   include: ["web_search_call.results"],
   tools: [
     {
       type: :web_search,
       search_content_types: ["image", "text"],
-      image_settings: {max_results: 3, caption: true}
+      image_settings: {
+        max_results: 3,
+        caption: true
+      }
     }
   ]
 )
@@ -1299,7 +1312,12 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Find when the Eiffel Tower opened to the public and cite the source.",
-  tools: [{type: :web_search, external_web_access: false}]
+  tools: [
+    {
+      type: :web_search,
+      external_web_access: false
+    }
+  ]
 )
 
 puts(response.output_text)

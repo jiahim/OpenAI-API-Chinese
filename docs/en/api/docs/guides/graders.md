@@ -242,13 +242,15 @@ client = OpenAI::Client.new
 grader = {
   "type" => "score_model",
   "name" => "my_score_model",
-  "input" => [{
-    "role" => "system",
-    "content" => "You are an expert grader. If the reference and model answer are exact matches, output a score of 1. If they are somewhat similar in meaning, output a score in 0.5. Otherwise, give a score of 0."
-  }, {
-    "role" => "user",
-    "content" => "Reference: {{ item.reference_answer }}. Model answer: {{ sample.output_text }}"
-  }],
+  "input" => [
+    {
+      "role" => "system",
+      "content" => "You are an expert grader. If the reference and model answer are exact matches, output a score of 1. If they are somewhat similar in meaning, output a score in 0.5. Otherwise, give a score of 0."
+    }, {
+      "role" => "user",
+      "content" => "Reference: {{ item.reference_answer }}. Model answer: {{ sample.output_text }}"
+    }
+  ],
   "pass_threshold" => 0.5,
   "model" => "o4-mini-2025-04-16",
   "range" => [0, 1],
@@ -258,7 +260,7 @@ grader = {
     "reasoning_effort" => "medium"
   }
 }
-item = {reference_answer: 1.0}
+item = { reference_answer: 1.0 }
 model_sample = "0.9"
 
 pp(client.fine_tuning.alpha.graders.validate(grader: grader))
@@ -426,8 +428,11 @@ require "openai"
 
 client = OpenAI::Client.new
 # Set OPENAI_GRADER_SOURCE_PATH to the Python grader file to upload.
-grader = {type: :python, source: File.read(ENV.fetch("OPENAI_GRADER_SOURCE_PATH"))}
-item = {reference_answer: "fuzzy wuzzy had no hair"}
+grader = {
+  type: :python,
+  source: File.read(ENV.fetch("OPENAI_GRADER_SOURCE_PATH"))
+}
+item = { reference_answer: "fuzzy wuzzy had no hair" }
 model_sample = "fuzzy wuzzy was a bear"
 
 pp(client.fine_tuning.alpha.graders.validate(grader: grader))

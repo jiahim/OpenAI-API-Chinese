@@ -12,6 +12,8 @@ Prompt caching reuses work when requests share the same prompt prefix. This prov
 
 Prompt caching is enabled by default for supported OpenAI models. Use the [Prompt Caching Dashboard](https://platform.openai.com/usage?usage_section=prompt-caching) to monitor cache read hit rates and use the [Prompt Cache Diagnostics tool](https://developers.openai.com/api/docs/guides/prompt-caching/diagnostics) to diagnose cache misses and improve cache reuse.
 
+Agents API model calls use the same prompt-caching behavior as the Responses API. Reusing context within a session can preserve a shared prompt prefix, but maintaining a session doesn't guarantee a cache hit. See [Observability and usage](https://developers.openai.com/api/docs/guides/agents-api/observability) for session usage fields and subagent accounting.
+
 ## What is the prompt cache?
 
 When the model processes input tokens, it must calculate intermediate states, known as key-value (KV) states. These states let the model refer back to earlier tokens while processing new input and generating output tokens.
@@ -29,6 +31,10 @@ Ask ChatGPT for a deeper explanation
 OpenAI caches the model's full rendered context including OpenAI-provided instructions, [developer messages](https://developers.openai.com/api/docs/guides/prompt-engineering#message-roles-and-instruction-following), [tool definitions](https://developers.openai.com/api/docs/guides/function-calling), and [conversation history](https://developers.openai.com/api/docs/guides/conversation-state) containing [text](https://developers.openai.com/api/docs/guides/text), [images](https://developers.openai.com/api/docs/guides/images-vision), [documents](https://developers.openai.com/api/docs/guides/file-inputs), and supported [audio](https://developers.openai.com/api/docs/guides/audio).
 
 Cache reuse requires the entire rendered prefix to match. If content or a relevant setting changes before a breakpoint, the prefix after that change cannot match the existing cache entry.
+
+<a id="cache-affecting-settings"></a>
+
+
 
 <a id="which-settings-affect-the-cached-prefix"></a>
 
@@ -241,6 +247,12 @@ Using separate keys can make cached token usage and billing easier to explain fo
 
 For models before GPT-5.6, the minimum cacheable input length varies with request settings, including tools, images, output schemas, reasoning effort, and verbosity.
 
+
+
+Ask ChatGPT to find the cache minimum for my request
+
+
+
 <a id="best-practices"></a>
 
 ## How to optimize prompt caching
@@ -332,6 +344,8 @@ Item to append to the input array
 
 
 
+
+<a id="tools"></a>
 
 
 
@@ -540,10 +554,9 @@ def calculate_input_cost(
   cache_write_tokens = details.cache_write_tokens
   ordinary_input_tokens = input_tokens - cached_tokens - cache_write_tokens
 
-  weighted_input_tokens =
-    ordinary_input_tokens +
-    (cached_tokens * cache_input_multiplier) +
-    (cache_write_tokens * cache_write_multiplier)
+  weighted_input_tokens = ordinary_input_tokens +
+                          (cached_tokens * cache_input_multiplier) +
+                          (cache_write_tokens * cache_write_multiplier)
   (weighted_input_tokens * input_price_per_million) / 1_000_000
 end
 ```

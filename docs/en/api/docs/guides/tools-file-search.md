@@ -785,7 +785,10 @@ response = client.responses.create(
   input: "What is deep research by OpenAI?",
   include: ["file_search_call.results"],
   tools: [
-    {type: :file_search, vector_store_ids: ["<vector_store_id>"]}
+    {
+      type: :file_search,
+      vector_store_ids: ["<vector_store_id>"]
+    }
   ]
 )
 

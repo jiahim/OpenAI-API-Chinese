@@ -4,9 +4,11 @@
 
 Tool search allows the model to dynamically search for and load tools into the model's context as needed. This allows you to avoid loading all tool definitions into the model's context up front and **may help reduce overall token usage and cost**. For optimal cost and latency, tool search is designed to **preserve the model’s cache**. When new tools are discovered by the model, they are injected at the end of the context window.
 
-Only `gpt-5.4` and later models support `tool_search`.
+In the Responses API, only `gpt-5.4` and later models support `tool_search`.
 
-To activate tool search, you must do two things:
+The following configuration and examples use the Responses API. For session-based function loading and automatic MCP discovery, see [Agents API](#agents-api).
+
+To activate tool search in the Responses API, you must do two things:
 
 1. Add `tool_search` as a tool in your `tools` array.
 2. If you are using [functions](https://developers.openai.com/api/docs/guides/function-calling#defining-functions), mark the ones you want to defer with `defer_loading: true`. If you are using [MCP servers](https://developers.openai.com/api/docs/guides/tools-connectors-mcp), set `defer_loading: true` on the MCP server tool definition.
@@ -61,7 +63,7 @@ Namespaces can have a mix of tools that are deferred and not deferred. Tools wit
 
 ### Tool search types
 
-There are two ways to use tool search:
+Choose between two types of tool search:
 
 - **Hosted tool search:** OpenAI searches across the deferred tools you declared in the request and returns the loaded subset in the same response.
 - **Client-executed tool search:** The model emits a `tool_search_call`, your application performs the lookup, and you return a matching `tool_search_output`.
@@ -300,7 +302,7 @@ require "openai"
 client = OpenAI::Client.new
 parameters = {
   type: :object,
-  properties: {customer_id: {type: :string}},
+  properties: { customer_id: { type: :string } },
   required: ["customer_id"],
   additionalProperties: false
 }
@@ -329,7 +331,7 @@ response = client.responses.create(
         }
       ]
     },
-    {type: :tool_search}
+    { type: :tool_search }
   ]
 )
 
@@ -413,6 +415,7 @@ Configure client-executed tool search
 
 ```javascript
 import OpenAI from "openai";
+import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
 
 const client = new OpenAI();
 
@@ -479,7 +482,7 @@ const searchOutput = {
 const secondResponse = await client.responses.create({
   model: "gpt-6-astra",
   input: [
-    ...firstResponse.output,
+    ...toResponseInputItems(firstResponse.output),
     // highlight-start:subtle
     searchOutput,
     // highlight-end
@@ -719,17 +722,19 @@ search = client.responses.create(
   model: "gpt-6-astra",
   input: "Find the shipping ETA tool, then use it for order_42.",
   parallel_tool_calls: false,
-  tools: [{
-    type: :tool_search,
-    execution: :client,
-    description: "Find the project tools needed to continue the task.",
-    parameters: {
-      type: :object,
-      properties: {goal: {type: :string}},
-      required: ["goal"],
-      additionalProperties: false
+  tools: [
+    {
+      type: :tool_search,
+      execution: :client,
+      description: "Find the project tools needed to continue the task.",
+      parameters: {
+        type: :object,
+        properties: { goal: { type: :string } },
+        required: ["goal"],
+        additionalProperties: false
+      }
     }
-  }]
+  ]
 )
 call = search.output.find do |item|
   item.is_a?(OpenAI::Models::Responses::ResponseToolSearchCall)
@@ -741,25 +746,29 @@ end
 response = client.responses.create(
   model: "gpt-6-astra",
   previous_response_id: search.id,
-  input: [{
-    type: :tool_search_output,
-    call_id: call.call_id,
-    execution: :client,
-    status: :completed,
-    tools: [{
-      type: :function,
-      name: "get_shipping_eta",
-      description: "Look up shipping details for an order.",
-      defer_loading: true,
-      strict: true,
-      parameters: {
-        type: :object,
-        properties: {order_id: {type: :string}},
-        required: ["order_id"],
-        additionalProperties: false
-      }
-    }]
-  }]
+  input: [
+    {
+      type: :tool_search_output,
+      call_id: call.call_id,
+      execution: :client,
+      status: :completed,
+      tools: [
+        {
+          type: :function,
+          name: "get_shipping_eta",
+          description: "Look up shipping details for an order.",
+          defer_loading: true,
+          strict: true,
+          parameters: {
+            type: :object,
+            properties: { order_id: { type: :string } },
+            required: ["order_id"],
+            additionalProperties: false
+          }
+        }
+      ]
+    }
+  ]
 )
 
 function_calls = response.output.grep(
@@ -891,6 +900,247 @@ Set `role` to `developer` and include the tools to add in the item's `tools` arr
 
 
 Tools in an `additional_tools` item become available only after that item appears in the input. When you manually round-trip conversation items, preserve the item's position so the model sees the same tools at the same point in the conversation.
+
+## Agents API
+
+The [Agents API](https://developers.openai.com/api/docs/guides/agents-api/overview) loads function definitions eagerly by default. To defer selected functions, include `{ "type": "tool_search" }` in `agent.tools` and set `defer_loading: true` on each function you want the agent to discover on demand. Adding `tool_search` does not defer every function.
+
+Your session request still supplies the full function definition, including its name, description, and argument schema. Tool search changes when that definition reaches the model. After discovery, your application handles the function call and returns its result as usual. See [Functions](https://developers.openai.com/api/docs/guides/agents-api/tools/functions) for result handling.
+
+Set `OPENAI_API_KEY` before running this example:
+
+Load function tools only when needed
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const result = await client.beta.agents.sessions.create({
+  agent: {
+    model: "gpt-6-astra",
+    tools: [
+      {
+        type: "tool_search",
+      },
+      {
+        type: "function",
+        name: "lookup_account",
+        description: "Find an account by its account number.",
+        parameters: {
+          type: "object",
+          properties: {
+            account_id: {
+              type: "string",
+            },
+          },
+          required: ["account_id"],
+          additionalProperties: false,
+        },
+        defer_loading: true,
+      },
+    ],
+  },
+  environment: {
+    type: "none",
+  },
+  input: [
+    {
+      role: "user",
+      content: [
+        {
+          type: "input_text",
+          text: "Look up account 42.",
+        },
+      ],
+    },
+  ],
+});
+console.log(result.id);
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+result = client.beta.agents.sessions.create(
+    agent={
+        "model": "gpt-6-astra",
+        "tools": [
+            {"type": "tool_search"},
+            {
+                "type": "function",
+                "name": "lookup_account",
+                "description": "Find an account by its account number.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {"account_id": {"type": "string"}},
+                    "required": ["account_id"],
+                    "additionalProperties": False,
+                },
+                "defer_loading": True,
+            },
+        ],
+    },
+    environment={"type": "none"},
+    input=[
+        {
+            "role": "user",
+            "content": [{"type": "input_text", "text": "Look up account 42."}],
+        }
+    ],
+)
+print(result.id)
+```
+
+```go
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+)
+
+ctx := context.Background()
+client := openai.NewClient()
+result, err := client.Beta.Agents.Sessions.New(ctx,
+	openai.BetaAgentSessionNewParams{
+		Agent: openai.BetaAgentSessionNewParamsAgent{
+			Model: openai.String("gpt-6-astra"),
+			Tools: []openai.AgentToolParamUnion{
+				{OfParamToolSearch: &openai.AgentToolParamToolSearch{}},
+				{
+					OfParamFunction: &openai.AgentToolParamFunction{
+						Name:        "lookup_account",
+						Description: "Find an account by its account number.",
+						Parameters: map[string]any{
+							"type":                 "object",
+							"properties":           map[string]any{"account_id": map[string]any{"type": "string"}},
+							"required":             []any{"account_id"},
+							"additionalProperties": false,
+						},
+						DeferLoading: openai.Bool(true),
+					},
+				},
+			},
+		},
+		Environment: openai.EnvironmentParamUnion{OfParamNone: &openai.EnvironmentParamNone{}},
+		Input: openai.BetaAgentSessionNewParamsInputUnion{
+			OfArrayOfInputMessages: []openai.AgentSessionInputMessageParam{
+				{
+					Content: []openai.InputContentParamUnion{
+						{OfParamInputText: &openai.InputContentParamInputText{Text: "Look up account 42."}},
+					},
+				},
+			},
+		},
+	})
+if err != nil {
+	panic(err)
+}
+fmt.Println(result.ID)
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.beta.agents.AgentToolParam;
+import com.openai.models.beta.agents.sessions.SessionCreateParams;
+import java.util.List;
+import java.util.Map;
+
+OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+var result =
+    client
+        .beta()
+        .agents()
+        .sessions()
+        .create(
+            SessionCreateParams.builder()
+                .agent(
+                    SessionCreateParams.Agent.builder()
+                        .model("gpt-6-astra")
+                        .addToolToolSearch()
+                        .addTool(
+                            AgentToolParam.Function.builder()
+                                .name("lookup_account")
+                                .description("Find an account by its account number.")
+                                .parameters(
+                                    AgentToolParam.Function.Parameters.builder()
+                                        .putAdditionalProperty("type", JsonValue.from("object"))
+                                        .putAdditionalProperty(
+                                            "properties",
+                                            JsonValue.from(
+                                                Map.of("account_id", Map.of("type", "string"))))
+                                        .putAdditionalProperty(
+                                            "required", JsonValue.from(List.of("account_id")))
+                                        .putAdditionalProperty(
+                                            "additionalProperties", JsonValue.from(false))
+                                        .build())
+                                .deferLoading(true)
+                                .build())
+                        .build())
+                .environmentNone()
+                .input("Look up account 42.")
+                .build());
+System.out.println(result.id());
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+result = client.beta.agents.sessions.create(
+  agent: {
+    model: "gpt-6-astra",
+    tools: [
+      { type: "tool_search" },
+      {
+        type: "function",
+        name: "lookup_account",
+        description: "Find an account by its account number.",
+        parameters: {
+          type: "object",
+          properties: { account_id: { type: "string" } },
+          required: ["account_id"],
+          additionalProperties: false
+        },
+        defer_loading: true
+      }
+    ]
+  },
+  environment: { type: "none" },
+  input: [
+    {
+      role: "user",
+      content: [
+        {
+          type: "input_text",
+          text: "Look up account 42."
+        }
+      ]
+    }
+  ]
+)
+puts result.id
+```
+
+
+### Choose a function loading strategy
+
+| Strategy         | Configuration                                        | Useful for                                                    | Tradeoff                                                                                 |
+| ---------------- | ---------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Eager loading    | Omit `defer_loading` or set it to `false`.           | A small set of functions, or functions needed for most tasks. | Unused definitions occupy context. Changing a definition can invalidate a cached prefix. |
+| Deferred loading | Set `defer_loading: true` and include `tool_search`. | A large catalog where each task needs only a few functions.   | Discovery adds a step and depends on finding the relevant tool.                          |
+
+Mixing eager and deferred functions in an Agents API session is supported but generally not recommended. Give deferred functions clear names and descriptions. Compare task completion, input-token usage, and latency with representative requests before choosing a default.
+
+### MCP and plugin tools
+
+MCP tools use automatic discovery in the Agents API when the model and provider support tool search. The runtime defers MCP tools and adds tool search when searchable deferred tools are available. This applies to remote MCPs, executor MCPs, and MCP tools supplied by plugins.
+
+You do not need to add `{ "type": "tool_search" }` just for MCP tools or set a function-level `defer_loading` flag on an MCP server. Configure the server using [MCP connections](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp). The Responses API configuration earlier in this guide does not apply to Agents API MCP servers.
 
 ## Related guides
 

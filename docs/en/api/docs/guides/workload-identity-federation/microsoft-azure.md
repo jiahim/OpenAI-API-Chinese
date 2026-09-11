@@ -329,6 +329,7 @@ end
 unless Base64.urlsafe_encode64(payload, padding: false) == parts[1]
   raise "JWT payload is not valid Base64URL"
 end
+
 payload.force_encoding(Encoding::UTF_8)
 raise "JWT payload is not valid UTF-8" unless payload.valid_encoding?
 
@@ -1207,6 +1208,7 @@ end
 unless Base64.urlsafe_encode64(payload, padding: false) == parts[1]
   raise "JWT payload is not valid Base64URL"
 end
+
 payload.force_encoding(Encoding::UTF_8)
 raise "JWT payload is not valid UTF-8" unless payload.valid_encoding?
 

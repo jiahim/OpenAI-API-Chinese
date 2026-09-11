@@ -417,22 +417,29 @@ def get_weather(city)
   # Demo data. Replace this function with your weather service.
   raise "No demo weather snapshot for #{city}" unless city == "Paris"
 
-  {city: city, temperature_c: 22, condition: "Clear", source: "demo weather snapshot"}
+  {
+    city: city,
+    temperature_c: 22,
+    condition: "Clear",
+    source: "demo weather snapshot"
+  }
 end
 
 client = OpenAI::Client.new
-tools = [OpenAI::Models::Responses::FunctionTool.new(
-  name: "get_weather",
-  description: "Read the demo weather snapshot for a city.",
-  async: true,
-  strict: true,
-  parameters: {
-    type: "object",
-    properties: {city: {type: "string"}},
-    required: ["city"],
-    additionalProperties: false
-  }
-)]
+tools = [
+  OpenAI::Models::Responses::FunctionTool.new(
+    name: "get_weather",
+    description: "Read the demo weather snapshot for a city.",
+    async: true,
+    strict: true,
+    parameters: {
+      type: "object",
+      properties: { city: { type: "string" } },
+      required: ["city"],
+      additionalProperties: false
+    }
+  )
+]
 instructions = "Start the weather lookup and answer the independent packing question " \
   "without waiting. Use the actual tool result when it arrives; never invent it. " \
   "Identify the weather as demo data."
@@ -448,26 +455,29 @@ end
 unless call.is_a?(OpenAI::Models::Responses::ResponseFunctionToolCall)
   raise "The response did not include a weather call."
 end
+
 city = JSON.parse(call.arguments).fetch("city")
 latest_response_id = response.id
 result = if call.async
-  job = Thread.new { get_weather(city) }
-  puts(response.output_text)
-  # Independent work or conversation turns can happen here.
-  # Update latest_response_id after each continuation.
-  job.value
-else
-  get_weather(city)
-end
+           job = Thread.new { get_weather(city) }
+           puts(response.output_text)
+           # Independent work or conversation turns can happen here.
+           # Update latest_response_id after each continuation.
+           job.value
+         else
+           get_weather(city)
+         end
 response = client.responses.create(
   model: "gpt-6-astra",
   tools: tools,
   instructions: instructions,
   previous_response_id: latest_response_id,
-  input: [OpenAI::Models::Responses::ResponseInputItem::FunctionCallOutput.new(
-    call_id: call.call_id,
-    output: JSON.generate(result)
-  )]
+  input: [
+    OpenAI::Models::Responses::ResponseInputItem::FunctionCallOutput.new(
+      call_id: call.call_id,
+      output: JSON.generate(result)
+    )
+  ]
 )
 puts(response.output_text)
 ```

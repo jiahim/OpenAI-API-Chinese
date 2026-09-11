@@ -37666,462 +37666,6 @@ Schema name: `ResponseSteerEvent`
 
 Events emitted only over a Responses API WebSocket connection.
 
-### error
-
-Emitted when an error occurs while processing a Responses WebSocket request.
-
-#### Schema
-
-Schema name: `ResponseWsError`
-
-```json
-{
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ResponsesServerEvent/anyOf/57",
-    "docstring": "Emitted when an error occurs while processing a Responses WebSocket request.",
-    "ident": "ResponseWsError",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "error"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "sequence_number"
-        },
-        {
-          "ident": "status"
-        },
-        {
-          "ident": "stream_id"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error",
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) type",
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) sequence_number",
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) status",
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) stream_id"
-    ]
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseWsError/properties/error",
-    "deprecated": false,
-    "key": "error",
-    "docstring": "Details about the error.",
-    "title": "Error payload",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "code"
-        },
-        {
-          "ident": "message"
-        },
-        {
-          "ident": "param"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "headers"
-        },
-        {
-          "ident": "misalignment"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) code",
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) message",
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) param",
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) type",
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) headers",
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment"
-    ]
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseWsError/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `error`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ResponseWsError/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "error"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) type > (member) 0"
-    ]
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) sequence_number": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseWsError/properties/sequence_number",
-    "deprecated": false,
-    "key": "sequence_number",
-    "docstring": "The sequence number of an error emitted by the response stream.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) status": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseWsError/properties/status",
-    "deprecated": false,
-    "key": "status",
-    "docstring": "The HTTP status code associated with a WebSocket protocol error.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) stream_id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ResponseWsError/properties/stream_id",
-    "deprecated": false,
-    "key": "stream_id",
-    "docstring": "The WebSocket lane that emitted this event. This field is present when the\noriginating `response.create` event supplied a `stream_id`.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) code": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ErrorPayload/properties/code",
-    "deprecated": false,
-    "key": "code",
-    "docstring": "The error code that was emitted, if any.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": true,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) message": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ErrorPayload/properties/message",
-    "deprecated": false,
-    "key": "message",
-    "docstring": "The human-readable error message that was emitted.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) param": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ErrorPayload/properties/param",
-    "deprecated": false,
-    "key": "param",
-    "docstring": "The parameter name that was associated with the error, if any.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": true,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ErrorPayload/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The error type that was emitted.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) headers": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ErrorPayload/properties/headers",
-    "deprecated": false,
-    "key": "headers",
-    "docstring": "The response headers that were emitted with the error, if any.",
-    "type": {
-      "kind": "HttpTypeReference",
-      "oasRef": "#/components/schemas/ErrorPayload/properties/headers",
-      "ident": "Record",
-      "typeParameters": [
-        {
-          "kind": "HttpTypeString"
-        },
-        {
-          "kind": "HttpTypeString"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "map",
-    "children": []
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ErrorPayload/properties/misalignment",
-    "deprecated": false,
-    "key": "misalignment",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "detailed_explanation"
-        },
-        {
-          "ident": "error_type"
-        },
-        {
-          "ident": "steer"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) detailed_explanation",
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type",
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) steer"
-    ]
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "error"
-    }
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) detailed_explanation": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/MisalignmentErrorDetailsResource/properties/detailed_explanation",
-    "deprecated": false,
-    "key": "detailed_explanation",
-    "docstring": "The public explanation for this block.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/MisalignmentErrorDetailsResource/properties/error_type",
-    "deprecated": false,
-    "key": "error_type",
-    "docstring": "An optional classification; clients must accept additional values.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/MisalignmentErrorDetailsResource/properties/error_type",
-      "types": [
-        {
-          "kind": "HttpTypeString"
-        },
-        {
-          "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/_MisalignmentErrorType/anyOf/1",
-          "types": [
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "potentially_unintended_data_transfer"
-            },
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "potentially_unintended_data_access"
-            },
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "potentially_unintended_destructive_activity"
-            },
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "other"
-            }
-          ]
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "union",
-    "childrenParentSchema": "union",
-    "children": [
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 0",
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1"
-    ]
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) steer": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/MisalignmentErrorDetailsResource/properties/steer",
-    "deprecated": false,
-    "key": "steer",
-    "docstring": "An optional public continuation instruction.",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "message"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) steer > (property) message"
-    ]
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 0": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/_MisalignmentErrorType/anyOf/0",
-    "ident": "UnionMember0",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "children": []
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/_MisalignmentErrorType/anyOf/1",
-    "docstring": "An optional classification; clients must accept additional values.",
-    "ident": "SafetyAlertErrorType",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/_MisalignmentErrorType/anyOf/1",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "potentially_unintended_data_transfer"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "potentially_unintended_data_access"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "potentially_unintended_destructive_activity"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "other"
-        }
-      ]
-    },
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1 > (member) 0",
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1 > (member) 1",
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1 > (member) 2",
-      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1 > (member) 3"
-    ]
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) steer > (property) message": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/_MisalignmentSteer/properties/message",
-    "deprecated": false,
-    "key": "message",
-    "docstring": "The public continuation instruction.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1 > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "potentially_unintended_data_transfer"
-    }
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1 > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "potentially_unintended_data_access"
-    }
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1 > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "potentially_unintended_destructive_activity"
-    }
-  },
-  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1 > (member) 3": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "other"
-    }
-  }
-}
-```
-
-#### Example
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "stream_id": "agent_1",
-  "error": {
-    "type": "invalid_request_error",
-    "code": "websocket_stream_limit_reached",
-    "message": "This WebSocket connection has reached its stream limit.",
-    "param": "stream_id"
-  }
-}
-```
-
 ### response.steer.accepted
 
 Emitted when steering input has been validated and queued. Acceptance means
@@ -41268,6 +40812,462 @@ Schema name: `ResponseSteerFailedEvent`
     "type": "invalid_request_error",
     "code": "successor_creation_failed",
     "message": "We couldn't start the next response. Send this steering input again with response.create."
+  }
+}
+```
+
+### error
+
+Emitted when an error occurs while processing a Responses WebSocket request.
+
+#### Schema
+
+Schema name: `ResponseWsError`
+
+```json
+{
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/ResponsesServerEvent/anyOf/57",
+    "docstring": "Emitted when an error occurs while processing a Responses WebSocket request.",
+    "ident": "ResponseWsError",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "error"
+        },
+        {
+          "ident": "type"
+        },
+        {
+          "ident": "sequence_number"
+        },
+        {
+          "ident": "status"
+        },
+        {
+          "ident": "stream_id"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error",
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) type",
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) sequence_number",
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) status",
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) stream_id"
+    ]
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ResponseWsError/properties/error",
+    "deprecated": false,
+    "key": "error",
+    "docstring": "Details about the error.",
+    "title": "Error payload",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "code"
+        },
+        {
+          "ident": "message"
+        },
+        {
+          "ident": "param"
+        },
+        {
+          "ident": "type"
+        },
+        {
+          "ident": "headers"
+        },
+        {
+          "ident": "misalignment"
+        }
+      ]
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "object",
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) code",
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) message",
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) param",
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) type",
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) headers",
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment"
+    ]
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ResponseWsError/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "docstring": "The type of the event. Always `error`.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ResponseWsError/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "error"
+        }
+      ]
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) sequence_number": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ResponseWsError/properties/sequence_number",
+    "deprecated": false,
+    "key": "sequence_number",
+    "docstring": "The sequence number of an error emitted by the response stream.",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "integer",
+    "children": []
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) status": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ResponseWsError/properties/status",
+    "deprecated": false,
+    "key": "status",
+    "docstring": "The HTTP status code associated with a WebSocket protocol error.",
+    "type": {
+      "kind": "HttpTypeNumber"
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "integer",
+    "children": []
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) stream_id": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ResponseWsError/properties/stream_id",
+    "deprecated": false,
+    "key": "stream_id",
+    "docstring": "The WebSocket lane that emitted this event. This field is present when the\noriginating `response.create` event supplied a `stream_id`.\n",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "string",
+    "children": []
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) code": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ErrorPayload/properties/code",
+    "deprecated": false,
+    "key": "code",
+    "docstring": "The error code that was emitted, if any.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": false,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) message": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ErrorPayload/properties/message",
+    "deprecated": false,
+    "key": "message",
+    "docstring": "The human-readable error message that was emitted.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "string",
+    "children": []
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) param": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ErrorPayload/properties/param",
+    "deprecated": false,
+    "key": "param",
+    "docstring": "The parameter name that was associated with the error, if any.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": false,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ErrorPayload/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "docstring": "The error type that was emitted.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "string",
+    "children": []
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) headers": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ErrorPayload/properties/headers",
+    "deprecated": false,
+    "key": "headers",
+    "docstring": "The response headers that were emitted with the error, if any.",
+    "type": {
+      "kind": "HttpTypeReference",
+      "oasRef": "#/components/schemas/ErrorPayload/properties/headers",
+      "ident": "Record",
+      "typeParameters": [
+        {
+          "kind": "HttpTypeString"
+        },
+        {
+          "kind": "HttpTypeString"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "map",
+    "children": []
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ErrorPayload/properties/misalignment",
+    "deprecated": false,
+    "key": "misalignment",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "detailed_explanation"
+        },
+        {
+          "ident": "error_type"
+        },
+        {
+          "ident": "steer"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "object",
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) detailed_explanation",
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type",
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) steer"
+    ]
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "error"
+    }
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) detailed_explanation": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/MisalignmentErrorDetailsResource/properties/detailed_explanation",
+    "deprecated": false,
+    "key": "detailed_explanation",
+    "docstring": "The public explanation for this block.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "string",
+    "children": []
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/MisalignmentErrorDetailsResource/properties/error_type",
+    "deprecated": false,
+    "key": "error_type",
+    "docstring": "An optional classification; clients must accept additional values.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/MisalignmentErrorDetailsResource/properties/error_type",
+      "types": [
+        {
+          "kind": "HttpTypeString"
+        },
+        {
+          "kind": "HttpTypeUnion",
+          "oasRef": "#/components/schemas/_MisalignmentErrorType/anyOf/1",
+          "types": [
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "potentially_unintended_data_transfer"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "potentially_unintended_data_access"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "potentially_unintended_destructive_activity"
+            },
+            {
+              "kind": "HttpTypeLiteral",
+              "literal": "other"
+            }
+          ]
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "union",
+    "childrenParentSchema": "union",
+    "children": [
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 0",
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1"
+    ]
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) steer": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/MisalignmentErrorDetailsResource/properties/steer",
+    "deprecated": false,
+    "key": "steer",
+    "docstring": "An optional public continuation instruction.",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "message"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": false,
+    "schemaType": "object",
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) steer > (property) message"
+    ]
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 0": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/_MisalignmentErrorType/anyOf/0",
+    "ident": "UnionMember0",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "children": []
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/_MisalignmentErrorType/anyOf/1",
+    "docstring": "An optional classification; clients must accept additional values.",
+    "ident": "SafetyAlertErrorType",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/_MisalignmentErrorType/anyOf/1",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "potentially_unintended_data_transfer"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "potentially_unintended_data_access"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "potentially_unintended_destructive_activity"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "other"
+        }
+      ]
+    },
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1 > (member) 0",
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1 > (member) 1",
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1 > (member) 2",
+      "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1 > (member) 3"
+    ]
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) steer > (property) message": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/_MisalignmentSteer/properties/message",
+    "deprecated": false,
+    "key": "message",
+    "docstring": "The public continuation instruction.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "string",
+    "children": []
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1 > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "potentially_unintended_data_transfer"
+    }
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1 > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "potentially_unintended_data_access"
+    }
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1 > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "potentially_unintended_destructive_activity"
+    }
+  },
+  "(resource) responses > (model) responses_server_event > (schema) > (variant) 57 > (property) error > (property) misalignment > (property) error_type > (variant) 1 > (member) 3": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "other"
+    }
+  }
+}
+```
+
+#### Example
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "stream_id": "agent_1",
+  "error": {
+    "type": "invalid_request_error",
+    "code": "websocket_stream_limit_reached",
+    "message": "This WebSocket connection has reached its stream limit.",
+    "param": "stream_id"
   }
 }
 ```

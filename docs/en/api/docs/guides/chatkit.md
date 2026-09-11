@@ -153,7 +153,7 @@ server.mount_proc("/api/chatkit/session") do |request, response|
   upstream["Authorization"] = "Bearer #{api_key}"
   upstream["Content-Type"] = "application/json"
   upstream["OpenAI-Beta"] = "chatkit_beta=v1"
-  upstream.body = JSON.generate(workflow: {id: workflow_id}, user: user.fetch(1))
+  upstream.body = JSON.generate(workflow: { id: workflow_id }, user: user.fetch(1))
   begin
     result = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true, open_timeout: 10, read_timeout: 30) do |http|
       http.request(upstream)
@@ -161,6 +161,7 @@ server.mount_proc("/api/chatkit/session") do |request, response|
     result.value
     secret = JSON.parse(result.body).fetch("client_secret")
     raise "Missing session secret" unless secret.is_a?(String) && !secret.empty?
+
     response.body = JSON.generate(client_secret: secret)
   rescue
     response.status = 502

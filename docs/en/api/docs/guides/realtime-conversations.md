@@ -126,18 +126,24 @@ connection.session.update(
   output_modalities: [:audio],
   audio: {
     input: {
-      format: {type: :"audio/pcm", rate: 24_000},
-      turn_detection: {type: :semantic_vad}
+      format: {
+        type: :"audio/pcm",
+        rate: 24_000
+      },
+      turn_detection: { type: :semantic_vad }
     },
     output: {
-      format: {type: :"audio/pcm", rate: 24_000},
+      format: {
+        type: :"audio/pcm",
+        rate: 24_000
+      },
       voice: :marin
     }
   },
   prompt: {
     id: ENV.fetch("OPENAI_REALTIME_PROMPT_ID"),
     version: "89",
-    variables: {city: "Paris"}
+    variables: { city: "Paris" }
   },
   instructions: "Speak clearly and briefly. Confirm before taking action."
 )
@@ -212,7 +218,12 @@ ws.send(json.dumps(event))
 connection.conversation.items.create(
   type: :message,
   role: :user,
-  content: [{type: :input_text, text: "What is the weather like today?"}]
+  content: [
+    {
+      type: :input_text,
+      text: "What is the weather like today?"
+    }
+  ]
 )
 ```
 
@@ -665,7 +676,12 @@ audio = Base64.strict_encode64(File.binread("speech.pcm"))
 connection.conversation.items.create(
   type: :message,
   role: :user,
-  content: [{type: :input_audio, audio: audio}]
+  content: [
+    {
+      type: :input_audio,
+      audio: audio
+    }
+  ]
 )
 ```
 
@@ -753,8 +769,14 @@ connection.conversation.items.create(
   type: :message,
   role: :user,
   content: [
-    {type: :input_image, image_url: "data:image/png;base64,#{encoded_image}"},
-    {type: :input_text, text: "Describe this image."}
+    {
+      type: :input_image,
+      image_url: "data:image/png;base64,#{encoded_image}"
+    },
+    {
+      type: :input_text,
+      text: "Describe this image."
+    }
   ]
 )
 connection.response.create(output_modalities: [:text])
@@ -845,7 +867,7 @@ ws.send(json.dumps(event))
 ```ruby
 connection.response.create(
   conversation: :none,
-  metadata: {topic: "classification"},
+  metadata: { topic: "classification" },
   output_modalities: [:text],
   instructions: "Classify the conversation as support or sales."
 )
@@ -983,14 +1005,22 @@ ws.send(json.dumps(event))
 ```ruby
 connection.response.create(
   conversation: :none,
-  metadata: {topic: "classification"},
+  metadata: { topic: "classification" },
   output_modalities: [:text],
   input: [
-    {type: :item_reference, id: ENV.fetch("OPENAI_REALTIME_CONTEXT_ITEM_ID")},
+    {
+      type: :item_reference,
+      id: ENV.fetch("OPENAI_REALTIME_CONTEXT_ITEM_ID")
+    },
     {
       type: :message,
       role: :user,
-      content: [{type: :input_text, text: "Classify this issue: my order is late."}]
+      content: [
+        {
+          type: :input_text,
+          text: "Classify this issue: my order is late."
+        }
+      ]
     }
   ]
 )
