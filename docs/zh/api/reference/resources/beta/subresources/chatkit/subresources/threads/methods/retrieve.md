@@ -1,10 +1,10 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。通过在页面 URL 末尾追加 `.md` 可获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。你可以通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-## Retrieve ChatKit thread
+## 检索 ChatKit 会话线程
 
 **get** `/chatkit/threads/{thread_id}`
 
-按标识符检索 ChatKit 会话。
+根据标识符获取 ChatKit 会话线程。
 
 ### 路径参数
 
@@ -26,35 +26,35 @@
 
   - `object: "chatkit.thread"`
 
-    类型鉴别字段，始终为 `chatkit.thread`.
+    始终为的类型判别符 `chatkit.thread`.
 
     - `"chatkit.thread"`
 
   - `status: object { type }  or object { reason, type }  or object { reason, type }`
 
-    会话的当前状态。新建会话默认为 `active` 。
+    会话的当前状态。默认为 `active` ，适用于新建会话。
 
     - `Active object { type }`
 
-      表示会话处于活跃状态。
+      表示会话处于活动状态。
 
       - `type: "active"`
 
-        状态鉴别字段，始终为 `active`.
+        始终为的状态判别符 `active`.
 
         - `"active"`
 
     - `Locked object { reason, type }`
 
-      表示会话已锁定，无法接受新的输入。
+      表示会话已被锁定，无法接受新的输入。
 
       - `reason: string or null`
 
-        会话被锁定的原因。未记录原因时默认为 null。
+        会话被锁定的原因。若未记录原因，则默认为 null。
 
       - `type: "locked"`
 
-        状态鉴别字段，始终为 `locked`.
+        始终为的状态判别符 `locked`.
 
         - `"locked"`
 
@@ -64,17 +64,17 @@
 
       - `reason: string or null`
 
-        会话被关闭的原因。未记录原因时默认为 null。
+        会话被关闭的原因。若未记录原因，则默认为 null。
 
       - `type: "closed"`
 
-        状态鉴别字段，始终为 `closed`.
+        始终为的状态判别符 `closed`.
 
         - `"closed"`
 
   - `title: string or null`
 
-    会话的可选人类可读标题。尚未生成标题时默认为 null。
+    可选的人类可读会话标题。若尚未生成标题，则默认为 null。
 
   - `user: string`
 

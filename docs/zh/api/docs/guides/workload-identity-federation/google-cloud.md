@@ -1,23 +1,23 @@
 # 为 Google Cloud 配置工作负载身份联合
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取 Markdown 版本的文档页面。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可在页面 URL 末尾追加 `.md` 以获取文档页面的 Markdown 版本。
 
-在以下任意场景中，可将 Google Cloud 用作工作负载身份提供方：
+在以下任意场景中，可将 Google Cloud 用作 Workload Identity Provider：
 
-- **Google 工作负载身份：** 将由附加的 Google 服务账号签发的 Google OIDC 令牌交换为短期有效的 OpenAI 访问令牌。
-- **Google Kubernetes Engine：** 将投射的 GKE 服务账号令牌交换为短期有效的 OpenAI 访问令牌。
+- **Google workload identity:** 将通过附加的 Google 服务账号签发的 Google OIDC token 交换为短时效的 OpenAI 访问令牌。
+- **Google Kubernetes Engine:** 将投影的 GKE 服务账号令牌交换为短时效的 OpenAI 访问令牌。
 
-对于 Codex，使用本页获取并检查 Google token。然后 [配置 Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) 将该 token 写入文件并让 Codex 指向该文件。本页中的服务账号映射和 SDK 示例适用于 OpenAI API。
+对于 Codex，使用本页获取并检查 Google token。然后 [配置 Codex 工作负载身份](https://developers.openai.com/codex/enterprise/workload-identity) 以将该 token 写入文件并指向 Codex。本页中的服务账号映射和SDK 示例适用于OpenAI API。
 
 
 
-## Google 工作负载身份
+## Google workload identity
 
-Google Cloud 工作负载可以从 Google 元数据服务器请求已签名的 OIDC 身份令牌，而无需存储长期有效的服务账号密钥。在 OpenAI 工作负载身份联合中，Google 身份令牌是 OpenAI 在签发 OpenAI 访问令牌之前进行验证的主体令牌。此流程适用于 Compute Engine、Cloud Run、使用已挂载 Google 服务账号的 GKE 工作负载，以及其他暴露元数据服务器身份端点的 Google 托管运行时。
+Google Cloud 工作负载可以从 Google 元数据服务器请求已签名的 OIDC 身份令牌，而无需存储长期有效的服务账号密钥。在 OpenAI 工作负载身份联合中，Google 身份令牌是 OpenAI 在签发 OpenAI 访问令牌之前会进行验证的主体令牌。此流程适用于 Compute Engine、Cloud Run、使用已关联 Google 服务账号的 GKE 工作负载，以及其他暴露元数据服务器身份端点的 Google 托管运行时。
 
-### 配置 Google 工作负载身份
+### 配置 Google workload identity
 
-为需要调用 OpenAI API 的工作负载创建一个 Google 服务账号。完整的设置流程，请参阅 Google 的指南： [创建服务账号](https://docs.cloud.google.com/iam/docs/service-accounts-create).
+为需要调用 OpenAI API 的工作负载创建一个 Google 服务账号。完整的配置流程，请参阅 Google 的 [创建服务账号](https://docs.cloud.google.com/iam/docs/service-accounts-create).
 
 例如，使用 Google Cloud CLI 创建一个服务账号：
 
@@ -27,13 +27,13 @@ gcloud iam service-accounts create openai-wif \
   --display-name="OpenAI workload identity federation"
 ```
 
-创建附加了服务账号的 Compute Engine VM，或将服务账号附加到运行应用程序的 Google Cloud 资源。该资源必须能够在运行时调用 Google 元数据服务器。有关 VM 设置详情，请参阅 Google 指南： [创建使用用户管理服务账号的 VM](https://docs.cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances).
+创建 Compute Engine VM 并附加该服务账号，或将该服务账号附加到运行应用的 Google Cloud 资源上。该资源必须能够在运行时调用 Google 元数据服务器。有关 VM 设置的详细信息，请参阅 Google 的 [创建使用用户管理服务账号的 VM](https://docs.cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances).
 
-不要为此流程创建或下载服务账号密钥。该工作负载使用附加的服务账号和元数据服务器来请求短期 OIDC 令牌。
+请勿为此流程创建或下载服务账号密钥。工作负载使用附加的服务账号和元数据服务器来请求短时长的 OIDC 令牌。
 
 ### 获取 Google 身份令牌
 
-从已附加服务账号的 Google Cloud 资源，通过元数据服务器使用已配置的 audience 请求一个 OIDC 身份令牌。该令牌是 OpenAI 用于换取由 OpenAI 颁发的访问令牌的 subject token。
+从已绑定服务账号的 Google Cloud 资源出发，向元数据服务器请求一个带有已配置 audience 的 OIDC 身份令牌。该令牌是 OpenAI 用于换取 OpenAI 颁发的访问令牌的 subject token。
 
 ```bash
 AUDIENCE="https://api.openai.com/v1"
@@ -44,11 +44,11 @@ TOKEN=$(curl -sS -G -H "Metadata-Flavor: Google" \
 export TOKEN
 ```
 
-元数据服务器会返回一个由 Google 签名的 JWT。有关元数据服务器身份端点的更多信息，请参阅 Google 的 [验证 VM 身份](https://docs.cloud.google.com/compute/docs/instances/verifying-instance-identity).
+元数据服务器会返回一个由 Google 签名的 JWT。有关元数据服务器身份端点的更多信息，请参阅 Google 的 [验证虚拟机身份](https://docs.cloud.google.com/compute/docs/instances/verifying-instance-identity).
 
-### 验证 token
+### 验证令牌
 
-在配置工作负载身份联合之前，请将 Google 身份令牌导出为 `TOKEN`，然后在本地运行以下脚本来检查其声明：
+在配置工作负载身份联合之前，先将 Google 身份令牌导出为 `TOKEN`，然后在本地运行以下脚本来检查其声明：
 
 ```javascript
 const parts = process.env.TOKEN?.split(".") ?? [];
@@ -333,6 +333,7 @@ end
 unless Base64.urlsafe_encode64(payload, padding: false) == parts[1]
   raise "JWT payload is not valid Base64URL"
 end
+
 payload.force_encoding(Encoding::UTF_8)
 raise "JWT payload is not valid UTF-8" unless payload.valid_encoding?
 
@@ -343,9 +344,9 @@ puts(payload)
 ```
 
 
-此命令仅解码 JWT 负载，不会验证令牌签名。请使用本地解码器处理生产环境中的令牌，避免将生产令牌粘贴到第三方工具中。
+此命令会解码 JWT 负载，但不会验证令牌签名。生产环境中的令牌请使用本地解码器，并避免将生产令牌粘贴到第三方工具中。
 
-解码后的 Google 元数据服务器身份令牌如下所示：
+解码后的 Google 元数据服务器身份令牌大致如下所示：
 
 ```json
 {
@@ -360,41 +361,41 @@ puts(payload)
 }
 ```
 
-使用解码后的负载，将你收到的令牌与 OpenAI 中配置的 issuer、audience 和映射值进行比较。大多数配置问题都可以在 `iss`, `aud`, `email`，和 `sub` 声明中看到，再交换令牌。
+使用解码后的负载，将你收到的令牌与 OpenAI 中配置的颁发者、受众和映射值进行比较。大多数配置问题都会在交换令牌之前的 `iss`, `aud`, `email`，和 `sub` 声明中体现出来。
 
-### 设置工作负载身份联合
+### 设置 workload identity federation
 
-在 OpenAI 中为 Google 颁发的身份令牌创建一个工作负载身份提供商，然后添加一个匹配该令牌中稳定声明的服务账号映射。
+在 OpenAI 中创建一个针对 Google 颁发的身份令牌的工作负载身份提供方，然后添加一个与令牌中稳定声明相匹配的服务账号映射。
 
-请先配置工作负载身份提供商，然后再创建服务账号映射。
+首先配置工作负载身份提供方，然后创建服务账号映射。
 
 #### 设置 Workload Identity Provider
 
-1. **创建 Workload Identity Provider。** 设置 **Name** 为唯一值,例如 `google-workload-identity-prod`。使用 **Description**,例如 `Production Google Cloud workloads`，以便管理员识别该提供商。
+1. **创建 Workload Identity Provider。** 设置 **Name** 为唯一值，例如 `google-workload-identity-prod`。使用 **Description**，例如 `Production Google Cloud workloads`，以帮助管理员识别该提供方。
 
-2. **设置 issuer 和 audience。** 设置 **OIDC Issuer URL** 为 `https://accounts.google.com`。设置 **Audience** 为你的工作负载从 Google 元数据服务器请求的自定义 audience,例如 `https://api.openai.com/v1`。此值必须与令牌的 `aud` 声明匹配。
+2. **设置 issuer 和 audience。** 设置 **OIDC Issuer URL** 为 `https://accounts.google.com`。将 **Audience** 设置为你工作负载从 Google 元数据服务器请求的自定义 audience，例如 `https://api.openai.com/v1`。此值必须与令牌的 `aud` 声明匹配。
 
-3. **使用 Google OIDC 发现。** 将 **Use uploaded JWKS for token verification** 保持禁用。OpenAI 使用 Google 的 OIDC 发现元数据和 JWKS 来验证 Google 签发的身份令牌。
+3. **使用 Google OIDC 发现。** 将 **Use uploaded JWKS for token verification** 保持未启用。OpenAI 使用 Google 的 OIDC 发现元数据和 JWKS 来验证 Google 签发的身份令牌。
 
-4. **如果需要派生映射属性，请添加属性转换。** 例如，输入 `subject` 并使用表达式 `assertion.sub` 以从主体声明中创建 `openai.subject` 。仪表板会自动应用 `openai.` 前缀。已以 `openai.` 开头的原始令牌声明会忽略其映射键， `openai.` 除非配置了匹配的转换。
+4. **如果需要派生映射属性，请添加属性转换。** 例如，输入 `subject` 并使用表达式 `assertion.sub` 来创建 `openai.subject` ，来源是 subject claim。仪表板会自动添加 `openai.` 前缀。已经以 `openai.` 开头的原始 token claim 在用作 `openai.` 映射键时会被忽略，除非配置了匹配的转换。
 
-#### 设置服务账号映射
+#### 设置服务账户映射
 
-1. **Create a service account mapping.** 设置 **Name** to a unique value within the Workload Identity Provider, such as `compute-openai-wif`。使用 **Description**,例如 `Production Compute Engine OpenAI API workload`, to explain which workload can use the mapping.
+1. **创建一个服务账号映射。** 设置 **Name** 到 Workload Identity Provider 中的一个唯一值，例如 `compute-openai-wif`。使用 **Description**，例如 `Production Compute Engine OpenAI API workload`，用于说明哪些工作负载可以使用该映射。
 
-2. **Match stable Google service account claims.** Add one **Key** and **Value** row for each claim that must match. Use `sub` as the primary identity binding because it is stable and unique. You may additionally match `email` for readability.
+2. **匹配稳定的 Google 服务账号声明。** 添加一个 **键** 和 **值** 行，用于每个必须匹配的声明。请使用 `sub` 作为主要的身份绑定，因为它稳定且唯一。你还可以额外匹配 `email` 以提升可读性。
 
-3. **选择 OpenAI 目标。** 设置 **项目** 为拥有目标服务账号的 OpenAI 项目设置 **服务账号** 为 Google Cloud 工作负载可使用的 OpenAI 服务账号，例如 `google-workload-identity-prod-openai-wif`.
+3. **选择 OpenAI 目标。** 设置 **Project** 为拥有目标服务账号的 OpenAI 项目。设置 **Service account** 为 Google Cloud 工作负载可使用的 OpenAI 服务账号，例如 `google-workload-identity-prod-openai-wif`.
 
-4. **如需要，缩小 API 权限范围。** 选择合适的 **权限** 例如 `api.model.request` and `api.vector_store.read` 以进一步收窄从此映射生成的访问令牌。将权限留空可避免添加 WIF 专属的作用域限制；该令牌仍会以映射的服务账号身份进行授权。
+4. **如有必要，收窄 API 权限。** 选择合适的 **Permissions** 例如 `api.model.request` 和 `api.vector_store.read` 以进一步收窄从此映射生成的访问令牌。如果将权限留空，则避免添加 WIF 专属的作用域限制；该令牌仍会以映射后的服务账号身份进行授权。
 
-### 在代码中使用 token
+### 在代码中使用令牌
 
-配置你的 OpenAI SDK 客户端，使其从元数据服务器请求 Google 身份令牌，并将其交换为由 OpenAI 颁发的访问令牌。
+配置你的 OpenAI SDK 客户端，使其从元数据服务器请求 Google 身份令牌，并将其交换为 OpenAI 颁发的访问令牌。
 
-将 `OPENAI_WIF_AUDIENCE` 设置为已配置为 Workload Identity Provider 受众的自定义受众。SDK 会为该受众请求 Google 身份令牌，并将其交换为由 OpenAI 颁发的访问令牌，然后使用该 OpenAI 令牌对 API 请求进行身份验证。
+将 `OPENAI_WIF_AUDIENCE` 设置为配置为 Workload Identity Provider 受众的自定义受众。SDK 会为该受众请求 Google 身份令牌，将其交换为 OpenAI 颁发的访问令牌，并使用该 OpenAI 令牌对 API 请求进行身份验证。
 
-使用 Google 元数据服务器身份令牌进行身份验证
+通过 Google 元数据服务器身份令牌进行身份验证
 
 ```javascript
 import OpenAI from "openai";
@@ -811,31 +812,31 @@ puts(response.output_text)
 
 ## Google Kubernetes Engine
 
-使用 Google Kubernetes Engine 作为工作负载身份提供方，通过将 GKE 颁发的投影服务账户令牌交换为短期 OpenAI 访问令牌。
+通过将 GKE 颁发的 projected 服务账户令牌交换为短期有效的 OpenAI 访问令牌，使用 Google Kubernetes Engine 作为工作负载身份提供方。
 
-GKE 工作负载可以使用以下任一方式进行身份验证：
+GKE 工作负载可以通过以下任一方式进行身份验证：
 
-- 由集群 OIDC 签发者签发的 Kubernetes 服务账户令牌投影。
-- 通过 GKE Workload Identity 获取的 Google 服务账户身份令牌，其中 Kubernetes 服务账户绑定到 Google 服务账户。
+- 由集群 OIDC 颁发者签发的 Kubernetes 服务账号令牌（projected）。
+- 通过 GKE Workload Identity 获取的 Google 服务账号身份令牌，其中 Kubernetes 服务账号已绑定到某个 Google 服务账号。
 
-当你希望 OpenAI 直接信任集群的 OIDC 签发方时，请使用 Kubernetes 投影服务账号令牌。当你的工作负载已经依赖 Google 服务账号身份，并希望 OpenAI 改为信任 Google 颁发的身份令牌时，请使用 GKE Workload Identity。
+当你希望 OpenAI 直接信任集群的 OIDC 签发方时，请使用投影的 Kubernetes 服务账户令牌。当你的工作负载已依赖 Google 服务账户身份，并希望 OpenAI 改为信任 Google 签发的身份令牌时，请使用 GKE Workload Identity。
 
-如果你的 GKE 工作负载已配置 GKE Workload Identity 并且能够从元数据服务器请求
-  Google 身份令牌，请按照上面的 [Google workload
-  identity](#google-workload-identity) 操作说明进行配置，而不是使用 GKE
+如果你的 GKE 工作负载已配置 GKE Workload Identity，并且能够从元数据服务器请求
+  Google 身份令牌，请按上述 [Google 工作负载
+  身份](#google-workload-identity) 说明进行操作，而不是使用 GKE
   投影令牌流程。
 
 ### 设置 GKE
 
-这些说明假设你使用的是托管型 GKE 集群。对于自管型 Kubernetes 集群，请参阅 [Kubernetes 指南](https://developers.openai.com/api/docs/guides/workload-identity-federation/kubernetes).
+这些说明假定你使用的是托管型 GKE 集群。对于自管型 Kubernetes 集群，请使用 [Kubernetes 指南](https://developers.openai.com/api/docs/guides/workload-identity-federation/kubernetes).
 
-为需要调用 OpenAI API 的 GKE 工作负载使用 Kubernetes `ServiceAccount` 。如果还没有，请创建一个：
+为需要调用 OpenAI API 的 GKE 工作负载使用一个 Kubernetes `ServiceAccount` 。如果还没有，请先创建一个：
 
 ```bash
 kubectl create serviceaccount openai-wif --namespace default
 ```
 
-检索与 GKE 集群关联的 issuer URL：
+检索与该 GKE 集群关联的 issuer URL：
 
 ```bash
 kubectl get --raw /.well-known/openid-configuration | jq -r .issuer
@@ -847,9 +848,9 @@ kubectl get --raw /.well-known/openid-configuration | jq -r .issuer
 https://container.googleapis.com/v1/projects/my-project/locations/us-central1/clusters/openai-wif
 ```
 
-你在 OpenAI Workload Identity Provider 中配置的 issuer 必须与此 issuer URL 匹配，并且与 `iss` 已投射 GKE 服务账号令牌中的 claim 匹配。
+你在 OpenAI Workload Identity Provider 中配置的 issuer 必须与此 issuer URL 以及 `iss` 所投射的 GKE 服务账号令牌中的 claim 相匹配。
 
-使用 OpenAI 期望的 audience 配置投射的服务账号令牌，并设置适合你工作负载的过期时间。OpenAI 会校验令牌的 issuer、签名、audience 和过期时间。在本示例中，令牌文件挂载到 `/var/run/secrets/tokens/token`，使用的 audience 为 `https://api.openai.com/v1`，过期时间为 3600 秒。如果投射令牌的 audience 与 OpenAI Workload Identity Provider 的 audience 匹配，你也可以使用其他 audience：
+使用 OpenAI 期望的 audience 以及适合你工作负载的过期时间来配置所投射的服务账号令牌。OpenAI 会校验令牌的 issuer、签名、audience 和过期时间。在本示例中，令牌文件挂载在 `/var/run/secrets/tokens/token`，使用的 audience 为 `https://api.openai.com/v1`，过期时间为 3600 秒。如果所投射令牌的 audience 与 OpenAI Workload Identity Provider 的 audience 一致，你也可以使用其他 audience：
 
 ```yaml
 apiVersion: v1
@@ -876,9 +877,9 @@ spec:
               expirationSeconds: 3600
 ```
 
-### 验证 token
+### 验证令牌
 
-在配置 workload identity federation 之前，请在本地解码一份示例投射的服务账号令牌并检查其 claim。从已挂载投射令牌的运行中的 pod 里取出令牌，并将其导出为 `TOKEN`:
+在配置工作负载身份联合之前，请在本地解码一份示例所投射的服务账号令牌并检查其声明。从一个已挂载该所投射令牌的运行中 Pod 里，取出该令牌并将其导出为 `TOKEN`:
 
 ```bash
 TOKEN=$(kubectl exec -n default openai-wif-app -- cat /var/run/secrets/tokens/token)
@@ -1170,6 +1171,7 @@ end
 unless Base64.urlsafe_encode64(payload, padding: false) == parts[1]
   raise "JWT payload is not valid Base64URL"
 end
+
 payload.force_encoding(Encoding::UTF_8)
 raise "JWT payload is not valid UTF-8" unless payload.valid_encoding?
 
@@ -1180,9 +1182,9 @@ puts(payload)
 ```
 
 
-此命令仅解码 JWT 负载，不会验证令牌签名。请使用本地解码器处理生产环境中的令牌，避免将生产令牌粘贴到第三方工具中。
+此命令会解码 JWT 负载，但不会验证令牌签名。生产环境中的令牌请使用本地解码器，并避免将生产令牌粘贴到第三方工具中。
 
-解码后的 GKE 投射服务账号令牌大致如下：
+解码后的 GKE 所投射服务账号令牌类似如下：
 
 ```json
 {
@@ -1201,43 +1203,43 @@ puts(payload)
 }
 ```
 
-使用解码后的负载，将你收到的令牌与 OpenAI 中配置的 issuer、audience 和映射值进行比较。大多数配置问题都可以在 `iss`, `aud`，和 `sub` 声明中看到，再交换令牌。
+使用解码后的负载，将你收到的令牌与 OpenAI 中配置的颁发者、受众和映射值进行比较。大多数配置问题都会在交换令牌之前的 `iss`, `aud`，和 `sub` 声明中体现出来。
 
-### 设置工作负载身份联合
+### 设置 workload identity federation
 
-为该 GKE issuer 在 OpenAI 中创建一个 Workload Identity Provider，然后添加一个与投射令牌中属性匹配的服务账号映射。
+在 OpenAI 中为该 GKE issuer 创建一个 Workload Identity Provider，然后添加一个服务账号映射，使其与所投射令牌中的属性相匹配。
 
-请先配置工作负载身份提供商，然后再创建服务账号映射。
+首先配置工作负载身份提供方，然后创建服务账号映射。
 
 #### 设置 Workload Identity Provider
 
-1. **创建 Workload Identity Provider。** 设置 **Name** 为唯一值,例如 `google-gke-prod`。使用 **Description**,例如 `Production GKE cluster`，以帮助管理员识别集群。
+1. **创建 Workload Identity Provider。** 设置 **Name** 为唯一值，例如 `google-gke-prod`。使用 **Description**，例如 `Production GKE cluster`，帮助管理员识别集群。
 
-2. **设置 issuer 和 audience。** 设置 **OIDC Issuer URL** 为 字段返回的 `kubectl get --raw /.well-known/openid-configuration | jq -r .issuer`。此值必须与 `iss` 声明相匹配。设置 **Audience** 为投射的服务账户令牌卷上配置的相同 audience。在本示例中，该值为 `https://api.openai.com/v1`.
+2. **设置 issuer 和 audience。** 设置 **OIDC Issuer URL** 与颁发者返回的 `kubectl get --raw /.well-known/openid-configuration | jq -r .issuer`。此值必须与投影的 GKE 服务账号令牌中的 `iss` 声明匹配。将 **Audience** 设置为投影服务账号令牌卷上配置的相同受众。在本示例中，该值为 `https://api.openai.com/v1`.
 
-3. **使用 GKE OIDC 发现。** 将 **Use uploaded JWKS for token verification** 禁用。OpenAI 使用 GKE issuer 的 OIDC 发现元数据和 JWKS 来验证投射的服务账户令牌。
+3. **使用 GKE OIDC 发现。** 将 **Use uploaded JWKS for token verification** disabled. OpenAI 使用 GKE 颁发者的 OIDC 发现元数据和 JWKS 来验证投射的服务账户令牌。
 
-4. **如果需要派生映射属性，请添加属性转换。** 例如，输入 `gke_subject` 并使用表达式 `assertion.sub` 以从主体声明中创建 `openai.gke_subject`。该仪表板应用 `openai.` 前缀。已以 `openai.` 开头的原始令牌声明会忽略其映射键， `openai.` 除非配置了匹配的转换。
+4. **如果需要派生映射属性，请添加属性转换。** 例如，输入 `gke_subject` 并使用表达式 `assertion.sub` 来创建 `openai.gke_subject`。仪表板应用 `openai.` 前缀。已经以 `openai.` 开头的原始 token claim 在用作 `openai.` 映射键时会被忽略，除非配置了匹配的转换。
 
-#### 设置服务账号映射
+#### 设置服务账户映射
 
-1. **Create a service account mapping.** 设置 **Name** to a unique value within the Workload Identity Provider, such as `default-openai-wif`。使用 **Description**,例如 `Default namespace GKE OpenAI API workload`, to explain which workload can use the mapping.
+1. **创建一个服务账号映射。** 设置 **Name** 到 Workload Identity Provider 中的一个唯一值，例如 `default-openai-wif`。使用 **Description**，例如 `Default namespace GKE OpenAI API workload`，用于说明哪些工作负载可以使用该映射。
 
-2. **匹配 GKE 服务账户的 subject。** 设置 **Key** 为 `sub` and **Value** 为 `system:serviceaccount:default:openai-wif`。对于 GKE 服务账户，subject 格式为 `system:serviceaccount:<namespace>:<service-account-name>`.
+2. **与 GKE 服务账户 subject 匹配。** 设置 **键** 为 `sub` 和 **值** 为 `system:serviceaccount:default:openai-wif`。对于 GKE 服务账户，subject 格式为 `system:serviceaccount:<namespace>:<service-account-name>`.
 
-3. **选择 OpenAI 目标。** 设置 **项目** 为拥有目标服务账号的 OpenAI 项目设置 **服务账号** 为 GKE 工作负载可使用的 OpenAI 服务账户，例如 `google-gke-prod-openai-wif`.
+3. **选择 OpenAI 目标。** 设置 **Project** 为拥有目标服务账号的 OpenAI 项目。设置 **Service account** 授予 GKE 工作负载可以使用的 OpenAI 服务账户，例如 `google-gke-prod-openai-wif`.
 
-4. **如需要，缩小 API 权限范围。** 选择合适的 **权限** 例如 `api.model.request` and `api.vector_store.read` 以进一步收窄从此映射生成的访问令牌。将权限留空可避免添加 WIF 专属的作用域限制；该令牌仍会以映射的服务账号身份进行授权。
+4. **如有必要，收窄 API 权限。** 选择合适的 **Permissions** 例如 `api.model.request` 和 `api.vector_store.read` 以进一步收窄从此映射生成的访问令牌。如果将权限留空，则避免添加 WIF 专属的作用域限制；该令牌仍会以映射后的服务账号身份进行授权。
 
-### 在代码中使用 token
+### 在代码中使用令牌
 
-配置你的 OpenAI SDK 客户端，以读取投影的 GKE 服务账号令牌并将其交换为 OpenAI 颁发的访问令牌。
+配置你的 OpenAI SDK 客户端，以读取已投影的 GKE 服务账号令牌，并将其交换为由 OpenAI 颁发的访问令牌。
 
-使用挂载的令牌路径，例如 `/var/run/secrets/tokens/token`，作为 SDK 工作负载身份联合提供者（workload identity federation provider）的主体令牌来源。SDK 会将该 GKE 令牌交换为 OpenAI 颁发的访问令牌，并使用 OpenAI 令牌对 API 请求进行身份验证。
+使用挂载的令牌路径，例如 `/var/run/secrets/tokens/token`，作为 SDK 工作负载身份联合提供方的主体令牌来源。SDK 会将该 GKE 令牌交换为由 OpenAI 颁发的访问令牌，并使用该 OpenAI 令牌来验证 API 请求。
 
-以下示例使用自定义主体令牌提供者初始化 OpenAI 客户端。该提供者会从挂载的文件路径读取投影的 GKE 服务账号令牌，并将其用作工作负载身份联合的主体令牌。
+下面的示例使用自定义主体令牌提供方初始化 OpenAI 客户端。该提供方会从挂载的文件路径读取已投影的 GKE 服务账号令牌，并将其用作工作负载身份联合的主体令牌。
 
-从 GKE 投影的服务账号令牌进行身份验证
+通过 GKE 投影的服务账号令牌进行身份验证
 
 ```javascript
 import { readFile } from "node:fs/promises";
@@ -1525,12 +1527,12 @@ puts(response.output_text)
 
 
 
-## Google Cloud best practices
+## Google Cloud 最佳实践
 
-- 为每个工作负载使用专用的 Google 服务账号。避免在不相关的服务或环境之间共享服务账号。
-- 使用工作负载身份流程，而不是长期的服务账号密钥。避免为可以使用元数据服务器身份令牌或 GKE Workload Identity 的工作负载分发和轮换 JSON 密钥文件。
-- 将身份范围限定到尽可能小的工作负载边界。为各个应用使用独立的服务账号可以提供更清晰的审计和最小权限访问。
-- 谨慎使用基于属性的映射。尽可能优先使用稳定标识符，例如服务账号 subject 声明，而不是易变的元数据。
-- 将生产项目和非生产项目分开。独立的项目可降低意外共享权限的风险，并简化审计。
-- 仅授予所需的 IAM 权限。将 Google 身份限制为工作负载所需的权限。
-- 监控服务账号的使用情况。意外的令牌交换可能表明配置漂移或工作负载遭到入侵。
+- 为每个工作负载使用专用的 Google 服务账号。避免在不同的服务或环境之间共享服务账号。
+- 使用工作负载身份流程，避免使用长期有效的服务账号密钥。对于可以使用元数据服务器身份令牌或 GKE Workload Identity 的工作负载，避免分发和轮换 JSON 密钥文件。
+- 将身份范围限定在尽可能小的工作负载边界内。为各个应用程序分别使用服务账号，可以提供更清晰的审计和最小权限访问。
+- 谨慎使用基于属性的映射。在可能的情况下，优先选择稳定的标识符（例如服务账号 subject 声明），而不是易变的元数据。
+- 将生产项目和非生产项目分开。使用不同的项目可以降低意外权限共享的风险，并简化审计。
+- 仅授予所需的 IAM 权限。将 Google 身份限制为仅具备该工作负载所需的权限。
+- 监控服务账号的使用情况。异常的令牌交换可能表明配置发生了偏移或工作负载已被攻破。

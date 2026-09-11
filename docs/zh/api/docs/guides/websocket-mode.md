@@ -1,22 +1,22 @@
 # WebSocket 模式
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 末尾追加 `.md` 。
+> 查看完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取 Markdown 版本的文档页面，请在页面 URL 末尾添加 `.md` 即可。
 
-Responses API支持 WebSocket 模式，用于长时间运行、工具调用密集的工作流。除了降低延迟外， `stream_id` 还支持 WebSocket 多路复用：只需一条到 `/v1/responses` 的持久连接，即可并行运行多个对话，并将现有对话分叉到一个新的流上。每个回合只需发送新的输入项以及 `previous_response_id`.
+Responses API 支持针对长时间运行、工具调用密集型工作流的 WebSocket 模式。除了降低延迟之外， `stream_id` 还支持 WebSocket 多路复用：通过单个持久连接到 `/v1/responses` 可以运行并行会话，并将已有会话分叉到一个新的流上。每一轮只需发送新的输入项以及 `previous_response_id`.
 
-WebSocket 模式同时兼容零数据保留（ZDR）和 `store=false`.
+WebSocket 模式同时兼容 Zero Data Retention (ZDR) 和 `store=false`.
 
-## 为什么使用 WebSocket 模式
+## 为什么要使用 WebSocket 模式
 
-当 工作流 涉及大量模型与工具之间的多轮往返（例如，智能体编码或需要重复调用工具的编排循环）时，WebSocket 模式最为实用。
+当工作流涉及大量模型-工具往返（例如智能体编码或包含重复工具调用的编排循环）时，WebSocket 模式最为有用。
 
-由于连接保持打开状态，且每一轮只发送增量输入，WebSocket 模式降低了每轮 延续 的开销，并改善了长链路中的端到端延迟。对于工具调用超过 20 次的批量运行，我们观察到端到端执行速度最高可提升约 40%。
+由于连接保持打开状态，每一轮只发送增量输入，WebSocket 模式减少了每轮延续开销，并降低了长链路中的端到端延迟。对于包含 20 次以上工具调用的运行，我们观察到端到端执行速度最高可提升约 40%。
 
 ## 连接并创建响应
 
-使用以下命令安装 WebSocket 依赖 `pip install "openai[realtime]>=3.8.0"` 适用于 Python， `npm install openai@^7.10.0 ws` 适用于 JavaScript，或 `gem install openai async-websocket` 适用于 Ruby。
+通过以下命令安装 WebSocket 依赖 `pip install "openai[realtime]>=3.8.0"` 用于 Python， `npm install openai@^7.10.0 ws` 用于 JavaScript，或 `gem install openai async-websocket` 用于 Ruby。
 
-在 WebSocket 模式下，每一轮通过从客户端发送 `response.create` 事件开始。该载荷与常规的 [Responses 创建请求体](https://developers.openai.com/api/reference/resources/responses/methods/create)，相同，只是不会使用 `stream` 和 `background` 等传输相关的字段。
+在 WebSocket 模式下，每一轮开始时由客户端发送一个 `response.create` 事件。负载与标准的 [Responses 创建请求体](https://developers.openai.com/api/reference/resources/responses/methods/create)，一致，但不会使用 `stream` 和 `background` 等传输相关字段。
 
 ```javascript
 import OpenAI from "openai";
@@ -112,19 +112,27 @@ end
 def print_response(response)
   response.fetch("output").each do |item|
     next unless item["type"] == "message"
+
     item.fetch("content").each { |part| puts(part.fetch("text")) if part["type"] == "output_text" }
   end
 end
 
 endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
-headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+headers = { "Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}" }
 Sync do |task|
   task.with_timeout(120) do
     Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
-      connection.write(JSON.generate(
-        type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
-        input: [{role: "user", content: "Find fizz_buzz()"}], tools: []
-      ))
+      connection.write(
+        JSON.generate(
+          type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
+          input: [
+            {
+              role: "user",
+              content: "Find fizz_buzz()"
+            }
+          ], tools: []
+        )
+      )
       connection.flush
       print_response(wait_for_response(connection))
     end
@@ -133,16 +141,16 @@ end
 ```
 
 
-客户端可以选择性地通过发送 `response.create` 来预热 `generate: false`。请求状态。当你已经知道即将发送的工具、指令和/或自定义消息时，这非常有用。 `generate: false` 不会返回模型输出，但会准备请求状态，以便下一轮生成的对话可以更快启动。预热请求会返回一个响应 ID，你可以在后续的 `previous_response_id`，中通过该 ID 进行链式调用，包括在响应链中后续的轮次。下一节将介绍如何使用 `previous_response_id` 和增量输入来延续会话。
+客户端可以选择性地通过发送 `response.create` 来 `generate: false`。预热请求状态。当你已经知道即将发送的工具、指令和/或自定义消息时，这非常有用。 `generate: false` 不会返回模型输出，但会准备请求状态，以便下一轮生成能够更快开始。预热请求会返回一个响应 ID，你可以通过 `previous_response_id`，在响应链中的后续轮次中基于该 ID 继续会话。下一节将介绍如何使用 `previous_response_id` 和增量输入来延续会话。
 
 ## 使用增量输入继续
 
-要在响应仍在进行时添加用户指令，请使用 [中途引导](https://developers.openai.com/api/docs/guides/steering)。引导会保留已完成的工作，并将新指令包含在一次延续中。请使用以下 `response.create` 模式来处理常规的回合间延续和工具结果。
+若要在响应仍在进行时添加用户指令，请使用 [中途引导](https://developers.openai.com/api/docs/guides/steering)。引导会保留已完成的工作，并在一次延续中包含新的指令。使用以下 `response.create` 模式来处理普通的轮次间延续和工具结果。
 
-要继续运行，请再发送一个 `response.create` ，并附加：
+若要继续一次运行，请再发送一个 `response.create` ，内容为：
 
-- `previous_response_id` 设置为上一个响应 ID。
-- `input` 仅包含新项（例如，工具输出和下一条用户消息）。
+- `previous_response_id` 设置为上一次响应的 ID。
+- `input` 仅包含新条目（例如工具输出和下一条用户消息）。
 
 ```javascript
 import OpenAI from "openai";
@@ -325,42 +333,71 @@ end
 def print_response(response)
   response.fetch("output").each do |item|
     next unless item["type"] == "message"
+
     item.fetch("content").each { |part| puts(part.fetch("text")) if part["type"] == "output_text" }
   end
 end
 
-tools = [{
-  type: "function", name: "get_test_results", description: "Read the demo test results.",
-  parameters: {type: "object", properties: {}, required: [], additionalProperties: false}, strict: true
-}]
+tools = [
+  {
+    type: "function",
+    name: "get_test_results",
+    description: "Read the demo test results.",
+    parameters: {
+      type: "object",
+      properties: {},
+      required: [],
+      additionalProperties: false
+    },
+    strict: true
+  }
+]
 
 endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
-headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+headers = { "Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}" }
 Sync do |task|
   task.with_timeout(120) do
     Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
-      connection.write(JSON.generate(
-        type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
-        input: "Find the failing test and suggest a fix.", tools: tools,
-        tool_choice: {type: "function", name: "get_test_results"}, parallel_tool_calls: false
-      ))
+      connection.write(
+        JSON.generate(
+          type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
+          input: "Find the failing test and suggest a fix.", tools: tools,
+          tool_choice: {
+            type: "function",
+            name: "get_test_results"
+          }, parallel_tool_calls: false
+        )
+      )
       connection.flush
       response = wait_for_response(connection)
       call = response.fetch("output").find { |item| item["type"] == "function_call" }
       unless call && call["name"] == "get_test_results" && JSON.parse(call.fetch("arguments")) == {}
         raise "Expected a get_test_results call with no arguments"
       end
+
       # Demo data. Replace this with your test runner.
-      result = {test: "test_fizz_buzz", failure: 'Expected "FizzBuzz" for 15, got "Fizz".'}
-      connection.write(JSON.generate(
-        type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
-        previous_response_id: response.fetch("id"),
-        input: [
-          {type: "function_call_output", call_id: call.fetch("call_id"), output: JSON.generate(result)},
-          {role: "user", content: "Now optimize it."}
-        ],
-        tools: tools, tool_choice: "none"
-      ))
+      result = {
+        test: "test_fizz_buzz",
+        failure: 'Expected "FizzBuzz" for 15, got "Fizz".'
+      }
+      connection.write(
+        JSON.generate(
+          type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
+          previous_response_id: response.fetch("id"),
+          input: [
+            {
+              type: "function_call_output",
+              call_id: call.fetch("call_id"),
+              output: JSON.generate(result)
+            },
+            {
+              role: "user",
+              content: "Now optimize it."
+            }
+          ],
+          tools: tools, tool_choice: "none"
+        )
+      )
       connection.flush
       print_response(wait_for_response(connection))
     end
@@ -369,32 +406,32 @@ end
 ```
 
 
-## 延续机制的工作原理
+## 延续的工作原理
 
-WebSocket 模式使用与 HTTP 模式相同的 `previous_response_id` 链式语义，但它在活动 socket 上增加了一条更低延迟的 延续 路径。
+WebSocket 模式使用与 HTTP 模式相同的 `previous_response_id` 链接语义，但在该活跃 socket 上增加了一条低延迟的延续路径。
 
-在活动 WebSocket 连接上，服务会将最近的 previous-response 状态保存在一个连接本地的内存缓存中。当你使用 `stream_id`，时，每个 lane 会保留其最新的已缓存响应，因此在该 lane 中从最新响应继续会比较快，因为服务可以复用连接本地的状态。由于服务仅在内存中保留 previous-response 状态而不会将其写入磁盘，因此你可以以兼容 `store=false` 和 Zero Data Retention（ZDR）的方式使用 WebSocket 模式。
+在活跃的 WebSocket 连接上，服务会在连接本地的内存缓存中保留最近的 previous-response 状态。当你使用 `stream_id`，时，每个 lane 会保留其最新的缓存响应，因此从该 lane 中最新响应进行延续会很快，因为服务可以复用连接本地的状态。由于服务仅在内存中保留 previous-response 状态而不会写入磁盘，因此你可以在与 `store=false` 和 Zero Data Retention (ZDR) 兼容的方式下使用 WebSocket 模式。
 
-如果某个 `previous_response_id` 不在内存缓存中，其行为取决于你是否存储响应：
+如果某个 `previous_response_id` 不在内存缓存中，则行为取决于你是否存储响应：
 
-- 使用 `store=true`，服务可以在可用时从持久化状态中恢复旧的响应 ID。延续仍然可以工作，但会失去内存中的延迟优势。
-- 使用 `store=false` （包括 ZDR），则没有持久化回退。如果该 ID 未缓存，请求将返回 `previous_response_not_found`.
+- 在 `store=true`，的情况下，服务在可用时可能会从持久化状态中恢复较早的 response ID。延续仍可工作，但会失去内存中的延迟优势。
+- 在 `store=false` （包括 ZDR），则没有持久化回退机制。如果该 ID 未被缓存，请求将返回 `previous_response_not_found`.
 
-如果同泳道的 延续 返回一个 `4xx` 或 `5xx`，服务会将所引用的内容从 `previous_response_id` 连接本地缓存中逐出。返回错误的跨泳道分叉会保留共享父项，以便源泳道能够继续。
+如果同一通道的延续返回 a `4xx` 或 `5xx`，服务会将引用的内容从连接本地缓存中淘汰。 `previous_response_id` 返回错误的跨通道分叉会保留共享的父级，以便源通道可以继续。
 
 ## 压缩与创建新响应
 
-如果你正在使用压缩，有两种不同的 延续 模式：
+如果使用压缩，则存在两种不同的延续模式：
 
 ### 服务端压缩（`context_management`)
 
-当你启用服务端压缩（`context_management` 来预热 `compact_threshold`）时，压缩会在正常的 `/responses` 生成过程中进行。在 WebSocket 模式下，你可以像平常一样继续：发送下一个 `response.create` ，并附带最新的 `previous_response_id` ，且只包含新增的输入项。
+当你启用 服务端 压缩（`context_management` 来 `compact_threshold`），压缩会在正常 `/responses` 生成期间进行。在 WebSocket 模式下，你按往常一样继续：发送下一个 `response.create` ，并附带最新的 `previous_response_id` 以及仅新的输入项。
 
-### 独立使用 `/responses/compact`
+### Standalone `/responses/compact`
 
-独立式 [`/responses/compact` 端点](https://developers.openai.com/api/reference/resources/responses/methods/compact) 返回新的压缩后输入窗口，而不是响应 ID。压缩后，使用压缩后的窗口在 WebSocket 连接上创建新响应 `input` （以及后续的用户/工具项）。
+独立 [`/responses/compact` 端点](https://developers.openai.com/api/reference/resources/responses/methods/compact) 会返回一个新的已压缩输入窗口，而不是响应 ID。压缩完成后，在你的 WebSocket 连接上以该压缩窗口作为 `input` (以及后续的 user/tool 条目)创建一个新的响应。
 
-省略 `previous_response_id` 或将其设置为 `null`。原样传入压缩后的输出；不要裁剪返回的窗口。
+省略 `previous_response_id` 或将其设置为 `null`. 原样传入压缩后的输出；不要裁剪返回的窗口。
 
 ```javascript
 import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
@@ -509,6 +546,7 @@ end
 def print_response(response)
   response.fetch("output").each do |item|
     next unless item["type"] == "message"
+
     item.fetch("content").each { |part| puts(part.fetch("text")) if part["type"] == "output_text" }
   end
 end
@@ -516,20 +554,30 @@ end
 client = OpenAI::Client.new
 compacted = client.responses.compact(
   model: "gpt-6-astra",
-  input: [{role: :user, content: "Find the failing test."}]
+  input: [
+    {
+      role: :user,
+      content: "Find the failing test."
+    }
+  ]
 )
 next_input = compacted.output.map(&:to_h)
-next_input << {role: :user, content: "Continue from here."}
+next_input << {
+  role: :user,
+  content: "Continue from here."
+}
 
 endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
-headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+headers = { "Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}" }
 Sync do |task|
   task.with_timeout(120) do
     Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
-      connection.write(JSON.generate(
-        type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
-        input: next_input, tools: []
-      ))
+      connection.write(
+        JSON.generate(
+          type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
+          input: next_input, tools: []
+        )
+      )
       connection.flush
       print_response(wait_for_response(connection))
     end
@@ -540,12 +588,12 @@ end
 
 ## 并行运行对话
 
-你可以使用以下参数在同一连接上保持并行的会话 `stream_id` 参数。使用不同的 `response.create` 事件背靠背地发送 `stream_id` 值即可。服务器可以在一个连接上并发运行这些事件。它们的事件可能会交错，因此请保持单一的读取循环，并按以下字段路由每个事件： `stream_id`.
+你可以在同一连接上使用以下参数维护并行对话 `stream_id` 参数。发送独立的 `response.create` 事件，使其具有不同的 `stream_id` 值并连续发送。服务器可以在同一连接上并发运行这些事件。它们的事件可以交错，因此请使用一个读取循环并按以下方式路由每个事件 `stream_id`.
 
-一个 `stream_id` 命名了同一 WebSocket 连接上的一条有序通道。请保持 `stream_id` 和 `previous_response_id` 彼此独立：
+一个 `stream_id` 为一个 WebSocket 连接上的有序通道命名。请保持 `stream_id` 和 `previous_response_id` 分离：
 
-- `stream_id` 控制事件的流向，以及请求以先进先出顺序运行的顺序。
-- `previous_response_id` 控制会话的谱系关系。
+- `stream_id` 控制事件的去向以及哪些请求按先进先出顺序运行。
+- `previous_response_id` 控制会话的传承关系。
 
 这种分离带来了两种有用的模式。
 
@@ -555,18 +603,18 @@ one WebSocket connection
 └─ stream_id="research"  list deployment risks
 ```
 
-具有相同 `stream_id` 的请求保持先进先出，且互不重叠。具有不同 `stream_id` 值的请求可以并发执行。
+具有相同 `stream_id` 的请求保持先进先出，且互不重叠。不同 `stream_id` 值的请求可以并发运行。
 
 ### 每个连接的限制
 
-- 一个连接在命名和默认通道中最多可以同时有 16 个进行中的响应。连接接受更多 `response.create` 事件并将其排队，直到当前响应完成。
-- 一个连接最多接受 32 个不同的命名 `stream_id` 值。隐式的默认通道不计入此命名流限制。达到上限后，请复用现有 `stream_id` ，或新建一个连接。
+- 一个连接在命名通道和默认通道上最多可以同时有 16 个处于进行中状态的响应。连接会接收更多 `response.create` 事件并将其加入队列，直到某个进行中的响应结束。
+- 一个连接最多接受 32 个不同的命名 `stream_id` 值。隐式的默认通道不计入此命名流限制。达到上限后请复用现有 `stream_id` 或新建一个连接。
 
 ### 将对话分叉到新流
 
-要从已完成的响应分叉，请将其 ID 作为 `previous_response_id` 传入，并附带新的 `stream_id`。在原响应仍可用期间，新流会继承其上下文，并且原流可以继续进行。分叉开始后，两个分支可以并发运行，因为它们使用不同的流 ID。
+要从已完成的响应进行分支，将其 ID 作为 `previous_response_id` 与新的 `stream_id`。一起发送。在该响应仍可用时，新流将继承其上下文，并且原始流可以继续运行。分支开始后，两个分支可以并发运行，因为它们使用不同的流 ID。
 
-使用 `store=false` （包括 ZDR）时，跨通道分叉依赖于父响应保留在连接本地缓存中。如果在源通道推进或失败时，分叉进入队列，则父响应可能在分叉开始前被逐出，分叉会返回 `previous_response_not_found`。在推进源通道之前，请等待分叉通道发出 `response.in_progress` ，或者将 `previous_response_id` 设置为 `null` 并重放完整的输入上下文。
+使用 `store=false` （包括 ZDR）时，跨通道分支依赖于父响应保留在连接本地缓存中。如果在源通道推进或失败时分支进入队列，父响应可能会在分支开始前被驱逐，此时分支将返回 `previous_response_not_found`。在推进源通道之前，等待分支通道发出 `response.in_progress` ，或使用 `previous_response_id` 设置为 `null` 并重放完整的输入上下文。
 
 ```text
 main:   resp_1 ──▶ resp_2 ──▶ resp_3
@@ -574,7 +622,7 @@ main:   resp_1 ──▶ resp_2 ──▶ resp_3
 critic:                 resp_4 ──▶ resp_5
 ```
 
-复用现有的 `stream_id` 而不带 `previous_response_id` 会启动一个新响应，而不会延续对话。
+复用同一个 `stream_id` 在不 `previous_response_id` 时，会开启一个新响应，而不是继续该对话。
 
 关键调用如下所示：
 
@@ -831,8 +879,16 @@ require "json"
 
 def send_create(connection, stream_id, text, previous_response_id = nil)
   payload = {
-    type: "response.create", stream_id: stream_id, model: "gpt-6-astra", store: false,
-    input: [{role: "user", content: text}]
+    type: "response.create",
+    stream_id: stream_id,
+    model: "gpt-6-astra",
+    store: false,
+    input: [
+      {
+        role: "user",
+        content: text
+      }
+    ]
   }
   payload[:previous_response_id] = previous_response_id if previous_response_id
   connection.write(JSON.generate(payload))
@@ -845,6 +901,7 @@ def read_event(connection)
   if ["response.failed", "response.incomplete", "error"].include?(event["type"])
     raise "Response failed: #{JSON.generate(event)}"
   end
+
   event
 end
 
@@ -854,13 +911,14 @@ def drain_responses(connection, lanes, latest_ids)
     event = read_event(connection)
     lane = event["stream_id"]
     next unless remaining.include?(lane) && event["type"] == "response.completed"
+
     latest_ids[lane] = event.fetch("response").fetch("id")
     remaining.delete(lane)
   end
 end
 
 endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
-headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+headers = { "Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}" }
 Sync do |task|
   task.with_timeout(120) do
     Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
@@ -884,29 +942,29 @@ end
 ```
 
 
-一个 `stream_id` 必须为 1–256 个字符，且只能包含字母、数字、下划线（`_`）、连字符（`-`）和句点（`.`）。仅在 WebSocket `response.create` 事件中使用它；不要在 HTTP `POST /v1/responses`.
+一个 `stream_id` 必须为 1–256 个字符，且只能包含字母、数字、下划线（`_`）、连字符（`-`）和句点（`.`）。仅在 WebSocket `response.create` 事件中使用它；不要将其包含在 HTTP `POST /v1/responses`.
 
-对于命名流，服务端事件包含匹配的 `stream_id`，包括终止事件和请求范围内的错误。
+对于已命名的流，server 事件包含匹配的 `stream_id`，包括终止事件和请求范围内的错误。
 
-如果省略 `stream_id`，请求将使用隐式默认通道，其事件不包含 `stream_id`。默认通道在排序和并发规则上与命名流相同。空字符串不是有效的 `stream_id`；省略该字段以选择默认通道。
+如果省略 `stream_id`，则请求使用隐式默认通道，其事件不包含 `stream_id`。默认通道在其他方面遵循与已命名流相同的排序和并发规则。空字符串不是有效的 `stream_id`；请省略该字段以选择默认通道。
 
 ## 连接行为与限制
 
-- 每个响应中的事件遵循现有的 Responses 流式事件模型。不同通道的事件可以交错出现。
-- 具有相同 `stream_id` 运行顺序的请求采用先进先出方式且不会重叠，不同通道上的请求可以并发运行。
-- 连接最长持续 60 分钟。达到上限时请重新连接。
+- 每个响应内的事件遵循现有的 Responses 流式事件模型。不同 lane 的事件可以交错出现。
+- 具有相同 `stream_id` 的请求按先进先出顺序运行，且不会重叠。不同 lane 上的请求可以并发运行。
+- 连接最多持续 60 分钟。在达到上限时进行重连。
 
 ## 重连与恢复
 
-当连接关闭（或达到 60 分钟上限）时，其连接本地缓存会从所有 lane 中消失。请打开一个新的 WebSocket 连接，并使用以下任一模式来恢复各个 lane：
+当连接关闭（或达到 60 分钟限制）时，其连接级本地缓存会从每个通道中消失。请打开一个新的 WebSocket 连接，并使用以下模式之一恢复每个通道：
 
-1. 如果你已存储了先前的响应（`store=true`）并拥有有效的响应 ID，则使用以下方式延续该会话线索 `previous_response_id` 以及新的输入项。
-2. 如果你无法延续某条会话线索（例如， `store=false`/ZDR 或 `previous_response_not_found`），请通过将 `previous_response_id` 设置为 `null` （或省略该参数）并发送该会话线索下一轮所需的完整输入上下文来开启新响应。
-3. 如果你使用 `/responses/compact`，对上下文进行了压缩，请将返回的压缩后窗口作为 `input` 该新响应的基础，然后追加最新的用户/工具项。
+1. 如果你已存储先前的 response (`store=true`) 并拥有有效的 response ID，请使用 `previous_response_id` 以及新的输入项来延续该会话线。
+2. 如果你无法延续某个会话线（例如， `store=false`/ZDR 或 `previous_response_not_found`)，请通过将 `previous_response_id` 设置为 `null` （或省略它）并发送该会话线下一轮的完整输入上下文来开始新的 response。
+3. 如果你使用 `/responses/compact`，压缩了上下文，请将返回的压缩窗口作为 `input` 该新 response 的基础，然后追加最新的 user/tool 项。
 
 ## 需要处理的错误
 
-当服务端可以将错误关联到某个具名通道时，错误事件会包含 `stream_id`。在请求范围内的错误之后，其他通道可以继续。
+当服务端能够将错误关联到某个具名 lane 时，错误事件会包含 `stream_id`。在请求范围内的错误发生后，其他 lane 可以继续执行。
 
 `previous_response_not_found`
 

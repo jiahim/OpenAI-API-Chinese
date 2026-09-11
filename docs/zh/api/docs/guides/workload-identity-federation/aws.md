@@ -1,39 +1,39 @@
 # 为 AWS 配置工作负载身份联合
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
-在以下任一场景中，将 AWS 用作工作负载身份提供方：
+在以下任一场景中，可使用 AWS 作为工作负载身份提供方：
 
-- **AWS 出站身份联合：** 将由 AWS STS 颁发的 OIDC JWT 从 `GetWebIdentityToken` 换取一个短时效的 OpenAI 访问令牌。
-- **Amazon EKS：** 将投射的 Amazon EKS 服务账号令牌换取为短时效的 OpenAI 访问令牌。
+- **AWS 出站身份联合：** 将由 AWS STS 颁发的 OIDC JWT 兑换为 `GetWebIdentityToken` 短期有效的 OpenAI 访问令牌。
+- **Amazon EKS：** 将投射的 Amazon EKS 服务账号令牌兑换为短期有效的 OpenAI 访问令牌。
 
-对于 Codex，使用本页获取并检查 AWS token。然后 [配置 Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) 将该 token 写入文件并指向 Codex。本页中的服务账号映射和 SDK 示例适用于 OpenAI API。
+对于 Codex，使用此页面获取并检查 AWS token。然后 [配置 Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) 将该 token 写入文件并指向 Codex。本页面上的服务账号映射与 SDK 示例适用于 OpenAI API。
 
-OpenAI 支持来自出站身份联合的 AWS 颁发的 OIDC JWT，以及
-  Amazon EKS 颁发的 Kubernetes projected service account token。OpenAI 不
+OpenAI 支持来自出站身份联合的 AWS 签发的 OIDC JWT，以及
+  Amazon EKS 签发的 Kubernetes projected service account token。OpenAI 不
   支持 SigV4 签名请求或 AWS STS 临时访问密钥凭证
-  作为 workload identity federation 的 subject token。
+  作为 workload identity federation subject token。
 
 
 
 ## AWS 出站身份联合
 
-AWS 出站身份联合让 AWS 主体可向 AWS STS 请求已签名的 OIDC JWT，并将该令牌出示给外部服务。在 OpenAI 工作负载身份联合中，AWS 颁发的 JWT 是 OpenAI 在签发 OpenAI 访问令牌之前进行验证的 subject token。
+AWS 出站身份联合允许 AWS 主体从 AWS STS 请求已签名的 OIDC JWT，然后将该令牌出示给外部服务。在 OpenAI 工作负载身份联合中，AWS 颁发的 JWT 是 OpenAI 在签发 OpenAI 访问令牌之前进行验证的 subject token。
 
-### 配置 AWS 出站身份联合
+### 设置 AWS 出站身份联合
 
-为将颁发令牌的那个 AWS 账户启用出站身份联合。设置细节请参阅 AWS 指南中的 [出站身份联合入门](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_outbound_getting_started.html).
+为将颁发令牌的目标 AWS 账户启用出站身份联合。有关设置详情，请参阅 AWS 指南 [出站身份联合入门](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_outbound_getting_started.html).
 
 ```bash
 aws iam enable-outbound-web-identity-federation
 ```
 
-记录由 AWS 返回的该账户专属的签发者 URL。你将把该值配置为 OpenAI 工作负载身份提供商的签发者，并且它必须与 `iss` AWS 所颁发令牌中的声明一致。
+记录 AWS 返回的账户特定 issuer URL。你需要将该值配置为 OpenAI Workload Identity Provider 的 issuer，并且它必须与 `iss` AWS 颁发的令牌中的 claim 匹配。
 
 AWS STS `GetWebIdentityToken` API 在 STS 全局
-  端点上不可用。请配置 AWS CLI 或 SDK 使用区域 STS 端点。
+  endpoint 上不可用。请将 AWS CLI 或 SDK 配置为使用区域 STS endpoint。
 
-授予工作负载调用 `sts:GetWebIdentityToken`。的权限。在 IAM 中限制受众和最长令牌有效期，以便该 AWS 主体只能为 OpenAI 签发令牌。此示例允许为受众 `https://api.openai.com/v1` 签发最长有效期为 300 秒的令牌：
+授予该工作负载调用 `sts:GetWebIdentityToken`。的权限。在 IAM 中限制 audience 和最长 token 有效期，使 AWS principal 只能签发用于 OpenAI 的 token。下面的示例允许 audience 为 `https://api.openai.com/v1` 且最长有效期为 300 秒的 token：
 
 ```json
 {
@@ -56,7 +56,7 @@ AWS STS `GetWebIdentityToken` API 在 STS 全局
 }
 ```
 
-使用将在 OpenAI 工作负载身份提供商上配置的相同受众,请求 AWS 颁发的 OIDC 令牌。使用 `ES384` ,除非你的环境要求 `RS256` 兼容性。
+向 AWS 请求一个 OIDC token，使用与 OpenAI Workload Identity Provider 上配置的相同的 audience。可使用 `ES384` ，除非你的环境要求 `RS256` 兼容性。
 
 ```bash
 TOKEN=$(aws sts get-web-identity-token \
@@ -72,7 +72,7 @@ export TOKEN
 
 ### 验证 AWS 颁发的令牌
 
-在配置工作负载身份联合之前，将 AWS 颁发的令牌导出为 `TOKEN`，然后在本地运行以下脚本以检查其声明：
+在配置工作负载身份联合之前，将 AWS 颁发的令牌导出为 `TOKEN`，然后在本地运行此脚本以检查其声明：
 
 ```javascript
 const parts = process.env.TOKEN?.split(".") ?? [];
@@ -357,6 +357,7 @@ end
 unless Base64.urlsafe_encode64(payload, padding: false) == parts[1]
   raise "JWT payload is not valid Base64URL"
 end
+
 payload.force_encoding(Encoding::UTF_8)
 raise "JWT payload is not valid UTF-8" unless payload.valid_encoding?
 
@@ -367,9 +368,9 @@ puts(payload)
 ```
 
 
-此命令在验证令牌签名的情况下解码 JWT 负载。对生产令牌使用本地解码器，并避免将生产令牌粘贴到第三方工具中。
+此命令解码 JWT 负载但不验证令牌签名。生产环境的令牌请使用本地解码器，并避免将生产令牌粘贴到第三方工具中。
 
-解码后的 AWS 颁发 OIDC 令牌类似于：
+解码后的 AWS 颁发 OIDC 令牌类似如下：
 
 ```json
 {
@@ -394,52 +395,52 @@ puts(payload)
 }
 ```
 
-并非每个 AWS 颁发的令牌都包含每个 AWS 特定的声明。以下中的声明 `https://sts.amazonaws.com/` 取决于调用主体、会话上下文和请求标签。
+并非每个 AWS 颁发的令牌都包含所有 AWS 特定的声明。以下 `https://sts.amazonaws.com/` 下的声明取决于调用主体、会话上下文和请求标签。
 
-验证你计划在 OpenAI 中配置的声明：
+请确认你计划在 OpenAI 中配置的声明：
 
-- `iss`: 必须与OpenAI Workload Identity Provider 中配置的 AWS 账户特定 issuer URL 相匹配。
-- `aud`: 必须匹配 `GetWebIdentityToken` 受众以及OpenAI Workload Identity Provider 受众。
-- `sub`: 标识请求该令牌时使用的 IAM 主体 ARN。建议匹配完全一致的角色 ARN。
-- AWS 相关声明：在匹配账户、组织、principal tag 或 request tag 值之前，请以解码后的令牌作为唯一可信来源。
+- `iss`: 必须与在 OpenAI Workload Identity Provider 中配置的 AWS 账户特定 issuer URL 一致。
+- `aud`: 必须与 `GetWebIdentityToken` audience 和 OpenAI Workload Identity Provider audience 一致。
+- `sub`: 标识请求该令牌的 IAM principal ARN。建议匹配精确的角色 ARN。
+- AWS 特有的声明：在匹配账户、组织、principal tag 或 request tag 的值之前，请将解码后的令牌作为真实来源。
 
-使用解码后的负载，将你收到的令牌与在 OpenAI 中配置的 issuer、audience 和 mapping 值进行比较。大多数配置问题都可以在 `iss`, `aud`、和 `sub` 声明中看到，然后你再去交换令牌。
+使用解码后的负载，将你收到的令牌与 OpenAI 中配置的发行方、受众和映射值进行比较。大多数配置问题在以下内容中可见 `iss`, `aud`，以及 `sub` 声明中，在交换令牌前请先核对。
 
 ### 设置工作负载身份联合
 
-在 OpenAI 中为 AWS 账户签发方创建一个 Workload Identity Provider，然后添加一个与 AWS 签发的令牌中稳定声明相匹配的服务账户映射。
+在 OpenAI 中为 AWS 账户颁发者创建一个工作负载身份提供者，然后添加一个与 AWS 颁发的令牌中的稳定声明相匹配的服务账户映射。
 
-先配置 Workload Identity Provider，然后创建服务账户映射。
+先配置工作负载身份提供者，然后再创建服务账户映射。
 
 #### 设置 Workload Identity Provider
 
-1. **创建 Workload Identity Provider。** 设置 **Name** 为一个唯一值,例如 `aws-outbound-prod`. 使用 **Description**,例如 `Production AWS outbound identity federation workloads`，以帮助管理员识别该 provider。
+1. **创建 Workload Identity Provider。** 将 **Name** 设置为唯一值，例如 `aws-outbound-prod`。使用 **Description**，例如 `Production AWS outbound identity federation workloads`，以帮助管理员识别该提供程序。
 
-2. **设置 issuer 和 audience。** 设置 **OIDC Issuer URL** 到启用出站身份联合时返回的 AWS 账户特定 issuer URL。此值必须与令牌的 `iss` claim 匹配。将 **Audience** 设置为传递给 `GetWebIdentityToken`。的相同 audience。在本例中，该值为 `https://api.openai.com/v1`.
+2. **设置 issuer 和 audience。** 将 **OIDC Issuer URL** 设置为启用出站身份联合时返回的 AWS 账户特定的 issuer URL。此值必须与令牌中的 `iss` 声明匹配。将 **Audience** 设置为传递给 `GetWebIdentityToken`。的相同 audience。在本示例中，该值为 `https://api.openai.com/v1`.
 
-3. **使用 AWS OIDC 发现。** 将 **Use uploaded JWKS for token verification** 禁用。OpenAI 使用 AWS issuer 的 OIDC 发现元数据和 JWKS 来验证 AWS 颁发的令牌。
+3. **使用 AWS OIDC 发现。** 将 **Use uploaded JWKS for token verification** 保持禁用。OpenAI 使用 AWS issuer 的 OIDC 发现元数据和 JWKS 来验证 AWS 颁发的令牌。
 
-4. **仅在需要派生映射属性时才添加属性转换。** 原始令牌匹配支持顶级标量声明，例如 `sub`, `aud`，以及 `iss`。AWS 特定的命名空间声明嵌套在 `https://sts.amazonaws.com/`，下，因此在映射中使用派生属性之前需要使用 CEL 方括号表示法创建它们。例如，输入 `aws_environment` ，表达式为 `assertion["https://sts.amazonaws.com/"]["principal_tags"]["environment"]` 以创建 `openai.aws_environment` ，该属性来自上面解码的令牌示例。在使用嵌套声明路径之前，请先在示例令牌中验证它；如果某个转换无法求值，映射解析将失败。已经以 `openai.` 开头的原始令牌声明将作为 `openai.` 映射键被忽略，除非配置了匹配的转换。
+4. **仅当你需要派生映射属性时，才添加属性转换。** 原始令牌匹配支持顶层标量声明，例如 `sub`, `aud`，以及 `iss`。AWS 专属命名空间的声明嵌套在 `https://sts.amazonaws.com/`，因此在使用它们进行映射之前，需要先使用 CEL 方括号表示法创建派生属性。例如，输入 `aws_environment` 并使用表达式 `assertion["https://sts.amazonaws.com/"]["principal_tags"]["environment"]` 来创建 `openai.aws_environment` ，根据上文解码后的令牌示例。在使用前，请在示例令牌中验证嵌套声明路径；如果某个转换无法求值，映射解析将失败。原始令牌声明中已以 `openai.` 开头的部分将被忽略，不会用于 `openai.` 映射键，除非配置了匹配的转换。
 
 #### 设置服务账户映射
 
-1. **创建一个服务账号映射。** 设置 **Name** 设置为 Workload Identity Provider 内唯一的值，例如 `aws-role-openai-wif`. 使用 **Description**,例如 `Production AWS role for OpenAI API workload`，用于说明哪些工作负载可以使用该映射。
+1. **创建服务账号映射。** 将 **Name** 为 Workload Identity Provider 内唯一的值，例如 `aws-role-openai-wif`。使用 **Description**，例如 `Production AWS role for OpenAI API workload`，用于说明哪些工作负载可以使用该映射。
 
-2. **匹配 AWS 主体。** 设置 **Key** 为 `sub` ，并将 **Value** 设置为解码令牌中的 IAM 主体 ARN，例如 `arn:aws:iam::123456789012:role/OpenAIWifRole`。精确匹配 `sub` 声明可为 AWS 出站身份联合提供最强的隔离。
+2. **匹配 AWS 主体。** 将 **Key** 为 `sub` ， **Value** 为解码后令牌中的 IAM 主体 ARN，例如 `arn:aws:iam::123456789012:role/OpenAIWifRole`。精确匹配 `sub` 声明可为 AWS 出站身份联合提供最强的隔离。
 
-3. **根据需要添加额外的声明匹配。** 你可以匹配任意可用的标量声明或转换后的属性。例如，如果需要额外的信任边界，可以使用源自 AWS 账户、组织、主体标签或请求标签声明的转换后属性。
+3. **根据需要添加其他声明匹配。** 你可以匹配任何可用的标量声明或转换后的属性。例如，如果需要额外的信任边界，可以使用基于 AWS 账号、组织、主体标签或请求标签声明派生的转换后属性。
 
-4. **选择 OpenAI 目标。** 设置 **Project** 设置为拥有目标服务账号的 OpenAI 项目。将 **Service account** 设置为 AWS 工作负载可以使用的 OpenAI 服务账号，例如 `aws-outbound-prod-openai-wif`.
+4. **选择 OpenAI 目标。** 将 **Project** 为拥有目标服务账号的 OpenAI 项目。将 **Service account** 设置为 AWS 工作负载可使用的 OpenAI 服务账号，例如 `aws-outbound-prod-openai-wif`.
 
-5. **根据需要收窄 API 权限。** 选择合适的 **权限** 例如 `api.model.request` ，并将 `api.vector_store.read` 以进一步收窄从此映射中生成的访问令牌。保持权限为空可避免添加 WIF 专属的作用域限制；该令牌仍会以映射后的服务帐号身份进行授权。
+5. **根据需要收紧 API 权限。** 选择适当的 **Permissions** such as `api.model.request` ， `api.vector_store.read` 以进一步收窄从此映射生成的访问令牌的范围。保持 permissions 为空可避免添加 WIF 专属的作用域限制；该令牌仍会以所映射的服务账号身份进行授权。
 
-### 在代码中使用令牌
+### 在代码中使用该 token
 
-配置你的 OpenAI SDK 客户端，以向 AWS STS 请求 AWS 颁发的 OIDC 令牌，并将其兑换为 OpenAI 颁发的访问令牌。
+配置你的 OpenAI SDK 客户端，从 AWS STS 获取由 AWS 颁发的 OIDC 令牌，并将其交换为 OpenAI 颁发的访问令牌。
 
-设置 `OPENAI_WIF_AUDIENCE` 为在 OpenAI Workload Identity Provider 上配置的相同受众。subject token provider 会以该受众调用 AWS STS `GetWebIdentityToken` ，将 AWS 颁发的 JWT 作为 subject token 返回，然后 OpenAI SDK 将其兑换为 OpenAI 颁发的访问令牌。
+设置 `OPENAI_WIF_AUDIENCE` 为在 OpenAI Workload Identity Provider 上配置的相同受众。主体令牌提供程序会使用该受众调用 AWS STS `GetWebIdentityToken` ，返回由 AWS 颁发的 JWT 作为主体令牌，然后由 OpenAI SDK 将其交换为 OpenAI 颁发的访问令牌。
 
-使用 AWS 颁发的 OIDC 令牌进行身份验证
+通过 AWS 颁发的 OIDC 令牌进行身份验证
 
 ```javascript
 import { GetWebIdentityTokenCommand, STSClient } from "@aws-sdk/client-sts";
@@ -790,19 +791,19 @@ puts(response.output_text)
   
 
 
-## Amazon EKS 投影的服务账户令牌
+## Amazon EKS 投射的服务账户令牌
 
-通过将 EKS 颁发的投影服务账户令牌交换为短期 OpenAI 访问令牌，将 Amazon EKS 用作 Workload Identity Provider。
+使用 Amazon EKS 作为工作负载身份提供方，通过将 EKS 签发的投影服务账户令牌交换为短时效的 OpenAI 访问令牌。
 
-### 设置 EKS
+### Setting up EKS
 
-使用 Kubernetes `ServiceAccount` 为需要调用 OpenAI API 的 EKS 工作负载。如果还没有，请创建一个：
+使用 Kubernetes `ServiceAccount` 为需要调用 OpenAI API 的 EKS 工作负载创建相应的资源。如果你还没有，请创建一个：
 
 ```bash
 kubectl create serviceaccount openai-wif --namespace default
 ```
 
-EKS 投影的服务账户令牌使用 `sub` 格式的 claim `system:serviceaccount:<namespace>:<service-account-name>`。对于上面的服务账户， `sub` claim 为 `system:serviceaccount:default:openai-wif`.
+EKS 投射的服务账户令牌使用 `sub` 声明，格式为 `system:serviceaccount:<namespace>:<service-account-name>`。对于上述服务账户， `sub` 声明为 `system:serviceaccount:default:openai-wif`.
 
 检索与 EKS 集群关联的 OIDC 颁发者 URL：
 
@@ -820,9 +821,9 @@ aws eks describe-cluster \
 https://oidc.eks.us-west-2.amazonaws.com/id/EXAMPLED539D4633E53DE1B716D3
 ```
 
-在 OpenAI Workload Identity Provider 中配置的颁发者必须与此颁发者 URL 以及 `iss` 投影的 EKS 服务账户令牌中的 claim 相匹配。
+你在 OpenAI Workload Identity Provider 中配置的颁发者必须与此颁发者 URL 以及 `iss` 投射的 EKS 服务账户令牌中的声明相匹配。
 
-使用 OpenAI 期望的受众和适合你工作负载的过期时间来配置投影的服务账户令牌。OpenAI 会验证令牌的颁发者、签名、受众和过期时间。在本例中，令牌文件挂载在 `/var/run/secrets/tokens/token`，使用的受众为 `https://api.openai.com/v1`，并在 3600 秒后过期。如果投影令牌的受众与 OpenAI Workload Identity Provider 的受众一致，你也可以使用其他受众：
+使用 OpenAI 期望的受众和适合你工作负载的过期时间来配置投射的服务账户令牌。OpenAI 会校验令牌的颁发者、签名、受众和过期时间。在本示例中，令牌文件挂载在 `/var/run/secrets/tokens/token`，使用受众 `https://api.openai.com/v1`，并在 3600 秒后过期。如果投射令牌的受众与 OpenAI Workload Identity Provider 的受众一致，你也可以使用其他受众：
 
 ```yaml
 apiVersion: v1
@@ -851,7 +852,7 @@ spec:
 
 ### 验证 EKS 令牌
 
-在配置工作负载身份联合之前，请在本地解码一段示例的投射服务账号令牌并检查其声明。从一个已挂载投射令牌的运行中 Pod 中，检索该令牌并将其导出为 `TOKEN`:
+在配置工作负载身份联合之前，请在本地解码一个示例的投射服务账户令牌并检查其声明。从一个已挂载投射令牌的运行中 pod 里，获取该令牌并将其导出为 `TOKEN`:
 
 ```bash
 TOKEN=$(kubectl exec -n default openai-wif-app -- cat /var/run/secrets/tokens/token)
@@ -1143,6 +1144,7 @@ end
 unless Base64.urlsafe_encode64(payload, padding: false) == parts[1]
   raise "JWT payload is not valid Base64URL"
 end
+
 payload.force_encoding(Encoding::UTF_8)
 raise "JWT payload is not valid UTF-8" unless payload.valid_encoding?
 
@@ -1153,9 +1155,9 @@ puts(payload)
 ```
 
 
-此命令在验证令牌签名的情况下解码 JWT 负载。对生产令牌使用本地解码器，并避免将生产令牌粘贴到第三方工具中。
+此命令解码 JWT 负载但不验证令牌签名。生产环境的令牌请使用本地解码器，并避免将生产令牌粘贴到第三方工具中。
 
-解码后的 EKS 投射服务账号令牌将类似于：
+解码后的 EKS 投射服务账户令牌大致如下：
 
 ```json
 {
@@ -1174,45 +1176,45 @@ puts(payload)
 }
 ```
 
-使用解码后的负载，将你收到的令牌与在 OpenAI 中配置的 issuer、audience 和 mapping 值进行比较。大多数配置问题都可以在 `iss`, `aud`、和 `sub` 声明中看到，然后你再去交换令牌。
+使用解码后的负载，将你收到的令牌与 OpenAI 中配置的发行方、受众和映射值进行比较。大多数配置问题在以下内容中可见 `iss`, `aud`，以及 `sub` 声明中，在交换令牌前请先核对。
 
 ### 设置工作负载身份联合
 
-为 EKS 签发方在 OpenAI 中创建一个工作负载身份提供方，然后添加一个与投射令牌属性匹配的服务账号映射。
+在 OpenAI 中为 EKS 签发方创建一个工作负载身份提供方，然后添加一个与投射令牌中属性匹配的服务账户映射。
 
-先配置 Workload Identity Provider，然后创建服务账户映射。
+先配置工作负载身份提供者，然后再创建服务账户映射。
 
 #### 设置 Workload Identity Provider
 
-1. **创建 Workload Identity Provider。** 设置 **Name** 为一个唯一值,例如 `aws-eks-prod`. 使用 **Description**,例如 `Production EKS cluster`,以帮助管理员识别集群。
+1. **创建 Workload Identity Provider。** 将 **Name** 设置为唯一值，例如 `aws-eks-prod`。使用 **Description**，例如 `Production EKS cluster`，以帮助管理员识别集群。
 
-2. **设置 issuer 和 audience。** 设置 **OIDC Issuer URL** 为 `aws eks describe-cluster --query "cluster.identity.oidc.issuer"`。该值必须与 `iss` 中声明的 projected EKS 服务账户令牌中的声明相匹配。将 **Audience** 设置为投射的服务账户令牌卷上配置的相同 audience。在本示例中,该值为 `https://api.openai.com/v1`.
+2. **设置 issuer 和 audience。** 将 **OIDC Issuer URL** 设置为返回的发行者 `aws eks describe-cluster --query "cluster.identity.oidc.issuer"`。该值必须与 `iss` 投射的 EKS 服务账户令牌中的 claim 相匹配。设置 **Audience** 为与投射的服务账户令牌卷上配置的 audience 相同的值。在本示例中，该值为 `https://api.openai.com/v1`.
 
-3. **使用 EKS OIDC 发现。** 将 **Use uploaded JWKS for token verification** 处于禁用状态。OpenAI 使用 EKS 颁发者的 OIDC 发现元数据和 JWKS 来验证投射的服务账户令牌。
+3. **使用 EKS OIDC 发现。** 将 **Use uploaded JWKS for token verification** 已禁用。OpenAI 使用 EKS 发行者的 OIDC 发现元数据和 JWKS 来验证投射的服务账户令牌。
 
-4. **仅在需要派生映射属性时才添加属性转换。** 原始令牌声明(如 `sub`, `aud`，以及 `iss` )可直接用于映射断言。例如,创建一个名为 `subject` ，表达式为 `assertion.sub`。的转换属性。在仪表板中,输入 `subject` 作为属性名称;OpenAI 将其存储为 `openai.subject`,你可以在映射中引用它。
+4. **仅当你需要派生映射属性时，才添加属性转换。** 原始令牌声明（如 `sub`, `aud`，以及 `iss` ）可直接用于映射断言。例如，创建一个名为 `subject` 并使用表达式 `assertion.sub`。的转换属性。在控制台中，输入 `subject` 作为属性名；OpenAI 将其存储为 `openai.subject`，你可以在映射中引用它。
 
-   > **注意:** 已以 `openai.` 开头的原始令牌声明将作为 `openai.` 映射键被忽略，除非配置了匹配的转换。
+   > **注意：** 已以 `openai.` 开头的部分将被忽略，不会用于 `openai.` 映射键，除非配置了匹配的转换。
 
 #### 设置服务账户映射
 
-1. **创建一个服务账号映射。** 设置 **Name** 为 Workload Identity Provider 内的唯一值,例如 `openai-mapping-eks`. 使用 **Description**,例如 `Workload Identity Provider Mapping for EKS Workloads`，用于说明哪些工作负载可以使用该映射。
+1. **创建服务账号映射。** 将 **Name** 设置为 Workload Identity Provider 内的唯一值，例如 `openai-mapping-eks`。使用 **Description**，例如 `Workload Identity Provider Mapping for EKS Workloads`，用于说明哪些工作负载可以使用该映射。
 
-2. **匹配 EKS 服务账户主体。** 设置 **Key** 为 `sub` ，并将 **Value** 为 `system:serviceaccount:default:openai-wif`。你可以匹配任何可用的声明或转换属性。匹配 `sub` 是限制性最强的选项,因为它能唯一标识一个 Kubernetes 服务账户。
+2. **匹配 EKS 服务账户主体。** 将 **Key** 为 `sub` ， **Value** 为 `system:serviceaccount:default:openai-wif`。你可以匹配任何可用的 claim 或转换属性。匹配 `sub` 是最严格的选项，因为它能唯一标识一个 Kubernetes 服务账户。
 
-3. **选择 OpenAI 目标。** 设置 **Project** 设置为拥有目标服务账号的 OpenAI 项目。将 **Service account** 为 EKS 工作负载可使用的 OpenAI 服务账户,例如 `aws-eks-prod-openai-wif`。检查 `Create a new service account in this project` 如果你希望为此映射创建一个新的服务账号，而不是复用现有账号。
+3. **选择 OpenAI 目标。** 将 **Project** 为拥有目标服务账号的 OpenAI 项目。将 **Service account** 为 EKS 工作负载可使用的 OpenAI 服务账户，例如 `aws-eks-prod-openai-wif`。勾选 `Create a new service account in this project` 如果你希望为此映射创建一个新的服务账号而不是复用已有的服务账号。
 
-4. **根据需要收窄 API 权限。** 选择合适的 **权限** 例如 `api.model.request` ，并将 `api.vector_store.read` 以进一步收窄从此映射中生成的访问令牌。保持权限为空可避免添加 WIF 专属的作用域限制；该令牌仍会以映射后的服务帐号身份进行授权。
+4. **根据需要收紧 API 权限。** 选择适当的 **Permissions** such as `api.model.request` ， `api.vector_store.read` 以进一步收窄从此映射生成的访问令牌的范围。保持 permissions 为空可避免添加 WIF 专属的作用域限制；该令牌仍会以所映射的服务账号身份进行授权。
 
-### 在代码中使用令牌
+### 在代码中使用该 token
 
-配置你的 OpenAI SDK 客户端，以读取投影的 EKS 服务账户令牌，并将其交换为 OpenAI 颁发的访问令牌。
+配置你的 OpenAI SDK 客户端，使其读取已挂载的 EKS 服务账户令牌，并将其交换为 OpenAI 颁发的访问令牌。
 
-使用挂载的令牌路径，例如 `/var/run/secrets/tokens/token`，作为 SDK 工作负载身份联合提供方的主体令牌源。SDK 将该 EKS 令牌交换为 OpenAI 颁发的访问令牌，并使用该 OpenAI 令牌对 API 请求进行身份验证。
+使用挂载的令牌路径，例如 `/var/run/secrets/tokens/token`，作为 SDK 工作负载身份联合提供方的主体令牌来源。SDK 会将该 EKS 令牌交换为 OpenAI 颁发的访问令牌，并使用该 OpenAI 令牌对 API 请求进行身份验证。
 
-以下示例使用自定义主体令牌提供方初始化 OpenAI 客户端。该提供方从挂载的文件路径读取投影的 EKS 服务账户令牌，并将其用作工作负载身份联合的主体令牌。
+以下示例使用自定义主体令牌提供方初始化 OpenAI 客户端。该提供方从已挂载的文件路径读取已挂载的 EKS 服务账户令牌，并将其用作工作负载身份联合的主体令牌。
 
-通过 EKS 投影的服务账户令牌进行身份验证
+使用 EKS 已挂载服务账户令牌进行身份验证
 
 ```javascript
 import { readFile } from "node:fs/promises";
@@ -1502,10 +1504,10 @@ puts(response.output_text)
 
 ## AWS 最佳实践
 
-- 为每个工作负载使用专用的 AWS 身份。为 AWS 出站身份联合使用单独的 IAM 角色，并为 EKS 工作负载使用单独的 Kubernetes 服务账户。
-- 为 OpenAI 访问配置专用受众。在 AWS 签发或 EKS 投射的令牌以及 OpenAI Workload Identity Provider 配置中使用相同的受众值。
-- 保持令牌生命周期合理较短。对于 AWS 出站身份联合，使用 IAM 条件，例如 `sts:DurationSeconds`；对于 EKS，设置适当的投射令牌过期时间。
-- 优先进行精确的主体匹配。对 AWS 出站令牌匹配完整的 IAM 主体 ARN，或对 EKS 令牌匹配完整的 Kubernetes 服务账户主体。
-- 将映射范围限定在稳定边界内。当账户、组织、命名空间或转换后的属性能够在不创建广泛信任规则的前提下缩减访问范围时，使用它们。
-- 在交换令牌时重新加载令牌。根据需要请求 AWS 出站令牌，并从挂载的文件路径读取 EKS 投射令牌，以便自动获取轮换后的令牌。
-- 仅授予工作负载所需的权限。使用映射级权限进一步收窄目标 OpenAI 服务账户所授予的访问权限。
+- 为每个工作负载使用专用的 AWS 身份。为 AWS 出站身份联合使用独立的 IAM 角色，并为 EKS 工作负载使用独立的 Kubernetes 服务账户。
+- 为 OpenAI 访问配置专用的 audience。在 AWS 颁发的或 EKS 投射的令牌以及 OpenAI Workload Identity Provider 配置中使用相同的 audience 值。
+- 将令牌生命周期保持在合理较短的范围内。对于 AWS 出站身份联合，使用 IAM 条件，例如 `sts:DurationSeconds`；对于 EKS，设置合适的投射令牌过期时间。
+- 优先使用精确的主体匹配。针对 AWS 出站令牌匹配完整的 IAM 主体 ARN，或针对 EKS 令牌匹配完整的 Kubernetes 服务账户主体。
+- 将映射范围限定在稳定的边界。在能够减少访问且不会造成宽泛信任规则的情况下，使用账号、组织、命名空间或经过转换的属性。
+- 在交换令牌时重新加载令牌。按需请求 AWS 出站令牌，并从已挂载的文件路径读取 EKS 投射令牌，以便自动获取轮换后的令牌。
+- 仅授予工作负载所需的权限。使用映射级别的权限进一步收窄目标 OpenAI 服务账户所授予的访问范围。

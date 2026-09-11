@@ -1,27 +1,27 @@
-# 文件搜索
+# File search
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，请在页面 URL 末尾追加 `.md` 。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
 
-文件搜索是 [Responses API](https://developers.openai.com/api/reference/resources/responses).
-中提供的工具。它使模型能够通过语义搜索和关键字搜索，在先前上传的文件所构成的知识库中检索信息。
-通过创建向量存储并将文件上传到其中，你可以让模型访问这些知识库，从而扩充模型自身的知识，或者 `vector_stores`.
+文件搜索是以下接口中可用的工具： [Responses API](https://developers.openai.com/api/reference/resources/responses).
+它使模型能够通过语义搜索和关键字搜索从先前上传的文件知识库中检索信息。
+通过创建向量存储并向其中上传文件，你可以让模型访问这些知识库，从而扩展其固有知识，或者 `vector_stores`.
 
-若要进一步了解向量存储与语义搜索的工作原理，请参阅我们的
+要详细了解向量存储和语义搜索的工作原理，请参阅我们的
   [检索指南](https://developers.openai.com/api/docs/guides/retrieval).
 
-这是一个由 OpenAI 托管的 托管工具，你无需自行编写代码来处理它的执行。
-当模型决定使用它时，会自动调用该工具、从你的文件中检索信息，并返回结果。
+这是一个由 OpenAI 管理的 托管工具，意味着你无需在端实现代码来处理其执行。
+当模型决定使用它时，会自动调用该工具，从你的文件中检索信息并返回输出。
 
 ## 使用方法
 
-在使用文件搜索和Responses API之前，你需要在向量存储中建立一个知识库并向其上传文件。
+在使用 文件搜索 与 Responses API 之前，你需要先在向量存储中建立一个知识库并向其中上传文件。
 
 
 
 ### 创建向量存储并上传文件
 
 
-按照以下步骤创建一个向量存储并向其中上传文件。你可以使用 [这个示例文件](https://cdn.openai.com/API/docs/deep_research_blog.pdf) 或上传你自己的文件。
+按照以下步骤创建向量存储并将文件上传到其中。你可以使用 [此示例文件](https://cdn.openai.com/API/docs/deep_research_blog.pdf) 或上传你自己的文件。
 
 #### 将文件上传到 File API
 
@@ -221,7 +221,7 @@ puts(store.id)
 
 #### 将文件添加到向量存储
 
-将文件添加到向量存储
+向向量存储中添加文件
 
 ```javascript
 await openai.vectorStores.files.create(vectorStore.id, {
@@ -286,9 +286,9 @@ puts(file.id)
 ```
 
 
-#### 检查状态
+#### Check status
 
-运行此代码，直到文件可以投入使用（即状态为 `completed`).
+运行此代码，直到文件可以正常使用（即，当状态为 `completed`).
 
 检查状态
 
@@ -344,7 +344,7 @@ puts(files.data&.map(&:status))
 
 
 
-知识库设置完成后，你可以将 `file_search` 工具加入模型可用的工具列表，同时加入要搜索的向量存储列表。
+完成知识库的设置后，你可以在模型可用工具列表中包含 `file_search` 工具，并指定要在其中搜索的向量存储列表。
 
 文件搜索工具
 
@@ -466,9 +466,9 @@ puts(response)
 ```
 
 
-当模型调用此工具时，你会收到一个包含多个输出的响应：
+当模型调用此工具时，你将收到包含多个输出的响应：
 
-1. 一个 `file_search_call` output item，其中包含 文件搜索 调用的 id。
+1. 一个 `file_search_call` output item，其中包含该 文件搜索 调用的 id。
 2. 一个 `message` output item，其中包含模型的响应以及文件引用。
 
 文件搜索响应
@@ -525,11 +525,11 @@ puts(response)
 ```
 
 
-## 检索自定义
+## 检索定制
 
 ### 限制结果数量
 
-使用 文件搜索 工具与 Responses API 时，你可以自定义要从向量存储中检索的结果数量。这有助于降低 token 使用量和延迟，但可能会以牺牲答案质量为代价。
+使用 文件搜索 工具配合 Responses API，你可以自定义要从向量存储中检索的结果数量。这有助于同时减少 token 用量和延迟，但可能会以答案质量下降为代价。
 
 限制结果数量
 
@@ -660,11 +660,11 @@ puts(response)
 
 ### 在响应中包含搜索结果
 
-虽然你可以在输出文本中看到标注（对文件的引用），但 文件搜索 调用默认不会返回搜索结果。
+虽然你可以在输出文本中看到注释（对文件的引用），但 文件搜索 调用默认不会返回搜索结果。
 
-如需在响应中包含搜索结果，你可以在创建响应时使用 `include` 参数。
+若要在响应中包含搜索结果，你可以在创建响应时使用 `include` 参数。
 
-包含搜索结果
+在响应中包含搜索结果
 
 ```javascript
 const response = await openai.responses.create({
@@ -785,7 +785,10 @@ response = client.responses.create(
   input: "What is deep research by OpenAI?",
   include: ["file_search_call.results"],
   tools: [
-    {type: :file_search, vector_store_ids: ["<vector_store_id>"]}
+    {
+      type: :file_search,
+      vector_store_ids: ["<vector_store_id>"]
+    }
   ]
 )
 
@@ -793,12 +796,12 @@ puts(response)
 ```
 
 
-### 元数据过滤
+### 元数据筛选
 
-你可以根据文件的元数据来过滤搜索结果。更多详情,请参阅我们的 [检索指南](https://developers.openai.com/api/docs/guides/retrieval),其中涵盖:
+你可以根据文件的元数据来过滤搜索结果。更多详情，请参阅我们的 [检索指南](https://developers.openai.com/api/docs/guides/retrieval)，其中涵盖：
 
-- 如何 [在向量存储文件上设置属性](https://developers.openai.com/api/docs/guides/retrieval#attributes)
-- 如何 [定义筛选器](https://developers.openai.com/api/docs/guides/retrieval#attribute-filtering)
+- 操作方法 [设置向量存储文件的属性](https://developers.openai.com/api/docs/guides/retrieval#attributes)
+- 操作方法 [定义筛选器](https://developers.openai.com/api/docs/guides/retrieval#attribute-filtering)
 
 元数据过滤
 
@@ -969,9 +972,9 @@ puts(response)
 ```
 
 
-## 支持的文件
+## Supported files
 
-_有关 `text/` MIME 类型，编码必须是以下之一 `utf-8`, `utf-16`，或 `ascii`._
+_对于 `text/` MIME 类型，编码必须是以下之一 `utf-8`, `utf-16`，或 `ascii`._
 
 {/* Keep this table in sync with RETRIEVAL_SUPPORTED_EXTENSIONS in the agentapi service */}
 

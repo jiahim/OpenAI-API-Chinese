@@ -1,8 +1,10 @@
 # 使用工具
 
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 后追加 `.md` 即可获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-在生成模型响应或构建智能体时，你可以使用内置工具、函数调用、Programmatic Tool Calling、工具搜索以及远程 MCP 服务器来扩展能力。这些功能使模型能够搜索网页、从你的文件中检索内容、在运行时加载延迟加载的工具定义、调用你自己的函数、用 JavaScript 组合工具调用，或访问第三方服务。仅 `gpt-5.4` 及更高版本的模型支持 `tool_search`.
+在生成模型响应或构建智能体时，你可以使用内置工具、函数调用、程序化工具调用、工具搜索以及远程 MCP 服务器来扩展能力。这些工具让模型能够搜索网页、从你的文件中检索内容、在运行时加载延迟的工具定义、调用你自己的函数、在 JavaScript 中组合工具调用，或访问第三方服务。仅限 `gpt-5.4` 及更高版本的模型支持 `tool_search`.
+
+为你的运行时选择集成方式：在 [Responses API 请求](#usage-in-the-api)，中配置工具，在 [智能体 API 智能体](#agents-api)，中配置，或在 [Agents SDK 定义](#usage-in-the-agents-sdk)。中配置。工具的可用性、配置方式和调用处理取决于具体的集成方式。以下示例使用 Responses API。
 
 
 
@@ -109,7 +111,7 @@ openai = OpenAI::Client.new
 
 response = openai.responses.create(
   model: "gpt-6-astra",
-  tools: [{type: "web_search"}],
+  tools: [{ type: "web_search" }],
   input: "What was a positive news story from today?"
 )
 
@@ -496,7 +498,7 @@ require "openai"
 client = OpenAI::Client.new
 parameters = {
   type: :object,
-  properties: {customer_id: {type: :string}},
+  properties: { customer_id: { type: :string } },
   required: ["customer_id"],
   additionalProperties: false
 }
@@ -525,7 +527,7 @@ response = client.responses.create(
         }
       ]
     },
-    {type: :tool_search}
+    { type: :tool_search }
   ]
 )
 
@@ -781,7 +783,10 @@ tools = [
 response = openai.responses.create(
   model: "gpt-6-astra",
   input: [
-    {role: "user", content: "What is the weather like in Paris today?"}
+    {
+      role: "user",
+      content: "What is the weather like in Paris today?"
+    }
   ],
   tools: tools
 )
@@ -825,7 +830,7 @@ curl -X POST https://api.openai.com/v1/responses \
   
 
     
-Remote MCP
+远程 MCP
 
     Call a remote MCP server
 
@@ -997,7 +1002,7 @@ puts(response.output_text)
 
 ## 可用工具
 
-以下是 OpenAI 平台中可用工具的概览——选择其中一项以获取使用方面的进一步指导。
+以下是 OpenAI 平台中可用工具的概述——选择其中一项以获取详细的使用指南。
 
 [函数调用
 
@@ -1019,7 +1024,7 @@ puts(response.output_text)
       Give the model access to new capabilities via Model Context Protocol (MCP)
     servers.](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)
 
-[Skills
+[技能
 
 
 
@@ -1031,7 +1036,7 @@ puts(response.output_text)
 
       Run shell commands in hosted containers or in your own local runtime.](https://developers.openai.com/api/docs/guides/tools-shell)
 
-[Computer use
+[计算机使用
 
 
 
@@ -1058,29 +1063,35 @@ puts(response.output_text)
       Dynamically load relevant tools into the model’s context to optimize token
     usage.](https://developers.openai.com/api/docs/guides/tools-tool-search)
 
-[Programmatic Tool Calling
+[编程式工具调用
 
 
 
       Let models compose and run JavaScript that orchestrates tool calls.](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling)
 
-## API 中的使用
+## 在 API 中的使用
 
-当发起请求以生成一次 [模型响应](https://developers.openai.com/api/reference/resources/responses/methods/create)，时，通常需要在 `tools` 参数中指定配置来启用工具访问。每个工具有其独特的配置要求，详见 [可用工具](#available-tools) 章节中的详细说明。
+在发起生成 [模型响应](https://developers.openai.com/api/reference/resources/responses/methods/create)，的请求时,你通常需要在 `tools` 参数中指定配置以启用工具访问。每个工具都有其独特的配置要求——请参阅 [可用工具](#available-tools) 部分获取详细说明。
 
-根据所提供的 [prompt](https://developers.openai.com/api/docs/guides/text)，模型会自动决定是否使用已配置的工具。例如，如果你的 prompt 请求的内容超出模型的训练截止日期，并且已启用网页搜索，模型通常会调用网页搜索工具来获取相关的最新信息。
+根据提供的 [提示](https://developers.openai.com/api/docs/guides/text),模型会自动决定是否使用已配置的工具。例如,如果你的提示请求的信息超出了模型的训练截止日期,并且网页搜索已启用,模型通常会调用网页搜索工具来获取相关的最新信息。
 
-一些高级工作流还可以在交互过程中加载更多工具定义。例如， [tool search](https://developers.openai.com/api/docs/guides/tools-tool-search) 可以将函数定义延迟到模型认为需要时再加载。
+一些高级工作流还可以在交互过程中加载更多工具定义。例如, [tool search](https://developers.openai.com/api/docs/guides/tools-tool-search) 可以将函数定义延迟到模型决定需要时再加载。
 
-你可以通过在请求中设置 `tool_choice` 参数 [来显式控制或引导该行为，在 API 请求中](https://developers.openai.com/api/reference/resources/responses/methods/create).
+你可以通过设置 `tool_choice` 参数 [在 API 请求中](https://developers.openai.com/api/reference/resources/responses/methods/create).
+
+## 智能体 API
+
+该 [智能体 API](https://developers.openai.com/api/docs/guides/agents-api/overview) 为你运行 智能体 循环。在中配置工具 `agent.tools`,在应用中处理函数调用,并在工具需要执行环境时连接沙箱。
+
+请参阅 [Functions(函数)](https://developers.openai.com/api/docs/guides/agents-api/tools/functions) 以调用应用代码, [MCP 连接](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp) 以连接工具服务器,以及 [沙箱配置](https://developers.openai.com/api/docs/guides/agents-api/configuration#environment-settings) ,适用于需要执行环境的工具。 [程序化工具调用](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling#agents-api) 默认启用。 [Skills(技能)](https://developers.openai.com/api/docs/guides/tools-skills#agents-api) 通过沙箱的能力目录发现。
 
 ## 在 Agents SDK 中的用法
 
-在 Agents SDK 中，工具语义保持不变，但调用方式被移入 智能体 定义和 工作流 设计中，而不是放在单个 Responses API 请求里。
+在 Agents SDK 中，工具语义保持不变，但连接方式移入了 智能体 定义和 工作流 设计中，而不是单个 Responses API 请求。
 
-- 当某个智能体应当自行调用托管工具、函数工具或托管 MCP 工具时，直接将它们挂载到该智能体上。
-- 当由管理智能体掌控面向用户的回复时，可将专用智能体作为工具暴露。
-- 即使 SDK 会建模工具调用决策，也请在运行时中保留 shell、apply patch 与 computer-use 测试脚手架。
+- 当某个专家需要自行调用托管工具、函数工具或托管 MCP 工具时，直接将它们挂载到该智能体上。
+- 当由管理者统一掌控面向用户的回复时，将专家作为工具对外暴露。
+- 即使 SDK 负责建模工具决策，也要在运行时中保留 shell、apply patch 和 computer-use 的执行环境。
 
 将本地逻辑包装为函数工具
 
@@ -1109,7 +1120,7 @@ def get_weather(city: str) -> str:
 ```
 
 
-将专家智能体暴露为工具
+将专家作为工具公开
 
 ```javascript
 import { Agent } from "@openai/agents";
@@ -1150,4 +1161,4 @@ main_agent = Agent(
 ```
 
 
-使用 [智能体 定义](https://developers.openai.com/api/docs/guides/agents/define-agents) 当你正在构建单个专家时， [编排与交接](https://developers.openai.com/api/docs/guides/agents/orchestration) 当工具影响归属时， [护栏与人工审核](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals) 当工具影响审批时，以及 [集成与可观测性](https://developers.openai.com/api/docs/guides/agents/integrations-observability#mcp) 当能力来自 MCP 时。
+使用 [智能体定义](https://developers.openai.com/api/docs/guides/agents/define-agents) 来塑造单个专家时， [编排与交接](https://developers.openai.com/api/docs/guides/agents/orchestration) 当工具影响所有权时， [护栏与人工审核](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals) 当工具影响审批时，以及 [集成与可观测性](https://developers.openai.com/api/docs/guides/agents/integrations-observability#mcp) 当能力来自 MCP 时。

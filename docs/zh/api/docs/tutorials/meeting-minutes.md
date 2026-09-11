@@ -1,20 +1,20 @@
 # 会议纪要
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 末尾追加 `.md` 。
+> 有关完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
-在本教程中，你将构建一个自动化的会议纪要生成器。该应用会转写会议录音、总结讨论内容、提取关键要点和待办事项、分析情感，并将结果保存为 Word 文档。
+在本教程中，你将构建一个自动化的会议纪要生成器。该应用会转写会议录音、总结讨论内容、提取关键要点和行动项、分析情感，并将结果保存为 Word 文档。
 
 ## 入门
 
-本教程假设你熟悉其中一门受支持的语言，并且拥有 [OpenAI API 密钥](https://platform.openai.com/settings/organization/api-keys)。你可以使用简短的冒烟测试音频文件，也可以使用你自己录制的最大 25 MB 的音频。
+本教程假设你熟悉受支持的语言之一，并拥有 [OpenAI API 密钥](https://platform.openai.com/settings/organization/api-keys)。你可以使用简短的冒烟测试音频文件，或你自己的录音（最大 25 MB）。
 
 安装 [OpenAI SDK](https://developers.openai.com/api/docs/libraries) 以及适用于你所用语言的 DOCX 库：
 
-- JavaScript： [`docx`](https://docx.js.org/)
-- Python： [`python-docx`](https://python-docx.readthedocs.io/en/latest/)
-- Go： [`godocx`](https://github.com/gomutex/godocx)
-- Java： [Apache POI XWPF](https://poi.apache.org/components/document/quick-guide-xwpf.html)
-- Ruby： [`caracal`](https://github.com/urvin-compliance/caracal)
+- JavaScript: [`docx`](https://docx.js.org/)
+- Python: [`python-docx`](https://python-docx.readthedocs.io/en/latest/)
+- Go: [`godocx`](https://github.com/gomutex/godocx)
+- Java: [Apache POI XWPF](https://poi.apache.org/components/document/quick-guide-xwpf.html)
+- Ruby: [`caracal`](https://github.com/urvin-compliance/caracal)
 
 ## 转录音频
 
@@ -49,9 +49,9 @@
 
 
 
-将下载的文件另存为 `meeting.wav` 请将其放在运行示例的目录中，或者将 `meeting.wav` 替换为你的录音路径。这段简短的下载片段用于验证工作流；请使用大小不超过 25 MB 的真实会议录音，以生成有用的摘要和待办事项。
+将下载的文件另存为 `meeting.wav` ，保存到运行示例的目录中，或者将其替换 `meeting.wav` 为你的录音路径。短小的可下载片段用于验证工作流；若要生成有用的摘要和行动项，请使用不超过 25 MB 的真实会议录音。
 
-定义一个辅助函数，用于打开录音文件并将其内容发送到 [`gpt-transcribe`](https://developers.openai.com/api/docs/models/gpt-transcribe):
+定义一个用于打开录音并将文件内容发送到的辅助函数 [`gpt-transcribe`](https://developers.openai.com/api/docs/models/gpt-transcribe):
 
 ```javascript
 import fs from "node:fs";
@@ -188,15 +188,15 @@ end
 ```
 
 
-该辅助函数接收本地音频路径，使用该语言的API标准文件接口打开文件，并将文件内容传递给转写模型。转写接口需要的是音频字节，而不是本地路径或远程 URL。如果你的服务器将录音存储在其他位置，请在创建转写请求之前将录音下载或流式传输到请求中。
+该辅助函数接收本地音频路径，使用该语言的标准文件 API 打开文件，并将文件内容传递给转写模型。转写端点需要的是音频字节，而不是本地路径或远程 URL。如果你的服务器将录音存储在其他位置，请在创建转写请求之前先将录音下载或流式传输到请求中。
 
-## 使用 GPT 模型对转录文本进行摘要和分析
+## 使用 GPT 模型对转录文本进行总结和分析
 
-通过以下接口将转录文本传给 GPT 模型： [Chat Completions API](https://developers.openai.com/api/reference/resources/chat)。本教程演示的是仍受支持的 Chat Completions 路径，适用于现有集成。新建项目请使用 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) 并从 [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra)。开始。下面的代码片段使用一个经过测试的模型来生成摘要、提取关键点和行动项，并分析情感。
+通过 [Chat Completions API](https://developers.openai.com/api/reference/resources/chat)。将转录文本传递给 GPT 模型。本教程演示了仍受支持的 Chat Completions 路径，供现有集成使用。对于新项目，请使用 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) ，并从 [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra)。开始。下面的代码片段使用一个经过测试的模型来生成摘要、提取关键点和行动项，并分析情感。
 
-本教程为每个任务使用一次单独的模型调用。你可以将指令合并到一次请求中以减少调用次数，但拆分的提示让每个结果都更容易调优。
+本教程针对每个任务使用单独的模型调用。你可以将指令合并到一次请求中以减少调用次数，但分开编写提示可以让每个结果更易于调优。
 
-定义一个共享辅助函数，用于将转录文本和任务专属指令发送给模型：
+定义一个共享的辅助函数，用于将转录文本和任务相关的指令发送给模型：
 
 ```javascript
 async function complete(transcription, instructions) {
@@ -260,8 +260,14 @@ def complete(client, transcription, instructions)
   response = client.chat.completions.create(
     model: "gpt-5.5",
     messages: [
-      {role: :system, content: instructions},
-      {role: :user, content: transcription}
+      {
+        role: :system,
+        content: instructions
+      },
+      {
+        role: :user,
+        content: transcription
+      }
     ]
   )
   response.choices.first.message.content || ""
@@ -336,13 +342,13 @@ end
 ```
 
 
-该辅助函数将转录文本传给四个聚焦的辅助函数：分别用于摘要、关键点、行动项和情感。如果你的应用需要更多分析，可添加另一个辅助函数和输出部分。
+该辅助函数将转录文本传递给四个专注的辅助函数：分别用于摘要、关键点、行动项和情感。如果你的应用需要更多分析，可以添加另一个辅助函数和输出部分。
 
-下面是每个函数的工作方式：
+下面介绍这些函数各自的工作方式：
 
 ### Summary extraction
 
-摘要助手会要求模型输出一段简洁的段落，在保留重要决策和上下文的同时省略无关分支。系统消息控制此行为。如需了解更多塑造结果的方式，请参阅 [提示工程指南](https://developers.openai.com/api/docs/guides/prompt-engineering).
+摘要助手会要求模型生成一段简明的文字，在保留重要决策和上下文的同时省略无关内容。这一行为由系统消息控制。若想了解更多塑造结果的方式，请参阅 [提示工程指南](https://developers.openai.com/api/docs/guides/prompt-engineering).
 
 ```javascript
 async function extractAbstractSummary(transcription) {
@@ -390,7 +396,7 @@ end
 
 ### 要点提取
 
-要点助手会列出会议中讨论的重要观点、发现和主题。当有助于模型识别对你的受众重要的内容时,请在系统消息中添加相关的项目或公司上下文。
+要点助手会列出会议中讨论的重要观点、发现和主题。当有助于模型识别对你的受众重要的内容时，向系统消息中添加相关的项目或公司上下文。
 
 ```javascript
 async function extractKeyPoints(transcription) {
@@ -436,9 +442,9 @@ end
 ```
 
 
-### Action item extraction
+### 行动项提取
 
-action-items 助手会识别任务和后续跟进事项，当转录文本提供时会包括负责人和截止时间。若要在另一个系统中创建并分配任务，请将此步骤连接到 [function calling](https://developers.openai.com/api/docs/guides/function-calling).
+action-items 助手会识别任务和后续跟进事项，当转录文本中包含负责人和截止时间时也会一并提取。如需在其他系统中创建并分配任务，可将此步骤连接到 [function calling](https://developers.openai.com/api/docs/guides/function-calling).
 
 ```javascript
 async function extractActionItems(transcription) {
@@ -486,7 +492,7 @@ end
 
 ### 情感分析
 
-情绪助手会将讨论分类为正面、负面或中性，并解释评估结果。对于更简单的任务，可以尝试 [`gpt-5.6-terra`](https://developers.openai.com/api/docs/models/gpt-5.6-terra) 查看它是否能以更低的成本和延迟达到你的质量目标。
+情感助手会将讨论分类为正面、负面或中性，并说明评估依据。对于更简单的任务，可以尝试 [`gpt-5.6-terra`](https://developers.openai.com/api/docs/models/gpt-5.6-terra) 看看它是否能以更低的成本和延迟达到你的质量目标。
 
 ```javascript
 async function analyzeSentiment(transcription) {
@@ -553,7 +559,7 @@ end
 
 </br>
 
-定义一个将每个结果章节写入 Word 文档的辅助函数：
+定义一个用于将每个结果小节写入 Word 文档的辅助函数：
 
 ```javascript
 async function saveAsDocx(minutes, filename) {
@@ -653,7 +659,7 @@ end
 ```
 
 
-该辅助函数接收生成的章节和输出文件名，为每个章节添加标题和段落，并将文档保存到当前工作目录。
+该辅助函数接收生成的小节和输出文件名，为每个小节添加标题和段落，然后将文档保存到当前工作目录。
 
 最后，将这些步骤组合起来，从音频文件生成会议纪要：
 
@@ -708,6 +714,6 @@ save_as_docx(minutes, "meeting_minutes.docx")
 ```
 
 
-此代码解析 `meeting.wav` 从进程工作目录中获取，生成并打印会议纪要，然后将其另存为 `meeting_minutes.docx`.
+这段代码解析 `meeting.wav` （从进程工作目录中获取），生成并打印会议纪要，并将其保存为 `meeting_minutes.docx`.
 
-现在你已经掌握了基本的会议纪要工作流，可以使用 [提示工程](https://developers.openai.com/api/docs/guides/prompt-engineering) 来调优提示，或者构建一个端到端系统， [function calling](https://developers.openai.com/api/docs/guides/function-calling).
+现在你已经有了一个基本的会议纪要工作流，可以使用 [提示工程](https://developers.openai.com/api/docs/guides/prompt-engineering) 对其进行调优，或使用 [function calling](https://developers.openai.com/api/docs/guides/function-calling).

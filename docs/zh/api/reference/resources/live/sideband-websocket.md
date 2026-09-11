@@ -1,24 +1,24 @@
-# Sideband WebSocket
+# 旁带 WebSocket
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾附加 `.md` 即可获取对应页面的 Markdown 版本文档。
 
-使用你的 OpenAI API 密钥将你的后端服务器接入现有的实时会话。例如，当你的前端通过 WebRTC 连接时，可使用此 WebSocket 从后端处理事件并控制该会话。
+使用你的 OpenAI API 密钥将你的后端服务器接入现有的实时会话。例如，当你的前端通过 WebRTC 连接时，可使用此 WebSocket 来处理事件并从后端控制会话。
 
 WS `/v1/live/sessions/{session_id}/attach`
 
-## Connection
+## 连接
 
 `wss://api.openai.com/v1/live/sessions/{session_id}/attach`
 
-在你的后端使用你的 OpenAI API 密钥进行身份验证，在 `Authorization: Bearer $OPENAI_API_KEY` 请求头中携带该密钥，并将其保存在你的服务器上。
+在后端使用你的 OpenAI API 密钥通过以下方式鉴权： `Authorization: Bearer $OPENAI_API_KEY` 请求头。请将密钥保存在你的服务器上。
 
 `session_id` （必填路径参数）：要附加到的现有会话的 ID。
 
-附加操作不会创建新会话，也不会重放先前的事件。音频仍保留在主连接上。请勿在该 WebSocket 上发送 session.start 或 session.input_audio.append。
+附加操作不会创建会话，也不会重放之前的事件。音频会保留在主连接上。请勿在此 WebSocket 上发送 session.start 或 session.input_audio.append。
 
-## 输入
+## Inputs
 
-对于使用 Responses 委托的会话，更新其工具选择。委托类型无法更改。附加后不需要必需的首条消息。
+对于使用 Responses 委托的会话，更新其工具选择。委托类型无法更改。附加后无需发送首条消息。
 
 ### 示例客户端事件：session.update
 
@@ -41,7 +41,7 @@ WS `/v1/live/sessions/{session_id}/attach`
 
 ## Outputs
 
-配置更新会通过 session.updated 进行确认。你还会收到后续的会话事件；仅连接并不会触发此事件。
+配置更新通过 session.updated 进行确认。你还会收到后续的会话事件；仅附加不会触发此事件。
 
 ### 服务端事件示例 · 节选：session.updated
 
@@ -61,13 +61,13 @@ WS `/v1/live/sessions/{session_id}/attach`
 
 [所有服务端事件](#server-events)
 
-[需要从你的后端启动会话并流式传输音频？使用主 WebSocket。](https://developers.openai.com/api/reference/resources/live/primary-websocket)
+[需要从你的后端启动会话并流式传输音频？请使用主 WebSocket。](https://developers.openai.com/api/reference/resources/live/primary-websocket)
 
 ## 客户端事件
 
 ### session.update
 
-更新活动 Live 会话的委托设置。服务端通过以下方式确认已接受的更改 `session.updated`.
+更新正在进行的 Live 会话的委托设置。服务器会通过以下方式确认已接受的更改： `session.updated`.
 
 #### Schema
 
@@ -1353,7 +1353,7 @@ Schema name: `LiveSessionUpdateParam`
 
 ### session.input_audio.mute
 
-将音频输入静音以发送到 Live 模型，但不关闭会话。服务端将回复确认， `session.input_audio.muted`.
+在不关闭会话的情况下将音频输入静音至 Live 模型。服务器会通过以下方式确认 `session.input_audio.muted`.
 
 #### Schema
 
@@ -1446,7 +1446,7 @@ Schema name: `LiveInputAudioMuteParam`
 
 ### session.input_audio.unmute
 
-在静音后恢复对 Live 模型的音频输入。服务端会以以下内容进行确认 `session.input_audio.unmuted`.
+在静音后恢复向 Live 模型输入音频。服务端通过以下内容进行确认： `session.input_audio.unmuted`.
 
 #### Schema
 
@@ -1539,7 +1539,7 @@ Schema name: `LiveInputAudioUnmuteParam`
 
 ### session.instructions.append
 
-在 Live 会话运行期间向其追加指令，可选择将其与现有的客户端委托相关联。
+在 Live 会话运行期间向其追加指令，可选择将其与现有的客户端委托关联。
 
 #### Schema
 
@@ -1673,7 +1673,7 @@ Schema name: `LiveInstructionsAppendParam`
 
 ### session.thinking.append
 
-向 Live 模型提供静默推理或进度上下文，可选地用于已有的客户端委托。
+向 Live 模型提供静默推理或进度上下文，可选地用于现有的客户端委托。
 
 #### Schema
 
@@ -1807,7 +1807,7 @@ Schema name: `LiveThinkingAppendParam`
 
 ### session.commentary.append
 
-为 Live 模型提供可以向用户传达的上下文，可选地用于现有的客户端委托。
+提供 Live 模型可与用户沟通的上下文，可选地用于现有的客户端委托。
 
 #### Schema
 
@@ -1941,7 +1941,7 @@ Schema name: `LiveCommentaryAppendParam`
 
 ### response.item.create
 
-向 Live 会话的 Responses 后端添加输入项。需要启用 Responses 委托，使用 `response.create` 以请求响应。
+向 Live 会话的 Responses 后端添加输入项。需要启用 Responses 委派，使用 `response.create` 来请求响应。
 
 #### Schema
 
@@ -27386,7 +27386,7 @@ Schema name: `LiveResponseItemCreateParam`
 
 ### response.create
 
-向 Live 会话的 Responses 后端请求一次响应，或继续等待工具结果的已委托响应。需要 Responses 委托。
+从 Live 会话的 Responses 后端请求响应，或继续等待工具结果的已委托响应。需要 Responses 委托。
 
 #### Schema
 
@@ -27479,7 +27479,7 @@ Schema name: `LiveResponseCreateParam`
 
 ### session.close
 
-请求关闭 Live 会话。终止 `session.closed` 事件包含关闭原因和最终用量信息。
+请求关闭 Live 会话。该终止 `session.closed` 事件包含关闭原因和最终使用情况。
 
 #### Schema
 
@@ -27574,7 +27574,7 @@ Schema name: `LiveSessionCloseParam`
 
 ### session.started
 
-当 Live 会话已开始时返回。包含已解析的会话配置，包括服务端默认值。
+在 Live 会话已开始时返回。包含已解析的会话配置，包括服务端默认值。
 
 #### Schema
 
@@ -31124,7 +31124,7 @@ Schema name: `LiveSessionStarted`
 
 ### session.updated
 
-在接受 Live 会话更新时返回。包含更新后已解析的会话配置。
+在 Live 会话更新被接受时返回。包含更新后已解析的会话配置。
 
 #### Schema
 
@@ -34680,7 +34680,7 @@ Schema name: `LiveSessionUpdated`
 
 ### session.input_audio.muted
 
-当 session.input_audio.mute 命令被接受时返回。输入音频不再发送到模型；边带音频反射继续进行。
+在接受 session.input_audio.mute 命令时返回。此后不再将输入音频发送给模型；旁路音频反射继续进行。
 
 #### Schema
 
@@ -34789,7 +34789,7 @@ Schema name: `LiveInputAudioMuted`
 
 ### session.input_audio.unmuted
 
-在 session.input_audio.unmute 命令被接受时返回。输入音频会再次发送给模型。
+在接受到 session.input_audio.unmute 命令时返回。输入音频再次发送给模型。
 
 #### Schema
 
@@ -34898,7 +34898,7 @@ Schema name: `LiveInputAudioUnmuted`
 
 ### session.instructions.appended
 
-当 session.instructions.append 命令被接受并进入 Live session 时间线时返回。该返回值用于确认已接收追加的指令，但并不保证模型已据此执行。
+当 session.instructions.append 命令被接受并加入 Live 会话时间线时返回。确认已追加这些指令，但不保证模型已据此执行。
 
 #### Schema
 
@@ -35045,7 +35045,7 @@ Schema name: `LiveInstructionsAppended`
 
 ### session.thinking.appended
 
-当 session.thinking.append 命令被接受并加入 Live 会话时间线时返回。仅确认已附加的推理上下文，不保证产生任何语音输出。
+当 session.thinking.append 命令被接受并加入 Live 会话时间线时返回。该返回仅确认新增的推理上下文已被接收，并不保证会产生任何语音输出。
 
 #### Schema
 
@@ -35192,7 +35192,7 @@ Schema name: `LiveThinkingAppended`
 
 ### session.commentary.appended
 
-当 session.commentary.append 命令被接受并加入 Live 会话时间线时返回。仅确认已添加该旁白，但不保证措辞完全一致，也不保证音频播放已完成。
+当 session.commentary.append 命令被接受并加入 Live 会话时间线时返回。用于确认已添加的解说内容，但不保证具体措辞或音频播放是否完成。
 
 #### Schema
 
@@ -35337,96 +35337,9 @@ Schema name: `LiveCommentaryAppended`
 }
 ```
 
-### session.input_audio.append
-
-从主传输接收的输入音频，在模型输入静音之前反射到 Live 边带连接。
-
-#### Schema
-
-Schema name: `(resource) live > (model) server_event > (schema) > (variant) 7`
-
-```json
-{
-  "(resource) live > (model) server_event > (schema) > (variant) 7": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/LiveServerEvent-2/oneOf/7",
-    "docstring": "Input audio received from the primary transport and reflected to a Live sideband connection before model-input muting.",
-    "ident": "SessionInputAudioAppend",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "audio"
-        },
-        {
-          "ident": "type"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) audio",
-      "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) type"
-    ]
-  },
-  "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) audio": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/LiveInputAudioAppend/properties/audio",
-    "deprecated": false,
-    "key": "audio",
-    "docstring": "Base64-encoded raw mono PCM16LE at 24 kHz received from the primary transport, reflected to the sideband before model-input muting. This server event uses the same audio key as the client command, but is not an acknowledgment of it.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/LiveInputAudioAppend/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The event type, always `session.input_audio.append`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/LiveInputAudioAppend/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "session.input_audio.append"
-        }
-      ]
-    },
-    "default": "session.input_audio.append",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) type > (member) 0"
-    ]
-  },
-  "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "session.input_audio.append"
-    }
-  }
-}
-```
-
-#### 示例
-
-```json
-{}
-```
-
 ### session.input_transcript.delta
 
-Live 会话中用户输入音频的转写片段。按交付顺序累积片段；这些事件不定义完整的轮次，也不包含 transcript-done 事件。
+Live 会话中用户输入音频的转写片段。按投递顺序累积这些片段；这些事件不定义完整的轮次，也不包含转写完成事件。
 
 #### Schema
 
@@ -35591,7 +35504,7 @@ Schema name: `LiveInputTranscriptDelta`
 
 ### session.output_transcript.delta
 
-Live 会话中助手输出音频的转录片段。按交付顺序累积片段；这些事件不定义完整的轮次，也不包含 transcript-done 事件。
+Live 会话中助手输出音频的转录片段。按送达顺序累积片段；这些事件不定义完整的轮次，也不包含转录完成事件。
 
 #### Schema
 
@@ -35756,7 +35669,7 @@ Schema name: `LiveOutputTranscriptDelta`
 
 ### session.delegation.created
 
-当 Live 模型将工作委托给你的应用或 Responses 后端时返回。包含委托元数据以及在工作被委托时该处在会话时间线上的位置。
+当 Live 模型将工作委托给你的应用或 Responses 后端时返回。包含委托元数据以及会话时间线上发生委托的位置。
 
 #### Schema
 
@@ -36056,7 +35969,7 @@ Schema name: `LiveDelegationCreated`
 
 ### response.event
 
-来自 Live 会话委托的后端的流式 Responses API 事件。使用外部 delegation_id 将嵌套流与其 Live 委托关联起来。
+来自 Live 会话委托后端的流式 Responses API 事件。请使用外层 delegation_id 将该嵌套流与其 Live 委托关联起来。
 
 #### Schema
 
@@ -36220,7 +36133,7 @@ Schema name: `LiveResponseEvent`
 
 ### session.usage.updated
 
-报告累计的实时音频用量，并在可用时报告最近的上下文窗口用量。已委托的 Responses 令牌用量会在 response.event 事件中单独报告。
+报告累计的实时音频使用情况，并在可用时报告最近一次上下文窗口的使用情况。委托的 Responses 令牌使用情况在 response.event 事件中单独报告。
 
 #### Schema
 
@@ -36431,7 +36344,7 @@ Schema name: `LiveSessionUsageUpdated`
 
 ### session.closed
 
-在 Live 会话完成收尾后返回，包含关闭原因、最终会话快照以及累计的音频用量。若连接关闭时未返回该事件，则不能确认已成功收尾。
+在 Live 会话完成最终化后返回,包含关闭原因、最终的会话快照以及累计的音频使用情况。连接关闭时若未返回此事件,则不能确认已成功完成最终化。
 
 #### Schema
 
@@ -40410,9 +40323,9 @@ Schema name: `LiveErrorEvent`
 }
 ```
 
-### 信息
+### info
 
-关于 Live 会话的信息性通知，例如应用于前端数据通道的事件权限。
+关于 Live 会话的通知信息，例如应用于前端数据通道的事件权限。
 
 #### Schema
 
@@ -40556,13 +40469,103 @@ Schema name: `LiveInfoEvent`
 }
 ```
 
-### transport.dtmf.received
+### session.input_audio.append
 
-来自主叫方的 SIP DTMF 按键。仅传递给边带观察者。
+从主传输接收的音频在模型输入静音之前被反射到 Live 边带连接。
 
 #### Schema
 
-Schema name: `(resource) live > (model) server_event > (schema) > (variant) 17`
+Schema name: `LiveInputAudioAppend`
+
+```json
+{
+  "(resource) live > (model) server_event > (schema) > (variant) 7": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/LiveServerEvent-2/oneOf/7",
+    "docstring": "Input audio received from the primary transport and reflected to a Live sideband connection before model-input muting.",
+    "ident": "SessionInputAudioAppend",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "audio"
+        },
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) audio",
+      "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) type"
+    ]
+  },
+  "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) audio": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/LiveInputAudioAppend/properties/audio",
+    "deprecated": false,
+    "key": "audio",
+    "docstring": "Base64-encoded raw mono PCM16LE at 24 kHz received from the primary transport, reflected to the sideband before model-input muting. This server event uses the same audio key as the client command, but is not an acknowledgment of it.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": false,
+    "nullable": false,
+    "schemaType": "string",
+    "children": []
+  },
+  "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) type": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/LiveInputAudioAppend/properties/type",
+    "deprecated": false,
+    "key": "type",
+    "docstring": "The event type, always `session.input_audio.append`.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/LiveInputAudioAppend/properties/type",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "session.input_audio.append"
+        }
+      ]
+    },
+    "default": "session.input_audio.append",
+    "optional": false,
+    "nullable": false,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) live > (model) server_event > (schema) > (variant) 7 > (property) type > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "session.input_audio.append"
+    }
+  }
+}
+```
+
+#### 示例
+
+```json
+{
+  "type": "session.input_audio.append",
+  "audio": "AACAAIAAAIAAAP9/AIAAgA=="
+}
+```
+
+### transport.dtmf.received
+
+来自呼叫方的 SIP DTMF 按键。仅传递给旁路监听者。
+
+#### Schema
+
+Schema name: `LiveTransportDTMFReceived`
 
 ```json
 {
@@ -40659,16 +40662,20 @@ Schema name: `(resource) live > (model) server_event > (schema) > (variant) 17`
 #### 示例
 
 ```json
-{}
+{
+  "type": "transport.dtmf.received",
+  "event_id": "event_dtmf_1",
+  "event": "5"
+}
 ```
 
 ### transport.dtmf.send
 
-由托管工具成功发送的 SIP DTMF 按键。仅传递给边带观察者，这不是客户端命令。
+由 托管工具 成功发送的 SIP DTMF 按键。仅传递给边带观察者；这不是客户端命令。
 
 #### Schema
 
-Schema name: `(resource) live > (model) server_event > (schema) > (variant) 18`
+Schema name: `LiveTransportDTMFSend`
 
 ```json
 {
@@ -40765,16 +40772,20 @@ Schema name: `(resource) live > (model) server_event > (schema) > (variant) 18`
 #### 示例
 
 ```json
-{}
+{
+  "type": "transport.dtmf.send",
+  "event_id": "event_dtmf_2",
+  "event": "#"
+}
 ```
 
 ### transport.ringing
 
-呼出的 SIP 通话链路正在响铃或提供早期媒体。仅投递给旁路观察者。
+出站 SIP 提供商的通话正在响铃或提供早期媒体。仅传递给带外观察者。
 
 #### Schema
 
-Schema name: `(resource) live > (model) server_event > (schema) > (variant) 19`
+Schema name: `LiveTransportRinging`
 
 ```json
 {
@@ -40868,16 +40879,20 @@ Schema name: `(resource) live > (model) server_event > (schema) > (variant) 19`
 #### 示例
 
 ```json
-{}
+{
+  "type": "transport.ringing",
+  "event_id": "event_call_1",
+  "session_id": "live_u0_123"
+}
 ```
 
 ### transport.answered
 
-出站 SIP 提供商侧已应答并建立媒体。仅向旁路观察者投递。
+出站 SIP 提供商通道已应答并建立媒体。仅交付给边带观察者。
 
 #### Schema
 
-Schema name: `(resource) live > (model) server_event > (schema) > (variant) 20`
+Schema name: `LiveTransportAnswered`
 
 ```json
 {
@@ -40971,16 +40986,20 @@ Schema name: `(resource) live > (model) server_event > (schema) > (variant) 20`
 #### 示例
 
 ```json
-{}
+{
+  "type": "transport.answered",
+  "event_id": "event_call_2",
+  "session_id": "live_u0_123"
+}
 ```
 
 ### transport.failed
 
-异步外向 SIP 建立失败。仅传递给旁带观察者。
+异步出站 SIP 建立失败。仅发送给旁路观察者。
 
 #### Schema
 
-Schema name: `(resource) live > (model) server_event > (schema) > (variant) 21`
+Schema name: `LiveTransportFailed`
 
 ```json
 {
@@ -41183,5 +41202,15 @@ Schema name: `(resource) live > (model) server_event > (schema) > (variant) 21`
 #### 示例
 
 ```json
-{}
+{
+  "type": "transport.failed",
+  "event_id": "event_call_4",
+  "session_id": "live_u0_123",
+  "error": {
+    "type": "call_error",
+    "code": "provider_invite_failed",
+    "message": "provider rejected the call",
+    "param": ""
+  }
+}
 ```
