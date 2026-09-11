@@ -357,105 +357,92 @@ Wait for `session.started` before sending further WebSocket commands. WebRTC sta
 
 ### Start a WebSocket fork
 
-Set `OPENAI_API_KEY` and `OPENAI_LIVE_SESSION_ID` to your API key and stored source session ID. These examples confirm startup and then close the fork. To continue the conversation, send and receive audio after `session.started` using the [WebSocket connection flow](https://developers.openai.com/api/docs/guides/voice-websockets?api=live). See the [fork WebSocket reference](https://developers.openai.com/api/reference/resources/live/fork-websocket) for the startup fields and events.
+Set `OPENAI_API_KEY`. The examples use the stored source session ID saved by your application. They confirm startup and then close the fork. To continue the conversation, send and receive audio after `session.started` using the [WebSocket connection flow](https://developers.openai.com/api/docs/guides/voice-websockets?api=live). See the [fork WebSocket reference](https://developers.openai.com/api/reference/resources/live/fork-websocket) for the startup fields and events.
 
 ```javascript
 import OpenAI from "openai";
 import { ForksWS } from "openai/resources/live/forks/ws";
 
-const sourceSessionId = process.env.OPENAI_LIVE_SESSION_ID;
-if (!sourceSessionId) throw new Error("Set OPENAI_LIVE_SESSION_ID");
-
-const ws = new ForksWS(new OpenAI(), { session_id: sourceSessionId });
-let finalized = false;
-try {
-  for await (const event of ws) {
-    if (event.type === "open") {
-      ws.send({ type: "session.start", session: {} });
-    } else if (event.type === "error") {
-      throw event.error;
-    } else if (event.type === "message") {
-      if (event.message.type === "session.started") {
-        console.log("Fork ready:", event.message.session.id);
-        // This startup example closes the fork after confirming it is ready.
-        ws.send({ type: "session.close" });
-      } else if (event.message.type === "session.closed") {
-        console.log("Final usage:", event.message.usage);
-        finalized = true;
-        break;
+async function forkSession(sourceSessionId) {
+  const ws = new ForksWS(new OpenAI(), { session_id: sourceSessionId });
+  let finalized = false;
+  try {
+    for await (const event of ws) {
+      if (event.type === "open") {
+        ws.send({ type: "session.start", session: {} });
+      } else if (event.type === "error") {
+        throw event.error;
+      } else if (event.type === "message") {
+        if (event.message.type === "session.started") {
+          console.log("Fork ready:", event.message.session.id);
+          // This startup example closes the fork after confirming it is ready.
+          ws.send({ type: "session.close" });
+        } else if (event.message.type === "session.closed") {
+          console.log("Final usage:", event.message.usage);
+          finalized = true;
+          break;
+        }
       }
     }
+    if (!finalized) throw new Error("Connection closed before session.closed");
+  } finally {
+    ws.close();
   }
-  if (!finalized) throw new Error("Connection closed before session.closed");
-} finally {
-  ws.close();
 }
 ```
 
 ```python
-import os
-
 from openai import OpenAI
 
-client = OpenAI()
-source_session_id = os.environ["OPENAI_LIVE_SESSION_ID"]
 
-with client.live.forks.connect(session_id=source_session_id) as connection:
-    connection.session.start(session={})
-    finalized = False
-    for event in connection:
-        if event.type == "session.started":
-            print("Fork ready:", event.session.id)
-            # This startup example closes the fork after confirming it is ready.
-            connection.session.close()
-        elif event.type == "session.closed":
-            print("Final usage:", event.usage)
-            finalized = True
-            break
-        elif event.type == "error":
-            raise RuntimeError(event.error.message)
-    if not finalized:
-        raise RuntimeError("Connection closed before session.closed")
+def fork_session(source_session_id: str) -> None:
+    client = OpenAI()
+    with client.live.forks.connect(session_id=source_session_id) as connection:
+        connection.session.start(session={})
+        finalized = False
+        for event in connection:
+            if event.type == "session.started":
+                print("Fork ready:", event.session.id)
+                # This startup example closes the fork after confirming it is ready.
+                connection.session.close()
+            elif event.type == "session.closed":
+                print("Final usage:", event.usage)
+                finalized = True
+                break
+            elif event.type == "error":
+                raise RuntimeError(event.error.message)
+        if not finalized:
+            raise RuntimeError("Connection closed before session.closed")
 ```
 
 
 ### Start a WebRTC fork
 
-Create a new SDP offer in your frontend and send it to your backend. The following backend examples read that offer from the file named by `OPENAI_LIVE_SDP_OFFER_FILE` and fork the stored `OPENAI_LIVE_SESSION_ID`:
+Create a new SDP offer in your frontend and send it to your backend. The following backend examples use that offer and the stored source session ID from your application:
 
 ```javascript
 import OpenAI from "openai";
-import { readFile } from "node:fs/promises";
 
-const sourceSessionId = process.env.OPENAI_LIVE_SESSION_ID;
-const offerFile = process.env.OPENAI_LIVE_SDP_OFFER_FILE;
-if (!sourceSessionId || !offerFile) {
-  throw new Error("Set OPENAI_LIVE_SESSION_ID and OPENAI_LIVE_SDP_OFFER_FILE");
+async function forkSession(sourceSessionId, offerSdp) {
+  const client = new OpenAI();
+  const fork = await client.live.sessions.fork(sourceSessionId, {
+    transport: { type: "webrtc", sdp: offerSdp },
+  });
+  console.log(JSON.stringify(fork));
 }
-const offerSdp = await readFile(offerFile, "utf8");
-
-const client = new OpenAI();
-const fork = await client.live.sessions.fork(sourceSessionId, {
-  transport: { type: "webrtc", sdp: offerSdp },
-});
-console.log(JSON.stringify(fork));
 ```
 
 ```python
-import os
-from pathlib import Path
-
 from openai import OpenAI
 
-client = OpenAI()
-source_session_id = os.environ["OPENAI_LIVE_SESSION_ID"]
-offer_sdp = Path(os.environ["OPENAI_LIVE_SDP_OFFER_FILE"]).read_bytes().decode()
 
-fork = client.live.sessions.fork(
-    source_session_id,
-    transport={"type": "webrtc", "sdp": offer_sdp},
-)
-print(fork.model_dump_json())
+def fork_session(source_session_id: str, offer_sdp: str) -> None:
+    client = OpenAI()
+    fork = client.live.sessions.fork(
+        source_session_id,
+        transport={"type": "webrtc", "sdp": offer_sdp},
+    )
+    print(fork.model_dump_json())
 ```
 
 
@@ -465,34 +452,31 @@ Use the new session ID for later sideband connections and session controls. Keep
 
 ### Download a recording
 
-After the stored recording is finalized, download its audio with `GET /v1/live/sessions/{session_id}/content`. The response is binary stereo WAV, with input audio in the left channel and output audio in the right channel. Set `OPENAI_LIVE_SESSION_ID` to the stored session ID. These examples stream the response to `recording.wav`:
+After the stored recording is finalized, download its audio with `GET /v1/live/sessions/{session_id}/content`. The response is binary stereo WAV, with input audio in the left channel and output audio in the right channel. The examples use the stored session ID from your application and stream the response to `recording.wav`:
 
 ```javascript
 import OpenAI from "openai";
 import { createWriteStream } from "node:fs";
 import { pipeline } from "node:stream/promises";
 
-const sessionId = process.env.OPENAI_LIVE_SESSION_ID;
-if (!sessionId) throw new Error("Set OPENAI_LIVE_SESSION_ID");
-
-const client = new OpenAI();
-const response = await client.live.sessions.downloadRecording(sessionId);
-if (!response.body) throw new Error("Recording response has no body");
-await pipeline(response.body, createWriteStream("recording.wav"));
+async function downloadRecording(sessionId) {
+  const client = new OpenAI();
+  const response = await client.live.sessions.downloadRecording(sessionId);
+  if (!response.body) throw new Error("Recording response has no body");
+  await pipeline(response.body, createWriteStream("recording.wav"));
+}
 ```
 
 ```python
-import os
-
 from openai import OpenAI
 
-client = OpenAI()
-session_id = os.environ["OPENAI_LIVE_SESSION_ID"]
 
-with client.live.sessions.with_streaming_response.download_recording(
-    session_id
-) as response:
-    response.stream_to_file("recording.wav")
+def download_recording(session_id: str) -> None:
+    client = OpenAI()
+    with client.live.sessions.with_streaming_response.download_recording(
+        session_id
+    ) as response:
+        response.stream_to_file("recording.wav")
 ```
 
 

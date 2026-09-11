@@ -98,13 +98,21 @@ Successful responses include a short-lived bearer token:
   "issued_token_type": "urn:ietf:params:oauth:token-type:access_token",
   "token_type": "Bearer",
   "expires_in": 3600,
+  "expires_at": 1789045200,
   "scope": "api.model.read api.model.request"
 }
 ```
 
+The response includes these expiration fields for both JWT and X.509 exchanges:
+
+| Field        | Type    | Description                                                                                                                                        |
+| ------------ | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `expires_in` | Integer | Access-token lifetime in seconds, measured from issuance (`iat`). Time spent processing or delivering the response consumes part of this lifetime. |
+| `expires_at` | Integer | Absolute expiration as a Unix timestamp in seconds since January 1, 1970, at 00:00:00 UTC. Equals the issued access token's `exp` claim.           |
+
 The `scope` property is returned only when the resolved mapping has permissions. Access tokens expire after at most one hour. A JWT exchange token never outlives its external subject token, and an X.509 exchange token never outlives the verified client certificate. Token exchange doesn't return a refresh token.
 
-The `expires_in` value of `3600` in the example is illustrative. The returned lifetime can be shorter when the verified client certificate expires sooner.
+The expiration values in the example are illustrative. The returned lifetime can be shorter when the external subject token or verified client certificate expires sooner. For scheduling another exchange, see [token renewal guidance](https://developers.openai.com/api/docs/guides/workload-identity-federation#renew-the-access-token).
 
 ## Token exchange errors
 
