@@ -392,6 +392,62 @@ for item in response_cfg.output:
         # *** End Patch
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+input = <<~PROMPT
+  Add a cancel button next to the save button in app/page.tsx.
+  Current file contents:
+  export default function Page() { return <button>Save</button>; }
+PROMPT
+response = client.responses.create(
+  model: "gpt-5.3-codex", input: input,
+  tools: [{type: :apply_patch}], parallel_tool_calls: false
+)
+response.output.each do |item|
+  pp(item.operation) if item.is_a?(OpenAI::Responses::ResponseApplyPatchToolCall)
+end
+
+APPLY_PATCH_GRAMMAR = <<~GRAMMAR
+
+  start: begin_patch hunk+ end_patch
+  begin_patch: "*** Begin Patch" LF
+  end_patch: "*** End Patch" LF?
+
+  hunk: add_hunk | delete_hunk | update_hunk
+  add_hunk: "*** Add File: " filename LF add_line+
+  delete_hunk: "*** Delete File: " filename LF
+  update_hunk: "*** Update File: " filename LF change_move? change?
+
+  filename: /(.+)/
+  add_line: "+" /(.*)/ LF -> line
+
+  change_move: "*** Move to: " filename LF
+  change: (change_context | change_line)+ eof_line?
+  change_context: ("@@" | "@@ " /(.+)/) LF
+  change_line: ("+" | "-" | " ") /(.*)/ LF
+  eof_line: "*** End of File" LF
+
+  %import common.LF
+
+GRAMMAR
+
+response = client.responses.create(
+  model: "gpt-5.3-codex", input: input,
+  tools: [{
+    type: :custom, name: "apply_patch",
+    description: "Apply a patch to update files.",
+    format: {type: :grammar, syntax: :lark, definition: APPLY_PATCH_GRAMMAR}
+  }],
+  parallel_tool_calls: false
+)
+response.output.each do |item|
+  puts(item.input) if item.is_a?(OpenAI::Responses::ResponseCustomToolCall)
+end
+```
+
 
 Patches objects the Responses API tool can be implemented by following this [example](https://github.com/openai/openai-agents-python/blob/main/examples/tools/apply_patch.py) and patches from the freeform tool can be applied with the logic in our canonical GPT-5 [apply_patch.py](https://github.com/openai/openai-cookbook/blob/main/examples/gpt-5/apply_patch.py%20) implementation.
 
@@ -555,6 +611,37 @@ PROMPT_TOOL_USE_DIRECTIVE = (
     "- Strictly avoid raw `cmd`/terminal for Git operations. Use the dedicated "
     "`git` tool instead."
 )
+```
+
+```ruby
+require "json"
+
+GIT_TOOL = {
+  "type" => "function",
+  "name" => "git",
+  "description" => "Execute a git command in the repository root. Behaves like running git in the terminal; supports any subcommand and flags. The command can be provided as a full git invocation (e.g., `git status -sb`) or just the arguments after git (e.g., `status -sb`).",
+  "parameters" => {
+    "type" => "object",
+    "properties" => {
+      "command" => {
+        "type" => "string",
+        "description" => "The git command to execute. Accepts either a full git invocation or only the subcommand/args."
+      },
+      "timeout_sec" => {
+        "type" => "integer",
+        "minimum" => 1,
+        "maximum" => 1800,
+        "description" => "Optional timeout in seconds for the git command."
+      }
+    },
+    "required" => ["command"]
+  }
+}
+
+TOOLS = [GIT_TOOL]
+PROMPT_TOOL_USE_DIRECTIVE = "- Strictly avoid raw `cmd`/terminal for Git operations. Use the dedicated `git` tool instead."
+puts(JSON.generate(TOOLS))
+puts(PROMPT_TOOL_USE_DIRECTIVE)
 ```
 
 

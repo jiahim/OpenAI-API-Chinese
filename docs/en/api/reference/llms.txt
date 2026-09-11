@@ -92,6 +92,9 @@ Each entry has a Markdown twin at `/api/reference/<slug>.md`.
 - [Image generation streaming events](https://developers.openai.com/api/reference/resources/images/generation-streaming-events.md): OpenAI API streaming event reference.
 - [Images](https://developers.openai.com/api/reference/resources/images.md): OpenAI API endpoint reference.
 - [Images — Create Variation](https://developers.openai.com/api/reference/resources/images/methods/create_variation.md): OpenAI API endpoint method reference.
+- [Live fork WebSocket](https://developers.openai.com/api/reference/resources/live/fork-websocket.md): OpenAI API streaming event reference.
+- [Live primary WebSocket](https://developers.openai.com/api/reference/resources/live/primary-websocket.md): OpenAI API streaming event reference.
+- [Live sideband WebSocket](https://developers.openai.com/api/reference/resources/live/sideband-websocket.md): OpenAI API streaming event reference.
 - [Models](https://developers.openai.com/api/reference/resources/models.md): OpenAI API endpoint reference.
 - [Models — Delete](https://developers.openai.com/api/reference/resources/models/methods/delete.md): OpenAI API endpoint method reference.
 - [Models — List](https://developers.openai.com/api/reference/resources/models/methods/list.md): OpenAI API endpoint method reference.

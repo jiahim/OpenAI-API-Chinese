@@ -1,82 +1,82 @@
 # 使用 GPT-4.1
 
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。通过在页面 URL 后追加 `.md` 即可获得文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。你可以在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 简介
 
-GPT-4.1 系列模型相较 GPT-4o 在编码、指令遵循和长上下文能力方面迈出了重要一步。在本提示指南中，我们汇总了一系列来自大量内部测试的重要提示技巧，帮助开发者充分发挥这一新模型系列的改进能力。
+GPT-4.1 模型系列在编码、指令遵循和长上下文能力上相较 GPT-4o 实现了显著飞跃。在本提示词指南中，我们汇集了通过大量内部测试提炼的一系列重要提示词技巧，帮助开发者充分发挥这一新模型系列所具备的改进能力。
 
-许多典型的最佳实践仍然适用于 GPT-4.1，例如提供上下文示例、让指令尽可能具体清晰，以及通过提示引导规划以最大化模型智能。然而，我们预计要充分发挥该模型的能力，需要进行一定的提示调整。GPT-4.1 经过训练，能够比其前代模型更严格、更字面化地遵循指令；前代模型往往更自由地从用户和系统提示中推断意图。不过，这也意味着 GPT-4.1 具有高度的可控性，能够响应明确指定的提示——如果模型行为与你的预期不同，几乎只需用一句坚定且明确的陈述说明你期望的行为，就足以将模型引导回正轨。
+许多常见最佳实践依然适用于 GPT-4.1，例如提供上下文示例、让指令尽可能具体清晰，以及通过提示词引导规划以最大化模型智能。然而，我们预计要充分发挥该模型的潜力，仍然需要进行一定的提示词迁移。GPT-4.1 在训练中比其前身更严格、更字面地遵循指令，而此前的模型往往会更自由地从用户和系统提示词中推断意图。但与此同时，这也意味着 GPT-4.1 高度可引导，能很好地响应明确具体的提示词——如果模型行为与你预期不符，几乎总能用一句话坚定且明确地说明你期望的行为，从而将模型引导回正轨。
 
-请继续浏览这些可供参考的提示示例，并请记住，虽然这些指导具有广泛的适用性，但没有任何建议是万能的。AI 工程本质上是一门经验性学科，大语言模型本质上是非确定性的；除了遵循本指南外，我们还建议构建信息丰富的评估并经常迭代，以确保你的提示工程改动确实为你的用例带来收益。
+请继续阅读下文的提示词示例以作参考，并请记住，尽管本指南具有广泛的适用性，但没有任何建议是放之四海而皆准的。AI 工程本质上是一门经验性学科，大语言模型本质上也是非确定性的；除遵循本指南外，我们还建议构建信息丰富的评测，并经常迭代，以确保你的提示词工程改动确实为你的使用场景带来了收益。
 
-## 新增功能
+## 最新动态
 
-- 比之前的 GPT 模型更贴近原文、更忠实地遵循指令
-- 更强的编码与长上下文行为
-- 在通过 tools 字段传入 schema 时，更强的 API 原生工具调用能力 `tools` tools 字段
-- 面向智能体工作流与 diff 生成的提示词迁移指引
+- 比之前的 GPT 模型更贴近、更准确地遵循指令
+- 更强的编程和长上下文表现
+- 在通过 `tools` 字段传入 schema 时，更好的原生 API 工具调用能力
+- 面向智能体工作流的提示词迁移指引与 diff 生成
 
 ## 迁移快速入门
 
-- 将模型标识符更新为 `gpt-4.1`.
+- 将模型 slug 更新为 `gpt-4.1`.
 - 根据你的集成方式，使用 Responses API 或 Chat Completions API。
 - 移除与推理相关的参数；GPT-4.1 是非推理模型。
-- 通过 API 传入工具 schema `tools` 字段，而不是将工具定义注入到提示中。
-- 审阅提示中是否按字面意思遵循指令，必要时添加明确的持久性和工具使用规则，并通过评估验证更改。
+- 通过 API 的 `tools` 字段传入工具模式，而不是将工具定义注入到提示中。
+- 审查提示是否严格遵循字面指令，必要时添加明确的持久化和工具使用规则，并通过评估验证更改。
 
-## 模型、API 与功能更新
+## 模型、API 和功能更新
 
-- GPT-4.1 系列包括 `gpt-4.1`, `gpt-4.1-mini`，以及 `gpt-4.1-nano`.
-- GPT-4.1 具有 1M token 的上下文窗口，并且在不进行推理步骤的情况下保持低延迟。
+- GPT-4.1 系列包含 `gpt-4.1`, `gpt-4.1-mini`，以及 `gpt-4.1-nano`.
+- GPT-4.1 拥有 1M token 的上下文窗口，并且在不进行推理步骤的情况下具有低延迟。
 - 该系列支持 Responses API 和 Chat Completions API。
 - GPT-4.1 和 GPT-4.1 mini 支持监督微调。
 - 支持的工具包括函数调用、网页搜索、文件搜索、图像生成、代码解释器和远程 MCP。
 
 
-## 提示词最佳实践
+## Prompting best practices
 
-### 1. 智能体工作流
+### 1. Agentic Workflows
 
-GPT-4.1 是构建智能体工作流的理想起点。在模型训练中，我们着重提供多样化的智能体问题求解轨迹，并且该模型的智能体评测框架在 SWE-bench Verified 上的非推理模型中达到了业界领先水平，解决了 55% 的问题。
+GPT-4.1 是构建智能体工作流的绝佳选择。在模型训练中，我们着重提供多样化的智能体问题解决轨迹，并且我们为该模型打造的智能体框架在 SWE-bench Verified 上的非推理模型中达到了业界领先的性能，可解决 55% 的问题。
 
 ### 系统提示提醒
 
-为了充分利用 GPT-4.1 的智能体能力，我们建议在所有 智能体 提示中包含三种关键类型的提醒。以下提示是专门为智能体编码 工作流 优化的，但可以轻松修改以适用于一般的智能体用例。
+为了充分利用 GPT-4.1 的智能体能力，我们建议在所有 智能体 提示中包含三类关键提醒。以下提示针对智能体编码 工作流 进行了专门优化，但可以轻松修改以适用于一般的智能体用例。
 
-1. Persistence（持久性）：用于让模型理解自己正在进入一个多轮对话回合，避免过早地把控制权交还给用户。我们的示例如下：
+1. Persistence（持续性）：这能确保模型理解自己正在进入一个多消息轮次，并防止它过早地将控制权交还给用户。我们的示例如下：
 
 ```text
 You are an agent - please keep going until the user’s query is completely resolved, before ending your turn and yielding back to the user. Only terminate your turn when you are sure that the problem is solved.
 ```
 
-2. Tool-calling（工具调用）：用于鼓励模型充分利用其工具，降低其产生幻觉或猜测答案的可能性。我们的示例如下：
+2. Tool-calling（工具调用）：这能鼓励模型充分利用其工具，并降低它产生幻觉或猜测答案的可能性。我们的示例如下：
 
 ```text
 If you are not sure about file content or codebase structure pertaining to the user’s request, use your tools to read files and gather the relevant information: do NOT guess or make up an answer.
 ```
 
-3. Planning \[optional\]: 如果需要，可确保模型以文本形式对每次工具调用进行显式的规划与反思，而不是通过串联一系列仅有工具调用的方式直接完成任务。我们的示例如下：
+3. Planning \[optional\]:如果需要，它能确保模型在文本中明确地对每次工具调用进行规划和反思，而不是仅通过链式调用一系列工具来完成任务。我们的示例如下：
 
 ```text
 You MUST plan extensively before each function call, and reflect extensively on the outcomes of the previous function calls. DO NOT do this entire process by making function calls only, as this can impair your ability to solve the problem and think insightfully.
 ```
 
-GPT-4.1 经过训练，能够在智能体场景中非常紧密地遵循用户指令和系统提示。该模型紧密遵循了这三条简单指令，并使我们的内部 SWE-bench Verified 得分提升了近 20% \- 因此，我们强烈鼓励在任何 智能体 提示开头加入涵盖上述三类内容的明确提醒。总体而言，我们发现这三条指令可以将模型从类似聊天机器人的状态转变为更加“主动”的 智能体，自主且独立地推动交互向前发展。
+GPT-4.1 在智能体场景下经过训练，能够非常贴近地遵循用户指令和系统提示。该模型严格遵循了这三条简单指令，并使我们的内部 SWE-bench Verified 分数提升了近 20%。 \- 因此，我们强烈建议在任何 智能体 提示的开头添加清晰的提醒，覆盖上述三类指令。总体而言，我们发现这三条指令会将模型从聊天机器人式的状态转变为更加“主动”的 智能体，自主且独立地推动交互向前发展。
 
 ### 工具调用
 
-相比之前的模型，GPT-4.1 接受了更多关于有效使用 OpenAI API 请求中作为参数传入的工具的训练。我们建议开发者仅使用 tools 字段来传递工具，而不要像过去一些人所做的那样，手动将工具描述注入到提示中，并为工具调用编写单独的解析器。这是最小化错误并确保模型在工具调用轨迹中保持分布内的最佳方式 \- 在我们自己的实验中，我们观察到使用 API 解析的工具描述相比手动将 schema 注入到系统提示中，SWE-bench Verified 通过率提升了 2%。
+与之前的模型相比，GPT-4.1 接受了更多关于有效利用通过 OpenAI API 请求作为参数传入的工具的训练。我们建议开发者仅使用 tools 字段传递工具，而不是像一些开发者在过去所做的那样，手动将工具描述注入到 prompt 中并为工具调用编写单独的解析器。这是最大限度减少错误并确保模型在工具调用轨迹中保持分布内的最佳方式 \- 在我们自己的实验中，我们观察到使用 API 解析的工具描述相对于手动将 schema 注入系统提示，SWE-bench Verified 通过率提升了 2%。
 
-开发者应为工具取一个能清晰表明其用途的名称，并在工具的 "description" 字段中添加清晰、详细的描述。类似地，对于每个工具参数，也要依靠良好的命名和描述来确保正确的使用。如果你的工具特别复杂，并且希望提供工具用法的示例，我们建议你在系统提示中创建一个 `# Examples` 部分，并将示例放在那里，而不是将它们添加到 "description" 字段中——该字段应保持详尽但相对简洁。提供示例有助于指明何时使用工具、是否在工具调用时附带用户文本，以及针对不同输入应使用哪些参数。记住，你可以使用 [Prompt Playground](https://platform.openai.com/playground) 来获得新工具定义的良好起点。
+开发者应当为工具起一个清晰的名字以表明其用途，并在工具的 "description" 字段中添加清晰、详细的描述。类似地，对于每个工具参数，也应通过良好的命名和描述来确保正确使用。如果你的工具特别复杂，并且希望提供工具使用示例，我们建议你在系统提示中创建一个 `# Examples` 章节来放置这些示例，而不是将它们添加到 "description" 字段中；该字段应当保持详尽但相对简洁。提供示例有助于说明何时使用工具、是否在工具调用中附带用户文本，以及针对不同输入应使用哪些参数。请记住，你可以使用 [Prompt Playground](https://platform.openai.com/playground) 中的“Generate Anything”来为新工具定义获取一个良好的起点。
 
-### 提示诱导规划与思维链
+### 提示引导的规划与思维链
 
-如前所述，开发者可以选择性地提示使用 GPT-4.1 构建的智能体在工具调用之间进行规划和反思，而不是以不间断的顺序静默调用工具。GPT-4.1 不是推理模型 \- 这意味着它在回答之前不会产生内部的思维链 \- 但在提示中，开发者可以通过使用上文所示 Planning 提示组件的任何变体来诱导模型产生显式的、逐步的计划。这可以看作是模型“边想边说”。在我们对 SWE-bench Verified 智能体任务的实验中，诱导显式规划使通过率提高了 4%。
+如前所述，开发者可以选择性地提示使用 GPT-4.1 构建的智能体在工具调用之间进行规划和反思，而不是以不间断的顺序静默调用工具。GPT-4.1 不是推理模型 \- 这意味着它在回答之前不会产生内部思维链 \- 但是在提示中，开发者可以通过使用上述 Planning 提示组件的任何变体来引导模型生成显式的、逐步的计划。这可以看作模型“在出声思考”。在我们对 SWE-bench Verified 智能体任务的实验中，引导显式规划使通过率提高了 4%。
 
 ### 示例提示：SWE-bench Verified
 
-下面，我们将分享我们在 SWE-bench Verified 上取得最高分所使用的智能体提示词，其中包含关于 工作流 和问题解决策略的详细说明。这种通用模式可用于任何智能体任务。
+下面，我们分享在 SWE-bench Verified 上取得最高分所使用的智能体提示，其中包含关于工作流和解决问题的详细策略说明。这种通用模式可用于任何智能体任务。
 
 ```python
 from openai import OpenAI
@@ -469,15 +469,15 @@ puts(response.output_text)
 
 ### 2. 长上下文
 
-GPT-4.1 拥有高性能的 1M token 输入上下文窗口，可用于多种长上下文任务，包括结构化文档解析、重排序、在忽略无关上下文的情况下筛选相关信息，以及利用上下文进行多跳推理。
+GPT-4.1 拥有性能强劲的 1M token 输入上下文窗口，可用于多种长上下文任务，包括结构化文档解析、重排序、在忽略无关上下文的同时选取相关信息，以及利用上下文执行多跳推理。
 
-### 最佳上下文大小
+### Optimal Context Size
 
-在我们的完整 1M token 上下文中，大海捞针评估表现出非常出色的性能，并且我们观察到在同时混合相关与不相关的代码以及其他文档的复杂任务上，性能也相当强劲。然而，当需要检索的项目数量增多，或需要基于整个上下文状态进行复杂推理（例如执行图搜索）时，长上下文性能可能会下降。
+我们在长达 1M token 的完整上下文的大海捞针评估中观察到非常好的性能，并且在涉及相关和无关代码及其他文档混合的复杂任务中也观察到了非常强的性能。然而，随着需要检索的内容增多，或者需要进行需要了解整个上下文状态的复杂推理（例如执行图搜索），长上下文性能可能会下降。
 
-### Tuning Context Reliance
+### 调优上下文依赖度
 
-考虑回答你的问题可能需要的外部世界知识与内部世界知识的组合。有时让模型运用自身知识来关联概念或进行逻辑跳跃很重要，而在其他情况下则应仅使用提供的上下文
+考虑回答你的问题可能需要的外部世界知识与内部世界知识的混合。有时让模型运用自身的部分知识来关联概念或进行逻辑跳跃是重要的，而在其他情况下，则最好仅使用所提供的上下文
 
 ```text
 # Instructions
@@ -489,13 +489,13 @@ GPT-4.1 拥有高性能的 1M token 输入上下文窗口，可用于多种长�
 
 ### 提示词组织
 
-在长上下文使用场景中，指令和上下文的位置会影响性能。如果你的提示中包含较长的上下文，理想的做法是将指令同时放在所提供上下文的开头和结尾处，因为我们发现这种方式的性能优于仅放在上方或下方。如果你希望指令只出现一次，那么放在所提供上下文上方比下方效果更好。
+在长上下文使用场景下，指令和上下文的位置会影响性能。如果你的提示中包含长上下文，理想的做法是将指令同时放在所提供上下文的首尾两端，因为我们的研究表明这样做比仅放在上方或下方效果更好。如果你倾向于只保留一次指令，那么放在所提供的上下文上方比放在下方效果更好。
 
 ### 3. 思维链
 
-如上所述，GPT-4.1 不是推理模型，但提示模型逐步思考（即所谓的“思维链”）可以成为让模型将问题拆分为更易处理的子问题、逐一求解并提升整体输出质量的有效方式，代价是会使用更多输出 token，从而带来更高的成本和延迟。该模型经过了针对智能体推理和真实世界问题解决的训练，因此无需过多提示即可表现良好。
+如上所述，GPT-4.1 不是推理模型，但提示模型逐步思考（即“思维链”）可以有效地让模型将问题拆解为更易处理的片段、逐个解决并提升整体输出质量，代价是会因使用更多输出 token 而带来更高的成本和延迟。该模型经过训练，能够在智能体式推理和现实问题求解方面表现出色，因此无需大量提示即可获得良好效果。
 
-我们建议你在提示末尾使用以下这条基础的思维链指令作为起点：
+我们建议在提示末尾使用以下基础的思维链指令作为起点：
 
 ```text
 ...
@@ -503,9 +503,9 @@ GPT-4.1 拥有高性能的 1M token 输入上下文窗口，可用于多种长�
 First, think carefully step by step about what documents are needed to answer the query. Then, print out the TITLE and ID of each document. Then, format the IDs into a list.
 ```
 
-在此基础上，你应当通过审视具体示例和评估中的失败案例来改进思维链 (CoT) 提示，并使用更明确的指令来解决系统性的规划和推理错误。在不受约束的 CoT 提示中，模型尝试的策略可能存在差异；如果你观察到某种方法效果良好，可以将该策略固化到提示中。一般来说，错误往往源于误解用户意图、上下文收集或分析不足，以及分步思考不够充分或不正确，因此请留意这些问题，并尝试用更有针对性的指令加以解决。
+在此基础上，你应通过审视具体示例和评估中的失败案例，并使用更明确的指令来纠正系统性的规划和推理错误，从而改进思维链（CoT）提示。在未加约束的 CoT 提示中，它尝试的策略可能会有所不同；如果你观察到某种效果良好的方法，可以在提示中将其固化为策略。一般来说，错误往往源于误解用户意图、上下文收集或分析不足，以及逐步思考不充分或不正确，因此请留意这些问题，并通过更具针对性的指令加以改进。
 
-下面是一个示例提示，它指示模型在开始作答前更有条理地分析用户意图并考虑相关上下文。
+下面是一个示例提示，它指示模型在着手作答之前，更具条理地分析用户意图并考虑相关上下文。
 
 ```text
 # Reasoning Strategy
@@ -526,35 +526,35 @@ First, think carefully step by step about what documents are needed to answer th
 
 ### 4. 指令遵循
 
-GPT-4.1 表现出卓越的指令遵循能力，开发者可以利用这一点来精准塑造并控制其特定用例的输出。开发者通常会广泛地为智能体推理步骤、响应语气和风格、工具调用信息、输出格式、需要避免的话题等内容编写提示。然而，由于该模型会更严格地遵循指令，开发者可能需要明确指明该做什么或不该做什么。此外，为其他模型优化的现有提示可能无法直接套用于此模型，因为现有指令会被更严格地遵循，原本被强烈推断出的隐含规则不再被如此强烈地推断出来。
+GPT-4.1 表现出出色的指令遵循能力，开发者可以利用这一点针对具体用例精确地塑造和控制输出。开发者通常会大量使用提示来引导智能体推理步骤、回复语气和风格、工具调用信息、输出格式、需要避免的主题等。然而，由于该模型对指令的遵循更加字面化，开发者可能需要就“应当做什么”以及“不应当做什么”提供明确说明。此外，为其他模型优化的现有提示可能无法直接用于此模型，因为现有指令会被更严格地遵循，隐含规则也不会再被强烈地推断出来。
 
 ### 推荐的工作流
 
-以下是我们推荐的提示词中指令开发和调试的工作流：
+以下是我们推荐的用于在提示词中开发和调试指令的工作流：
 
-1. 首先用一个整体的“回复规则”或“指令”章节，提供高层级的指导要点和项目符号列表。
-2. 如果想修改更具体的行为，可以新增一个章节来细化该类别，例如 `# Sample Phrases`.
-3. 如果希望模型在其工作流中遵循特定步骤，请添加一个有序列表并指示模型按这些步骤执行。
-4. 如果行为仍不符合预期：
-   1. 检查是否存在冲突、不够明确或错误的指令与示例。如果存在冲突的指令，GPT-4.1 倾向于遵循更靠近提示末尾的那一条。
-   2. 添加能够展示期望行为的示例，并确保示例中展示的所有重要行为也在规则中加以说明。
-   3. 通常无需使用全大写或奖励、小费等其他激励手段。我们建议先不使用这些技巧，只有在你的特定提示确实必要时再采用。请注意，如果现有提示中已经使用了这些技巧，可能会导致 GPT-4.1 过于严格地遵循它们。
+1. 从一个总体的“Response Rules”（响应规则）或“Instructions”（指令）章节开始，提供高层指引和要点列表。
+2. 如果你希望调整更具体的行为，可以新增一个章节来为该类别指定更多细节，例如 `# Sample Phrases`.
+3. 如果你希望模型在其工作流中遵循特定步骤，请添加一个有序列表，并指示模型按这些步骤执行。
+4. 如果行为仍未按预期工作：
+   1. 检查是否存在相互冲突、表述模糊或错误的指令与示例。如果指令相互冲突，GPT-4.1 通常会遵循更靠近提示末尾的那一条。
+   2. 添加能够体现期望行为的示例；确保示例中展示的所有重要行为也都在规则中得到说明。
+   3. 通常没有必要使用全大写或其他诸如“利诱”“小费”之类的激励手段。我们建议先不使用这些技巧，仅在你的特定提示确有需要时再考虑引入。请注意，如果你的现有提示中已经包含这些技巧，可能会导致 GPT-4.1 对它们关注得过于严格。
 
-_请注意，使用你常用的 AI 驱动 IDE 对于迭代优化提示非常有帮助，包括检查一致性或冲突、补充示例，或进行统一的更新（例如新增一条指令并相应更新其他指令以体现该指令）。_
+_请注意，使用你首选的 AI 驱动 IDE 对迭代提示非常有帮助，包括检查一致性或冲突、添加示例，或者进行连贯的更新（例如添加一条指令并更新相关指令以演示该指令）。_
 
 ### 常见失败模式
 
-这些失败模式并非 GPT-4.1 独有，但我们在此处列出它们，以便于大家了解并进行调试。
+这些失败模式并非 GPT-4.1 所独有，但我们在此处分享它们以提升整体认知并便于调试。
 
-- 指示模型始终遵循特定行为，有时会产生不良影响。例如，如果告诉模型“你必须在回复用户之前先调用工具”，那么当模型没有足够信息时，可能会幻觉出工具输入或使用 null 值调用工具。补充说明“如果你没有足够的信息来调用工具，请向用户询问你需要的信息”应当能缓解这个问题。
-- 当提供示例短语时，模型可能会逐字引用这些短语，从而开始让用户感到重复。确保你指示模型根据需要变换这些短语。
-- 在没有具体指示的情况下，一些模型可能会急于提供额外的文本来解释它们的决定，或在响应中输出过多不必要的格式。应当提供指示并辅以示例来帮助缓解这种情况。
+- 指示模型始终遵循某种特定行为，有时可能产生不良副作用。例如，如果告诉模型“在向用户回复之前必须先调用一个工具”，那么当模型缺乏足够信息时，它们可能会臆造工具输入或使用 null 值调用工具。可以添加“如果信息不足以调用工具，请向用户询问所需的信息”来缓解这一问题。
+- 当提供示例短语时，模型可能会逐字使用这些引用，导致回复听起来对用户而言重复机械。请确保指示模型在必要时变换措辞。
+- 如果没有明确指示，某些模型可能会急于提供额外文本来解释其决策，或在回复中输出超出预期的格式化内容。请提供说明并辅以示例以缓解此问题。
 
-### 示例提示：客户服务
+### 示例提示：客服
 
-这演示了一个虚构的客户服务智能体的最佳实践。请注意规则的多样性、具体性、使用额外章节提供更多细节，以及通过示例来展示融合了所有先前规则的精确行为。
+这演示了一个虚构的客户服务智能体的最佳实践。请注意规则的多样性、具体性、为提供更多细节而使用的额外章节，以及用于展示精确行为的示例，该示例融合了所有先前的规则。
 
-尝试运行以下 notebook 单元格——你应该会同时看到一条用户消息和一次工具调用，其中用户消息以问候语开头，然后回显其回答，再提及即将调用工具。可以尝试修改指令来塑造模型行为，或者尝试其他用户消息，以测试指令遵循效果。
+尝试运行以下 notebook 单元——你应该会看到一条用户消息和一次工具调用，用户消息应以问候语开头，然后回显他们的回答，接着说明他们即将调用工具。可以尝试修改指令来塑造模型行为，或使用其他用户消息，以测试指令遵循的表现。
 
 ```python
 SYS_PROMPT_CUSTOMER_SERVICE = """You are a helpful customer service agent working for NewTelco, helping a user efficiently fulfill their request while adhering closely to provided guidelines.
@@ -812,7 +812,7 @@ puts(response.output_text)
 
 ### 提示结构
 
-作为参考，这里有一个很好的起点，可用于构建你的提示词结构。
+作为参考，这里有一个良好的起点可用于构建你的提示。
 
 ```text
 # Role and Objective
@@ -833,14 +833,14 @@ puts(response.output_text)
 # Final instructions and prompt to think step by step
 ```
 
-根据需要添加或删除部分，并通过试验来确定最适合你使用场景的方案。
+根据你的需要添加或删除各个部分，并通过实验确定对你的使用场景而言最优的方案。
 
 ### 分隔符
 
-以下是一些为你的提示选择最佳分隔符的通用指南。有关该上下文类型的特殊注意事项，请参阅长上下文（Long Context）部分。
+以下是一些用于为你的提示选择最佳分隔符的通用指南。有关该上下文类型的特殊注意事项，请参阅长上下文部分。
 
-1. Markdown：我们建议你从这里开始，并为主要的章节与子章节（包括更深层级，至 H4 及以上）使用 Markdown 标题。必要时使用行内反引号或反引号代码块精确包裹代码，并使用标准的编号列表或项目符号列表。
-2. XML：XML 的表现同样出色，并且此模型对 XML 中信息的遵循度已得到改进。XML 便于精确包裹某个章节（包括起始与结束），可以为标签添加元数据以提供额外上下文，并且支持嵌套。下面是一个示例，展示如何使用 XML 标签在示例章节中嵌套示例，并为每个示例提供输入和输出：
+1. Markdown：我们建议从这里开始，并使用 Markdown 标题来组织主要章节和子章节（包括更深层级的标题，到 H4+）。使用内联反引号或反引号代码块精确包裹代码，并根据需要使用标准的编号或项目符号列表。
+2. XML：这些标签格式的表现也很好，并且我们在此模型中改进了对 XML 信息的遵循程度。XML 便于精确包裹一段包含起始和结束的内容，可向标签添加元数据以提供额外上下文，并支持嵌套。以下是使用 XML 标签在示例章节中嵌套示例的示例，每个示例都包含输入和输出：
 
 ```text
 <examples>
@@ -851,31 +851,31 @@ puts(response.output_text)
 </examples>
 ```
 
-3. JSON 结构化程度高，模型对其理解良好，尤其在编程场景中。不过 JSON 可能更冗长，并且需要字符转义，这会带来额外开销。
+3. JSON 高度结构化，且在编程场景中模型对其理解良好。然而它可能更冗长，并且需要字符转义，这会增加额外开销。
 
-专门针对向输入上下文添加大量文档或文件的指导：
+针对向输入上下文添加大量文档或文件的专门指南：
 
 - XML 在我们的长上下文测试中表现良好。
   - 示例： `<doc id='1' title='The Fox'>The quick brown fox jumps over the lazy dog</doc>`
-- 该格式由 Lee et al. ( 提出（[参考](https://arxiv.org/pdf/2406.13121)),在我们的长上下文测试中也表现良好。
+- 该格式由 Lee 等人（[ref](https://arxiv.org/pdf/2406.13121)）提出，在我们的长上下文测试中也表现良好。
   - 示例： `ID: 1 | TITLE: The Fox | CONTENT: The quick brown fox jumps over the lazy dog`
-- JSON 表现尤其不佳。
+- JSON 表现尤其糟糕。
   - 示例： `[{'id': 1, 'title': 'The Fox', 'content': 'The quick brown fox jumped over the lazy dog'}]`
 
-该模型经过训练，能够稳健地理解多种格式的结构。通常，你可以自行判断，考虑哪种方式能让信息清晰并对模型“突出”。例如，如果你检索的文档包含大量 XML，基于 XML 的分隔符效果可能较差。
+该模型经过训练,能够稳健地理解多种格式的结构。通常,你需要自行判断,并思考哪种方式能提供清晰的信息并引起模型的“注意”。例如,如果你检索的文档包含大量 XML,那么基于 XML 的分隔符效果可能较差。
 
 ### 注意事项
 
-- 在某些个别情况下，我们观察到模型在生成非常冗长、重复的输出时会出现抵抗行为，例如逐个分析数百个项目。如果你的用例确实需要这样做，请明确指示模型完整输出这些信息，并考虑拆分问题或改用更简洁的方法。
-- 我们曾遇到一些罕见的并行工具调用结果不正确的案例。建议你进行测试，如果发现问题，可考虑将 [parallel_tool_calls](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-parallel_tool_calls) 参数设置为 false。
+- 在某些孤立情况下，我们观察到模型在生成非常长且重复的输出时会表现出抗拒，例如逐个分析数百个项目。如果你的用例确实需要这样做，请强烈指示模型完整输出这些信息，并考虑拆分问题或使用更简洁的方法。
+- 我们注意到在极少数情况下，并行工具调用会出现错误。建议对此进行测试，如果遇到问题，可以考虑将 [parallel_tool_calls](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-parallel_tool_calls) 参数设置为 false。
 
-### 附录：生成与应用文件差异（diff）
+### 附录：生成与应用文件差异
 
-开发者反馈，准确且格式规范的 diff 生成能力是支撑编码相关任务的关键能力。为此，GPT-4.1 系列相比之前的 GPT 模型大幅提升了 diff 能力。此外，尽管 GPT-4.1 在给定清晰指令和示例的情况下，对任何格式的 diff 生成都表现出色，我们仍在此开源一种推荐的 diff 格式，模型已针对该格式进行了广泛训练。我们希望这能特别帮助刚刚入门的开发者，省去自行创建 diff 时的大量猜测工作。
+开发者向我们反馈，准确且格式规范的 diff 生成能力是支撑编码相关任务的关键能力。为此，GPT-4.1 系列相较于此前的 GPT 模型在 diff 能力上有显著提升。此外，GPT-4.1 在根据清晰指令和示例生成任意格式的 diff 方面表现出色，我们在此开源一种推荐的 diff 格式，模型已针对该格式进行了大量训练。我们希望对于刚起步的开发者来说，这将省去大量自行创建 diff 时的猜测工作。
 
-### Apply Patch
+### 应用补丁
 
-请参阅下方示例，了解一个正确应用我们推荐的工具调用的提示。
+请参阅下面的示例，了解一个正确应用我们推荐工具调用的提示。
 
 ```python
 APPLY_PATCH_TOOL_DESC = """This is a custom utility that makes it more convenient to add, remove, move, or edit code files. `apply_patch` effectively allows you to execute a diff/patch against a file, but the format of the diff specification is unique to this task, so pay careful attention to these instructions. To use the `apply_patch` command, you should pass a message of the following structure as "input":
@@ -950,10 +950,83 @@ APPLY_PATCH_TOOL = {
 }
 ```
 
+```ruby
+require "json"
+
+APPLY_PATCH_TOOL_DESC = <<~PROMPT
+  This is a custom utility that makes it more convenient to add, remove, move, or edit code files. `apply_patch` effectively allows you to execute a diff/patch against a file, but the format of the diff specification is unique to this task, so pay careful attention to these instructions. To use the `apply_patch` command, you should pass a message of the following structure as "input":
+
+  %%bash
+  apply_patch <<"EOF"
+  *** Begin Patch
+  [YOUR_PATCH]
+  *** End Patch
+  EOF
+
+  Where [YOUR_PATCH] is the actual content of your patch, specified in the following V4A diff format.
+
+  *** [ACTION] File: [path/to/file] -> ACTION can be one of Add, Update, or Delete.
+  For each snippet of code that needs to be changed, repeat the following:
+  [context_before] -> See below for further instructions on context.
+  - [old_code] -> Precede the old code with a minus sign.
+  + [new_code] -> Precede the new, replacement code with a plus sign.
+  [context_after] -> See below for further instructions on context.
+
+  For instructions on [context_before] and [context_after]:
+  - By default, show 3 lines of code immediately above and 3 lines immediately below each change. If a change is within 3 lines of a previous change, do NOT duplicate the first change’s [context_after] lines in the second change’s [context_before] lines.
+  - If 3 lines of context is insufficient to uniquely identify the snippet of code within the file, use the @@ operator to indicate the class or function to which the snippet belongs. For instance, we might have:
+  @@ class BaseClass
+  [3 lines of pre-context]
+  - [old_code]
+  + [new_code]
+  [3 lines of post-context]
+
+  - If a code block is repeated so many times in a class or function such that even a single @@ statement and 3 lines of context cannot uniquely identify the snippet of code, you can use multiple `@@` statements to jump to the right context. For instance:
+
+  @@ class BaseClass
+  @@ 	def method():
+  [3 lines of pre-context]
+  - [old_code]
+  + [new_code]
+  [3 lines of post-context]
+
+  Note, then, that we do not use line numbers in this diff format, as the context is enough to uniquely identify code. An example of a message that you might pass as "input" to this function, in order to apply a patch, is shown below.
+
+  %%bash
+  apply_patch <<"EOF"
+  *** Begin Patch
+  *** Update File: pygorithm/searching/binary_search.py
+  @@ class BaseClass
+  @@     def search():
+  -          pass
+  +          raise NotImplementedError()
+
+  @@ class Subclass
+  @@     def search():
+  -          pass
+  +          raise NotImplementedError()
+
+  *** End Patch
+  EOF
+
+PROMPT
+
+tool = {
+  name: "apply_patch",
+  description: APPLY_PATCH_TOOL_DESC,
+  parameters: {
+    type: "object",
+    properties: {input: {type: "string", description: "The apply_patch command to execute."}},
+    required: ["input"]
+  }
+}
+puts(JSON.generate(tool))
+```
+
 
 ### 参考实现：apply_patch.py
 
-这是我们用作模型训练一部分的 apply_patch 工具的参考实现。你需要将其设为可执行文件，并可在以下位置使用： \`apply_patch\` 从模型将执行命令的 shell 中：
+下面是我们作为模型训练一部分使用的 apply_patch 工具的参考实现。你需要将其设为可执行文件，并可在模型将执行命令的 shell 中作为 \`apply_patch\` 使用：
 
 ```python
 #!/usr/bin/env python3
@@ -1491,11 +1564,11 @@ if __name__ == "__main__":
 ```
 
 
-### 其他有效的差异格式
+### 其他有效的 diff 格式
 
-如果你想尝试使用不同的 diff 格式，我们在测试中发现 Aider 的 polyglot 基准中所使用的 SEARCH/REPLACE diff 格式，以及一种不带内部转义的伪 XML 格式，两者都拥有较高的成功率。
+如果你想尝试使用其他 diff 格式，我们在测试中发现，Aider 的 polyglot 基准测试中使用的 SEARCH/REPLACE diff 格式，以及一种不进行内部转义的伪 XML 格式，都具有较高的成功率。
 
-这些 diff 格式有两个共同的关键特征：(1) 它们不使用行号；(2) 它们既提供要被替换的精确代码，也提供用来替换的精确代码，并在两者之间使用清晰的分隔符。
+这些 diff 格式有两个共同的关键特点：(1) 不使用行号；(2) 同时给出要被替换的精确代码以及用于替换的精确代码，并在两者之间使用清晰的分隔符。
 
 ````python
 SEARCH_REPLACE_DIFF_EXAMPLE = """

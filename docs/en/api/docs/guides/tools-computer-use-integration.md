@@ -2010,6 +2010,41 @@ def execute_in_sandbox(
     return observations
 ```
 
+```ruby
+require "net/http"
+
+def execute_in_sandbox(code, session_id, endpoint)
+  puts(code)
+  print("Run this code in the isolated runtime? Type yes: ")
+  unless $stdin.gets&.strip == "yes"
+    return [{type: "input_text", text: "The user declined this execution."}]
+  end
+  uri = URI(endpoint)
+  request = Net::HTTP::Post.new(uri)
+  request["Content-Type"] = "application/json"
+  token = ENV["OPENAI_EXAMPLE_CODE_EXECUTION_TOKEN"]
+  request["Authorization"] = "Bearer #{token}" if token
+  request.body = JSON.generate(session_id: session_id, language: "python", code: code)
+  response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https", open_timeout: 10, read_timeout: 30) do |http|
+    http.request(request)
+  end
+  response.value
+  payload = JSON.parse(response.body)
+  output = payload.is_a?(Hash) && payload["output"]
+  raise "The execution service returned no observations" unless output.is_a?(Array) && !output.empty?
+  output.map do |item|
+    raise "Invalid execution-service output item" unless item.is_a?(Hash)
+    if item["type"] == "input_text" && item["text"].is_a?(String)
+      {type: "input_text", text: item["text"]}
+    elsif item["type"] == "input_image" && item["image_url"].is_a?(String) && item["detail"] == "original"
+      {type: "input_image", image_url: item["image_url"], detail: "original"}
+    else
+      raise "Expected input_text or input_image with original detail"
+    end
+  end
+end
+```
+
 
 Combine the adapter with the [API loop](https://developers.openai.com/api/docs/guides/tools-computer-use#connect-your-own-runtime), then call `run_computer_use` in Python or `runComputerUse` in JavaScript with your endpoint and task. The loop preserves the runtime session and uses `previous_response_id` to continue the model conversation. It stops after 20 responses if the task has not finished.
 

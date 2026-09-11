@@ -1322,11 +1322,11 @@ Example outputs:
 
 This runnable example remains pinned to `gpt-image-2`. Use it as a baseline, then choose an available model and its supported request settings for your evaluation.
 
-The Python example below generates four logo variations and extracts a product onto a transparent background. Install the [OpenAI Python SDK](https://developers.openai.com/api/docs/libraries#install-an-official-sdk), set `OPENAI_API_KEY`, and save the [product photograph](https://developers.openai.com/images/platform/guides/image-prompting/shampoo.webp) as `input_images/shampoo.webp`. Live requests incur API usage charges.
+The examples below generate four logo variations and extract a product onto a transparent background. Install the [OpenAI SDK](https://developers.openai.com/api/docs/libraries#install-an-official-sdk) with `pip install openai` for Python or `gem install openai` for Ruby. Set `OPENAI_API_KEY` and save the [product photograph](https://developers.openai.com/images/platform/guides/image-prompting/shampoo.webp) as `input_images/shampoo.webp`. Live requests incur API usage charges.
 
 
 
-### View the Python example
+### View the complete example
 
 
   Generate and edit transparent assets
@@ -1387,6 +1387,28 @@ result = client.images.edit(
 Path("extract-product-gpt-image-2.png").write_bytes(
     base64.b64decode(result.data[0].b64_json)
 )
+```
+
+```ruby
+require "base64"
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+result = client.images.generate(
+  model: "gpt-image-2",
+  prompt: "Create an original logo for Field & Flour, a local bakery. Use warm, simple shapes on a fully transparent background, with clean alpha edges and no shadow or checkerboard.",
+  size: "1024x1536", quality: :medium, background: :transparent, output_format: :png, n: 4
+)
+Array(result.data).each_with_index do |item, index|
+  File.binwrite("logo-generation-#{index + 1}-gpt-image-2.png", Base64.strict_decode64(item.b64_json || raise("No PNG returned")))
+end
+result = client.images.edit(
+  model: "gpt-image-2", image: OpenAI::FilePart.new(Pathname("input_images/shampoo.webp"), content_type: "image/webp"),
+  prompt: "Extract the product onto a fully transparent background. Preserve its geometry and label, with clean edges and no shadow or restyling.",
+  size: "1024x1536", quality: :medium, background: :transparent, output_format: :png
+)
+File.binwrite("extract-product-gpt-image-2.png", Base64.strict_decode64(Array(result.data).fetch(0).b64_json || raise("No PNG returned")))
 ```
 
 

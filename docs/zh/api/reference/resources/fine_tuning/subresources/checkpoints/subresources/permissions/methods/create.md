@@ -1,12 +1,12 @@
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。如需页面的 Markdown 版本，请在页面 URL 后追加 `.md` 即可获取。
 
 ## 创建检查点权限
 
 **post** `/fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions`
 
-**注意：** 调用此端点需要使用 [管理员 API 密钥](../admin-api-keys).
+**注意：** 调用此端点需要 [管理员 API 密钥](/api/reference/resources/admin/subresources/organization/subresources/admin_api_keys).
 
-这使组织所有者能够将微调模型共享给组织内的其他项目。
+这使组织所有者可以与其组织中的其他项目共享微调模型。
 
 ### 路径参数
 
@@ -16,19 +16,19 @@
 
 - `project_ids: array of string`
 
-  要授予访问权限的项目标识符。
+  授予访问权限的项目标识符。
 
-### Returns
+### 返回值
 
 - `data: array of object { id, created_at, object, project_id }`
 
   - `id: string`
 
-    权限标识符，可在 API 端点中引用。
+    可在 API 端点中引用的权限标识符。
 
   - `created_at: number`
 
-    权限创建时的 Unix 时间戳（以秒为单位）。
+    创建该权限时的 Unix 时间戳（以秒为单位）。
 
   - `object: "checkpoint.permission"`
 
@@ -38,7 +38,7 @@
 
   - `project_id: string`
 
-    该权限所属的项目标识符。
+    该权限所属项目的标识符。
 
 - `has_more: boolean`
 

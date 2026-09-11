@@ -60,6 +60,68 @@ many concerns are glued together into one object, Items are distinct from one an
 
 Additionally, Chat Completions can return multiple parallel generations as `choices`, using the `n` param. In Responses, we've removed this param, leaving only one generation.
 
+
+
+  Chat Completions API
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+completion = client.chat.completions.create(
+    model="gpt-6-astra",
+    messages=[
+        {
+            "role": "user",
+            "content": "Write a one-sentence bedtime story about a unicorn.",
+        }
+    ],
+)
+
+print(completion.choices[0].message.content)
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+completion = client.chat.completions.create(
+  model: "gpt-6-astra",
+  messages: [{role: :user, content: "Write a one-sentence bedtime story about a unicorn."}]
+)
+puts(completion.choices.fetch(0).message.content)
+```
+
+  Responses API
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-6-astra",
+    input="Write a one-sentence bedtime story about a unicorn.",
+)
+
+print(response.output_text)
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-6-astra",
+  input: "Write a one-sentence bedtime story about a unicorn."
+)
+puts(response.output_text)
+```
+
+
+
+
 When you get a response back from the Responses API, the fields differ slightly.
 Instead of a `message`, you receive a typed `response` object with its own `id`.
 Responses are stored by default. Chat completions are stored by default for new accounts.

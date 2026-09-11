@@ -1,25 +1,25 @@
 # Shell
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 后追加 `.md` 来获取。
 
-shell 工具让模型能够在完整的终端环境中工作。我们通过 Responses API 支持本地执行和托管执行的 shell。
+shell 工具使模型能够在完整的终端环境中工作。我们支持本地执行的 shell，以及通过 Responses API 进行的托管执行。
 
-shell 工具让模型通过以下任一方式运行命令：
+shell 工具允许模型通过以下任一方式运行命令：
 
-- 由 OpenAI 管理的托管 shell 容器。
-- [本地 shell 运行时](#local-shell-mode) 由你自己托管和执行。
+- 由 OpenAI 管理的托管 Shell 容器。
+- [本地 Shell 运行时](#local-shell-mode) 由你自行托管和执行。
 
-Shell 可通过 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses)。使用。无法通过 Chat Completions API 使用。
+Shell 可通过 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses)。使用，不支持通过 Chat Completions API 使用。
 
-运行任意 shell 命令可能存在风险。请务必对执行进行沙箱隔离，
-  在可行的情况下应用白名单或黑名单，并记录工具活动以便
+运行任意 shell 命令可能存在风险。请始终在沙盒环境中执行，
+  在条件允许时使用允许列表或拒绝列表，并记录工具活动以便
   审计。
 
 ## 托管 shell 快速入门
 
-Hosted shell 是面向需要更丰富、可确定性处理的任务的原生且精简的选项，从运行计算到处理多媒体。
+Hosted shell 是一种原生且精简的选项，适合需要更丰富、确定性处理的任务，从运行计算到处理多媒体。
 
-使用 `container_auto` 当你希望 OpenAI 为该请求置备并管理一个容器时。
+使用 `container_auto` 当你希望 OpenAI 为该请求置备并管理容器时。
 
 使用 container_auto 的 Shell 工具
 
@@ -163,14 +163,14 @@ puts(response.output_text)
 
 ## 托管运行时详情
 
-- 运行时当前基于 `Debian 12` ，并且可能随时间变化。
-- 默认工作目录是 `/mnt/data`.
-- `/mnt/data` 始终存在，并且是支持的用户可下载制品路径。
+- Runtime 目前基于 `Debian 12` ，并可能随时间发生变化。
+- 默认工作目录为 `/mnt/data`.
+- `/mnt/data` 始终存在，是用户可下载产物的受支持路径。
 - 托管 shell 不支持交互式 TTY 会话。
-- 托管 shell 命令不会使用 `sudo`.
+- 托管 shell 命令不通过 `sudo`.
 - 当你的工作流需要时，你可以在容器内运行服务。
 
-当前预安装的语言包括：
+当前预装语言包括：
 
 - Python `3.11`
 - Node.js `22.16`
@@ -179,11 +179,11 @@ puts(response.output_text)
 - Ruby `3.1`
 - Go `1.23`
 
-## 在多个请求间复用容器
+## 跨请求复用容器
 
-如果你需要用于迭代工作流的长时间运行环境，可以创建一个容器，然后在后续的 Responses API 调用中引用它。
+如果你需要一个用于迭代工作流的长时间运行环境，可以创建一个容器，然后在后续的 Responses API 调用中引用它。
 
-### 1. 创建容器
+### 1. Create a container
 
 创建一个可复用的容器
 
@@ -285,7 +285,7 @@ puts(container.id)
 
 ### 2. 在 Responses 中引用容器
 
-将 shell 与 container_reference 配合使用
+使用 shell 和 container_reference
 
 ```bash
 curl -L 'https://api.openai.com/v1/responses' \
@@ -415,11 +415,11 @@ puts(response.output_text)
 
 ## 附加技能
 
-Skills 是可复用的、带版本管理的资源包，你可以在托管 shell 环境中挂载它们。它定义了可用的 skills，在 shell 执行时由模型决定是否调用它们。
+技能是可复用、有版本管理的资源包，可在托管 shell 环境中挂载。它定义了可用的技能，在 shell 执行时由模型决定是否调用它们。
 
-请参阅 [Skills 指南](https://developers.openai.com/api/docs/guides/tools-skills) 了解上传和版本管理的详细信息。
+请参阅 [Skills 指南](https://developers.openai.com/api/docs/guides/tools-skills) 了解上传与版本管理详情。
 
-创建带有已挂载 skills 的容器
+创建附带技能的容器
 
 ```bash
 curl -L 'https://api.openai.com/v1/containers' \
@@ -558,12 +558,12 @@ puts(container.id)
 
 托管容器默认没有出站网络访问权限。
 
-启用方法：
+若要启用：
 
-1. 管理员必须在控制台中配置你所在组织的允许列表。
+1. 管理员必须在自己的组织中配置控制台的允许列表。
 2. 你必须显式设置 `network_policy` 在请求中的容器环境上。
 
-带有网络白名单的 Shell 工具
+带有网络允许列表的 Shell 工具
 
 ```bash
 curl -L 'https://api.openai.com/v1/responses' \
@@ -752,32 +752,32 @@ puts(response.output_text)
 ```
 
 
-将域名加入白名单会引入安全风险，例如由提示注入导致的数据泄露
-  。仅将你信任且攻击者无法用于接收泄露数据的域名加入白名单。请仔细阅读
-  下方关于风险 [风险
-  和安全](#risks-and-safety) 部分，然后再使用此工具。
+将域名加入允许列表会带来安全风险，例如通过提示注入导致的数据泄露。仅将你信任且攻击者无法用于接收泄露数据的域名加入允许列表。在使用此工具之前，请仔细查看下方
+  中的“风险与安全”部分。仔细查看下方
+  与安全部分， [风险
+  与安全](#risks-and-safety) 部分，再使用此工具。
 
 ## 网络策略优先级
 
 当存在多个控件时：
 
 - 你的组织允许列表定义了完整的 `allowed_domains`.
-- Request 级 `network_policy` 进一步限制访问。
-- 当包含你所在组织允许列表之外的域名时，请求会失败。 `allowed_domains` 包含你的组织允许列表之外的域名。
+- 请求级别 `network_policy` 进一步限制访问。
+- 当请求 `allowed_domains` 中包含的组织允许列表之外的域名时，请求将失败。
 
 ## 数据保留与容器生命周期
 
-Hosted Shell 和 Code Interpreter 使用的托管容器可能会在容器处于活动状态时，将临时应用状态写入容器文件系统（由临时块存储提供支持）。容器数据会在容器到期或被显式删除时被删除。
+Hosted Shell 和 Code Interpreter 使用的托管容器在容器处于活动状态时，可能会将临时应用状态写入容器文件系统（由临时块存储提供支持）。容器数据会在容器过期或被显式删除时删除。
 
-有关数据控制的更多详情，请参阅 [ZDR 和数据驻留](https://developers.openai.com/api/docs/guides/your-data).
+有关数据控制的更多详细信息，请参阅 [ZDR 和数据驻留](https://developers.openai.com/api/docs/guides/your-data).
 
 ### 下载制品
 
-托管 shell 可以生成可下载的文件。使用与代码解释器相同的容器/文件 API 来检索在 `/mnt/data`.
+托管 Shell 可以生成可下载的文件。使用与代码解释器相同的容器/文件 API 来检索在 `/mnt/data`.
 
-### Additional data controls
+### 其他数据控制
 
-如果你希望内容和文件在托管生命周期内保持临时性，可以在请求中内联文件，并在容器中挂载内联技能。
+如果你希望内容和文件在托管生命周期内保持临时状态，可以在请求中以内联方式传入文件，并在容器中挂载内联技能。
 
 使用内联文件和内联技能
 
@@ -958,12 +958,39 @@ response = client.responses.create(
 print(response.output_text)
 ```
 
+```ruby
+require "base64"
+require "openai"
 
-对于后续请求，传入相同的 `container_id` 与 `container_reference`。在容器处于活动状态期间，挂载的技能和已有的容器文件仍然可用。
+client = OpenAI::Client.new
+inline_zip = Base64.strict_encode64(File.binread("csv_insights.zip"))
+base64_string = Base64.strict_encode64(File.binread("report.csv"))
+container = client.containers.create(
+  name: "inline-skill-container",
+  skills: [{
+    type: :inline,
+    name: "csv-insights",
+    description: "Summarize CSV files and produce a markdown report.",
+    source: {type: :base64, media_type: "application/zip", data: inline_zip}
+  }]
+)
+response = client.responses.create(
+  model: "gpt-6-astra",
+  tools: [{type: :shell, environment: {type: :container_reference, container_id: container.id}}],
+  input: [{role: :user, content: [
+    {type: :input_file, filename: "report.csv", file_data: "data:text/csv;base64,#{base64_string}"},
+    {type: :input_text, text: "Use the csv-insights skill to summarize report.csv."}
+  ]}]
+)
+puts(response.output_text)
+```
+
+
+对于后续请求，请传入相同的 `container_id` 以及 `container_reference`。在容器处于活动状态期间，已挂载的技能和容器中已有的文件仍然可用。
 
 ### 主动删除容器
 
-你可以在任务完成后显式删除容器，而不必等待非活动过期。
+工作完成后，你可以显式删除容器，而不必等待因不活动而到期。
 
 删除容器
 
@@ -1035,23 +1062,23 @@ puts("Deleted container_id")
 
 ## 域名密钥
 
-使用 `domain_secrets` 当你列表中的某个域名 `allowed_domains` 需要私有授权请求头时，例如 `Authorization: Bearer <token>`.
+使用 `domain_secrets` 当列表中的某个域名需要 `allowed_domains` 诸如以下之类的私有授权标头时 `Authorization: Bearer <token>`.
 
-每个密钥条目包含：
+每个密钥条目包括：
 
-- 目标域名
+- 目标域
 - 友好的密钥名称
 - 密钥值
 
 在运行时：
 
 - 模型和运行时看到的是占位符名称（例如， `$API_KEY`），而不是原始凭据。
-- 认证转换 sidecar 仅对经批准的目标应用原始密钥值。
-- 原始密钥值不会持久化在 API 服务器上，也不会出现在模型可见的上下文中。
+- 认证翻译 sidecar 仅对经过批准的目标应用原始密钥值。
+- 原始密钥值不会在 API 服务器上持久化，也不会出现在模型可见的上下文中。
 
-这使得助手能够在降低泄露风险的同时调用受保护的服务。
+这样可以让助手调用受保护的服务，同时降低泄漏风险。
 
-使用 domain_secrets 的 Shell 工具
+带 domain_secrets 的 Shell 工具
 
 ```bash
 curl -L 'https://api.openai.com/v1/responses' \
@@ -1278,9 +1305,9 @@ puts(response.output_text)
 
 ## 多轮工作流
 
-要在同一托管环境中继续工作，请复用该容器并传入 `previous_response_id`.
+若要在同一托管环境中继续工作，请复用容器并传入 `previous_response_id`.
 
-继续执行 shell 工作流
+继续 shell 工作流
 
 ```bash
 curl -L 'https://api.openai.com/v1/responses' \
@@ -1423,12 +1450,12 @@ puts(response.output_text)
 
 ## Responses 中的 Shell 输出
 
-托管 shell 和本地 shell 使用相同的输出项类型。Shell 运行由成对的输出项表示：
+Hosted shell 与 local shell 使用相同的输出项类型。Shell 运行通过成对的输出项来表示：
 
 - `shell_call`: 模型请求的命令。
 - `shell_call_output`: 命令输出和退出结果。
 
-Example shell_call item
+shell_call 示例项
 
 ```json
 {
@@ -1444,11 +1471,11 @@ Example shell_call item
 ```
 
 
-## 本地 Shell 模式
+## 本地 shell 模式
 
-你也可以在自己的本地运行时中执行 shell 命令来运行 `shell_call` actions 并将结果 `shell_call_output` 发送回模型。
+你也可以通过执行 `shell_call` 操作来在自己的本地运行环境中运行 shell 命令，并将 `shell_call_output` 结果发送回模型。
 
-当你需要对执行环境、文件系统访问或现有的内部工具链拥有完全控制权时，请使用此模式。
+当你需要完全控制执行环境、文件系统访问或现有的内部工具时，请使用此模式。
 
 本地 shell 请求
 
@@ -1563,11 +1590,11 @@ puts(response.output)
 ```
 
 
-当你收到 `shell_call` output items 时：
+当你收到 `shell_call` 输出项时:
 
-- 在你的运行时中执行所请求的命令。
-- 捕获输入 `stdout`, `stderr`，以及结果。
-- 将结果作为 `shell_call_output` 在下一次请求中返回。
+- 在运行时中执行所请求的命令。
+- 捕获 `stdout`, `stderr`，以及结果。
+- 将结果作为 `shell_call_output` 在下一个请求中返回。
 
 本地 shell 执行器示例
 
@@ -1735,7 +1762,7 @@ puts(ShellExecutor.new.run("printf shell-executor-ready"))
 ```
 
 
-shell_call_output 有效负载示例
+shell_call_output 负载示例
 
 ```json
 {
@@ -1763,13 +1790,13 @@ shell_call_output 有效负载示例
 ```
 
 
-有关旧版迁移的详细信息，请参阅 [本地 shell 指南](https://developers.openai.com/api/docs/guides/tools-local-shell).
+有关旧版迁移详情，请参阅较早的 [本地 shell 指南](https://developers.openai.com/api/docs/guides/tools-local-shell).
 
-## 使用本地 shell 和 Agents SDK
+## 使用 Agents SDK 本地 shell
 
-如果你使用的是 [Agents SDK](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)，你可以将你自己的 shell 执行器实现传递给 shell 工具辅助函数。
+如果你使用的是 [Agents SDK](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)，你可以将自己的 shell 执行器实现传递给 shell 工具辅助函数。
 
-将本地 shell 与 Agents SDK 配合使用
+在 Agents SDK 中使用本地 shell
 
 ```javascript
 import { Agent, run, withTrace, shellTool } from "@openai/agents";
@@ -1887,29 +1914,29 @@ if __name__ == "__main__":
 
 ## 处理常见错误
 
-- 如果某个命令超出你的执行超时时间，请返回超时结果并附上已捕获的部分输出。
-- 如果 `max_output_length` 存在于 `shell_call`，请将其包含到 `shell_call_output`.
-- 不要依赖交互式命令；shell 工具的执行应是非交互式的。
-- 保留非零退出输出，以便模型能够据此推理恢复步骤。
+- 如果某个命令超出你的执行超时时间，请返回超时结果，并包含已捕获的部分输出。
+- 如果 `max_output_length` 出现在 `shell_call`，中，请将其包含在 `shell_call_output`.
+- 不要依赖交互式命令；Shell 工具的执行应为非交互式。
+- 保留非零退出输出，以便模型能够推理恢复步骤。
 
 ## 风险与安全
 
-在容器中启用网络访问是一项强大的能力API，但也会带来显著的安全与数据治理风险。默认情况下网络访问并未启用。启用后，出站访问应严格限制在任务所需的可信域名范围内。
+在 Containers API 中启用网络访问是一项强大的能力，同时也会带来显著的安全与数据治理风险。默认情况下，网络访问并未启用。启用后，出站访问应严格限定在完成任务所需的可信域名范围内。
 
-启用网络访问的容器可以与第三方服务和软件包仓库交互。这会带来包括数据泄露、提示注入驱动的工具滥用以及超出预期边界的意外访问等风险。当策略范围宽泛、静态或执行不一致时，这些风险会进一步增加。
+启用网络的容器可以与第三方服务和软件包仓库交互。这会带来包括数据泄露、由提示注入驱动的工具滥用以及超出预期边界的意外访问等风险。当策略过于宽泛、静态或执行不一致时，这些风险会进一步加剧。
 
-#### 理解来自网络检索内容的提示注入风险
+#### 了解从网络检索内容中获取信息时的提示注入风险
 
-通过网络获取的任何外部内容都可能包含旨在操纵模型行为的隐藏指令。应将不可信的网络内容视为潜在对抗性内容，对于可能修改数据或系统的操作需要格外谨慎。
+通过网络获取的任何外部内容都可能包含意图操纵模型行为的隐藏指令。请将不受信任的网络内容视为潜在对抗性输入，并对可能修改数据或系统的操作保持额外谨慎。
 
-#### 仅连接到可信目标
+#### 仅连接到受信任的目标
 
-仅允许你信任并积极维护的域名。对于代理其他服务的中间方和聚合方需保持谨慎，在将其加入允许的域名列表之前，请先审查它们的数据处理和留存实践。
+仅允许你信任并积极维护的域名。对于代理到其他服务的中间方和聚合器，请谨慎处理，并在将它们添加到允许域名列表之前，审查其数据处理和数据保留做法。
 
-#### 在请求执行前后内置评审
+#### 在请求执行前后内置审核
 
-查看 Responses API 响应中提供的 shell 工具命令和执行输出。记录每个会话请求的主机和实际出站目标。定期查看日志，以验证访问模式是否符合预期、发现偏移并识别可疑行为。
+审查 shell 工具命令及其执行输出，这些内容在 Responses API 响应中提供。记录每次会话请求的主机和实际出站目的地。定期审查日志，以验证访问模式是否符合预期、检测偏差并识别可疑行为。
 
-#### 验证数据驻留与保留要求
+#### 验证数据驻留和保留要求
 
-[OpenAI 数据控制](https://developers.openai.com/api/docs/guides/your-data) 在 OpenAI 边界内生效。然而，通过网络连接传输到第三方服务的数据需遵循其数据保留策略。请确保外部端点符合你的驻留、保留和合规要求。
+[OpenAI 数据控制](https://developers.openai.com/api/docs/guides/your-data) 在 OpenAI 边界内生效。但是，通过网络连接传输给第三方服务的数据需遵循其数据保留策略。请确保外部端点满足你的数据驻留、保留和合规要求。

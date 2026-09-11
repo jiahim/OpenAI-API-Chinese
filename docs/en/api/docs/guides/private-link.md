@@ -156,6 +156,12 @@ client = OpenAI(
 )
 ```
 
+```ruby
+client = OpenAI::Client.new(
+  base_url: "https://southcentralus.privatelink.api.openai.com/v1"
+)
+```
+
 
 The SDK reads `OPENAI_API_KEY` from your environment.
 

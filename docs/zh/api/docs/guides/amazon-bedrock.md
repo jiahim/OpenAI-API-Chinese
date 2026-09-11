@@ -1,62 +1,54 @@
-# Amazon Bedrock 中的 OpenAI 模型
+# OpenAI models in Amazon Bedrock
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需完整文档索引,请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
-Amazon Bedrock 通过 AWS 托管的基础设施提供受支持的 OpenAI 模型
-。当你的组织希望将采购、身份、区域控制以及相关的云上运维
-保留在 AWS 中时，这种部署路径会很有用。
-AWS 中。
+Amazon Bedrock 在 AWS 托管的基础设施上运行受支持的 OpenAI 模型。
+使用本指南来比较 [OpenAI API 功能支持](#responses-api-feature-availability)
+并与 OpenAI SDK 集成。请使用本页链接的
+[AWS 文档](#availability-and-operations) 进行部署配置。
 
-Amazon Bedrock 的可用性与 OpenAI API 不同。在部署之前，请确认你
-  工作负载所支持的模型、AWS 区域、功能集以及计费方式。
-  部署。
+模型能力和 API 兼容性决定了你的应用可以
+  做什么。AWS 为你的 Bedrock 部署管理模型访问、区域可用性、路由、计费和
+  运维控制。
 
 ## Bedrock 可用性的工作原理
 
-Amazon Bedrock 中的OpenAI 模型通过 AWS 托管的部署路径运行，并提供
-Responses API 对受支持模型和能力的兼容性。
-你的应用仍然使用 OpenAI 模型行为，但周边
-云控制平面（包括账户访问、区域可用性和
-计费）由 AWS 负责。
+OpenAI 模型可通过两个 Amazon Bedrock 端点获取：
+`bedrock-runtime` 和 `bedrock-mantle`。两者都支持与 OpenAI 兼容的
+Responses 和 Chat Completions API，但其功能
+覆盖范围有所不同。
 
-在以下场景中使用 Bedrock：
+请根据应用所需的能力选择端点。例
+如，托管 网页搜索 目前需要使用 Mantle。请参阅本页的
+[端点差异](#endpoint-differences) 以及 AWS 的 [端点对比](https://docs.aws.amazon.com/bedrock/latest/userguide/endpoints.html) ，了解 Bedrock 特定功能和端点选择。
 
-- AWS 原生采购与计费。
-- AWS 托管的身份、访问与账户控制。
-- 面向具有云区域
-  需求的客户，在受支持的 AWS 区域部署。
+GPT-6 Astra 可通过 Bedrock Runtime 以及 Mantle 在
+  `us-west-2` （俄勒冈州）获取。本指南中的示例使用 GPT-5.6 Sol 在
+  `us-east-2`；在更改模型之前，请选择 Astra 支持的区域。
 
-当你需要最广泛的功能覆盖、最新的第一方平台能力，或 OpenAI API 中不可用的功能时，请直接使用
-最新的第一方平台能力，或 Bedrock 中不可用的功能时
-Bedrock。
+有关访问和设置，请参阅 AWS 的 [GPT-6 Astra 公告](https://aws.amazon.com/blogs/machine-learning/take-on-your-most-ambitious-work-with-gpt-6-astra-on-amazon-bedrock/) 和 [Runtime 端点说明](https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-mantle.html).
 
 ## 发起 Responses API 请求
 
-要通过 Amazon Bedrock 发送 OpenAI SDK 请求，请将客户端配置为
-你的部署所对应的 AWS 区域和模型 ID：
+这些示例使用 OpenAI SDK 与 Mantle 端点。请选择你的部署所使用的 AWS
+区域和模型 ID：
 
-- 带有 Bedrock provider 的客户端库会从 AWS 区域派生出一个区域性的 Mantle base URL
-  。JavaScript、Python、Go 和 Java provider 在本指南的示例中
-  `https://bedrock-mantle.us-east-2.api.aws/openai/v1` 使用了这一 URL。
-  `us-east-2` 示例。Ruby 示例则直接配置该 `/openai/v1`
-  endpoint，因为该 provider 的默认 `/v1` 路由不支持该模型
-  时，需要直接配置 SDK 端点，因为 .NET 开发工具包 未包含 Bedrock 提供方
-  该提供方不包含 Bedrock。
-- 使用带有此前缀的 Bedrock 模型 ID，例如 `openai.` 此前缀，例如
+- 带有 Bedrock 提供商的客户端库会根据 AWS 区域派生出一个区域性的 Mantle 基础 URL
+  根据 AWS 区域派生。JavaScript、Python、Go 和 Java 提供商使用
+  `https://bedrock-mantle.us-east-2.api.aws/openai/v1` 用于本指南的
+  `us-east-2` 示例。Ruby 示例直接配置此 `/openai/v1`
+  端点，因为提供商的默认 `/v1` 路由不支持
+  此模型。
+- 使用带有 `openai.` 前缀的 Bedrock 模型 ID，例如
   `openai.gpt-5.6-sol`.
 
-本示例使用 `openai.gpt-5.6-sol` 位于 `us-east-2`。请使用受支持的模型与
-AWS 区域组合来部署你的 Bedrock。
+示例使用 `openai.gpt-5.6-sol` 在 `us-east-2`。对于 Runtime，请遵循 AWS [Responses API 端点说明](https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-mantle.html) 来选择 base URL 和 inference profile。请勿在未检查 Runtime 要求的情况下重复使用 Mantle 模型 ID
+。
 
-下面的示例使用一个存储为
-`AWS_BEARER_TOKEN_BEDROCK`。的 Bedrock API 密钥。参见
-[Amazon Bedrock API 密钥](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys.html)
-了解如何生成和使用 Bedrock API 密钥。每个示例都会
-将环境中的令牌传递给对应语言的 Bedrock 提供方，或者
-对于 .NET，传递给区域 OpenAI 兼容端点。.NET SDK 目前
-尚未包含 Bedrock 提供方。
+以下示例使用一个存储为
+`AWS_BEARER_TOKEN_BEDROCK`。的 Bedrock API 密钥。请参阅 [Amazon Bedrock API 密钥](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys.html) ，了解如何生成和使用 Bedrock API 密钥。
 
-在使用任一 Java 示例之前，请先安装可选的 Java Bedrock 提供方：
+在使用任一 Java 示例之前，请先安装可选的 Java Bedrock 提供程序：
 
 ```xml
 <dependency>
@@ -230,13 +222,13 @@ curl "https://bedrock-mantle.us-east-2.api.aws/openai/v1/responses" \
 ```
 
 
-对于长时间运行的应用程序，建议使用标准的 AWS 凭证链，
-而不是静态的 bearer 令牌。JavaScript、Python、Go、Java 和 Ruby SDK 的
-提供方会解析最新的 AWS 凭证，并使用
-SigV4 对每个请求进行签名。该凭证链可以包含通过 `aws login`，配置的凭证、共享
+对于长时间运行的应用，更推荐使用标准的 AWS 凭证链，而不是静态 bearer 令牌。JavaScript、Python、Go、Java 和 Ruby SDK
+of a static bearer token. The JavaScript, Python, Go, Java, and Ruby 开发工具包
+提供程序会解析最新的 AWS 凭证，并使用
+SigV4 对每次请求尝试进行签名。该凭证链可以包含通过以下方式配置的凭证： `aws login`、共享
 配置文件、工作负载角色以及实例或容器凭证。
 
-在使用 AWS 凭证链示例之前，请先安装可选依赖：
+在使用此路径之前，请先为 AWS 凭证链示例安装可选依赖：
 此路径：
 
 ```shell
@@ -246,9 +238,9 @@ go get github.com/openai/openai-go/v3/bedrock
 bundle add aws-sdk-core
 ```
 
-.NET SDK 当前未提供等效的 Bedrock 提供程序或 AWS
-SigV4 身份验证策略。在 .NET 中使用 Bedrock API 密钥，或在应用程序需要时通过 AWS 支持的客户端发送签名
-HTTP 请求
+.NET SDK 目前尚未提供等效的 Bedrock 提供商或 AWS
+SigV4 身份验证策略。在 .NET 中使用 Bedrock API 密钥，或者在应用程序需要时通过 AWS 支持的客户端发送已签名的
+HTTP 请求来使用
 AWS 凭证链。
 
 使用 AWS 托管的 Bedrock 凭证发送请求
@@ -384,142 +376,129 @@ puts(response.output_text)
 ```
 
 
+## Responses API 功能可用性
+
+使用此矩阵来识别与 OpenAI API 之间的差异。可用性
+取决于具体的模型和端点；支持某个 API 并不意味着支持
+所有工具或响应模式。
+
+| 功能                | OpenAI API                    | Amazon Bedrock                |
+| ------------------------- | ----------------------------- | ----------------------------- |
+| 文本生成           | 可用                     | 可用                     |
+| 图像输入               | 可用                     | 可用                     |
+| 文件输入                | 可用                     | 可用                     |
+| 结构化输出        | 可用                     | 可用                     |
+| 函数调用          | 可用                     | 可用                     |
+| 异步工具调用 | 在支持的模型上可用 | 不可用                 |
+| 流式响应       | 可用                     | 可用                     |
+| WebSocket 连接     | 可用                     | 不可用                 |
+| 回合中途引导         | 在支持的模型上可用 | 不可用                 |
+| 上下文窗口            | 取决于模型               | 取决于模型               |
+| 推理努力程度          | 可用                     | 可用                     |
+| 推理更新         | 在支持的模型上可用 | 不可用                 |
+| Pro 模式                  | 在支持的模型上可用 | 不可用                 |
+| 持久化推理       | 在支持的模型上可用 | 在支持的模型上可用 |
+| 提示缓存            | 可用                     | 可用                     |
+| 程序化工具调用 | 在支持的模型上可用 | 不可用                 |
+| Multi-智能体               | 在支持的模型上提供 Beta      | 不可用                 |
+| 自定义工具              | 可用                     | 可用                     |
+| 客户端 `tool_search` | 可用                     | 可用                     |
+| 托管网页搜索         | 可用                     | 仅 Mantle                   |
+| 托管文件搜索        | 可用                     | 不可用                 |
+| 计算机使用              | 可用                     | 可用                     |
+| Shell 工具                | 可用                     | 不可用                 |
+| 图像生成工具     | 可用                     | 不可用                 |
+| 远程 MCP 服务器        | 可用                     | 不可用                 |
+
+异步工具调用（`async: true`）和推理更新
+(`configuration_update` 输入项）在 Amazon Bedrock 上不受支持。
+轮次中途引导需要 WebSockets，不能通过任何一个
+Bedrock 端点使用。
+
+客户端 `tool_search` 与托管工具和远程 MCP 服务器
+支持不同。托管的网页搜索通过 Mantle 提供；托管的文件搜索以及
+远程 MCP 服务器不可用。
+
+Computer use 在 Runtime 和 Mantle 上对支持的模型可用。你的
+应用执行计算机操作并将结果返回给模型；此
+功能不需要 Bedrock 托管的执行环境。
+
+在 Amazon Bedrock 上，GPT-5.4 和 GPT-5.5 支持 100 万 token 的上下文窗口；
+GPT-5.6 Sol、Terra、Luna 和 GPT-6 Astra 支持 1,050,000 tokens。请查阅 AWS [OpenAI 模型卡](https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards-openai.html) 以了解特定模型的限制。
+
+### 端点差异
+
+这些 Responses API 差异适用于在 Runtime 与 Mantle 之间进行选择时：
+
+| 功能                             | Bedrock Runtime                  | Mantle                                                                      |
+| -------------------------------------- | -------------------------------- | --------------------------------------------------------------------------- |
+| GPT-6 Astra                            | 可用                        | 可用区域 `us-west-2` （俄勒冈州）                                           |
+| 计算机使用                           | 在支持的模型上可用    | 在支持的模型上可用                                               |
+| 流式响应                    | 可用                        | 可用                                                                   |
+| 后台模式（`background: true`)   | 不可用                    | 可用，但受 [数据保留设置](#data-access-and-retention) |
+| 托管网页搜索                      | 不可用                    | 在支持的模型上可用                                               |
+| 继续使用 `previous_response_id` | 包含 `model` 在每次请求中 | 模型可继承自上一次响应                       |
+
+运行时需要 `model` 即使你提供了 `previous_response_id`。后台
+模式与流式传输是分开的，它并不描述异步函数
+调用。请参阅 AWS [Responses API 文档](https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-mantle.html) 以获取完整的端点契约。关于 网页搜索 权限和
+配置，请参阅 AWS [网页搜索 指南](https://docs.aws.amazon.com/bedrock/latest/userguide/web-search.html).
+
 ## 可用性与运维
 
-可用性取决于 AWS 区域和模型。首发支持范围比
-OpenAI API 更有限，因此请查看 [各 AWS 区域
-的模型支持情况](https://docs.aws.amazon.com/bedrock/latest/userguide/models-region-compatibility.html)
-，然后再进行部署。
+AWS 负责维护 Amazon Bedrock 的部署选项和可用性。请使用
+以下参考来选择并配置你的部署：
 
-Amazon Bedrock 在受支持的 AWS 区域中提供与 Responses API 兼容的推理，用于受支持的 OpenAI
-模型。AWS 负责身份验证、账户访问、
-采购与计费。
+| AWS 托管的关注点                           | AWS 文档                                                                                                                                                                                                                                                                                                                          |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 模型 ID 与支持的 API                  | [OpenAI 模型卡片](https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards-openai.html)                                                                                                                                                                                    |
+| 按 AWS 区域划分的模型和端点可用性 | [模型可用性](https://docs.aws.amazon.com/bedrock/latest/userguide/models-region-compatibility.html) 和 [端点可用性](https://docs.aws.amazon.com/bedrock/latest/userguide/endpoints-region-availability.html) |
+| 地理与全局请求路由         | [跨区域推理](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html)                                                                                                                                                                            |
+| 账户配额与提升请求          | [Amazon Bedrock 配额](https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html)                                                                                                                                                                                             |
 
-AWS 区域是物理部署位置，与 OpenAI 的数据
-驻留司法管辖区不同。有驻留要求的团队应
-评估 Bedrock 区域本身及相应的 AWS 条款。
+AWS 区域不是 OpenAI 数据驻留司法管辖范围。如果你的工作负载有
+位置要求，请查看推理配置文件的目标区域
+以及适用的 AWS 条款，而不仅仅看你的端点 URL 中的区域。
 
 ## 数据访问与保留
 
-Amazon Bedrock 使用相互独立的控制来分别管理操作员访问与数据保留：
+Amazon Bedrock 对操作员访问和数据保留使用单独的控制措施：
 
-- **[零操作员访问（ZOA）](https://aws.amazon.com/blogs/machine-learning/exploring-the-zero-operator-access-design-of-mantle/)**
-  意味着 AWS 操作员没有任何技术手段登录到 Mantle 的
-  底层计算系统或访问客户数据，包括推理
-  提示和补全。
-- **[零数据保留（ZDR）](https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html)**
-  意味着当有效保留模式为
-  时，AWS 不会将模型输入或输出写入持久化存储。 `none`.
+- **零运维访问（ZOA）** 意味着 AWS 运维人员没有任何技术手段
+  登录到 Mantle 的底层计算系统或访问其中的客户数据
+  。请参阅 AWS [ZOA 设计](https://aws.amazon.com/blogs/machine-learning/exploring-the-zero-operator-access-design-of-mantle/).
+- **零数据保留（ZDR）** 意味着当有效保留模式为
+  时，AWS 不会将请求或响应数据写入持久化存储 `none`.
 
-对于 Amazon Bedrock 中的 OpenAI 模型，当有效保留模式为时，AWS 不会与 OpenAI 共享请求或响应
-内容与 该公司 共享请求或响应 `default` 或 `none`.
+设置 `store: false` 并不能保证 ZDR。对于使用 Responses API 且有效保留模式为
+的请求，AWS 会拒绝 `none`,且 background `store: true`，模式不可用。
+模式不可用。
 
-[配置 Bedrock 数据
-保留](https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html#data-retention-configuration)
-（适用于你的 AWS 账户或项目）。
+对于 Amazon Bedrock 中的 OpenAI 模型，当有效保留模式为
+时，AWS 不会与 OpenAI 共享请求或响应内容 `default` 或 `none`.
+请参阅 AWS [数据保留文档](https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html) ，了解可用的模式、资格条件以及账户或项目配置。参见 [Amazon Bedrock 滥用检测](https://docs.aws.amazon.com/bedrock/latest/userguide/abuse-detection.html) ，了解针对特定模型的保留要求和例外情况。
 
-在 `default` 保留模式下，保留行为取决于模型和请求
-设置。对于特定的 OpenAI GPT 模型，AWS 会保留被分类器标记的流量
-最长 30 天，用于自动化离线滥用检测。Responses API 请求
-默认使用 `store: true` 。AWS 会保留响应（包括其输入和
-输出）30 天，以便你可以在后续请求中检索或引用它。
-请参阅 [Amazon Bedrock 滥用
-检测](https://docs.aws.amazon.com/bedrock/latest/userguide/abuse-detection.html)
-，了解当前的模型列表和保留详情。
-
-如果你需要对需要保留的模型获得完整的 ZDR，请联系你的 AWS
-客户经理以讨论资格。AWS 会针对每个账户评估 ZDR 访问权限
-和模型。如果 AWS 批准访问权限，请确认 `none` 出现在模型的
-`allowed_modes`，然后将账户或项目的保留模式设置为 `none`.
-设置 `store: false` 不能保证 ZDR。当生效的保留模式
-为 `none`，时，AWS 会拒绝 `store: true`，且后台模式不可用。
-
-如果 AWS 在图像输入中检测到疑似 CSAM，AWS 可以将标记的输入
-  或输出移出 ZOA 环境，并仅为判断其是否属于 CSAM 而进行存储和审查。AWS 还可能向国家
-  主管部门提交报告。
-  主管部门。
-
-## Responses API 功能可用性
-
-Amazon Bedrock 支持通过 Responses API 提供的部分能力
-通过 OpenAI API。下表描述的功能可用性截至
-以下日期。它不包括临时可用性和服务状态。
-
-以下信息反映了截至 2026/07/13 的功能可用性。
-  模型和区域的可用性也可能会变化。如需了解最新信息，请参阅
-  该 [Amazon Bedrock 中 OpenAI 模型的 AWS 文档
-  Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards-openai.html)
-  和 [各 AWS 区域
-  的模型支持情况](https://docs.aws.amazon.com/bedrock/latest/userguide/models-region-compatibility.html).
-
-| 能力                | OpenAI API                    | Amazon Bedrock                                    |
-| ------------------------- | ----------------------------- | ------------------------------------------------- |
-| 文本生成           | 可用                     | 可用                                         |
-| 图像输入               | 可用                     | 可用                                         |
-| 文件输入                | 可用                     | 支持的文件类型可用                |
-| 结构化输出        | 可用                     | 可用                                         |
-| 函数调用          | 可用                     | 可用                                         |
-| 流式响应       | 可用                     | 可用                                         |
-| WebSocket 连接     | 可用                     | 不可用                                     |
-| 上下文窗口            | 取决于模型               | GPT-5.4 和 GPT-5.5 为 272,000 tokens            |
-| 上下文窗口            | 取决于模型               | GPT-5.6 Sol、Terra 和 Luna 为 1,050,000 tokens |
-| 推理强度          | 可用                     | 可用，包括 `max` 支持模型上的    |
-| Pro 模式                  | 在支持的模型上可用 | 不可用                                     |
-| 持久化推理       | 在支持的模型上可用 | 在支持的模型上可用                     |
-| 提示词缓存            | 可用                     | 在支持的模型上进行隐式和显式缓存 |
-| 可编程工具调用 | 在支持的模型上可用 | 不可用                                     |
-| 多智能体               | 在支持的模型上提供 Beta      | 不可用                                     |
-| 自定义工具              | 可用                     | 可用                                         |
-| 客户端 `tool_search` | 可用                     | 可用                                         |
-| 托管网页搜索         | 可用                     | 可用                                         |
-| 托管文件搜索        | 可用                     | 不可用                                     |
-| 计算机使用              | 可用                     | 不可用                                     |
-| Shell 工具                | 可用                     | 不可用                                     |
-| 图像生成工具     | 可用                     | 不可用                                     |
-| 远程 MCP 服务器        | 可用                     | 不可用                                     |
-| 服务等级             | 在支持的地区可用     | 仅按需推理                          |
-
-客户端 `tool_search` 与托管工具和远程 MCP 服务器
-支持不同。托管的网页搜索在 Amazon Bedrock 上可用，但托管文件
-搜索和远程 MCP 服务器不可用。
-
-GPT-5.4 和 GPT-5.5 在 Amazon Bedrock 上具有 272,000 个 token 的上下文窗口。
-GPT-5.6 Sol、Terra 和 Luna 具有 1,050,000 个 token 的上下文窗口。Amazon
-Bedrock 会拒绝超出相应模型限制的请求。有关各模型当前的限制，请参阅 AWS
-模型卡。
-
-将功能对等视为与工作负载相关的特性。如果你的应用依赖
-某个特定工具、响应模式或服务层级，请在
-提交到该部署路径之前，通过 Bedrock 测试该行为。
+如果 AWS 在图像输入中检测到疑似 CSAM，AWS 可能将标记的输入
+  或输出移出 ZOA 环境，并仅出于判断其是否为 CSAM 的目的进行存储和审查。
+  AWS 还可能向相关国家主管部门
+  提交报告。
 
 ## 身份验证与操作
 
-Amazon Bedrock 使用 AWS 托管的访问控制。由你的 AWS 管理员控制
-哪些账户、角色或临时凭证可以访问受支持的模型
-部署。具体的身份验证流程取决于你所在组织使用的 Bedrock 配置
-。
-
-为 AWS 自主运行的运维检查做好规划，例如：
-
-- 账户和模型访问配置。
-- 区域特定部署审批。
-- 临时凭证或令牌有效期。
-- AWS 配额、日志和支持工作流。
+你的 AWS 管理员控制账户、模型和功能访问权限。使用 AWS [API 密钥文档](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys.html) 了解凭证的创建与生命周期管理，以及 [IAM 文档](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html) 了解身份与权限相关的内容。本页面中的 OpenAI SDK 示例展示了如何
+提供这些凭证；它们不会配置 AWS 权限。
 
 ## 定价
 
-AWS 会开具 Amazon Bedrock 用量的账单。Bedrock 专属定价可能与直接
-OpenAI API 定价不同，包括区域处理溢价或其他 AWS 特有的
-商业条款。
+Amazon Bedrock 的用量通过 AWS 计费。商业区域的 Bedrock 定价
+与 OpenAI 针对同等服务的直接定价一致。请注意，使用
+Bedrock 中的区域特定服务时，定价与 OpenAI API 的区域处理相同。Beck
+rock 用量适用 Amazon 商业条款。
 
-请参阅 [API 定价](https://developers.openai.com/api/docs/pricing) 以获取直接的 OpenAI API 定价。Bedrock 定价请参阅 AWS 为你计划使用的 Bedrock 部署所发布的
-定价资料，
-。
+参见 [API 定价](https://developers.openai.com/api/docs/pricing) ，查看直接的 OpenAI API 定价。Bedrock
+的价格、支持的服务等级和计费选项，请参阅 [Amazon Bedrock 定价](https://aws.amazon.com/bedrock/pricing/) 以及适用的模型卡。
 
 ## 后续步骤
 
-- 在 Amazon Bedrock 中确认你支持的模型和 AWS 区域。
-- 验证你的工作负载所需的 API 特性。
-- 在上线前比较 Bedrock 定价与直接 API 定价。
-- 如需在 ChatGPT Work 和 Codex 中进行设置,请参阅
-  [将 ChatGPT Work 和 Codex 与 Amazon Bedrock 配合使用](https://developers.openai.com/codex/amazon-bedrock).
+在 ChatGPT Work 和 Codex 中的设置，请参阅
+[将 ChatGPT Work 和 Codex 与 Amazon Bedrock 配合使用](https://developers.openai.com/codex/amazon-bedrock).

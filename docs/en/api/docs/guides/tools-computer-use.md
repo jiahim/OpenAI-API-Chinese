@@ -43,7 +43,7 @@ Use the app's README for installation, desktop permissions, and supported enviro
 
 ### Connect your own runtime
 
-The following example shows the API loop for a runtime you provide. Python uses PyAutoGUI to operate a desktop; JavaScript uses Playwright to operate a browser. Both expose an ordinary function tool and return text or images with the original `call_id`.
+The following example shows the API loop for a runtime you provide. Python and Ruby send Python code to a desktop runtime that uses PyAutoGUI; JavaScript uses Playwright to operate a browser. Each client exposes an ordinary function tool and returns text or images with the original `call_id`.
 
 The `execute_in_sandbox` or `executeInSandbox` helper sends code to your execution environment and returns its observations. It must preserve the browser or desktop session, enforce execution limits, and apply your permission rules. These are integration examples, separate from running the sample app.
 
@@ -212,6 +212,56 @@ text with console.log(). The context viewport is 1440x900.`,
     previousResponseId = response.id;
   }
 }
+```
+
+  
+
+  
+
+    
+Ruby
+
+    Run computer use with code execution
+
+```ruby
+require "json"
+require "openai"
+require "securerandom"
+
+def run_computer_use(endpoint, prompt)
+  client = OpenAI::Client.new
+  session_id = SecureRandom.uuid
+  tools = [{
+    type: :function, name: "exec_py",
+    description: "Run Python in a persistent desktop. Variables persist across calls. PyAutoGUI operations are synchronous. Available: pyautogui, time, log(value), and display(PIL_image). Inspect the screen with display(pyautogui.screenshot()) before acting. Use screenshot coordinates and check the screen after a short group of actions. Keep screenshots in memory and PyAutoGUI's fail-safe enabled.",
+    parameters: {type: :object, properties: {code: {type: :string}}, required: ["code"], additionalProperties: false},
+    strict: true
+  }]
+  next_input = []
+  next_input << {role: :user, content: prompt}
+  history = {}
+  20.times do |turn|
+    response = client.responses.create(
+      model: "gpt-6-astra", tools: tools, input: next_input, previous_response_id: history[:id]
+    )
+    raise "Response stopped with status: #{response.status}" unless response.status == OpenAI::Responses::ResponseStatus::COMPLETED
+    calls = response.output.grep(OpenAI::Responses::ResponseFunctionToolCall)
+    if calls.empty? && response.output.any? { |item| item.is_a?(OpenAI::Responses::ResponseOutputMessage) && item.phase != :commentary }
+      puts(response.output_text)
+      return response
+    end
+    raise "The task reached the 20-response limit" if turn == 19
+    next_input.clear
+    calls.each do |call|
+      raise "Unexpected tool: #{call.name}" unless call.name == "exec_py"
+      code = JSON.parse(call.arguments).fetch("code")
+      raise "Expected Python source text" unless code.is_a?(String)
+      output = execute_in_sandbox(code, session_id, endpoint)
+      next_input << {type: :function_call_output, call_id: call.call_id, output: output}
+    end
+    history[:id] = response.id
+  end
+end
 ```
 
 

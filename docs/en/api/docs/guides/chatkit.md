@@ -52,9 +52,7 @@ authenticate your application's users and pass a unique identifier for them in t
 
 1. On your server, generate a client token.
 
-   This snippet spins up a FastAPI service whose sole job is to create a new ChatKit session through the OpenAI API and hand back the session's client secret:
-
-   server.py
+   This example starts a service that creates a ChatKit session through the OpenAI API and returns the session's client secret:
 
 ```python
 import hmac
@@ -118,6 +116,66 @@ def create_chatkit_session(
     return {"client_secret": session.client_secret}
 ```
 
+```ruby
+require "json"
+require "net/http"
+require "openssl"
+require "webrick"
+
+api_key = ENV.fetch("OPENAI_API_KEY")
+workflow_id = ENV.fetch("OPENAI_CHATKIT_WORKFLOW_ID")
+# Demo authentication mapping. Replace this with your application's session authentication.
+authenticated_users = JSON.parse(ENV.fetch("CHATKIT_AUTHENTICATED_USERS"))
+server = WEBrick::HTTPServer.new(
+  BindAddress: "127.0.0.1", Port: Integer(ENV.fetch("PORT", "8000")),
+  AccessLog: [], Logger: WEBrick::Log.new($stderr, WEBrick::BasicLog::WARN)
+)
+server.mount_proc("/api/chatkit/session") do |request, response|
+  response["Content-Type"] = "application/json"
+  response["Cache-Control"] = "no-store"
+  unless request.path == "/api/chatkit/session" && request.request_method == "POST"
+    response.status = 405
+    response.body = JSON.generate(error: "Use POST /api/chatkit/session")
+    next
+  end
+  token = request["Authorization"].to_s.delete_prefix("Bearer ")
+  user = authenticated_users.find do |credential, _id|
+    request["Authorization"].to_s.start_with?("Bearer ") &&
+      OpenSSL.secure_compare(credential, token)
+  end
+  unless user
+    response.status = 401
+    response.body = JSON.generate(error: "Invalid authentication token")
+    next
+  end
+  uri = URI("https://api.openai.com/v1/chatkit/sessions")
+  upstream = Net::HTTP::Post.new(uri)
+  upstream["Authorization"] = "Bearer #{api_key}"
+  upstream["Content-Type"] = "application/json"
+  upstream["OpenAI-Beta"] = "chatkit_beta=v1"
+  upstream.body = JSON.generate(workflow: {id: workflow_id}, user: user.fetch(1))
+  begin
+    result = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true, open_timeout: 10, read_timeout: 30) do |http|
+      http.request(upstream)
+    end
+    result.value
+    secret = JSON.parse(result.body).fetch("client_secret")
+    raise "Missing session secret" unless secret.is_a?(String) && !secret.empty?
+    response.body = JSON.generate(client_secret: secret)
+  rescue
+    response.status = 502
+    response.body = JSON.generate(error: "Unable to create a ChatKit session")
+  end
+end
+trap("INT") { server.shutdown }
+trap("TERM") { server.shutdown }
+puts("http://127.0.0.1:#{server.config[:Port]}/api/chatkit/session")
+$stdout.flush
+server.start
+```
+
+
+   For Ruby, install WEBrick with `gem install webrick`.
 
    Before starting the service, set `OPENAI_API_KEY`, `OPENAI_CHATKIT_WORKFLOW_ID`, and `CHATKIT_AUTHENTICATED_USERS`. The last value is a JSON map from your application's bearer tokens to stable user IDs. In production, replace this environment-backed map with your application's authentication or session lookup.
 

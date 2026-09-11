@@ -540,7 +540,19 @@ Schema name: `ResponseCreatedEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "action"
+                  },
+                  {
+                    "ident": "background"
+                  },
+                  {
+                    "ident": "output_format"
+                  },
+                  {
                     "ident": "quality"
+                  },
+                  {
+                    "ident": "revised_prompt"
                   },
                   {
                     "ident": "size"
@@ -2761,7 +2773,19 @@ Schema name: `ResponseCreatedEvent`
                 "ident": "type"
               },
               {
+                "ident": "action"
+              },
+              {
+                "ident": "background"
+              },
+              {
+                "ident": "output_format"
+              },
+              {
                 "ident": "quality"
+              },
+              {
+                "ident": "revised_prompt"
               },
               {
                 "ident": "size"
@@ -4771,7 +4795,7 @@ Schema name: `ResponseCreatedEvent`
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/OutputItem/oneOf/14",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -4789,7 +4813,19 @@ Schema name: `ResponseCreatedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -4802,7 +4838,11 @@ Schema name: `ResponseCreatedEvent`
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) result",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) status",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) type",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) revised_prompt",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size"
     ]
   },
@@ -5655,7 +5695,19 @@ Schema name: `ResponseCreatedEvent`
               "ident": "type"
             },
             {
+              "ident": "action"
+            },
+            {
+              "ident": "background"
+            },
+            {
+              "ident": "output_format"
+            },
+            {
               "ident": "quality"
+            },
+            {
+              "ident": "revised_prompt"
             },
             {
               "ident": "size"
@@ -8603,7 +8655,7 @@ Schema name: `ResponseCreatedEvent`
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Item/oneOf/14",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -8621,7 +8673,19 @@ Schema name: `ResponseCreatedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -8634,7 +8698,11 @@ Schema name: `ResponseCreatedEvent`
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) result",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) status",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) revised_prompt",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size"
     ]
   },
@@ -12735,7 +12803,7 @@ Schema name: `ResponseCreatedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -12749,7 +12817,7 @@ Schema name: `ResponseCreatedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -12763,7 +12831,7 @@ Schema name: `ResponseCreatedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
@@ -12802,7 +12870,7 @@ Schema name: `ResponseCreatedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
@@ -12819,6 +12887,108 @@ Schema name: `ResponseCreatedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 2"
     ]
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality": {
@@ -12870,6 +13040,20 @@ Schema name: `ResponseCreatedEvent`
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality > (member) 5"
     ]
   },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/size",
@@ -12885,7 +13069,7 @@ Schema name: `ResponseCreatedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -20560,7 +20744,7 @@ Schema name: `ResponseCreatedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -20574,7 +20758,7 @@ Schema name: `ResponseCreatedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -20588,7 +20772,7 @@ Schema name: `ResponseCreatedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
@@ -20627,7 +20811,7 @@ Schema name: `ResponseCreatedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
@@ -20644,6 +20828,108 @@ Schema name: `ResponseCreatedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality": {
@@ -20695,6 +20981,20 @@ Schema name: `ResponseCreatedEvent`
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality > (member) 5"
     ]
   },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/size",
@@ -20710,7 +21010,7 @@ Schema name: `ResponseCreatedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -25547,6 +25847,69 @@ Schema name: `ResponseCreatedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
+  },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -25591,7 +25954,7 @@ Schema name: `ResponseCreatedEvent`
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -25600,12 +25963,12 @@ Schema name: `ResponseCreatedEvent`
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -31431,6 +31794,69 @@ Schema name: `ResponseCreatedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
+  },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -31475,7 +31901,7 @@ Schema name: `ResponseCreatedEvent`
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -31484,12 +31910,12 @@ Schema name: `ResponseCreatedEvent`
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -57086,7 +57512,19 @@ Schema name: `ResponseInProgressEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "action"
+                  },
+                  {
+                    "ident": "background"
+                  },
+                  {
+                    "ident": "output_format"
+                  },
+                  {
                     "ident": "quality"
+                  },
+                  {
+                    "ident": "revised_prompt"
                   },
                   {
                     "ident": "size"
@@ -59307,7 +59745,19 @@ Schema name: `ResponseInProgressEvent`
                 "ident": "type"
               },
               {
+                "ident": "action"
+              },
+              {
+                "ident": "background"
+              },
+              {
+                "ident": "output_format"
+              },
+              {
                 "ident": "quality"
+              },
+              {
+                "ident": "revised_prompt"
               },
               {
                 "ident": "size"
@@ -61317,7 +61767,7 @@ Schema name: `ResponseInProgressEvent`
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/OutputItem/oneOf/14",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -61335,7 +61785,19 @@ Schema name: `ResponseInProgressEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -61348,7 +61810,11 @@ Schema name: `ResponseInProgressEvent`
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) result",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) status",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) type",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) revised_prompt",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size"
     ]
   },
@@ -62201,7 +62667,19 @@ Schema name: `ResponseInProgressEvent`
               "ident": "type"
             },
             {
+              "ident": "action"
+            },
+            {
+              "ident": "background"
+            },
+            {
+              "ident": "output_format"
+            },
+            {
               "ident": "quality"
+            },
+            {
+              "ident": "revised_prompt"
             },
             {
               "ident": "size"
@@ -65149,7 +65627,7 @@ Schema name: `ResponseInProgressEvent`
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Item/oneOf/14",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -65167,7 +65645,19 @@ Schema name: `ResponseInProgressEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -65180,7 +65670,11 @@ Schema name: `ResponseInProgressEvent`
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) result",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) status",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) revised_prompt",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size"
     ]
   },
@@ -69281,7 +69775,7 @@ Schema name: `ResponseInProgressEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -69295,7 +69789,7 @@ Schema name: `ResponseInProgressEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -69309,7 +69803,7 @@ Schema name: `ResponseInProgressEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
@@ -69348,7 +69842,7 @@ Schema name: `ResponseInProgressEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
@@ -69365,6 +69859,108 @@ Schema name: `ResponseInProgressEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 2"
     ]
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality": {
@@ -69416,6 +70012,20 @@ Schema name: `ResponseInProgressEvent`
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality > (member) 5"
     ]
   },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/size",
@@ -69431,7 +70041,7 @@ Schema name: `ResponseInProgressEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -77106,7 +77716,7 @@ Schema name: `ResponseInProgressEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -77120,7 +77730,7 @@ Schema name: `ResponseInProgressEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -77134,7 +77744,7 @@ Schema name: `ResponseInProgressEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
@@ -77173,7 +77783,7 @@ Schema name: `ResponseInProgressEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
@@ -77190,6 +77800,108 @@ Schema name: `ResponseInProgressEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality": {
@@ -77241,6 +77953,20 @@ Schema name: `ResponseInProgressEvent`
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality > (member) 5"
     ]
   },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/size",
@@ -77256,7 +77982,7 @@ Schema name: `ResponseInProgressEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -82093,6 +82819,69 @@ Schema name: `ResponseInProgressEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
+  },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -82137,7 +82926,7 @@ Schema name: `ResponseInProgressEvent`
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -82146,12 +82935,12 @@ Schema name: `ResponseInProgressEvent`
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -87977,6 +88766,69 @@ Schema name: `ResponseInProgressEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
+  },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -88021,7 +88873,7 @@ Schema name: `ResponseInProgressEvent`
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -88030,12 +88882,12 @@ Schema name: `ResponseInProgressEvent`
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -113632,7 +114484,19 @@ Schema name: `ResponseCompletedEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "action"
+                  },
+                  {
+                    "ident": "background"
+                  },
+                  {
+                    "ident": "output_format"
+                  },
+                  {
                     "ident": "quality"
+                  },
+                  {
+                    "ident": "revised_prompt"
                   },
                   {
                     "ident": "size"
@@ -115853,7 +116717,19 @@ Schema name: `ResponseCompletedEvent`
                 "ident": "type"
               },
               {
+                "ident": "action"
+              },
+              {
+                "ident": "background"
+              },
+              {
+                "ident": "output_format"
+              },
+              {
                 "ident": "quality"
+              },
+              {
+                "ident": "revised_prompt"
               },
               {
                 "ident": "size"
@@ -117863,7 +118739,7 @@ Schema name: `ResponseCompletedEvent`
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/OutputItem/oneOf/14",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -117881,7 +118757,19 @@ Schema name: `ResponseCompletedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -117894,7 +118782,11 @@ Schema name: `ResponseCompletedEvent`
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) result",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) status",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) type",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) revised_prompt",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size"
     ]
   },
@@ -118747,7 +119639,19 @@ Schema name: `ResponseCompletedEvent`
               "ident": "type"
             },
             {
+              "ident": "action"
+            },
+            {
+              "ident": "background"
+            },
+            {
+              "ident": "output_format"
+            },
+            {
               "ident": "quality"
+            },
+            {
+              "ident": "revised_prompt"
             },
             {
               "ident": "size"
@@ -121695,7 +122599,7 @@ Schema name: `ResponseCompletedEvent`
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Item/oneOf/14",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -121713,7 +122617,19 @@ Schema name: `ResponseCompletedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -121726,7 +122642,11 @@ Schema name: `ResponseCompletedEvent`
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) result",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) status",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) revised_prompt",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size"
     ]
   },
@@ -125827,7 +126747,7 @@ Schema name: `ResponseCompletedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -125841,7 +126761,7 @@ Schema name: `ResponseCompletedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -125855,7 +126775,7 @@ Schema name: `ResponseCompletedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
@@ -125894,7 +126814,7 @@ Schema name: `ResponseCompletedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
@@ -125911,6 +126831,108 @@ Schema name: `ResponseCompletedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 2"
     ]
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality": {
@@ -125962,6 +126984,20 @@ Schema name: `ResponseCompletedEvent`
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality > (member) 5"
     ]
   },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/size",
@@ -125977,7 +127013,7 @@ Schema name: `ResponseCompletedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -133652,7 +134688,7 @@ Schema name: `ResponseCompletedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -133666,7 +134702,7 @@ Schema name: `ResponseCompletedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -133680,7 +134716,7 @@ Schema name: `ResponseCompletedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
@@ -133719,7 +134755,7 @@ Schema name: `ResponseCompletedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
@@ -133736,6 +134772,108 @@ Schema name: `ResponseCompletedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality": {
@@ -133787,6 +134925,20 @@ Schema name: `ResponseCompletedEvent`
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality > (member) 5"
     ]
   },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/size",
@@ -133802,7 +134954,7 @@ Schema name: `ResponseCompletedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -138639,6 +139791,69 @@ Schema name: `ResponseCompletedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
+  },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -138683,7 +139898,7 @@ Schema name: `ResponseCompletedEvent`
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -138692,12 +139907,12 @@ Schema name: `ResponseCompletedEvent`
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -144523,6 +145738,69 @@ Schema name: `ResponseCompletedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
+  },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -144567,7 +145845,7 @@ Schema name: `ResponseCompletedEvent`
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -144576,12 +145854,12 @@ Schema name: `ResponseCompletedEvent`
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -170195,7 +171473,19 @@ Schema name: `ResponseFailedEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "action"
+                  },
+                  {
+                    "ident": "background"
+                  },
+                  {
+                    "ident": "output_format"
+                  },
+                  {
                     "ident": "quality"
+                  },
+                  {
+                    "ident": "revised_prompt"
                   },
                   {
                     "ident": "size"
@@ -172416,7 +173706,19 @@ Schema name: `ResponseFailedEvent`
                 "ident": "type"
               },
               {
+                "ident": "action"
+              },
+              {
+                "ident": "background"
+              },
+              {
+                "ident": "output_format"
+              },
+              {
                 "ident": "quality"
+              },
+              {
+                "ident": "revised_prompt"
               },
               {
                 "ident": "size"
@@ -174426,7 +175728,7 @@ Schema name: `ResponseFailedEvent`
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/OutputItem/oneOf/14",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -174444,7 +175746,19 @@ Schema name: `ResponseFailedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -174457,7 +175771,11 @@ Schema name: `ResponseFailedEvent`
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) result",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) status",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) type",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) revised_prompt",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size"
     ]
   },
@@ -175310,7 +176628,19 @@ Schema name: `ResponseFailedEvent`
               "ident": "type"
             },
             {
+              "ident": "action"
+            },
+            {
+              "ident": "background"
+            },
+            {
+              "ident": "output_format"
+            },
+            {
               "ident": "quality"
+            },
+            {
+              "ident": "revised_prompt"
             },
             {
               "ident": "size"
@@ -178258,7 +179588,7 @@ Schema name: `ResponseFailedEvent`
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Item/oneOf/14",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -178276,7 +179606,19 @@ Schema name: `ResponseFailedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -178289,7 +179631,11 @@ Schema name: `ResponseFailedEvent`
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) result",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) status",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) revised_prompt",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size"
     ]
   },
@@ -182390,7 +183736,7 @@ Schema name: `ResponseFailedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -182404,7 +183750,7 @@ Schema name: `ResponseFailedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -182418,7 +183764,7 @@ Schema name: `ResponseFailedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
@@ -182457,7 +183803,7 @@ Schema name: `ResponseFailedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
@@ -182474,6 +183820,108 @@ Schema name: `ResponseFailedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 2"
     ]
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality": {
@@ -182525,6 +183973,20 @@ Schema name: `ResponseFailedEvent`
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality > (member) 5"
     ]
   },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/size",
@@ -182540,7 +184002,7 @@ Schema name: `ResponseFailedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -190215,7 +191677,7 @@ Schema name: `ResponseFailedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -190229,7 +191691,7 @@ Schema name: `ResponseFailedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -190243,7 +191705,7 @@ Schema name: `ResponseFailedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
@@ -190282,7 +191744,7 @@ Schema name: `ResponseFailedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
@@ -190299,6 +191761,108 @@ Schema name: `ResponseFailedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality": {
@@ -190350,6 +191914,20 @@ Schema name: `ResponseFailedEvent`
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality > (member) 5"
     ]
   },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/size",
@@ -190365,7 +191943,7 @@ Schema name: `ResponseFailedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -195202,6 +196780,69 @@ Schema name: `ResponseFailedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
+  },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -195246,7 +196887,7 @@ Schema name: `ResponseFailedEvent`
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -195255,12 +196896,12 @@ Schema name: `ResponseFailedEvent`
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -201086,6 +202727,69 @@ Schema name: `ResponseFailedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
+  },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -201130,7 +202834,7 @@ Schema name: `ResponseFailedEvent`
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -201139,12 +202843,12 @@ Schema name: `ResponseFailedEvent`
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -226743,7 +228447,19 @@ Schema name: `ResponseIncompleteEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "action"
+                  },
+                  {
+                    "ident": "background"
+                  },
+                  {
+                    "ident": "output_format"
+                  },
+                  {
                     "ident": "quality"
+                  },
+                  {
+                    "ident": "revised_prompt"
                   },
                   {
                     "ident": "size"
@@ -228964,7 +230680,19 @@ Schema name: `ResponseIncompleteEvent`
                 "ident": "type"
               },
               {
+                "ident": "action"
+              },
+              {
+                "ident": "background"
+              },
+              {
+                "ident": "output_format"
+              },
+              {
                 "ident": "quality"
+              },
+              {
+                "ident": "revised_prompt"
               },
               {
                 "ident": "size"
@@ -230974,7 +232702,7 @@ Schema name: `ResponseIncompleteEvent`
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/OutputItem/oneOf/14",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -230992,7 +232720,19 @@ Schema name: `ResponseIncompleteEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -231005,7 +232745,11 @@ Schema name: `ResponseIncompleteEvent`
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) result",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) status",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) type",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) revised_prompt",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size"
     ]
   },
@@ -231858,7 +233602,19 @@ Schema name: `ResponseIncompleteEvent`
               "ident": "type"
             },
             {
+              "ident": "action"
+            },
+            {
+              "ident": "background"
+            },
+            {
+              "ident": "output_format"
+            },
+            {
               "ident": "quality"
+            },
+            {
+              "ident": "revised_prompt"
             },
             {
               "ident": "size"
@@ -234806,7 +236562,7 @@ Schema name: `ResponseIncompleteEvent`
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Item/oneOf/14",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -234824,7 +236580,19 @@ Schema name: `ResponseIncompleteEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -234837,7 +236605,11 @@ Schema name: `ResponseIncompleteEvent`
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) result",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) status",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) revised_prompt",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size"
     ]
   },
@@ -238938,7 +240710,7 @@ Schema name: `ResponseIncompleteEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -238952,7 +240724,7 @@ Schema name: `ResponseIncompleteEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -238966,7 +240738,7 @@ Schema name: `ResponseIncompleteEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
@@ -239005,7 +240777,7 @@ Schema name: `ResponseIncompleteEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
@@ -239022,6 +240794,108 @@ Schema name: `ResponseIncompleteEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 2"
     ]
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality": {
@@ -239073,6 +240947,20 @@ Schema name: `ResponseIncompleteEvent`
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality > (member) 5"
     ]
   },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/size",
@@ -239088,7 +240976,7 @@ Schema name: `ResponseIncompleteEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -246763,7 +248651,7 @@ Schema name: `ResponseIncompleteEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -246777,7 +248665,7 @@ Schema name: `ResponseIncompleteEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -246791,7 +248679,7 @@ Schema name: `ResponseIncompleteEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
@@ -246830,7 +248718,7 @@ Schema name: `ResponseIncompleteEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
@@ -246847,6 +248735,108 @@ Schema name: `ResponseIncompleteEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality": {
@@ -246898,6 +248888,20 @@ Schema name: `ResponseIncompleteEvent`
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality > (member) 5"
     ]
   },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/size",
@@ -246913,7 +248917,7 @@ Schema name: `ResponseIncompleteEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -251750,6 +253754,69 @@ Schema name: `ResponseIncompleteEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
+  },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -251794,7 +253861,7 @@ Schema name: `ResponseIncompleteEvent`
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -251803,12 +253870,12 @@ Schema name: `ResponseIncompleteEvent`
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -257634,6 +259701,69 @@ Schema name: `ResponseIncompleteEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
+  },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -257678,7 +259808,7 @@ Schema name: `ResponseIncompleteEvent`
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -257687,12 +259817,12 @@ Schema name: `ResponseIncompleteEvent`
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -283407,7 +285537,7 @@ Schema name: `ResponseOutputItemAddedEvent`
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/OutputItem/oneOf/14",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -283425,7 +285555,19 @@ Schema name: `ResponseOutputItemAddedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -283438,7 +285580,11 @@ Schema name: `ResponseOutputItemAddedEvent`
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) result",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) status",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) type",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) revised_prompt",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size"
     ]
   },
@@ -284291,7 +286437,19 @@ Schema name: `ResponseOutputItemAddedEvent`
               "ident": "type"
             },
             {
+              "ident": "action"
+            },
+            {
+              "ident": "background"
+            },
+            {
+              "ident": "output_format"
+            },
+            {
               "ident": "quality"
+            },
+            {
+              "ident": "revised_prompt"
             },
             {
               "ident": "size"
@@ -287345,7 +289503,7 @@ Schema name: `ResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -287359,7 +289517,7 @@ Schema name: `ResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -287373,7 +289531,7 @@ Schema name: `ResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
@@ -287412,7 +289570,7 @@ Schema name: `ResponseOutputItemAddedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
@@ -287429,6 +289587,108 @@ Schema name: `ResponseOutputItemAddedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 2"
     ]
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality": {
@@ -287480,6 +289740,20 @@ Schema name: `ResponseOutputItemAddedEvent`
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality > (member) 5"
     ]
   },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/size",
@@ -287495,7 +289769,7 @@ Schema name: `ResponseOutputItemAddedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -292141,6 +294415,69 @@ Schema name: `ResponseOutputItemAddedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
+  },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -292185,7 +294522,7 @@ Schema name: `ResponseOutputItemAddedEvent`
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -292194,12 +294531,12 @@ Schema name: `ResponseOutputItemAddedEvent`
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -307511,7 +309848,7 @@ Schema name: `ResponseOutputItemDoneEvent`
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/OutputItem/oneOf/14",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -307529,7 +309866,19 @@ Schema name: `ResponseOutputItemDoneEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -307542,7 +309891,11 @@ Schema name: `ResponseOutputItemDoneEvent`
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) result",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) status",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) type",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) revised_prompt",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size"
     ]
   },
@@ -308395,7 +310748,19 @@ Schema name: `ResponseOutputItemDoneEvent`
               "ident": "type"
             },
             {
+              "ident": "action"
+            },
+            {
+              "ident": "background"
+            },
+            {
+              "ident": "output_format"
+            },
+            {
               "ident": "quality"
+            },
+            {
+              "ident": "revised_prompt"
             },
             {
               "ident": "size"
@@ -311449,7 +313814,7 @@ Schema name: `ResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -311463,7 +313828,7 @@ Schema name: `ResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -311477,7 +313842,7 @@ Schema name: `ResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
@@ -311516,7 +313881,7 @@ Schema name: `ResponseOutputItemDoneEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
@@ -311533,6 +313898,108 @@ Schema name: `ResponseOutputItemDoneEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 2"
     ]
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality": {
@@ -311584,6 +314051,20 @@ Schema name: `ResponseOutputItemDoneEvent`
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality > (member) 5"
     ]
   },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/size",
@@ -311599,7 +314080,7 @@ Schema name: `ResponseOutputItemDoneEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -316245,6 +318726,69 @@ Schema name: `ResponseOutputItemDoneEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
+  },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -316289,7 +318833,7 @@ Schema name: `ResponseOutputItemDoneEvent`
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -316298,12 +318842,12 @@ Schema name: `ResponseOutputItemDoneEvent`
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -339976,7 +342520,19 @@ Schema name: `ResponseQueuedEvent`
                     "ident": "type"
                   },
                   {
+                    "ident": "action"
+                  },
+                  {
+                    "ident": "background"
+                  },
+                  {
+                    "ident": "output_format"
+                  },
+                  {
                     "ident": "quality"
+                  },
+                  {
+                    "ident": "revised_prompt"
                   },
                   {
                     "ident": "size"
@@ -342197,7 +344753,19 @@ Schema name: `ResponseQueuedEvent`
                 "ident": "type"
               },
               {
+                "ident": "action"
+              },
+              {
+                "ident": "background"
+              },
+              {
+                "ident": "output_format"
+              },
+              {
                 "ident": "quality"
+              },
+              {
+                "ident": "revised_prompt"
               },
               {
                 "ident": "size"
@@ -344207,7 +346775,7 @@ Schema name: `ResponseQueuedEvent`
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/OutputItem/oneOf/14",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -344225,7 +346793,19 @@ Schema name: `ResponseQueuedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -344238,7 +346818,11 @@ Schema name: `ResponseQueuedEvent`
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) result",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) status",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) type",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) revised_prompt",
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size"
     ]
   },
@@ -345091,7 +347675,19 @@ Schema name: `ResponseQueuedEvent`
               "ident": "type"
             },
             {
+              "ident": "action"
+            },
+            {
+              "ident": "background"
+            },
+            {
+              "ident": "output_format"
+            },
+            {
               "ident": "quality"
+            },
+            {
+              "ident": "revised_prompt"
             },
             {
               "ident": "size"
@@ -348039,7 +350635,7 @@ Schema name: `ResponseQueuedEvent`
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Item/oneOf/14",
-    "docstring": "An image generation request made by the model.\n",
+    "docstring": "An image generation request made by the model.",
     "ident": "ImageGenerationCall",
     "type": {
       "kind": "HttpTypeObject",
@@ -348057,7 +350653,19 @@ Schema name: `ResponseQueuedEvent`
           "ident": "type"
         },
         {
+          "ident": "action"
+        },
+        {
+          "ident": "background"
+        },
+        {
+          "ident": "output_format"
+        },
+        {
           "ident": "quality"
+        },
+        {
+          "ident": "revised_prompt"
         },
         {
           "ident": "size"
@@ -348070,7 +350678,11 @@ Schema name: `ResponseQueuedEvent`
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) result",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) status",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) type",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) revised_prompt",
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size"
     ]
   },
@@ -352171,7 +354783,7 @@ Schema name: `ResponseQueuedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -352185,7 +354797,7 @@ Schema name: `ResponseQueuedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -352199,7 +354811,7 @@ Schema name: `ResponseQueuedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
@@ -352238,7 +354850,7 @@ Schema name: `ResponseQueuedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
@@ -352255,6 +354867,108 @@ Schema name: `ResponseQueuedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 0",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 1",
+      "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 2"
     ]
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality": {
@@ -352306,6 +355020,20 @@ Schema name: `ResponseQueuedEvent`
       "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality > (member) 5"
     ]
   },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/size",
@@ -352321,7 +355049,7 @@ Schema name: `ResponseQueuedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -359996,7 +362724,7 @@ Schema name: `ResponseQueuedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/id",
     "deprecated": false,
     "key": "id",
-    "docstring": "The unique ID of the image generation call.\n",
+    "docstring": "The unique ID of the image generation call.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -360010,7 +362738,7 @@ Schema name: `ResponseQueuedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/result",
     "deprecated": false,
     "key": "result",
-    "docstring": "The generated image encoded in base64.\n",
+    "docstring": "The generated image encoded in base64.",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -360024,7 +362752,7 @@ Schema name: `ResponseQueuedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
     "deprecated": false,
     "key": "status",
-    "docstring": "The status of the image generation call.\n",
+    "docstring": "The status of the image generation call.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/status",
@@ -360063,7 +362791,7 @@ Schema name: `ResponseQueuedEvent`
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
     "deprecated": false,
     "key": "type",
-    "docstring": "The type of the image generation call. Always `image_generation_call`.\n",
+    "docstring": "The type of the image generation call. Always `image_generation_call`.",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/ImageGenToolCall/properties/type",
@@ -360080,6 +362808,108 @@ Schema name: `ResponseQueuedEvent`
     "childrenParentSchema": "enum",
     "children": [
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) type > (member) 0"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+    "deprecated": false,
+    "key": "action",
+    "docstring": "The action used for image generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/action",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "generate"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "edit"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+    "deprecated": false,
+    "key": "background",
+    "docstring": "The background setting used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/background",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "transparent"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "opaque"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 2"
+    ]
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+    "deprecated": false,
+    "key": "output_format",
+    "docstring": "The output format used for generation.",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/output_format",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "png"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "webp"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "jpeg"
+        }
+      ]
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "enum",
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 0",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 1",
+      "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 2"
     ]
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality": {
@@ -360131,6 +362961,20 @@ Schema name: `ResponseQueuedEvent`
       "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality > (member) 5"
     ]
   },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) revised_prompt": {
+    "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/revised_prompt",
+    "deprecated": false,
+    "key": "revised_prompt",
+    "docstring": "The prompt that was used after any model prompt rewriting.",
+    "type": {
+      "kind": "HttpTypeString"
+    },
+    "optional": true,
+    "nullable": true,
+    "schemaType": "string",
+    "children": []
+  },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/ImageGenToolCall/properties/size",
@@ -360146,7 +362990,7 @@ Schema name: `ResponseQueuedEvent`
         },
         {
           "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+          "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
           "types": [
             {
               "kind": "HttpTypeLiteral",
@@ -364983,6 +367827,69 @@ Schema name: `ResponseQueuedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
+  },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -365027,7 +367934,7 @@ Schema name: `ResponseQueuedEvent`
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -365036,12 +367943,12 @@ Schema name: `ResponseQueuedEvent`
   },
   "(resource) responses > (model) response_output_item > (schema) > (variant) 14 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -370867,6 +373774,69 @@ Schema name: `ResponseQueuedEvent`
       "literal": "image_generation_call"
     }
   },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "generate"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "edit"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) action > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "transparent"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "opaque"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) background > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "auto"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 0": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "png"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 1": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "webp"
+    }
+  },
+  "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) output_format > (member) 2": {
+    "kind": "HttpDeclReference",
+    "type": {
+      "kind": "HttpTypeLiteral",
+      "literal": "jpeg"
+    }
+  },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) quality > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -370911,7 +373881,7 @@ Schema name: `ResponseQueuedEvent`
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -370920,12 +373890,12 @@ Schema name: `ResponseQueuedEvent`
   },
   "(resource) responses > (model) response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) size > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+    "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
     "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/1",
+      "oasRef": "#/components/schemas/ImageGenToolCall/properties/size/anyOf/0/anyOf/1",
       "types": [
         {
           "kind": "HttpTypeLiteral",

@@ -193,7 +193,7 @@ OpenAI handles routing automatically. Within an organization and processing regi
 
 - Current machine load and available capacity.
 - A hash of the initial tokens after the hidden OpenAI content, including tool definitions when present. The number of tokens hashed varies by model.
-- The optionally supplied [`prompt_cache_key`](#prompt-cache-keys) that controls grouping and distribution during higher-volume traffic, to mitigate request overflow to other machines and, therefore, cache misses.
+- An optional [`prompt_cache_key`](#prompt-cache-keys), which separates cache reuse between groups of requests.
 
 
 
@@ -205,9 +205,9 @@ OpenAI handles routing automatically. Within an organization and processing regi
 
 
 
-When traffic exceeds a machine's available capacity, requests may overflow to another machine. If that machine does not have a matching cache entry, the initial overflow request incurs a cache miss.
+[`prompt_cache_key`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20prompt_cache_key%20%3E%20%28schema%29) is an optional control for maintaining separate cache accounting for customers or users within your application. OpenAI handles cache routing automatically; you can omit the key for normal caching.
 
-Set [`prompt_cache_key`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20prompt_cache_key%20%3E%20%28schema%29) to help requests with the same prefix reach the same cache. Keys influence routing; they do not pin requests to a machine or guarantee a cache read hit. See [how to tune prompt cache keys](#tune-prompt-cache-keys).
+Using separate keys can make cached token usage and billing easier to explain for each customer or user. For example, separate keys help prevent cache-hit probing across users: submitting candidate prompts and observing cache hits to learn whether matching content was previously cached. See [Separate cache accounting with keys](#separate-prompts-with-cache-keys).
 
 
 
@@ -245,7 +245,7 @@ For models before GPT-5.6, the minimum cacheable input length varies with reques
 
 ## How to optimize prompt caching
 
-Focus on [preserving conversation history](#preserve-conversation-history), [keeping tool definitions stable](#manage-tools-with-append-only-updates), and understanding the three main cache controls. Use [`prompt_cache_options.mode` and `prompt_cache_breakpoint`](#choose-a-caching-mode) to choose where caching occurs, and [`prompt_cache_key`](#tune-prompt-cache-keys) to help related requests reach the same cache.
+Focus on [preserving conversation history](#preserve-conversation-history), [keeping tool definitions stable](#manage-tools-with-append-only-updates), and choosing where caching occurs. Use [`prompt_cache_options.mode` and `prompt_cache_breakpoint`](#choose-a-caching-mode) to control cache breakpoints. If your application needs separate cache accounting for customers, you can also use an optional [`prompt_cache_key`](#separate-prompts-with-cache-keys).
 
 
 
@@ -380,88 +380,27 @@ On GPT-5.6 and later, two controls determine where cache breakpoints are placed:
 
 
 
-
+<a id="prompt-cache-key-best-practices"></a>
 
 <a id="tune-prompt-cache-keys"></a>
 
-
-
-### Tune prompt cache keys
+<a id="separate-prompts-with-cache-keys"></a>
 
 
 
-- **Group related requests.** Combine a prompt version with a stable user, workspace, session, or thread ID that matches how your application reuses context. For example:
-  - `prompt_name_v1:user_123` groups a user's related requests that share a prompt version.
-  - `prompt_name_v1:session_456` groups requests within one session.
-  - `prompt_name_v1:workspace_acme:shard_3` groups requests within a stable shard of a workspace.
-- **Keep keys stable.** Reuse the key while its prefix remains useful; do not generate a new key for every request.
-- **Split busy groups.** If a group receives high traffic and cache read hits decline, distribute it across more keys with a stable, deterministic mapping. Keep related requests on the same shard so they can reuse its cache.
+<a id="separate-cache-accounting-with-keys"></a>
 
-Create stable cache keys
 
-```javascript
-import { createHash } from "node:crypto";
 
-const tenantId = "acme";
-const sessionId = "session-42";
-const promptVersion = "support-v3";
-// Tune for peak traffic per tenant and reusable prompt group; monitor cache hits.
-const shardCount = 16;
+### Separate cache accounting with keys
 
-const digest = createHash("sha256")
-  .update(`${tenantId}:${sessionId}`)
-  .digest("hex");
-const shard = Number.parseInt(digest.slice(0, 8), 16) % shardCount;
-const promptCacheKey = `${promptVersion}:${tenantId}:shard-${shard}`;
-```
 
-```python
-import hashlib
 
-tenant_id = "acme"
-session_id = "session-42"
-prompt_version = "support-v3"
-# Tune for peak traffic per tenant and reusable prompt group; monitor cache hits.
-shard_count = 16
+Use `prompt_cache_key` when you want to maintain separate cache accounting for customers, users, or workspaces within your application. This can make cached token usage and billing easier to explain within each group. The key is optional and is not needed to optimize caching.
 
-digest = hashlib.sha256(f"{tenant_id}:{session_id}".encode()).hexdigest()
-shard = int(digest[:8], 16) % shard_count
-prompt_cache_key = f"{prompt_version}:{tenant_id}:shard-{shard}"
-```
-
-```java
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.util.HexFormat;
-
-String tenantId = "acme";
-String sessionId = "session-42";
-String promptVersion = "support-v3";
-int shardCount = 16;
-
-String digest =
-    HexFormat.of()
-        .formatHex(
-            MessageDigest.getInstance("SHA-256")
-                .digest((tenantId + ":" + sessionId).getBytes(StandardCharsets.UTF_8)));
-long shard = Long.parseLong(digest.substring(0, 8), 16) % shardCount;
-String promptCacheKey = promptVersion + ":" + tenantId + ":shard-" + shard;
-```
-
-```ruby
-require "digest"
-
-tenant_id = "acme"
-session_id = "session-42"
-prompt_version = "support-v3"
-# Tune for peak traffic per tenant and reusable prompt group; monitor cache hits.
-shard_count = 16
-
-digest = Digest::SHA256.hexdigest("#{tenant_id}:#{session_id}")
-shard = digest.slice(0, 8).to_s.to_i(16) % shard_count
-prompt_cache_key = "#{prompt_version}:#{tenant_id}:shard-#{shard}"
-```
-
+- **Choose how to separate cache accounting.** Assign a distinct key to each customer or user whose cache accounting should remain separate. For example, `support:customer_123` and `support:customer_456` maintain separate cache accounting for two customers, even when their requests contain the same prefix.
+- **Keep keys stable within each group.** Reuse the same key for a customer's related requests. Generate a separate key for a session or thread only when it needs its own cache accounting.
+- **Apply keys consistently.** Use the customer's key across their requests to maintain separate cache accounting. This also helps prevent cache-hit probing across customers.
 
 
 
@@ -625,7 +564,7 @@ end
 
 
 - Keep existing stable prefixes.
-- Keep existing `prompt_cache_key` values.
+- If you use `prompt_cache_key`, keep existing values to preserve separate cache accounting for customers or users.
 - Replace `prompt_cache_retention` with `prompt_cache_options.ttl`.
 - Confirm that reusable prefixes meet the model's [minimum cacheable length](#summary-of-model-differences).
 - If the default breakpoint includes content that changes between requests, add an explicit breakpoint after the stable prefix.
@@ -651,7 +590,6 @@ end
 Consider a single-turn LLM judge that determines whether a completed interaction shows evidence that the user is satisfied after an interaction with a chatbot. Each request uses the same grading rubric and labeled few-shot examples to evaluate a different interaction.
 
 - **Preserving the prefix:** The fixed rubric and examples come first. Their combined length is deliberately kept just above the model's [minimum cacheable length](#summary-of-model-differences), using material that helps calibrate the judge. The interaction being evaluated comes last.
-- **Prompt cache key:** A stable `prompt_cache_key`, such as `satisfaction_judge_v1`, groups requests using the same rubric version.
 - **Caching mode and breakpoint:** Explicit-only caching is enabled, with a breakpoint after the fixed rubric and examples. The user–chatbot conversation being evaluated comes after that breakpoint and is not written to the cache, avoiding a cache-write charge for content that is unlikely to be reused.
 
 An example deployment using these principles reported a **token cache-hit rate of ~70%**. This figure illustrates a possible outcome. Actual cache-hit rate ceilings will depend upon your context and application usage.
@@ -663,7 +601,6 @@ Responses API request for a single-turn judge
   "model": "gpt-5.6-sol",
   "reasoning": { "effort": "medium", "context": "all_turns" },
   "text": { "verbosity": "low" },
-  "prompt_cache_key": "satisfaction_judge_v1",
   "prompt_cache_options": { "mode": "explicit" },
   "input": [
     {
@@ -702,7 +639,7 @@ Responses API request for a single-turn judge
 Consider a multi-turn agent with long, shared developer instructions and frequent tool calls. Typical usage sees users running multiple sessions with the agent at once, and often forking the threads.
 
 - **Preserving the prefix**: Each turn appends new messages, tool calls, and results without rewriting earlier context, so the reusable prefix grows over time.
-- **Prompt cache key:** The `prompt_cache_key` is defined for each user-agent pair, shared across that user's sessions with the agent. For example, `agent_123_v1:user_456` groups user 456's sessions and forks with agent 123. The session and thread IDs are kept out of the key when those sessions should share the same reusable prefix.
+- **Optional prompt cache key:** This example uses `agent_123_v1:user_456` to maintain separate cache accounting for user 456, making their cached token usage and billing easier to explain. This also helps prevent cache-hit probing across users. The key stays the same across that user's sessions and forks with the agent. Omit it if your application does not need this separation.
 - **Implicit caching mode:** Implicit caching is enabled so the latest eligible user or tool message provides a breakpoint.
 - **Explicit breakpoints:** A breakpoint is added after each tool result to preserve earlier reusable prefixes and improve cache efficiency of forking.
 
@@ -784,7 +721,6 @@ Without a breakpoint after the static content
   "model": "gpt-5.6-sol",
   "reasoning": { "effort": "medium", "context": "all_turns" },
   "text": { "verbosity": "low" },
-  "prompt_cache_key": "prompt_name_v1",
   "prompt_cache_options": { "mode": "implicit" },
   "input": [
     { "role": "developer", "content": "Static content..." },
@@ -803,7 +739,6 @@ With a breakpoint after the static content
   "model": "gpt-5.6-sol",
   "reasoning": { "effort": "medium", "context": "all_turns" },
   "text": { "verbosity": "low" },
-  "prompt_cache_key": "prompt_name_v1",
   "prompt_cache_options": { "mode": "explicit" },
   "input": [
     {

@@ -1,6 +1,110 @@
-# Realtime API with SIP
+# Telephony and SIP
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
+Choose the API your application uses. Each API has its own authentication, session creation, and event contract.
+
+
+
+## Choose a telephony connection
+
+A phone call can reach GPT-Live through a SIP trunk or through an application that relays audio. Choose the path that fits your existing phone system and where your application needs to process audio.
+
+| Connection          | Audio and application responsibilities                                                                                                                   |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Direct SIP          | The provider exchanges call audio with OpenAI. Your application handles webhooks, session configuration, call decisions, and business logic.             |
+| Server audio bridge | Your application relays provider or room audio to GPT-Live over WebSocket. It manages both connections, event translation, playback, and call lifecycle. |
+
+A provider's connection to your application and your application's connection to OpenAI are separate. For example, a caller can join a room through SIP while an agent in that room connects to GPT-Live over WebSocket.
+
+Using Twilio, Telnyx, LiveKit, or Daily/Pipecat? See [GPT-Live partner integrations](https://developers.openai.com/api/docs/guides/live-partner-integrations) for provider-specific guides.
+
+### Direct SIP
+
+Direct SIP keeps call audio on the provider-to-OpenAI media path. SIP signaling uses TLS, and GPT-Live requires SRTP for call audio. Your backend still owns the incoming-call decision, session configuration, authorization, and business logic.
+
+Use a [sideband connection](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live) when your backend needs to receive session events or send commands. It attaches to the existing conversation while SIP carries the audio. Assign one handler to each action so that duplicate webhook deliveries or events observed on multiple connections don't execute tools twice.
+
+Keep SIP routing and provider configuration together with the integration that uses them. Realtime webhook events, call identifiers, and acceptance payloads belong to the Realtime API; use the GPT-Live contract for a Live session.
+
+### Handle the call lifecycle
+
+Confirm that GPT-Live SIP support is enabled for your project and that your
+  provider's SIP trunk is routed to that project before using this flow. The
+  Realtime webhook and acceptance payloads in the other tab are a different API
+  contract.
+
+#### Receive the incoming call
+
+Configure your project's [webhook endpoint](https://developers.openai.com/api/docs/guides/webhooks) for `live.transport.incoming`. Verify the webhook signature and deduplicate deliveries before making a call decision. A delivery acknowledgment does not accept the call.
+
+The webhook identifies a SIP call with `data.type: "sip"` and provides `data.session_id`. Use that session ID unchanged for every Live call action. Treat `data.sip_headers` as untrusted caller metadata, not authorization.
+
+Existing integrations may still receive the deprecated `live.call.incoming` event, which has no `data.type`. During migration, handle both names and retain the old subscription until legacy deliveries and retries have drained. The same pending call can also emit a Realtime webhook; assign one handler to the accept/reject decision rather than accepting through both APIs.
+
+#### Accept or reject the call
+
+Apply your application's authorization and routing rules. To [accept the call](https://developers.openai.com/api/reference/resources/live/subresources/sessions/methods/accept), send an authenticated `POST /v1/live/sessions/{session_id}/accept` request with a top-level `session` object:
+
+```json
+{
+  "session": {
+    "type": "live",
+    "model": "gpt-live-1",
+    "instructions": "You are answering an inbound support call.",
+    "audio": { "output": { "voice": "marin" } },
+    "delegation": { "type": "client" }
+  }
+}
+```
+
+Use `Authorization: Bearer $OPENAI_API_KEY` from your trusted backend for call-control requests. Choose the voice and delegation mode at acceptance. SIP negotiates the audio format, so omit `audio.format`. The example selects client delegation; your backend must handle delegated work. See [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation) for client and Responses configurations.
+
+A successful acceptance returns `200 OK` with an empty body after session initialization. Handle HTTP errors before treating the call as accepted.
+
+To [reject the call](https://developers.openai.com/api/reference/resources/live/subresources/sessions/methods/reject), send `POST /v1/live/sessions/{session_id}/reject` with a SIP status, such as `{ "status_code": 486 }` for busy. The status must be an integer from 300 through 699. The first accept or reject decision wins; a later competing decision returns `decision_already_made`.
+
+#### Attach your backend
+
+After acceptance, connect a [sideband WebSocket](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live) at `wss://api.openai.com/v1/live/sessions/{session_id}/attach`. Use the accepted session ID and the same project authentication and connection headers. Do not send `session.start` again.
+
+SIP carries the call audio. Use the sideband for transcripts, delegation, tools, commands, and reflected audio. Choose one owner for each side effect, even if multiple connections observe an event.
+
+#### Observe keypad events
+
+The sideband receives `transport.dtmf.received` when the caller presses a key and `transport.dtmf.send` after a hosted tool successfully sends a tone. The event's `event` field contains one of `0`–`9`, `*`, `#`, or `A`–`D`.
+
+These are observer notifications, not client commands. Do not send `transport.dtmf.send` to request a tone, or assume the browser data channel receives keypad events.
+
+#### Transfer or end the call
+
+To [transfer the call](https://developers.openai.com/api/reference/resources/live/subresources/sessions/methods/refer), send `POST /v1/live/sessions/{session_id}/refer` with `{ "target_uri": "sip:agent@example.com" }` for your destination. To [hang up](https://developers.openai.com/api/reference/resources/live/subresources/sessions/methods/hangup), send `POST /v1/live/sessions/{session_id}/hangup` with no request body. Both return `200 OK` with an empty body on success.
+
+Keep your sideband open for final events and usage before releasing application resources. A successful hangup request or an unexpected disconnect is not a substitute for `session.closed`. See [Usage and graceful close](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close) for finalization and close reasons.
+
+This flow accepts inbound calls. Creating an outbound SIP call through `POST /v1/live/sessions` is not supported; use the relevant [partner integration](https://developers.openai.com/api/docs/guides/live-partner-integrations) for provider-owned outbound calling.
+
+### Server audio bridges
+
+Use the [GPT-Live WebSocket connection](https://developers.openai.com/api/docs/guides/voice-websockets?api=live) when your application receives an audio stream from a phone provider or an agent framework. The application authenticates both connections, translates their event envelopes, and relays audio in both directions.
+
+GPT-Live supports raw G.711 μ-law and A-law audio at 8 kHz over WebSocket. When the provider stream uses the same codec, sample rate, and channel count, your application can forward the raw audio bytes without converting them to PCM. Preserve audio order and use the message format required by each connection. Matching audio formats don't make the two event protocols interchangeable.
+
+The bridge also owns any audio it queues for playback. Include provider buffering, interruptions, and ending the call in your application design. See [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations) for the Live session lifecycle and [Migrate to GPT-Live](https://developers.openai.com/api/docs/guides/live-migration) for changes to turn-taking and playback control.
+
+Keep the provider's call or room identifier alongside the OpenAI session ID so you can trace a conversation across both systems.
+
+## Next steps with GPT-Live
+
+- [WebSockets](https://developers.openai.com/api/docs/guides/voice-websockets?api=live): connect a server audio stream to GPT-Live.
+- [Webhooks and server-side controls](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live): manage a session from your backend.
+- [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation): connect speech to your reasoning and tool backend.
+- [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations): handle transcripts, session state, and close.
+
+
+
+
+
 
 [SIP](https://en.wikipedia.org/wiki/Session_Initiation_Protocol) is a
 protocol used to make phone calls over the internet. With SIP and the
@@ -126,7 +230,7 @@ via the `accept` endpoint).
 The WebSocket behaves exactly like any other Realtime API connection. Send
 [`response.create`](https://developers.openai.com/api/reference/resources/realtime/client-events#response.create),
 and other client events to control the call, and listen for server events to
-track progress. See [Webhooks and server-side controls](https://developers.openai.com/api/docs/guides/realtime-server-controls)
+track progress. See [Webhooks and server-side controls](https://developers.openai.com/api/docs/guides/voice-server-controls?api=realtime)
 for more information.
 
 ```javascript
@@ -355,10 +459,10 @@ sideband_workers.each(&:join)
 
 Now that you've connected over SIP, use the left navigation or click into these pages to start building your realtime application.
 
-- [Realtime prompting guide](https://developers.openai.com/api/docs/guides/realtime-models-prompting)
+- [Realtime prompting guide](https://developers.openai.com/api/docs/guides/voice-prompting)
 - [Managing conversations](https://developers.openai.com/api/docs/guides/realtime-conversations)
-- [Webhooks and server-side controls](https://developers.openai.com/api/docs/guides/realtime-server-controls)
-- [Managing costs](https://developers.openai.com/api/docs/guides/realtime-costs)
+- [Webhooks and server-side controls](https://developers.openai.com/api/docs/guides/voice-server-controls?api=realtime)
+- [Managing costs](https://developers.openai.com/api/docs/guides/voice-latency-cost?api=realtime)
 - [Realtime transcription](https://developers.openai.com/api/docs/guides/realtime-transcription)
 
 ### Additional Resources

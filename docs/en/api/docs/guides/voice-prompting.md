@@ -1,6 +1,14 @@
-# Using realtime models
+# Prompting Realtime models
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
+Choose the Realtime model you are building with. For GPT-Live, use [Prompting GPT-Live](https://developers.openai.com/api/docs/guides/live-prompting).
+
+
+
+
+
+
 
 `gpt-realtime-2` is our state-of-the-art reasoning voice model for low-latency speech-to-speech applications. It can think before it speaks, follow instructions more reliably, use a larger context window, and call tools with greater precision than earlier realtime models.
 
@@ -45,8 +53,6 @@ Start simple. Do not over-prompt upfront. Begin with a minimal prompt, run
     </tr>
   </tbody>
 </table>
-
-
 
 ## Realtime 2.0 Prompting Guide
 
@@ -2081,8 +2087,15 @@ The second example shows conversation responses from `gpt-realtime-1.5` using th
 
 ## Next steps
 
+For GPT-Live:
+
+- Review [delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation) for the backend prompt and application-owned context.
+- Connect with [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=live) or [WebSockets](https://developers.openai.com/api/docs/guides/voice-websockets?api=live). See [Telephony and SIP](https://developers.openai.com/api/docs/guides/voice-sip?api=live) for phone integrations.
+- [Evaluate voice agents](https://developers.openai.com/api/docs/guides/voice-agents#evaluate-your-voice-agent) across conversation quality and verified task outcomes.
+
+For Realtime:
+
 - Review the earlier [Realtime prompting guide](https://developers.openai.com/cookbook/examples/realtime_prompting_guide) for more `gpt-realtime-1.5` examples.
 - Review the [Realtime eval guide](https://developers.openai.com/cookbook/examples/realtime_eval_guide) to test representative voice-agent behavior.
-- Learn how to connect with [WebRTC](https://developers.openai.com/api/docs/guides/realtime-webrtc), [WebSocket](https://developers.openai.com/api/docs/guides/realtime-websocket), or [SIP](https://developers.openai.com/api/docs/guides/realtime-sip).
-- Learn the [Realtime conversation lifecycle](https://developers.openai.com/api/docs/guides/realtime-conversations).
-- Review [Realtime costs](https://developers.openai.com/api/docs/guides/realtime-costs).
+- Connect with [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime), [WebSockets](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime), or [SIP](https://developers.openai.com/api/docs/guides/voice-sip?api=realtime).
+- Learn the [Realtime conversation lifecycle](https://developers.openai.com/api/docs/guides/realtime-conversations) and review [Realtime costs](https://developers.openai.com/api/docs/guides/voice-latency-cost?api=realtime).

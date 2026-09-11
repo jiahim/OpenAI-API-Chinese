@@ -8,7 +8,7 @@ Start with [`gpt-live-transcribe`](https://developers.openai.com/api/docs/models
 
 ## Create a transcription session
 
-Create a session with `type: "transcription"` and select `gpt-live-transcribe`. Connect with [WebSocket](https://developers.openai.com/api/docs/guides/realtime-websocket) for server-side audio pipelines or [WebRTC](https://developers.openai.com/api/docs/guides/realtime-webrtc) for browser audio.
+Create a session with `type: "transcription"` and select `gpt-live-transcribe`. Connect with [WebSocket](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime) for server-side audio pipelines or [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime) for browser audio.
 
 ```json
 {
@@ -241,7 +241,7 @@ Don't choose a setting from synthetic audio alone. Test with representative micr
 
 
 
-      Stream raw audio through a server-side media pipeline.](https://developers.openai.com/api/docs/guides/realtime-websocket)
+      Stream raw audio through a server-side media pipeline.](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime)
 
 [Voice activity detection
 

@@ -2,7 +2,7 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-Once you have connected to the Realtime API through either [WebRTC](https://developers.openai.com/api/docs/guides/realtime-webrtc) or [WebSocket](https://developers.openai.com/api/docs/guides/realtime-websocket), you can call a Realtime model (such as [`gpt-realtime-2.1`](https://developers.openai.com/api/docs/models/gpt-realtime-2.1)) to have speech-to-speech conversations. Doing so will require you to **send client events** to initiate actions, and **listen for server events** to respond to actions taken by the Realtime API.
+Once you have connected to the Realtime API through either [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime) or [WebSocket](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime), you can call a Realtime model (such as [`gpt-realtime-2.1`](https://developers.openai.com/api/docs/models/gpt-realtime-2.1)) to have speech-to-speech conversations. Doing so will require you to **send client events** to initiate actions, and **listen for server events** to respond to actions taken by the Realtime API.
 
 This guide will walk through the event flows required to use model capabilities like audio and text generation, image input, and function calling, and how to think about the state of a Realtime Session.
 
@@ -32,9 +32,9 @@ All these components together make up a Realtime Session. You will use client ev
 
 ## Session lifecycle events
 
-After initiating a session via either [WebRTC](https://developers.openai.com/api/docs/guides/realtime-webrtc) or [WebSockets](https://developers.openai.com/api/docs/guides/realtime-websocket), the server will send a [`session.created`](https://developers.openai.com/api/reference/resources/realtime) event indicating the session is ready. On the client, you can update the current session configuration with the [`session.update`](https://developers.openai.com/api/reference/resources/realtime) event. Most session properties can be updated at any time, except for the `voice` the model uses for audio output, after the model has responded with audio once during the session. The maximum duration of a Realtime session is **60 minutes**.
+After initiating a session via either [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime) or [WebSockets](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime), the server will send a [`session.created`](https://developers.openai.com/api/reference/resources/realtime) event indicating the session is ready. On the client, you can update the current session configuration with the [`session.update`](https://developers.openai.com/api/reference/resources/realtime) event. Most session properties can be updated at any time, except for the `voice` the model uses for audio output, after the model has responded with audio once during the session. The maximum duration of a Realtime session is **60 minutes**.
 
-The following example shows updating the session with a `session.update` client event. See the [WebRTC](https://developers.openai.com/api/docs/guides/realtime-webrtc#sending-and-receiving-events) or [WebSocket](https://developers.openai.com/api/docs/guides/realtime-websocket#sending-and-receiving-events) guide for more on sending client events over these channels.
+The following example shows updating the session with a `session.update` client event. See the [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime#sending-and-receiving-events) or [WebSocket](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime#sending-and-receiving-events) guide for more on sending client events over these channels.
 
 Update the system instructions used by the model in this session
 
@@ -352,7 +352,7 @@ Realtime sessions can be configured to use one of several built‑in voices when
 
 If you are connecting to the Realtime API using WebRTC, the Realtime API is acting as a [peer connection](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection) to your client. Audio output from the model is delivered to your client as a [remote media stream](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream). Audio input to the model is collected using audio devices ([`getUserMedia`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)), and media streams are added as tracks to the peer connection.
 
-The example code from the [WebRTC connection guide](https://developers.openai.com/api/docs/guides/realtime-webrtc) shows a basic example of configuring both local and remote audio using browser APIs:
+The example code from the [WebRTC connection guide](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime) shows a basic example of configuring both local and remote audio using browser APIs:
 
 ```javascript
 // Create a peer connection
@@ -371,7 +371,7 @@ pc.addTrack(ms.getTracks()[0]);
 ```
 
 
-The snippet above enables simple interaction with the Realtime API, but there's much more that can be done. For more examples of different kinds of user interfaces, check out the [WebRTC samples](https://github.com/webrtc/samples) repository. Live demos of these samples can also be [found here](https://webrtc.github.io/samples/).
+The snippet above enables interaction with the Realtime API, but there's much more that can be done. For more examples of different kinds of user interfaces, check out the [WebRTC samples](https://github.com/webrtc/samples) repository. Live demos of these samples can also be [found here](https://webrtc.github.io/samples/).
 
 Using [media captures and streams](https://developer.mozilla.org/en-US/docs/Web/API/Media_Capture_and_Streams_API) in the browser enables you to do things like mute and unmute microphones, select which device to collect input from, and more.
 
@@ -785,7 +785,7 @@ This can be useful for moderation or input validation or RAG patterns, where you
 
 ## Create responses outside the default conversation
 
-By default, all responses generated during a session are added to the session's conversation state (the "default conversation"). However, you may want to generate model responses outside the context of the session's default conversation, or have multiple responses generated concurrently. You might also want to have more granular control over which conversation items are considered while the model generates a response (e.g. only the last N number of turns).
+By default, all responses generated during a session are added to the session's conversation state (the "default conversation"). However, you may want to generate model responses outside the context of the session's default conversation, or have multiple responses generated concurrently. You might also want to have more granular control over which conversation items are considered while the model generates a response (for example, only the last N number of turns).
 
 Generating "out-of-band" responses which are not added to the default conversation state is possible by setting the `response.conversation` field to the string `none` when creating a response with the [`response.create`](https://developers.openai.com/api/reference/resources/realtime) client event.
 
@@ -1242,7 +1242,7 @@ This unsuccessful event sent from the client will emit an error event like the f
 
 ## Interruption and Truncation
 
-In many voice applications the user can interrupt the model while it's speaking. Realtime API handles interruptions when VAD is enabled, in that it detects user speech, cancels the ongoing response, and starts a new one. However in this scenario you will want the model to know where it was interrupted, so it can continue the conversation naturally (for example if the user says "what was that last thing?"). We call this **truncating** the model's last response, i.e. removing the unplayed portion of the model's last response from the conversation.
+In many voice applications the user can interrupt the model while it's speaking. Realtime API handles interruptions when VAD is enabled, in that it detects user speech, cancels the ongoing response, and starts a new one. However in this scenario you will want the model to know where it was interrupted, so it can continue the conversation naturally (for example if the user says "what was that last thing?"). We call this **truncating** the model's last response, that is, removing the unplayed portion of the model's last response from the conversation.
 
 In WebRTC and SIP connections the server manages a buffer of output audio, and thus knows how much audio has been played at a given moment. The server will automatically truncate unplayed audio when there's a user interruption.
 
@@ -1278,7 +1278,7 @@ To implement push-to-talk with a WebSocket connection, you'll want the client to
 1. Turn VAD off by setting `"turn_detection": null` in a [`session.update`](https://developers.openai.com/api/reference/resources/realtime) event.
 1. On push down, start recording audio on the client.
    1. If there is an in-progress response from the model, cancel it by sending a [`response.cancel`](https://developers.openai.com/api/reference/resources/realtime) event.
-   1. If there is is ongoing output playback from the model, stop playback immediately and send an `conversation.item.truncate` event to remove any unplayed audio from the conversation.
+   1. If there is ongoing output playback from the model, stop playback immediately and send a `conversation.item.truncate` event to remove any unplayed audio from the conversation.
 1. On up, send an [`input_audio_buffer.append`](https://developers.openai.com/api/reference/resources/realtime) message with the audio to place new audio into the input buffer.
 1. Send an [`input_audio_buffer.commit`](https://developers.openai.com/api/reference/resources/realtime) event, this will commit the audio written to the input buffer and kick off input transcription (if enabled).
 1. Then trigger a response with a [`response.create`](https://developers.openai.com/api/reference/resources/realtime) event.
@@ -1290,6 +1290,6 @@ Implementing push-to-talk with WebRTC is similar but the input audio buffer must
 1. Turn VAD off by setting `"turn_detection": null` in a [`session.update`](https://developers.openai.com/api/reference/resources/realtime) event.
 1. On push down, send an [`input_audio_buffer.clear`](https://developers.openai.com/api/reference/resources/realtime) event to clear any previous audio input.
    1. If there is an in-progress response from the model, cancel it by sending a [`response.cancel`](https://developers.openai.com/api/reference/resources/realtime) event.
-   1. If there is is ongoing output playback from the model, send an [`output_audio_buffer.clear`](https://developers.openai.com/api/reference/resources/realtime) event to clear out the unplayed audio, this truncates the conversation as well.
+   1. If there is ongoing output playback from the model, send an [`output_audio_buffer.clear`](https://developers.openai.com/api/reference/resources/realtime) event to clear out the unplayed audio, this truncates the conversation as well.
 1. On up, send an [`input_audio_buffer.commit`](https://developers.openai.com/api/reference/resources/realtime) event, this will commit the audio written to the input buffer and kick off input transcription (if enabled).
 1. Then trigger a response with a [`response.create`](https://developers.openai.com/api/reference/resources/realtime) event.
