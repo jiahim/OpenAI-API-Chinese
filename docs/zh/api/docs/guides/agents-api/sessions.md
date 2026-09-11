@@ -1,26 +1,26 @@
 # 运行并延续会话
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
-会话用于在多次交互中保留智能体的配置、对话记录和已保存的工作内容。复用同一会话即可发送后续消息，继续相关工作。
+会话用于在长时间跨度内保留智能体的配置、对话和已保存的工作。复用同一个会话即可发送后续消息并继续工作。
 
 
 
 
 ## 会话与轮次
 
-回合是会话内的一次工作循环。向空闲会话发送的消息会开启新回合。在进行中的回合内发送的消息会引导该回合。
+一轮是会话内的一次工作循环。向空闲会话发送消息会开启新一轮。在活跃轮次中发送消息则会引导该轮。
 
-回合以异步方式运行。你的应用可以通过流式传输来跟踪进度，或通过 [webhook](https://developers.openai.com/api/docs/guides/agents-api/sessions/webhooks).
-
-
+轮次以异步方式运行。你的应用可以通过流式传输来跟踪进度，或通过 [webhooks](https://developers.openai.com/api/docs/guides/agents-api/sessions/webhooks).
 
 
-## Start work
 
-使用 智能体 配置和初始消息创建一个会话 `input`。设置 `stream` 为 `true` 以在同一个请求中接收第一轮的事件。
 
-配置好你的 [API 密钥和 SDK 后](https://developers.openai.com/api/docs/guides/agents-api/quickstart#prerequisites)，运行以下示例以创建并执行一个脚本。OpenAI 会管理其环境：
+## 开始工作
+
+使用 智能体 配置和初始输入创建一个会话 `input`。将 `stream` 设置为 `true` ，以便在同一请求中接收第一轮的事件。
+
+配置好你的 [API 密钥和 SDK 后](https://developers.openai.com/api/docs/guides/agents-api/quickstart#prerequisites)，运行此示例以创建并运行脚本。OpenAI 管理其环境：
 
 创建会话并流式传输其第一轮
 
@@ -160,39 +160,40 @@ curl --no-buffer --fail-with-body https://api.openai.com/v1/agents/sessions \\\n
 ```
 
 
-存储 `session_id` 以及你应用的对话状态。使用它发送后续消息并检索该对话中保存的内容。
+将会话 ID 与你应用的对话状态一起存储。 `session_id` 使用它来发送后续消息并检索该对话中保存的内容。
 
-请参阅 [配置 智能体](https://developers.openai.com/api/docs/guides/agents-api/configuration) 了解可复用的 智能体 设置，以及 [架构](https://developers.openai.com/api/docs/guides/agents-api/architecture) 了解环境选择。包含 `environment.type: "none"` 的会话需要初始输入。 [Create session 参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/create) 列出了请求字段。
-
-
-
-
-## 追踪进度并处理结果
-
-Events 会随着 智能体 的运行而上报输出和变化。检查该轮的结果：完成、失败或取消。仅凭空闲会话本身并不能说明该轮已成功。
-
-查找 `agent.session.turn.completed`, `agent.session.turn.failed`，或 `agent.session.turn.cancelled`。同时检查 智能体 的输出：完成的轮次并不保证每个工具都成功了。
-
-如果会话需要函数结果或环境连接，请获取它并检查 `required_actions`。你的代码必须 [处理函数调用](https://developers.openai.com/api/docs/guides/agents-api/tools/functions) 或 [连接环境](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted) ，以便工作可以继续进行。
-
-请参阅 [事件与条目](https://developers.openai.com/api/docs/guides/agents-api/sessions/events) 中了解事件类型和负载。
+参见 [配置 智能体](https://developers.openai.com/api/docs/guides/agents-api/configuration) ，了解可复用的 智能体 设置，以及 [架构](https://developers.openai.com/api/docs/guides/agents-api/architecture) 了解环境选择。带有 `environment.type: "none"` 的会话需要提供初始输入。 [创建会话参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/create) 列出了请求字段。
 
 
 
 
+## 跟踪进度并处理结果
+
+Events 会随着 智能体 的运行而输出并变化。请检查本轮的结果：完成、失败或取消。仅凭会话处于空闲状态并不意味着本轮执行成功。
+
+查找 `agent.session.turn.completed`, `agent.session.turn.failed`，或 `agent.session.turn.cancelled`。同时检查 智能体 的输出：本轮完成并不保证每个工具调用都成功。
+
+如果会话需要函数结果或环境连接，请获取它并检查 `required_actions`。你的代码必须 [处理函数调用](https://developers.openai.com/api/docs/guides/agents-api/tools/functions) 或 [连接环境](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted) ，以便工作可以继续。
+
+参见 [Events 与 Items](https://developers.openai.com/api/docs/guides/agents-api/sessions/events) ，了解事件类型与负载。
 
 
-## 延续或引导工作
 
-再次发送 `agent.session.input.message` 到同一会话。如果智能体正在处理消息，则该消息会引导当前进行中的轮次。如果会话处于空闲状态，它会基于现有对话开启新一轮次。
 
-使用该会话的会话 ID 来发送输入。订阅其 [事件流](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/events/methods/stream) 之后再发送消息，这样你的应用就能收到该轮次的早期事件。
 
-将你的 API 客户端、会话 ID 和消息传递给应用中的某个函数：
+
+## 延续或调整工作方向
+
+发送另一条消息 `agent.session.input.message` 到同一个会话。如果 智能体 正在工作，该消息会引导当前的轮次。如果会话处于空闲状态，则会基于已有对话开启一个新的轮次。
+
+使用该会话的会话 ID 来发送输入。订阅其 [事件流](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/events/methods/stream) 后再发送消息，这样你的应用就能接收到该轮次早期的事件。
+
+将你的 API 客户端、会话 ID 和消息传递给应用中的一个函数：
 
 发送后续消息
 
 ```javascript
+// Pass your saved session ID and message to this helper.
 async function sendMessage(client, sessionId, text) {
   await client.beta.agents.sessions.events.create(sessionId, {
     events: [
@@ -216,6 +217,7 @@ async function sendMessage(client, sessionId, text) {
 ```
 
 ```python
+# Pass your saved session ID and message to this helper.
 def send_message(client: OpenAI, session_id: str, text: str) -> None:
     client.beta.agents.sessions.events.create(
         session_id,
@@ -239,6 +241,7 @@ def send_message(client: OpenAI, session_id: str, text: str) -> None:
 ```
 
 ```go
+// Pass your saved session ID and message to this helper.
 func sendMessage(ctx context.Context, client *openai.Client, sessionID, text string) error {
 	return client.Beta.Agents.Sessions.Events.New(ctx,
 		sessionID,
@@ -263,6 +266,7 @@ func sendMessage(ctx context.Context, client *openai.Client, sessionID, text str
 ```
 
 ```java
+// Pass your saved session ID and message to this helper.
 public static void sendMessage(OpenAIClient client, String sessionId, String text) {
   client
       .beta()
@@ -284,6 +288,7 @@ public static void sendMessage(OpenAIClient client, String sessionId, String tex
 ```
 
 ```ruby
+# Pass your saved session ID and message to this helper.
 def send_message(client, session_id, text)
   client.beta.agents.sessions.events.create(
     session_id,
@@ -334,20 +339,21 @@ curl \
 ```
 
 
-有关发送并流式接收的合并示例，请参阅 [事件与条目](https://developers.openai.com/api/docs/guides/agents-api/sessions/events#send-and-stream-a-task).
+如需查看发送与流式传输的组合示例，请参阅 [Events 与 Items](https://developers.openai.com/api/docs/guides/agents-api/sessions/events#send-and-stream-a-task).
 
 
 
 
 
 
-## 检索已保存的工作
+## Retrieve saved work
 
-事件展示实时进度。条目（Items）是已保存的消息和工具调用，包括已完成的响应。检索它们以在回合结束后展示先前的工作或查看结果：
+事件展示实时进度。条目是已保存的消息和工具调用，包括已完成的响应。检索它们以显示之前的工作或在轮次结束后检查结果：
 
 检索会话条目
 
 ```javascript
+// Pass your saved session ID to this helper.
 async function listItems(client, sessionId) {
   return client.beta.agents.sessions.items.list(sessionId, {
     order: "asc",
@@ -357,11 +363,13 @@ async function listItems(client, sessionId) {
 ```
 
 ```python
+# Pass your saved session ID to this helper.
 def list_items(client: OpenAI, session_id: str):
     return client.beta.agents.sessions.items.list(session_id, order="asc", limit=100)
 ```
 
 ```go
+// Pass your saved session ID to this helper.
 func listItems(ctx context.Context, client *openai.Client, sessionID string) (*pagination.CursorPage[openai.AgentSessionItemUnion], error) {
 	return client.Beta.Agents.Sessions.Items.List(ctx,
 		sessionID,
@@ -373,6 +381,7 @@ func listItems(ctx context.Context, client *openai.Client, sessionID string) (*p
 ```
 
 ```java
+// Pass your saved session ID to this helper.
 public static ItemListPage listItems(OpenAIClient client, String sessionId) {
   return client
       .beta()
@@ -389,6 +398,7 @@ public static ItemListPage listItems(OpenAIClient client, String sessionId) {
 ```
 
 ```ruby
+# Pass your saved session ID to this helper.
 def list_items(client, session_id)
   client.beta.agents.sessions.items.list(
     session_id,
@@ -406,20 +416,21 @@ curl \
 ```
 
 
-请参阅 [管理会话](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage) 以查看会话状态和回合结果。通过 [文件和制品](https://developers.openai.com/api/docs/guides/agents-api/environments/files).
+参见 [管理会话](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage) 来检查会话状态和轮次结果。通过以下方式检索文件 [文件和制品](https://developers.openai.com/api/docs/guides/agents-api/environments/files).
 
 
 
 
-流不会重放错过的事件。断开连接后，请检索会话及其已保存的条目以恢复工作。参阅 [恢复断开的流](https://developers.openai.com/api/docs/guides/agents-api/sessions/events#how-to-recover-a-disconnected-stream) 了解重连步骤。
+流不会重放错过的事件。断开连接后，检索会话及其已保存的条目以恢复工作。参见 [恢复断开的流](https://developers.openai.com/api/docs/guides/agents-api/sessions/events#how-to-recover-a-disconnected-stream) 了解重连步骤。
 
-## 取消一个进行中的轮次
+## 取消活动的轮次
 
-当你希望 智能体 停止时，取消当前轮次。会话及其之前的工作仍然可用：
+当你希望 智能体停止时，取消当前轮次。会话及其先前的工作仍然可用：
 
-取消活动轮次
+取消当前轮次
 
 ```javascript
+// Pass your saved session ID to this helper.
 async function cancelTurn(client, sessionId) {
   await client.beta.agents.sessions.events.create(sessionId, {
     events: [{ type: "agent.session.input.cancel" }],
@@ -428,6 +439,7 @@ async function cancelTurn(client, sessionId) {
 ```
 
 ```python
+# Pass your saved session ID to this helper.
 def cancel_turn(client: OpenAI, session_id: str) -> None:
     client.beta.agents.sessions.events.create(
         session_id, events=[{"type": "agent.session.input.cancel"}]
@@ -435,6 +447,7 @@ def cancel_turn(client: OpenAI, session_id: str) -> None:
 ```
 
 ```go
+// Pass your saved session ID to this helper.
 func cancelTurn(ctx context.Context, client *openai.Client, sessionID string) error {
 	return client.Beta.Agents.Sessions.Events.New(ctx,
 		sessionID,
@@ -447,6 +460,7 @@ func cancelTurn(ctx context.Context, client *openai.Client, sessionID string) er
 ```
 
 ```java
+// Pass your saved session ID to this helper.
 public static void cancelTurn(OpenAIClient client, String sessionId) {
   client
       .beta()
@@ -462,6 +476,7 @@ public static void cancelTurn(OpenAIClient client, String sessionId) {
 ```
 
 ```ruby
+# Pass your saved session ID to this helper.
 def cancel_turn(client, session_id)
   client.beta.agents.sessions.events.create(
     session_id,

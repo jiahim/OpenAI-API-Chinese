@@ -1,14 +1,14 @@
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整文档索引请参见 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## Add upload part
 
-**发布** `/uploads/{upload_id}/parts`
+**post** `/uploads/{upload_id}/parts`
 
-将一个 [Part](/docs/api-reference/uploads/part-object) 添加到 [Upload](/docs/api-reference/uploads/object) 对象。一个 Part 表示你尝试上传的文件中的一块字节。
+将一个 [Part](/api/reference/resources/uploads/subresources/parts) 添加到 [Upload](/api/reference/resources/uploads) 对象。一个 Part 表示你要上传的文件中的一块字节数据。
 
-每个 Part 最多 64 MB，你可以不断添加 Parts，直到达到 Upload 的最大容量 8 GB。
+每个 Part 最大为 64 MB，你可以不断添加 Parts，直到达到 Upload 的上限 8 GB。
 
-你可以并行添加多个 Parts。在你 [完成 Upload](/docs/api-reference/uploads/complete).
+可以并行添加多个 Parts。你可以在 [完成 Upload](/api/reference/resources/uploads/methods/complete).
 
 ### 路径参数
 
@@ -18,11 +18,11 @@
 
 - `UploadPart object { id, created_at, object, upload_id }`
 
-  upload Part 表示我们可以添加到 Upload 对象的一小块字节。
+  upload Part 表示我们可以添加到 Upload 对象的一个字节块。
 
   - `id: string`
 
-    upload Part 的唯一标识符，可以在 API 端点中引用。
+    upload Part 的唯一标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
@@ -30,7 +30,7 @@
 
   - `object: "upload.part"`
 
-    对象类型，始终是 `upload.part`.
+    对象类型，始终为 `upload.part`.
 
     - `"upload.part"`
 

@@ -1,52 +1,52 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后附加 `.md` 来获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
 
-## Create upload
+## 创建上传
 
 **post** `/uploads`
 
-创建一个中间 [Upload](/docs/api-reference/uploads/object) 对象
-，你可以向其中添加 [Parts](/docs/api-reference/uploads/part-object) 。
-目前，一个 Upload 最多接受总计 8 GB 的内容，并在创建
-一小时后过期。
+创建一个中间的 [Upload](/api/reference/resources/uploads) 对象
+，你可以向其中添加 [Parts](/api/reference/resources/uploads/subresources/parts) 。
+目前，一个 Upload 最多只能接受总计 8 GB 的内容，并且在你创建后一小时后
+过期。
 
-完成 Upload 后，我们会创建一个包含你上传的所有 part 的
-[File](/docs/api-reference/files/object) 对象。该 File 可在我们平台的其他地方作为常规的
-File 对象在平台其余部分中使用。
+完成 Upload 后，我们会创建一个包含你上传的所有部分的
+[File](/api/reference/resources/files) 对象。该
+File 可在我们平台的其他部分作为常规的 File 对象使用。
 File 对象。
 
 对于某些 `purpose` 值，必须指定正确的 `mime_type` 。
-请参阅针对你使用场景的
-[支持的 MIME 类型文档](/docs/assistants/tools/file-search#supported-files).
+请参考适合你用例的
+[支持的 MIME 类型文档](/api/docs/guides/tools-file-search#supported-files).
 
-有关每个用途的正确文件扩展名指南，请
-按照相关文档进行 [创建一个
-File](/docs/api-reference/files/create).
+有关每个用途的合适文件扩展名指南，请
+遵循相关文档说明以 [创建
+File](/api/reference/resources/files/methods/create).
 
-返回带有状态信息的 Upload 对象 `pending`.
+返回 Upload 对象及其状态 `pending`.
 
-### 请求体参数
+### Body 参数
 
 - `bytes: number`
 
-  你要上传的文件的字节数。
+  你正在上传的文件的字节数。
 
 - `filename: string`
 
-  要上传的文件的名称。
+  要上传文件的名称。
 
 - `mime_type: string`
 
   文件的 MIME 类型。
 
-  此值必须属于你的文件用途所支持的 MIME 类型范围。参见
-  助手中支持的 MIME 类型和视觉功能。
+  该类型必须属于文件用途所支持的 MIME 类型范围内。参见
+  助手与视觉功能所支持的 MIME 类型。
 
 - `purpose: "assistants" or "batch" or "fine-tune" or "vision"`
 
-  上传文件的预期用途。
+  已上传文件的预期用途。
 
-  请参阅 File（文件）的 [documentation on File
-  purposes](/docs/api-reference/files/create#files-create-purpose).
+  参见 [File 的
+  用途](/api/reference/resources/files/methods/create#%28resource%29%20files%20%3E%20%28method%29%20create%20%3E%20%28params%29%200%20%3E%20%28param%29%20purpose%20%3E%20%28schema%29).
 
   - `"assistants"`
 
@@ -58,23 +58,23 @@ File](/docs/api-reference/files/create).
 
 - `expires_after: optional object { anchor, seconds }`
 
-  文件的过期策略。默认情况下，带有 `purpose=batch` 的过期时间为 30 天，其他所有文件会一直保留直到被手动删除。
+  文件的过期策略。默认情况下,带有 `purpose=batch` 的文件在 30 天后过期,其他所有文件会一直保留,直到被手动删除。
 
   - `anchor: "created_at"`
 
-    过期策略生效的锚定时间戳。支持的锚点： `created_at`.
+    过期策略生效的锚定时间戳。支持以下锚点: `created_at`.
 
     - `"created_at"`
 
   - `seconds: number`
 
-    文件将在锚定时间之后过期的秒数。必须介于 3600（1 小时）和 2592000（30 天）之间。
+    文件在锚点时间之后过期的秒数。必须在 3600（1 小时）到 2592000（30 天）之间。
 
 ### 返回值
 
 - `Upload object { id, bytes, created_at, 6 more }`
 
-  Upload 对象可以以 Parts 的形式接收字节分块。
+  Upload 对象可以以 Parts 的形式接收字节块。
 
   - `id: string`
 
@@ -86,19 +86,19 @@ File](/docs/api-reference/files/create).
 
   - `created_at: number`
 
-    Upload 创建时的 Unix 时间戳（以秒为单位）。
+    Upload 创建时的 Unix 时间戳（单位为秒）。
 
   - `expires_at: number`
 
-    Upload 过期时的 Unix 时间戳（以秒为单位）。
+    Upload 过期时的 Unix 时间戳（单位为秒）。
 
   - `filename: string`
 
-    要上传的文件名。
+    要上传的文件名称。
 
   - `purpose: string`
 
-    文件的预期用途。 [请参考此处](/docs/api-reference/files/object#files/object-purpose) 了解可接受的值。
+    文件的预期用途。 [请参阅此处](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) 以了解可接受的值。
 
   - `status: "pending" or "completed" or "cancelled" or "expired"`
 
@@ -122,11 +122,11 @@ File](/docs/api-reference/files/create).
 
     - `bytes: number`
 
-      文件的大小，以字节为单位。
+      文件大小（以字节为单位）。
 
     - `created_at: number`
 
-      文件创建时的 Unix 时间戳（以秒为单位）。
+      文件创建时的 Unix 时间戳（单位为秒）。
 
     - `filename: string`
 
@@ -160,7 +160,7 @@ File](/docs/api-reference/files/create).
 
     - `status: "uploaded" or "processed" or "error"`
 
-      已弃用。文件的当前状态，可能为 `uploaded`, `processed`，或 `error`.
+      已弃用。文件的当前状态，可为 `uploaded`, `processed`，或 `error`.
 
       - `"uploaded"`
 
@@ -170,7 +170,7 @@ File](/docs/api-reference/files/create).
 
     - `expires_at: optional number`
 
-      文件到期时的 Unix 时间戳（单位：秒）。
+      文件过期时的 Unix 时间戳（以秒为单位）。
 
     - `status_details: optional string`
 
@@ -196,7 +196,7 @@ curl https://api.openai.com/v1/uploads \
         }'
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -239,7 +239,7 @@ curl https://api.openai.com/v1/uploads \
   }'
 ```
 
-#### 响应
+#### Response
 
 ```json
 {

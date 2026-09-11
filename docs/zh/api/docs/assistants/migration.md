@@ -1,19 +1,19 @@
 # Assistants 迁移指南
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
 
-Assistants API 已于 2026 年 8 月 26 日正式下线，不再可用。请改用 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) 来完成新的集成。
-
-
+Assistants API 已于 2026-08-26 正式停用，无法继续使用。请使用 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) 完成新的集成。
 
 
-感谢所有使用过 Assistants API 的用户。我们由衷感谢你们基于它构建的一切，以及一路走来的反馈。
 
-请参考本指南，将你的集成迁移至 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses).
 
-Responses 更简洁——发送输入项即可获得输出项。使用 Responses API 还能获得更出色的性能以及 [深度研究](https://developers.openai.com/api/docs/guides/deep-research), [MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)、以及 [计算机使用](https://developers.openai.com/api/docs/guides/tools-computer-use)。等新功能。此次更新还让你可以直接管理对话，而无需回传 `previous_response_id`.
+感谢所有使用过 Assistants API 的用户。非常感谢你构建的一切以及一路走来的反馈。
 
-### 有什么变化？
+请参考本指南将你的集成迁移至 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses).
+
+Responses 更简洁——发送输入项即可获取输出项。使用 Responses API 还能获得更佳的性能以及以下新功能： [深度研究](https://developers.openai.com/api/docs/guides/deep-research), [MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)，以及 [计算机使用](https://developers.openai.com/api/docs/guides/tools-computer-use)。这一变更也让你可以管理会话，而无需回传 `previous_response_id`.
+
+### 发生了什么变化？
 
 <table>
   <thead>
@@ -55,31 +55,31 @@ Responses 更简洁——发送输入项即可获得输出项。使用 Responses
   </tbody>
 </table>
 
-## 从 assistants 到 prompts
+## 从 Assistants 到提示词
 
-Assistants 是持久化的 API 对象，将模型选择、指令和工具声明捆绑在一起——完全通过 API 创建和管理。其替代方案 prompts 只能在仪表盘中创建，你可以在产品开发过程中对其进行版本管理。
+Assistants 是持久化的 API 对象，将模型选择、指令和工具声明捆绑在一起——完全通过 API 创建和管理。它们的替代方案 prompts 只能在仪表板中创建，你可以在那里随着产品的开发对其进行版本管理。
 
-### 为什么这很有用
+### 为什么这很有帮助
 
-- **可移植性与版本控制**：你可以对提示词规范进行快照、审查、差异比较和回滚。你也可以为提示词设置版本，让你的代码只需指向最新版本即可。
-- **关注点分离**：你的应用代码现在负责处理编排逻辑（历史裁剪、工具循环、重试），而你的提示词专注于高层行为与约束（系统指引、工具可用性、结构化输出 schema、温度默认值）。
-- **实时兼容性**：通过 Realtime API 连接时，可以复用同一份提示词配置，让你在聊天、流式传输和低延迟交互会话中获得统一的行为定义。
-- **工具与输出一致性**：通过使用提示词，你启动的每一次 Responses 或 Realtime 会话都会继承一致的契约，因为提示词封装了工具 schema 和结构化输出预期。
+- **可移植性与版本管理**：你可以对 prompt 规格进行快照、审阅、对比和回滚。你还可以对 prompt 进行版本管理，这样你的代码只需指向最新版本即可。
+- **关注点分离**：你的应用代码现在负责处理编排逻辑（历史裁剪、工具循环、重试），而你的 prompt 则专注于高层行为和约束（系统指引、工具可用性、结构化输出 schema、温度默认值）。
+- **Realtime 兼容性**：当你通过 Realtime API 进行连接时，可以复用同一份 prompt 配置，从而在对话、流式传输和低延迟交互会话之间获得统一的行为定义。
+- **工具与输出一致性**：使用 prompt 后，你启动的每一个 Responses 或 Realtime 会话都会继承一致的契约，因为 prompt 封装了工具 schema 和结构化输出预期。
 
 ### 实用的迁移步骤
 
 1. 识别每个现有智能体的 _指令 + 工具_ 组合。
-2. 在仪表板中，将该组合重新创建为命名提示。
-3. 将提示 ID（或其导出规范）存储在源代码管理中，以便应用程序代码可以引用稳定的标识符。
-4. 在发布过程中，通过交换提示 ID 来运行 A/B 测试——无需以编程方式创建或删除智能体对象。
+2. 在仪表板中，将该组合重建为一个命名的提示词。
+3. 将提示词 ID（或其导出的规范）存入源代码管理，以便应用代码能够引用稳定的标识符。
+4. 在灰度过程中，通过切换提示词 ID 进行 A/B 测试——无需以编程方式创建或删除智能体对象。
 
-把 prompt 看作一份 **可版本化的行为配置** 以便接入 Responses 或 Realtime API。
+把提示词视为一个 **可版本化、用于描述行为特征的配置文件** ，以接入 Responses 或 Realtime API。
 
 ---
 
 ## 从线程到对话
 
-线程是存储在服务端的消息集合。线程只能 _存储_ 消息。对话存储条目，其中可以包含消息、工具调用、工具输出和其他数据。
+会话线程是一组存储在 服务端的消息。会话线程只能 _只能_ 存储消息。对话存储的是项（item），其中可以包含消息、工具调用、工具输出以及其他数据。
 
 ### 请求示例
 
@@ -105,7 +105,7 @@ Assistants 是持久化的 API 对象，将模型选择、指令和工具声明�
 }
 ```
 
-#### 会话对象
+#### 对话对象
 
 ```json
 {
@@ -122,11 +122,11 @@ Assistants 是持久化的 API 对象，将模型选择、指令和工具声明�
 
 ---
 
-## 从 runs 到 responses
+## 从 run 到 response
 
-Runs 是针对线程执行的异步进程。请参阅下面的示例。Responses 更简单：提供一组要执行的 input 项，然后取回一个 output 项列表。
+Run 是针对线程执行的异步进程。请参阅下面的示例。Responses 更简单：提供一组输入项来执行，并返回一组输出项。
 
-Responses 设计为可单独使用，但你也可以与 prompt 对象和 conversation 对象一起使用，以存储上下文和配置。
+Responses 被设计为可单独使用，但你也可以将其与 prompt 和 conversation 对象配合使用，以存储上下文和配置。
 
 ### 请求示例
 
@@ -263,34 +263,34 @@ Responses 设计为可单独使用，但你也可以与 prompt 对象和 convers
 
 ## 迁移你的集成
 
-按以下迁移步骤，从 Assistants API 迁移到 Responses API，同时保留所有功能支持。
+按照以下迁移步骤，可以从 Assistants API 迁移到 Responses API，且不会失去任何功能支持。
 
-### 1. 从你的 assistants 创建 prompts
+### 1. 基于你的助手创建提示
 
-1. 识别你应用中最重要的 assistant 对象。
-1. 在仪表板中找到这些对象，然后点击 `Create prompt`.
+1. 识别应用中最重要的智能体对象。
+1. 在仪表板中找到这些对象并点击 `Create prompt`.
 
-这会从每个现有的助手对象创建一个 prompt 对象。
+这会基于每个现有的助手对象创建一个 prompt 对象。
 
-可复用的 prompt 对象也即将弃用。如果你使用此迁移
-  路径，请查看 [prompts 弃用
-  时间表](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) ，再在长期集成中采用
+可复用的 prompt 对象也即将被弃用。如果你使用此迁移
+  方式，请查看 [prompts 弃用
+  时间表](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 后再决定是否在长期集成中采用
   prompt 对象。
 
 ### 2. 将新的用户聊天迁移到 conversations 和 responses
 
-使用 Conversations API 和 Responses API 开启新的聊天。若需保留更早的对话历史，请使用你的应用中已存储的消息。
+使用 Conversations API 和 Responses API 开启新聊天。若需保留此前的对话历史，请使用你的应用程序中已存储的消息。
 
-下面的示例展示了在停用前如何迁移线程历史。Assistants API 中用于获取线程消息的调用将不再可用；请改用你已存储的消息。
+下面的示例展示了在停用前如何迁移线程历史。Assistants API 中用于获取线程消息的调用已不再可用；请改用你已存储的消息。
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 
 from openai import OpenAI
 
 openai = OpenAI()
 messages = []
-thread_id = os.environ["OPENAI_THREAD_ID"]
+thread_id = "thread_123"
 
 for page in openai.beta.threads.messages.list(
     thread_id=thread_id, order="asc"
@@ -326,10 +326,11 @@ conversation = openai.conversations.create(items=items)
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
 
 client = OpenAI::Client.new
-thread_id = ENV.fetch("OPENAI_THREAD_ID")
+thread_id = "thread_123"
 messages = client.beta.threads.messages.list(thread_id, order: :asc)
 items = []
 messages.auto_paging_each do |message|
@@ -365,9 +366,9 @@ puts(conversation.id)
 ```
 
 
-## 比较完整示例
+## 对比完整示例
 
-以下是一些同时使用 Assistants API 和 Responses API 的集成示例，方便你了解二者的对比。
+下面是一些同时使用 Assistants API 和 Responses API 的集成示例，方便你了解二者的差异。
 
 ### 用户聊天应用
 
@@ -376,6 +377,7 @@ puts(conversation.id)
 Assistants API
 
 ```python
+# Replace the illustrative IDs and URLs below with your own resource values.
 threads_by_session: dict[str, str] = {}
 
 
@@ -392,8 +394,9 @@ async def message(message: Message):
         content=message.content,
     )
 
+    example_assistant_id = "asst_123"
     run = openai.beta.threads.runs.create(
-        assistant_id=os.environ["OPENAI_ASSISTANT_ID"],
+        assistant_id=example_assistant_id,
         thread_id=thread_id,
     )
     while run.status in ("queued", "in_progress"):
@@ -413,10 +416,11 @@ async def message(message: Message):
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
 
 client = OpenAI::Client.new
-assistant_id = ENV.fetch("OPENAI_ASSISTANT_ID")
+assistant_id = "asst_123"
 threads_by_session = {}
 
 handle_message = lambda do |session_id:, content:|
@@ -465,6 +469,7 @@ puts(
 Responses API
 
 ```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
 import express from "express";
 import OpenAI from "openai";
 
@@ -502,11 +507,7 @@ app.post("/messages", async (request, response) => {
   }
   const conversationId = await conversationIdPromise;
 
-  const promptId = process.env.OPENAI_PROMPT_ID;
-  if (!promptId) {
-    response.status(500).json({ error: "OPENAI_PROMPT_ID is required." });
-    return;
-  }
+  const promptId = "pmpt_123";
 
   const result = await client.responses.create({
     prompt: { id: promptId },
@@ -521,6 +522,7 @@ app.listen(Number(process.env.OPENAI_EXAMPLE_PORT ?? 8000), "127.0.0.1");
 ```
 
 ```python
+# Replace the illustrative IDs and URLs below with your own resource values.
 conversations_by_session: dict[str, str] = {}
 
 
@@ -531,8 +533,9 @@ async def message(message: Message):
         conversation_id = openai.conversations.create().id
         conversations_by_session[message.session_id] = conversation_id
 
+    example_prompt_id = "pmpt_123"
     response = openai.responses.create(
-        prompt={"id": os.environ["OPENAI_PROMPT_ID"]},
+        prompt={"id": example_prompt_id},
         input=[{"role": "user", "content": message.content}],
         conversation=conversation_id,
     )
@@ -541,6 +544,7 @@ async def message(message: Message):
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
 
 client = OpenAI::Client.new
@@ -554,7 +558,7 @@ handle_message = lambda do |session_id:, content:|
   end
 
   response = client.responses.create(
-    prompt: { id: ENV.fetch("OPENAI_PROMPT_ID") },
+    prompt: { id: "pmpt_123" },
     input: [
       {
         role: :user,

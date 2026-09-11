@@ -1,20 +1,20 @@
-# Realtime 客户端事件
+# Realtime client events
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 完整文档索引请参见 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 末尾追加 `.md` 。
 
-这些事件是 OpenAI Realtime WebSocket 服务器将接受来自客户端的事件。
+这些事件是 OpenAI Realtime WebSocket 服务器将接受客户端发送的事件。
 
 ## session.update
 
 发送此事件以更新会话的配置。
-客户端可以随时发送此事件来更新任何字段
-除了 `voice` 和 `model`. `voice` 之外,只有在尚未产生其他音频输出时才能更新。
+客户端可以随时发送此事件以更新任何字段
+除外， `voice` 且 `model`. `voice` 仅在没有其他音频输出的情况下才能更新。
 
-当服务器收到一个 `session.update`，时,它会响应一个
-包含 `session.updated` 事件,显示完整且生效的配置。
-仅会更新 `session.update` 中存在的字段。若要清除类似
-`instructions`，的字段,请传递空字符串。若要清除类似 `tools`，的字段,请传递空数组。
-若要清除类似 `turn_detection`，的字段,请传递 `null`.
+当服务器收到 `session.update`，时，它会响应一个
+，其中包含 `session.updated` 事件，展示完整且生效的配置。
+只有出现在 `session.update` 中的字段会被更新。若要清除类似
+`instructions`，的字段，请传递空字符串。若要清除类似 `tools`，的字段，请传递空数组。
+若要清除类似 `turn_detection`，的字段，请传递 `null`.
 
 ### Schema
 
@@ -545,7 +545,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/prompt",
     "deprecated": false,
     "key": "prompt",
-    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).\n",
+    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsePrompt",
@@ -1075,7 +1075,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   "(resource) responses > (model) response_prompt > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Prompt",
-    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).\n",
+    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).\n",
     "ident": "ResponsePrompt",
     "type": {
       "kind": "HttpTypeObject",
@@ -1234,7 +1234,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   "(resource) realtime > (model) realtime_tools_config_union > (schema) > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tools/items/oneOf/1",
-    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).\n",
+    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).\n",
     "ident": "McpTool",
     "type": {
       "kind": "HttpTypeObject",
@@ -1601,7 +1601,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/audio/properties/input/properties/transcription",
     "deprecated": false,
     "key": "transcription",
-    "docstring": "Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n",
+    "docstring": "Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "AudioTranscription",
@@ -2048,7 +2048,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   "(resource) responses > (model) response_input_image > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/InputImageContent",
-    "docstring": "An image input to the model. Learn about [image inputs](/docs/guides/vision).",
+    "docstring": "An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).",
     "ident": "ResponseInputImage",
     "type": {
       "kind": "HttpTypeObject",
@@ -2609,7 +2609,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "oasRef": "#/components/schemas/MCPTool/properties/connector_id",
     "deprecated": false,
     "key": "connector_id",
-    "docstring": "Identifier for service connectors, like those available in ChatGPT. One of\n`server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more\nabout service connectors [here](/docs/guides/tools-remote-mcp#connectors).\n\nCurrently supported `connector_id` values are:\n\n- Dropbox: `connector_dropbox`\n- Gmail: `connector_gmail`\n- Google Calendar: `connector_googlecalendar`\n- Google Drive: `connector_googledrive`\n- Microsoft Teams: `connector_microsoftteams`\n- Outlook Calendar: `connector_outlookcalendar`\n- Outlook Email: `connector_outlookemail`\n- SharePoint: `connector_sharepoint`\n",
+    "docstring": "Identifier for service connectors, like those available in ChatGPT. One of\n`server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more\nabout service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).\n\nCurrently supported `connector_id` values are:\n\n- Dropbox: `connector_dropbox`\n- Gmail: `connector_gmail`\n- Google Calendar: `connector_googlecalendar`\n- Google Drive: `connector_googledrive`\n- Microsoft Teams: `connector_microsoftteams`\n- Outlook Calendar: `connector_outlookcalendar`\n- Outlook Email: `connector_outlookemail`\n- SharePoint: `connector_sharepoint`\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/MCPTool/properties/connector_id",
@@ -2796,7 +2796,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   "(resource) realtime > (model) realtime_tools_config_union > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tools/items",
-    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).\n",
+    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).\n",
     "ident": "RealtimeToolsConfigUnion",
     "type": {
       "kind": "HttpTypeUnion",
@@ -3033,7 +3033,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "oasRef": "#/components/schemas/RealtimeTranscriptionSessionCreateRequestGA/properties/audio/properties/input/properties/transcription",
     "deprecated": false,
     "key": "transcription",
-    "docstring": "Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n",
+    "docstring": "Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "AudioTranscription",
@@ -3392,7 +3392,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "oasRef": "#/components/schemas/AudioTranscription/properties/prompt",
     "deprecated": false,
     "key": "prompt",
-    "docstring": "An optional text to guide the model's style or continue a previous audio\nsegment.\nFor `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting).\nFor `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example \"expect words related to technology\".\nPrompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.\n",
+    "docstring": "An optional text to guide the model's style or continue a previous audio\nsegment.\nFor `whisper-1`, the [prompt is a list of keywords](/api/docs/guides/speech-to-text#prompting).\nFor `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example \"expect words related to technology\".\nPrompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.\n",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -5647,18 +5647,18 @@ Schema name: `RealtimeClientEventSessionUpdate`
 ## input_audio_buffer.append
 
 发送此事件以将音频字节追加到输入音频缓冲区。该音频
-缓冲区是可写入的临时存储，之后可以提交。“提交”操作会根据缓冲区内容在
-对话历史中创建一个新的用户消息条目，并清空缓冲区。
-（如果启用）将在缓冲区提交时生成输入音频转录。
+缓冲区是一种临时存储，你可以向其写入内容并在稍后提交。提交会基于缓冲区内容在对话历史中创建一个新的
+用户消息条目，并清空缓冲区。
+输入音频转录（如果已启用）将在缓冲区提交时生成。
 
-如果启用了 VAD，则使用音频缓冲区来检测语音，并由服务端决定
-何时提交。当服务端 VAD 禁用时，你必须手动提交音频缓冲区。
-输入音频降噪功能作用于对音频缓冲区的写入。
+如果启用了 VAD，音频缓冲区将用于检测语音，并由服务端决定何时提交。当禁用服务端 VAD 时，你必须手动提交音频
+缓冲区。输入音频降噪作用于对音频缓冲区的写入操作。
+客户端可以选择每个事件中放入多少音频，最大为。
 
-客户端可以选择每次事件放入多少音频，最大不超过
-15 MiB；例如，从客户端流式传输较小的数据块可以让
+15 MiB；例如，客户端流式传输较小的分块可以让
 VAD 响应更及时。与大多数其他客户端事件不同，服务端
-不会为该事件发送确认响应。
+不会针对此事件发送确认响应。
+不会针对此事件发送确认响应。
 
 ### Schema
 
@@ -5769,9 +5769,9 @@ Schema name: `RealtimeClientEventInputAudioBufferAppend`
 
 ## input_audio_buffer.commit
 
-发送此事件以提交用户输入音频缓冲区，这将在对话中创建一个新的用户消息项。如果输入音频缓冲区为空，此事件将产生错误。在 Server VAD 模式下，客户端无需发送此事件，服务端会自动提交音频缓冲区。
+发送此事件以提交用户输入音频缓冲区，提交后会在对话中创建一个新的用户消息项。如果输入音频缓冲区为空，此事件会产生错误。在 Server VAD 模式下，客户端无需发送此事件，服务端会自动提交音频缓冲区。
 
-提交输入音频缓冲区将触发输入音频转录（如果在会话配置中启用），但不会创建来自模型的响应。服务端将以一个 `input_audio_buffer.committed` 事件作出响应。
+提交输入音频缓冲区将触发输入音频转录（如果已在会话配置中启用），但不会由模型生成响应。服务端将返回一个 `input_audio_buffer.committed` 事件。
 
 ### Schema
 
@@ -5863,8 +5863,8 @@ Schema name: `RealtimeClientEventInputAudioBufferCommit`
 
 ## input_audio_buffer.clear
 
-发送该事件以清空缓冲区中的音频字节。服务端将
-以以下响应作出回复 `input_audio_buffer.cleared` 事件作出响应。
+发送此事件以清除缓冲区中的音频字节。服务器将
+响应一个 `input_audio_buffer.cleared` 事件。
 
 ### Schema
 
@@ -5956,13 +5956,13 @@ Schema name: `RealtimeClientEventInputAudioBufferClear`
 
 ## conversation.item.create
 
-向会话上下文中添加一个新 Item，包括消息、函数
-调用和函数调用响应。该事件既可用于填充会话的
-“历史记录”，也可用于在流式传输过程中添加新的 Item，但存在
-当前限制：无法填充助手音频消息。
+向会话上下文添加新的 Item，包括消息、函数
+调用和函数调用响应。此事件既可用于填充会话的
+“历史”记录，也可在流式传输中途添加新条目，但目前存在
+无法填充助手音频消息的限制。
 
 如果成功，服务端将响应一个 `conversation.item.created`
-事件，否则将发送一个 `error` 事件。
+事件，否则将发送 `error` 事件。
 
 ### Schema
 
@@ -8651,10 +8651,10 @@ Schema name: `RealtimeClientEventConversationItemCreate`
 
 ## conversation.item.retrieve
 
-当你希望获取服务器对会话历史中某一项的表示时，发送此事件。例如，可用于在降噪和 VAD 之后检查用户音频。
-服务器将返回一个 `conversation.item.retrieved` 事件，
-除非该项不存在于会话历史中，此时
-服务器将返回错误。
+当你希望检索服务端对会话历史中某个特定条目的表示时，发送此事件。例如，在噪声消除和 VAD 之后检查用户音频时，这非常有用。
+服务端将响应一个 `conversation.item.retrieved` 事件，
+除非该条目不存在于会话历史中，在这种情况下
+服务端将响应一个错误。
 
 ### Schema
 
@@ -8765,17 +8765,17 @@ Schema name: `RealtimeClientEventConversationItemRetrieve`
 
 ## conversation.item.truncate
 
-发送此事件以截断之前的助手消息的音频。服务器
-生成音频的速度快于实时，因此当用户中断以截断已经发送给
-客户端但尚未播放的音频时，该事件非常有用。这会将服务器对
-音频的理解与客户端的播放同步起来。
-客户端的播放同步起来。
+发送此事件以截断之前的助手消息的音频。服务端
+将以快于实时的速度生成音频，因此当用户
+中断以截断已经发送到客户端但尚未
+播放的音频时，此事件非常有用。这将使服务端对音频的理解与
+客户端的播放。
 
-截断音频将删除服务端 文本转录，以确保上下文中
-不会出现用户尚未听到的文本。
+截断音频将删除 服务端 文本转录，以确保
+上下文中不存在用户尚未听到的文本。
 
 如果成功，服务端将响应一个 `conversation.item.truncated`
-事件作出响应。
+事件。
 
 ### Schema
 
@@ -8924,10 +8924,10 @@ Schema name: `RealtimeClientEventConversationItemTruncate`
 
 ## conversation.item.delete
 
-当你想从对话历史中移除任何条目时发送该事件
-。服务端将响应一个 `conversation.item.deleted` 事件，
-除非该项不存在于会话历史中，此时
-服务器将返回错误。
+当你想要从对话中移除任何条目时，发送此事件
+历史记录。服务端将响应一个 `conversation.item.deleted` 事件，
+除非该条目不存在于会话历史中，在这种情况下
+服务端将响应一个错误。
 
 ### Schema
 
@@ -9038,30 +9038,30 @@ Schema name: `RealtimeClientEventConversationItemDelete`
 
 ## response.create
 
-此事件指示服务端创建一个 Response，即触发
-模型推理。在 Server VAD 模式下，服务端会自动创建 Response
+此事件指示服务器创建一个 Response，即触发
+模型推理。在 Server VAD 模式下，服务器会自动创建 Responses
 。
 
-一个 Response 至少包含一个 Item，也可能有两个，此时
-第二个将是一个函数调用。这些 Item 默认会被追加到
-对话历史中。
+一个 Response 将包含至少一个 Item，也可能有两个，此时
+第二个将是函数调用。这些 Item 将被追加到
+默认情况下返回对话历史。
 
-服务器将返回一个 `response.created` 事件、Items 事件
-以及已创建内容的事件，最后是一个 `response.done` 事件以指示
+服务端将响应一个 `response.created` 事件，用于 Items
+以及所创建内容的 events，最后是一个 `response.done` 事件，用于表示该
 Response 已完成。
 
-该 `response.create` 事件包含推理配置，例如
-`instructions` 和 `tools`。如果设置了，它们将仅针对此次 Response 覆盖 Session 的
-配置。
+该 `response.create` event includes inference configuration like
+`instructions` 且 `tools`. If these are set, they will override the Session's
+configuration for this Response only.
 
-Response 可以在默认 Conversation 之外创建，这意味着它们可以
-包含任意输入，并且可以禁用将输出写入到 Conversation。
-默认 Conversation 同一时间只能由一个 Response 写入，但除此之外可以并行创建多个
-Response。 `metadata` 字段是区分
-同时进行的多个 Response 的好方法。
+Responses can be created out-of-band of the default Conversation, meaning that they can
+have arbitrary input, and it's possible to disable writing the output to the Conversation.
+Only one Response can write to the default Conversation at a time, but otherwise multiple
+Responses can be created in parallel. The `metadata` field is a good way to disambiguate
+multiple simultaneous Responses.
 
 客户端可以设置 `conversation` 以 `none` 来创建一个不会写入默认
-会话的 Response。可以通过 `input` 字段提供任意输入，该字段是一个接受
+会话的 Response。可以使用 `input` 字段提供任意输入，该字段是一个接受
 原始 Items 和对现有 Items 引用的数组。
 
 ### Schema
@@ -9384,7 +9384,7 @@ Schema name: `RealtimeClientEventResponseCreate`
     "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/prompt",
     "deprecated": false,
     "key": "prompt",
-    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).\n",
+    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "ResponsePrompt",
@@ -10038,7 +10038,7 @@ Schema name: `RealtimeClientEventResponseCreate`
   "(resource) responses > (model) response_prompt > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/Prompt",
-    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).\n",
+    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).\n",
     "ident": "ResponsePrompt",
     "type": {
       "kind": "HttpTypeObject",
@@ -10242,7 +10242,7 @@ Schema name: `RealtimeClientEventResponseCreate`
   "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/tools/items/oneOf/1",
-    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).\n",
+    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).\n",
     "ident": "McpTool",
     "type": {
       "kind": "HttpTypeObject",
@@ -12010,7 +12010,7 @@ Schema name: `RealtimeClientEventResponseCreate`
   "(resource) responses > (model) response_input_image > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/InputImageContent",
-    "docstring": "An image input to the model. Learn about [image inputs](/docs/guides/vision).",
+    "docstring": "An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).",
     "ident": "ResponseInputImage",
     "type": {
       "kind": "HttpTypeObject",
@@ -12464,7 +12464,7 @@ Schema name: `RealtimeClientEventResponseCreate`
     "oasRef": "#/components/schemas/MCPTool/properties/connector_id",
     "deprecated": false,
     "key": "connector_id",
-    "docstring": "Identifier for service connectors, like those available in ChatGPT. One of\n`server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more\nabout service connectors [here](/docs/guides/tools-remote-mcp#connectors).\n\nCurrently supported `connector_id` values are:\n\n- Dropbox: `connector_dropbox`\n- Gmail: `connector_gmail`\n- Google Calendar: `connector_googlecalendar`\n- Google Drive: `connector_googledrive`\n- Microsoft Teams: `connector_microsoftteams`\n- Outlook Calendar: `connector_outlookcalendar`\n- Outlook Email: `connector_outlookemail`\n- SharePoint: `connector_sharepoint`\n",
+    "docstring": "Identifier for service connectors, like those available in ChatGPT. One of\n`server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more\nabout service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).\n\nCurrently supported `connector_id` values are:\n\n- Dropbox: `connector_dropbox`\n- Gmail: `connector_gmail`\n- Google Calendar: `connector_googlecalendar`\n- Google Drive: `connector_googledrive`\n- Microsoft Teams: `connector_microsoftteams`\n- Outlook Calendar: `connector_outlookcalendar`\n- Outlook Email: `connector_outlookemail`\n- SharePoint: `connector_sharepoint`\n",
     "type": {
       "kind": "HttpTypeUnion",
       "oasRef": "#/components/schemas/MCPTool/properties/connector_id",
@@ -14798,11 +14798,11 @@ Schema name: `RealtimeClientEventResponseCreate`
 
 ## response.cancel
 
-发送此事件以取消进行中的响应。服务端将响应
-包含 `response.done` 状态为 `response.status=cancelled`。的事件。如果
-没有可取消的响应，服务端将返回错误。即使
-调用 `response.cancel` 时没有响应正在进行，也会返回错误，
-会话将不受影响。
+发送此事件以取消正在进行中的响应。服务器将响应一个状态为
+，其中包含 `response.done` 的事件。如果 `response.status=cancelled`。没有可取消的响应，服务器将返回错误。取消操作是安全的
+。
+调用 `response.cancel` 即使没有响应正在进行，也会返回错误
+会话将保持不受影响。
 
 ### Schema
 
@@ -14912,11 +14912,11 @@ Schema name: `RealtimeClientEventResponseCancel`
 
 ## output_audio_buffer.clear
 
-**仅限 WebRTC/SIP：** 发送以切断当前的音频响应。这将触发服务器
-停止生成音频并发出一个 `output_audio_buffer.cleared` 事件。此
-事件应之前发送一个 `response.cancel` 客户端事件以停止当前响应
-的生成。
-[了解更多](https://developers.openai.com/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
+**仅限 WebRTC/SIP：** 用于发出切断当前音频响应的指令。这将触发服务端
+停止生成音频并发出一个 `output_audio_buffer.cleared` 事件。该
+事件应通过一个 `response.cancel` 客户端事件来停止当前响应的
+生成。
+[了解更多](https://developers.openai.com/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
 ### Schema
 
@@ -14927,7 +14927,7 @@ Schema name: `RealtimeClientEventOutputAudioBufferClear`
   "(resource) realtime > (model) output_audio_buffer_clear_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeClientEventOutputAudioBufferClear",
-    "docstring": "**WebRTC/SIP Only:** Emit to cut off the current audio response. This will trigger the server to\nstop generating audio and emit a `output_audio_buffer.cleared` event. This\nevent should be preceded by a `response.cancel` client event to stop the\ngeneration of the current response.\n[Learn more](/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).\n",
+    "docstring": "**WebRTC/SIP Only:** Emit to cut off the current audio response. This will trigger the server to\nstop generating audio and emit a `output_audio_buffer.cleared` event. This\nevent should be preceded by a `response.cancel` client event to stop the\ngeneration of the current response.\n[Learn more](/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).\n",
     "ident": "OutputAudioBufferClearEvent",
     "type": {
       "kind": "HttpTypeObject",

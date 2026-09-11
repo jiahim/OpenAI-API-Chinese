@@ -1,12 +1,12 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取 Markdown 版本的文档页面。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。你也可以在页面 URL 末尾添加 `.md` 来获取该页面的 Markdown 版本。
 
 ## 取消上传
 
 **post** `/uploads/{upload_id}/cancel`
 
-取消该 Upload。Upload 被取消后，不可再添加任何 Part。
+取消该上传。上传被取消后，不可再添加任何分块。
 
-返回带有状态的 Upload 对象 `cancelled`.
+返回状态为 `cancelled`.
 
 ### 路径参数
 
@@ -16,11 +16,11 @@
 
 - `Upload object { id, bytes, created_at, 6 more }`
 
-  Upload 对象可以以 Parts 的形式接收字节数据块。
+  Upload 对象可以以 Parts 的形式接收字节分块。
 
   - `id: string`
 
-    Upload 的唯一标识符，可以在 API 端点中引用。
+    Upload 的唯一标识符，可在 API 端点中引用。
 
   - `bytes: number`
 
@@ -40,7 +40,7 @@
 
   - `purpose: string`
 
-    文件的预期用途。 [请参考此处](/docs/api-reference/files/object#files/object-purpose) 了解可接受的值。
+    该文件的预期用途。 [请参考此处](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) 了解可接受的值。
 
   - `status: "pending" or "completed" or "cancelled" or "expired"`
 
@@ -60,7 +60,7 @@
 
     - `id: string`
 
-      文件标识符，可以在 API 端点中引用。
+      文件标识符，可在 API 端点中引用。
 
     - `bytes: number`
 
@@ -102,7 +102,7 @@
 
     - `status: "uploaded" or "processed" or "error"`
 
-      已弃用。文件的当前状态，可能为 `uploaded`, `processed`，或 `error`.
+      已弃用。文件的当前状态，可以为 `uploaded`, `processed`，或 `error`.
 
       - `"uploaded"`
 
@@ -112,11 +112,11 @@
 
     - `expires_at: optional number`
 
-      文件过期时的 Unix 时间戳（以秒为单位）。
+      文件到期时间的 Unix 时间戳（秒）。
 
     - `status_details: optional string`
 
-      已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段位于 `fine_tuning.job`.
+      已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段，位于 `fine_tuning.job`.
 
   - `object: optional "upload"`
 

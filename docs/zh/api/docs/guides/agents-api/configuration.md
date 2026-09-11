@@ -1,19 +1,19 @@
 # 配置 智能体
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取文档页面的 Markdown 版本。
+> 完整文档索引请参见 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 获取文档页面的 Markdown 版本。
 
-智能体配置定义了智能体的行为方式。你可以在创建会话时提供它，也可以保存它以便重复使用。会话负责保存对话和工作内容，而已保存的智能体则用于存放可复用的设置。
+一个智能体配置定义了智能体的行为方式。你可以在创建会话时提供它，或将其保存以供复用。会话负责承载对话与工作内容，而已保存的智能体则保存可复用的设置。
 
 ## 定义智能体的行为
 
-从模型和指令开始，然后根据任务需要添加工具和控件：
+从模型和指令开始，然后根据你的任务添加所需的工具和控件：
 
-- **Model:** 执行工作的模型。
-- **Instructions:** 智能体 应执行的任务以及应具备的行为方式。
-- **Tools:** 智能体 可执行的操作，例如搜索网页或调用你的函数。
-- **Reasoning and output:** 模型使用的推理量以及响应的格式和详细程度。
+- **Model：** 负责执行工作的模型。
+- **Instructions：** 智能体 应执行的任务以及应遵循的行为方式。
+- **Tools：** 智能体 可执行的操作，例如网页搜索或调用你的函数。
+- **Reasoning and output：** 模型使用的推理量以及响应的格式和详细程度。
 
-在创建会话时传入这些设置 `agent` 。本示例提供了一个模型、指令以及第一条用户消息：
+在创建会话时传入这些设置 `agent` 。此示例提供一个模型、指令和第一条用户消息：
 
 为单个会话配置一个智能体
 
@@ -151,11 +151,11 @@ puts result
 ```
 
 
-请参阅 [智能体 API 参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents) 了解配置字段和可接受的值。请参阅 [Functions](https://developers.openai.com/api/docs/guides/agents-api/tools/functions) 与 [MCP connections](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp) 了解工具设置， [多智能体](https://developers.openai.com/api/docs/guides/agents-api/multi-agent) 了解任务委派。
+请参阅 [智能体 API 参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents) 了解配置字段和可接受的值。请参阅 [函数](https://developers.openai.com/api/docs/guides/agents-api/tools/functions) 和 [MCP 连接](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp) 了解工具设置，以及 [多智能体](https://developers.openai.com/api/docs/guides/agents-api/multi-agent) 了解委托。
 
 ## 跨会话复用智能体
 
-保存一个智能体以跨会话复用其配置。只需创建一次，然后在每次启动会话时将其 ID 作为 `agent_id` 传入：
+保存一个智能体以在多个会话之间复用其配置。只需创建一次，然后在每次启动会话时将其 ID 作为 `agent_id` 传入：
 
 复用智能体
 
@@ -280,21 +280,22 @@ puts result
 ```
 
 
-每个会话拥有独立的对话和工作内容。请参阅 [智能体 API 参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents) 以列出、获取、更新或删除已保存的智能体。凭据存放在 [vaults](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults)，中，与保存的配置分开。
+每个会话拥有独立的对话和工作内容。参见 [智能体 API 参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents) 以列出、获取、更新或删除已保存的智能体。凭据保存在 [保险库](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults)，中，与保存的配置分开存放。
 
-## 为单个会话覆盖设置
+## 覆盖单个会话的设置
 
-同时包含 `agent_id` 与 `agent` 来自定义使用已保存智能体的会话。会话会继承省略的设置，包括模型。
+同时传入 `agent_id` 和 `agent` 以自定义使用已保存 智能体 的会话。会话会继承未提供的设置，包括模型。
 
-设为 `OPENAI_AGENT_ID` 已保存智能体的 ID 后再运行本示例：
+将示例中的 `agent_123` 值替换为已保存 智能体 的 ID，然后再运行此示例：
 
-在单个会话中覆盖智能体
+为单个会话覆盖 智能体
 
 ```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
 import OpenAI from "openai";
 const client = new OpenAI();
 
-const agentId = process.env.OPENAI_AGENT_ID;
+const agentId = "agent_123";
 const session = await client.beta.agents.sessions.create({
   agent_id: agentId,
   agent: {
@@ -320,12 +321,12 @@ console.log(session);
 ```
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 from openai import OpenAI
 
 client = OpenAI()
 
-agent_id = os.environ["OPENAI_AGENT_ID"]
+agent_id = "agent_123"
 session = client.beta.agents.sessions.create(
     agent_id=agent_id,
     agent={"instructions": "Answer this question in one concise paragraph."},
@@ -346,10 +347,10 @@ print(session.to_json())
 ```
 
 ```go
+// Replace the illustrative IDs and URLs below with your own resource values.
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/openai/openai-go/v3"
 )
@@ -358,7 +359,7 @@ ctx := context.Background()
 client := openai.NewClient()
 result, err := client.Beta.Agents.Sessions.New(ctx,
 	openai.BetaAgentSessionNewParams{
-		AgentID:     openai.String(os.Getenv("OPENAI_AGENT_ID")),
+		AgentID:     openai.String("agent_123"),
 		Agent:       openai.BetaAgentSessionNewParamsAgent{Instructions: openai.String("Answer this question in one concise paragraph.")},
 		Environment: openai.EnvironmentParamUnion{OfParamNone: &openai.EnvironmentParamNone{}},
 		Input: openai.BetaAgentSessionNewParamsInputUnion{
@@ -380,6 +381,7 @@ fmt.Println(result)
 ```
 
 ```java
+// Replace the illustrative IDs and URLs below with your own resource values.
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.beta.agents.sessions.SessionCreateParams;
@@ -392,7 +394,7 @@ var result =
         .sessions()
         .create(
             SessionCreateParams.builder()
-                .agentId(System.getenv("OPENAI_AGENT_ID"))
+                .agentId("agent_123")
                 .agent(
                     SessionCreateParams.Agent.builder()
                         .instructions("Answer this question in one concise paragraph.")
@@ -404,11 +406,12 @@ System.out.println(result);
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
 
 client = OpenAI::Client.new
 result = client.beta.agents.sessions.create(
-  agent_id: ENV.fetch("OPENAI_AGENT_ID"),
+  agent_id: "agent_123",
   agent: { instructions: "Answer this question in one concise paragraph." },
   environment: { type: "none" },
   input: [
@@ -427,13 +430,13 @@ puts result
 ```
 
 
-覆盖仅对该会话生效，不会更改已保存的智能体或其他会话。提供的对象和数组会整体替换该字段，而不是与已保存的值合并。例如，提供 `tools` 会替换已保存的工具列表。
+覆盖仅作用于该会话。它们不会更改已保存的 智能体 或其他会话。提供的对象和数组会整体替换该字段，而不是与已保存的值合并。例如，提供 `tools` 会替换已保存的工具列表。
 
-请参阅 [创建会话参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/create) 了解请求字段。
+请参阅 [创建会话参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/create) 以了解请求字段。
 
 ## 环境设置
 
-设为 `environment` 与 `agent` 时确定的。它决定智能体在何处运行命令并处理文件。
+设置 `environment` 与 `agent` 在创建会话时。它决定智能体运行命令以及处理文件的位置。
 
 
 
@@ -446,8 +449,8 @@ puts result
 
 
 
-选择 `none`, `openai_hosted`，或者 `self_hosted`. [架构](https://developers.openai.com/api/docs/guides/agents-api/architecture) 说明了何时使用每种选项以及由谁管理环境。
+选择 `none`, `openai_hosted`，或 `self_hosted`. [架构](https://developers.openai.com/api/docs/guides/agents-api/architecture) 说明了何时使用每个选项以及由谁来管理环境。
 
-对于 OpenAI 托管的环境，配置任务所需的软件包、初始文件和网络访问。你可以跨多个会话复用同一环境模板。对于自托管环境，请准备好你的计算资源，并 [连接执行器](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted).
+对于OpenAI托管环境，配置任务所需的包、初始文件和网络访问。你可以在多个会话之间复用环境模板。对于自托管环境，准备好你的计算资源，并 [连接一个执行器](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted).
 
-请参阅 [创建会话参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/create) 以了解环境字段，以及 [插件](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins) 以了解技能、插件和模板。参见 [会话产物](https://developers.openai.com/api/docs/guides/agents-api/environments/files) ，了解你要在执行后保留的文件。
+请参阅 [创建会话参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/create) 有关环境字段的信息，请参阅 [插件](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins) 中了解技能、插件和模板。详见 [会话产物](https://developers.openai.com/api/docs/guides/agents-api/environments/files) 了解执行后需要保留的文件。

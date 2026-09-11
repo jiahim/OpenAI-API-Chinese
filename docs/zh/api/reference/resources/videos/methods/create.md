@@ -1,30 +1,30 @@
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。可在页面 URL 末尾附加 `.md` 来获取 Markdown 版本的文档页面。
+> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
 ## 创建视频
 
 **post** `/videos`
 
-根据提示词和可选的参考素材创建新的视频生成任务。
+根据提示词和可选的参考素材创建一个新的视频生成任务。
 
-### Body Parameters
+### Body 参数
 
 - `prompt: string`
 
-  描述要生成的视频的文本提示。
+  描述要生成的视频的文本提示词。
 
 - `input_reference: optional ImageInputReferenceParam`
 
-  用于引导生成的可选参考对象。请提供以下其中之一 `image_url` 或 `file_id`.
+  用于引导生成的可选参考对象。请提供以下其中之一： `image_url` 或 `file_id`.
 
   - `file_id: optional string`
 
   - `image_url: optional string`
 
-    完整的 URL 或 base64 编码的 data URL。
+    完整的 URL 或 base64 编码的数据 URL。
 
 - `model: optional VideoModel`
 
-  要使用的视频生成模型（允许的值：sora-2、sora-2-pro）。默认为 `sora-2`.
+  要使用的视频生成模型（允许的取值：sora-2、sora-2-pro）。默认为 `sora-2`.
 
   - `string`
 
@@ -42,7 +42,7 @@
 
 - `seconds: optional VideoSeconds`
 
-  片段时长（秒）（允许的值：4、8、12）。默认为 4 秒。
+  片段时长（秒）（允许的取值：4、8、12）。默认为 4 秒。
 
   - `"4"`
 
@@ -52,7 +52,7 @@
 
 - `size: optional VideoSize`
 
-  输出分辨率，格式为宽 x 高（允许的值：720x1280、1280x720、1024x1792、1792x1024）。默认为 720x1280。
+  输出分辨率，格式为宽 x 高（允许的取值：720x1280、1280x720、1024x1792、1792x1024）。默认为 720x1280。
 
   - `"720x1280"`
 
@@ -62,15 +62,15 @@
 
   - `"1792x1024"`
 
-### 返回
+### 返回值
 
 - `Video object { id, completed_at, created_at, 10 more }`
 
-  用于描述生成的视频任务的结构化信息。
+  描述已生成视频任务的结构化信息。
 
   - `id: string`
 
-    该视频任务的唯一标识符。
+    视频任务的唯一标识符。
 
   - `completed_at: number or null`
 
@@ -82,7 +82,7 @@
 
   - `error: VideoCreateError or null`
 
-    解释生成失败原因的错误负载（如果适用）。
+    用于解释生成失败原因的错误载荷（如适用）。
 
     - `code: string`
 
@@ -96,17 +96,17 @@
 
       - `detailed_explanation: optional string`
 
-        针对此拦截的公开说明。
+        此屏蔽的公开说明。
 
       - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-        一个可选的分类；客户端必须接受其他取值。
+        一个可选的分类；客户端必须接受额外的值。
 
         - `string`
 
         - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-          一个可选的分类；客户端必须接受其他取值。
+          一个可选的分类；客户端必须接受额外的值。
 
           - `"potentially_unintended_data_transfer"`
 
@@ -118,7 +118,7 @@
 
       - `steer: optional object { message }`
 
-        可选的公开延续指令。
+        一个可选的公开延续指令。
 
         - `message: string`
 
@@ -158,11 +158,11 @@
 
   - `prompt: string or null`
 
-    用于生成该视频的提示词。
+    用于生成视频的提示词。
 
   - `remixed_from_video_id: string or null`
 
-    如果该视频为 remix，则为源视频的标识符。
+    如果该视频是二次创作，则为源视频的标识符。
 
   - `seconds: string`
 
@@ -182,7 +182,7 @@
 
   - `status: "queued" or "in_progress" or "completed" or "failed"`
 
-    视频任务当前的生命周期状态。
+    视频任务的当前生命周期状态。
 
     - `"queued"`
 

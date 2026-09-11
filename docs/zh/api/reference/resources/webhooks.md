@@ -1,19 +1,19 @@
-# Webhooks events
+# Webhook 事件
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾添加 `.md` 来获取。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
 
-Webhook 是由 OpenAI 在某些情况发生时向你指定的 URL 发起的 HTTP 请求。
-这些情况发生在使用 API 的过程中。
+Webhooks 是在使用过程中发生某些事件时，由 OpenAI 向你指定的 URL 发起的 HTTP 请求。
+了解更多关于 API 使用的事件。
 
-[了解更多关于 Webhook 的内容](https://developers.openai.com/api/docs/guides/webhooks).
+[了解更多关于 webhook](https://developers.openai.com/api/docs/guides/webhooks).
 
 ## response.completed
 
-当后台响应已完成时发送。
+在后台响应完成时发送。
 
 ### Schema
 
-Schema name: `WebhookResponseCompleted`
+Schema 名称： `WebhookResponseCompleted`
 
 ```json
 {
@@ -198,11 +198,11 @@ Schema name: `WebhookResponseCompleted`
 
 ## response.cancelled
 
-当后台响应被取消时发送。
+在后台响应被取消时发送。
 
 ### Schema
 
-Schema name: `WebhookResponseCancelled`
+Schema 名称： `WebhookResponseCancelled`
 
 ```json
 {
@@ -391,7 +391,7 @@ Schema name: `WebhookResponseCancelled`
 
 ### Schema
 
-Schema name: `WebhookResponseFailed`
+Schema 名称： `WebhookResponseFailed`
 
 ```json
 {
@@ -576,11 +576,11 @@ Schema name: `WebhookResponseFailed`
 
 ## response.incomplete
 
-当后台响应被中断时触发。
+当后台响应被中断时发送。
 
 ### Schema
 
-Schema name: `WebhookResponseIncomplete`
+Schema 名称： `WebhookResponseIncomplete`
 
 ```json
 {
@@ -765,11 +765,11 @@ Schema name: `WebhookResponseIncomplete`
 
 ## batch.completed
 
-当某个批 API 请求已完成时发送。
+当批量 API 请求已完成时发送。
 
 ### Schema
 
-Schema name: `WebhookBatchCompleted`
+Schema 名称： `WebhookBatchCompleted`
 
 ```json
 {
@@ -954,11 +954,11 @@ Schema name: `WebhookBatchCompleted`
 
 ## batch.cancelled
 
-当批量 API 请求被取消时发送。
+当批处理 API 请求被取消时发送。
 
 ### Schema
 
-Schema name: `WebhookBatchCancelled`
+Schema 名称： `WebhookBatchCancelled`
 
 ```json
 {
@@ -1147,7 +1147,7 @@ Schema name: `WebhookBatchCancelled`
 
 ### Schema
 
-Schema name: `WebhookBatchExpired`
+Schema 名称： `WebhookBatchExpired`
 
 ```json
 {
@@ -1336,7 +1336,7 @@ Schema name: `WebhookBatchExpired`
 
 ### Schema
 
-Schema name: `WebhookBatchFailed`
+Schema 名称： `WebhookBatchFailed`
 
 ```json
 {
@@ -1521,11 +1521,11 @@ Schema name: `WebhookBatchFailed`
 
 ## fine_tuning.job.succeeded
 
-在微调作业成功时发送。
+当微调任务成功时发送。
 
 ### Schema
 
-Schema name: `WebhookFineTuningJobSucceeded`
+Schema 名称： `WebhookFineTuningJobSucceeded`
 
 ```json
 {
@@ -1710,11 +1710,11 @@ Schema name: `WebhookFineTuningJobSucceeded`
 
 ## fine_tuning.job.failed
 
-在微调任务失败时发送。
+当微调任务失败时发送。
 
 ### Schema
 
-Schema name: `WebhookFineTuningJobFailed`
+Schema 名称： `WebhookFineTuningJobFailed`
 
 ```json
 {
@@ -1899,11 +1899,11 @@ Schema name: `WebhookFineTuningJobFailed`
 
 ## fine_tuning.job.cancelled
 
-在微调任务被取消时发送。
+当微调任务被取消时发送。
 
 ### Schema
 
-Schema name: `WebhookFineTuningJobCancelled`
+Schema 名称： `WebhookFineTuningJobCancelled`
 
 ```json
 {
@@ -2088,11 +2088,11 @@ Schema name: `WebhookFineTuningJobCancelled`
 
 ## eval.run.succeeded
 
-在评估运行成功时发送。
+在评测运行成功时发送。
 
 ### Schema
 
-Schema name: `WebhookEvalRunSucceeded`
+Schema 名称： `WebhookEvalRunSucceeded`
 
 ```json
 {
@@ -2277,11 +2277,11 @@ Schema name: `WebhookEvalRunSucceeded`
 
 ## eval.run.failed
 
-当 eval 运行失败时发送。
+当评估运行失败时发送。
 
 ### Schema
 
-Schema name: `WebhookEvalRunFailed`
+Schema 名称： `WebhookEvalRunFailed`
 
 ```json
 {
@@ -2466,11 +2466,11 @@ Schema name: `WebhookEvalRunFailed`
 
 ## eval.run.canceled
 
-在评测运行被取消时发送。
+当评测运行被取消时发送。
 
 ### Schema
 
-Schema name: `WebhookEvalRunCanceled`
+Schema 名称： `WebhookEvalRunCanceled`
 
 ```json
 {
@@ -2655,13 +2655,13 @@ Schema name: `WebhookEvalRunCanceled`
 
 ## realtime.call.incoming
 
-当有传入的 API SIP 会话可供 Realtime 接受时发送。
-同一个挂起的会话也可能发出 `live.transport.incoming`；首次
-成功的 Realtime 或 Live accept 端点会选择运行时表面。
+当有传入的 API SIP 会话可被 Realtime 接受时发送。
+同一待处理会话也可以发出 `live.transport.incoming`；首个
+成功的 Realtime 或 Live accept 端点将选定运行时表面。
 
 ### Schema
 
-Schema name: `WebhookRealtimeCallIncoming`
+Schema 名称： `WebhookRealtimeCallIncoming`
 
 ```json
 {
@@ -2914,14 +2914,14 @@ Schema name: `WebhookRealtimeCallIncoming`
 ## live.call.incoming
 
 已弃用：请使用 `live.transport.incoming`。仅为现有订阅保留
-用于迁移期间；不允许新订阅此事件。
-当有传入的 API SIP 会话可供 Live 接受时发送。该
-同一待处理会话也会发出 `realtime.call.incoming`；首次
-成功的 Realtime 或 Live accept 端点会选择运行时表面。
+迁移期间；不允许新订阅此事件。
+当有传入的 API SIP 会话可被 Live 接受时发送。该
+同一待处理会话也会触发 `realtime.call.incoming`；首个
+成功的 Realtime 或 Live accept 端点将选定运行时表面。
 
 ### Schema
 
-Schema name: `WebhookLiveCallIncoming`
+Schema 名称： `WebhookLiveCallIncoming`
 
 ```json
 {
@@ -3069,7 +3069,7 @@ Schema name: `WebhookLiveCallIncoming`
     "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/data/properties/session_id",
     "deprecated": false,
     "key": "session_id",
-    "docstring": "The `live_...` ID of the pending SIP session. Forward this value\nunchanged when accepting or rejecting the call through the Live API.\n",
+    "docstring": "The `live_...` ID of the pending SIP session. Pass this value unchanged\nto Live call controls and sideband connections. The corresponding\n`realtime.call.incoming` event uses a separate `rtc_...` call ID.\n",
     "type": {
       "kind": "HttpTypeString"
     },
@@ -3173,13 +3173,13 @@ Schema name: `WebhookLiveCallIncoming`
 
 ## live.transport.incoming
 
-当有传入的 API SIP 会话可供 Live 接受时发送。该
-同一待处理会话也会发出 `realtime.call.incoming`；首次
-成功的 Realtime 或 Live accept 端点会选择运行时表面。
+当有传入的 API SIP 会话可被 Live 接受时发送。该
+同一待处理会话也会触发 `realtime.call.incoming`；首个
+成功的 Realtime 或 Live accept 端点将选定运行时表面。
 
 ### Schema
 
-Schema name: `WebhookLiveTransportIncoming`
+Schema 名称： `WebhookLiveTransportIncoming`
 
 ```json
 {
@@ -3467,11 +3467,11 @@ Schema name: `WebhookLiveTransportIncoming`
 
 ## safety.alert.created
 
-在 API 项目存在已批准的安全警报时发送。
+当 API 项目有已批准的安全提醒时发送。
 
 ### Schema
 
-Schema name: `WebhookSafetyAlertCreated`
+Schema 名称： `WebhookSafetyAlertCreated`
 
 ```json
 {
@@ -3658,7 +3658,7 @@ Schema name: `WebhookSafetyAlertCreated`
 
 ### Schema
 
-Schema name: `WebhookSafetyOrgAlertCreated`
+Schema 名称： `WebhookSafetyOrgAlertCreated`
 
 ```json
 {

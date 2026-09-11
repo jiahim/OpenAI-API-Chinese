@@ -1,15 +1,15 @@
 # 管理会话
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-将会话 ID 与应用程序的数据存储一起保存。使用它可以检索会话的当前状态、处理来自智能体的请求，或删除该会话。
+将会话 ID 与应用程序的数据存储一同保存。可使用该 ID 检索会话的当前状态、处理来自智能体的请求，或删除该会话。
 
 
 
 
 ## 查找会话
 
-列出项目中的会话以浏览历史工作。SDK 分页助手可获取更多页面：
+在你的项目中列出会话以浏览过往工作。SDK 分页辅助方法可获取更多页：
 
 列出会话并获取下一页
 
@@ -109,28 +109,32 @@ fi
 
 ## 检查会话
 
-检索某个会话以读取其状态、智能体配置、环境以及 `required_actions`。传入你的 API 客户端和该会话的会话 ID：
+检索会话以读取其状态、智能体配置、环境，以及 `required_actions`。传入你的 API 客户端和该会话的 ID：
 
 检索会话
 
 ```javascript
+// Pass your saved session ID to this helper.
 async function retrieveSession(client, sessionId) {
   return client.beta.agents.sessions.retrieve(sessionId);
 }
 ```
 
 ```python
+# Pass your saved session ID to this helper.
 def retrieve_session(client: OpenAI, session_id: str):
     return client.beta.agents.sessions.retrieve(session_id)
 ```
 
 ```go
+// Pass your saved session ID to this helper.
 func retrieveSession(ctx context.Context, client *openai.Client, sessionID string) (*openai.AgentSession, error) {
 	return client.Beta.Agents.Sessions.Get(ctx, sessionID)
 }
 ```
 
 ```java
+// Pass your saved session ID to this helper.
 public static AgentSession retrieveSession(OpenAIClient client, String sessionId) {
   return client
       .beta()
@@ -141,6 +145,7 @@ public static AgentSession retrieveSession(OpenAIClient client, String sessionId
 ```
 
 ```ruby
+# Pass your saved session ID to this helper.
 def retrieve_session(client, session_id)
   client.beta.agents.sessions.retrieve(session_id)
 end
@@ -154,29 +159,30 @@ curl \
 ```
 
 
-请参阅 [检索会话参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/retrieve) 以获取完整的响应 schema。
+参见 [检索会话参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/retrieve) 以获取完整的响应模式。
 
 ### 处理必需操作
 
-状态为 `requires_action` 的会话需要你的应用先执行操作，然后工作才能继续。当你收到 `agent.session.requires_action`，时，请检索该会话并检查 `required_actions`:
+处于该状态的会话 `requires_action` 需要你的应用先执行操作，工作才能继续。当你收到 `agent.session.requires_action`，时，获取该会话并检查其中的每一项 `required_actions`:
 
-- **`function_call`:** 运行由 `name` 标识的函数，传入其 `arguments`。使用该 action 的 `turn_id` 和 `call_id`。在同一会话中返回结果。参见 [Function tools](https://developers.openai.com/api/docs/guides/agents-api/tools/functions#return-the-result).
-- **`environment_connection`:** 连接由 `environment_id`。在同一会话中返回结果。参见 [Connect an environment](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted).
+- **`function_call`:** 运行由 `name` 使用其 `arguments`。标识的函数。在同一会话中使用该动作的 `turn_id` 和 `call_id`。返回结果。参见 [函数工具](https://developers.openai.com/api/docs/guides/agents-api/tools/functions#return-the-result).
+- **`environment_connection`:** 连接由 `environment_id`。返回结果。参见 [连接环境](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted).
 
-事件会告知你的应用何时进行检查。检索到的会话会告知它要做什么。在重启或流断开后，检索会话以查找待处理的操作。处理完这些操作后，继续跟踪事件以获取该轮次的结果。
-
-
+事件会告知你的应用何时检查，取回的会话则告诉它该做什么。重启或流断开后，取回会话以查找待处理操作。处理完这些操作后，继续跟踪事件以获取该轮的最终结果。
 
 
-有关已保存的消息、工具调用和轮次结果，请参阅 [获取条目和轮次](https://developers.openai.com/api/docs/guides/agents-api/sessions/events#fetch-items-and-turns)。若要识别是哪个 智能体 运行了某个命令，请参阅 [观察委托](https://developers.openai.com/api/docs/guides/agents-api/multi-agent#observe-delegation).
+
+
+有关已保存消息、工具调用和轮次结果，请参阅 [获取条目与轮次](https://developers.openai.com/api/docs/guides/agents-api/sessions/events#fetch-items-and-turns)。若要识别哪个智能体执行了某条命令，请参阅 [观察委派](https://developers.openai.com/api/docs/guides/agents-api/multi-agent#observe-delegation).
 
 ## 删除会话
 
-当你的应用不再需要某个会话时，可以将其删除。删除操作会将该会话从 API 中移除。物理清理可能会异步继续进行。
+当你的应用不再需要某个会话时，删除该会话。删除操作会将其从 API 中移除。物理清理可能会异步继续进行。
 
 删除会话
 
 ```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
 import OpenAI from "openai";
 
 /**
@@ -187,12 +193,12 @@ async function deleteSession(client, sessionId) {
   return client.beta.agents.sessions.delete(sessionId);
 }
 
-const result = await deleteSession(new OpenAI(), process.env.OPENAI_SESSION_ID);
+const result = await deleteSession(new OpenAI(), "sess_123");
 console.log(result);
 ```
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 
 from openai import OpenAI
 
@@ -202,17 +208,17 @@ def delete_session(client: OpenAI, session_id: str):
 
 
 if __name__ == "__main__":
-    result = delete_session(OpenAI(), os.environ["OPENAI_SESSION_ID"])
+    result = delete_session(OpenAI(), "sess_123")
     print(result.to_json())
 ```
 
 ```go
+// Replace the illustrative IDs and URLs below with your own resource values.
 package main
 
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/openai/openai-go/v3"
 )
@@ -223,7 +229,7 @@ func deleteSession(ctx context.Context, client *openai.Client, sessionID string)
 
 func main() {
 	client := openai.NewClient()
-	result, err := deleteSession(context.Background(), &client, os.Getenv("OPENAI_SESSION_ID"))
+	result, err := deleteSession(context.Background(), &client, "sess_123")
 	if err != nil {
 		panic(err)
 	}
@@ -232,6 +238,7 @@ func main() {
 ```
 
 ```java
+// Replace the illustrative IDs and URLs below with your own resource values.
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.beta.agents.AgentSessionDeleted;
@@ -247,20 +254,21 @@ public final class AgentsApiSessionsDeleteSessionExample {
   }
 
   public static void main(String[] args) {
-    var result = deleteSession(OpenAIOkHttpClient.fromEnv(), System.getenv("OPENAI_SESSION_ID"));
+    var result = deleteSession(OpenAIOkHttpClient.fromEnv(), "sess_123");
     System.out.println(result);
   }
 }
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
 
 def delete_session(client, session_id)
   client.beta.agents.sessions.delete(session_id)
 end
 
-puts delete_session(OpenAI::Client.new, ENV.fetch("OPENAI_SESSION_ID"))
+puts delete_session(OpenAI::Client.new, "sess_123")
 ```
 
 ```bash
@@ -271,4 +279,4 @@ curl -X DELETE \
 ```
 
 
-若要停止当前工作并保留对话， [取消当前轮次](https://developers.openai.com/api/docs/guides/agents-api/sessions#cancel-an-active-turn)。请参阅 [删除会话参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/delete) 了解删除响应。
+若要停止当前工作并保留对话， [取消当前轮次](https://developers.openai.com/api/docs/guides/agents-api/sessions#cancel-an-active-turn)。请参阅 [删除会话参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/delete) 以了解删除响应。

@@ -1,16 +1,16 @@
 # Vaults
 
-> 完整的文档索引请参见 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 完整文档索引请参见 [llms.txt](/llms.txt).可通过在页面 URL 末尾追加 `.md` 获取文档页面的 Markdown 版本。
 
-保险库用于存储来自OpenAI的 MCP 连接的凭证。将其挂载到会话上，以便智能体能够使用经过身份验证的工具，而无需接收密钥值。
+保险库用于存储来自 OpenAI 的 MCP 连接凭证。将其挂载到会话中，以便 智能体 能够在不接收密钥值的情况下使用经过身份验证的工具。
 
-保险库支持 bearer 令牌和已有的 OAuth 授权。针对来自你所在环境的连接，请使用其他 [MCP 身份验证选项](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp#add-authentication).
+保险库支持 bearer 令牌以及已有的 OAuth 授权。对于来自你所在环境的连接，请使用其他的 [MCP 身份验证选项](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp#add-authentication).
 
 ## 权限
 
-对于受限的应用密钥，请授予：
+对于受限的应用程序密钥，授予：
 
-- `api.vaults.read` 用于列出和检索 vaults 与凭据。
+- `api.vaults.read` 用于列出和检索保险库和凭据。
 - `api.vaults.write` 用于创建、更新或删除它们。
 
 
@@ -18,7 +18,7 @@
 
 ## 创建并使用保险库
 
-使用你的 API 客户端、MCP 服务器 URL（`mcp_url`）以及该服务器的访问令牌（`access_token`）。示例使用 GitHub 工具。
+使用你的 API 客户端、MCP 服务器的 URL（`mcp_url`）以及该服务器的一个访问令牌（`access_token`）。示例使用 GitHub 工具。
 
 首先，创建一个保险库：
 
@@ -74,11 +74,16 @@ vault = client.beta.agents.vaults.create(
 ```
 
 
-将其 ID 保存为 `vault_id`，然后添加令牌。 `mcp_server_url` 将凭据绑定到该服务器：
+将其 ID 保存为 `vault_id`，然后添加令牌。 `mcp_server_url` 将凭证绑定到该服务器：
 
-存储一个持有者令牌
+存储一个 bearer 令牌
 
 ```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
+const vaultId = "vault_123";
+const mcpUrl = "https://api.githubcopilot.com/mcp/";
+const accessToken = process.env.GITHUB_TOKEN;
+
 const credential = await client.beta.agents.vaults.credentials.create(vaultId, {
   name: "GitHub access token",
   auth: {
@@ -90,6 +95,11 @@ const credential = await client.beta.agents.vaults.credentials.create(vaultId, {
 ```
 
 ```python
+# Replace the illustrative IDs and URLs below with your own resource values.
+vault_id = "vault_123"
+mcp_url = "https://api.githubcopilot.com/mcp/"
+access_token = os.environ["GITHUB_TOKEN"]
+
 credential = client.beta.agents.vaults.credentials.create(
     vault_id,
     name="GitHub access token",
@@ -102,6 +112,11 @@ credential = client.beta.agents.vaults.credentials.create(
 ```
 
 ```go
+// Replace the illustrative IDs and URLs below with your own resource values.
+vaultId := "vault_123"
+mcpUrl := "https://api.githubcopilot.com/mcp/"
+accessToken := os.Getenv("GITHUB_TOKEN")
+
 credential, err := client.Beta.Agents.Vaults.Credentials.New(ctx,
 	vaultId,
 	openai.BetaAgentVaultCredentialNewParams{
@@ -119,6 +134,11 @@ if err != nil {
 ```
 
 ```java
+// Replace the illustrative IDs and URLs below with your own resource values.
+String vaultId = "vault_123";
+String mcpUrl = "https://api.githubcopilot.com/mcp/";
+String accessToken = System.getenv("GITHUB_TOKEN");
+
 var credential =
     client
         .beta()
@@ -138,6 +158,11 @@ var credential =
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
+vault_id = "vault_123"
+mcp_url = "https://api.githubcopilot.com/mcp/"
+access_token = ENV.fetch("GITHUB_TOKEN")
+
 credential = client.beta.agents.vaults.credentials.create(
   vault_id,
   name: "GitHub access token",
@@ -150,16 +175,20 @@ credential = client.beta.agents.vaults.credentials.create(
 ```
 
 
-将凭据 ID 保存为 `credential_id` 以便后续更新。
+将凭证 ID 保存为 `credential_id` 以供后续更新使用。
 
 
 
 
-在创建会话时在 `vault_ids` 中传入已保存的 ID。在 MCP 配置中使用相同的服务器 URL：
+在创建会话时传入已保存的 ID `vault_ids` 。在 MCP 配置中使用相同的服务器 URL：
 
 将保险库附加到会话
 
 ```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
+const mcpUrl = "https://api.githubcopilot.com/mcp/";
+const vaultId = "vault_123";
+
 const session = await client.beta.agents.sessions.create({
   agent: {
     model: "gpt-6-astra",
@@ -186,6 +215,10 @@ const session = await client.beta.agents.sessions.create({
 ```
 
 ```python
+# Replace the illustrative IDs and URLs below with your own resource values.
+mcp_url = "https://api.githubcopilot.com/mcp/"
+vault_id = "vault_123"
+
 session = client.beta.agents.sessions.create(
     agent={
         "model": "gpt-6-astra",
@@ -210,6 +243,10 @@ session = client.beta.agents.sessions.create(
 ```
 
 ```go
+// Replace the illustrative IDs and URLs below with your own resource values.
+mcpUrl := "https://api.githubcopilot.com/mcp/"
+vaultId := "vault_123"
+
 session, err := client.Beta.Agents.Sessions.New(ctx,
 	openai.BetaAgentSessionNewParams{
 		Agent: openai.BetaAgentSessionNewParamsAgent{
@@ -236,6 +273,10 @@ if err != nil {
 ```
 
 ```java
+// Replace the illustrative IDs and URLs below with your own resource values.
+String mcpUrl = "https://api.githubcopilot.com/mcp/";
+String vaultId = "vault_123";
+
 var session =
     client
         .beta()
@@ -264,6 +305,10 @@ var session =
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
+mcp_url = "https://api.githubcopilot.com/mcp/"
+vault_id = "vault_123"
+
 session = client.beta.agents.sessions.create(
   agent: {
     model: "gpt-6-astra",
@@ -291,20 +336,30 @@ session = client.beta.agents.sessions.create(
 ```
 
 
-智能体 API 会选择与服务器 URL 匹配的凭据。如果有多个附加的凭据匹配，设置 MCP 工具的 `credential_id` 以选择其中一个。检索保险库或凭据不会返回其密钥内容。
+智能体 API 会选择与服务器 URL 匹配的凭证。如果存在多个匹配的附加凭证，请设置 MCP 工具的 `credential_id` 来选择其中一个。检索保险库或凭证不会返回其密钥值。
 
 
 
 
-## 使用 OAuth 凭据
+## 使用 OAuth 凭证
 
-你的应用负责处理提供方的授权和同意流程。将最终获得的授权结果与 `auth.type: "mcp_oauth"`。一起存储。将 `expires_at` 设置为访问令牌的过期时间（RFC 3339 时间戳格式），如果已知的话。
+你的应用负责处理提供商的授权与同意流程。将得到的授权凭证与 `auth.type: "mcp_oauth"`。一同存储。将 `expires_at` 设置为访问令牌的过期时间（若已知），格式为 RFC 3339 时间戳。
 
-下面的示例使用了来自你提供方 OAuth 流程中的值。请包含 `refresh` 以允许 智能体 API 刷新令牌：
+下面的示例使用了来自你提供商 OAuth 流程的值。传入 `refresh` ，以便 智能体 API 刷新该令牌：
 
 存储 OAuth 授权
 
 ```javascript
+// Replace the illustrative expiry with your access token's actual expiry.
+// Replace the illustrative IDs and URLs below with your own resource values.
+const vaultId = "vault_123";
+const mcpUrl = "https://mcp.example.com/mcp";
+const accessToken = process.env.OAUTH_ACCESS_TOKEN;
+const expiresAt = "2030-01-01T00:00:00Z";
+const tokenEndpoint = "https://auth.example.com/oauth/token";
+const clientId = "example-client-id";
+const refreshToken = process.env.OAUTH_REFRESH_TOKEN;
+
 const credential = await client.beta.agents.vaults.credentials.create(vaultId, {
   name: "Example MCP OAuth credential",
   auth: {
@@ -325,6 +380,16 @@ const credential = await client.beta.agents.vaults.credentials.create(vaultId, {
 ```
 
 ```python
+# Replace the illustrative expiry with your access token's actual expiry.
+# Replace the illustrative IDs and URLs below with your own resource values.
+vault_id = "vault_123"
+mcp_url = "https://mcp.example.com/mcp"
+access_token = os.environ["OAUTH_ACCESS_TOKEN"]
+expires_at = "2030-01-01T00:00:00Z"
+token_endpoint = "https://auth.example.com/oauth/token"
+client_id = "example-client-id"
+refresh_token = os.environ["OAUTH_REFRESH_TOKEN"]
+
 credential = client.beta.agents.vaults.credentials.create(
     vault_id,
     name="Example MCP OAuth credential",
@@ -344,6 +409,16 @@ credential = client.beta.agents.vaults.credentials.create(
 ```
 
 ```go
+// Replace the illustrative expiry with your access token's actual expiry.
+// Replace the illustrative IDs and URLs below with your own resource values.
+vaultId := "vault_123"
+mcpUrl := "https://mcp.example.com/mcp"
+accessToken := os.Getenv("OAUTH_ACCESS_TOKEN")
+expiresAt := "2030-01-01T00:00:00Z"
+tokenEndpoint := "https://auth.example.com/oauth/token"
+clientId := "example-client-id"
+refreshToken := os.Getenv("OAUTH_REFRESH_TOKEN")
+
 credential, err := client.Beta.Agents.Vaults.Credentials.New(ctx,
 	vaultId,
 	openai.BetaAgentVaultCredentialNewParams{
@@ -368,6 +443,16 @@ if err != nil {
 ```
 
 ```java
+// Replace the illustrative expiry with your access token's actual expiry.
+// Replace the illustrative IDs and URLs below with your own resource values.
+String vaultId = "vault_123";
+String mcpUrl = "https://mcp.example.com/mcp";
+String accessToken = System.getenv("OAUTH_ACCESS_TOKEN");
+String expiresAt = "2030-01-01T00:00:00Z";
+String tokenEndpoint = "https://auth.example.com/oauth/token";
+String clientId = "example-client-id";
+String refreshToken = System.getenv("OAUTH_REFRESH_TOKEN");
+
 var credential =
     client
         .beta()
@@ -395,6 +480,16 @@ var credential =
 ```
 
 ```ruby
+# Replace the illustrative expiry with your access token's actual expiry.
+# Replace the illustrative IDs and URLs below with your own resource values.
+vault_id = "vault_123"
+mcp_url = "https://mcp.example.com/mcp"
+access_token = ENV.fetch("OAUTH_ACCESS_TOKEN")
+expires_at = "2030-01-01T00:00:00Z"
+token_endpoint = "https://auth.example.com/oauth/token"
+client_id = "example-client-id"
+refresh_token = ENV.fetch("OAUTH_REFRESH_TOKEN")
+
 credential = client.beta.agents.vaults.credentials.create(
   vault_id,
   name: "Example MCP OAuth credential",
@@ -414,11 +509,9 @@ credential = client.beta.agents.vaults.credentials.create(
 ```
 
 
-使用你的提供方所要求的令牌端点认证方式。示例中使用了 `none`; `client_secret_basic` 和 `client_secret_post` 。更多支持的字段请参阅 [凭据创建参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/vaults/subresources/credentials/methods/create) 中的字段说明。
+使用提供商要求的令牌端点鉴权方式。示例使用了 `none`; `client_secret_basic` ， `client_secret_post` 也受支持。参见 [凭据创建参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/vaults/subresources/credentials/methods/create) 了解相关字段。
 
-如果过期的令牌无法被刷新，请提供一个有效的替代令牌。令牌过期不会删除该凭据或它的保险库。
-
-
+如果过期令牌无法刷新，请提供一个有效的新令牌。令牌过期不会删除该凭据或其保管库中的内容。
 
 
 
@@ -429,13 +522,22 @@ credential = client.beta.agents.vaults.credentials.create(
 
 
 
-## 轮换或移除凭据
 
-[更新凭证](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/vaults/subresources/credentials/methods/update) 以替换其令牌，但不会更改其 ID、身份验证类型或服务端 URL。对于 OAuth，请使用已保存的 `vault_id` 和 `credential_id` 并提供替换令牌及过期时间：
+
+## 轮换或移除凭证
+
+[更新凭据](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/vaults/subresources/credentials/methods/update) 以替换其令牌，而不更改其 ID、身份验证类型或服务端 URL。对于 OAuth，请使用已保存的 `vault_id` ， `credential_id` 以及替换令牌和过期时间：
 
 轮换 OAuth 令牌
 
 ```javascript
+// Replace the illustrative expiry with your access token's actual expiry.
+// Replace the illustrative IDs and URLs below with your own resource values.
+const credentialId = "cred_123";
+const vaultId = "vault_123";
+const accessToken = process.env.OAUTH_ACCESS_TOKEN;
+const expiresAt = "2030-01-01T00:00:00Z";
+
 const credential = await client.beta.agents.vaults.credentials.update(
   credentialId,
   {
@@ -452,6 +554,13 @@ const credential = await client.beta.agents.vaults.credentials.update(
 ```
 
 ```python
+# Replace the illustrative expiry with your access token's actual expiry.
+# Replace the illustrative IDs and URLs below with your own resource values.
+credential_id = "cred_123"
+vault_id = "vault_123"
+access_token = os.environ["OAUTH_ACCESS_TOKEN"]
+expires_at = "2030-01-01T00:00:00Z"
+
 credential = client.beta.agents.vaults.credentials.update(
     credential_id,
     vault_id=vault_id,
@@ -464,6 +573,13 @@ credential = client.beta.agents.vaults.credentials.update(
 ```
 
 ```go
+// Replace the illustrative expiry with your access token's actual expiry.
+// Replace the illustrative IDs and URLs below with your own resource values.
+vaultId := "vault_123"
+credentialId := "cred_123"
+accessToken := os.Getenv("OAUTH_ACCESS_TOKEN")
+expiresAt := "2030-01-01T00:00:00Z"
+
 credential, err := client.Beta.Agents.Vaults.Credentials.Update(ctx,
 	vaultId,
 	credentialId,
@@ -481,6 +597,13 @@ if err != nil {
 ```
 
 ```java
+// Replace the illustrative expiry with your access token's actual expiry.
+// Replace the illustrative IDs and URLs below with your own resource values.
+String credentialId = "cred_123";
+String vaultId = "vault_123";
+String accessToken = System.getenv("OAUTH_ACCESS_TOKEN");
+String expiresAt = "2030-01-01T00:00:00Z";
+
 var credential =
     client
         .beta()
@@ -500,6 +623,13 @@ var credential =
 ```
 
 ```ruby
+# Replace the illustrative expiry with your access token's actual expiry.
+# Replace the illustrative IDs and URLs below with your own resource values.
+credential_id = "cred_123"
+vault_id = "vault_123"
+access_token = ENV.fetch("OAUTH_ACCESS_TOKEN")
+expires_at = "2030-01-01T00:00:00Z"
+
 credential = client.beta.agents.vaults.credentials.update(
   credential_id,
   vault_id: vault_id,
@@ -512,8 +642,8 @@ credential = client.beta.agents.vaults.credentials.update(
 ```
 
 
-包含 `expires_at` ，用于指定替换令牌的过期时间。如果提供新的访问令牌但未指定过期时间，则会清除已存储的过期时间；显式设置 `null` 也会将其清除。
+请包含 `expires_at` ，用于指示替换令牌的过期时间。如果只提供新的访问令牌而不提供过期时间，则会清除已存储的过期时间；显式设置 `null` 也会将其清除。
 
-[删除凭证](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/vaults/subresources/credentials/methods/delete) ，以在不再需要时将其删除。 [删除保险库](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/vaults/methods/delete) ，以移除该保险库及其所有凭证。
+[删除凭据](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/vaults/subresources/credentials/methods/delete) （当你不再需要它时）。 [删除保险库](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/vaults/methods/delete) 以移除该保险库及其所有凭据。
 
-删除已存储的凭证不会在提供方侧撤销原始令牌，也不会停止正在运行的会话。提供商侧的撤销和 [会话取消](https://developers.openai.com/api/docs/guides/agents-api/sessions#cancel-an-active-turn).
+删除已存储的凭据并不会撤销其在提供方处的原始令牌，也不会停止正在运行的会话。提供商侧的令牌撤销和 [会话取消](https://developers.openai.com/api/docs/guides/agents-api/sessions#cancel-an-active-turn).

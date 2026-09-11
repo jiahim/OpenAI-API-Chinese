@@ -1,25 +1,25 @@
 # 智能体 API 快速入门
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 后追加 `.md` 即可获取页面的 Markdown 版本。
+> 完整文档索引请参见 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 获取文档页面的 Markdown 版本。
 
-构建一个能够编写代码的编程助手，它会 `tree.py`，运行代码，并显示目录树。OpenAI 负责管理 智能体、其对话以及其运行所在的沙箱。
+构建一个能编写 `tree.py`、运行并展示目录树的编程助手。OpenAI 负责管理智能体、其对话以及它运行所用的沙箱。
 
-## 前置条件
+## 前提条件
 
-创建一个 [应用 API 密钥](https://platform.openai.com/api-keys) 在你的 OpenAI Platform 项目中。为会话操作授予 `api.agents.read` 和 `api.agents.write` 权限，并为模型推理授予 `api.responses.write` 权限，然后导出它：
+在 该公司 Platform 项目中创建一个 [application API key](https://platform.openai.com/api-keys) ，该密钥位于你的 OpenAI Platform 项目中。为会话操作授予相应权限，并为模型推理授予相应权限，然后导出它： `api.agents.read` 为 `api.agents.write` 授予会话操作权限，并为 `api.responses.write` 授予模型推理权限，然后导出该密钥：
 
 ```bash
 export OPENAI_API_KEY="your-api-key"
 ```
 
-将此密钥保留在 智能体 沙箱之外。详见 [OpenAI 托管的沙箱](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted#configure-the-sandbox) 了解沙箱配置与限制。
+请将此密钥保存在 智能体 的沙箱之外。详见 [OpenAI 托管沙箱](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted#configure-the-sandbox) 以了解沙箱配置和限制。
 
-请求需要包含 `OpenAI-Beta: agents=v1` 请求头。OpenAI SDK 会自动添加该
-  请求头；使用 cURL 时需显式包含。
+请求需要 `OpenAI-Beta: agents=v1` 请求头。OpenAI SDK 会自动添加该请求头；
+  使用 cURL 时需要显式包含该请求头。
 
 ## 1. 运行任务
 
-选择一种语言，安装 OpenAI SDK，然后运行示例。SDK 示例使用 `beta.agents` 命名空间。该请求会创建一个会话，提交任务，并流式输出进度。
+选择一门语言，安装 OpenAI SDK，然后运行示例。SDK 示例使用 `beta.agents` 命名空间。该请求会创建一个会话，提交一个任务，并以流式方式返回进度。
 
 
 
@@ -54,7 +54,7 @@ with OpenAI() as client:
 ```
 
 
-在你的终端中运行它：
+在终端中运行：
 
 ```bash
 python quickstart.py
@@ -103,7 +103,7 @@ try {
 ```
 
 
-在你的终端中运行它：
+在终端中运行：
 
 ```bash
 node quickstart.mjs
@@ -118,7 +118,7 @@ node quickstart.mjs
 Go
 
 
-在一个新目录中，创建一个 Go 模块并安装 SDK：
+在新目录中创建一个 Go 模块并安装 SDK：
 
 ```bash
 go mod init agents-quickstart
@@ -163,7 +163,7 @@ if err := events.Err(); err != nil {
 ```
 
 
-在你的终端中运行它：
+在终端中运行：
 
 ```bash
 go run .
@@ -178,7 +178,7 @@ go run .
 Java
 
 
-将 OpenAI SDK 添加到你的 Maven 项目 `pom.xml`:
+将 OpenAI SDK 添加到你的 Maven 项目的 `pom.xml`:
 
 ```xml
 <dependency>
@@ -230,7 +230,7 @@ try (StreamResponse<AgentSessionEvent> events =
 ```
 
 
-在你的终端中运行它：
+在终端中运行：
 
 ```bash
 mvn compile exec:java -Dexec.mainClass=AgentsApiSessionsStreamConversationExample
@@ -278,7 +278,7 @@ end
 ```
 
 
-在你的终端中运行它：
+在终端中运行：
 
 ```bash
 ruby quickstart.rb
@@ -293,7 +293,7 @@ ruby quickstart.rb
 cURL
 
 
-在你的终端中使用 cURL；无需安装 SDK：
+在你的终端中使用 cURL，无需安装 SDK：
 
 创建并运行 tree.py
 
@@ -307,26 +307,22 @@ curl --no-buffer --fail-with-body https://api.openai.com/v1/agents/sessions \\\n
 
 ## 2. 跟踪进度
 
-终端会显示流式事件。SDK 示例会输出 JSON；cURL 会显示原始的事件流。成功运行时，智能体 会创建 `tree.py`，执行它，并返回一个包含该文件的目录树。其他文件和输出取决于沙箱。
+终端会显示流式事件。SDK 示例会输出 JSON；cURL 会显示原始事件流。在成功运行的场景下，智能体 会创建 `tree.py`，执行它，并报告包含该文件的目录树。其他文件和输出则取决于沙箱。
 
-查看 `agent.session.turn.completed`，然后检查 智能体 报告的执行结果。完成的轮次并不保证每个工具都成功。事件以 `turn.failed`, `turn.cancelled`，或 `session.failed` 结尾表示失败或被取消； `agent.session.idle` 单独出现并不意味着成功。如果流提前断开， [检索会话及其已保存的项目](https://developers.openai.com/api/docs/guides/agents-api/sessions#how-to-recover-a-disconnected-stream) 后再重试。
+查找 `agent.session.turn.completed`，然后检查 智能体 报告的执行结果。某个回合完成并不保证每个工具都执行成功。以 `turn.failed`, `turn.cancelled`、或 `session.failed` 结束的事件表示失败或被取消；仅； `agent.session.idle` 并不代表成功。如果流提前断开，请在重试前， [检索该会话及其已保存的条目](https://developers.openai.com/api/docs/guides/agents-api/sessions#how-to-recover-a-disconnected-stream) 。
 
 ## 3. 继续该会话
 
-保存 `session_id` 来自事件。使用它来 [发送后续](https://developers.openai.com/api/docs/guides/agents-api/sessions#send-input) 例如“向 `tree.py`，添加一个最大深度选项，运行它，并显示输出。”在发送后续输入之前打开事件流，以免遗漏早期事件。
+保存从事件中获取的 `session_id` 。使用它 [发送后续](https://developers.openai.com/api/docs/guides/agents-api/sessions#send-input) ，例如“为 `tree.py`，添加一个最大深度选项，运行它，然后把输出展示给我”。在发送后续输入前打开事件流，以免遗漏早期事件。
 
 
 
 
-## 4. 清理资源
+## 4. 清理
 
-保留会话以用于更多任务，或在完成时将其删除。 [保存所需的文件](https://developers.openai.com/api/docs/guides/agents-api/environments/files) 首先。
+保留会话以用于更多任务，或在完成后将其删除。 [保存你需要的文件](https://developers.openai.com/api/docs/guides/agents-api/environments/files) 首先。
 
-将 `OPENAI_SESSION_ID` 设置为你保存的会话 ID：
-
-```bash
-export OPENAI_SESSION_ID="your-session-id"
-```
+将示例中的示意 `sess_123` 值替换为你保存的会话 ID。
 
   
 
@@ -336,7 +332,7 @@ Python
     Delete the session
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 
 from openai import OpenAI
 
@@ -346,7 +342,7 @@ def delete_session(client: OpenAI, session_id: str):
 
 
 if __name__ == "__main__":
-    result = delete_session(OpenAI(), os.environ["OPENAI_SESSION_ID"])
+    result = delete_session(OpenAI(), "sess_123")
     print(result.to_json())
 ```
 
@@ -360,6 +356,7 @@ JavaScript
     Delete the session
 
 ```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
 import OpenAI from "openai";
 
 /**
@@ -370,7 +367,7 @@ async function deleteSession(client, sessionId) {
   return client.beta.agents.sessions.delete(sessionId);
 }
 
-const result = await deleteSession(new OpenAI(), process.env.OPENAI_SESSION_ID);
+const result = await deleteSession(new OpenAI(), "sess_123");
 console.log(result);
 ```
 
@@ -384,12 +381,12 @@ Go
     Delete the session
 
 ```go
+// Replace the illustrative IDs and URLs below with your own resource values.
 package main
 
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/openai/openai-go/v3"
 )
@@ -400,7 +397,7 @@ func deleteSession(ctx context.Context, client *openai.Client, sessionID string)
 
 func main() {
 	client := openai.NewClient()
-	result, err := deleteSession(context.Background(), &client, os.Getenv("OPENAI_SESSION_ID"))
+	result, err := deleteSession(context.Background(), &client, "sess_123")
 	if err != nil {
 		panic(err)
 	}
@@ -418,6 +415,7 @@ Java
     Delete the session
 
 ```java
+// Replace the illustrative IDs and URLs below with your own resource values.
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.beta.agents.AgentSessionDeleted;
@@ -433,7 +431,7 @@ public final class AgentsApiSessionsDeleteSessionExample {
   }
 
   public static void main(String[] args) {
-    var result = deleteSession(OpenAIOkHttpClient.fromEnv(), System.getenv("OPENAI_SESSION_ID"));
+    var result = deleteSession(OpenAIOkHttpClient.fromEnv(), "sess_123");
     System.out.println(result);
   }
 }
@@ -449,13 +447,14 @@ Ruby
     Delete the session
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
 
 def delete_session(client, session_id)
   client.beta.agents.sessions.delete(session_id)
 end
 
-puts delete_session(OpenAI::Client.new, ENV.fetch("OPENAI_SESSION_ID"))
+puts delete_session(OpenAI::Client.new, "sess_123")
 ```
 
   
@@ -468,7 +467,7 @@ cURL
     Delete the session
 
 ```bash
-curl -X DELETE "https://api.openai.com/v1/agents/sessions/$OPENAI_SESSION_ID" \\\n  -H "OpenAI-Beta: agents=v1" \\\n  -H "Authorization: Bearer $OPENAI_API_KEY"
+curl -X DELETE "https://api.openai.com/v1/agents/sessions/sess_123" \\\n  -H "OpenAI-Beta: agents=v1" \\\n  -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
 
@@ -476,7 +475,7 @@ curl -X DELETE "https://api.openai.com/v1/agents/sessions/$OPENAI_SESSION_ID" \\
 ## 后续步骤
 
 - [浏览示例应用](https://developers.openai.com/api/docs/guides/agents-api/overview#try-an-example).
-- [配置 OpenAI 托管的沙盒](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted)：添加软件包和输入文件，控制网络访问，并下载制品。
-- [使用子智能体比较发行说明](https://developers.openai.com/api/docs/guides/agents-api/multi-agent#example-compare-release-notes).
+- [配置 OpenAI 托管沙箱](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted):添加包和输入文件，控制网络访问，并下载制品。
+- [将发布说明与子智能体进行比较](https://developers.openai.com/api/docs/guides/agents-api/multi-agent#example-compare-release-notes).
 - [处理文件和制品](https://developers.openai.com/api/docs/guides/agents-api/environments/files).
-- [选择环境](https://developers.openai.com/api/docs/guides/agents-api/configuration#environment-settings)，或 [连接你自己的沙盒](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted).
+- [选择环境](https://developers.openai.com/api/docs/guides/agents-api/configuration#environment-settings)，或 [连接你自己的沙箱](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted).
