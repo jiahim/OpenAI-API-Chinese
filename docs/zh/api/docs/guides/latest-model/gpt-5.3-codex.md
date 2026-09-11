@@ -1,25 +1,25 @@
 # 使用 GPT-5.3-Codex
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面支持 Markdown 版本，可在页面 URL 后追加 `.md` 来获取。
+> 完整的文档索引请参见 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取文档页面的 Markdown 版本。
 
 ## 简介
 
-GPT-5.3-Codex 推进了智能体编码领域智能与效率的前沿。请仔细遵循本指南，以确保你从该模型获得最佳性能。本指南适用于通过 API 直接使用模型以获得最大可定制性的用户；我们还提供 [Codex SDK](https://developers.openai.com/codex/codex-sdk/) 以便更简单地集成。
+GPT-5.3-Codex 在智能体编码方面推进了智能与效率的前沿。请仔细遵循本指南，以确保从此模型获得最佳性能。本指南适用于通过 API 直接使用该模型以获得最大可定制性的用户；我们还提供 [Codex SDK](https://developers.openai.com/codex/codex-sdk/) 以实现更简化的集成。
 
-在 API 中，Codex 调优后的模型是 `gpt-5.3-codex` （参见 [模型页面](https://developers.openai.com/api/docs/models/gpt-5.3-codex)).
+在 API 中，Codex 调优后的模型为 `gpt-5.3-codex` （参见 [模型页面](https://developers.openai.com/api/docs/models/gpt-5.3-codex)).
 
-## 最近更新
+## 新增功能
 
-- 更快且 token 更高效：使用更少的思考 token 来完成任务。我们推荐“medium”推理力度作为一款各方面表现均衡的交互式编程模型，能在智能与速度之间取得良好平衡。
-- 更高的智能与长时间自主能力：Codex 可以自主工作数小时以完成你最困难的任务。你可以使用 `high` 或 `xhigh` 推理力度来应对你最困难的任务。
-- 一流的压缩支持：压缩支持使长达数小时的推理不会触及上下文限制，并支持更长时间的持续用户对话，无需开启新的聊天会话。
-- Codex 在 PowerShell 和 Windows 环境下也表现得更出色。
+- 更快且 token 更高效：完成任务所使用的思考 token 更少。我们推荐将“中等”推理力度作为一款各方面表现均衡的交互式编码模型，在智能与速度之间取得良好平衡。
+- 更高的智能与长时自主能力：Codex 可以自主工作数小时以完成你最具挑战性的任务。你可以使用 `high` 或 `xhigh` 推理力度来处理最具挑战性的任务。
+- 一流的压缩支持：压缩功能支持多小时的推理而不会触及上下文限制，并支持更长时间的连续用户对话，无需开启新的聊天会话。
+- Codex 在 PowerShell 和 Windows 环境中也表现显著更佳。
 
 ## 迁移快速入门
 
-如果你已有可运行的 Codex 实现，那么该模型应该能以较小的改动正常工作；但如果你的起点是针对 GPT-5 系列模型或第三方模型优化的提示词和工具集，我们建议你进行更大幅度的修改。最佳参考实现是我们完全开源的 codex-cli 智能体，可在 [GitHub](https://github.com/openai/codex). 克隆此仓库并使用 Codex（或任何编码 智能体）来询问实现方式的相关问题。在与客户合作的过程中，我们也了解了如何针对此特定实现之外的其他场景定制 智能体 编排框架。
+如果你已有可正常运行的 Codex 实现，那么该模型应该只需相对较少的更新即可良好工作；但如果你是从一个针对 GPT-5 系列模型优化的提示和工具集开始，或使用第三方模型，我们建议进行更显著的改动。最佳参考实现是我们的完全开源的 codex-cli 智能体，可在以下地址获取： [GitHub](https://github.com/openai/codex). 克隆此仓库并使用 Codex（或任何编程智能体）来询问实现细节。根据与客户的协作经验，我们还了解到如何在特定实现之外定制智能体 工具链。
 
-将编排框架迁移到 codex-cli 的关键步骤：
+将你的工具链迁移到 codex-cli 的关键步骤：
 
 <ol>
   <li>
@@ -44,19 +44,19 @@ GPT-5.3-Codex 推进了智能体编码领域智能与效率的前沿。请仔细
   </li>
 </ol>
 
-## Model、API 与功能更新
+## 模型、API 及功能更新
 
 - `gpt-5.3-codex` 针对 Codex 或类似环境中的智能体编码任务进行了优化。
-- 可在 Responses API 中使用。
+- 它可在 Responses API 中使用。
 - `reasoning.effort` 支持 `low`, `medium`, `high`，以及 `xhigh`.
-- 支持的工具包括函数调用、网页搜索、托管 shell 和技能。
+- 支持的工具包括函数调用、网页搜索、托管 shell 和 skills。
 
 
-## 提示最佳实践
+## 提示词最佳实践
 
-### 推荐的开场提示
+### 推荐入门提示词
 
-此提示最初为默认 [GPT-5.1-Codex-Max 提示](https://github.com/openai/codex/blob/main/codex-rs/core/gpt-5.1-codex-max_prompt.md) 并针对答案正确性、完整性、质量、正确的工具使用与并行性，以及行动倾向，进一步根据内部评估进行了优化。如果你正在使用此模型运行评估，建议提高自主性或提示采用“非交互”模式，不过在实际使用中，更多澄清说明可能更合适。
+此提示最初是默认的 [GPT-5.1-Codex-Max 提示](https://github.com/openai/codex/blob/main/codex-rs/core/gpt-5.1-codex-max_prompt.md) 并针对内部评估在回答正确性、完整性、质量、正确的工具使用与并行性以及行动倾向方面进行了进一步优化。如果你正在使用该模型运行评估，建议提高自主性或提示采用“非交互”模式，不过在实际使用中，更多的澄清说明可能更合适。
 
 ```text
 You are Codex, based on GPT-5. You are running as a coding agent in the Codex CLI on a user's computer.
@@ -193,17 +193,17 @@ You are producing plain text that will later be styled by the CLI. Follow these 
   * Examples: src/app.ts, src/app.ts:42, b/server/index.js#L10, C:\repo\project\main.rs:12:5
 ```
 
-### 中段滚动更新用户信息
+### Mid-Rollout User Updates
 
-Codex 模型系列在工作过程中可以展示任务进行中的用户更新。对于早于 gpt-5.3-codex 的 codex 版本，这些更新由系统生成，无法通过提示词控制，因此我们建议不要在这些版本的提示词中添加关于中间计划或向用户发送消息的指令。对于 gpt-5.3-codex 及之后的版本，这些更新更具沟通性，能够提供更多关于正在发生什么以及为什么发生的关键信息，其工作方式与其他 GPT-5 系列模型的中间消息类似，可以根据下方“开场白与个性”部分进行提示。
+Codex 模型系列在执行过程中能够呈现中途向用户发送的更新。对于 gpt-5.3-codex 之前的 codex 版本，这些更新由系统生成而非可通过提示控制，因此我们建议不要在这些版本的提示中增加关于中间计划或向用户发送消息的指令。对于 gpt-5.3-codex 及之后的版本，这些更新更具沟通性，能提供更多关于正在发生什么、为什么发生的关键信息，其工作方式与其他 GPT-5 系列模型的中间消息类似，并可按照下方的“开场白与个性”章节进行提示。
 
 ### 使用 智能体.md
 
-Codex-cli 会自动枚举这些文件并将它们注入对话；模型经过训练，能够严格遵循这些指令。
+Codex-cli 会自动枚举这些文件并将它们注入对话；该模型经过训练，能够严格遵循这些指令。
 
-1\. 文件来自 \~/.codex 以及从仓库根目录到 CWD 的每一个目录（带有可选的回退名称和大小上限）。  
+1\. 文件来自 \~/.codex 以及从仓库根目录到 CWD 的每个目录（可选用回退名称和大小上限）。  
 2\. 它们按顺序合并，后面的目录会覆盖前面的目录。  
-3\. 每个合并后的块会以独立的用户角色消息形式呈现给模型，如下所示：
+3\. 每个合并后的块会作为一条独立的 user 角色消息呈现给模型，如下所示：
 
 ```text
 # AGENTS.md instructions for <directory>
@@ -216,32 +216,32 @@ Codex-cli 会自动枚举这些文件并将它们注入对话；模型经过训�
 
 更多详情
 
-- 每个发现的文件都会成为一条独立的用户角色消息，其开头为 \# AGENTS.md instructions for \<directory\>，其中 \<directory\> 是提供该文件的文件夹的路径（相对于仓库根目录）。
-- 消息会注入到对话历史的靠近顶部的位置，在用户提示之前，按从根到叶的顺序排列：先是全局指令，然后是仓库根目录，再依次是更深的每个目录。如果使用了 AGENTS.override.md，其目录名称仍会出现在标头中（例如。， \# AGENTS.md instructions for backend/api），以便在转录中一目了然。
+- 每个被发现的文件都会成为一条独立的用户角色消息，并以 \# AGENTS.md 指令中的 \<directory\>，开头，其中 \<directory\> 是该文件所在文件夹的路径（相对于仓库根目录）。
+- 这些消息会被注入到对话历史顶部附近，在用户提示之前，按从根到叶的顺序排列：先是全局指令，然后是仓库根目录，接着是更深的各级目录。如果使用了 AGENTS.override.md，其目录名称仍会出现在标头中（例如， \# backend/api 的 AGENTS.md 指令），以便在对话记录中上下文清晰可见。
 
 ### Compaction
 
-压缩功能显著提升了可用的有效上下文窗口，用户对话可以在许多轮次中持续进行，而不会触及上下文窗口限制或遭遇长上下文性能下降，智能体也可以执行远超典型上下文窗口的长时间任务轨迹，以应对长期且复杂的任务。此前通过临时搭建脚手架和对话摘要也能实现类似但较弱的效果，而我们通过 Responses API 提供的一级实现已与模型深度集成，并具备出色的性能。
+压缩功能解锁了显著更长的有效上下文窗口，用户对话可以持续多轮而不会触及上下文窗口限制或长上下文性能下降，并且智能体可以执行远超典型上下文窗口的超长轨迹，用于长时间运行的复杂任务。此前通过临时脚手架和对话摘要也能实现较弱的版本，但我们的原生实现通过Responses API提供，与模型深度集成且性能出色。
 
 工作原理：
 
-1. 你仍然像往常一样使用 Responses API，发送包含工具调用、用户输入和助手消息的输入项。
-2. 当你的上下文窗口变大时，你可以调用 /compact 来生成一个新的、压缩后的上下文窗口。有两点需要注意：
-   1. 你发送给 /compact 的上下文窗口应当能放入模型的上下文窗口之内。
-   2. 该端点兼容 ZDR，并会返回一个 “encrypted_content” 项，你可以将其传入后续请求。
-3. 对于后续对 /responses 端点的调用，你可以传入更新后的、压缩后的对话项列表（包括新增的压缩项）。模型会以更少的对话 token 保留关键的先前状态。
+1. 你可以像现在一样使用 Responses API，发送包含工具调用、用户输入和助手消息的输入项。
+2. 当你的上下文窗口变大时，可以调用 /compact 来生成一个新的、压缩后的上下文窗口。有两点需要注意：
+   1. 你发送给 /compact 的上下文窗口应能适配所用模型的上下文窗口大小。
+   2. 该端点兼容 ZDR，并将返回一个 “encrypted_content” 项，你可以在后续请求中传入该项。
+3. 对于后续对 /responses 端点的调用，你可以传入更新后、压缩后的对话项列表（包括新增的压缩项）。模型以更少的对话 token 保留关键的历史状态。
 
 有关端点详情，请参阅我们的 `/responses/compact` [文档](https://developers.openai.com/api/reference/resources/responses/methods/compact).
 
 ### 工具
 
-1. 我们强烈建议使用我们官方的 `apply_patch` 实现，因为模型经过训练，能够在这种差异格式上表现出色。对于终端命令，我们推荐使用 `shell` 工具；而对于计划/TODO 项，我们的 `update_plan` 工具性能最佳。
-2. 如果你希望你的智能体使用更多“类似终端的工具”（例如 `file_read()` 而不是在终端中调用 \`sed\` ），该模型可以可靠地调用这些工具，而不是使用终端（按照下面的说明）
-3. 对于其他工具，包括语义搜索、MCP 或其他自定义工具，它们可以工作，但需要更多的调优和试验。
+1. 我们强烈建议使用我们的精确 `apply_patch` 实现，因为模型经过训练能够出色地处理这种 diff 格式。对于终端命令，我们推荐使用 `shell` 工具，对于计划/TODO 项，我们的 `update_plan` 工具性能最佳。
+2. 如果你希望你的智能体使用更多类似终端的工具（例如 `file_read()` 而不是在终端中调用 \`sed\` ），该模型可以可靠地调用这些工具，而不是使用终端（请遵循下面的说明）
+3. 对于其他工具，包括语义搜索、MCP 或其他自定义工具，虽然可以工作，但需要更多的调优和实验。
 
 #### Apply_patch
 
-实现 apply_patch 最简单的方式是使用我们 Responses API 中的一等实现，但你也可以使用我们的自由格式工具实现，结合 [context-free grammar](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_new_params_and_tools?utm_source=chatgpt.com#3-contextfree-grammar-cfg)。下文展示了这两种方式。
+实现 apply_patch 的最简单方式是使用 Responses API 中我们的一类实现，但你也可以使用我们的自由格式工具实现，并结合 [context-free grammar](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_new_params_and_tools?utm_source=chatgpt.com#3-contextfree-grammar-cfg)。两者均在下方演示。
 
 ```python
 # Sample script to demonstrate the server-defined apply_patch tool
@@ -404,7 +404,7 @@ input = <<~PROMPT
 PROMPT
 response = client.responses.create(
   model: "gpt-5.3-codex", input: input,
-  tools: [{type: :apply_patch}], parallel_tool_calls: false
+  tools: [{ type: :apply_patch }], parallel_tool_calls: false
 )
 response.output.each do |item|
   pp(item.operation) if item.is_a?(OpenAI::Responses::ResponseApplyPatchToolCall)
@@ -436,11 +436,18 @@ GRAMMAR
 
 response = client.responses.create(
   model: "gpt-5.3-codex", input: input,
-  tools: [{
-    type: :custom, name: "apply_patch",
-    description: "Apply a patch to update files.",
-    format: {type: :grammar, syntax: :lark, definition: APPLY_PATCH_GRAMMAR}
-  }],
+  tools: [
+    {
+      type: :custom,
+      name: "apply_patch",
+      description: "Apply a patch to update files.",
+      format: {
+        type: :grammar,
+        syntax: :lark,
+        definition: APPLY_PATCH_GRAMMAR
+      }
+    }
+  ],
   parallel_tool_calls: false
 )
 response.output.each do |item|
@@ -449,11 +456,11 @@ end
 ```
 
 
-可以通过参考该Responses API 工具的修补对象 [example](https://github.com/openai/openai-agents-python/blob/main/examples/tools/apply_patch.py) 实现，而自由格式工具生成的补丁则可以使用我们规范的 GPT-5 [apply_patch.py](https://github.com/openai/openai-cookbook/blob/main/examples/gpt-5/apply_patch.py%20) 中的逻辑来应用。
+Patches 对象可按照本 [示例](https://github.com/openai/openai-agents-python/blob/main/examples/tools/apply_patch.py) 实现 Responses API 工具，而来自自由格式工具的补丁可使用我们规范 GPT-5 中的逻辑来应用 [apply_patch.py](https://github.com/openai/openai-cookbook/blob/main/examples/gpt-5/apply_patch.py%20) 实现。
 
 #### Shell_command
 
-这是我们默认的 shell 工具。注意，当命令类型为“string”而不是命令列表时，我们观察到了更好的性能。
+这是我们的默认 shell 工具。注意，与命令列表相比，使用“string”类型的命令时我们观察到更好的性能。
 
 ```json
 {
@@ -493,17 +500,17 @@ end
 }
 ```
 
-如果你使用的是 Windows PowerShell，请将此工具描述更新为本文档中的版本。
+如果你使用的是 Windows PowerShell，请更新到该工具描述。
 
 ```text
 Runs a shell command and returns its output. The arguments you pass will be invoked via PowerShell (e.g., ["pwsh", "-NoLogo", "-NoProfile", "-Command", "<cmd>"]). Always fill in workdir; avoid using cd in the command string.
 ```
 
-你可以查看 codex-cli 以了解以下内容的实现： `exec_command`，当需要流式输出、REPL 或交互式会话时，它会启动一个长期运行的 PTY；以及 `write_stdin`，用于为现有的 exec_command 会话输入额外的按键操作（或仅轮询输出）。
+你可以查看 codex-cli 了解以下工具的实现： `exec_command`，用于在需要流式输出、REPL 或交互式会话时启动一个长生命周期的 PTY；以及 `write_stdin`，用于向已有的 exec_command 会话发送额外的按键输入（或仅轮询输出）。
 
-#### Update Plan
+#### 更新计划
 
-这是我们的默认 TODO 工具；你可以根据自己的需要进行自定义。详见 `## Plan tool` 部分，了解我们起始提示中关于保持整洁和调整行为的更多说明。
+这是我们默认的 TODO 工具；你可以根据需要进行自定义。参见 `## Plan tool` 章节的起始提示，了解保持整洁和调整行为的额外说明。
 
 ```json
 {
@@ -572,7 +579,7 @@ Runs a shell command and returns its output. The arguments you pass will be invo
 
 ### 专用终端包装工具
 
-如果你更希望你的 codex 智能体 使用封装终端的工具（例如专用的 `list_dir(‘.’)` 工具，而不是 `terminal(‘ls .’)`，这通常效果很好。我们发现，当工具的名称、参数和输出与底层命令尽可能接近时，可以获得最佳效果，这样对模型来说尽可能不偏离分布（该模型主要使用专用终端工具训练）。例如，如果你注意到模型通过终端使用 git，并希望它改用专用工具，我们发现创建一个相关工具，并在提示中添加一条指令，要求仅使用该工具来执行 git 命令，就可以完全消除模型在 git 命令上对终端的使用。
+如果你希望你的 codex 智能体使用具备终端封装能力的工具（例如专用 `list_dir(‘.’)` 工具，而不是 `terminal(‘ls .’)`，效果通常都很好。当工具的名称、参数和输出与底层命令尽可能接近时，我们看到的效果最佳，因为这样对模型而言尽可能符合其训练时的分布（模型主要使用专用终端工具进行训练）。例如，如果你发现模型通过终端使用 git，并希望它改用专用工具，我们发现创建一个相关工具，并在提示中加入一条指令，要求仅使用该工具执行 git 命令，可以完全消除模型通过终端使用 git 的情况。
 
 ```python
 GIT_TOOL = {
@@ -647,15 +654,15 @@ puts(PROMPT_TOOL_USE_DIRECTIVE)
 
 ### 其他自定义工具（网页搜索、语义搜索、记忆等）
 
-该模型未必经过专门的后训练以胜任这些工具，但我们同样观察到了一些成功案例。为了充分发挥这些工具的能力，我们建议：
+该模型未必经过专门的后训练以在这些工具上表现出色，但我们同样观察到成功的案例。为了充分发挥这些工具的能力，我们建议：
 
-1. 尽可能让工具名称和参数在语义上“准确”，例如“search”语义模糊，而“semantic_search”能清晰表明该工具的功能，相对于你可能拥有的其他潜在搜索相关工具而言。“Query”是该工具的一个合适参数名。
-2. 在提示词中明确说明何时、为何以及如何使用这些工具，并给出正面和反面的示例。
-3. 让结果的呈现方式与模型从其他工具熟悉的输出区分开来也很有帮助，例如 ripgrep 的结果应当与语义搜索结果有所区别，以避免模型陷入原有的习惯。
+1. 尽可能让工具名称和参数在语义上“准确”，例如 “search” 含义模糊，而 “semantic_search” 则清晰表明了该工具的功能，相对于你可能拥有的其他潜在搜索相关工具而言。对于此工具而言，“Query” 是一个不错的参数名称。
+2. 在提示中明确说明使用这些工具的时机、原因和方式，包括好的和坏的示例。
+3. 让结果看起来与模型习惯的其他工具输出不同也可能有帮助，例如 ripgrep 的结果应当与语义搜索的结果看起来不同，以避免模型沿用旧习惯。
 
 ### Parallel Tool Calling
 
-在 codex-cli 中，当启用并行工具调用时，responses API 请求设置 `parallel_tool_calls: true` 并将以下片段添加到系统指令中：
+在 codex-cli 中，当启用并行工具调用时，responses API 请求会设置 `parallel_tool_calls: true` 并将以下代码片段添加到系统指令中：
 
 ```text
 ## Exploration and reading files
@@ -672,7 +679,7 @@ puts(PROMPT_TOOL_USE_DIRECTIVE)
 - Do not try to parallelize using scripting or anything else than `multi_tool_use.parallel`.
 ```
 
-我们发现，按以下方式对并行工具调用项及其响应进行排序是有帮助的，且更符合数据分布：
+我们发现，如果按以下方式排列并行工具调用项及其响应，会更有帮助，也更符合数据分布：
 
 ```text
 function_call
@@ -683,20 +690,20 @@ function_call_output
 
 ### 工具响应截断
 
-我们建议按如下方式对工具调用响应进行截断，以尽可能贴合模型的训练分布：
+我们建议按如下方式对工具调用响应进行截断处理，以便尽可能贴近模型的训练分布：
 
-- 限制为 10k 个 token。你可以通过估算来低成本地近似实现这一点，方法是计算 `num_bytes/4`.
-- 如果达到截断限制，你应该将预算的一半用于开头，一半用于结尾，并在中间进行截断，使用 `…3 tokens truncated…`
+- 限制为 1 万个 token。你可以通过以下方式廉价地近似计算 `num_bytes/4`.
+- 如果达到了截断限制，应将预算的一半用于开头，一半用于末尾，并在中间截断，使用 `…3 tokens truncated…`
 
 ### GPT-5.3 Codex 中的新功能
 
 #### 前言消息
 
-Responses API 提供一个 `phase` 参数，用于在 prompt 请求前导消息时防止过早停止和其他异常行为。正确实现此参数是必需的，否则可能导致显著的性能下降。 `gpt-5.3-codex`；否则可能会出现显著的性能下降。
+Responses API 包含一个 `phase` 参数，用于在提示请求前导消息时防止提前停止和其他异常行为。正确实现此参数对于 `gpt-5.3-codex`；是必需的；否则可能导致严重的性能下降。
 
-#### 阶段
+#### Phase
 
-为了更好地支持包含 `gpt-5.3-codex`，的前导消息，Responses API 提供了一个 `phase` 字段，旨在防止在长时间运行的任务及其他异常行为上过早停止。
+为了更好地支持带 `gpt-5.3-codex`，的预消息，Responses API 包含一个 `phase` 字段，旨在防止在长时间运行的任务上过早停止以及其他异常行为。
 
 ##### Values
 
@@ -708,44 +715,44 @@ Responses API 提供一个 `phase` 参数，用于在 prompt 请求前导消息�
 
 ##### 出现位置
 
-你会收到 `phase` 助手输出项上的（例如， `output_item.done`）。你的集成必须持久化助手输出项，包括其 `phase`，并在后续请求中把这些助手项传回。
+你将收到 `phase` 针对助手输出项（例如， `output_item.done`）。你的集成必须持久化助手输出项，包括它们的 `phase`，并在后续请求中把这些助手项传回。
 
-**重要提示：** `phase` 仅在助手项上受支持。不要将 `phase` 添加到用户消息中。
+**重要提示：** `phase` 仅在助手项上受支持。请勿将 `phase` 添加到用户消息中。
 
-##### 它的下游使用方式
+##### 下游使用方式
 
-当模型使用以下方式标记某个输出项时：
+当模型将某个输出项标记为：
 
-- `phase: "commentary"`: 应将对应的助手消息视为评注/前言式内容。
-- `phase: "final_answer"`: 应将对应的助手消息视为最终收尾内容。
+- `phase: "commentary"`：相应的助手消息应被视为评论/前言式的内容。
+- `phase: "final_answer"`：相应的助手消息应被视为最终的收尾内容。
 
-正确地保留 `phase` 助手消息项是必需的 `gpt-5.3-codex`。如果助手 `phase` 元数据在历史记录重建过程中丢失，可能会导致显著的性能下降。
+正确保留 `phase` assistant 项目上的元数据 `gpt-5.3-codex`。是必需的。如果 assistant `phase` 元数据在历史记录重建过程中被丢弃，可能会出现严重的性能下降。
 
 #### 前言与人格设定
 
-前言是在工具调用过程中一并发送的消息，用于在工作进行时向用户提供更新：是简短、人类可读的进度与意图快照，能够让用户保持方向感，又不会把整段对话记录变成工具调用日志。GPT-5.3-Codex 的前言已围绕以下特征进行调优：
+前言（preamble）是与工具调用一同发送的消息，用于在工作时向用户提供更新：是简短、可读的进度与意图快照，使用户能够随时了解当前进展，又不会把会话记录变成一份工具调用日志。GPT-5.3-Codex 的前言已针对以下特性进行了调优：
 
-- 先确认收到并制定计划，再调用任何工具（用 1 句话确认，用 1–2 句话说明计划）。
-- 大多数更新应控制在 1–2 句话，只有在真正的里程碑处才使用更长的更新。
-- 节奏：尽量每 1–3 个执行步骤更新一次；硬性下限：至少每 6 个步骤或 10 次工具调用内更新一次。
-- 每次更新的内容：截至目前的结果/影响、接下来的 1–3 个步骤，以及存在的未决问题/经验。
-- 语气：像真实的人并肩协作，少一些繁文缛节；避免使用标题/状态标签和日志式口吻。
+- 在调用任何工具前先确认再规划（1 句确认，1–2 句规划）。
+- 大多数更新保持 1–2 句，只在真正的重要节点使用更长更新。
+- 节奏：每 1–3 个执行步骤更新一次；硬性下限：至少每 6 步或 10 次工具调用内更新一次。
+- 每次更新内容：到目前为止的结果/影响、下一步 1–3 步，以及必要时附上的开放问题/心得。
+- 语气：像真人协作，低仪式感；避免使用标题/状态标签和日志口吻。
 
-##### 人格（友好型 vs 务实型）
+##### Personality (友好型 vs 务实型)
 
-Personality 是高于前言机制（节奏、长度和依据）的高层氛围与协作姿态。它会影响用词选择、模型解释权衡的主动程度，以及它在交互中展现的温暖程度。
+人格是位于前置语机制（节奏、长度与基础约束）之上的更高层氛围与协作姿态。它会影响用词、模型解释权衡取舍时的主动程度，以及在交互中展现的亲和度。
 
-Codex 应用和 CLI 自带两种 personality 支持，这里将其作为你 harness 的示例实现提供。
+Codex 应用与 CLI 自带对两种人格的支持，本文档将其作为示例实现提供给你的 harness 使用。
 
 ###### 友好型
 
-- 更具人情味、伙伴式的配对感。
-- 更多地给予确认、安抚和上下文铺垫。
-- 在用户需要叙述性引导时（入门引导、任务模糊或变更影响较大时）效果更佳。
+- 更人性化、更像搭档的配对感。
+- 稍多一些的回应、安慰与背景铺垫。
+- 在用户能从叙事性引导中受益时效果更好（上手引导、任务模糊、影响较大的更改）。
 
-###### 来自 codex-cli 的友好个性提示片段示例
+###### Example Friendly personality prompt snippet from codex-cli
 
-此代码片段可用于你的系统提示中，以引导模型的结对编程个性。
+你可以将这段片段放入系统提示中，用来引导模型的结对编程风格。
 
 ```text
 # Personality
@@ -771,21 +778,21 @@ You escalate gently and deliberately when decisions have non-obvious consequence
 
 ###### Pragmatic
 
-- 更简洁、直接，专注交付。
-- 减少社交性修饰；提高每个 token 中可操作信息的占比。
-- 在延迟/吞吐量至关重要时，或你的用户已经了解 工作流 并只想要进展和结果时，效果更好。
+- 更简洁、直接，专注交付上线。
+- 减少社交性修饰；提高每个 token 的有效信息密度。
+- 在延迟或吞吐量至关重要时更合适，或当你的用户已经了解工作流，只想要进展与结果时更合适。
 
-#### 故障排除与元提示
+#### 故障排查与元提示
 
 我们一直在明确追踪的常见失败模式：
 
-- 在首次有效操作（工具调用或具体计划）之前过度思考 / 时间过长。
-- 日志化 / 不自然的状态更新，而不是结对编程式的协作。
-- 尴尬的开场措辞和重复的口头禅（如 “Good catch”、“Aha”、“Got it–” 等）。
+- 在第一个有效操作（工具调用或具体计划）之前过度思考 / 耗时过长。
+- 记录式 / 不自然的状态更新，而非结对编程式的协作。
+- 尴尬的铺垫措辞以及重复的口头禅（"Good catch"、"Aha"、"Got it–" 等）。
 
 ##### 用于针对性修复的元提示
 
-像上面这些失败模式通常可以通过元提示（metaprompting）来应对。可以在表现未达预期的回合结束时，向模型询问如何改进其自身的指令。下面的提示用于针对上文的一些“过度思考”问题生成解决方案，你可以根据自己的实际需求进行修改。
+上述这类失败模式通常可以通过元提示（metaprompting）来加以应对。可以在某个表现未达预期的轮次结束时，让模型自行给出改进其指令的建议。下面这条提示曾用于生成上文部分“过度思考”问题的一些解法，你可以根据自身需求进行修改。
 
 ```text
 That was a high quality response, thanks! It seemed like it took you a while to finish responding though. Is there a way to clarify your instructions so you can get to a response as good as this faster next time? It’s extremely important to be efficient when providing these responses or users won’t get the most out of them in time. Let’s see if we can improve!
@@ -794,10 +801,10 @@ read through your instructions starting from "" and look for anything that might
 write out targeted (but generalized) additions/changes/deletions to your instructions to make a request like this one faster next time with the same level of quality
 ```
 
-在特定上下文中进行元提示时，请尽可能多次生成响应，并留意这些响应之间共同的元素。模型提出的某些改进或改动可能过于针对该特定情境，但你通常可以将它们简化，从而得出通用的改进方案。我们建议创建一个评估（eval），用于衡量特定的提示变更对你的具体用例而言是更好还是更差。
+在特定上下文内进行元提示时，重要的一点是：条件允许的话，多次生成回复，并留意这些回复之间共同出现的要素。模型提出的某些改进或修改可能过于针对该具体情境，但通常可以对其进行简化，从而提炼出更通用的改进建议。我们建议构建一个评测，用来衡量某项提示改动对你具体用例而言是更好还是更差。
 
 ##### 一些示例
 
-- 针对过度思考/启动缓慢的问题：让它提出能够缩短首次工具调用时间或更快给出首个具体方案的指令修改建议。
-- 针对前置铺垫过于冗长的问题：让它根据你的特定偏好约束，重写你的用户更新指令。
+- 针对过度思考 / 启动缓慢的问题：让智能体提出指令修改建议，以缩短首次工具调用时间或首个具体方案生成时间。
+- 针对过于啰嗦的前置铺垫：让智能体重写你的用户更新指令，以满足你特定的偏好约束。
 

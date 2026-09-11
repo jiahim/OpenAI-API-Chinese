@@ -1,63 +1,63 @@
 # 使用 GPT-5.4
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
 
-## 概述
+## 简介
 
-[GPT-5.4](https://developers.openai.com/api/docs/models/gpt-5.4) 作为面向专业工作的前沿模型已发布，覆盖 API 和 Codex。它帮助开发者分析复杂信息、构建生产级软件，并自动化多步骤工作流。
+[GPT-5.4](https://developers.openai.com/api/docs/models/gpt-5.4) 作为面向专业工作的前沿模型发布于 API 和 Codex。它帮助开发者分析复杂信息、构建生产级软件，并自动化多步工作流。
 
-在 GPT-5.4 系列中， `gpt-5.4` 是适用于在软件工程、推理、写作和工具使用之间切换的工作流的通用模型。
+在 GPT-5.4 代际中， `gpt-5.4` 是在软件开发、推理、写作和工具使用之间切换的工作流的通用模型。
 
-本指南介绍 GPT-5 模型系列的主要特性，以及如何充分发挥 GPT-5.4 的能力。
+本指南介绍 GPT-5 模型系列的关键特性，以及如何充分发挥 GPT-5.4 的能力。
 
 ## 新增内容
 
-与之前的 GPT-5.2 模型相比，GPT-5.4 在以下方面有所改进：
+相较于之前的 GPT-5.2 模型，GPT-5.4 在以下方面有所改进：
 
-- 代码编写、文档理解、工具使用与指令遵循
-- 图像感知与多模态任务
-- 长时间运行的任务执行与多步骤 智能体工作流
-- 面向工具密集型工作负载的 Token 效率与端到端性能
-- 面向难以定位信息的网页搜索与多源综合
-- 客服、分析与财务等场景中以文档和电子表格为主的工作流
+- 编程、文档理解、工具使用和指令遵循
+- 图像感知和多模态任务
+- 长时间运行的任务执行和多步骤 智能体工作流
+- 在工具密集型工作负载下的 token 效率和端到端性能
+- 针对难以查找信息的网页搜索和多源综合
+- 客服、分析和财务领域中以文档和电子表格为主的工作流
 
-GPT-5.4 将 GPT-5.3-Codex 的编码能力带到了我们的旗舰前沿模型。开发者可以生成生产级代码、构建精美的前端 UI、遵循仓库特定的模式，并以更少的重试处理多文件变更。它还具备强大的开箱即用编码风格，因此团队可以减少在提示词调优上的时间投入。
+GPT-5.4 将 GPT-5.3-Codex 的编码能力带到了我们的旗舰前沿模型中。开发者可以生成生产级代码、构建精致的前端 UI、遵循仓库特有的模式，并以更少的重试处理多文件变更。它还具备出色的开箱即用编码特性，使团队在提示调优上花费的时间更少。
 
-对于智能体工作负载，GPT-5.4 缩短了多步轨迹的端到端耗时，并且通常使用更少的 token 和工具调用即可完成任务。这使得智能体响应更敏捷，并降低在 API 和 Codex 中大规模运行复杂工作流时的成本。
+在智能体工作负载方面，GPT-5.4 缩短了多步轨迹的端到端时间，并且通常以更少的 token 和工具调用完成任务。这使得 智能体 响应更快，并降低了在 API 和 Codex 中大规模运行复杂工作流 的成本。
 
 ### GPT-5.4 中的新功能
 
-与早期 GPT-5 模型一样，GPT-5.4 支持自定义工具、控制详细程度和推理能力的参数，以及允许的工具列表。GPT-5.4 还引入了多项新能力，让构建强大的智能体系统、在更大规模的信息上运行，以及执行更可靠的工作流变得更加容易：
+与早期 GPT-5 模型一样，GPT-5.4 支持自定义工具、可控制输出详细程度和推理强度的参数，以及允许使用的工具列表。GPT-5.4 还引入了多项能力，使构建强大的智能体系统、基于更大规模的信息进行操作，以及运行更可靠的自动化工作流变得更加容易：
 
-- **`tool_search` 在 API 中：** GPT-5.4 通过使用延迟工具加载来改进更大工具生态系统的工具搜索。这使工具可被搜索，仅加载相关的定义，降低 token 使用量，并在实际部署中提升工具选择准确率。在 [工具搜索指南](https://developers.openai.com/api/docs/guides/tools-tool-search).
-- **1M token 上下文窗口：** GPT-5.4 支持最高 1M token 的上下文窗口，便于在单个请求中分析整个代码库、长文档集合或扩展的 智能体 轨迹。详见 [1M 上下文窗口](#1m-context-window) 部分。
-- **内置计算机使用：** GPT-5.4 是首个内置计算机使用能力的主流模型，使 智能体 能够直接与软件交互，在“构建-运行-验证-修复”循环中完成、验证和修复任务。详见 [计算机使用指南](https://developers.openai.com/api/docs/guides/tools-computer-use).
-- **原生上下文压缩支持：** GPT-5.4 是首个经过训练以支持上下文压缩的主流模型，可在保留关键上下文的同时支持更长的 智能体 轨迹。
+- **`tool_search` 在 API 中：** GPT-5.4 通过使用延迟工具加载来改进对更大工具生态系统的工具搜索。这使工具可被搜索，仅加载相关定义，减少 token 使用量，并在实际部署中提升工具选择准确度。详情请参阅 [工具搜索指南](https://developers.openai.com/api/docs/guides/tools-tool-search).
+- **1M token 上下文窗口：** GPT-5.4 支持最高 1M token 的上下文窗口，便于在单次请求中分析整个代码库、长文档集合或较长的 智能体 轨迹。更多信息请参阅 [1M 上下文窗口](#1m-context-window) 部分。
+- **内置计算机使用：** GPT-5.4 是首个具备内置计算机使用能力的主流模型，使 智能体 能够直接与软件交互，在“构建—运行—验证—修复”循环中完成任务、验证并修复问题。详情请参阅 [计算机使用指南](https://developers.openai.com/api/docs/guides/tools-computer-use).
+- **原生压缩支持：** GPT-5.4 是首个经过训练以支持压缩功能的主流模型，可在保留关键上下文的同时支持更长的 智能体 轨迹。
 
-## 模型、API 和功能更新
+## Model、API 与功能更新
 
-在该模型代系中， `gpt-5.4` 是适用于广泛任务和编程的通用模型。对于更困难的问题， `gpt-5.4-pro` 会使用更多算力来更长时间地思考，并给出更一致的答案。
+在此模型代际中， `gpt-5.4` 是面向广泛任务和编程的通用模型。对于更困难的问题， `gpt-5.4-pro` 会使用更多算力进行更长时间的思考，从而给出更稳定的回答。
 
 如果需要更小、更快的版本，可以从 `gpt-5.4-mini` 或 `gpt-5.4-nano`.
 
-若要帮助你挑选最契合自身用例的模型，可以参考以下权衡：
+着手。为了帮助你挑选最适合用例的模型，请考虑以下权衡：
 
-| 变体                                         | 适用场景                                                                                                             |
+| Variant                                         | Best for                                                                                                             |
 | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| [`gpt-5.4`](https://developers.openai.com/api/docs/models/gpt-5.4)           | 通用任务，包括复杂推理、广泛的世界知识，以及代码密集或多步骤的智能体任务 |
-| [`gpt-5.4-pro`](https://developers.openai.com/api/docs/models/gpt-5.4-pro)   | 需要更长时间解决且需要更深层推理的难题                                               |
-| [`gpt-5.4-mini`](https://developers.openai.com/api/docs/models/gpt-5.4-mini) | 高吞吐量的编码、计算机使用，以及仍需较强推理能力的智能体工作流                               |
-| [`gpt-5.4-nano`](https://developers.openai.com/api/docs/models/gpt-5.4-nano) | 速度与成本最重要的高吞吐量任务                                                               |
+| [`gpt-5.4`](https://developers.openai.com/api/docs/models/gpt-5.4)           | 通用任务，包括复杂推理、广泛的世界知识，以及代码密集型或多步骤智能体任务 |
+| [`gpt-5.4-pro`](https://developers.openai.com/api/docs/models/gpt-5.4-pro)   | 可能需要更长时间解决且需要更深层推理的难题                                               |
+| [`gpt-5.4-mini`](https://developers.openai.com/api/docs/models/gpt-5.4-mini) | 高吞吐量编码、计算机使用以及仍需要强大推理能力的智能体工作流                               |
+| [`gpt-5.4-nano`](https://developers.openai.com/api/docs/models/gpt-5.4-nano) | 速度和成本最重要的高吞吐量任务                                                               |
 
-### 较低的推理投入度
+### 较低的推理力度
 
-该 `reasoning.effort` parameter controls how many reasoning tokens the model generates before producing a response. Earlier reasoning models like o3 supported only `low`, `medium`, and `high`: `low` favored speed and fewer tokens, while `high` favored more thorough reasoning.
+该 `reasoning.effort` 参数控制模型在生成响应之前生成多少推理 tokens。像 o3 这样的早期推理模型仅支持 `low`, `medium`，并且 `high`: `low` 倾向于更快和更少的 tokens，而 `high` 倾向于更深入的推理。
 
-GPT-5.2 and GPT-5.4 support `none` as their lowest reasoning effort for lower-latency interactions. It is the default setting for both models. If you need more thinking, slowly increase to `medium` and experiment with results.
+GPT-5.2 和 GPT-5.4 支持 `none` 作为其最低推理力度，用于低延迟交互。这是两个模型的默认设置。如果你需要更多思考，可以缓慢提升到 `medium` 并试验结果。
 
-With reasoning effort set to `none`, prompting is important. To improve the model's reasoning quality, even with the default settings, encourage it to "think" or outline its steps before answering.
+当推理力度设置为 `none`，时，提示工程很重要。为了提高模型的推理质量，即使使用默认设置，也要鼓励它在回答前先“思考”或列出步骤。
 
-Reasoning effort set to none
+推理力度设置为 none
 
 ```javascript
 import OpenAI from "openai";
@@ -167,7 +167,7 @@ require "openai"
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-5.4",
-  reasoning: {effort: :minimal},
+  reasoning: { effort: :minimal },
   input: "Explain the bug and propose a fix."
 )
 puts(response.output_text)
@@ -188,18 +188,18 @@ curl --request POST \
 ```
 
 
-### Verbosity
+### 详细程度
 
-详细程度决定了会生成多少输出 token。减少 token 数量可以降低整体延迟。虽然模型的推理方式基本保持不变，但模型会尝试以更简洁的方式作答——具体效果取决于你的使用场景，答案质量可能变好也可能变差。下面是详细程度两个极端的一些典型场景：
+详细程度决定了生成的输出 token 数量。减少 token 数量会降低整体延迟。虽然模型的推理方式基本保持不变，但模型会找到更简洁的作答方式——这可能会根据你的用例提升或降低答案质量。以下是详细程度光谱两端的几种场景：
 
-- **高详细程度：** 当你需要模型提供详尽的文档说明或执行大规模代码重构时使用。
-- **低详细程度：** 最适合需要简洁答案或专注代码生成的场景，例如 SQL 查询。
+- **高详细度：** 当你需要模型对文档提供详尽的解释或执行大规模代码重构时使用。
+- **低详细度：** 最适合需要简洁回答或聚焦的代码生成（例如 SQL 查询）的场景。
 
-GPT-5 将此选项设为可配置项之一， `high`, `medium`，或 `low`。使用 GPT-5.4 时，详细程度仍可配置且默认值为 `medium`.
+GPT-5 将此选项设为以下之一 `high`, `medium`，或 `low`。在 GPT-5.4 中，详尽程度仍然可配置，默认值为 `medium`.
 
-当使用 GPT-5.4 生成代码时， `medium` 并且 `high` 冗长度级别会生成更长、结构更清晰的代码，并附带内联解释，而 `low` 冗长度则会生成更短、更简洁的代码，并附带最少的注释。
+使用 GPT-5.4 生成代码时， `medium` 和 `high` 详尽程度会生成更长、结构更清晰的代码并附带内联解释，而 `low` 详尽程度会生成更短、更简洁的代码，并附带最少的说明。
 
-控制冗长度
+控制详尽程度
 
 ```javascript
 import OpenAI from "openai";
@@ -282,7 +282,7 @@ require "openai"
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-5.4",
-  text: {verbosity: :low},
+  text: { verbosity: :low },
   input: "Explain the bug and propose a fix."
 )
 puts(response.output_text)
@@ -303,29 +303,29 @@ curl --request POST \
 ```
 
 
-即使在 API 中将其设为 `low` 后，你仍然可以通过提示来调整冗长度。冗长度参数在系统提示级别定义了一个通用的 token 范围，但实际输出在该范围内会根据开发者和用户的提示灵活调整。
+在将详尽程度设置为 `low` 后，你仍然可以通过提示来引导 API 中的输出。详尽程度参数在系统提示层面定义了一个通用的 token 范围，但实际输出在该范围内对开发者提示和用户提示都具有灵活性。
 
 #### 1M context window
 
-1M token 上下文窗口随 GPT-5.4 一起推出，让你可以更轻松地在单个请求中分析整个代码库、长文档集合或较长的智能体运行轨迹。
+1M token 上下文窗口随 GPT-5.4 一起推出，便于在单个请求中分析整个代码库、长文档集合或延长的 智能体 轨迹。
 
-我们对 272K tokens 以下和 272K tokens 以上的请求设有不同的标准定价，详情见 [定价文档](https://developers.openai.com/api/docs/pricing)。如果你使用 [Fast 模式](https://developers.openai.com/api/docs/guides/fast-mode)，任何超过 272K tokens 的 prompt 都会自动按标准价格计费。
+我们对 272K tokens 以下和 272K tokens 以上的请求分别设有标准定价，详情请参阅 [定价文档](https://developers.openai.com/api/docs/pricing)。如果你使用 [Fast 模式](https://developers.openai.com/api/docs/guides/fast-mode)，任何超过 272K tokens 的 prompt 将自动按标准费率处理。
 
-长上下文定价会与数据驻留和批处理等其他定价调整项叠加计算。
+长上下文定价可与其他定价调整项（如数据驻留和批处理）叠加。
 
-我们对 272K tokens 以下和 272K tokens 以上的请求设有不同的速率限制，详情见 [GPT-5.4 模型页面](https://developers.openai.com/api/docs/models/gpt-5.4).
+我们对 272K tokens 以下和 272K tokens 以上的请求设置了不同的速率限制；详情可在 [GPT-5.4 模型页面](https://developers.openai.com/api/docs/models/gpt-5.4).
 
-## Using tools with GPT-5.4
+## 将工具与 GPT-5.4 配合使用
 
-GPT-5.4 已针对特定工具进行了后训练。详见 [工具文档](https://developers.openai.com/api/docs/guides/tools) 以获取更具体的指导。
+GPT-5.4 已针对特定工具进行了后训练。参见 [tools 文档](https://developers.openai.com/api/docs/guides/tools) 以获取更具体的指导。
 
-### Computer use 工具
+### Computer use tool
 
-计算机使用让 GPT-5.4 能够通过检查截图并返回结构化操作来操作软件界面，供你的执行框架运行。它非常适合那些用户可以通过 UI 完成的浏览器或桌面工作流，例如浏览网站、填写表单，或验证某项更改是否真正生效。
+Computer use 让 GPT-5.4 通过检查屏幕截图并返回供你的执行环境运行的结构化操作来操作软件界面。它非常适合那些用户可以通过 UI 完成任务的工作流，例如浏览网站、填写表单或验证某项更改是否真的生效。
 
-请在隔离的浏览器或虚拟机中使用它，并对高风险操作保持人工参与。完整指南涵盖了内置的 Responses API 循环、自定义执行框架模式以及基于代码执行的设置方案。
+请在隔离的浏览器或虚拟机中使用它，并在执行高风险操作时保持人工参与。完整指南涵盖了内置的 Responses API 循环、自定义执行环境模式以及基于代码执行的设置方法。
 
-[计算机使用指南
+[Computer use 指南
 
 
 
@@ -334,11 +334,11 @@ GPT-5.4 已针对特定工具进行了后训练。详见 [工具文档](https://
 
 ### 工具搜索工具
 
-工具搜索让 GPT-5.4 将大量工具集合延迟到运行时再加载，使模型只载入所需的定义。当你拥有大量函数时，这一能力尤为有用， `namespaces`，或者拥有许多 MCP 工具，并希望降低 token 使用量、保持缓存性能并缩短延迟，而无需提前暴露所有 schema。
+Tool search 让 GPT-5.4 将大型工具集合推迟到运行时再加载，从而使模型只加载它需要的定义。当你有大量函数时，这一特性尤为有用， `namespaces`，或 MCP 工具，并希望在不预先暴露每个 schema 的情况下降低 token 使用量、保持缓存性能并改善延迟。
 
-当候选工具在请求时已经确定时，使用 托管工具 search；当你的应用需要动态决定加载哪些工具时，使用客户端执行的工具搜索。完整指南还涵盖最佳实践，包括 `namespaces`, MCP 服务器和延迟加载。
+当候选工具在请求时已经确定时，使用 托管工具 search；当你的应用需要动态决定要加载哪些工具时，使用客户端执行的 tool search。完整指南还涵盖了针对 `namespaces`、MCP 服务器以及延迟加载的最佳实践。
 
-[工具搜索指南
+[Tool search guide
 
 
 
@@ -346,7 +346,7 @@ GPT-5.4 已针对特定工具进行了后训练。详见 [工具文档](https://
 
 ### 自定义工具
 
-随着 GPT-5 模型家族的发布，我们引入了一项名为自定义工具的新能力，它允许模型将任意原始文本作为工具调用输入发送，同时在需要时仍可对输出施加约束。该工具行为在 GPT-5.4 中同样适用。
+GPT-5 模型系列发布时，我们引入了一项名为自定义工具的新能力，它允许模型将任意原始文本作为工具调用输入，同时在需要时仍可约束输出。该工具行为在 GPT-5.4 中依然成立。
 
 [函数调用指南
 
@@ -354,9 +354,9 @@ GPT-5.4 已针对特定工具进行了后训练。详见 [工具文档](https://
 
       Learn about custom tools in the function calling guide.](https://developers.openai.com/api/docs/guides/function-calling)
 
-#### 自由格式输入
+#### Freeform inputs
 
-使用以下方式定义你的工具 `type: custom` 以使模型能够将明文输入直接发送到你的工具，而不仅限于结构化的 JSON。模型可以将任何原始文本——代码、SQL 查询、shell 命令、配置文件或长篇散文——直接发送到你的工具。
+使用以下方式定义你的工具 `type: custom` 以使模型能够直接将明文输入发送到你的工具，而不是仅限于结构化 JSON。模型可以将任何原始文本——代码、SQL 查询、Shell 命令、配置文件或长篇散文——直接发送到你的工具。
 
 ```json
 {
@@ -366,20 +366,20 @@ GPT-5.4 已针对特定工具进行了后训练。详见 [工具文档](https://
 }
 ```
 
-#### 约束输出
+#### 限制输出
 
-GPT-5.4 支持上下文无关文法（`CFGs`）用于自定义工具，可让你提供 Lark 文法以将输出约束到特定语法或 DSL。例如附加 CFG（如 SQL 或 DSL 文法）可确保助手的文本与你的文法匹配。
+GPT-5.4 支持自定义工具的上下文无关文法 (`CFGs`)，让你可以提供一份 Lark 文法，将输出约束为特定语法或 DSL。附加 CFG（例如 SQL 或 DSL 文法）可确保助手生成的文本符合你的文法。
 
-这使得精确、受约束的工具调用或结构化响应成为可能，并让你能够在 GPT-5.4 的函数调用中直接强制执行严格的语法或特定领域的格式，从而提升在复杂或受限领域中的可控性和可靠性。
+这使得工具调用或结构化响应更加精确、受控，并允许你在 GPT-5.4 的函数调用中直接强制执行严格的语法或特定领域的格式，从而提升在复杂或受限领域下的可控性与可靠性。
 
 #### 自定义工具的最佳实践
 
-- **编写简洁、明确的工具描述。** 模型会根据你的描述选择要发送的内容；如果希望模型始终调用该工具，请明确说明。
-- **在服务端验证输出**.自由格式的字符串功能强大，但需要设置防护措施以防止注入或不安全的命令。
+- **编写简洁、明确的工具描述。** 模型会根据你的描述决定要发送什么；如果希望它始终调用该工具，请明确说明。
+- **在服务端验证输出**。自由格式字符串虽然强大，但需要防范注入或不安全的命令。
 
 ### Allowed tools
 
-该 `allowed_tools` parameter under `tool_choice` 让你传入 N 个工具定义，但限制模型只能使用其中 M 个（&lt; N）。在 `tools`，中列出你的完整工具集，然后使用一个 `allowed_tools` 块来指定该子集并明确模式——可以是 `auto` （模型可任选其中一个）也可以是 `required` （模型必须调用其中一个）。
+该 `allowed_tools` 参数 `tool_choice` 允许你传入 N 个工具定义，但将模型限制为只能使用其中的 M 个（&lt; N）个。在 `tools`，中列出你的完整工具包，然后使用一个 `allowed_tools` 块来指定该子集并指定模式——可以是 `auto` （模型可以从中任选一个）或者 `required` （模型必须调用其中一个）。
 
 [函数调用指南
 
@@ -387,13 +387,13 @@ GPT-5.4 支持上下文无关文法（`CFGs`）用于自定义工具，可让你
 
       Learn about the allowed tools option in the function calling guide.](https://developers.openai.com/api/docs/guides/function-calling)
 
-通过将所有可用工具与 _当前_，可使用的子集分开，你能获得更高的安全性、可预测性以及更好的提示缓存效果。同时也能避免脆弱的提示工程，例如硬编码的调用顺序。GPT-5.4 能够在对话过程中动态调用或要求调用特定函数，同时降低在长上下文中出现意外工具调用的风险。
+通过将所有可能的工具与 _当前_，可用的子集分开，你将获得更高的安全性、可预测性以及更好的提示缓存效果。同时也避免了脆弱的提示工程，例如硬编码的调用顺序。GPT-5.4 能够在对话中间动态调用或要求特定函数，同时降低在长上下文中发生意外工具调用的风险。
 
-|                  | **标准工具**                        | **允许使用的工具**                                             |
+|                  | **标准工具**                        | **允许的工具**                                             |
 | ---------------- | ----------------------------------------- | ------------------------------------------------------------- |
-| 模型可访问范围 | 下列所有工具 **`"tools": […]`** | 仅限下列子集 **`"tools": […]`** 中的 **`tool_choice`** |
-| 工具调用  | 模型可以选择调用任意工具        | 模型只能（或必须）调用所选工具        |
-| 用途          | 声明可用的能力            | 限制实际可调用的能力                |
+| 模型的能力范围 | 下列所有工具 **`"tools": […]`** | 仅限以下子集 **`"tools": […]`** 中的 **`tool_choice`** |
+| 工具调用  | 模型可能调用也可能不调用任何工具        | 模型仅限于（或必须调用）所选工具        |
+| 用途          | 声明可用能力            | 限制实际使用的能力                |
 
 ```json
 {
@@ -410,52 +410,52 @@ GPT-5.4 支持上下文无关文法（`CFGs`）用于自定义工具，可让你
 
 有关所有这些新功能的更详细概述，请参阅 [GPT-5.4 提示指南](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.4#prompting-best-practices).
 
-### 前导内容
+### Preambles
 
-前言是 GPT-5.4 在调用任何工具或函数之前生成的简短、对用户可见的说明，概述其意图或计划——例如，“为什么要调用这个工具”。它们出现在思维链之后、实际工具调用之前，使模型的推理更易于理解和调试，同时支持精确的引导。
+前言是 GPT-5.4 在调用任何工具或函数之前生成的简短、面向用户的解释，用于概述其意图或计划——例如“我为什么要调用这个工具”。它们出现在思维链之后、实际工具调用之前，使模型的推理更易于理解和调试，同时支持精确引导。
 
-通过让 GPT-5.4 在每次工具调用前“边想边说”，前言可以在不增加推理开销的情况下提高工具调用准确性（以及整体任务成功率）。要启用前言，请添加系统或开发者指令，例如：“在调用工具之前，先解释为什么要调用它。”GPT-5.4 会为每个指定的工具调用添加简洁的理由。该模型还可能在工具调用之间输出多条消息，这可以增强交互体验——尤其适用于低推理或对延迟敏感的使用场景。
+通过让 GPT-5.4 在每次工具调用前“边想边说”，前言可以在不增加推理开销的情况下提高工具调用准确性（以及整体任务成功率）。要启用前言，请添加系统或开发者指令——例如：“在调用工具之前，解释你为什么要调用它。”GPT-5.4 会为每个指定的工具调用添加简洁的说明。模型还可能在工具调用之间输出多条消息，这可以增强交互体验——尤其适用于低推理或对延迟敏感的使用场景。
 
-有关使用前言的更多信息，请参阅 [GPT-5 提示词 cookbook](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide#tool-preambles).
+有关使用前言的更多信息，请参阅 [GPT-5 提示词指南](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide#tool-preambles).
 
 ## 迁移快速入门
 
-GPT-5.4 与 Responses API 配合使用效果最佳，该 接口 支持在多轮对话间保留推理上下文，从而提升性能。请阅读下文，了解如何从当前模型或 API 进行迁移。
+GPT-5.4 与 Responses API 配合使用效果最佳，该 接口 支持在多轮之间保留推理上下文以提升性能。请阅读下文，了解如何从你当前使用的模型或 API 进行迁移。
 
 ### 从其他模型迁移到 GPT-5.4
 
 使用 [OpenAI 文档
   技能](https://github.com/openai/skills/tree/main/skills/.system/openai-docs)
-  在将现有提示或工作流迁移到 GPT-5.4 时使用它。它可在我们的
+  来将现有提示词或工作流迁移到 GPT-5.4。该技能可在我们的
   公共技能仓库和 Codex 桌面应用中获取。
 
-虽然该模型应可近乎直接替代 GPT-5.2，但仍有几项关键变化需要指出。详见 [GPT-5.4 的提示指南](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.4#prompting-best-practices) 以了解需要在提示中进行哪些具体更新。
+虽然该模型应能近乎直接替代 GPT-5.2，但仍有一些关键变化需要留意。详见 [GPT-5.4 提示词指南](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.4#prompting-best-practices) 以了解需要在提示词中进行的具体更新。
 
-使用 GPT-5 模型与 Responses API 时，由于 API 的设计，可以获得更强的智能。Responses API 可以将上一轮的思维链传递给模型。这会带来更少的推理 token、更高的缓存命中率以及更低的延迟。要了解更多信息，请参阅 [深入指南](https://developers.openai.com/cookbook/examples/responses_api/reasoning_items) ，了解 Responses API 的优势。
+使用 GPT-5 系列模型配合 Responses API 可以凭借该 API 的设计获得更强的智能。Responses API 可将上一轮的思维链传递给模型，从而减少生成的推理 token、提高缓存命中率并降低延迟。更多信息，请参阅 [深入指南](https://developers.openai.com/cookbook/examples/responses_api/reasoning_items) ，了解 Responses API 的优势。
 
-在从较旧的 OpenAI 模型迁移到 GPT-5.4 时，首先尝试不同的推理等级和提示策略。使用 [prompt optimizer](https://platform.openai.com/chat/edit?models=gpt-5.4&optimize=true) 根据当前最佳实践更新适用于 GPT-5.4 的提示，然后参考以下针对该模型的指南：
+从较旧的 OpenAI 模型迁移到 GPT-5.4 时，建议先试验推理强度和提示词策略。可使用 [提示词优化器](https://platform.openai.com/chat/edit?models=gpt-5.4&optimize=true) 根据当前最佳实践更新适用于 GPT-5.4 的提示词，然后参考以下针对该模型的指南：
 
-- **`gpt-5.2`**: `gpt-5.4` 默认设置下，它是可直接替换的模型。
-- **o3**: `gpt-5.4` 配合 `medium` 或 `high` 推理。从 `medium` 配合提示调优进行推理开始，然后提升到 `high` 如果你没有获得想要的结果。
-- **`gpt-4.1`**: `gpt-5.4` 配合 `none` 推理。从 `none` 并调优你的提示；如果需要更好的性能，可以提升。
-- **`o4-mini` 或 `gpt-4.1-mini`**: `gpt-5.4-mini` 配合提示调优是非常好的替代方案。
-- **`gpt-4.1-nano`**: `gpt-5.4-nano` 配合提示调优是非常好的替代方案。
+- **`gpt-5.2`**: `gpt-5.4` 使用默认设置时，它是即插即用的替代方案。
+- **o3**: `gpt-5.4` 搭配 `medium` 或 `high` reasoning。先从 `medium` reasoning 配合提示调优开始，再提升到 `high` ，如果你没有获得想要的结果。
+- **`gpt-4.1`**: `gpt-5.4` 搭配 `none` reasoning。先从 `none` 并对你的提示进行调优；如果需要更好的效果，可以提高。
+- **`o4-mini` 或 `gpt-4.1-mini`**: `gpt-5.4-mini` 配合提示调优是一个不错的替代方案。
+- **`gpt-4.1-nano`**: `gpt-5.4-nano` 配合提示调优是一个不错的替代方案。
 
 ### New `phase` parameter
 
-对于长时间运行或工具密集型的 GPT-5.4 工作流，在Responses API中，请使用 assistant 消息 `phase` 字段，以避免提前停止和其他异常行为。
+对于长时间运行或工具调用密集的 GPT-5.4 Responses API 流程，使用 assistant 消息 `phase` 字段可以避免提前停止和其他异常行为。
 
-`phase` 在API层面是可选的，但我们强烈建议使用它。使用 `phase: "commentary"` 输出中间的 assistant 更新（例如工具调用前的开场白），并使用 `phase: "final_answer"` 输出最终完成的回答。请勿将 `phase` 添加到用户消息中。
+`phase` 在 API 层面是可选的，但我们强烈建议你使用。使用 `phase: "commentary"` 表示中间阶段的助手更新（例如工具调用前的开场白），并使用 `phase: "final_answer"` 表示已完成的回答。不要向 `phase` 用户消息中添加它。
 
-如果你使用 `previous_response_id`，这通常是最简单的路径，因为
-  之前的 assistant 状态会被保留。如果你要手动重放 assistant 历史，请，
-  保留每个原始的 `phase` 值。
+如果你使用 `previous_response_id`，通常是最简单的方案，因为
+  会保留之前的助手状态。如果你手动重放助手历史记录，
+  请保留每个原始 `phase` 值。
 
-缺失或丢失的 `phase` 可能导致开场白被当作最终回答，
-上述场景都会出现这种情况。更多指导和示例，请参阅 [GPT-5.4
+缺失或丢失的 `phase` 可能导致开场白被当作最终回答处理
+。更多指导和示例，请参阅 [GPT-5.4
 提示词指南](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.4#phase-parameter).
 
-往返 assistant 阶段值
+往返助手阶段值
 
 ```javascript
 import OpenAI from "openai";
@@ -579,7 +579,7 @@ require "openai"
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-5.4",
-  reasoning: {effort: :medium},
+  reasoning: { effort: :medium },
   input: "Explain the bug and propose a fix."
 )
 puts(response.output_text)
@@ -588,15 +588,15 @@ puts(response.output_text)
 
 ### GPT-5.4 参数兼容性
 
-以下参数 **仅在使用 GPT-5.4 且** reasoning effort 为以下值时支持 `none`:
+以下参数 **仅在** 使用 GPT-5.4 且将推理强度设置为时支持 `none`:
 
 - `temperature`
 - `top_p`
 - `logprobs`
 
-对于 GPT-5.4 或 GPT-5.2，若 reasoning effort 设置为其他任何值，或对于较早的 GPT-5 模型（例如 `gpt-5`, `gpt-5-mini`，或 `gpt-5-nano`.
+包含这些字段的请求将在以下情况下报错：GPT-5.4 或 GPT-5.2 使用其他推理强度设置，或者其他较旧的 GPT-5 模型（例如 `gpt-5`, `gpt-5-mini`，或 `gpt-5-nano`.
 
-若要在更高的 reasoning effort 下，或使用其他 GPT-5 系列模型获得类似效果，请尝试以下替代参数：
+若要在更高推理强度设置下，或使用其他 GPT-5 系列模型获得类似结果，可以尝试以下替代参数：
 
 - **推理深度：** `reasoning: { effort: "none" | "low" | "medium" | "high" | "xhigh" }`
 - **输出详细程度：** `text: { verbosity: "low" | "medium" | "high" }`
@@ -604,11 +604,11 @@ puts(response.output_text)
 
 ### 从 Chat Completions 迁移到 Responses API
 
-最大的差异，也是迁移到 GPT-5.4 的 Responses API 的主要原因，是支持在多轮之间传递思维链（CoT）。请参阅完整的 [两个 API 的对比](https://developers.openai.com/api/docs/guides/migrate-to-responses).
+从 Chat Completions 迁移到 Responses API（用于 GPT-5.4）的最大区别，也是迁移的主要原因是支持在多轮之间传递思维链（CoT）。请参阅完整的 [两个 API 的对比](https://developers.openai.com/api/docs/guides/migrate-to-responses).
 
-传递 CoT 仅在 Responses API 中可用，我们观察到这样做带来了更高的智能水平、更少的生成推理 token、更高的缓存命中率以及更低的延迟。大多数其他参数保持一致，但格式有所不同。下面是 Chat Completions 和 Responses API 之间处理新参数的差异：
+CoT 的传递仅存在于 Responses API 中，我们观察到这样做带来了更高的智能水平、更少生成的推理 token、更高的缓存命中率以及更低的延迟。大多数其他参数仍然保持一致，只是格式有所不同。下面介绍 Chat Completions 与 Responses API 之间新参数的处理差异：
 
-**推理努力程度**
+**推理努力度**
 
 
 
@@ -658,7 +658,7 @@ curl --request POST \
 
 
 
-**详细程度**
+**冗长度**
 
 
 
@@ -771,44 +771,44 @@ curl --request POST \
 
 
 
-## 提示工程最佳实践
+## 提示词最佳实践
 
-在排查 GPT-5.4 将中间更新视为
-  最终答案的情况时，请验证你的集成正确保留了 assistant 消息 `phase`
-  字段。详见 [Phase 参数](#phase-parameter) 部分。
+当排查 GPT-5.4 将中间更新视为
+  最终答案的情况时，请验证你的集成是否正确保留了 assistant 消息 `phase`
+  字段。详见 [Phase 参数](#phase-parameter) 。
 
 ### 了解 GPT-5.4 的行为
 
-#### GPT-5.4 最擅长的场景
+#### GPT-5.4 的优势所在
 
-GPT-5.4 在以下领域尤其表现出色：
+GPT-5.4 在以下领域往往表现尤为出色：
 
-- 更强的个性与语气遵循能力，在长答案中漂移更少
-- 智能体 工作流 的鲁棒性，更倾向于坚持多步骤工作、重试并端到端地完成 智能体 循环
-- 证据丰富的综合能力，尤其在长上下文或多工具工作流中
-- 在合约明确时，对模块化、基于技能以及块结构化提示词的指令遵循
-- 在大型、繁杂或多文档输入上的长上下文分析
-- 在保持工具调用准确性的同时进行批处理或并行工具调用
-- 需要指令遵循、格式保真度以及更强自我验证能力的电子表格、财务和 Excel 工作流
+- 在长答案中保持强烈的个性和语气，且漂移更少
+- 智能体 工作流 的稳健性，更倾向于坚持多步工作、重试并端到端地完成 智能体 循环
+- 证据丰富的综合分析，尤其是在长上下文或多工具工作流中
+- 在契约明确时，对模块化、基于技能和块结构提示的指令遵循
+- 针对大型、杂乱或多文档输入的长上下文分析
+- 在保持工具调用准确性的同时，进行批量或并行的工具调用
+- 需要指令遵循、格式保真度和更强自我验证的电子表格、金融和 Excel 工作流
 
-#### 显式提示仍有帮助的场景
+#### 显式提示仍然有帮助的场景
 
-尽管具备上述优势，GPT-5.4 在一些反复出现的场景中仍然受益于更明确的指引：
+尽管有上述优势，GPT-5.4 在一些反复出现的模式中仍需要更明确的指引：
 
-- 会话早期上下文较少时的工具路由，此时工具选择可能不够可靠
-- 需要显式检查前置条件和后续步骤的依赖感知型工作流
-- 推理投入度的选择，更高投入度并非总是更好，正确的选择取决于任务形态而非直觉
-- 需要严谨收集来源并保证引用一致性的研究类任务
-- 需要在执行前进行验证的不可逆或高影响操作
-- 终端或编码智能体环境中需要保持清晰工具边界的场景
+- 会话早期工具上下文较少、工具选择可靠性可能较低的场景
+- 需要明确检查前置依赖和后续步骤的依赖感知型工作流
+- 推理强度的选择，更高的强度并不总是更好，正确的选择取决于任务形态而非直觉
+- 需要严格收集来源并保持引用一致的研究类任务
+- 执行前需要校验的不可逆或高影响操作
+- 必须保持清晰工具边界的终端或编码智能体环境
 
-这些模式是观察到的默认值，并非保证。请从能通过你评估的最小提示开始，并且仅在解决已测量的失败模式时才添加相应的模块。
+这些模式是观察到的默认值，并非保证。请从能通过评估的最小提示开始，仅当某些模块能修复已测得的失败模式时再添加它们。
 
-### 使用核心提示词模式
+### 使用核心提示模式
 
 #### 保持输出简洁且结构化
 
-若要在 GPT-5.4 上提升 token 使用效率，应通过明确的输出契约来约束 verbosity 并强制结构化输出。在实际使用中，这与 `verbosity` 参数（Responses API 中的对应参数）形成额外的控制层，从而引导模型既控制输出篇幅，又规范输出结构。
+为了提升 GPT-5.4 的 token 使用效率，应限制其输出详尽程度，并通过清晰的输出契约强制结构化输出。在实际应用中，这会作为一个额外的控制层，与 `verbosity` 参数（Responses API 中）协同工作，使你既能引导模型输出多少内容，也能引导模型如何组织输出。
 
 ```xml
 <output_contract>
@@ -826,11 +826,11 @@ GPT-5.4 在以下领域尤其表现出色：
 </verbosity_controls>
 ```
 
-#### 为落地执行设置明确的默认值
+#### 为后续执行设定明确的默认值
 
-用户经常会在对话中途改变任务、格式或语气。为了让助手保持对齐，需要明确定义何时继续、何时询问，以及新的指令如何覆盖先前的默认设置。
+用户经常在对话中途更改任务、格式或语气。为了让助手保持一致，需要明确定义何时继续、何时询问，以及后续指令如何覆盖先前的默认设置。
 
-可使用类似如下的默认执行策略：
+使用类似这样的默认跟进策略：
 
 ```xml
 <default_follow_through_policy>
@@ -843,7 +843,7 @@ GPT-5.4 在以下领域尤其表现出色：
 </default_follow_through_policy>
 ```
 
-明确指令的优先级：
+明确指令优先级：
 
 ```xml
 <instruction_priority>
@@ -854,17 +854,17 @@ GPT-5.4 在以下领域尤其表现出色：
 </instruction_priority>
 ```
 
-高优先级的开发者或系统指令始终具有约束力。
+更高优先级的开发者或系统指令仍然具有约束力。
 
-**指导原则：** 当指令在对话中途发生变化时，应将更新表达得明确、有范围且局部化。说明哪些内容发生了变化、哪些仍然适用，以及该变化是只影响下一轮还是影响整个对话的其余部分。
+**指南：** 当指令在对话中途发生变化时，需将更新表达得明确、有范围且局部生效。说明哪些内容发生了变化、哪些仍然适用，以及该变化是仅影响下一轮还是影响后续整个对话。
 
 #### 处理对话过程中的指令更新
 
-对于对话中途的更新，使用明确且范围受限的引导消息，说明：
+对于对话中途的更新，使用明确且范围可控的引导消息，并说明：
 
-1. 作用域
-2. 覆盖
-3. 沿用
+1. Scope
+2. Override
+3. Carry forward
 
 ```text
 <task_update>
@@ -877,7 +877,7 @@ All earlier instructions still apply unless they conflict with this update.
 </task_update>
 ```
 
-如果任务本身发生变化，请直接说明：
+如果任务本身发生了变化，请直接说明：
 
 ```text
 <task_update>
@@ -895,11 +895,11 @@ Rules for this turn:
 </task_update>
 ```
 
-#### 在正确性依赖于工具调用时，使其保持持久化
+#### 在正确性依赖工具使用时，使其保持持久化
 
-使用明确的规则来确保工具使用充分、了解依赖关系且节奏适当，尤其是在后续操作依赖先前检索或验证的工作流中。一种常见失败模式是，因为正确的最终状态似乎显而易见，而跳过前置条件。
+使用明确的规则来确保工具调用既彻底、考虑依赖关系，又节奏得当，特别是在后续操作依赖于早期检索或验证的工作流中。一个常见的失败模式是：因为预期的终态似乎显而易见，而跳过前置步骤。
 
-在会话初期，上下文仍较薄弱时，GPT-5.4 的工具路由可靠性可能较低。应提示模型执行前置条件检查、依赖关系检查和精确的工具意图判断。
+GPT-5.4 在会话初期、上下文尚浅时，对工具路由的选择可能不太可靠。应当提示其执行前置步骤、检查依赖关系，并明确工具的调用意图。
 
 ```xml
 <tool_persistence_rules>
@@ -912,7 +912,7 @@ Rules for this turn:
 </tool_persistence_rules>
 ```
 
-这在最终操作依赖先前查找或检索步骤的工作流中尤其重要。最常见的失败模式之一是，因为预期的最终状态似乎显而易见，而跳过前置条件。
+这一点在最终操作依赖于早期查询或检索步骤的工作流中尤为重要。最常见的失败模式之一是：因为预期的终态似乎显而易见，而跳过前置步骤。
 
 ```xml
 <dependency_checks>
@@ -922,7 +922,7 @@ Rules for this turn:
 </dependency_checks>
 ```
 
-当任务彼此独立且墙钟时间很重要时，提示模型采用并行处理。当依赖关系、歧义或不可逆操作比速度更重要时，提示模型采用顺序处理。
+当任务相互独立且挂钟时间很重要时，应提示采用并行执行。当依赖关系、模糊性或不可逆操作比速度更重要时，应提示采用顺序执行。
 
 ```xml
 <parallel_tool_calling>
@@ -933,9 +933,9 @@ Rules for this turn:
 </parallel_tool_calling>
 ```
 
-#### 在长时任务中强制完成
+#### 在长时任务上强制保持完整
 
-对于多步骤工作流，常见的失败模式是执行不完整：模型在部分覆盖后即结束、遗漏批次中的某些项，或将空结果或窄域检索视为最终结果。当提示词定义了明确的完成规则和恢复行为时，GPT-5.4 会变得更加可靠。
+对于多步工作流，一种常见的失败模式是执行不完整：模型在部分覆盖后就停止，遗漏批次中的项目，或将空检索或窄检索视为最终结果。当提示词定义了明确的完成规则和恢复行为时，GPT-5.4 会变得更加可靠。
 
 可以通过顺序检索或并行检索来实现覆盖，但无论采用哪种方式，完成规则都应保持明确。
 
@@ -951,7 +951,7 @@ Rules for this turn:
 </completeness_contract>
 ```
 
-对于检索结果常出现空、部分或噪声较多情况的工作流：
+对于经常出现空检索、部分检索或噪声检索的工作流：
 
 ```xml
 <empty_result_recovery>
@@ -967,9 +967,9 @@ If a lookup returns empty, partial, or suspiciously narrow results:
 </empty_result_recovery>
 ```
 
-#### 在影响重大的操作前添加验证循环
+#### 在高影响操作前添加验证循环
 
-当工作流 看似完成时，在返回答案或执行不可逆操作之前，添加一个轻量的验证步骤。这有助于在提交之前发现遗漏的需求、事实依据问题以及格式偏差。
+一旦 工作流 看起来已经完成，在返回答案或执行不可逆操作之前，添加一个轻量的验证步骤。这有助于在提交前捕获需求遗漏、事实依据问题以及格式偏差。
 
 ```xml
 <verification_loop>
@@ -989,7 +989,7 @@ Before finalizing:
 </missing_context_gating>
 ```
 
-对于会主动执行操作的智能体，添加一个简短的执行框架：
+对于 智能体，如果它们会主动执行操作，请添加一个简短的执行框架：
 
 ```xml
 <action_safety>
@@ -999,15 +999,15 @@ Before finalizing:
 </action_safety>
 ```
 
-### 处理专业工作流
+### 处理专业化工作流
 
-#### 为视觉和计算机使用明确选择图像细节
+#### 为视觉与计算机使用显式选择图像细节
 
-如果你的工作流依赖于视觉精度，请在提示或集成中指定图像 `detail` 清晰度级别，而不是依赖 `auto`。使用 `high` 进行标准的高保真图像理解。使用 `original` 处理大型、密集或对空间敏感度高的图像，尤其是 [计算机使用、定位、OCR 和点击精度任务](https://developers.openai.com/api/docs/guides/tools-computer-use) 以及未来的模型。仅在速度和成本比细节更重要时使用 `gpt-5.4` 。使用 `low` 仅在速度和成本比细节更重要时使用。有关图像清晰度级别的更多详情，请参阅 [图像与视觉指南](https://developers.openai.com/api/docs/guides/images-vision).
+如果你的工作流依赖视觉精度，请在提示词或集成中指定图像 `detail` 级别，而不是依赖 `auto`。使用 `high` 进行标准的高保真图像理解。使用 `original` 处理大型、密集或对空间敏感度的图像，尤其是 [computer use、本地化、OCR 和点击精度任务](https://developers.openai.com/api/docs/guides/tools-computer-use) 上 `gpt-5.4` 以及未来模型使用 `low` 仅在速度和成本比细节更重要时使用。有关图像细节级别的更多详细信息，请参阅 [图像与视觉指南](https://developers.openai.com/api/docs/guides/images-vision).
 
-#### 将研究和引用限定在检索到的证据范围内
+#### 将研究与引用锁定至检索到的证据
 
-当引用质量很重要时，需要明确指出来源边界和格式要求。这有助于减少伪造引用、无依据的断言以及引用格式的偏差。
+当引用质量很重要时，应同时明确来源边界和格式要求。这有助于减少虚构引用、缺乏依据的说法以及引用格式的偏差。
 
 ```xml
 <citation_rules>
@@ -1027,11 +1027,11 @@ Before finalizing:
 </grounding_rules>
 ```
 
-如果你的应用需要行内引用，就要求使用行内引用；如果需要脚注，就要求使用脚注。关键在于锁定格式，避免模型即兴生成无依据的引用。
+如果你的应用要求内联引用，就要求内联引用。如果它要求脚注，就要求脚注。关键在于锁定格式，防止模型临时拼凑出没有依据的引用。
 
 #### Research 模式
 
-将 GPT-5.4 推入一种纪律严明的研究模式。使用此模式处理研究、审查和综合任务。不要将其强加于短执行任务或简单的确定性转换。
+将 GPT-5.4 推入一种受约束的研究模式。将其用于研究、审阅和综合任务。不要将其强行用于短执行任务或简单的确定性转换。
 
 ```xml
 <research_mode>
@@ -1043,11 +1043,11 @@ Before finalizing:
 </research_mode>
 ```
 
-如果你的宿主环境使用特定的研究工具或需要提交步骤，请将此模式与宿主的最终化契约结合使用。
+如果你的宿主环境使用特定的研究工具或要求提交步骤，请将其与宿主的终结化契约结合使用。
 
 #### 限制严格的输出格式
 
-对于 SQL、JSON 或其他对解析敏感的输出，告诉 GPT-5.4 只输出目标格式，并在完成前进行检查。
+对于 SQL、JSON 或其他对解析敏感的输出，请告诉 GPT-5.4 仅输出目标格式，并在完成前进行检查。
 
 ```text
 <structured_output_contract>
@@ -1070,15 +1070,15 @@ Before finalizing:
 </bbox_extraction_spec>
 ```
 
-#### 在编码和终端智能体中保持工具边界清晰
+#### 在编程与终端智能体中保持工具边界明确
 
-在编码 智能体中，当 shell 访问和文件编辑的规则明确无歧义时，GPT-5.4 的表现会更好。当你开放诸如以下的工具时，这一点尤为重要 [Shell](https://developers.openai.com/api/docs/guides/tools-shell) 或 [应用补丁](https://developers.openai.com/api/docs/guides/tools-apply-patch).
+在编写代码类智能体时，如果 shell 访问和文件编辑的规则明确无误，GPT-5.4 的表现会更好。当你暴露出以下工具时，这一点尤为重要： [Shell](https://developers.openai.com/api/docs/guides/tools-shell) 或 [Apply patch](https://developers.openai.com/api/docs/guides/tools-apply-patch).
 
 #### 用户更新
 
-GPT-5.4 擅长简短、以结果为导向的更新。复用 5.2 指南中的用户更新模式，但同时加入明确的完成与验证要求。
+GPT-5.4 在简短的、基于结果的更新中表现良好。可以复用 5.2 指南中的用户更新模式，但需要与明确的完成和验证要求配合使用。
 
-建议的更新规范：
+推荐的更新规范：
 
 ```xml
 <user_updates_spec>
@@ -1089,13 +1089,13 @@ GPT-5.4 擅长简短、以结果为导向的更新。复用 5.2 指南中的用�
 </user_updates_spec>
 ```
 
-有关编码 智能体，请参阅下方的“编码任务的提示模式”部分，获取更具体的指导。
+对于编码 智能体 任务，请参阅下方“编码任务的提示模式”部分以获取更具体的指导。
 
 #### 编码任务的提示模式
 
 **自主性与持久性**
 
-GPT-5.4 在编码和工具使用任务上通常比早期主流模型更端到端地更彻底，因此你常常无需显式地提示“验证一切”。不过，对于高风险变更（例如生产环境、迁移或安全工作），仍需保留一条轻量级的验证条款。
+GPT-5.4 在编码和工具使用任务上通常比早期的主流模型更加全面，因此你往往不需要显式地使用 “verify everything” 之类的提示。不过，对于生产环境、迁移或安全相关等高风险改动，请保留一条轻量的验证条款。
 
 ```xml
 <autonomy_and_persistence>
@@ -1107,7 +1107,7 @@ Unless the user explicitly asks for a plan, asks a question about the code, is b
 
 **中间过程更新**
 
-保持更新稀疏且高信噪比。在编码任务中，倾向于在关键节点进行更新。
+保持更新稀疏且高信号。在编码任务中，优先在关键节点提供更新。
 
 ```xml
 <user_updates_spec>
@@ -1126,9 +1126,9 @@ Unless the user explicitly asks for a plan, asks a question about the code, is b
 </user_updates_spec>
 ```
 
-**格式化**
+**格式**
 
-GPT-5.4 默认倾向于使用更结构化的格式，并可能过度使用项目符号列表。如果你希望得到一份干净的最终回复，请显式约束列表形态。
+GPT-5.4 常常默认使用更结构化的格式，并可能过度使用无序列表。如果希望最终回复干净简洁，请明确限制列表的形态。
 
 ```xml
 Never use nested bullets. Keep lists flat (single level). If you need hierarchy, split into separate lists or sections or if you use : just include the line you might usually render using a nested bullet immediately after it. For numbered lists, only use the `1. 2. 3.` style markers (with a period), never `1)`.
@@ -1136,7 +1136,7 @@ Never use nested bullets. Keep lists flat (single level). If you need hierarchy,
 
 **前端任务**
 
-仅在需要额外的前端指导时使用此部分。
+仅在需要额外的前端指导时使用此节。
 
 ```xml
 <frontend_tasks>
@@ -1168,9 +1168,9 @@ Exception: If working within an existing website or design system, preserve the 
 </terminal_tool_hygiene>
 ```
 
-#### 文档本地化与 OCR 框
+#### 文档本地化与 OCR 框选
 
-对于 bbox 任务，请明确说明坐标约定，并添加漂移测试。
+对于 bbox 任务，需明确说明坐标系约定，并添加漂移测试。
 
 ```xml
 <bbox_extraction_spec>
@@ -1182,46 +1182,46 @@ Exception: If working within an existing website or design system, preserve the 
 </bbox_extraction_spec>
 ```
 
-#### 运行时与 API 集成说明
+#### 运行时及 API 集成注意事项
 
-对于长时间运行或重度依赖工具的智能体而言，运行时契约与提示词契约同样重要。
+对于长时间运行或工具密集型的智能体，运行时契约与提示词契约同样重要。
 
 ##### Phase 参数
 
-对于 GPT-5.4， `gpt-5.3-codex`,以及更高版本的 Responses 模型,该 `phase` 字段可以
-help in the small number of long-running or tool-heavy flows where preambles or
-other intermediate assistant updates are mistaken for the final answer.
+对于 GPT-5.4， `gpt-5.3-codex`，以及之后的 Responses 模型， `phase` 字段可以
+在少数长时间运行或工具密集型的工作流中发挥作用，这些工作流中开场白或其他
+中间助手更新会被误认为是最终答案。
 
-- `phase` 在 API 级别上是可选的，但强烈建议使用。虽然 服务端 可能进行尽力推断，但对 `phase` 进行显式的往返传输效果要严格更好。
-- 使用 `phase` 用于长时间运行或重度依赖工具的 智能体，这类智能体可能会在工具调用之前或最终答案之前发出评论性内容。
-- 保留 `phase` 以便在重放先前的助手消息项时，模型能够区分工作过程中的评论性内容和已完成的答案。在包含前言、与工具相关的更新，或同一回合中包含多条助手消息的多步流程中，这一点尤为重要。
-- 不要将 `phase` 添加到用户消息中。
-- 如果你使用 `previous_response_id`，这通常是最简单的路径，因为 OpenAI 通常可以在不手动重放助手消息项的情况下恢复先前的状态。
-- 如果你自行重放助手历史记录，请保留原始的 `phase` 值。
-- 缺失或丢弃 `phase` 可能导致前言被解释为最终答案，并降低这些多步任务上的表现。
+- `phase` 在 API 级别是可选的，但强烈建议使用。服务端 可能存在尽力推断，但显式往返传输 `phase` 明显更好。
+- 对 `phase` 长时间运行或工具密集型的 智能体 使用，这些智能体在工具调用之前或最终答案之前可能会发出解说内容。
+- 在重放 `phase` 先前的助手项时保留，以便模型能够区分工作解说和已完成答案。这在具有前导内容、工具相关更新或同一轮中多条助手消息的多步骤流程中最为重要。
+- 不要向用户 `phase` 消息添加。
+- 如果使用 `previous_response_id`，这通常是最简单的路径，因为 OpenAI 通常无需手动重放助手项即可恢复先前的状态。
+- 如果自行重放助手历史记录，请保留原始 `phase` 值。
+- 缺失或丢失的 `phase` 可能导致前导内容被误解为最终答案，并降低这些多步骤任务上的表现。
 
 #### 在长会话中保留行为
 
-Compaction 可显著延长有效的上下文窗口，用户对话可以在多轮交互中持续进行，不会触及上下文限制或出现长上下文性能下降，智能体可以执行远超典型上下文窗口的超长轨迹，以完成长时间运行的复杂任务。
+压缩可显著延长有效的上下文窗口，使用户对话能够在多轮交互中持续进行，而不会触达上下文限制或出现长上下文性能下降，同时让智能体能够执行远超典型上下文窗口的极长轨迹，从而胜任长时间运行的复杂任务。
 
-如果使用 [Compaction](https://developers.openai.com/api/docs/guides/compaction) ，在 Responses API 中，在主要里程碑后进行压缩，将压缩后的条目视为不透明状态，并保持压缩后的提示在功能上保持一致。该端点兼容 ZDR，并返回一个 `encrypted_content` 条目，你可以将其传入后续请求中。随着会话轮次增加，GPT-5.4 在更长、多轮对话中通常能保持更好的连贯性和可靠性，较少出现故障。
+如果你正在使用 [压缩](https://developers.openai.com/api/docs/guides/compaction) 在 Responses API 中，在关键里程碑后进行压缩，将压缩后的项视为不透明状态，并保持压缩后的提示在功能上保持一致。该端点兼容 ZDR，并返回一个 `encrypted_content` 条目，你可以将其传入后续请求。随着会话轮次增加，GPT-5.4 在长多轮对话中通常能保持更高的连贯性与可靠性，较少出现崩溃。
 
-如需更多指导，请参阅 [`/responses/compact` API 参考](https://developers.openai.com/api/reference/resources/responses/methods/compact).
+更多指引，请参阅 [`/responses/compact` API 参考](https://developers.openai.com/api/reference/resources/responses/methods/compact).
 
-#### 控制面向客户工作流的个性
+#### 面向客户工作流的人格控制
 
-GPT-5.4 在将持久化个性与每次响应级别的写作控制分开后，可以被更有效地引导。这对面向客户的工作流（如邮件、支持回复、公告以及博客风格内容）尤其有用。
+GPT-5.4 在将持久性人格与逐响应的写作控制分离时，可以被更有效地引导。这在面向客户的工作流（例如邮件支持回复、公告和博客风格内容）中尤其有用。
 
-- **个性（持久）：** 设定整个会话的默认语气、详细程度和决策风格。
+- **Personality（持续生效）：** 在整个会话中设定默认的语气、详细程度和决策风格。
 - **写作控制（每次响应）：** 为特定产物定义渠道、语域、格式和长度。
-- **提醒：** 个性不应覆盖任务特定的输出要求。如果用户要求 JSON，则返回 JSON。
+- **提醒：** personality 不应覆盖任务特定的输出要求。如果用户要求 JSON，请返回 JSON。
 
-对于自然、高质量的文本生成，最高杠杆率的可控因素包括：
+对于自然、高质量的文本，最高杠杆率的可控因素包括：
 
-- 为模型设定清晰的角色。
-- 明确语气和情感基调。
-- 需要纯文本时，明确禁止使用格式。
-- 使用严格的长度限制。
+- 为模型设定清晰的人设。
+- 明确渠道与情感表达基调。
+- 当你想要散文式输出时，明确禁止使用格式。
+- 使用硬性长度限制。
 
 ```xml
 <personality_and_writing_controls>
@@ -1234,11 +1234,11 @@ GPT-5.4 在将持久化个性与每次响应级别的写作控制分开后，可
 </personality_and_writing_controls>
 ```
 
-如果想直接复用现成的风格模式，可以参考 [提示词风格 Cookbook](https://developers.openai.com/cookbook/examples/gpt-5/prompt_personalities).
+如需可直接借鉴的更多人格模式，请参阅 [提示人格 cookbook](https://developers.openai.com/cookbook/examples/gpt-5/prompt_personalities).
 
 **专业备忘录模式**
 
-对于备忘录、评审以及其他专业写作任务，泛泛的写作指令往往不够。这类工作流需要针对具体性、领域惯例、综合分析以及恰当的分寸感给出明确指导。
+对于备忘录、评审以及其他专业写作任务来说，常规的写作指引往往不够。这些工作流需要针对具体性、领域惯例、综合分析以及恰当的确定性给出明确指导。
 
 ```xml
 <memo_mode>
@@ -1251,36 +1251,36 @@ GPT-5.4 在将持久化个性与每次响应级别的写作控制分开后，可
 </memo_mode>
 ```
 
-该模式尤其适用于法律、政策、研究以及面向高管的写作场景，其目标不仅是文笔流畅，更要做到严谨的综合分析并给出清晰的结论。
+该模式特别适用于法律、政策、研究以及面向高管层级的写作，因为这些场景的目标不仅是流畅表达，还要进行有约束的综合分析并得出清晰的结论。
 
 ### 调优推理与迁移
 
-#### 把推理强度当作最后一公里的微调旋钮
+#### 将推理强度视为最后一公里的调节旋钮
 
-推理强度并非一刀切。应将其视为最后微调的旋钮，而非提升质量的主要手段。在许多情况下，更强的提示、清晰的输出契约和轻量的验证循环就能恢复团队原本希望通过更高推理设置获得的大部分性能。
+推理强度并非放之四海而皆准。应将其视为最后的微调旋钮，而非提升质量的主要手段。在许多情况下，更强的提示、清晰的输出约定以及轻量级验证循环，往往能恢复团队原本希望通过更高推理设置获得的绝大部分性能。
 
-推荐默认值：
+推荐的默认值：
 
-- `none`：适用于快速、对成本敏感、对延迟敏感且模型无需进行思考的任务。
-- `low`：适用于对延迟敏感的任务，少量思考即可带来显著的准确性提升，尤其是在复杂指令场景下表现良好。
-- `medium` 或 `high`：仅保留给真正需要更强推理能力、且可以承受延迟和成本权衡的任务。根据任务从额外推理中获得的性能提升程度在它们之间进行选择。
-- `xhigh`：除非你的评估显示明显收益，否则避免作为默认选项。它最适合长链路、需自主智能体介入的重推理任务，在这些场景下最大化智能水平比速度或成本更重要。
+- `none`: 适合对延迟和成本敏感、追求速度且无需模型思考的任务。
+- `low`: 适合对延迟敏感的任务，少量思考即可带来明显的准确率提升，尤其是面对复杂指令时。
+- `medium` 或 `high`: 仅保留给确实需要更强推理能力、并且能够承受其延迟和成本权衡的任务。可根据任务能从额外推理中获得的性能提升在它们之间选择。
+- `xhigh`: 不要作为默认选项，除非你的评估显示出明显收益。它最适合长链路、智能体式、推理密集型任务，这些场景下最高智能水平比速度和成本更重要。
 
-实际上，大多数团队应该默认使用 `none`, `low`，或 `medium` 区间。
+实际上，大多数团队应默认使用 `none`, `low`，或 `medium` 区间。
 
-从 `none` 开始用于执行密集型负载，例如 工作流 步骤、字段抽取、支持分流以及短结构化转换。
+从 `none` 开始用于执行密集型工作负载，例如 工作流 步骤、字段抽取、支持分诊以及短结构化转换。
 
-从 `medium` 或更高用于研究密集型负载，例如长上下文综合、多文档审阅、冲突解决以及策略撰写。使用 `medium` 配合精心编写的提示词，你可以挤出不少表现。
+从 `medium` 或更高用于研究密集型工作负载，例如长上下文综合、多文档审阅、冲突解决以及策略撰写。使用 `medium` 搭配精心设计的提示词，你可以榨出大量性能。
 
-对于 GPT-5.4 负载， `none` 在动作选择和工具纪律任务上已经表现良好。如果你的负载依赖于细致的解读，比如隐含需求、歧义性或取消工具调用的恢复，那么请从 `low` 或 `medium` 开始。
+对于 GPT-5.4 工作负载， `none` 在动作选择和工具规范性任务上已经能表现良好。如果你的工作负载依赖于细微解读，例如隐含需求、歧义性或已取消工具调用的恢复，请从 `low` 或 `medium` 开始。
 
-在提升推理力度之前，先添加：
+在提高推理强度之前，先添加：
 
 - `<completeness_contract>`
 - `<verification_loop>`
 - `<tool_persistence_rules>`
 
-如果模型仍然显得过于字面化或止步于第一个看似合理的答案，请在提高推理力度之前加入主动性提示：
+如果模型仍显得过于字面化，或停留在第一个看似合理的答案上，请在提升推理强度之前加入主动性提示：
 
 ```xml
 <dig_deeper_nudge>
@@ -1290,94 +1290,94 @@ GPT-5.4 在将持久化个性与每次响应级别的写作控制分开后，可
 </dig_deeper_nudge>
 ```
 
-#### 每次一处变更地将提示词迁移到 GPT-5.4
+#### 每次一个变更地将提示词迁移到 GPT-5.4
 
-沿用 5.2 指南中“一次只改一处”的做法：先切换模型并固定 `reasoning_effort`，运行 evals，再迭代。
+采用与 5.2 指南相同的“一次只改一处”的纪律：先切换模型，再固定参数 `reasoning_effort`，运行评估，然后迭代。
 
-以下这些起点对许多迁移场景都很有效：
+这些起点对许多迁移都很有效：
 
-| 当前配置             | 建议的 GPT-5.4 起点            | 备注                                                               |
+| 当前设置             | 建议的 GPT-5.4 起点            | 备注                                                               |
 | ------------------------- | ---------------------------------- | ------------------------------------------------------------------- |
-| `gpt-5.2`                 | 匹配当前推理力度 | 先保留现有的延迟和质量特征，再进行调优。 |
-| `gpt-5.3-codex`           | 匹配当前推理力度 | 对于编码工作流，保持推理力度不变。           |
-| `gpt-4.1` 或 `gpt-4o`     | `none`                             | 保持快速响应行为，只有在评测出现回退时才上调。           |
-| 研究密集型助手 | `medium` 或 `high`                 | 使用显式的研究多轮迭代与引用门控。               |
-| 长时程智能体       | `medium` 或 `high`                 | 添加工具持久化与完整性核算。                   |
+| `gpt-5.2`                 | 匹配当前的推理力度 | 首先保持现有的延迟和质量表现，再进行调整。 |
+| `gpt-5.3-codex`           | 匹配当前的推理力度 | 对于编码工作流，保持相同的推理力度。           |
+| `gpt-4.1` 或 `gpt-4o`     | `none`                             | 保持响应迅速的行为，仅在评估指标下滑时才提高。           |
+| 重研究的助手 | `medium` 或 `high`                 | 使用明确的多轮研究流程和引用把关。               |
+| 长时程 智能体       | `medium` 或 `high`                 | 添加工具持久化与完备性核算。                   |
 
-#### 面向的小模型指南 `gpt-5.4-mini` 与 `gpt-5.4-nano`
+#### 小模型指南 `gpt-5.4-mini` 和 `gpt-5.4-nano`
 
-`gpt-5.4-mini` 并且 `gpt-5.4-nano` 具有较高的可调控性，但与更大的模型相比，它们不太会自行推断缺失的步骤、隐式消除歧义，或按你期望的方式组织输出，除非你直接指定这些行为。在实际使用中，针对较小模型的提示通常会更长一些，也会更明确一些。
+`gpt-5.4-mini` 和 `gpt-5.4-nano` 具有高度的可引导性，但与更大的模型相比，它们不太可能推断缺失的步骤、隐式消解歧义，或者按你期望的方式组织输出，除非你直接明确指定这些行为。在实践中，针对较小模型的提示通常会更长一些，也更明确一些。
 
 **如何 `gpt-5.4-mini` 不同**
 
-- `gpt-5.4-mini` 更加字面化，假设更少。
-- 在任务结构清晰时表现强劲，但在处理隐式工作流和歧义时能力较弱。
-- 默认情况下，它可能会通过追问来延续对话，除非你显式抑制该行为。
+- `gpt-5.4-mini` 更加字面化，且假设更少。
+- 在任务结构清晰时表现强劲，但在处理隐式工作流和歧义时较弱。
+- 默认情况下，除非你显式抑制该行为，否则它可能会尝试通过追问来延续对话。
 
 **提示工程 `gpt-5.4-mini`**
 
-- 把关键规则放在最前面。
-- 当工具使用或副作用很重要时，明确指定完整的执行顺序。
-- 不要仅依赖 "you MUST"。使用结构化支架，如编号步骤、决策规则和明确的动作定义。
-- 将“执行动作”与“汇报动作”分开。
+- 将关键规则放在最前面。
+- 在涉及工具使用或副作用时，指定完整的执行顺序。
+- 不要只依赖“你 MUST”这样的措辞。应使用结构化支架，例如编号步骤、决策规则以及明确的操作定义。
+- 将“执行操作”与“报告操作”分开。
 - 展示正确的流程，而不仅仅是最终格式。
-- 明确定义歧义处理行为：何时提问、放弃或继续。
-- 直接指定输出封装：回答长度、是否追问、引用样式和章节顺序。
-- 谨慎使用 `output nothing else`。更推荐使用范围明确的指令，例如 `after the final JSON, output nothing further`.
+- 明确定义歧义处理行为：何时提问、何时放弃、何时继续。
+- 直接指定输出格式：回答长度、是否提出追问、引用样式以及章节顺序。
+- 谨慎使用 `output nothing else`。对于作用域受限的指令，应优先选择诸如 `after the final JSON, output nothing further`.
 
 **提示工程 `gpt-5.4-nano`**
 
-- 使用 `gpt-5.4-nano` 仅适用于范围狭窄、边界清晰的任务。
+- 对 `gpt-5.4-nano` 仅用于范围狭窄且边界明确的任务。
 - 优先使用封闭式输出：标签、枚举、简短 JSON 或固定模板。
-- 除非流程受到极严格约束，否则避免多步骤编排。
-- 将模糊或需要大量规划的任务路由到更强的模型，而不是过度提示 `gpt-5.4-nano`.
+- 除非流程极为受限，否则不要进行多步骤编排。
+- 将存在歧义或需要大量规划的任务交给更强的模型，而不是过度堆砌提示 `gpt-5.4-nano`.
 
-**Good default pattern**
+**良好的默认模式**
 
 1. 任务
 2. 关键规则
-3. 准确的步骤顺序
+3. 精确步骤顺序
 4. 边界情况或澄清行为
 5. 输出格式
-6. 一个正确示例
+6. 一个正确的示例
 
-**Avoid**
+**避免**
 
 - 隐含的后续步骤
-- 未明确的边界情况
-- 仅用于工具工作流的架构提示
+- 未指定的边界情况
+- 仅用于工具工作流的 Schema 提示
 - 缺乏结构的通用指令
 
 #### 网页搜索与深度研究
 
-如果你要迁移的特别是研究智能体，请在提升推理强度之前先完成以下提示词更新：
+如果你是迁移 智能体 的研究类智能体，请在提高推理力度之前进行以下提示更新：
 
-- Add `<research_mode>`
-- Add `<citation_rules>`
-- Add `<empty_result_recovery>`
-- Increase `reasoning_effort` 仅在修复提示后增加一档。
+- 添加 `<research_mode>`
+- 添加 `<citation_rules>`
+- 添加 `<empty_result_recovery>`
+- 提高 `reasoning_effort` 仅在修正提示后提升一档。
 
-你可以从 5.2 research 代码块开始，然后根据需要叠加引用门控和终稿契约。
+你可以从 5.2 研究模块开始,然后根据需要叠加引用把关和定稿契约。
 
-当任务需要多步骤证据收集、长上下文综合以及明确的提示契约时，GPT-5.4 表现尤其出色。在实践中，最高杠杆的提示变更包括：按任务形态选择推理 effort、定义精确的输出与引用格式、添加感知依赖的工具规则，以及明确完成标准。该模型在开箱即用时通常已经很强，但在提示中明确指定如何搜索、如何验证以及如何算作完成时最为可靠。
+当任务需要多步证据收集、长上下文综合以及明确的提示契约时,GPT-5.4 表现尤为出色。在实践中,收益最高的提示调整包括:按任务形态选择推理力度、定义精确的输出和引用格式、添加感知依赖的工具规则,以及明确完成标准。模型在开箱即用时通常已经很强,但只有当提示清晰说明如何搜索、如何验证以及什么算作完成时,它的表现才最为可靠。
 
 ### 后续步骤
 
-- 查看 [模型、API 和功能更新](#model-api-and-feature-updates) 了解模型能力、参数以及 API 兼容性详情。
-- 阅读 [提示工程](https://developers.openai.com/api/docs/guides/prompt-engineering) 获取适用于各模型系列的更广泛提示策略。
-- 阅读 [上下文压缩](https://developers.openai.com/api/docs/guides/compaction) 如果你正在 Responses API 中构建长时间运行的 GPT-5.4 会话。
+- 查看 [Model、API 与功能更新](#model-api-and-feature-updates) 了解模型能力、参数以及 API 兼容性详情。
+- 阅读 [提示工程](https://developers.openai.com/api/docs/guides/prompt-engineering) ，了解跨模型系列适用的更广泛的提示策略。
+- 阅读 [压缩](https://developers.openai.com/api/docs/guides/compaction) ，适用于在 Responses API 中构建长时间运行的 GPT-5.4 会话。
 
 
 ## 延伸阅读
 
 [GPT-5.3-Codex 提示指南](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide)
 
-[GPT-5.4 博客文章](https://openai.com/index/introducing-gpt-5-4/)
+[GPT-5.4 博文](https://openai.com/index/introducing-gpt-5-4/)
 
 [GPT-5 前端指南](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_frontend)
 
-[GPT-5 模型系列：新功能指南](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_new_params_and_tools)
+[GPT-5 模型家族：新特性指南](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_new_params_and_tools)
 
 [推理模型 Cookbook](https://developers.openai.com/cookbook/examples/responses_api/reasoning_items)
 
-[Responses API 与 Chat Completions 对比](https://developers.openai.com/api/docs/guides/migrate-to-responses)
+[Responses API 与 Chat Completions 的对比](https://developers.openai.com/api/docs/guides/migrate-to-responses)

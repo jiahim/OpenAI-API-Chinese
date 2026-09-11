@@ -1,44 +1,44 @@
 # 图像生成
 
-> 完整的文档索引请参见 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
 
 ## 概述
 
-API 可让你根据文本提示生成和编辑图像，使用 `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`。在编辑精度最为重要的工作流中选择 Sunburst，而在需要快速、高质量的日常图像生成时选择 Flare。你可以通过两个 API 访问图像生成功能：
+API 可让你根据文本提示生成和编辑图像，使用 `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`。在对编辑精度要求最高的工作流中选择 Sunburst，在追求快速、高质量的日常图像生成时选择 Flare。你可以通过两个 API 访问图像生成能力：
 
 ### 图像 API
 
-该 [图像 API](https://developers.openai.com/api/reference/resources/images) 提供了两个端点，每个端点具有不同的能力：
+该 [图像 API](https://developers.openai.com/api/reference/resources/images) 提供了两个端点，每个端点都具有不同的功能：
 
-- **生成**: [生成图像](#generate-images) 根据文本提示从零生成
-- **编辑**: [修改现有图像](#edit-images) 使用新提示进行局部或整体修改
+- **生成**: [生成图像](#generate-images) 根据文本提示从零开始生成
+- **编辑**: [修改已有图像](#edit-images) 使用新的提示进行局部或整体修改
 
 ### Responses API
 
-该 [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-tools) 允许你在对话或多步骤流程中生成图像。它将图像生成作为 [内置工具](https://developers.openai.com/api/docs/guides/tools?api-mode=responses)，并在上下文内接受图像输入和输出。
+该 [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-tools) 允许你在对话或多步骤流程中生成图像。它支持将图像生成作为 [内置工具](https://developers.openai.com/api/docs/guides/tools?api-mode=responses),并在上下文中接受图像输入和输出。
 
-与图像 API 相比，它新增了：
+与图像 API 相比,它新增了:
 
-- **Multi-turn editing**：通过提示迭代地对图像进行高保真编辑
+- **多轮编辑**：通过提示迭代地对图像进行高保真编辑
 - **灵活的输入**：接受图像 [File](https://developers.openai.com/api/reference/resources/files) ID 作为输入图像，而不仅仅是字节
 
-对于可以调用图像生成工具的主流模型，请参阅 [支持的模型](#supported-models).
+有关可调用图像生成工具的主流模型，请参阅 [支持的模型](#supported-models).
 
 ### 选择合适的 API
 
-- 如果你只需要根据一条提示生成或编辑单张图片，Image API 是最佳选择。
-- 如果你想使用 GPT Image 构建可对话、可编辑的图片体验，请选择 Responses API。
+- 如果只需要通过单个提示生成或编辑一张图片，Image API 是最佳选择。
+- 如果想要使用 GPT Image 构建可对话、可编辑的图片体验，请选择 Responses API。
 
-使用 Image API时，设置 `model` 为 `gpt-image-2.5-sunburst` 或 `gpt-image-2.5-flare` 即可。使用 Responses API 时，在顶层选择一个受支持的主流模型，并在 `gpt-image-2.5-sunburst` 或 `gpt-image-2.5-flare` 的图像生成工具中指定 `model` 字段。
+通过 Image API，可将 `model` 设置为 `gpt-image-2.5-sunburst` 或 `gpt-image-2.5-flare` 。使用 Responses API 时，请在顶层选择支持的 mainstream 模型，并在 `gpt-image-2.5-sunburst` 或 `gpt-image-2.5-flare` 中的图像生成工具的 `model` 字段中指定。
 
-两个 API 都允许你 [自定义输出](#customize-image-output) ，调整质量、尺寸、格式和压缩方式。
+两个 API 都允许你 [自定义输出](#customize-image-output) ，方式包括调整质量、尺寸、格式和压缩。
 
-为确保这些模型的负责任使用，你可能需要先完成 [API
+为确保负责任地使用这些模型，你可能需要完成 [API
   组织
   验证](https://help.openai.com/en/articles/10910291-api-organization-verification)
   ，从你的 [开发者
-  控制台](https://platform.openai.com/settings/organization/general) 中
-  使用 GPT Image 模型。
+  控制台](https://platform.openai.com/settings/organization/general) 完成
+  后再使用 GPT Image 模型。
 
 <div
   className="not-prose"
@@ -51,13 +51,13 @@ API 可让你根据文本提示生成和编辑图像，使用 `gpt-image-2.5-sun
 
 
 
-## Generate Images
+## 生成图像
 
-你可以使用 [图像生成端点](https://developers.openai.com/api/reference/resources/images) 根据文本提示创建图像,或在 [图像生成工具](https://developers.openai.com/api/docs/guides/tools?api-mode=responses) 的 Responses API 中生成作为对话一部分的图像。
+你可以使用 [图像生成端点](https://developers.openai.com/api/reference/resources/images) 根据文本提示创建图像，或使用 [图像生成工具](https://developers.openai.com/api/docs/guides/tools?api-mode=responses) 在 Responses API 中作为对话的一部分生成图像。
 
-要详细了解如何自定义输出(尺寸、质量、格式、压缩),请参阅 [自定义图像输出](#customize-image-output) 章节。
+要了解如何自定义输出（尺寸、质量、格式、压缩），请参阅 [自定义图像输出](#customize-image-output) 章节。
 
-你可以设置 `n` 参数,在单个请求中一次生成多张图像(默认情况下,API 返回单张图像)。
+你可以设置 `n` 参数，在单次请求中一次生成多张图像（默认情况下，API 返回单张图像）。
 
 
 
@@ -369,7 +369,12 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst"
+    }
+  ]
 )
 
 image_call = response.output.find do |item|
@@ -387,12 +392,12 @@ File.binwrite("otter.png", Base64.strict_decode64(encoded_image))
 
 ### 多轮图像生成
 
-使用 Responses API 时，你可以通过在上下文中提供图像生成调用的输出（也可以直接使用图像 ID），或者通过使用 [`previous_response_id` 参数](https://developers.openai.com/api/docs/guides/conversation-state?api-mode=responses#openai-apis-for-conversation-state).
-这样你可以在多轮对话中迭代图像——随着对话推进，逐步打磨提示词、应用新指令并完善视觉输出。
+使用 Responses API，你可以在上下文中提供图像生成调用的输出（也可以直接使用图像 ID），或使用 [`previous_response_id` 参数](https://developers.openai.com/api/docs/guides/conversation-state?api-mode=responses#openai-apis-for-conversation-state).
+从而在多轮对话中迭代图像——随着对话推进，不断打磨提示词、应用新指令并演进视觉输出。
 
-使用 Responses API 的图像生成工具时，受支持的工具模型可以选择生成新图像或编辑对话中已有的图像。可选的 `action` 参数控制此行为：设为 `action: "auto"` 让模型自行决定，设为 `action: "generate"` 则始终创建新图像，设为 `action: "edit"` 则当上下文中存在图像时强制进行编辑。
+借助 Responses API 的图像生成工具，支持的模型可以选择是生成新图像，还是编辑对话中已有的图像。可选的 `action` 参数控制此行为：设为 `action: "auto"` 让模型自行决定，设为 `action: "generate"` 始终创建新图像，设为 `action: "edit"` 在上下文中存在图像时强制进行编辑。
 
-使用 action 强制创建图像
+通过 action 强制创建图像
 
 ```javascript
 import OpenAI from "openai";
@@ -552,7 +557,13 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst", action: :generate}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst",
+      action: :generate
+    }
+  ]
 )
 
 image_call = response.output.find do |item|
@@ -569,11 +580,11 @@ puts(output_path)
 ```
 
 
-如果在未在上下文中提供图像的情况下强制 `edit` ，该调用将返回错误。将 `action` 设为 `auto` ，让模型自行决定何时生成或编辑。
+如果你强制 `edit` 时未在上下文中提供图像，该调用将返回错误。将 `action` 保留为 `auto` ，由模型决定何时生成或编辑。
 
 
 
-使用 previous response ID
+使用上一个响应 ID
 
     Multi-turn image generation
 
@@ -829,7 +840,12 @@ client = OpenAI::Client.new
 first = client.responses.create(
   model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst"
+    }
+  ]
 )
 
 first_image = first.output.find do |item|
@@ -846,7 +862,12 @@ follow_up = client.responses.create(
   model: "gpt-6-astra",
   input: "Now make it look realistic.",
   previous_response_id: first.id,
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst"
+    }
+  ]
 )
 
 follow_up_image = follow_up.output.find do |item|
@@ -865,7 +886,7 @@ File.binwrite("cat_and_otter_realistic.png", Base64.strict_decode64(encoded_imag
   
 
     
-使用 image ID
+使用图像 ID
 
     Multi-turn image generation
 
@@ -1164,7 +1185,12 @@ client = OpenAI::Client.new
 first = client.responses.create(
   model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst"
+    }
+  ]
 )
 
 first_image = first.output.find do |item|
@@ -1182,11 +1208,24 @@ follow_up = client.responses.create(
   input: [
     {
       role: :user,
-      content: [{type: :input_text, text: "Now make it look realistic."}]
+      content: [
+        {
+          type: :input_text,
+          text: "Now make it look realistic."
+        }
+      ]
     },
-    {type: :image_generation_call, id: first_image.id}
+    {
+      type: :image_generation_call,
+      id: first_image.id
+    }
   ],
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst"
+    }
+  ]
 )
 
 follow_up_image = follow_up.output.find do |item|
@@ -1242,13 +1281,13 @@ File.binwrite("cat_and_otter_realistic.png", Base64.strict_decode64(encoded_imag
 
 
 
-### 流式传输
+### Streaming
 
-Responses API 和 Image API 支持流式图像生成。你可以在 API 生成图像时流式接收部分图像，从而获得更具交互性的体验。
+Responses API 和 Image API 支持流式图像生成。你可以流式接收 API 生成的局部图像，从而获得更具交互性的体验。
 
-你可以通过调整该 `partial_images` 参数来接收 0-3 张部分图像。
+你可以调整 `partial_images` 参数以接收 0-3 张局部图像。
 
-- 如果将 `partial_images` 设置为 0，则只会收到最终图像。
+- 如果将 `partial_images` 设置为 0，你将只收到最终图像。
 - 对于大于零的值，如果完整图像生成得更快，你可能无法收到所请求的全部部分图像。
 
 
@@ -1438,7 +1477,13 @@ client = OpenAI::Client.new
 stream = client.responses.stream(
   model: "gpt-6-astra",
   input: "Generate an image of a river made of white owl feathers.",
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst", partial_images: 2}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst",
+      partial_images: 2
+    }
+  ]
 )
 
 stream.each do |event|
@@ -1594,18 +1639,18 @@ end
 
 
 
-  Prompt: Draw a gorgeous image of a river made of white owl feathers, snaking
-  its way through a serene winter landscape
+  提示词：绘制一幅壮丽的画面，一条由白色猫头鹰羽毛汇成的河流蜿蜒而过
+  穿行于宁静的冬日风景之中
 
 
 
-### 修订后的提示
+### 修订后的提示词
 
-在 Responses API 中使用图像生成工具时，主线模型（例如， `gpt-5.5`）会自动修改你的提示以提升效果。
+在 Responses API 中使用图像生成工具时，主线模型（例如， `gpt-5.5`）会自动修改你的提示词以提升效果。
 
-你可以在 `revised_prompt` 字段中访问修改后的提示：
+你可以在 `revised_prompt` 字段中查看修改后的提示词，调用图像生成时返回：
 
-修改后的提示响应
+修改后的提示词响应
 
 ```json
 {
@@ -1618,9 +1663,9 @@ end
 ```
 
 
-## Edit Images
+## 编辑图像
 
-该 [图片编辑](https://developers.openai.com/api/reference/resources/images) 端点可让你：
+该 [image edits](https://developers.openai.com/api/reference/resources/images) 端点可用于：
 
 - 编辑现有图像
 - 使用其他图像作为参考生成新图像
@@ -1630,19 +1675,19 @@ end
 
 你可以使用一张或多张图片作为参考来生成新图片。
 
-在本示例中，我们将使用 4 张输入图片来生成一张新的图片，展示一个包含参考图片中物品的礼品篮。
+在本示例中，我们将使用 4 张输入图片来生成一张新的图片，内容是一个包含参考图片中所有物品的礼篮。
 
 Responses API
 
     
 
-使用 Responses API 时，你可以通过 3 种不同的方式提供输入图片：
+使用 Responses API，你可以通过 3 种不同的方式提供输入图片：
 
-- 通过提供完全限定的 URL
-- 通过将图像作为 Base64 编码的数据 URL 提供
+- 通过提供完整的 URL
+- 通过提供 Base64 编码的 data URL 形式的图片
 - 通过提供文件 ID（使用 [Files API](https://developers.openai.com/api/reference/resources/files))
 
-#### Create a File
+#### 创建文件
 
 创建文件
 
@@ -1739,9 +1784,9 @@ puts(file.id)
 ```
 
 
-#### 创建 base64 编码的图像
+#### 创建一张 base64 编码的图像
 
-创建 base64 编码的图像
+创建 Base64 编码的图像
 
 ```javascript
 import fs from "fs";
@@ -2113,19 +2158,35 @@ prompt = <<~PROMPT
 PROMPT
 response = client.responses.create(
   model: "gpt-6-astra",
-  input: [{
-    role: :user,
-    content: [
-      {type: :input_text, text: prompt},
-      *base64_images.map do |image|
-        {type: :input_image, image_url: "data:image/png;base64,#{image}"}
-      end,
-      *file_ids.map do |file_id|
-        {type: :input_image, file_id: file_id}
-      end
-    ]
-  }],
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
+  input: [
+    {
+      role: :user,
+      content: [
+        {
+          type: :input_text,
+          text: prompt
+        },
+        *base64_images.map do |image|
+          {
+            type: :input_image,
+            image_url: "data:image/png;base64,#{image}"
+          }
+        end,
+        *file_ids.map do |file_id|
+          {
+            type: :input_image,
+            file_id: file_id
+          }
+        end
+      ]
+    }
+  ],
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst"
+    }
+  ]
 )
 
 image_call = response.output.find do |item|
@@ -2386,14 +2447,14 @@ openai images edit \
 
 ### 使用蒙版编辑图像
 
-你可以提供一个遮罩（mask），用于指定图像中需要进行编辑的区域。
+你可以提供一个蒙版，用于指定图片中应当被编辑的区域。
 
-在使用 GPT Image 的遮罩时，会向模型发送额外的指令，以相应地引导编辑过程。
+在使用 GPT Image 配合蒙版时，额外的提示会被发送给模型，以相应地引导编辑过程。
 
-使用 GPT Image 进行遮罩处理完全基于提示。模型会将遮罩作为
-  参考，但不一定能以完全精确的方式遵循其具体形状。
+在 GPT Image 中使用蒙版完全基于提示。模型会将蒙版作为
+  参考，但不一定能以完全的精确度遵循其具体形状。
 
-如果你提供多张输入图像，遮罩将应用于第一张图像。
+如果你提供多张输入图像，蒙版将应用于第一张图像。
 
 
 
@@ -2664,17 +2725,28 @@ image = client.files.create(file: Pathname("sunlit_lounge.png"), purpose: :visio
 mask = client.files.create(file: Pathname("mask.png"), purpose: :vision)
 response = client.responses.create(
   model: "gpt-6-astra",
-  input: [{
-    role: :user,
-    content: [
-      {type: :input_text, text: "Add a flamingo to the pool."},
-      {type: :input_image, file_id: image.id}
-    ]
-  }],
-  tools: [{
-    type: :image_generation, model: "gpt-image-2.5-sunburst",
-    input_image_mask: {file_id: mask.id}
-  }]
+  input: [
+    {
+      role: :user,
+      content: [
+        {
+          type: :input_text,
+          text: "Add a flamingo to the pool."
+        },
+        {
+          type: :input_image,
+          file_id: image.id
+        }
+      ]
+    }
+  ],
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst",
+      input_image_mask: { file_id: mask.id }
+    }
+  ]
 )
 
 image_call = response.output.find do |item|
@@ -2878,17 +2950,17 @@ openai images edit \
 
 
 
-  Prompt：一个阳光充足的室内休息区，区域内有一个泳池，池中有一只火烈鸟
+  Prompt: a sunlit indoor lounge area with a pool containing a flamingo
 
 
 
-#### 遮蔽要求
+#### 掩码要求
 
-要编辑的图像和遮罩必须具有相同的格式和尺寸（大小小于 50MB）。
+要编辑的图片和遮罩必须具有相同的格式和尺寸（大小小于 50MB）。
 
-遮罩图像也必须包含 alpha 通道。如果你使用图像编辑工具创建遮罩，请确保保存的遮罩带有 alpha 通道。
+遮罩图片也必须包含 alpha 通道。如果你使用图像编辑工具创建遮罩，请务必在保存遮罩时保留 alpha 通道。
 
-你可以通过编程方式修改黑白图像以添加 alpha 通道。
+你可以通过编程方式修改黑白图片，为其添加 alpha 通道。
 
 为黑白遮罩添加 alpha 通道
 
@@ -2970,58 +3042,58 @@ func main() {
 - **压缩**：JPEG 和 WebP 格式的压缩级别（0-100%）
 - **背景**：透明、不透明或自动
 
-`size`, `quality`，以及 `background` 支持 `auto` 选项，模型会根据提示自动选择最佳选项。
+`size`, `quality`，并且 `background` 支持 `auto` 选项，模型会根据提示自动选择最佳选项。
 
 ### 尺寸与质量选项
 
-`gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare` add `xhigh` 和 `max` quality settings. Both default to `auto`. Earlier GPT Image models support quality settings up to `high`.
+`gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare` 添加 `xhigh` 和 `max` 质量设置。两者默认均为 `auto`。更早的 GPT Image 模型支持的质量设置最高为 `high`.
 
 | 设置           | 选项                                                               |
 | ----------------- | --------------------------------------------------------------------- |
-| 推荐尺寸 | `1024x1024` （方形）， `1536x1024` （横版）， `1024x1536` （竖版） |
+| 推荐尺寸 | `1024x1024` (方形), `1536x1024` (横屏), `1024x1536` (竖屏) |
 | 质量           | `low`, `medium`, `high`, `xhigh`, `max`, `auto`                       |
 
-两个模型也都支持以字符串形式指定自定义尺寸，例如 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度必须是 16 的倍数，宽高比必须在 1:3 到 3:1 之间，且任一边长不得超过 3840 像素。总像素数必须在 655,360 到 8,294,400（4K）之间。高于 `2560x1440` 的分辨率为实验性功能。
+两个模型也都支持自定义尺寸，例如 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度必须是 16 的倍数，宽高比必须在 1:3 到 3:1 之间，且任一边长不得超过 3840 像素。总像素数必须在 655,360 到 8,294,400（4K）之间。高于 `2560x1440` 的分辨率为实验性功能。
 
-若要使用任一模型生成透明背景，请设置 `background: "transparent"` 并使用 `output_format: "png"` 或 `"webp"`.
+如需对任一模型使用透明背景，请设置 `background: "transparent"` 并使用 `output_format: "png"` 或 `"webp"`.
 
-使用 `quality: "low"` 可快速生成草稿。对于最终成品，请比较更高质量的设置，以在细节、延迟和成本之间找到合适的平衡。
+使用 `quality: "low"` 来快速生成草稿。对于最终成品，请比较不同的高质量设置，以找到在细节、延迟和成本之间的合适平衡。
 
 ### 输出格式
 
-Image API 会返回 base64 编码的图像数据。
+图像 API 返回 base64 编码的图像数据。
 默认格式为 `png`，但你也可以请求 `jpeg` 或 `webp`.
 
 如果使用 `jpeg` 或 `webp`，你还可以指定 `output_compression` 参数来控制压缩级别（0-100%）。例如， `output_compression=50` 会将图像压缩 50%。
 
-使用 `jpeg` 比 `png`，更快，因此如果
+使用 `jpeg` 比 `png`，更快，因此如果关注延迟，应优先选择此格式。
   延迟是关注点，
 
 ## 限制
 
-GPT Image 模型是强大且多用途的图像生成模型，但仍存在一些需要注意的局限性：
+GPT Image 模型功能强大且用途广泛，但仍有一些需要注意的局限性：
 
-- **延迟：** 复杂提示的处理时间可能长达 2 分钟。
-- **文本渲染：** 尽管已有显著改进，模型在精确的文字排版和清晰度方面仍可能存在不足。
-- **一致性：** 虽然能够生成风格一致的图像，但模型在多次生成过程中，偶尔难以在反复出现的角色或品牌元素上保持视觉一致性。
-- **构图控制：** 尽管指令遵循能力有所提升，模型在结构化或对布局敏感的构图中，仍可能难以精确放置元素。
+- **延迟：** 复杂的提示词处理时间最长可能需要 2 分钟。
+- **文本渲染：** 虽然已有显著改进，但模型在精确文本排版和清晰度方面仍然可能存在不足。
+- **一致性：** 虽然该模型能够生成风格一致的图像，但在多次生成过程中，偶尔仍难以保持反复出现的角色或品牌元素的视觉一致性。
+- **构图控制：** 尽管指令遵循能力有所提升，但在结构化或对布局敏感的构图中，模型仍可能难以精确放置元素。
 
-### 内容审核
+### Content Moderation
 
 所有提示词和生成的图像都会按照我们的 [内容政策](https://openai.com/policies/usage-policies/).
 
-对于使用 GPT Image 模型生成图像的场景，你可以通过以下参数控制审核严格程度： `moderation` 参数。该参数支持两个取值：
+对于使用 GPT Image 模型进行图像生成，你可以通过以下 `moderation` 参数控制审核严格程度。该参数支持两个值：
 
-- `auto` (default): 标准过滤，旨在限制生成某些类别的潜在不适合特定年龄段的内容。
-- `low`: 限制较少的过滤。
+- `auto` (默认)：标准过滤，旨在限制生成某些类别的潜在不适合特定年龄段的内容。
+- `low`：限制较少的过滤。
 
 ### 处理被阻止的请求及其他错误
 
-以处理其他 API 错误的方式来处理图像生成失败：检查 HTTP 状态码或 SDK 异常类型，记录请求 ID，并参阅 [错误代码指南](https://developers.openai.com/api/docs/guides/error-codes) ，了解认证、配额、速率限制和服务器故障。对暂时性的速率限制和服务器失败采用退避策略后重试。对于配额错误或需要修改请求的图像生成用户错误，不要自动重试。
+处理图像生成失败的方式与处理其他 API 错误相同：检查 HTTP 状态码或 SDK 异常类型，记录请求 ID，并参考 [错误代码指南](https://developers.openai.com/api/docs/guides/error-codes) 了解身份验证、配额、速率限制和服务端故障。针对瞬时的速率限制和服务端故障进行指数退避重试。不要自动重试配额错误或需要修改请求的图像生成用户错误。
 
-部分图像生成失败可由用户自行修正，并可能返回 `error.type = "image_generation_user_error"`。在未修改提示词或输入图像的情况下，不要自动重试这些错误。如需以编程方式处理，请使用 `error.code` 作为稳定的判别字段。
+部分图像生成失败可由用户自行修正，并可能返回 `error.type = "image_generation_user_error"`。除非修改提示词或输入图像，否则请勿自动重试这些错误。如需以编程方式处理，请使用 `error.code` 作为稳定的区分字段。
 
-当 `error.code = "moderation_blocked"`，时，错误中还可能包含一个可选的 `error.moderation_details` 对象：
+当 `error.code = "moderation_blocked"`，错误还可能包含一个可选的 `error.moderation_details` 对象：
 
 ```json
 {
@@ -3036,17 +3108,17 @@ GPT Image 模型是强大且多用途的图像生成模型，但仍存在一些�
 }
 ```
 
-该 `moderation_details` 对象提供粗粒度的调试上下文，但不会暴露内部分类器的标签或分数。
+该 `moderation_details` 对象提供粗粒度的调试上下文，且不会暴露内部分类器的标签或分数。
 
 `moderation_stage` 可以是：
 
-- `input`: 该块来自提示或请求输入。
-- `output`: 该块来自生成的图像或下游输出审核阶段。
-- `unknown`: 当来源难以确定时的罕见回退情况。
+- `input`: 该数据块来自 prompt 或请求输入。
+- `output`: 该数据块来自生成的图像或下游输出审核阶段。
+- `unknown`: 在难以判定来源时使用的罕见回退值。
 
-`categories` 包含粗粒度的公开标签。例如，你可能会看到类似这样的值 `harassment`, `self-harm`, `sexual`，或 `violence`.
+`categories` 包含粗粒度的公开标签。例如，你可能会看到类似 `harassment`, `self-harm`, `sexual`，的值，或者 `violence`.
 
-对于大多数应用，主终端用户消息应保持通用。可使用 `moderation_details` 用于开发者日志、支持工作流、分析以及轻量修复提示。
+对于大多数应用，保持面向终端用户的主消息通用。使用 `moderation_details` 用于开发者日志、支持工作流、分析以及轻量化的修正提示。
 
 处理被审核拦截的图像生成错误
 
@@ -3261,30 +3333,30 @@ end
 ```
 
 
-### 支持的模型
+### Supported models
 
-在使用 Responses API 进行图像生成时， `gpt-5` 以及更新的模型应当支持图像生成工具。 [请查看你所使用模型的详情页面](https://developers.openai.com/api/docs/models) 以确认你所需的模型是否可以使用图像生成工具。
+在 Responses API 中使用图像生成时， `gpt-5` 较新的模型应支持图像生成工具。 [请查看对应模型的详情页](https://developers.openai.com/api/docs/models) 以确认你所使用的模型是否可以使用图像生成工具。
 
 ## 成本与延迟
 
 ### GPT Image 2.5 成本
 
-Responses API 请求除了包含图像生成费用外，还包含主线模型的 token 用量。
+Responses API 请求除了包含图像生成费用外，还包含主模型的 token 使用量。
 
-GPT Image 2.5 两个模型使用相同的 token 费率：图像输入 token 每百万 8 美元，缓存图像输入 token 每百万 2 美元，图像输出 token 每百万 30 美元，文本输入 token 每百万 5 美元，缓存文本输入 token 每百万 1.25 美元。详见 [pricing](https://developers.openai.com/api/docs/pricing#image-generation).
+两个 GPT Image 2.5 模型使用相同的 token 费率：图像输入 token 8 美元/百万，缓存的图像输入 token 2 美元/百万，图像输出 token 30 美元/百万，文本输入 token 5 美元/百万，缓存的文本输入 token 1.25 美元/百万。详见 [定价](https://developers.openai.com/api/docs/pricing#image-generation).
 
-使用响应的 `usage` 来衡量不同提示、尺寸和质量设置的 token 消耗。相同的 token 费率并不意味着每张图像的成本相同：不同模型和质量设置的 token 消耗可能不同。有关旧模型的定价示例，请参阅 [Earlier GPT Image models](#earlier-gpt-image-models).
+使用响应的 `usage` 来衡量你的提示、尺寸和质量设置的 token 消耗。相同的 token 费率并不意味着每张图像的成本相同：不同模型和质量设置的 token 消耗可能不同。有关旧模型的定价示例，请参阅 [更早的 GPT Image 模型](#earlier-gpt-image-models).
 
 
 
 
 ### GPT Image 2.5 和 GPT Image 2 输出 token
 
-选择一个模型、质量和尺寸，以估算输出 token 和图片输出成本。
-对于 `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`,质量选项包括 `low`, `medium`, `high`, `xhigh`，以及 `max`.
-对于 `gpt-image-2`,选项包括 `low`, `medium`，以及 `high`.
-这些模型对相同的质量设置可以使用不同的 token 数,并且共享相同的每图片输出 token 价格。
-在此估算中使用明确的质量和尺寸数值; `auto` 取决于生成的图片。
+选择模型、质量和尺寸以估算输出 token 和图像输出费用。
+对于 `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`,质量选项包括 `low`, `medium`, `high`, `xhigh`，并且 `max`.
+对于 `gpt-image-2`,选项包括 `low`, `medium`，并且 `high`.
+不同模型在同一质量设置下可能使用不同的 token 数,且每张图像输出 token 的价格相同。
+在此估算中使用明确的质量和尺寸值; `auto` 取决于生成的图像。
 
 <GptImageTokenCalculator
   client:load
@@ -3295,18 +3367,18 @@ GPT Image 2.5 两个模型使用相同的 token 费率：图像输入 token 每�
   )}
 />
 
-### 部分图像费用
+### Partial images cost
 
 如果你希望 [流式生成图像](#streaming) 使用 `partial_images` 参数，每个部分图像将额外产生 100 个图像输出 token。
 
-## 较早的 GPT Image 模型
+## 更早的 GPT Image 模型
 
-以下详细信息适用于较早的模型，而不适用于 Sunburst 或 Flare。对于新集成，请使用上文所述的 GPT Image 2.5 模型之一。
+以下详细信息适用于更早的模型，不适用于 Sunburst 或 Flare。对于新的集成，请使用上文介绍的某个 GPT Image 2.5 模型。
 
 <details>
 <summary>GPT Image 2 settings and input fidelity</summary>
 
-`gpt-image-2` accepts any resolution in the `size` 参数，前提是该参数满足以下约束条件。正方形图像通常生成速度最快。
+`gpt-image-2` 参数接受任何满足以下约束的分辨率。 `size` 方形图像通常是生成速度最快的。
 
 <table>
   <tbody>
@@ -3386,11 +3458,11 @@ GPT Image 2.5 两个模型使用相同的 token 费率：图像输入 token 每�
 
 ### 图像输入保真度
 
-该 `input_fidelity` 参数控制模型在编辑和参考图像工作流中保留输入图像细节的强度。 `gpt-image-2`，时，请省略此参数；API 不允许更改它，因为模型会自动以高保真度处理每个输入图像。
+该 `input_fidelity` 参数控制模型在编辑和参考图像工作流中保留输入图像细节的程度。对于 `gpt-image-2`，请省略此参数；API 不允许更改它，因为模型会自动以高保真度处理每个图像输入。
 
-由于 `gpt-image-2` 始终以高保真度处理输入图像，图像
-  输入 token 在包含参考图像的编辑请求中可能会更高。要
-  了解费用影响，请参阅 [视觉
+由于 `gpt-image-2` 始终以高保真度处理图像输入，包含参考图像的编辑请求的图像
+  输入 token 可能会更高。要了解
+  成本影响，请参阅 [视觉
   费用](https://developers.openai.com/api/docs/guides/images-vision?api-mode=responses#calculating-costs)
   部分。
 
@@ -3399,42 +3471,42 @@ GPT Image 2.5 两个模型使用相同的 token 费率：图像输入 token 每�
 <details>
 <summary>Older-model pricing examples</summary>
 
-### Models prior to `gpt-image-2`
+### 更早的模型 `gpt-image-2`
 
-GPT Image models prior to `gpt-image-2` 生成图像的方式是首先生成专门的图像 token。延迟和最终成本都与渲染图像所需的 token 数量成正比——更大的图像尺寸和更高的质量设置会产生更多的 token。
+GPT Image models prior to `gpt-image-2` 通过首先生成专用的图像 token 来生成图像。延迟和最终成本都与渲染图像所需的 token 数量成正比——更大的图像尺寸和更高的质量设置会导致更多 token。
 
 生成的 token 数量取决于图像尺寸和质量：
 
-| 质量 | 方形 (1024×1024) | 竖版 (1024×1536) | 横版 (1536×1024) |
+| 质量 | 方形 (1024×1024) | 纵向 (1024×1536) | 横向 (1536×1024) |
 | ------- | ------------------ | -------------------- | --------------------- |
 | 低     | 272 tokens         | 408 tokens           | 400 tokens            |
 | 中  | 1056 tokens        | 1584 tokens          | 1568 tokens           |
 | 高    | 4160 tokens        | 6240 tokens          | 6208 tokens           |
 
-请注意，你还需要将 [输入 tokens](https://developers.openai.com/api/docs/guides/images-vision?api-mode=responses#calculating-costs):提示词对应的文本 tokens，以及输入图像对应的图像 tokens（如果是编辑图像）。
-由于 `gpt-image-2` 总是以高保真度处理图像输入，包含参考图像的编辑请求会使用更多的输入 tokens。
+请注意，你还需要将 [输入 token](https://developers.openai.com/api/docs/guides/images-vision?api-mode=responses#calculating-costs)：提示词的文本 token，以及在编辑图像时输入图像的图像 token。
+由于 `gpt-image-2` 始终以高保真度处理图像输入，包含参考图像的编辑请求可能会使用更多的输入 token。
 
-请参阅 [定价页面](https://developers.openai.com/api/docs/pricing#image-generation) 了解当前的
-文本和图像 token 价格，并使用下面的 [成本计算](#calculating-costs)
-部分来估算请求成本。
+请参阅 [定价页面](https://developers.openai.com/api/docs/pricing#image-generation) 查看当前的
+文本和图像 token 价格，并使用 [费用计算](#calculating-costs)
+部分估算请求费用。
 
 最终费用是以下各项的总和：
 
-- 输入文本 tokens
-- 使用编辑端点时的输入图像 tokens
-- 图像输出 tokens
+- 输入文本 token
+- 如果使用编辑端点，则为输入图像 token
+- 图像输出 token
 
-### 计算成本
+### Calculating costs
 
-使用下方定价计算器估算 GPT Image 模型的请求费用。
-`gpt-image-2` 支持数千种有效分辨率；下表列出了与之前 GPT Image
-模型相同的尺寸以便比较。对于 GPT Image 1.5、GPT Image，
-1 和 GPT Image 1 Mini，旧的每张图像输出定价表也
-在下方列出。在估算请求的总成本时，你仍需考虑文本和图
-像输入 token。
+使用下面的定价计算器来估算 GPT Image 模型的请求成本。
+`gpt-image-2` 支持数千种有效分辨率；下表列出了为便于比较而沿用的
+此前 GPT Image 模型所使用的相同尺寸。针对 GPT Image 1.5、
+GPT Image 1 和 GPT Image 1 Mini，旧的按图像输出定价表也
+在下方列出。在估算请求总成本时，你仍然需要将文本和图像输入
+词元计入在内。
 
-在相同的质量设置下，较大的非方形分辨率有时会比较小
-  的或方形的分辨率生成更少的输出 token。
+在相同的质量设置下，较大的非方形分辨率有时会比较小或
+  方形分辨率生成更少的输出词元。
 
 <table
   style={{ borderCollapse: "collapse", tableLayout: "fixed", width: "100%" }}
