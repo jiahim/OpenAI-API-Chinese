@@ -431,11 +431,11 @@ console.log(fileContents);
 ```
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 
 from openai import OpenAI
 
-output_file_id = os.environ["OPENAI_BATCH_OUTPUT_FILE_ID"]
+output_file_id = "file_123"
 client = OpenAI()
 
 file_response = client.files.content(output_file_id)
@@ -536,11 +536,11 @@ console.log(batch);
 ```
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 
 from openai import OpenAI
 
-batch_id = os.environ["OPENAI_BATCH_ID"]
+batch_id = "batch_123"
 client = OpenAI()
 
 client.batches.cancel(batch_id)

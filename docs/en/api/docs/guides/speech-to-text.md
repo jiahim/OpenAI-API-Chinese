@@ -499,7 +499,7 @@ segments.each do |segment|
   segment = Hash.try_convert(segment) or raise "Invalid speaker segment"
   puts(
     "#{segment.fetch(:speaker)}: #{segment.fetch(:text)} " \
-      "(#{segment.fetch(:start)}-#{segment.fetch(:end)})"
+      "(#{segment.fetch(:start)}-#{segment.fetch(:end_)})"
   )
 end
 ```

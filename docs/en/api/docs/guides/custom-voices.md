@@ -122,7 +122,7 @@ curl https://api.openai.com/v1/audio/speech \
 
 **Realtime API example**
 
-For Ruby, set `OPENAI_VOICE_ID` to your custom voice ID before running the example.
+For Ruby, replace `voice_123` with your custom voice ID before running the example.
 
 ```javascript
 const sessionConfig = JSON.stringify({
@@ -139,13 +139,14 @@ const sessionConfig = JSON.stringify({
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "json"
 
 session_config = JSON.generate(
   session: {
     type: "realtime",
     model: "gpt-realtime-2",
-    audio: { output: { voice: { id: ENV.fetch("OPENAI_VOICE_ID") } } }
+    audio: { output: { voice: { id: "voice_123" } } }
   }
 )
 puts(session_config)

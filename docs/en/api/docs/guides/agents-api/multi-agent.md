@@ -337,6 +337,7 @@ Given a command item and its session ID, retrieve the command's turn to identify
 Identify the agent that ran a command
 
 ```javascript
+// Use the saved session ID and command execution item from your application.
 const turn = await client.beta.agents.sessions.turns.retrieve(
   command.turn_id,
   { session_id: sessionId }
@@ -345,6 +346,7 @@ console.log(turn.subagent_id);
 ```
 
 ```python
+# Use the saved session ID and command execution item from your application.
 turn = client.beta.agents.sessions.turns.retrieve(
     command.turn_id, session_id=session_id
 )
@@ -352,6 +354,7 @@ print(turn.subagent_id)
 ```
 
 ```go
+// Use the saved session ID and command execution item from your application.
 turn, err := client.Beta.Agents.Sessions.Turns.Get(ctx, sessionID, item.TurnID)
 if err != nil {
 	panic(err)
@@ -360,6 +363,7 @@ fmt.Println(turn.SubagentID)
 ```
 
 ```java
+// Use the saved session ID and command execution item from your application.
 var turn =
     client
         .beta()
@@ -375,6 +379,7 @@ System.out.println(turn.subagentId());
 ```
 
 ```ruby
+# Use the saved session ID and command execution item from your application.
 turn = client.beta.agents.sessions.turns.retrieve(item.turn_id, session_id: session_id)
 puts turn.subagent_id
 ```

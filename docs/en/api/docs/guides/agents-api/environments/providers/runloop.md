@@ -2,7 +2,7 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-Run code and work with files in a Runloop Devbox while OpenAI runs the agent and maintains session state.
+See the [application-managed example](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/application_managed/runloop) in the OpenAI Cookbook.
 
 This guide uses **application-managed** provisioning: your application starts the Devbox, connects its executor, and shuts it down when finished. See [Sandbox lifecycle](https://developers.openai.com/api/docs/guides/agents-api/environments/lifecycle) for the lifecycle behavior.
 

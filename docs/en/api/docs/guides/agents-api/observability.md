@@ -19,17 +19,16 @@ Use the [Tracing guide](https://developers.openai.com/api/docs/guides/agents-api
 
 ## Follow events and inspect session history
 
-Every session exposes an event stream that shows what the agent is doing in real time. Set `OPENAI_API_KEY` and `SESSION_ID` before running these examples:
+Every session exposes an event stream that shows what the agent is doing in real time. Set `OPENAI_API_KEY` and replace the illustrative session ID in these examples with your saved session ID:
 
 Follow live session events
 
 ```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
 import OpenAI from "openai";
 
 const client = new OpenAI();
-const events = await client.beta.agents.sessions.events.stream(
-  process.env.SESSION_ID
-);
+const events = await client.beta.agents.sessions.events.stream("sess_123");
 try {
   for await (const event of events) {
     if (
@@ -51,11 +50,11 @@ try {
 ```
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 from openai import OpenAI
 
 client = OpenAI()
-session_id = os.environ["SESSION_ID"]
+session_id = "sess_123"
 with client.beta.agents.sessions.events.stream(session_id) as events:
     for event in events:
         if event.type in {
@@ -70,17 +69,17 @@ with client.beta.agents.sessions.events.stream(session_id) as events:
 ```
 
 ```go
+// Replace the illustrative IDs and URLs below with your own resource values.
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/openai/openai-go/v3"
 )
 
 ctx := context.Background()
 client := openai.NewClient()
-events := client.Beta.Agents.Sessions.Events.StreamStreaming(ctx, os.Getenv("SESSION_ID"))
+events := client.Beta.Agents.Sessions.Events.StreamStreaming(ctx, "sess_123")
 defer events.Close()
 if events.Err() != nil {
 	panic(events.Err())
@@ -99,6 +98,7 @@ if err := events.Err(); err != nil {
 ```
 
 ```java
+// Replace the illustrative IDs and URLs below with your own resource values.
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -108,7 +108,7 @@ import com.openai.models.beta.agents.AgentSessionEvent;
 OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 var json = new JsonMapper();
 try (StreamResponse<AgentSessionEvent> events =
-    client.beta().agents().sessions().events().streamStreaming(System.getenv("SESSION_ID"))) {
+    client.beta().agents().sessions().events().streamStreaming("sess_123")) {
   var iterator = events.stream().iterator();
   while (iterator.hasNext()) {
     var event = iterator.next();
@@ -125,11 +125,12 @@ try (StreamResponse<AgentSessionEvent> events =
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
 require "json"
 
 client = OpenAI::Client.new
-events = client.beta.agents.sessions.events.stream_streaming(ENV.fetch("SESSION_ID"))
+events = client.beta.agents.sessions.events.stream_streaming("sess_123")
 begin
   events.each do |event|
     case event.type.to_s
@@ -148,7 +149,7 @@ curl -N \
   -H "OpenAI-Beta: agents=v1" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Accept: text/event-stream" \
-  "https://api.openai.com/v1/agents/sessions/$SESSION_ID/events?stream=true"
+  "https://api.openai.com/v1/agents/sessions/sess_123/events?stream=true"
 ```
 
 
@@ -171,10 +172,11 @@ To inspect work that has already happened, retrieve the session’s saved items:
 Inspect saved session items
 
 ```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
 import OpenAI from "openai";
 const client = new OpenAI();
 
-const sessionId = process.env.SESSION_ID;
+const sessionId = "sess_123";
 const items = await client.beta.agents.sessions.items.list(sessionId, {
   order: "asc",
   limit: 100,
@@ -183,21 +185,21 @@ console.log(items.data);
 ```
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 from openai import OpenAI
 
 client = OpenAI()
 
-session_id = os.environ["SESSION_ID"]
+session_id = "sess_123"
 items = client.beta.agents.sessions.items.list(session_id, order="asc", limit=100)
 print(items.to_json())
 ```
 
 ```go
+// Replace the illustrative IDs and URLs below with your own resource values.
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/openai/openai-go/v3"
 )
@@ -205,7 +207,7 @@ import (
 ctx := context.Background()
 client := openai.NewClient()
 result, err := client.Beta.Agents.Sessions.Items.List(ctx,
-	os.Getenv("SESSION_ID"),
+	"sess_123",
 	openai.BetaAgentSessionItemListParams{
 		Order: "asc",
 		Limit: openai.Int(100),
@@ -217,6 +219,7 @@ fmt.Println(result.Data)
 ```
 
 ```java
+// Replace the illustrative IDs and URLs below with your own resource values.
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.beta.agents.sessions.items.ItemListParams;
@@ -230,7 +233,7 @@ var result =
         .items()
         .list(
             ItemListParams.builder()
-                .sessionId(System.getenv("SESSION_ID"))
+                .sessionId("sess_123")
                 .order(ItemListParams.Order.of("asc"))
                 .limit(100L)
                 .build());
@@ -238,11 +241,12 @@ System.out.println(result.items());
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
 
 client = OpenAI::Client.new
 result = client.beta.agents.sessions.items.list(
-  ENV.fetch("SESSION_ID"),
+  "sess_123",
   order: "asc",
   limit: 100
 )
@@ -253,27 +257,28 @@ puts result.data
 curl \
   -H "OpenAI-Beta: agents=v1" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
-  "https://api.openai.com/v1/agents/sessions/$SESSION_ID/items?order=asc&limit=100"
+  "https://api.openai.com/v1/agents/sessions/sess_123/items?order=asc&limit=100"
 ```
 
 
 ## Inspect turns and identify delegated commands
 
-Session turns are available through the public API. Set `TURN_ID` from a command item in addition to `OPENAI_API_KEY` and `SESSION_ID`. The cURL example requires `jq`:
+Session turns are available through the public API. Use the `turn_id` from a command item with your saved session ID. The cURL example requires `jq`:
 
 Identify delegated command execution
 
 ```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
 import OpenAI from "openai";
 const client = new OpenAI();
 
-const sessionId = process.env.SESSION_ID;
+const sessionId = "sess_123";
 const turns = await client.beta.agents.sessions.turns.list(sessionId, {
   limit: 20,
   order: "desc",
 });
 console.log(turns.data);
-const turnId = process.env.TURN_ID;
+const turnId = "turn_123";
 const turn = await client.beta.agents.sessions.turns.retrieve(turnId, {
   session_id: sessionId,
 });
@@ -281,24 +286,24 @@ console.log(turn.subagent_id);
 ```
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 from openai import OpenAI
 
 client = OpenAI()
 
-session_id = os.environ["SESSION_ID"]
+session_id = "sess_123"
 turns = client.beta.agents.sessions.turns.list(session_id, limit=20, order="desc")
 print(turns.to_json())
-turn_id = os.environ["TURN_ID"]
+turn_id = "turn_123"
 turn = client.beta.agents.sessions.turns.retrieve(turn_id, session_id=session_id)
 print(turn.subagent_id)
 ```
 
 ```go
+// Replace the illustrative IDs and URLs below with your own resource values.
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/openai/openai-go/v3"
 )
@@ -306,7 +311,7 @@ import (
 ctx := context.Background()
 client := openai.NewClient()
 result, err := client.Beta.Agents.Sessions.Turns.List(ctx,
-	os.Getenv("SESSION_ID"),
+	"sess_123",
 	openai.BetaAgentSessionTurnListParams{
 		Limit: openai.Int(20),
 		Order: "desc",
@@ -316,8 +321,8 @@ if err != nil {
 }
 fmt.Println(result.Data)
 turn, err := client.Beta.Agents.Sessions.Turns.Get(ctx,
-	os.Getenv("SESSION_ID"),
-	os.Getenv("TURN_ID"))
+	"sess_123",
+	"turn_123")
 if err != nil {
 	panic(err)
 }
@@ -325,6 +330,7 @@ fmt.Println(turn.SubagentID)
 ```
 
 ```java
+// Replace the illustrative IDs and URLs below with your own resource values.
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.beta.agents.sessions.turns.TurnListParams;
@@ -339,7 +345,7 @@ var result =
         .turns()
         .list(
             TurnListParams.builder()
-                .sessionId(System.getenv("SESSION_ID"))
+                .sessionId("sess_123")
                 .limit(20L)
                 .order(TurnListParams.Order.of("desc"))
                 .build());
@@ -351,36 +357,34 @@ var turn =
         .sessions()
         .turns()
         .retrieve(
-            TurnRetrieveParams.builder()
-                .turnId(System.getenv("TURN_ID"))
-                .sessionId(System.getenv("SESSION_ID"))
-                .build());
+            TurnRetrieveParams.builder().turnId("turn_123").sessionId("sess_123").build());
 System.out.println(turn.subagentId());
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
 
 client = OpenAI::Client.new
 result = client.beta.agents.sessions.turns.list(
-  ENV.fetch("SESSION_ID"),
+  "sess_123",
   limit: 20,
   order: "desc"
 )
 puts result.data
 turn = client.beta.agents.sessions.turns.retrieve(
-  ENV.fetch("TURN_ID"),
-  session_id: ENV.fetch("SESSION_ID")
+  "turn_123",
+  session_id: "sess_123"
 )
 puts turn.subagent_id
 ```
 
 ```bash
-curl "https://api.openai.com/v1/agents/sessions/$SESSION_ID/turns?limit=20&order=desc" \
+curl "https://api.openai.com/v1/agents/sessions/sess_123/turns?limit=20&order=desc" \
   -H "OpenAI-Beta: agents=v1" \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 
-curl "https://api.openai.com/v1/agents/sessions/$SESSION_ID/turns/$TURN_ID" \
+curl "https://api.openai.com/v1/agents/sessions/sess_123/turns/turn_123" \
   -H "OpenAI-Beta: agents=v1" \
   -H "Authorization: Bearer $OPENAI_API_KEY" | jq '.subagent_id'
 ```

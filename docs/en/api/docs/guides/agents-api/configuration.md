@@ -286,15 +286,16 @@ Each session has its own conversation and work. See the [Agents API reference](h
 
 Include both `agent_id` and `agent` to customize a session that uses a saved agent. The session inherits omitted settings, including the model.
 
-Set `OPENAI_AGENT_ID` to the saved agent's ID before running this example:
+Replace the illustrative `agent_123` value with the saved agent's ID before running this example:
 
 Override an agent for one session
 
 ```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
 import OpenAI from "openai";
 const client = new OpenAI();
 
-const agentId = process.env.OPENAI_AGENT_ID;
+const agentId = "agent_123";
 const session = await client.beta.agents.sessions.create({
   agent_id: agentId,
   agent: {
@@ -320,12 +321,12 @@ console.log(session);
 ```
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 from openai import OpenAI
 
 client = OpenAI()
 
-agent_id = os.environ["OPENAI_AGENT_ID"]
+agent_id = "agent_123"
 session = client.beta.agents.sessions.create(
     agent_id=agent_id,
     agent={"instructions": "Answer this question in one concise paragraph."},
@@ -346,10 +347,10 @@ print(session.to_json())
 ```
 
 ```go
+// Replace the illustrative IDs and URLs below with your own resource values.
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/openai/openai-go/v3"
 )
@@ -358,7 +359,7 @@ ctx := context.Background()
 client := openai.NewClient()
 result, err := client.Beta.Agents.Sessions.New(ctx,
 	openai.BetaAgentSessionNewParams{
-		AgentID:     openai.String(os.Getenv("OPENAI_AGENT_ID")),
+		AgentID:     openai.String("agent_123"),
 		Agent:       openai.BetaAgentSessionNewParamsAgent{Instructions: openai.String("Answer this question in one concise paragraph.")},
 		Environment: openai.EnvironmentParamUnion{OfParamNone: &openai.EnvironmentParamNone{}},
 		Input: openai.BetaAgentSessionNewParamsInputUnion{
@@ -380,6 +381,7 @@ fmt.Println(result)
 ```
 
 ```java
+// Replace the illustrative IDs and URLs below with your own resource values.
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.beta.agents.sessions.SessionCreateParams;
@@ -392,7 +394,7 @@ var result =
         .sessions()
         .create(
             SessionCreateParams.builder()
-                .agentId(System.getenv("OPENAI_AGENT_ID"))
+                .agentId("agent_123")
                 .agent(
                     SessionCreateParams.Agent.builder()
                         .instructions("Answer this question in one concise paragraph.")
@@ -404,11 +406,12 @@ System.out.println(result);
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
 
 client = OpenAI::Client.new
 result = client.beta.agents.sessions.create(
-  agent_id: ENV.fetch("OPENAI_AGENT_ID"),
+  agent_id: "agent_123",
   agent: { instructions: "Answer this question in one concise paragraph." },
   environment: { type: "none" },
   input: [

@@ -224,6 +224,7 @@ puts(store.id)
 Add a file to a vector store
 
 ```javascript
+// Use vectorStore and fileId from the earlier create and upload steps.
 await openai.vectorStores.files.create(vectorStore.id, {
   file_id: fileId,
 });
@@ -293,6 +294,7 @@ Run this code until the file is ready to be used (i.e., when the status is `comp
 Check status
 
 ```javascript
+// Use vectorStore from the earlier create step.
 const result = await openai.vectorStores.files.list(vectorStore.id);
 console.log(result);
 ```
@@ -622,6 +624,7 @@ using OpenAI.Responses;
 #pragma warning disable OPENAI001
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+// Replace this illustrative ID with your vector store ID.
 string vectorStoreId = "<vector_store_id>";
 ResponsesClient client = new(key);
 
@@ -755,6 +758,7 @@ using OpenAI.Responses;
 #pragma warning disable OPENAI001
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+// Replace this illustrative ID with your vector store ID.
 string vectorStoreId = "<vector_store_id>";
 ResponsesClient client = new(key);
 
@@ -927,6 +931,7 @@ using OpenAI.Responses;
 #pragma warning disable OPENAI001
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+// Replace this illustrative ID with your vector store ID.
 string vectorStoreId = "<vector_store_id>";
 ResponsesClient client = new(key);
 

@@ -21,6 +21,7 @@ Subscribe before sending work so your application receives the turn's early even
 Stream session events
 
 ```javascript
+// Pass your saved session ID to this helper.
 async function streamSession(client, sessionId, handleEvent) {
   const events = await client.beta.agents.sessions.events.stream(sessionId);
   try {
@@ -31,9 +32,22 @@ async function streamSession(client, sessionId, handleEvent) {
           continue;
         case "error":
           throw new Error(event.error.message);
-        case "agent.session.turn.completed":
+        case "agent.session.failed":
+        case "agent.session.environment.failed":
+          throw new Error(`Agent lifecycle failure: ${event.type}`);
         case "agent.session.turn.failed":
+          if (event.turn.subagent_id === null) {
+            throw new Error(
+              `${event.type}: ${event.turn.error?.message ?? ""}`
+            );
+          }
+          break;
         case "agent.session.turn.cancelled":
+          if (event.turn.subagent_id === null) {
+            throw new Error("The agent turn was cancelled");
+          }
+          break;
+        case "agent.session.turn.completed":
           if (event.turn.subagent_id === null) return;
           break;
       }
@@ -48,6 +62,7 @@ async function streamSession(client, sessionId, handleEvent) {
 ```
 
 ```python
+# Pass your saved session ID to this helper.
 def stream_session(client: OpenAI, session_id: str, handle_event):
     with client.beta.agents.sessions.events.stream(session_id) as events:
         for event in events:
@@ -57,17 +72,23 @@ def stream_session(client: OpenAI, session_id: str, handle_event):
                     continue
                 case "error":
                     raise RuntimeError(event.error.message)
-                case (
-                    "agent.session.turn.completed"
-                    | "agent.session.turn.failed"
-                    | "agent.session.turn.cancelled"
-                ):
+                case "agent.session.failed" | "agent.session.environment.failed":
+                    raise RuntimeError(f"Agent lifecycle failure: {event.type}")
+                case "agent.session.turn.failed":
+                    if event.turn.subagent_id is None:
+                        detail = event.turn.error.message if event.turn.error else ""
+                        raise RuntimeError(f"{event.type}: {detail}")
+                case "agent.session.turn.cancelled":
+                    if event.turn.subagent_id is None:
+                        raise RuntimeError("The agent turn was cancelled")
+                case "agent.session.turn.completed":
                     if event.turn.subagent_id is None:
                         return
     raise RuntimeError("Stream closed before a turn ended. Retrieve the saved state.")
 ```
 
 ```go
+// Pass your saved session ID to this helper.
 func streamSession(ctx context.Context, client *openai.Client, sessionID string, handleEvent func(openai.AgentSessionEventUnion)) error {
 	events := client.Beta.Agents.Sessions.Events.StreamStreaming(ctx, sessionID)
 	defer events.Close()
@@ -79,7 +100,13 @@ func streamSession(ctx context.Context, client *openai.Client, sessionID string,
 			continue
 		case "error":
 			return fmt.Errorf("agent error: %s", event.RawJSON())
-		case "agent.session.turn.completed", "agent.session.turn.failed", "agent.session.turn.cancelled":
+		case "agent.session.failed", "agent.session.environment.failed":
+			return fmt.Errorf("agent lifecycle failure: %s", event.RawJSON())
+		case "agent.session.turn.failed", "agent.session.turn.cancelled":
+			if event.Turn.SubagentID == "" {
+				return fmt.Errorf("agent turn did not complete: %s", event.RawJSON())
+			}
+		case "agent.session.turn.completed":
 			if event.Turn.SubagentID == "" {
 				return nil
 			}
@@ -93,6 +120,7 @@ func streamSession(ctx context.Context, client *openai.Client, sessionID string,
 ```
 
 ```java
+// Pass your saved session ID to this helper.
 public static void streamSession(
     OpenAIClient client, String sessionId, Consumer<AgentSessionEvent> handleEvent) {
   try (StreamResponse<AgentSessionEvent> events =
@@ -107,9 +135,14 @@ public static void streamSession(
       if (event.error().isPresent()) {
         throw new IllegalStateException("Agent error: " + event);
       }
-      if (event.turnCompleted().filter(e -> e.turn().subagentId().isEmpty()).isPresent()
-          || event.turnFailed().filter(e -> e.turn().subagentId().isEmpty()).isPresent()
+      if (event.failed().isPresent() || event.environmentFailed().isPresent()) {
+        throw new IllegalStateException("Agent lifecycle failure: " + event);
+      }
+      if (event.turnFailed().filter(e -> e.turn().subagentId().isEmpty()).isPresent()
           || event.turnCancelled().filter(e -> e.turn().subagentId().isEmpty()).isPresent()) {
+        throw new IllegalStateException("Agent turn did not complete: " + event);
+      }
+      if (event.turnCompleted().filter(e -> e.turn().subagentId().isEmpty()).isPresent()) {
         return;
       }
     }
@@ -120,6 +153,7 @@ public static void streamSession(
 ```
 
 ```ruby
+# Pass your saved session ID to this helper.
 def stream_session(client, session_id, &handle_event)
   events = client.beta.agents.sessions.events.stream_streaming(session_id)
   begin
@@ -130,7 +164,13 @@ def stream_session(client, session_id, &handle_event)
         next
       when "error"
         raise event.error.message
-      when "agent.session.turn.completed", "agent.session.turn.failed", "agent.session.turn.cancelled"
+      when "agent.session.failed", "agent.session.environment.failed"
+        raise "Agent lifecycle failure: #{event.type}"
+      when "agent.session.turn.failed"
+        raise "#{event.type}: #{event.turn.error&.message}" if event.turn.subagent_id.nil?
+      when "agent.session.turn.cancelled"
+        raise "The agent turn was cancelled" if event.turn.subagent_id.nil?
+      when "agent.session.turn.completed"
         return nil if event.turn.subagent_id.nil?
       end
     end
@@ -150,7 +190,7 @@ curl -N \
 ```
 
 
-The helper passes each event to your handler, then checks common event types. It continues on `agent.session.idle`, raises on `error`, and closes on turn completion, failure, or cancellation. Your handler decides how to display output and handle the outcome. If the stream closes before a turn ends, the helper raises an error. See [Recover a disconnected stream](#how-to-recover-a-disconnected-stream).
+The helper passes each event to your handler, then checks common event types. It continues on `agent.session.idle` and returns when the root turn completes. It raises an error if the root turn fails or is cancelled, the session or environment fails, or an `error` event arrives. Subagent turn events do not end the stream. Your handler decides how to display output; the caller handles errors from the helper. If the stream closes before a turn ends, the helper raises an error. See [Recover a disconnected stream](#how-to-recover-a-disconnected-stream).
 
 
 
@@ -163,6 +203,7 @@ This version accepts a message and submits it after opening the stream:
 Send and stream a message
 
 ```javascript
+// Pass your saved session ID and message to this helper.
 async function sendAndStream(client, sessionId, text, handleEvent) {
   const events = await client.beta.agents.sessions.events.stream(sessionId);
   try {
@@ -181,9 +222,22 @@ async function sendAndStream(client, sessionId, text, handleEvent) {
           continue;
         case "error":
           throw new Error(event.error.message);
-        case "agent.session.turn.completed":
+        case "agent.session.failed":
+        case "agent.session.environment.failed":
+          throw new Error(`Agent lifecycle failure: ${event.type}`);
         case "agent.session.turn.failed":
+          if (event.turn.subagent_id === null) {
+            throw new Error(
+              `${event.type}: ${event.turn.error?.message ?? ""}`
+            );
+          }
+          break;
         case "agent.session.turn.cancelled":
+          if (event.turn.subagent_id === null) {
+            throw new Error("The agent turn was cancelled");
+          }
+          break;
+        case "agent.session.turn.completed":
           if (event.turn.subagent_id === null) return;
           break;
       }
@@ -198,6 +252,7 @@ async function sendAndStream(client, sessionId, text, handleEvent) {
 ```
 
 ```python
+# Pass your saved session ID and message to this helper.
 def send_and_stream(client: OpenAI, session_id: str, text, handle_event):
     with client.beta.agents.sessions.events.stream(session_id) as events:
         client.beta.agents.sessions.events.create(
@@ -221,17 +276,23 @@ def send_and_stream(client: OpenAI, session_id: str, text, handle_event):
                     continue
                 case "error":
                     raise RuntimeError(event.error.message)
-                case (
-                    "agent.session.turn.completed"
-                    | "agent.session.turn.failed"
-                    | "agent.session.turn.cancelled"
-                ):
+                case "agent.session.failed" | "agent.session.environment.failed":
+                    raise RuntimeError(f"Agent lifecycle failure: {event.type}")
+                case "agent.session.turn.failed":
+                    if event.turn.subagent_id is None:
+                        detail = event.turn.error.message if event.turn.error else ""
+                        raise RuntimeError(f"{event.type}: {detail}")
+                case "agent.session.turn.cancelled":
+                    if event.turn.subagent_id is None:
+                        raise RuntimeError("The agent turn was cancelled")
+                case "agent.session.turn.completed":
                     if event.turn.subagent_id is None:
                         return
     raise RuntimeError("Stream closed before a turn ended. Retrieve the saved state.")
 ```
 
 ```go
+// Pass your saved session ID and message to this helper.
 func sendAndStream(ctx context.Context, client *openai.Client, sessionID string, text string, handleEvent func(openai.AgentSessionEventUnion)) error {
 	events := client.Beta.Agents.Sessions.Events.StreamStreaming(ctx, sessionID)
 	defer events.Close()
@@ -270,7 +331,13 @@ func sendAndStream(ctx context.Context, client *openai.Client, sessionID string,
 			continue
 		case "error":
 			return fmt.Errorf("agent error: %s", event.RawJSON())
-		case "agent.session.turn.completed", "agent.session.turn.failed", "agent.session.turn.cancelled":
+		case "agent.session.failed", "agent.session.environment.failed":
+			return fmt.Errorf("agent lifecycle failure: %s", event.RawJSON())
+		case "agent.session.turn.failed", "agent.session.turn.cancelled":
+			if event.Turn.SubagentID == "" {
+				return fmt.Errorf("agent turn did not complete: %s", event.RawJSON())
+			}
+		case "agent.session.turn.completed":
 			if event.Turn.SubagentID == "" {
 				return nil
 			}
@@ -284,6 +351,7 @@ func sendAndStream(ctx context.Context, client *openai.Client, sessionID string,
 ```
 
 ```java
+// Pass your saved session ID and message to this helper.
 public static void sendAndStream(
     OpenAIClient client, String sessionId, String text, Consumer<AgentSessionEvent> handleEvent) {
   try (StreamResponse<AgentSessionEvent> events =
@@ -314,9 +382,14 @@ public static void sendAndStream(
       if (event.error().isPresent()) {
         throw new IllegalStateException("Agent error: " + event);
       }
-      if (event.turnCompleted().filter(e -> e.turn().subagentId().isEmpty()).isPresent()
-          || event.turnFailed().filter(e -> e.turn().subagentId().isEmpty()).isPresent()
+      if (event.failed().isPresent() || event.environmentFailed().isPresent()) {
+        throw new IllegalStateException("Agent lifecycle failure: " + event);
+      }
+      if (event.turnFailed().filter(e -> e.turn().subagentId().isEmpty()).isPresent()
           || event.turnCancelled().filter(e -> e.turn().subagentId().isEmpty()).isPresent()) {
+        throw new IllegalStateException("Agent turn did not complete: " + event);
+      }
+      if (event.turnCompleted().filter(e -> e.turn().subagentId().isEmpty()).isPresent()) {
         return;
       }
     }
@@ -327,6 +400,7 @@ public static void sendAndStream(
 ```
 
 ```ruby
+# Pass your saved session ID and message to this helper.
 def send_and_stream(client, session_id, text, &handle_event)
   events = client.beta.agents.sessions.events.stream_streaming(session_id)
   begin
@@ -356,7 +430,13 @@ def send_and_stream(client, session_id, text, &handle_event)
         next
       when "error"
         raise event.error.message
-      when "agent.session.turn.completed", "agent.session.turn.failed", "agent.session.turn.cancelled"
+      when "agent.session.failed", "agent.session.environment.failed"
+        raise "Agent lifecycle failure: #{event.type}"
+      when "agent.session.turn.failed"
+        raise "#{event.type}: #{event.turn.error&.message}" if event.turn.subagent_id.nil?
+      when "agent.session.turn.cancelled"
+        raise "The agent turn was cancelled" if event.turn.subagent_id.nil?
+      when "agent.session.turn.completed"
         return nil if event.turn.subagent_id.nil?
       end
     end

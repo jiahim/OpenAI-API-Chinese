@@ -1515,9 +1515,11 @@ and retry behavior.
 Run and poll a background response
 
 ```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
 import OpenAI from "openai";
 
 const openai = new OpenAI();
+const logBundleFileId = "file_123";
 
 let job = await openai.responses.create({
   model: "gpt-6-astra",
@@ -1544,10 +1546,12 @@ console.log(job.output_text);
 ```
 
 ```python
+# Replace the illustrative IDs and URLs below with your own resource values.
 from openai import OpenAI
 import time
 
 client = OpenAI()
+log_bundle_file_id = "file_123"
 
 job = client.responses.create(
     model="gpt-6-astra",

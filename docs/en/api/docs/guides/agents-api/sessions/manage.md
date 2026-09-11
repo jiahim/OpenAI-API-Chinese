@@ -114,23 +114,27 @@ Retrieve a session to read its status, agent configuration, environment, and `re
 Retrieve a session
 
 ```javascript
+// Pass your saved session ID to this helper.
 async function retrieveSession(client, sessionId) {
   return client.beta.agents.sessions.retrieve(sessionId);
 }
 ```
 
 ```python
+# Pass your saved session ID to this helper.
 def retrieve_session(client: OpenAI, session_id: str):
     return client.beta.agents.sessions.retrieve(session_id)
 ```
 
 ```go
+// Pass your saved session ID to this helper.
 func retrieveSession(ctx context.Context, client *openai.Client, sessionID string) (*openai.AgentSession, error) {
 	return client.Beta.Agents.Sessions.Get(ctx, sessionID)
 }
 ```
 
 ```java
+// Pass your saved session ID to this helper.
 public static AgentSession retrieveSession(OpenAIClient client, String sessionId) {
   return client
       .beta()
@@ -141,6 +145,7 @@ public static AgentSession retrieveSession(OpenAIClient client, String sessionId
 ```
 
 ```ruby
+# Pass your saved session ID to this helper.
 def retrieve_session(client, session_id)
   client.beta.agents.sessions.retrieve(session_id)
 end
@@ -177,6 +182,7 @@ Delete a session when your application no longer needs it. Deletion removes the 
 Delete a session
 
 ```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
 import OpenAI from "openai";
 
 /**
@@ -187,12 +193,12 @@ async function deleteSession(client, sessionId) {
   return client.beta.agents.sessions.delete(sessionId);
 }
 
-const result = await deleteSession(new OpenAI(), process.env.OPENAI_SESSION_ID);
+const result = await deleteSession(new OpenAI(), "sess_123");
 console.log(result);
 ```
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 
 from openai import OpenAI
 
@@ -202,17 +208,17 @@ def delete_session(client: OpenAI, session_id: str):
 
 
 if __name__ == "__main__":
-    result = delete_session(OpenAI(), os.environ["OPENAI_SESSION_ID"])
+    result = delete_session(OpenAI(), "sess_123")
     print(result.to_json())
 ```
 
 ```go
+// Replace the illustrative IDs and URLs below with your own resource values.
 package main
 
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/openai/openai-go/v3"
 )
@@ -223,7 +229,7 @@ func deleteSession(ctx context.Context, client *openai.Client, sessionID string)
 
 func main() {
 	client := openai.NewClient()
-	result, err := deleteSession(context.Background(), &client, os.Getenv("OPENAI_SESSION_ID"))
+	result, err := deleteSession(context.Background(), &client, "sess_123")
 	if err != nil {
 		panic(err)
 	}
@@ -232,6 +238,7 @@ func main() {
 ```
 
 ```java
+// Replace the illustrative IDs and URLs below with your own resource values.
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.beta.agents.AgentSessionDeleted;
@@ -247,20 +254,21 @@ public final class AgentsApiSessionsDeleteSessionExample {
   }
 
   public static void main(String[] args) {
-    var result = deleteSession(OpenAIOkHttpClient.fromEnv(), System.getenv("OPENAI_SESSION_ID"));
+    var result = deleteSession(OpenAIOkHttpClient.fromEnv(), "sess_123");
     System.out.println(result);
   }
 }
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
 
 def delete_session(client, session_id)
   client.beta.agents.sessions.delete(session_id)
 end
 
-puts delete_session(OpenAI::Client.new, ENV.fetch("OPENAI_SESSION_ID"))
+puts delete_session(OpenAI::Client.new, "sess_123")
 ```
 
 ```bash

@@ -120,6 +120,7 @@ ws.send(json.dumps(event))
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 connection.session.update(
   type: :realtime,
   model: "gpt-realtime-2.1",
@@ -141,7 +142,7 @@ connection.session.update(
     }
   },
   prompt: {
-    id: ENV.fetch("OPENAI_REALTIME_PROMPT_ID"),
+    id: "pmpt_123",
     version: "89",
     variables: { city: "Paris" }
   },
@@ -1010,7 +1011,7 @@ connection.response.create(
   input: [
     {
       type: :item_reference,
-      id: ENV.fetch("OPENAI_REALTIME_CONTEXT_ITEM_ID")
+      id: existing_item_id
     },
     {
       type: :message,

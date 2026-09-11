@@ -595,6 +595,7 @@ function approveMcpRequest(approvalRequestId) {
 ```
 
 ```python
+# Use the ID from the received MCP approval-request item.
 def approve_mcp_request(ws, approval_request_id):
     event = {
         "type": "conversation.item.create",
@@ -610,6 +611,7 @@ def approve_mcp_request(ws, approval_request_id):
 ```
 
 ```ruby
+# Use the ID from the received MCP approval-request item.
 approval_request_id = item.id
 
 connection.conversation.items.create(

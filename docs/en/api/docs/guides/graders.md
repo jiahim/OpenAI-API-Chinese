@@ -376,7 +376,7 @@ The second argument supplied is a dictionary populated with input grading contex
 }
 ```
 
-Here's a working example. For Ruby, save the `grade` function shown above, including its import, as `grader.py`. Set `OPENAI_GRADER_SOURCE_PATH` to that file's path before running the example. The supplied function returns `1.0`; replace its body with your grading logic.
+Here's a working example. For Ruby, save the `grade` function shown above, including its import, as `grader.py`. Place `grader.py` in the directory where you run the example. The supplied function returns `1.0`; replace its body with your grading logic.
 
 ```python
 import os
@@ -427,10 +427,11 @@ print("run response:", response.text)
 require "openai"
 
 client = OpenAI::Client.new
-# Set OPENAI_GRADER_SOURCE_PATH to the Python grader file to upload.
+# Save your Python grading function as grader.py before running this example.
+grading_function = File.read("grader.py")
 grader = {
   type: :python,
-  source: File.read(ENV.fetch("OPENAI_GRADER_SOURCE_PATH"))
+  source: grading_function
 }
 item = { reference_answer: "fuzzy wuzzy had no hair" }
 model_sample = "fuzzy wuzzy was a bear"

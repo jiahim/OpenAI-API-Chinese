@@ -79,6 +79,11 @@ Save its ID as `vault_id`, then add the token. `mcp_server_url` binds the creden
 Store a bearer token
 
 ```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
+const vaultId = "vault_123";
+const mcpUrl = "https://api.githubcopilot.com/mcp/";
+const accessToken = process.env.GITHUB_TOKEN;
+
 const credential = await client.beta.agents.vaults.credentials.create(vaultId, {
   name: "GitHub access token",
   auth: {
@@ -90,6 +95,11 @@ const credential = await client.beta.agents.vaults.credentials.create(vaultId, {
 ```
 
 ```python
+# Replace the illustrative IDs and URLs below with your own resource values.
+vault_id = "vault_123"
+mcp_url = "https://api.githubcopilot.com/mcp/"
+access_token = os.environ["GITHUB_TOKEN"]
+
 credential = client.beta.agents.vaults.credentials.create(
     vault_id,
     name="GitHub access token",
@@ -102,6 +112,11 @@ credential = client.beta.agents.vaults.credentials.create(
 ```
 
 ```go
+// Replace the illustrative IDs and URLs below with your own resource values.
+vaultId := "vault_123"
+mcpUrl := "https://api.githubcopilot.com/mcp/"
+accessToken := os.Getenv("GITHUB_TOKEN")
+
 credential, err := client.Beta.Agents.Vaults.Credentials.New(ctx,
 	vaultId,
 	openai.BetaAgentVaultCredentialNewParams{
@@ -119,6 +134,11 @@ if err != nil {
 ```
 
 ```java
+// Replace the illustrative IDs and URLs below with your own resource values.
+String vaultId = "vault_123";
+String mcpUrl = "https://api.githubcopilot.com/mcp/";
+String accessToken = System.getenv("GITHUB_TOKEN");
+
 var credential =
     client
         .beta()
@@ -138,6 +158,11 @@ var credential =
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
+vault_id = "vault_123"
+mcp_url = "https://api.githubcopilot.com/mcp/"
+access_token = ENV.fetch("GITHUB_TOKEN")
+
 credential = client.beta.agents.vaults.credentials.create(
   vault_id,
   name: "GitHub access token",
@@ -160,6 +185,10 @@ Pass the saved ID in `vault_ids` when creating a session. Use the same server UR
 Attach the vault to a session
 
 ```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
+const mcpUrl = "https://api.githubcopilot.com/mcp/";
+const vaultId = "vault_123";
+
 const session = await client.beta.agents.sessions.create({
   agent: {
     model: "gpt-6-astra",
@@ -186,6 +215,10 @@ const session = await client.beta.agents.sessions.create({
 ```
 
 ```python
+# Replace the illustrative IDs and URLs below with your own resource values.
+mcp_url = "https://api.githubcopilot.com/mcp/"
+vault_id = "vault_123"
+
 session = client.beta.agents.sessions.create(
     agent={
         "model": "gpt-6-astra",
@@ -210,6 +243,10 @@ session = client.beta.agents.sessions.create(
 ```
 
 ```go
+// Replace the illustrative IDs and URLs below with your own resource values.
+mcpUrl := "https://api.githubcopilot.com/mcp/"
+vaultId := "vault_123"
+
 session, err := client.Beta.Agents.Sessions.New(ctx,
 	openai.BetaAgentSessionNewParams{
 		Agent: openai.BetaAgentSessionNewParamsAgent{
@@ -236,6 +273,10 @@ if err != nil {
 ```
 
 ```java
+// Replace the illustrative IDs and URLs below with your own resource values.
+String mcpUrl = "https://api.githubcopilot.com/mcp/";
+String vaultId = "vault_123";
+
 var session =
     client
         .beta()
@@ -264,6 +305,10 @@ var session =
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
+mcp_url = "https://api.githubcopilot.com/mcp/"
+vault_id = "vault_123"
+
 session = client.beta.agents.sessions.create(
   agent: {
     model: "gpt-6-astra",
@@ -305,6 +350,16 @@ The following example uses values from your provider's OAuth flow. Include `refr
 Store an OAuth grant
 
 ```javascript
+// Replace the illustrative expiry with your access token's actual expiry.
+// Replace the illustrative IDs and URLs below with your own resource values.
+const vaultId = "vault_123";
+const mcpUrl = "https://mcp.example.com/mcp";
+const accessToken = process.env.OAUTH_ACCESS_TOKEN;
+const expiresAt = "2030-01-01T00:00:00Z";
+const tokenEndpoint = "https://auth.example.com/oauth/token";
+const clientId = "example-client-id";
+const refreshToken = process.env.OAUTH_REFRESH_TOKEN;
+
 const credential = await client.beta.agents.vaults.credentials.create(vaultId, {
   name: "Example MCP OAuth credential",
   auth: {
@@ -325,6 +380,16 @@ const credential = await client.beta.agents.vaults.credentials.create(vaultId, {
 ```
 
 ```python
+# Replace the illustrative expiry with your access token's actual expiry.
+# Replace the illustrative IDs and URLs below with your own resource values.
+vault_id = "vault_123"
+mcp_url = "https://mcp.example.com/mcp"
+access_token = os.environ["OAUTH_ACCESS_TOKEN"]
+expires_at = "2030-01-01T00:00:00Z"
+token_endpoint = "https://auth.example.com/oauth/token"
+client_id = "example-client-id"
+refresh_token = os.environ["OAUTH_REFRESH_TOKEN"]
+
 credential = client.beta.agents.vaults.credentials.create(
     vault_id,
     name="Example MCP OAuth credential",
@@ -344,6 +409,16 @@ credential = client.beta.agents.vaults.credentials.create(
 ```
 
 ```go
+// Replace the illustrative expiry with your access token's actual expiry.
+// Replace the illustrative IDs and URLs below with your own resource values.
+vaultId := "vault_123"
+mcpUrl := "https://mcp.example.com/mcp"
+accessToken := os.Getenv("OAUTH_ACCESS_TOKEN")
+expiresAt := "2030-01-01T00:00:00Z"
+tokenEndpoint := "https://auth.example.com/oauth/token"
+clientId := "example-client-id"
+refreshToken := os.Getenv("OAUTH_REFRESH_TOKEN")
+
 credential, err := client.Beta.Agents.Vaults.Credentials.New(ctx,
 	vaultId,
 	openai.BetaAgentVaultCredentialNewParams{
@@ -368,6 +443,16 @@ if err != nil {
 ```
 
 ```java
+// Replace the illustrative expiry with your access token's actual expiry.
+// Replace the illustrative IDs and URLs below with your own resource values.
+String vaultId = "vault_123";
+String mcpUrl = "https://mcp.example.com/mcp";
+String accessToken = System.getenv("OAUTH_ACCESS_TOKEN");
+String expiresAt = "2030-01-01T00:00:00Z";
+String tokenEndpoint = "https://auth.example.com/oauth/token";
+String clientId = "example-client-id";
+String refreshToken = System.getenv("OAUTH_REFRESH_TOKEN");
+
 var credential =
     client
         .beta()
@@ -395,6 +480,16 @@ var credential =
 ```
 
 ```ruby
+# Replace the illustrative expiry with your access token's actual expiry.
+# Replace the illustrative IDs and URLs below with your own resource values.
+vault_id = "vault_123"
+mcp_url = "https://mcp.example.com/mcp"
+access_token = ENV.fetch("OAUTH_ACCESS_TOKEN")
+expires_at = "2030-01-01T00:00:00Z"
+token_endpoint = "https://auth.example.com/oauth/token"
+client_id = "example-client-id"
+refresh_token = ENV.fetch("OAUTH_REFRESH_TOKEN")
+
 credential = client.beta.agents.vaults.credentials.create(
   vault_id,
   name: "Example MCP OAuth credential",
@@ -436,6 +531,13 @@ If an expired token cannot be refreshed, supply a valid replacement. Token expir
 Rotate an OAuth token
 
 ```javascript
+// Replace the illustrative expiry with your access token's actual expiry.
+// Replace the illustrative IDs and URLs below with your own resource values.
+const credentialId = "cred_123";
+const vaultId = "vault_123";
+const accessToken = process.env.OAUTH_ACCESS_TOKEN;
+const expiresAt = "2030-01-01T00:00:00Z";
+
 const credential = await client.beta.agents.vaults.credentials.update(
   credentialId,
   {
@@ -452,6 +554,13 @@ const credential = await client.beta.agents.vaults.credentials.update(
 ```
 
 ```python
+# Replace the illustrative expiry with your access token's actual expiry.
+# Replace the illustrative IDs and URLs below with your own resource values.
+credential_id = "cred_123"
+vault_id = "vault_123"
+access_token = os.environ["OAUTH_ACCESS_TOKEN"]
+expires_at = "2030-01-01T00:00:00Z"
+
 credential = client.beta.agents.vaults.credentials.update(
     credential_id,
     vault_id=vault_id,
@@ -464,6 +573,13 @@ credential = client.beta.agents.vaults.credentials.update(
 ```
 
 ```go
+// Replace the illustrative expiry with your access token's actual expiry.
+// Replace the illustrative IDs and URLs below with your own resource values.
+vaultId := "vault_123"
+credentialId := "cred_123"
+accessToken := os.Getenv("OAUTH_ACCESS_TOKEN")
+expiresAt := "2030-01-01T00:00:00Z"
+
 credential, err := client.Beta.Agents.Vaults.Credentials.Update(ctx,
 	vaultId,
 	credentialId,
@@ -481,6 +597,13 @@ if err != nil {
 ```
 
 ```java
+// Replace the illustrative expiry with your access token's actual expiry.
+// Replace the illustrative IDs and URLs below with your own resource values.
+String credentialId = "cred_123";
+String vaultId = "vault_123";
+String accessToken = System.getenv("OAUTH_ACCESS_TOKEN");
+String expiresAt = "2030-01-01T00:00:00Z";
+
 var credential =
     client
         .beta()
@@ -500,6 +623,13 @@ var credential =
 ```
 
 ```ruby
+# Replace the illustrative expiry with your access token's actual expiry.
+# Replace the illustrative IDs and URLs below with your own resource values.
+credential_id = "cred_123"
+vault_id = "vault_123"
+access_token = ENV.fetch("OAUTH_ACCESS_TOKEN")
+expires_at = "2030-01-01T00:00:00Z"
+
 credential = client.beta.agents.vaults.credentials.update(
   credential_id,
   vault_id: vault_id,

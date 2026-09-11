@@ -49,6 +49,8 @@ Automatic continuations inherit the original request settings. Token and tool-ca
 
 ## Run a complete example
 
+The .NET SDK does not provide a Responses WebSocket client, so a C# SDK variant is not available for this example.
+
 Update a project plan while it runs
 
 ```javascript
@@ -186,116 +188,6 @@ async def main():
 
 
 asyncio.run(main())
-```
-
-```csharp
-using System.Net.WebSockets;
-using System.Text.Json;
-
-// Set OPENAI_API_KEY before running this example.
-// ClientWebSocket is built in; no extra package is required.
-
-using ClientWebSocket socket = new();
-string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-socket.Options.SetRequestHeader("Authorization", $"Bearer {key}");
-Uri endpoint = new("wss://api.openai.com/v1/responses");
-
-using CancellationTokenSource timeout = new(TimeSpan.FromSeconds(120));
-await socket.ConnectAsync(endpoint, timeout.Token);
-string? initialResponseId = null;
-string? successorResponseId = null;
-
-await SendAsync(new
-{
-    type = "response.create",
-    model = "gpt-6-astra",
-    reasoning = new { effort = "medium" },
-    input = "Draft a project plan for building a task-tracking app.",
-});
-
-while (true)
-{
-    using JsonDocument message = await ReceiveAsync();
-    JsonElement data = message.RootElement;
-    string? eventType = data.GetProperty("type").GetString();
-    if (eventType == "response.created")
-    {
-        string? responseId = data.GetProperty("response").GetProperty("id").GetString();
-        if (initialResponseId is null)
-        {
-            initialResponseId = responseId;
-            // Simulate a user adding instructions while the response runs.
-            await SendAsync(new
-            {
-                type = "response.steer",
-                previous_response_id = initialResponseId,
-                input = "Keep the scope small enough for one developer to finish in two weeks.",
-            });
-        }
-        else
-        {
-            successorResponseId = responseId;
-        }
-    }
-    else if (eventType is "response.steer.failed" or "response.failed" or "error")
-    {
-        throw new InvalidOperationException(data.GetRawText());
-    }
-    else if (eventType == "response.incomplete")
-    {
-        JsonElement response = data.GetProperty("response");
-        if (response.GetProperty("id").GetString() != initialResponseId
-            || !response.TryGetProperty("incomplete_details", out JsonElement details)
-            || !details.TryGetProperty("reason", out JsonElement reason)
-            || reason.GetString() != "steered")
-        {
-            throw new InvalidOperationException(data.GetRawText());
-        }
-    }
-    else if (eventType == "response.completed"
-        && data.GetProperty("response").GetProperty("id").GetString() == successorResponseId)
-    {
-        foreach (JsonElement item in data.GetProperty("response").GetProperty("output").EnumerateArray())
-        {
-            if (item.GetProperty("type").GetString() != "message") continue;
-            foreach (JsonElement part in item.GetProperty("content").EnumerateArray())
-            {
-                if (part.GetProperty("type").GetString() == "output_text")
-                {
-                    Console.Write(part.GetProperty("text").GetString());
-                }
-            }
-        }
-        Console.WriteLine();
-        break;
-    }
-    // Acceptance only queues the input. Keep reading past the first response.
-}
-
-async Task SendAsync<T>(T data)
-{
-    byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(data);
-    await socket.SendAsync(bytes.AsMemory(), WebSocketMessageType.Text, true, timeout.Token);
-}
-
-async Task<JsonDocument> ReceiveAsync()
-{
-    using MemoryStream message = new();
-    byte[] buffer = new byte[8192];
-    ValueWebSocketReceiveResult result;
-    do
-    {
-        result = await socket.ReceiveAsync(buffer.AsMemory(), timeout.Token);
-        if (result.MessageType == WebSocketMessageType.Close)
-        {
-            throw new InvalidOperationException(
-                "Connection closed before the steered response finished.");
-        }
-        message.Write(buffer, 0, result.Count);
-    } while (!result.EndOfMessage);
-    message.Position = 0;
-    return await JsonDocument.ParseAsync(message, cancellationToken: timeout.Token);
-}
 ```
 
 ```ruby

@@ -2,7 +2,9 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-Run sandbox tools in Cloudflare while OpenAI runs the agent and maintains session state. This guide uses **webhook-managed provisioning** with Cloudflare's reference Worker.
+This guide uses **webhook-managed provisioning** with Cloudflare's reference Worker.
+
+See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/application_managed/cloudflare) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/webhook_managed/cloudflare) examples in the OpenAI Cookbook.
 
 ## How it works
 
@@ -63,8 +65,10 @@ Replace `OPENAI_WEBHOOK_SECRET` with the signing secret returned by OpenAI, then
 Check Worker health
 
 ```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
+
 const response = await fetch(
-  process.env.WORKER_URL.replace(/\/+$/, "") + "/health",
+  "https://worker.example.com".replace(/\/+$/, "") + "/health",
   { method: "GET" }
 );
 if (!response.ok) throw new Error(`Request failed: ${response.status}`);
@@ -72,16 +76,17 @@ console.log(await response.text());
 ```
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 import urllib.request
 
-url = os.environ["WORKER_URL"].rstrip("/") + "/health"
+url = "https://worker.example.com".rstrip("/") + "/health"
 request = urllib.request.Request(url, method="GET")
 with urllib.request.urlopen(request) as response:
     print(response.read().decode())
 ```
 
 ```go
+// Replace the illustrative IDs and URLs below with your own resource values.
 import (
 	"io"
 	"net/http"
@@ -89,7 +94,7 @@ import (
 	"strings"
 )
 
-endpoint := strings.TrimRight(os.Getenv("WORKER_URL"), "/") + "/health"
+endpoint := strings.TrimRight("https://worker.example.com", "/") + "/health"
 request, err := http.NewRequest("GET", endpoint, nil)
 if err != nil {
 	panic(err)
@@ -108,12 +113,13 @@ if _, err := io.Copy(os.Stdout, response.Body); err != nil {
 ```
 
 ```java
+// Replace the illustrative IDs and URLs below with your own resource values.
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-String endpoint = System.getenv("WORKER_URL").replaceAll("/+$", "") + "/health";
+String endpoint = "https://worker.example.com".replaceAll("/+$", "") + "/health";
 var request =
     HttpRequest.newBuilder(URI.create(endpoint))
         .method("GET", HttpRequest.BodyPublishers.noBody())
@@ -125,10 +131,11 @@ System.out.println(response.body());
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "uri"
 require "net/http"
 
-uri = URI(ENV.fetch("WORKER_URL").sub(%r{/+\z}, "") + "/health")
+uri = URI("https://worker.example.com".sub(%r{/+\z}, "") + "/health")
 request = Net::HTTP::Get.new(uri)
 response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https") { |http| http.request(request) }
 raise "Request failed: #{response.code}" unless response.is_a?(Net::HTTPSuccess)
@@ -166,28 +173,26 @@ When the application no longer needs the sandbox, call the reference Worker's au
 Clean up the Worker sandbox
 
 ```javascript
-const response = await fetch(
-  process.env.WORKER_URL.replace(/\/+$/, "") +
-    "/executors/" +
-    encodeURIComponent(process.env.SESSION_ID),
-  {
-    method: "DELETE",
-    headers: { Authorization: `Bearer ${process.env.EXECUTOR_CLIENT_SECRET}` },
-  }
-);
+// Replace the illustrative IDs and URLs below with your own resource values.
+
+const response = await fetch("https://worker.example.com/executors/sess_123", {
+  method: "DELETE",
+  headers: { Authorization: `Bearer ${process.env.EXECUTOR_CLIENT_SECRET}` },
+});
 if (!response.ok) throw new Error(`Request failed: ${response.status}`);
 console.log(await response.text());
 ```
 
 ```python
+# Replace the illustrative IDs and URLs below with your own resource values.
 import os
 from urllib.parse import quote
 import urllib.request
 
 url = (
-    os.environ["WORKER_URL"].rstrip("/")
+    "https://worker.example.com".rstrip("/")
     + "/executors/"
-    + quote(os.environ["SESSION_ID"], safe="")
+    + quote("sess_123", safe="")
 )
 request = urllib.request.Request(
     url,
@@ -199,6 +204,7 @@ with urllib.request.urlopen(request) as response:
 ```
 
 ```go
+// Replace the illustrative IDs and URLs below with your own resource values.
 import (
 	"io"
 	"net/http"
@@ -207,7 +213,7 @@ import (
 	"strings"
 )
 
-endpoint := strings.TrimRight(os.Getenv("WORKER_URL"), "/") + "/executors/" + url.PathEscape(os.Getenv("SESSION_ID"))
+endpoint := strings.TrimRight("https://worker.example.com", "/") + "/executors/" + url.PathEscape("sess_123")
 request, err := http.NewRequest("DELETE", endpoint, nil)
 if err != nil {
 	panic(err)
@@ -227,6 +233,7 @@ if _, err := io.Copy(os.Stdout, response.Body); err != nil {
 ```
 
 ```java
+// Replace the illustrative IDs and URLs below with your own resource values.
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -235,10 +242,9 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
 String endpoint =
-    System.getenv("WORKER_URL").replaceAll("/+$", "")
+    "https://worker.example.com".replaceAll("/+$", "")
         + "/executors/"
-        + URLEncoder.encode(System.getenv("SESSION_ID"), StandardCharsets.UTF_8)
-            .replace("+", "%20");
+        + URLEncoder.encode("sess_123", StandardCharsets.UTF_8).replace("+", "%20");
 var request =
     HttpRequest.newBuilder(URI.create(endpoint))
         .header("Authorization", "Bearer " + System.getenv("EXECUTOR_CLIENT_SECRET"))
@@ -251,10 +257,11 @@ System.out.println(response.body());
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "uri"
 require "net/http"
 
-uri = URI(ENV.fetch("WORKER_URL").sub(%r{/+\z}, "") + "/executors/" + URI.encode_www_form_component(ENV.fetch("SESSION_ID")).gsub("+", "%20"))
+uri = URI("https://worker.example.com".sub(%r{/+\z}, "") + "/executors/" + URI.encode_www_form_component("sess_123").gsub("+", "%20"))
 request = Net::HTTP::Delete.new(uri)
 request["Authorization"] = "Bearer #{ENV.fetch("EXECUTOR_CLIENT_SECRET")}"
 response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https") { |http| http.request(request) }

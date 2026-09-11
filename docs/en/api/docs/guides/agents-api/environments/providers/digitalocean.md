@@ -2,7 +2,7 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-Run commands and work with files in a DigitalOcean sandbox while OpenAI runs the agent and maintains session state.
+See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/application_managed/digitalocean) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/webhook_managed/digitalocean) examples in the OpenAI Cookbook.
 
 ## How it works
 
@@ -33,7 +33,7 @@ The image connects the executor to the session's environment. Your application s
 
 The CLI creates both resources and lets you interact with the agent from your terminal. It provisions the sandbox directly, without a webhook controller.
 
-Install the [doctl beta release](https://github.com/digitalocean/doctl/releases/tag/v1.168.0-beta.8) that includes `harness-runtime`, then authenticate:
+Install the [`doctl` beta release](https://github.com/digitalocean/doctl/releases/tag/v1.168.0-beta.8) that includes `harness-runtime`, then authenticate:
 
 ```bash
 doctl auth init

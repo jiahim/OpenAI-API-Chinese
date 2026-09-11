@@ -172,6 +172,7 @@ A full implementation of both the `search` and `fetch` tools in FastMCP is below
 
 
 ```python
+# Replace the illustrative IDs and URLs below with your own resource values.
 """
 Sample MCP Server for ChatGPT Integration
 
@@ -212,7 +213,7 @@ logger = logging.getLogger(__name__)
 
 # OpenAI configuration
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
-VECTOR_STORE_ID = os.environ["VECTOR_STORE_ID"]
+VECTOR_STORE_ID = "vs_123"
 
 # Initialize OpenAI client
 openai_client = OpenAI(api_key=OPENAI_API_KEY)
@@ -395,10 +396,7 @@ if __name__ == "__main__":
 
 
 
-On Replit, you will need to configure two environment variables in the "Secrets" UI:
-
-- `OPENAI_API_KEY` - Your standard OpenAI API key
-- `VECTOR_STORE_ID` - The unique identifier of a vector store that can be used for search - the one you created earlier.
+On Replit, configure `OPENAI_API_KEY` with your OpenAI API key in the "Secrets" UI. In the sample, replace `vs_123` with the ID of the vector store you created earlier for search.
 
 On free Replit accounts, server URLs are active for as long as the editor is active, so while you are testing, you'll need to keep the browser tab open. You can get a URL for your MCP server by clicking on the chainlink icon:
 

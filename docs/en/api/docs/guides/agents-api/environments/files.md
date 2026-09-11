@@ -47,6 +47,7 @@ Pass your API client, session ID, completed turn ID, artifact path, and local de
 Find and download an artifact
 
 ```python
+# Pass the saved session ID, completed turn ID, artifact path, and local destination.
 def download_artifact(client, session_id, turn_id, path, destination):
     for artifact in client.beta.agents.sessions.artifacts.list(session_id):
         if artifact.turn_id != turn_id or artifact.path != path:

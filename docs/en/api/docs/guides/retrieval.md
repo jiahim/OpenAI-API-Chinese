@@ -2047,6 +2047,7 @@ console.log(completion.choices[0].message.content);
 ```
 
 ```python
+# Use results and user_query from the preceding search step.
 formatted_results = format_results(results.data)
 
 "\n".join("\n".join(c.text for c in result.content) for result in results.data)

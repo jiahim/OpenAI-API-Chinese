@@ -193,6 +193,7 @@ Pass your API client, session ID, and message to a function in your application:
 Send a follow-up message
 
 ```javascript
+// Pass your saved session ID and message to this helper.
 async function sendMessage(client, sessionId, text) {
   await client.beta.agents.sessions.events.create(sessionId, {
     events: [
@@ -216,6 +217,7 @@ async function sendMessage(client, sessionId, text) {
 ```
 
 ```python
+# Pass your saved session ID and message to this helper.
 def send_message(client: OpenAI, session_id: str, text: str) -> None:
     client.beta.agents.sessions.events.create(
         session_id,
@@ -239,6 +241,7 @@ def send_message(client: OpenAI, session_id: str, text: str) -> None:
 ```
 
 ```go
+// Pass your saved session ID and message to this helper.
 func sendMessage(ctx context.Context, client *openai.Client, sessionID, text string) error {
 	return client.Beta.Agents.Sessions.Events.New(ctx,
 		sessionID,
@@ -263,6 +266,7 @@ func sendMessage(ctx context.Context, client *openai.Client, sessionID, text str
 ```
 
 ```java
+// Pass your saved session ID and message to this helper.
 public static void sendMessage(OpenAIClient client, String sessionId, String text) {
   client
       .beta()
@@ -284,6 +288,7 @@ public static void sendMessage(OpenAIClient client, String sessionId, String tex
 ```
 
 ```ruby
+# Pass your saved session ID and message to this helper.
 def send_message(client, session_id, text)
   client.beta.agents.sessions.events.create(
     session_id,
@@ -348,6 +353,7 @@ Events show live progress. Items are the saved messages and tool calls, includin
 Retrieve session items
 
 ```javascript
+// Pass your saved session ID to this helper.
 async function listItems(client, sessionId) {
   return client.beta.agents.sessions.items.list(sessionId, {
     order: "asc",
@@ -357,11 +363,13 @@ async function listItems(client, sessionId) {
 ```
 
 ```python
+# Pass your saved session ID to this helper.
 def list_items(client: OpenAI, session_id: str):
     return client.beta.agents.sessions.items.list(session_id, order="asc", limit=100)
 ```
 
 ```go
+// Pass your saved session ID to this helper.
 func listItems(ctx context.Context, client *openai.Client, sessionID string) (*pagination.CursorPage[openai.AgentSessionItemUnion], error) {
 	return client.Beta.Agents.Sessions.Items.List(ctx,
 		sessionID,
@@ -373,6 +381,7 @@ func listItems(ctx context.Context, client *openai.Client, sessionID string) (*p
 ```
 
 ```java
+// Pass your saved session ID to this helper.
 public static ItemListPage listItems(OpenAIClient client, String sessionId) {
   return client
       .beta()
@@ -389,6 +398,7 @@ public static ItemListPage listItems(OpenAIClient client, String sessionId) {
 ```
 
 ```ruby
+# Pass your saved session ID to this helper.
 def list_items(client, session_id)
   client.beta.agents.sessions.items.list(
     session_id,
@@ -420,6 +430,7 @@ Cancel the current turn when you want the agent to stop. The session and its pre
 Cancel the active turn
 
 ```javascript
+// Pass your saved session ID to this helper.
 async function cancelTurn(client, sessionId) {
   await client.beta.agents.sessions.events.create(sessionId, {
     events: [{ type: "agent.session.input.cancel" }],
@@ -428,6 +439,7 @@ async function cancelTurn(client, sessionId) {
 ```
 
 ```python
+# Pass your saved session ID to this helper.
 def cancel_turn(client: OpenAI, session_id: str) -> None:
     client.beta.agents.sessions.events.create(
         session_id, events=[{"type": "agent.session.input.cancel"}]
@@ -435,6 +447,7 @@ def cancel_turn(client: OpenAI, session_id: str) -> None:
 ```
 
 ```go
+// Pass your saved session ID to this helper.
 func cancelTurn(ctx context.Context, client *openai.Client, sessionID string) error {
 	return client.Beta.Agents.Sessions.Events.New(ctx,
 		sessionID,
@@ -447,6 +460,7 @@ func cancelTurn(ctx context.Context, client *openai.Client, sessionID string) er
 ```
 
 ```java
+// Pass your saved session ID to this helper.
 public static void cancelTurn(OpenAIClient client, String sessionId) {
   client
       .beta()
@@ -462,6 +476,7 @@ public static void cancelTurn(OpenAIClient client, String sessionId) {
 ```
 
 ```ruby
+# Pass your saved session ID to this helper.
 def cancel_turn(client, session_id)
   client.beta.agents.sessions.events.create(
     session_id,

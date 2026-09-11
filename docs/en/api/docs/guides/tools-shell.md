@@ -473,11 +473,11 @@ console.log(container.id);
 ```
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 from openai import OpenAI
 
 client = OpenAI()
-skill_id = os.environ["OPENAI_SKILL_ID"]
+skill_id = "skill_123"
 
 container = client.containers.create(
     name="skill-container",
@@ -1056,11 +1056,11 @@ console.log(deleted);
 ```
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 from openai import OpenAI
 
 client = OpenAI()
-container_id = os.environ["OPENAI_CONTAINER_ID"]
+container_id = "cntr_123"
 
 deleted = client.containers.delete(container_id)
 
