@@ -328,7 +328,7 @@ jobs:
           pnpm translate:batch -- \
             --release "$release" \
             --result "$RUNNER_TEMP/translation-result.json" \
-            --limit 100 --max-batches 2400 --max-characters 1000000 \
+            --limit 100 --max-batches 3000 --max-characters 1000000 \
             --time-budget-minutes 140
 
       - name: Publish completed translations
