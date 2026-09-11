@@ -147,7 +147,7 @@ pnpm translate:review -- --match guides/agents/quickstart.md --limit 1
 
 ## 翻译批处理与恢复
 
-统一工作流调用 `pnpm translate:batch -- --release <本轮 release 路径> --result <临时 result 路径> --limit 100 --max-batches 2400 --max-characters 1000000 --time-budget-minutes 140`。release 中的必需页面排在历史积压之前；其余候选按 `stale-source`、`stale-policy`、`missing-target`、`pending` 的状态顺序选择，同一状态内按 `translation/priority.zh-CN.json` 的 `sourcePaths` 排序，再按稳定路径回退。本地独立批处理可使用相同预算参数调用 `translate:auto`，`translate:plan` 可用于查看候选顺序。
+统一工作流调用 `pnpm translate:batch -- --release <本轮 release 路径> --result <临时 result 路径> --limit 100 --max-batches 3000 --max-characters 1000000 --time-budget-minutes 140`。release 中的必需页面排在历史积压之前；其余候选按 `stale-source`、`stale-policy`、`missing-target`、`pending` 的状态顺序选择，同一状态内按 `translation/priority.zh-CN.json` 的 `sourcePaths` 排序，再按稳定路径回退。本地独立批处理可使用相同预算参数调用 `translate:auto`，`translate:plan` 可用于查看候选顺序。
 
 每轮最多检查 100 篇，不限制整页源字符数；Markdown adapter 先生成可回填的语义单元，`easy-translate` 再按每批最多 20 个单元、4,000 个源字符调用模型，并在每个成功批次后保存 checkpoint。启动下一篇前，CLI 复用 `easy-translate` 的实际分批过程预估去重后的语义批次数和字符数，并结合已完成批次的实际平均耗时判断时间预算。首篇选中的页面即使预估超出批次、字符或时间预算也会启动；后续页面遵守这些预算，避免仅因预估预算造成永久饥饿。达到预算时正常结束，已完成改动保存在 PR 分支；本轮尚未完整时维持 draft 状态。
 
