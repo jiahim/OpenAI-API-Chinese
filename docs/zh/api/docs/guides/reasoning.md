@@ -1,19 +1,19 @@
-# 推理模型
+# Reasoning models
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。如需各文档页面的 Markdown 版本，可在页面 URL 末尾追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-**推理模型** 在生成响应之前会使用内部推理 token。这有助于模型进行规划、有效地使用工具、检查替代方案、从歧义中恢复，并解决更困难的多步骤任务。推理模型在复杂问题求解、编码、科学推理以及多步骤智能体工作流方面表现尤为出色。它们也是以下场景的最佳模型： [Codex CLI](https://github.com/openai/codex)，我们轻量级的编码智能体。
+**推理模型** 会在生成响应之前使用内部推理 token。这有助于模型进行规划、有效地使用工具、检查备选方案、从歧义中恢复，以及解决更复杂的多步任务。推理模型特别适合复杂的问题求解、编程、科学推理以及多步智能体工作流。同时，它们也是以下用途的最佳模型： [Codex CLI](https://github.com/openai/codex)，我们轻量级的编程智能体。
 
-从以下模型开始 `gpt-6-astra` 用于大多数推理工作负载。如果希望降低成本，可考虑 [`gpt-5.6-terra`](https://developers.openai.com/api/docs/models/gpt-5.6-terra)，或 [`gpt-5.6-luna`](https://developers.openai.com/api/docs/models/gpt-5.6-luna) 以获得最低的成本和延迟。如果你使用的是 GPT-5.6 模型，请参阅 [推理模式](#reasoning-mode) 中的 `pro` 选项。
+可以从 `gpt-6-astra` 开始，适用于大多数推理负载。如果希望降低成本，可以考虑 [`gpt-5.6-terra`](https://developers.openai.com/api/docs/models/gpt-5.6-terra)，或者 [`gpt-5.6-luna`](https://developers.openai.com/api/docs/models/gpt-5.6-luna) ，以获得最低的成本和延迟。如果你使用的是 GPT-5.6 模型，请参阅 [推理模式](#reasoning-mode) 了解其 `pro` 选项。
 
 **推理模型与 [Responses
-  API](https://developers.openai.com/api/docs/guides/migrate-to-responses)**。配合使用效果更佳。虽然 Chat Completions API
+  API](https://developers.openai.com/api/docs/guides/migrate-to-responses)**。搭配使用效果更好。虽然 Chat Completions API
   仍然受支持，但通过
-  使用 Responses 可以获得更好的模型智能和性能。
+  使用 Responses，你将获得更强的模型智能和更好的性能。
 
 ## 开始使用推理
 
-调用 [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create) 并指定你的推理模型和推理力度：
+调用 [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create) 并指定你的推理模型和推理强度：
 
 在 Responses API 中使用推理模型
 
@@ -185,37 +185,37 @@ curl https://api.openai.com/v1/responses \
 
 ## Reasoning effort
 
-该 `reasoning.effort` 参数引导模型在执行任务时的思考深度。
+该 `reasoning.effort` 参数用于引导模型在执行任务时思考多少。
 
-支持的值取决于具体模型，可能包括 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`。较低的努力值优先考虑速度和更低的 token 使用量，而在较高的努力值下，模型会思考得更充分以输出更高质量的回答。模型还会在不同推理努力值之间自适应地分配推理资源，对简单任务使用更少的 token，对复杂任务则进行更深入的思考。
+支持的值因模型而异，可能包括 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`。较低的推理 effort 倾向于更快的速度和更少的 token 使用，而在更高的 effort 下，模型会思考得更充分以提供更高质量的回答。模型还会在不同的推理 effort 之间自适应地进行推理，对简单的任务使用更少的 token，对复杂的任务思考得更深入。
 
 [GPT-6 Astra](https://developers.openai.com/api/docs/models/gpt-6-astra) 不支持 `none` reasoning
-  effort。设置 `reasoning.effort` （Responses）或 `reasoning_effort` （Chat
+  effort。在 Responses 中设置 `reasoning.effort` （Responses）或 `reasoning_effort` （Chat
   Completions）为 `none` 会返回 HTTP 400。
 
-请使用 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) 进行函数
-调用。Chat Completions 不支持在 GPT-6 Astra 上进行函数调用。
+请使用 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) 进行 function
+calling。Chat Completions 不支持使用 GPT-6 Astra 进行函数调用。
 
-默认值同样取决于具体模型，而非通用。 `gpt-5.5` 默认为 `medium` 推理努力值。这是体验 `gpt-5.5`’在质量、可靠性和性能之间最佳平衡的推荐起点。
+默认值同样因模型而异，而非统一。 `gpt-5.5` 默认为 `medium` 推理 effort。这是 `gpt-5.5`’在质量、可靠性和性能方面最佳平衡的起点。
 
-| Effort   | 适用场景                                                                                                                                                                                                                                                                                                                                                             |
+| Effort   | Best for                                                                                                                                                                                                                                                                                                                                                             |
 | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `none`   | 对延迟敏感且无法受益于任何推理或多链式工具调用的任务。针对对延迟敏感的使用场景，我们建议先从 `gpt-5.5`，开始尝试，必要时再切换到 `low` （如果需要）。 `none` 。<br /><br />常见使用场景包括语音、快速信息检索和分类。                                                 |
-| `low`    | 在适度增加延迟的情况下提供高效推理。适合需要工具使用、规划、搜索或多步骤决策的场景，同时兼顾速度和成本。<br /><br />常见使用场景包括数据分析、起草、面向执行的编码，以及客户支持/聊天助手工作流。                                           |
-| `medium` | 当质量和可靠性至关重要，且任务涉及规划、复杂推理与判断时使用。是大多数工作负载的默认配置，并在延迟、性能和成本的帕累托曲线上达到良好平衡。<br /><br />常见使用场景包括智能体式编码、研究、处理电子表格与幻灯片，以及委派长周期任务。 |
-| `high`   | 高难度推理、复杂调试、深度规划，以及质量和智能比延迟更重要的关键任务。推荐用于复杂工作流和智能体任务。<br /><br />常见使用场景包括智能体式编码、长周期研究，以及知识工作。根据任务复杂度，建议同时评估 `medium` 和 `high`.     |
-| `xhigh`  | 深度研究、异步工作流以及需要长时间运行的智能体任务。仅当你的评估显示其能带来明显收益且值得额外的延迟和成本时再使用。<br /><br />常见使用场景包括安全与代码审查、企业生产力、更深度的研究任务，以及具有挑战性的编码工作流。                                             |
-| `max`    | 为最复杂的任务提供最大程度的推理。如果你当前正在使用 `xhigh`，请评估 `max` 是否能带来更强的性能                                                                                                                                                                                                                                 |
+| `none`   | 对延迟敏感且无需任何推理或多步骤链式工具调用的任务。对于对延迟敏感的使用场景， `gpt-5.5`，我们建议先尝试 `low` ，再根据需要切换到 `none` 。<br /><br />常见用例包括语音、快速信息检索和分类。                                                 |
+| `low`    | 以适度的延迟增加换取高效的推理。适合需要工具使用、规划、搜索或多步决策，同时在速度和成本上做了优化的使用场景。<br /><br />常见用例包括数据分析、起草、面向执行的编码以及客户支持/聊天助手工作流。                                           |
+| `medium` | 当质量和可靠性至关重要，且任务涉及规划、复杂推理和判断时使用。是大多数工作负载的默认配置，也是延迟、性能和成本帕累托曲线上一个均衡的点。<br /><br />常见用例包括智能体编码、研究、处理电子表格与幻灯片，以及委派长周期任务。 |
+| `high`   | 适用于困难推理、复杂调试、深度规划，以及质量和智能比延迟更重要的高价值任务。推荐用于复杂工作流和智能体任务。<br /><br />常见用例包括智能体编码、长周期研究以及知识工作。根据任务复杂度，可同时评估 `medium` 和 `high`.     |
+| `xhigh`  | 深度研究、异步工作流以及需要长时间运行的智能体任务。仅当你的评估显示能带来明显收益，足以证明额外延迟和成本合理时才使用。<br /><br />常见用例包括安全与代码审查、企业生产力、更深度的研究任务，以及具有挑战性的编码工作流。                                             |
+| `max`    | 用于处理最复杂任务的最大推理能力。如果你当前正在使用 `xhigh`，请评估是否 `max` 能带来更强的性能                                                                                                                                                                                                                                 |
 
-在延迟敏感的应用中，为了更快获得首个可见词元，可以让模型先生成一段简短的前言，再继续进行更深入的推理。
+在延迟敏感的应⽤中，为了更快地获得⻅⻅⻅第⼀个可⻅ token，可以让模型先⽣成⼀段简短的引导⽂本，再继续进⾏更深⼊的推理。
 
-部分模型仅支持这些取值中的子集，因此请查看相关的 [模型页面](https://developers.openai.com/api/docs/models) 后再选择相应设置。
+某些模型仅⽀持上述选项中的⼀部分，因此请参考相应的 [模型⻚⾯](https://developers.openai.com/api/docs/models) 后再选择相应设置。
 
 ## Reasoning mode
 
-GPT-5.6 模型支持 `standard` 和 `pro` 推理模式（在 Responses API 中）。 `standard` 为默认模式。设置 `reasoning.mode` 为 `pro` 适用于需要更多模型工作且可接受更高延迟和 token 用量的困难任务。
+GPT-5.6 模型支持 `standard` 和 `pro` 在 Responses API 中的推理模式。 `standard` 是默认值。将 `reasoning.mode` 设置为 `pro` 用于那些需要更多模型工作且可以容忍更高延迟和 token 用量的困难任务。
 
-推理模式和推理强度彼此独立。模式用于选择标准或 pro 执行方式，而 `reasoning.effort` 则控制模型在该模式下应用的推理程度。如果你省略 `reasoning.effort`,GPT-5.6 默认在两种模式下都使用 `medium` 。
+推理模式和推理力度是相互独立的。模式用于选择 standard 或 pro 执行，而 `reasoning.effort` 用于控制模型在该模式中应用的推理程度。如果你省略了 `reasoning.effort`，GPT-5.6 在两种模式下都默认使用 `medium` 。
 
 使用 pro 推理模式
 
@@ -234,31 +234,31 @@ curl https://api.openai.com/v1/responses \
 ```
 
 
-Pro 模式会汇总为生成最终答案所执行的模型工作，并按所选模型的标准 [token 费率](https://developers.openai.com/api/docs/pricing)。对这些 token 计费。Pro 模式相比标准模式会执行更多模型工作，从而增加 token 用量和成本。现有 Pro 模型 ID 保持其当前行为和定价不变。
+Pro 模式会汇总为生成最终答案而执行的模型工作，并按所选模型的标准 [token 费率](https://developers.openai.com/api/docs/pricing)。对这些 token 计费。Pro 模式比 standard 模式执行更多模型工作，从而增加 token 用量和成本。现有 Pro 模型 ID 保持其当前行为和定价不变。
 
 ## 推理工作原理
 
-推理模型引入了 **推理 tokens** ，作为输入和输出 tokens 之外的补充。这些模型使用这些推理 tokens 来“思考”，拆解提示并考虑生成回复的多种方法。我们的推理模型（例如 API 平台上的 GPT-5.6 和 o-series 模型）支持交错思考，即模型能够在思考前后以及之间生成可见的输出 tokens，并且能够在工具调用之间进行思考。 `gpt-5.5` 和 `gpt-5.4` 支持交错思考，其中模型能够在思考前后以及之间生成可见的输出 tokens，并能够在工具调用之间进行思考。
+推理模型会引入 **推理 tokens** ，作为输入和输出 tokens 之外的补充。这些模型使用这些推理 tokens 来“思考”，拆解提示并考虑生成回复的多种方法。我们的推理模型（如 `gpt-5.5` 和 `gpt-5.4` ）支持交错思考，即模型能够在思考前后及之间生成可见的输出 tokens，并且能够在工具调用之间进行思考。
 
-对于 GPT-5.6 之前发布的模型，在多步对话中的默认行为是保留每一步的输入和输出 tokens，而不会将先前回合的推理内容渲染到下一次采样中。GPT-5.6 模型则默认会渲染先前回合中可用的推理内容。可使用 `reasoning.context` 在支持的模型上选择任一行为。
+对于 GPT-5.6 之前发布的模型，在多步对话中的默认行为是保留每一步的输入和输出 tokens，而不会将先前轮次的推理内容渲染到下一次采样中。GPT-5.6 模型则默认会渲染先前轮次中可用的推理内容。可以使用 `reasoning.context` 在支持的模型上选择任一行为。
 
-![包含当前回合上下文的推理 tokens](https://cdn.openai.com/API/docs/images/context-window.png)
+![当前轮次上下文中的推理 tokens](https://cdn.openai.com/API/docs/images/context-window.png)
 
-虽然推理 tokens 无法通过 接口 查看，但它们仍然占用
+虽然推理 tokens 无法通过 API 查看，但它们仍然占用
   模型的上下文窗口空间，并按 [输出
   tokens](https://openai.com/api/pricing).
 
 ## 控制成本
 
-要控制推理模型的成本，你可以通过设置
-参数来限制模型生成的总令牌数，包括推理令牌、可见的输出令牌以及不可见的
-格式令牌。详见
+要控制推理模型的费用，你可以通过设置来限制模型生成的
+令牌总数，包括推理令牌、可见的输出令牌以及不可见的
+格式化令牌，方法是使用
 [`max_output_tokens`](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-max_output_tokens)
-参数。参见 [输出令牌计数](https://developers.openai.com/api/docs/guides/token-counting#understand-output-token-counts) 了解生成的令牌如何体现在用量和输出限制中的详细信息。
+参数。详见 [输出令牌计数](https://developers.openai.com/api/docs/guides/token-counting#understand-output-token-counts) ，了解生成的令牌如何在用量和输出限制中体现的详细信息。
 
 ### 管理上下文窗口
 
-在创建响应时，确保上下文窗口中有足够的空间用于推理 tokens 非常重要。根据问题的复杂度，模型可能生成从几百到数万个不等的推理 tokens。实际使用的推理 tokens 数量可在 [响应对象的 usage 对象](https://developers.openai.com/api/reference/resources/responses)，中查看，字段位于 `output_tokens_details`:
+在创建响应时，确保上下文窗口中有足够的空间用于推理令牌，这一点非常重要。根据问题的复杂程度，模型可能会生成从几百到数万个不等的推理令牌。所用推理令牌的确切数量可在响应对象的 [usage 对象](https://developers.openai.com/api/reference/resources/responses)，中查看，位置在 `output_tokens_details`:
 
 ```json
 {
@@ -276,13 +276,13 @@ Pro 模式会汇总为生成最终答案所执行的模型工作，并按所选�
 }
 ```
 
-上下文窗口长度可在 [模型参考页面](https://developers.openai.com/api/docs/models)，中查看，不同模型快照会有所差异。
+上下文窗口长度请参阅 [模型参考页](https://developers.openai.com/api/docs/models)，不同模型快照的上下文窗口长度会有所不同。
 
 ### Allocating space for reasoning
 
-如果生成的 token 达到上下文窗口上限或你设置的 `max_output_tokens` 值，你会收到一个带有 `status` 的 `incomplete` 和 `incomplete_details` 为 `reason` 设置为 `max_output_tokens`。的响应。这种情况可能发生在产生任何可见输出 token 之前，意味着你可能为输入和推理 token 付费，却没有收到可见的响应。
+如果生成的 token 达到上下文窗口上限或你 `max_output_tokens` 设置的值，你将收到一个包含以下内容的响应： `status` 为 `incomplete` 和 `incomplete_details` ，并 `reason` 设置为 `max_output_tokens`。这种情况可能在产生任何可见输出 token 之前就发生，意味着你可能会为输入和推理 token 付费却得不到可见响应。
 
-为避免这种情况，请确保上下文窗口有足够空间，或调高 `max_output_tokens` 值。OpenAI 建议在开始试验这些模型时，至少为推理和输出预留 25,000 个 token。当你熟悉提示所需的推理 token 数量后，可以相应调整这个缓冲区大小。
+为避免这种情况，请确保上下文窗口中有足够空间，或调整 `max_output_tokens` 值为更大的数字。OpenAI 建议在开始试验这些模型时，为推理和输出预留至少 25,000 个 token。随着你逐渐熟悉提示所需的推理 token 数量，可以相应调整该缓冲。
 
 处理不完整的响应
 
@@ -499,35 +499,35 @@ end
 
 ## 在调用之间保留推理过程
 
-对话状态和推理状态用途不同。跨调用传递消息可为模型提供可见的对话历史。在支持的模型上，持久化的推理还可以让模型将早期轮次中兼容的推理项渲染到下一段上下文中。
+会话状态与推理状态用途不同。跨调用传递消息可为模型提供可见的对话历史。在受支持的模型上，持久化的推理还允许模型将先前轮次中兼容的推理项渲染到其下一个上下文中。
 
-持久化的推理提供延续性，但不会暴露模型的原始推理。推理项仍然是不透明的，API 不会返回其推理文本。可设置 `reasoning.context` 以控制模型可使用的可用推理项：
+持久化推理提供延续性，但不会暴露模型的原始推理。推理项保持不透明，API 不会返回其推理文本。设置 `reasoning.context` 以控制模型可使用的可用推理项：
 
 该 [GPT-5.6 模型系列](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.6)
   支持
-  `all_turns` 并默认使用它。较早的模型默认为
+  `all_turns` 并默认使用它。早期模型默认使用
   `current_turn`。省略 `reasoning.context` 或将其设置为
   `auto` 以使用所选模型的默认值。
 
 | 值          | 行为                                                                                                                  |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `auto`         | 使用所选模型的默认值。省略 `reasoning.context` 的效果与 `auto`.                            |
-| `current_turn` | 使当前轮次的推理可用，但不会将更早轮次的推理渲染到下一个采样中。    |
-| `all_turns`    | 将更早轮次中可用且兼容的推理项渲染到下一个采样中。GPT-5.6 模型支持此值。 |
+| `auto`         | 使用所选模型的默认值。省略 `reasoning.context` 的效果等同于 `auto`.                            |
+| `current_turn` | 让当前轮次的推理可用,但不会将之前轮次的推理渲染到下一个采样中。    |
+| `all_turns`    | 将之前轮次中可用且兼容的推理项渲染到下一个采样中。GPT-5.6 模型支持此值。 |
 
-响应的 `reasoning.context` 字段包含实际使用的模式，为 `current_turn` 或 `all_turns`。请在每次响应时检查此字段以确认模型使用的模式。该设置不会创建原本不可用的推理项。
+响应的 `reasoning.context` 字段包含实际生效的模式，取值为 `current_turn` 或 `all_turns`。请在每次响应中检查该字段，以确认模型使用了哪种模式。该设置不会创建原本不可用的推理条目。
 
-`all_turns` 仅在请求可以访问较早的响应项时才有效。使用 `previous_response_id`，将响应附加到对话中，或手动重放完整的响应历史。在首次请求时， `current_turn` 和 `all_turns` 行为相同，因为此时不存在较早的推理。
+`all_turns` 仅在请求能够访问之前的响应条目时才会生效。可使用 `previous_response_id`，将该响应附加到一个会话中，或手动重放完整的响应历史。在首次请求时， `current_turn` 和 `all_turns` 表现相同，因为此时不存在任何先前的推理。
 
-持久化的推理只能在同一模型系列内复用。例如， `gpt-5.6-sol`, `gpt-5.6-terra`，以及 `gpt-5.6-luna` 可以互相复用彼此的推理，但推理不会在 GPT-5.6 和 GPT-5.5 系列之间传递。
+持久化的推理只能在同一模型系列内被复用。例如， `gpt-5.6-sol`, `gpt-5.6-terra`，以及 `gpt-5.6-luna` 之间可以互相复用推理，但推理不会在 GPT-5.6 与 GPT-5.5 系列之间传递。
 
-当你切换模型系列时，API 会从模型的上下文中省略不兼容的推理，即使在 `reasoning.context` 为 `all_turns`.
+当你切换模型系列时，API 会从模型的上下文里省略不兼容的推理，即使 `reasoning.context` 为 `all_turns`.
 
-### 使用存储的响应继续推理
+### 使用已存储的响应继续推理
 
 使用 `previous_response_id` 实现最短的有状态集成：
 
-在 响应接口 中保留之前的推理
+保留对上一响应的推理
 
 ```javascript
 import OpenAI from "openai";
@@ -680,13 +680,13 @@ puts(second.output_text)
 ```
 
 
-使用 `current_turn` 当重放模型已不再需要的旧响应条目时，可以省略较旧推理条目。这些推理条目可以保留在 API 有效负载中以保持连续性，但服务不会将它们渲染到新样本中。这可以减少长时间运行工作流的已渲染上下文。
+使用 `current_turn` 在回放模型不再需要的较旧响应项时使用。这些推理项可以保留在 API 有效负载中以保持连续性，但服务不会将它们渲染到新样本中。这可以减少长时间运行工作流的已渲染上下文。
 
 ### 在不使用存储响应的情况下保留推理
 
-当你在无状态模式下创建响应时，响应中 `output` 数组里的推理项默认包含一个 `encrypted_content` 属性。无状态模式适用于 `store` 为 `false` 或当你的组织使用零数据保留 (ZDR) 时。API 仍然接受旧版 `reasoning.encrypted_content` 值的 `include` 参数以保持兼容，但并不要求传入该值。
+当你在无状态模式下创建响应时，响应中的推理项默认会包含一个 `output` 属性。在以下情况下适用无状态模式： `encrypted_content` ，或者当你的组织使用零数据保留（ZDR）时。API 仍然接受旧版 `store` 为 `false` 或当你的组织使用零数据保留（ZDR）时。接口 仍然接受旧版 `reasoning.encrypted_content` 值以 `include` 保持兼容性，但并不要求该字段。
 
-以下请求在不指定的情况下返回加密的推理内容： `include`:
+以下请求在不指定 `include`:
 
 ```bash
 curl https://api.openai.com/v1/responses \
@@ -702,11 +702,11 @@ curl https://api.openai.com/v1/responses \
 ```
 
 
-中的推理项 `output` 数组将包含一个 `encrypted_content` 属性，其中包含可传递给后续调用的加密推理 token。
+数组中的推理条目将包含一个 `output` 属性，其中包含你可以传递给后续调用的加密推理 token。 `encrypted_content` 属性，其中包含你可以传递给后续调用的加密推理 token。
 
-要使用 `all_turns` 为 `store: false`，请保留每个输出项，追加下一条用户消息，并重放完整的对话历史：
+要使用 `all_turns` ，并 `store: false`，请保留每个输出条目，追加下一条用户消息，然后重放完整历史记录：
 
-保留推理而不存储响应
+在不使用 响应接口 存储的情况下保留推理
 
 ```javascript
 import OpenAI from "openai";
@@ -714,7 +714,6 @@ import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
 
 const client = new OpenAI();
 
-/** @type {OpenAI.Responses.ResponseInput} */
 const history = [
   {
     role: "user",
@@ -937,24 +936,24 @@ puts(second.output_text)
 ```
 
 
-### 将推理项保留在上下文中
+### 在上下文中保留推理项
 
-在进行 [函数调用](https://developers.openai.com/api/docs/guides/function-calling) 并使用推理模型时,我们强烈建议你将上次函数调用返回的所有推理项(除了函数的输出之外)一并传回。如果模型连续调用多个函数,你应该传回所有推理项、函数调用项和函数调用输出项,因为最后一条 [Responses API](https://developers.openai.com/api/reference/resources/responses), we highly recommend you pass back any reasoning items returned with the last function call (in addition to the output of your function). If the model calls multiple functions consecutively, you should pass back all reasoning items, function call items, and function call output items, since the last `user` 消息可以让模型继续其推理过程,以最高效的 token 使用方式产生更好的结果。
+在使用 [function calling](https://developers.openai.com/api/docs/guides/function-calling) 与推理模型结合时，我们强烈建议你在 [Responses API](https://developers.openai.com/api/reference/resources/responses)，中将上一次函数调用返回的所有推理项一并传回（除了你的函数输出之外）。如果模型连续调用了多个函数，你应该传回所有推理项、函数调用项和函数调用输出项，因为上一次 `user` 消息。这能让模型以最高效的 token 使用方式继续推理，从而产出更好的结果。
 
-最简单的做法是将上一次响应中的所有推理项传入下一次请求。我们的系统会智能地忽略与你的函数无关的推理项,只保留与上下文相关的部分。你可以通过 `previous_response_id` 参数传入之前响应中的推理项,或者手动传入所有 [输出](https://developers.openai.com/api/reference/resources/responses#responses/object-output) 将来自先前响应的 items 传入新的 [input](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-input) 中。
+最简单的做法是将上一次响应中的所有推理项都传入下一次响应。系统会智能地忽略与你的函数无关的推理项，只保留上下文中相关的部分。你可以使用 `previous_response_id` 参数传入上一次响应中的所有 [输出](https://developers.openai.com/api/reference/resources/responses#responses/object-output) 项到下一次响应的 [input](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-input) 中。
 
-对于你可能需要在传递给下一个响应之前截断和优化上下文窗口部分的高级用例，只需确保在最后一个用户消息和你的函数调用输出之间的所有 items 原样传递给下一个响应。这样可以确保模型拥有所需的全部上下文。
+对于你需要在传给下一次响应之前截断或优化上下文窗口部分内容的进阶用例，只要确保上一次用户消息和你的函数调用输出之间的所有项都原封不动地传入下一次响应即可。这能保证模型拥有所需的全部上下文。
 
-查看 [本指南](https://developers.openai.com/api/docs/guides/conversation-state) 了解有关手动上下文管理的更多信息。
+请参阅 [本指南](https://developers.openai.com/api/docs/guides/conversation-state) 以了解更多关于手动上下文管理的内容。
 
-## 在对话中途更改推理方式
+## 在对话过程中更改推理
 
-使用 `configuration_update` 以提高处理困难任务时的推理投入，或降低处理常规追问时的推理投入。在响应之间添加该更新，同时保持请求级别的 `reasoning.effort` 设置不变。这可以保留原始的提示词前缀，以便进行 [提示词缓存](https://developers.openai.com/api/docs/guides/prompt-caching).
+使用 `configuration_update` 在困难任务中提升推理力度，或在常规后续问题中降低它。在两次响应之间添加更新，同时保持请求级别的 `reasoning.effort` 不变。这会保留原始提示词前缀，以便 [提示词缓存](https://developers.openai.com/api/docs/guides/prompt-caching).
 
-配置更新仅由 GPT-6 Astra（`gpt-6-astra`）在
-  标准、单智能体模式下提供，仅更改推理 effort。
+配置更新仅由 GPT-6 Astra (`gpt-6-astra`) 在
+  标准的单智能体模式下支持。它们只会改变推理力度。
 
-在下一条用户消息之前，在 HTTP Responses 请求或 WebSocket `input` 请求的 `response.create` 数组中添加以下项：
+在下一条用户消息之前向 `input` HTTP Responses 请求或 WebSocket `response.create` 请求的数组中添加以下项：
 
 ```json
 {
@@ -965,9 +964,9 @@ puts(second.output_text)
 }
 ```
 
-例如，如果对话以请求级别的 effort 开始 `low`，此更新将选择 `high` 用于下一次响应及后续响应，直到另一次更新将其覆盖。
+例如，如果会话以请求级 effort 开头 `low`，此更新会选择 `high` 用于下一次响应及后续响应，直到另一次更新覆盖它。
 
-在追问中提高推理 effort
+在后续问题中提升推理力度
 
 ```javascript
 import OpenAI from "openai";
@@ -1157,23 +1156,23 @@ puts(response.output_text)
 ```
 
 
-使用 `previous_response_id`，保留更新，或者在手动管理对话历史时 [将其在原始位置重放](https://developers.openai.com/api/docs/guides/conversation-state#manually-manage-conversation-state)。响应的 `reasoning.effort` 仍然报告请求级别的设置，而不是由该更新选择的 effort。
+使用以下方式保留更新： `previous_response_id`，或在手动管理会话历史时按原始位置回放它们， [手动管理会话历史](https://developers.openai.com/api/docs/guides/conversation-state#manually-manage-conversation-state)。响应的 `reasoning.effort` 继续报告请求级设置，而不是由更新所选择的 effort。
 
-不要将两个 `configuration_update` 项直接相邻放置在对话历史中；API 会拒绝相邻的更新。
+不要将两个 `configuration_update` 项直接相邻放置在会话历史中；API 会拒绝相邻的更新。
 
-不要将配置更新与自动压缩或自动截断结合使用。独立的 `/responses/compact` 端点同样会拒绝包含这些更新的历史记录。
+不要将配置更新与自动压缩或自动截断结合使用。该独立 `/responses/compact` 端点也会拒绝包含这些更新的历史记录。
 
-你仍然可以通过在请求中包含 `compaction_trigger` 项来显式压缩历史记录。压缩后，请在下一条用户消息之前添加一个具有所需 effort 的 `/responses` 请求。压缩后，请在下一条用户消息之前添加一个具有所需 effort 的 `configuration_update` 的新条目。
+你仍然可以通过在 `compaction_trigger` 请求中包含一个 `/responses` 项来显式压缩历史。压缩后，在下一条用户消息之前，添加一个具有所需 effort 的 `configuration_update` 。
 
-常规的 prompt 缓存要求仍然适用。若要在响应运行期间发送用户指令，请使用 [中途引导](https://developers.openai.com/api/docs/guides/steering).
+常规的提示缓存要求仍然适用。若要在响应运行期间发送用户指令，请使用 [中途转向](https://developers.openai.com/api/docs/guides/steering).
 
 ## 推理摘要
 
-虽然我们不会暴露模型输出的原始推理令牌，但你可以通过以下参数查看模型的推理摘要： `summary` 参数。请参阅我们的 [模型文档](https://developers.openai.com/api/docs/models) ，以查看哪些推理模型支持摘要。
+虽然我们不会暴露模型输出的原始推理 token，但你可以使用 `summary` 参数查看模型推理的摘要。请参阅我们的 [模型文档](https://developers.openai.com/api/docs/models) 以查看哪些推理模型支持摘要。
 
-不同的模型支持不同的推理摘要设置。例如，我们的 computer use 模型支持 `concise` 摘要器，而 o4-mini 支持 `detailed`。要访问某模型可用的最详细的摘要器，请将此参数的值设置为 `auto`. `auto` ，对当前大多数推理模型而言等同于 `detailed` ，但未来可能会提供更细粒度的设置。
+不同模型支持不同的推理摘要设置。例如，我们的 computer use 模型支持 `concise` 摘要器，而 o4-mini 支持 `detailed`。要访问模型可用的最详细的摘要器，请将此参数的值设置为 `auto`. `auto` 将等同于 `detailed` ，这适用于当今大多数推理模型，但未来可能会有更细粒度的设置。
 
-推理摘要输出是 `summary` 输出项中 `reasoning` [数组的一部分](https://developers.openai.com/api/reference/resources/responses#responses/object-output)。除非你明确选择包含推理摘要，否则该输出不会包含在内。
+推理摘要输出是 `summary` 数组的一部分，位于 `reasoning` [输出项](https://developers.openai.com/api/reference/resources/responses#responses/object-output)。中。除非你明确选择包含推理摘要，否则此输出将不会被包含。
 
 下面的示例展示了如何发出包含推理摘要的 API 请求。
 
@@ -1323,7 +1322,7 @@ curl https://api.openai.com/v1/responses \
 ```
 
 
-此 API 请求将返回一个输出数组，其中包含一条助手消息以及模型在生成该响应时的推理摘要。
+此 API 请求将返回一个输出数组，其中包含助手消息以及模型在生成该响应时的推理摘要。
 
 ```json
 [
@@ -1354,20 +1353,20 @@ curl https://api.openai.com/v1/responses \
 ]
 ```
 
-在将摘要器与我们最新的推理模型配合使用之前，你可能需要完成
-  组织 [验证
-  。](https://help.openai.com/en/articles/10910291-api-organization-verification)
-  以确保安全部署。在平台设置页面开始使用验证 [platform
-  settings page](https://platform.openai.com/settings/organization/general).
+在将摘要器与我们最新的推理模型配合使用之前，你可能需要
+  完成 [组织
+  验证](https://help.openai.com/en/articles/10910291-api-organization-verification)
+  以确保安全部署。在 [platform
+  settings](https://platform.openai.com/settings/organization/general).
 
 ## `phase` parameter
 
-对于在 Responses API 中使用 GPT-5.5 和 GPT-5.4 的长时间运行或工具密集型工作流，请使用 assistant 消息 `phase` 字段以避免提前停止和其他异常行为。
-`phase` 字段在 API 层面是可选的，但 OpenAI 建议使用它。可使用 `phase: "commentary"` 提供中间的助手更新（例如工具调用前的开场白），并使用 `phase: "final_answer"` 给出最终答案。不要将 `phase` 添加到用户消息中。
-使用 `previous_response_id` 通常是最简单的做法，因为先前的助手状态会被保留。如果手动重放助手历史记录，请保留每个原始的 `phase` 值。
-缺失或丢失的 `phase` 在这些工作流中可能导致开场白被当作最终答案。有关特定模型的提示指南，请参阅 [提示 GPT-5.5](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.5#prompting-best-practices).
+对于使用 GPT-5.5 和 GPT-5.4 的 Responses API 中长时间运行或重度依赖工具的工作流，使用 assistant 消息 `phase` 字段以避免提前停止和其他异常行为。
+`phase` 在 API 层面是可选的，但 OpenAI 建议使用它。使用 `phase: "commentary"` 来输出中间助手更新，例如工具调用前的引导语，并 `phase: "final_answer"` 来输出最终回答。不要将 `phase` 添加到用户消息中。
+使用 `previous_response_id` 通常是最简单的方案，因为之前的助手状态会被保留。如果你手动重放助手历史记录，请保留每个原始 `phase` 的值。
+缺失或丢失的 `phase` 可能导致这些工作流中的引导语被当作最终回答处理。有关模型特定的提示指南，请参阅 [GPT-5.5 提示指南](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.5#prompting-best-practices).
 
-### 往返助手阶段值
+### 往返 assistant 阶段值
 
 往返助手阶段值
 
@@ -1536,15 +1535,15 @@ puts(response.output_text)
 
 ## 提示建议
 
-在向推理模型发出提示时，请考虑这些差异。具备推理能力的 GPT-5 模型通常在以下情况下效果最佳：给出清晰的目标、严格的约束以及明确的输出契约，同时不必规定每一个中间步骤。
+对推理模型进行提示时，请考虑这些差异。具备推理能力的 GPT-5 模型通常在你为其设定明确目标、给出强约束并明确输出契约（同时不预先规定每一个中间步骤）时表现最佳。
 
-- 为模型提供任务、约束条件和期望的输出格式。
-- 将 `reasoning.effort` 视为调节旋钮，而非恢复质量的主要手段。
-- 对于智能体类或研究密集型工作流，需明确“完成”的定义以及模型应如何验证其工作。
+- 向模型提供任务、约束条件以及期望的输出格式。
+- 将 temperature `reasoning.effort` 视为调节参数，而不是恢复质量的主要手段。
+- 对于智能体或研究密集型工作流，需定义何为完成以及模型应如何验证其工作。
 
-有关使用推理模型最佳实践的更多信息， [请参阅本指南](https://developers.openai.com/api/docs/guides/reasoning-best-practices).
+有关使用推理模型的最佳实践的更多信息， [请参阅本指南](https://developers.openai.com/api/docs/guides/reasoning-best-practices).
 
-### Prompt examples
+### 提示词示例
 
 
 
@@ -1552,7 +1551,7 @@ puts(response.output_text)
 
     
 
-OpenAI o-series 模型能够实现复杂算法并生成代码。此提示要求 o1 根据某些特定标准重构一个 React 组件。
+OpenAI o 系列模型能够实现复杂的算法并生成代码。该提示要求 o1 根据一些特定标准重构一个 React 组件。
 
 
 
@@ -1795,7 +1794,7 @@ puts(response.output_text)
 
     
 
-OpenAI o-series 模型同样擅长制定多步骤规划。此示例提示要求 o1 为完整解决方案创建文件系统结构，并附上实现所需用例的 Python 代码。
+OpenAI o 系列模型同样擅长创建多步骤计划。该示例提示要求 o1 为完整解决方案创建一个文件系统结构，并附上实现所需用例的 Python 代码。
 
 
 
@@ -1964,7 +1963,7 @@ STEM 研究
 
     
 
-OpenAI o-系列模型在 STEM 研究中表现出色。要求支持基础研究任务的提示词通常会得到理想结果。
+OpenAI o 系列模型在 STEM 研究中表现出色。请求支持基础研究任务的提示应能产生强劲的结果。
 
 
 
@@ -2105,15 +2104,15 @@ puts(response.output_text)
 
 ## 用例示例
 
-一些使用推理模型解决实际用例的示例可以在 [Cookbook](https://developers.openai.com/cookbook).
+一些使用推理模型处理真实场景的示例可以在 [cookbook](https://developers.openai.com/cookbook).
 
-[将推理用于数据校验
+[使用推理进行数据验证
 
 
 
       Evaluate a synthetic medical data set for discrepancies.](https://developers.openai.com/cookbook/examples/o1/using_reasoning_for_data_validation)
 
-[将推理用于例程生成
+[使用推理生成例程
 
 
 

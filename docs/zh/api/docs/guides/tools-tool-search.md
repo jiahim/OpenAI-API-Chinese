@@ -1,27 +1,27 @@
 # Tool search
 
-> 完整文档索引请参见 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 末尾添加 `.md` 后缀。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 后追加 `.md` 来获取。
 
-工具搜索允许模型根据需要动态搜索并将工具加载到模型的上下文中。这样可以避免将所有工具定义一次性加载到模型的上下文中，并且 **有助于降低整体的 token 用量和成本**。为了在成本和延迟上达到最优，工具搜索旨在 **保留模型的缓存**。当模型发现新工具时，它们会被注入到上下文窗口的末尾。
+工具搜索允许模型根据需要动态搜索并将工具加载到模型的上下文中。这样你无需预先将所有工具定义加载到模型的上下文中，并且 **有助于降低整体 token 用量和成本**。为了在成本和延迟方面达到最佳效果，工具搜索旨在 **保留模型的缓存**。当模型发现新工具时，这些工具会被注入到上下文窗口的末尾。
 
-在 Responses API 中，仅 `gpt-5.4` 及更高版本的模型支持 `tool_search`.
+在 Responses API 中，只有 `gpt-5.4` 及更高版本的模型支持 `tool_search`.
 
-以下配置和示例使用 Responses API。有关基于会话的函数加载和自动 MCP 发现，请参阅 [智能体 API](#agents-api).
+以下配置和示例使用 Responses API。关于基于会话的函数加载和自动 MCP 发现，请参阅 [智能体 API](#agents-api).
 
 要在 Responses API 中启用工具搜索，你需要完成两件事：
 
-1. 将其添加为工具 `tool_search` 在 tools 数组中 `tools` 。
-2. 如果你使用的是 [functions](https://developers.openai.com/api/docs/guides/function-calling#defining-functions)，请将需要延迟执行的部分标记为 `defer_loading: true`。如果你使用的是 [MCP servers](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)，请在 MCP 服务器工具定义上设置 `defer_loading: true` 。
+1. Add `tool_search` 作为工具添加到你的 `tools` 数组中。
+2. 如果你使用的是 [functions](https://developers.openai.com/api/docs/guides/function-calling#defining-functions),用 `defer_loading: true`。标记你想要延后的项。如果你使用的是 [MCP servers](https://developers.openai.com/api/docs/guides/tools-connectors-mcp),在 MCP 服务器工具定义上设置 `defer_loading: true` 。
 
 ### 尽可能使用命名空间
 
-你可以将工具搜索与延迟 [functions](https://developers.openai.com/api/docs/guides/function-calling#defining-functions), [namespaces](https://developers.openai.com/api/docs/guides/function-calling#defining-namespaces)，或者 [MCP servers](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)，一起使用，但我们建议尽可能使用 namespaces 或 MCP 服务器。我们的模型主要针对这些场景进行训练，在这些场景下节省的 token 通常更显著。
+你可以将工具搜索与延迟 [functions](https://developers.openai.com/api/docs/guides/function-calling#defining-functions), [namespaces](https://developers.openai.com/api/docs/guides/function-calling#defining-namespaces)，或者 [MCP servers](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)，一起使用，但我们建议尽可能使用 namespaces 或 MCP servers。我们的模型主要针对这些场景进行训练，并且在这些场景下的 token 节省通常更为显著。
 
-对于 namespaces， `defer_loading` 适用于 namespace 内部的函数，而非 namespace 对象本身。
+对于 namespaces， `defer_loading` 仅作用于命名空间内的函数，而不是命名空间对象本身。
 
-在请求开始时，模型仍然会看到所有可搜索项的名称和描述。对于 namespace 或 MCP 服务器，模型在开始时只能看到 namespace 或服务器的名称和描述，而不会展示其中各个函数的详细信息，直到工具搜索工具加载它们。对于单个延迟函数，模型仍会看到该函数的名称和描述，因此实际上工具搜索主要是延迟参数 schema 的加载。
+在请求开始时，模型仍会看到所有可搜索内容的名称和描述。对于 namespace 或 MCP server，这意味着模型在开始时只会看到 namespace 或 server 的名称和描述，而不会显示其中所包含的各个函数的详细信息，直到工具搜索工具加载它们。对于单个延迟函数，模型仍会看到函数名称和描述，因此在实践中工具搜索主要是在延迟参数 schema。
 
-为了最大化节省 token，我们建议将延迟函数归入 namespaces 或 MCP 服务器，并为它们提供清晰且高层级的描述，从而让模型能够充分了解其中包含的内容，以便有效地搜索并仅加载相关函数。作为最佳实践，建议每个 namespace 包含的函数少于 10 个，以获得更好的 token 效率和模型性能。
+为了最大限度地节省 token，我们建议将延迟函数归入 namespaces 或 MCP servers，并为它们提供清晰的高级描述，使模型能够充分了解其中所包含的内容，从而可以有效地搜索并仅加载相关函数。作为最佳实践，建议将每个 namespace 内的函数数量控制在 10 个以内，以获得更好的 token 效率和模型性能。
 
 ```json
 {
@@ -59,23 +59,23 @@
 ```
 
 
-Namespaces 可以混合包含延迟和非延迟的工具。未设置 `defer_loading: true` 的工具可以立即调用，而同一 namespace 中的延迟工具则通过工具搜索加载。
+Namespaces 可以混合使用延迟和非延迟的工具。没有 `defer_loading: true` 的工具可以立即调用，而同一 namespace 中的延迟工具则通过工具搜索加载。
 
 ### 工具搜索类型
 
 在两种工具搜索类型之间进行选择：
 
-- **托管工具搜索：** OpenAI 会在你在请求中声明的延迟工具中搜索，并在同一响应中返回已加载的子集。
-- **客户端执行的工具搜索：** 模型会发出一个 `tool_search_call`，由你的应用程序执行查找，然后你返回一个匹配的 `tool_search_output`.
+- **托管工具搜索：** OpenAI 会在你在请求中声明的延迟工具中进行搜索，并在同一响应中返回已加载的子集。
+- **客户端执行的工具搜索：** 模型发出一个 `tool_search_call`，由你的应用程序执行查找，并返回一个匹配的 `tool_search_output`.
 
-如果候选工具在创建请求时已经已知，请从托管工具 search 开始。
-  请在需要工具发现时使用 client-executed tool search。
-  取决于项目状态、租户状态或你应用中的其他系统
-  的访问控制。
+如果候选工具在创建请求时已经明确，请从托管工具搜索开始
+  。当工具发现依赖于项目状态、租户状态或你的应用所控制的
+  其他系统时，请使用由客户端执行的工具搜索
+  。
 
 ## 托管工具搜索
 
-当你已经清楚完整的工具清单时，托管工具搜索是最简单的路径， [functions](https://developers.openai.com/api/docs/guides/function-calling#defining-functions), [namespaces](https://developers.openai.com/api/docs/guides/function-calling#defining-namespaces)，或者 [MCP servers](https://developers.openai.com/api/docs/guides/tools-connectors-mcp) 你希望让模型去搜索。你需要预先声明它们，然后添加 `{"type": "tool_search"}`，由 API 决定加载哪些。
+当你已经知道希望模型搜索的完整工具清单时，托管工具搜索是最简单的途径。你可以预先声明它们，添加 [functions](https://developers.openai.com/api/docs/guides/function-calling#defining-functions), [namespaces](https://developers.openai.com/api/docs/guides/function-calling#defining-namespaces)，或者 [MCP servers](https://developers.openai.com/api/docs/guides/tools-connectors-mcp) ，然后由 API 决定要加载哪些。 `{"type": "tool_search"}`，让 接口 决定要加载的内容。
 
 配置 托管工具 搜索
 
@@ -84,7 +84,6 @@ import OpenAI from "openai";
 
 const client = new OpenAI();
 
-/** @type {OpenAI.Responses.NamespaceTool} */
 const crmNamespace = {
   type: "namespace",
   name: "crm",
@@ -339,10 +338,10 @@ puts(response.output)
 ```
 
 
-如果模型判定需要使用延迟工具，响应中会在最终函数调用之前额外包含两项输出项：
+如果模型判定它需要一个延迟加载的工具，响应会在最终函数调用之前包含两个额外的输出项：
 
 - `tool_search_call`，用于记录托管搜索步骤。
-- `tool_search_output`，其中包含已加载且可被调用的子集。
+- `tool_search_output`，其中包含已加载的、可被调用的子集。
 
 托管工具搜索响应
 
@@ -401,15 +400,15 @@ puts(response.output)
 ```
 
 
-在托管模式下， `execution` 被设置为 `server` 并且 `call_id` 被设置为 `null`.
+在托管模式下， `execution` 设置为 `server` 和 `call_id` 设置为 `null`.
 
-对于更复杂的任务，模型还可以在同一个 `tool_search_call`。中加载多个命名空间或 MCP 服务器。例如，如果它需要来自不同命名空间的函数来完成一个任务，可能会选择在发起后续函数调用之前一并搜索并加载这些接口面。
+对于更复杂的任务，模型还可以在同一个 `tool_search_call`。中加载多个命名空间或 MCP 服务器。例如，如果它需要来自不同命名空间的函数来完成一项任务，则可以选择在发起后续函数调用之前一起搜索并加载这些接口面。
 
 ## 客户端执行的工具搜索
 
-由客户端执行的工具搜索让你的应用可以完全掌控工具发现的方式。当可用工具依赖于无法在初始 `tools` 列表中声明的信息时，这种方式非常有用。
+客户端执行的工具搜索让你的应用可以完全掌控工具发现的方式。当你可用的工具取决于一些不切实际在初始 `tools` 列表中声明的信息时，这非常有用。
 
-使用以下方式配置 `tool_search` 工具，并提供一个用于搜索参数的 schema，你的应用将根据该 schema 接收参数： `execution: "client"` （此处为占位）
+为该工具配置 `tool_search` 以及应用所需的搜索参数 schema： `execution: "client"` 以及应用所需的搜索参数 schema：
 
 配置客户端执行的工具搜索
 
@@ -451,7 +450,6 @@ if (!searchCall) {
   throw new Error("The response did not include a tool search call.");
 }
 
-/** @type {OpenAI.Responses.Tool[]} */
 const loadedTools = [
   {
     type: "function",
@@ -470,7 +468,6 @@ const loadedTools = [
   },
 ];
 
-/** @type {OpenAI.Responses.ResponseToolSearchOutputItemParam} */
 const searchOutput = {
   type: "tool_search_output",
   execution: "client",
@@ -782,7 +779,7 @@ end
 ```
 
 
-在第一轮，模型会发出一个 `tool_search_call` 并在此停止：
+在第一轮中，模型会发出一个 `tool_search_call` 并在此停止：
 
 客户端工具搜索调用
 
@@ -801,7 +798,7 @@ end
 ```
 
 
-然后你的应用执行搜索，并返回一个 `tool_search_output` 其中包含希望加载的工具：
+然后你的应用执行该搜索，并返回一个 `tool_search_output` ，其中包含你希望加载的工具：
 
 返回 tool_search_output
 
@@ -850,31 +847,31 @@ end
 ```
 
 
-在客户端模式下， `execution` 被设置为 `client` 并且 `call_id` 已定义。在你的 `call_id` 中回显相同的 `tool_search_call` 即可。 `tool_search_output`.
+在客户端模式下， `execution` 设置为 `client` 和 `call_id` 已定义。在你的 `call_id` 中原样回显 `tool_search_call` 即可。 `tool_search_output`.
 
 ## 高级用法
 
 ### 保持命名空间描述清晰
 
-让命名空间描述清晰且能体现具体用例，因为模型会依据该描述决定何时加载该命名空间下的函数子集。避免过长的描述，而应将更丰富的细节放在仅在需要时才会加载的延迟函数描述中。
+让命名空间的描述清晰且能体现其使用场景，因为模型会根据该描述来决定何时加载该命名空间中的子集函数。避免使用过长的描述；相反，应将更丰富的细节放在那些仅在需要时才会加载的延迟函数描述中。
 
 ### 了解加载的内容
 
-`tool_search_output.tools` 包含模型动态加载的工具列表。模型将能够在后续的轮次中调用这些工具中的任何一个，因此在客户端模式下，你无需在各个轮次中重复加载同一工具。未作为此数组的一部分列出的工具将对模型不可用。如果你想停用某个已加载的工具，可以将其从定义已加载工具集的 `tool_search_output` 项中移除，但请注意，更改已加载工具集将从该时间点起破坏模型的缓存。
+`tool_search_output.tools` 包含模型动态加载的工具列表。模型将在后续轮次中能够调用这些工具中的任何一个，因此在客户端模式下，你无需在每轮重复加载相同的工具。未列在该数组中的工具对模型不可用。如果你想禁用已加载的工具，可以从定义已加载工具集的 item 中移除它，但请注意，更改已加载工具集将从该位置起中断模型的缓存。 `tool_search_output` item 中定义已加载工具集，但请注意，更改已加载工具集将从该位置起中断模型的缓存。
 
-### 高级注入模式
+### Advanced injection patterns
 
-大多数集成在请求的 `tools` 参数中声明工具。客户端执行的工具搜索还支持更高级的模式，让你的应用返回原始请求中不存在的工具。请将其视为进阶的工作流：仔细校验返回的 schema，并且只暴露可信的工具定义。
+大多数集成在请求的 `tools` 参数中声明工具。客户端执行的工具搜索也支持更高级的模式，即你的应用返回原始请求中不存在的工具。请将此视为高级的工作流：仔细校验返回的 schema，仅暴露可信的工具定义。
 
 ### 工具搜索与缓存
 
-所有工具都会在模型上下文窗口的末尾加载。无论 托管工具 搜索还是客户端执行的工具搜索都适用。这可以让模型的缓存在多个请求之间保持复用，从而降低总体成本并提升速度。
+所有工具都会加载到模型上下文窗口的末尾。这对 托管工具 搜索和客户端执行的工具搜索都同样适用。这样可以使模型的缓存在不同请求之间得以保留，从而降低成本并提升速度。
 
 ### 在输入的特定位置添加工具
 
-对于高级工作流，你可以使用一个 `additional_tools` 输入项，以便在对话的特定位置使工具可用。当你的应用在常规工具搜索流程之外加载工具，或需要保留上一次响应中添加的工具的顺序时，这非常有用。
+对于高级工作流，你可以使用一个 `additional_tools` 输入项，让工具在对话中的特定位置可用。当你的应用在常规工具搜索流程之外加载工具，或者需要保留上一次响应中添加的工具顺序时，这非常有用。
 
-将 `role` 设置为 `developer` ，并在项的 `tools` 数组中包含要添加工具：
+将 `role` 设置为 `developer` ，并在该项的 `tools` 数组中包含要添加的工具：
 
 ```json
 {
@@ -899,15 +896,15 @@ end
 ```
 
 
-位于 `additional_tools` 项中的工具仅在该项出现在输入中之后才可用。当你手动往返会话项时，请保留该项的位置，以便模型在对话中的同一点看到相同的工具。
+项中的工具仅在该输入项出现在输入中之后才可用。当你手动往返对话项时，请保留该项的位置，以便模型在对话中的同一点看到相同的工具。 `additional_tools` 项中的工具仅在该输入项出现在输入中之后才可用。当你手动往返对话项时，请保留该项的位置，以便模型在对话中的同一点看到相同的工具。
 
 ## 智能体 API
 
-该 [智能体 API](https://developers.openai.com/api/docs/guides/agents-api/overview) 默认会立即加载函数定义。若要延迟加载所选函数，请在 `{ "type": "tool_search" }` 中包含 `agent.tools` ，并在每个希望 智能体 按需发现的函数上设置 `defer_loading: true` 。添加 `tool_search` 并不会延迟所有函数。
+该 [智能体 API](https://developers.openai.com/api/docs/guides/agents-api/overview) 默认情况下会立即加载函数定义。要延迟加载所选函数,请在 `{ "type": "tool_search" }` 中 `agent.tools` 并设置 `defer_loading: true` on each function you want the 智能体 to discover on demand. Adding `tool_search` does not defer every function.
 
-你的会话请求仍然提供完整的函数定义，包括其名称、描述和参数 schema。工具搜索改变的是该定义到达模型的方式。发现之后，你的应用照常处理函数调用并返回结果。详见 [Functions](https://developers.openai.com/api/docs/guides/agents-api/tools/functions) 了解结果处理方式。
+你的会话请求仍然提供完整的函数定义,包括其名称、描述和参数 schema。工具搜索改变的是该定义到达模型的时机。发现之后,你的应用程序照常处理函数调用并返回结果。详见 [Functions](https://developers.openai.com/api/docs/guides/agents-api/tools/functions) 了解结果处理方式。
 
-将 `OPENAI_API_KEY` 在运行此示例之前：
+将 `OPENAI_API_KEY` 运行此示例前请先完成以下步骤:
 
 仅在需要时加载函数工具
 
@@ -1131,18 +1128,18 @@ puts result.id
 
 | 策略         | 配置                                        | 适用场景                                                    | 权衡                                                                                 |
 | ---------------- | ---------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| 急切加载    | 省略 `defer_loading` 或将其设置为 `false`.           | 少量函数，或大多数任务所需的函数 | 未使用的定义会占用上下文。更改定义可能会使缓存的前缀失效。 |
-| 延迟加载 | 设置 `defer_loading: true` 并包含 `tool_search`. | 大型目录，其中每个任务仅需少量函数   | 发现过程会增加一个步骤，并依赖于能否找到相关工具。                          |
+| 预加载    | 省略 `defer_loading` 或将其设置为 `false`.           | 少量函数，或大多数任务所需的函数。 | 未使用的定义会占用上下文。更改定义可能会使已缓存的前缀失效。 |
+| 延迟加载 | 设置 `defer_loading: true` 并包含 `tool_search`. | 大量函数目录，但每个任务只需要其中少量函数。   | 发现会增加一个步骤，并且依赖于能否找到相关工具。                          |
 
-在 智能体 API 会话中混用即时函数和延迟函数虽然受支持，但通常不建议这样做。为延迟函数提供清晰的名称和描述。在确定默认值之前，使用具有代表性的请求对比任务完成情况、输入 token 使用量和延迟。
+在智能体 API 会话中混合使用 eager 和 deferred 函数是被支持的，但通常不推荐这样做。为 deferred 函数设定清晰的名称和描述。在确定默认值之前，先使用有代表性的请求比较任务完成情况、输入 token 用量和延迟。
 
 ### MCP 和插件工具
 
-MCP 工具在 智能体 API 中使用自动发现，前提是模型和提供商支持工具搜索。运行时会推迟加载 MCP 工具，并在存在可搜索的延迟工具时添加工具搜索。此行为适用于远程 MCP、执行型 MCP 和由插件提供的 MCP 工具。
+当模型和提供商支持工具搜索时，MCP 工具会在 智能体 API 中使用自动发现。当存在可搜索的延迟工具时，运行时会延迟加载 MCP 工具并添加工具搜索。此规则适用于远程 MCP、执行器 MCP 以及由插件提供的 MCP 工具。
 
-你无需仅为 MCP 工具添加 `{ "type": "tool_search" }` 或在 MCP 服务器上设置函数级别的 `defer_loading` 标志。请通过 [MCP connections](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp)。配置该服务器。本指南前文的 Responses API 配置不适用于 智能体 API MCP 服务器。
+无需添加 `{ "type": "tool_search" }` 仅用于 MCP 工具或在 MCP 服务器上设置函数级 `defer_loading` 标志。请通过 [MCP 连接](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp)。进行服务器配置。本指南前面介绍的 Responses API 配置不适用于 智能体 API MCP 服务器。
 
 ## 相关指南
 
-- 使用 [函数调用](https://developers.openai.com/api/docs/guides/function-calling) 来定义可调用的函数和自定义工具。
-- 使用 [使用工具](https://developers.openai.com/api/docs/guides/tools) 以了解 Responses 中更广泛的工具生态。
+- 使用 [function calling](https://developers.openai.com/api/docs/guides/function-calling) 来定义可调用的函数和自定义工具。
+- 使用 [使用工具](https://developers.openai.com/api/docs/guides/tools) 了解 Responses 中更广泛的工具生态。

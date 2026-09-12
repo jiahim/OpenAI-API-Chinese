@@ -1,48 +1,48 @@
 # Apply Patch
 
-> 完整的文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾添加 `.md` 获取。
 
-该 `apply_patch` 工具让 GPT-5.1 能够使用结构化差异在你的代码库中创建、更新和删除文件。模型不是仅仅建议编辑，而是发出补丁操作，由你的应用执行后再向其回报结果，使迭代式、多步骤的代码编辑工作流成为可能。
+该 `apply_patch` 工具让 GPT-5.1 能够在你的代码库中使用结构化差异来创建、更新和删除文件。模型不是仅仅建议编辑，而是发出补丁操作，由你的应用程序应用这些操作并报告结果，从而支持迭代式、多步骤的代码编辑工作流。
 
-## 何时使用
+## 使用时机
 
-一些常见的 apply_patch 使用场景：
+一些使用 apply_patch 的常见场景：
 
 - **多文件重构** – 一次性跨多个文件重命名符号、抽取辅助函数或重组模块。
-- **Bug 修复** – 让模型既能诊断问题，又能输出精确的补丁。
-- **测试与文档生成** – 在代码改动的同时创建新的测试文件、测试固件和文档。
-- **迁移与机械式编辑** – 应用重复且结构化的更新（API 迁移、类型注解、格式修正等）。
+- **缺陷修复** – 让模型既诊断问题，又输出精确的补丁。
+- **测试与文档生成** – 在代码变更的同时，新建测试文件、测试数据和文档。
+- **迁移与机械性编辑** – 执行重复且结构化的更新（API 迁移、类型注解修正、格式修复等）。
 
-如果你能用文字描述你的仓库和所需的更改，apply_patch 通常就能生成相应的 diff。
+如果你能用文字描述你的代码仓库和所需的更改，apply_patch 通常可以生成对应的 diff。
 
-## 使用 apply patch 工具调用 Responses API
+## 使用 apply patch 工具配合Responses API
 
-从总体上看，使用 `apply_patch` 结合 Responses API 的用法如下：
+从总体上看，使用 `apply_patch` 与 Responses API 的基本流程如下：
 
-1. **使用 Responses API 调用，并通过 `apply_patch` tool**
-   - 向模型提供有关可用文件（或摘要）的上下文信息，在 `input`，中提供，或为模型提供用于探索文件系统的工具。
-   - 通过以下方式启用该工具 `tools=[{"type": "apply_patch"}]`.
+1. **使用 Responses API 调用并附带 `apply_patch` 工具**
+   - 向模型提供有关可用文件的上下文（或摘要）， `input`，或为模型提供用于浏览文件系统的工具。
+   - 启用该工具并 `tools=[{"type": "apply_patch"}]`.
 2. **让模型返回一个或多个补丁操作**
    - Response 输出包含一个或多个 `apply_patch_call` 对象。
-   - 每次调用描述一个文件操作：创建、更新或删除。
-3. **在环境中应用补丁**
-   - 运行补丁执行脚本或脚本，用于：
-     - 解析每个的 `operation` diff `apply_patch_call`.
+   - 每次调用描述单个文件操作：创建、更新或删除。
+3. **在你的环境中应用补丁**
+   - 运行补丁执行框架或脚本：
+     - 解析每个 `operation` 的 diff `apply_patch_call`.
      - 将补丁应用到你的工作目录或代码仓库。
-     - 记录每个补丁是否成功以及任何日志或错误信息。
-4. **将补丁结果返回给模型**
-   - 再次调用 Responses API，可通过 `previous_response_id` 或将你的对话项传回 `input`.
-   - 为每个包含一个 `apply_patch_call_output` 事件 `call_id`，并附带一个 `status` 以及可选的 `output` 字符串。
-   - 保持 `tools=[{"type": "apply_patch"}]` 以便模型可以在需要时继续编辑。
-5. **让模型继续操作或解释变更**
-   - 模型可能会发出更多 `apply_patch_call` 操作，或者
-   - 提供面向用户的说明，解释修改了什么以及为什么修改。
+     - 记录每个补丁是否成功以及任何日志或错误消息。
+4. **将补丁结果回报给模型**
+   - 再次调用 Responses API，可以使用 `previous_response_id` 或将会话项传回至 `input`.
+   - 为每个 `apply_patch_call_output` 事件 `call_id`，以及一个 `status` 以及可选的 `output` 字符串。
+   - 保留 `tools=[{"type": "apply_patch"}]` ，以便模型在需要时可以继续编辑。
+5. **让模型继续操作或解释更改**
+   - 模型可能会发起更多 `apply_patch_call` 操作，或者
+   - 提供面向人工的说明，解释它修改了什么以及原因。
 
 ## 示例：使用 Apply Patch Tool 重命名函数
 
-**步骤 1：让模型规划并输出补丁**
+**步骤 1：让模型进行规划并输出补丁**
 
-让模型规划并输出补丁
+让模型进行规划并输出补丁
 
 ```javascript
 const response = await client.responses.create({
@@ -178,12 +178,11 @@ apply_patch_call 对象示例
 ```
 
 
-**步骤 2：应用补丁并将结果发送回去**
+**步骤 2：应用补丁并将结果发回**
 
 应用补丁并返回结果
 
 ```javascript
-/** @type {import("openai/resources/responses/responses").ResponseInput} */
 const results = patchCalls.map((call) => {
   const { success, output } = applyOperation(call.operation);
 
@@ -307,7 +306,7 @@ puts(response.output_text)
 ```
 
 
-如果补丁应用失败（例如，找不到文件），请设置 `status: "failed"` 并附上一条有用的 `output` 字符串，以便模型可以恢复：
+如果补丁失败（例如，文件未找到），设置 `status: "failed"` 并附上一条有用的 `output` 字符串，以便模型能够恢复：
 
 报告失败的 apply_patch 调用
 
@@ -323,48 +322,47 @@ puts(response.output_text)
 
 ## 应用补丁操作
 
-| 操作类型 | 用途                            | 有效负载                                                          |
+| 操作类型 | 用途                            | 负载                                                          |
 | -------------- | ---------------------------------- | ---------------------------------------------------------------- |
-| `create_file`  | 在以下路径创建新文件： `path`.       | `diff` 是一个 V4A diff，表示文件的完整内容。        |
-| `update_file`  | 修改以下位置的现有文件： `path`. | `diff` 是一个 V4A diff，包含添加、删除或替换操作。 |
-| `delete_file`  | 删除以下文件： `path`.           | 无 `diff`；将文件完全删除。                             |
+| `create_file`  | 在以下位置创建新文件 `path`.       | `diff` 是表示完整文件内容的 V4A diff。        |
+| `update_file`  | 修改现有文件于 `path`. | `diff` 是包含添加、删除或替换的 V4A diff。 |
+| `delete_file`  | 删除位于的文件 `path`.           | 无 `diff`；彻底删除该文件。                             |
 
-你的补丁脚本需要负责解释 V4A diff 格式并应用更改。参考实现请参见 [Python Agents SDK](https://github.com/openai/openai-agents-python/blob/main/src/agents/apply_diff.py) 或 [TypeScript Agents SDK](https://github.com/openai/openai-agents-js/blob/main/packages/agents-core/src/utils/applyDiff.ts) 代码。
+你的补丁工具链负责解释 V4A diff 格式并应用更改。参考实现见 [Python Agents SDK](https://github.com/openai/openai-agents-python/blob/main/src/agents/apply_diff.py) 或 [TypeScript Agents SDK](https://github.com/openai/openai-agents-js/blob/main/packages/agents-core/src/utils/applyDiff.ts) 代码。
 
 ## 实现补丁测试框架
 
-使用 `apply_patch` 工具时，你无需提供输入模式；模型知道如何构造 `operation` 对象。你的任务是：
+使用 `apply_patch` 工具时，你不需要提供输入 schema；模型知道如何构造 `operation` 对象。你的工作是：
 
 1. **从 Response 中解析操作**
-   - 扫描 Response 中的项目 `type: "apply_patch_call"`.
-   - 针对每次调用，检查 `operation.type`, `operation.path`，以及任何潜在的 `diff`.
+   - 扫描 Response 中带有以下字段的项 `type: "apply_patch_call"`.
+   - 针对每个调用，检查 `operation.type`, `operation.path`，以及任何潜在的 `diff`.
 2. **应用文件操作**
-   - 对于 `create_file` 和 `update_file`，将 V4A diff 应用到文件系统或内存中的工作流。
-   - 对于 `delete_file`，删除位于 `path`.
+   - 对于 `create_file` 和 `update_file`，将 V4A 差异应用到文件系统或内存中的工作区。
+   - 对于 `delete_file`，删除该路径下的文件 `path`.
    - 记录每个操作是否成功以及任何日志或错误消息。
 3. **返回 `apply_patch_call_output` 事件**
-   - 针对每个 `call_id`，发出恰好一个 `apply_patch_call_output` 事件，其中包含：
-     - `status: "completed"` （如果该操作已成功应用）。
-     - `status: "failed"` （如果你遇到错误，请提供一个简短的、人类可读的 `output` 字符串）。
+   - 针对每个 `call_id`，恰好发出一个 `apply_patch_call_output` 事件，包含：
+     - `status: "completed"` 如果该操作已成功应用。
+     - `status: "failed"` 如果你遇到错误（包含一段简短的、可读的 `output` 字符串）。
 
 ### 安全性与鲁棒性
 
-- **路径验证**:防止目录遍历，并将编辑限制在允许的目录内。
-- **备份**:在应用补丁前，考虑备份文件(或在临时副本中操作)。
-- **错误处理**:始终返回一个 `failed` 状态以及具有信息量的 `output` 字符串,当补丁无法应用时。
-- **原子性**:决定你希望采用“全有或全无”的语义(任何补丁失败则回滚),还是逐文件成功/失败的语义。
+- **路径验证**：防止目录穿越，并将编辑限制在允许的目录内。
+- **备份**：在应用补丁之前，考虑备份文件（或在临时副本中操作）。
+- **错误处理**：始终返回一个 `failed` 状态以及信息丰富的 `output` 字符串，当补丁无法应用时。
+- **原子性**：决定你需要“全有或全无”的语义（任意补丁失败则回滚），还是逐文件成功/失败的处理方式。
 
-## 使用 Agents SDK 的 apply patch 工具
+## 使用 apply patch 工具配合 Agents SDK
 
-或者，你也可以使用 [Agents SDK](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk) 来使用 apply patch 工具。你仍然需要实现处理实际文件操作的执行框架，但你可以使用 `applyDiff` 函数来处理 diff 处理逻辑。
+或者，你也可以使用 [Agents SDK](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk) 来使用 apply patch 工具。你仍需自行实现处理实际文件操作的执行环境，但可以使用 `applyDiff` 函数来处理 diff 处理逻辑。
 
-将 apply patch 工具与 Agents SDK 配合使用
+将 apply patch 工具与 Agents SDK 一起使用
 
 ```javascript
 import { applyDiff, Agent, run, applyPatchTool } from "@openai/agents";
 
 class WorkspaceEditor {
-  /** @returns {Promise<import("@openai/agents").ApplyPatchResult>} */
   async createFile(operation) {
     // convert the diff to the file content
     const content = applyDiff("", operation.diff, "create");
@@ -372,7 +370,6 @@ class WorkspaceEditor {
     return { status: "completed", output: `Created ${operation.path}` };
   }
 
-  /** @returns {Promise<import("@openai/agents").ApplyPatchResult>} */
   async updateFile(operation) {
     // read the file content from the file system
     const current = "";
@@ -382,7 +379,6 @@ class WorkspaceEditor {
     return { status: "completed", output: `Updated ${operation.path}` };
   }
 
-  /** @returns {Promise<import("@openai/agents").ApplyPatchResult>} */
   async deleteFile(operation) {
     // delete the file from the file system
     return { status: "completed", output: `Deleted ${operation.path}` };
@@ -477,13 +473,13 @@ if __name__ == "__main__":
 
 你可以在 GitHub 上找到完整可运行的示例。
 
-[Apply patch 工具示例 - TypeScript
+[Apply patch tool 示例 - TypeScript
 
 
 
       Example of how to use the apply patch tool with the Agents SDK in TypeScript](https://github.com/openai/openai-agents-js/blob/main/examples/tools/applyPatch.ts)
 
-[Apply patch 工具示例 - Python
+[Apply patch tool 示例 - Python
 
 
 
@@ -491,7 +487,7 @@ if __name__ == "__main__":
 
 ## 处理常见错误
 
-使用 `status: "failed"` 外加一条清晰的 `output` 消息，以帮助模型恢复。
+使用 `status: "failed"` 以及一条清晰的 `output` 消息来帮助模型恢复。
 
 
 
@@ -528,18 +524,18 @@ if __name__ == "__main__":
 
 
 
-模型随后可以根据这些错误消息调整后续的 diff（例如，在提示中重新读取文件，或简化一次改动）。
+模型随后可以根据这些错误消息调整后续的 diff（例如重新读取你提示中的文件，或简化某次修改）。
 
 ## 最佳实践
 
-- **提供清晰的文件上下文**
-  - 当你调用 Responses API 时，要么提供文件的内联快照（就像示例那样），要么为模型提供用于浏览文件系统的工具（例如 `shell` 工具）。
-- **考虑与 `shell` tool**
-  - 结合使用时， `shell` 工具，模型可以浏览文件系统目录、读取文件以及通过 grep 搜索关键字，从而实现智能体的文件发现与编辑。
-- **鼓励进行小而集中的改动**
-  - 在系统指令中，引导模型进行最小化、有针对性的编辑，而不是大幅重写。
-- **确保改动能够干净地应用**
-  - 在一系列补丁之后，运行你的测试或 linter，并在下一次 `input` 中将失败结果反馈回去，以便模型修复它们。
+- **提供明确的文件上下文**
+  - 当你调用 Responses API 时，可以像示例中那样传入文件的内联快照，或者为模型提供用于探索文件系统的工具（例如 `shell` 工具）。
+- **考虑结合使用 `shell` 工具**
+  - 当与 `shell` 工具结合使用时，模型可以浏览文件系统目录、读取文件并使用 grep 搜索关键字，从而实现智能体式的文件发现与编辑。
+- **鼓励使用小而专注的差异**
+  - 在系统指令中，引导模型进行最小化、有针对性的修改，而不是进行大幅重写。
+- **确保更改顺利应用**
+  - 在完成一系列补丁后，运行你的测试或代码检查工具，并将失败结果在下次 `input` 中反馈给模型，以便模型修复这些问题。
 
 ## 使用说明
 
