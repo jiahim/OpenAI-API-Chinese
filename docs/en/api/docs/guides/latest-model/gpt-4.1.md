@@ -1044,16 +1044,9 @@ A self-contained **pure-Python 3.9+** utility for applying human-readable
 from __future__ import annotations
 
 import pathlib
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import (
-    Callable,
-    Dict,
-    List,
-    Optional,
-    Tuple,
-    Union,
-)
 
 
 # --------------------------------------------------------------------------- #
@@ -1068,14 +1061,14 @@ class ActionType(str, Enum):
 @dataclass
 class FileChange:
     type: ActionType
-    old_content: Optional[str] = None
-    new_content: Optional[str] = None
-    move_path: Optional[str] = None
+    old_content: str | None = None
+    new_content: str | None = None
+    move_path: str | None = None
 
 
 @dataclass
 class Commit:
-    changes: Dict[str, FileChange] = field(default_factory=dict)
+    changes: dict[str, FileChange] = field(default_factory=dict)
 
 
 # --------------------------------------------------------------------------- #
@@ -1091,21 +1084,21 @@ class DiffError(ValueError):
 @dataclass
 class Chunk:
     orig_index: int = -1
-    del_lines: List[str] = field(default_factory=list)
-    ins_lines: List[str] = field(default_factory=list)
+    del_lines: list[str] = field(default_factory=list)
+    ins_lines: list[str] = field(default_factory=list)
 
 
 @dataclass
 class PatchAction:
     type: ActionType
-    new_file: Optional[str] = None
-    chunks: List[Chunk] = field(default_factory=list)
-    move_path: Optional[str] = None
+    new_file: str | None = None
+    chunks: list[Chunk] = field(default_factory=list)
+    move_path: str | None = None
 
 
 @dataclass
 class Patch:
-    actions: Dict[str, PatchAction] = field(default_factory=dict)
+    actions: dict[str, PatchAction] = field(default_factory=dict)
 
 
 # --------------------------------------------------------------------------- #
@@ -1113,8 +1106,8 @@ class Patch:
 # --------------------------------------------------------------------------- #
 @dataclass
 class Parser:
-    current_files: Dict[str, str]
-    lines: List[str]
+    current_files: dict[str, str]
+    lines: list[str]
     index: int = 0
     patch: Patch = field(default_factory=Patch)
     fuzz: int = 0
@@ -1131,7 +1124,7 @@ class Parser:
         return line.rstrip("\r")
 
     # ------------- scanning convenience ----------------------------------- #
-    def is_done(self, prefixes: Optional[Tuple[str, ...]] = None) -> bool:
+    def is_done(self, prefixes: tuple[str, ...] | None = None) -> bool:
         if self.index >= len(self.lines):
             return True
         if (
@@ -1142,7 +1135,7 @@ class Parser:
             return True
         return False
 
-    def startswith(self, prefix: Union[str, Tuple[str, ...]]) -> bool:
+    def startswith(self, prefix: str | tuple[str, ...]) -> bool:
         return self._norm(self._cur_line()).startswith(prefix)
 
     def read_str(self, prefix: str) -> str:
@@ -1263,7 +1256,7 @@ class Parser:
         return action
 
     def _parse_add_file(self) -> PatchAction:
-        lines: List[str] = []
+        lines: list[str] = []
         while not self.is_done(
             ("*** End Patch", "*** Update File:", "*** Delete File:", "*** Add File:")
         ):
@@ -1278,8 +1271,8 @@ class Parser:
 #  Helper functions
 # --------------------------------------------------------------------------- #
 def find_context_core(
-    lines: List[str], context: List[str], start: int
-) -> Tuple[int, int]:
+    lines: list[str], context: list[str], start: int
+) -> tuple[int, int]:
     if not context:
         return start, 0
 
@@ -1300,8 +1293,8 @@ def find_context_core(
 
 
 def find_context(
-    lines: List[str], context: List[str], start: int, eof: bool
-) -> Tuple[int, int]:
+    lines: list[str], context: list[str], start: int, eof: bool
+) -> tuple[int, int]:
     if eof:
         new_index, fuzz = find_context_core(lines, context, len(lines) - len(context))
         if new_index != -1:
@@ -1312,12 +1305,12 @@ def find_context(
 
 
 def peek_next_section(
-    lines: List[str], index: int
-) -> Tuple[List[str], List[Chunk], int, bool]:
-    old: List[str] = []
-    del_lines: List[str] = []
-    ins_lines: List[str] = []
-    chunks: List[Chunk] = []
+    lines: list[str], index: int
+) -> tuple[list[str], list[Chunk], int, bool]:
+    old: list[str] = []
+    del_lines: list[str] = []
+    ins_lines: list[str] = []
+    chunks: list[Chunk] = []
     mode = "keep"
     orig_index = index
 
@@ -1397,7 +1390,7 @@ def _get_updated_file(text: str, action: PatchAction, path: str) -> str:
     if action.type is not ActionType.UPDATE:
         raise DiffError("_get_updated_file called with non-update action")
     orig_lines = text.split("\n")
-    dest_lines: List[str] = []
+    dest_lines: list[str] = []
     orig_index = 0
 
     for chunk in action.chunks:
@@ -1420,7 +1413,7 @@ def _get_updated_file(text: str, action: PatchAction, path: str) -> str:
     return "\n".join(dest_lines)
 
 
-def patch_to_commit(patch: Patch, orig: Dict[str, str]) -> Commit:
+def patch_to_commit(patch: Patch, orig: dict[str, str]) -> Commit:
     commit = Commit()
     for path, action in patch.actions.items():
         if action.type is ActionType.DELETE:
@@ -1447,7 +1440,7 @@ def patch_to_commit(patch: Patch, orig: Dict[str, str]) -> Commit:
 # --------------------------------------------------------------------------- #
 #  User-facing helpers
 # --------------------------------------------------------------------------- #
-def text_to_patch(text: str, orig: Dict[str, str]) -> Tuple[Patch, int]:
+def text_to_patch(text: str, orig: dict[str, str]) -> tuple[Patch, int]:
     lines = text.splitlines()  # preserves blank lines, no strip()
     if (
         len(lines) < 2
@@ -1461,7 +1454,7 @@ def text_to_patch(text: str, orig: Dict[str, str]) -> Tuple[Patch, int]:
     return parser.patch, parser.fuzz
 
 
-def identify_files_needed(text: str) -> List[str]:
+def identify_files_needed(text: str) -> list[str]:
     lines = text.splitlines()
     return [
         line[len("*** Update File: ") :]
@@ -1474,7 +1467,7 @@ def identify_files_needed(text: str) -> List[str]:
     ]
 
 
-def identify_files_added(text: str) -> List[str]:
+def identify_files_added(text: str) -> list[str]:
     lines = text.splitlines()
     return [
         line[len("*** Add File: ") :]
@@ -1486,7 +1479,7 @@ def identify_files_added(text: str) -> List[str]:
 # --------------------------------------------------------------------------- #
 #  File-system helpers
 # --------------------------------------------------------------------------- #
-def load_files(paths: List[str], open_fn: Callable[[str], str]) -> Dict[str, str]:
+def load_files(paths: list[str], open_fn: Callable[[str], str]) -> dict[str, str]:
     return {path: open_fn(path) for path in paths}
 
 

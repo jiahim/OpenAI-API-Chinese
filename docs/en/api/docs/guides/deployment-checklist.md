@@ -18,7 +18,7 @@
 | [Use `reasoning.encrypted_content`](#use-reasoningencryptedcontent)             | Quality, latency                    |
 | [Set image detail intentionally](#set-image-detail-intentionally)               | Quality, cost, latency              |
 | [Send a safety identifier](#send-a-safety-identifier)                           | Safety, reliability                 |
-| [Use `background=True`](#use-backgroundtrue)                                    | Resumability                        |
+| [Use `background=True`](#use-backgroundtrue)                                    | Resuming work                       |
 | [Use WebSocket mode](#use-websocket-mode)                                       | Latency                             |
 
 ## Use the Responses API
@@ -51,7 +51,7 @@ fewer reasoning tokens. Higher effort gives the model more time for planning,
 debugging, synthesis, and multi-step tradeoffs.
 
 Use `low` when the job is mostly extraction, routing, classification, or a
-simple rewrite. Use `medium` or `high` when the model needs to diagnose a
+routine rewrite. Use `medium` or `high` when the model needs to diagnose a
 problem, compare options, write a plan, or reason through code. Use `xhigh` or
 `max` only when representative evals show that the quality gain justifies the
 extra latency and cost. When migrating from GPT-5.5 or GPT-5.4, start with the
@@ -392,7 +392,7 @@ the model decides it needs a deferred tool, it runs tool search, and only then
 are the deferred tool definitions loaded into context. Only then will the model
 call them. This saves tokens and preserves cache performance.
 
-There are two modes:
+Tool search has two modes:
 
 - **Hosted tool search** is the simpler option. Use it when you already know
   which tools could be available for the request.
@@ -419,7 +419,6 @@ import OpenAI from "openai";
 
 const openai = new OpenAI();
 
-/** @type {OpenAI.Responses.Tool} */
 const billingNamespace = {
   type: "namespace",
   name: "billing",
@@ -444,7 +443,6 @@ const billingNamespace = {
   ],
 };
 
-/** @type {OpenAI.Responses.Tool} */
 const crmNamespace = {
   type: "namespace",
   name: "crm",
@@ -773,7 +771,7 @@ subagent context.
 
 ## Leverage built-in tools
 
-[Built-in tools](https://developers.openai.com/api/docs/guides/tools) are the API's native capabilities.
+[Built-in tools](https://developers.openai.com/api/docs/guides/tools) are native capabilities of the API.
 Instead of building every tool yourself, you can give the model access to tools
 that already work inside the Responses API. The model can then decide when to
 use them.
@@ -794,7 +792,7 @@ Current built-in tools and related tool options include:
 - **Skills**: Attach reusable instruction bundles and workflow files
 - **Apply patch**: Make structured code edits
 
-There is also a model-quality reason to prefer them. Built-in tools are
+Model quality is another reason to prefer them. Built-in tools are
 in-distribution for our post-training, meaning that the models are trained and
 evaluated around these tool shapes, behaviors, and outputs. With built-in tools,
 OpenAI models support better tool selection, cleaner execution, and fewer
@@ -815,7 +813,7 @@ and continue from the compacted output. This keeps the model sharp because the
 next turn is built around the important state, not every intermediate reasoning,
 failed command, and obsolete branch of reasoning.
 
-There are two ways to leverage compaction:
+You can use compaction in two ways:
 
 - **Let the server handle it**: if you use `previous_response_id`, turn on
   `context_management` with a `compact_threshold`. The server will automatically
@@ -1064,8 +1062,14 @@ uncached input token rate. Log `cached_tokens` and `cache_write_tokens`, then
 compare write volume with later cache reads to measure net cost and tune
 breakpoint placement.
 
-Use an optional `prompt_cache_key` to maintain separate cache accounting for
-customers, users, or workspaces. This can make cached token usage and billing
+Use a stable `prompt_cache_key` for requests that share a reusable prefix to
+help route related requests to the same cache and optimize cache hit rates on
+models before GPT-5.6. For busy groups, follow the [guidance for distributing
+traffic across more keys](https://developers.openai.com/api/docs/guides/prompt-caching#prompt-cache-keys).
+
+On GPT-5.6 and later, `prompt_cache_key` is optional: you can achieve optimal
+cache hit rates without it. You can use it to maintain separate cache accounting
+for customers, users, or workspaces. This can make cached token usage and billing
 easier to explain for each group. Assign a distinct key to each customer and
 keep it stable across that customer's related requests. Separate keys also help
 prevent cache-hit probing across customers. See [Separate cache accounting with
@@ -1243,7 +1247,6 @@ import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
 
 const openai = new OpenAI();
 
-/** @type {OpenAI.Responses.ResponseInput} */
 const history = [
   {
     role: "user",
@@ -1694,7 +1697,7 @@ the status; the result will appear here when it's ready."
 [WebSocket mode](https://developers.openai.com/api/docs/guides/websocket-mode) is built for long-running,
 tool-call-heavy workflows where you keep a persistent connection open and
 continue by sending only new input items plus `previous_response_id`. For
-rollouts with 20 or more tool calls, this approach is roughly 40% faster
+runs with 20 or more tool calls, this approach is roughly 40% faster
 end-to-end.
 
 **How this works**: The first message will look like a normal Responses request:
@@ -1720,7 +1723,7 @@ only stored in memory.
 
 The Python sample uses `pip install "openai[realtime]>=3.8.0"`.
 The JavaScript sample uses `npm install openai@^7.10.0 ws`.
-The Ruby sample uses `gem install async-websocket`.
+The Ruby sample uses `gem install openai async-websocket`.
 
 Start a Responses API WebSocket session
 
@@ -1803,17 +1806,15 @@ with client.responses.connect() as connection:
 
 ```ruby
 require "async"
-require "async/http/endpoint"
-require "async/websocket/client"
+require "openai"
 require "json"
 
 def wait_for_response(connection)
-  while (message = connection.read)
-    event = JSON.parse(message.to_str)
-    case event.fetch("type")
-    when "response.completed" then return event.fetch("response")
+  while (event = connection.receive)
+    case event.type.to_s
+    when "response.completed" then return event.response
     when "response.failed", "response.incomplete", "error"
-      raise "Response failed: #{JSON.generate(event)}"
+      raise "Response failed: #{event.to_json}"
     end
   end
   raise "Connection closed before the response finished"
@@ -1844,25 +1845,21 @@ code_search_tool = {
   strict: true
 }
 
-endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
-headers = { "Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}" }
+client = OpenAI::Client.new
 Sync do |task|
   task.with_timeout(120) do
-    Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
-      connection.write(
-        JSON.generate(
-          type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
-          input: [
-            {
-              role: "user",
-              content: "Find the flaky test in this run, call the tools you need, and keep going until you can explain the root cause."
-            }
-          ],
-          tools: [test_log_tool, code_search_tool]
-        )
+    client.responses.connect(request_options: { timeout: 10 }) do |connection|
+      connection.response.create(
+        stream_id: "main", model: "gpt-6-astra", store: false,
+        input: [
+          {
+            role: "user",
+            content: "Find the flaky test in this run, call the tools you need, and keep going until you can explain the root cause."
+          }
+        ],
+        tools: [test_log_tool, code_search_tool]
       )
-      connection.flush
-      puts(JSON.pretty_generate(wait_for_response(connection).fetch("output")))
+      puts(JSON.pretty_generate(wait_for_response(connection).output.map(&:to_h)))
     end
   end
 end

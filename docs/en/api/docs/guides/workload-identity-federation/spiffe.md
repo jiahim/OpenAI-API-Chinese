@@ -499,7 +499,6 @@ if (!identityProviderId || !serviceAccountId) {
   );
 }
 
-/** @returns {import("openai/auth/index").SubjectTokenProvider} */
 function spiffeJwtSvidProvider(path) {
   return {
     tokenType: "jwt",

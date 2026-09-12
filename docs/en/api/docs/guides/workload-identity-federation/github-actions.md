@@ -469,7 +469,6 @@ if (
   );
 }
 
-/** @returns {import("openai/auth/index").SubjectTokenProvider} */
 function githubActionsOIDCTokenProvider(requestURL, requestToken, audience) {
   return {
     tokenType: "jwt",

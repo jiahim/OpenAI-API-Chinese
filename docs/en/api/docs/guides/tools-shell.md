@@ -1862,7 +1862,6 @@ Use local shell with Agents SDK
 import { Agent, run, withTrace, shellTool } from "@openai/agents";
 
 class LocalShell {
-  /** @returns {Promise<import("@openai/agents").ShellResult>} */
   async run(action) {
     return {
       output: [

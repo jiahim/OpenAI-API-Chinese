@@ -1542,7 +1542,6 @@ Function calling
 import OpenAI from "openai";
 const client = new OpenAI();
 
-/** @type {OpenAI.Responses.Tool[]} */
 const tools = [
   {
     type: "function",

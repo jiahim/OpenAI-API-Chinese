@@ -36,7 +36,7 @@ let started = false;
 let closing = false;
 let finalized = false;
 let pendingByte = Buffer.alloc(0);
-/** @type {ReturnType<typeof setTimeout> | undefined} */
+
 let closeTimeout;
 
 ws.socket.on("open", () => {

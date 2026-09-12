@@ -349,7 +349,6 @@ import OpenAI from "openai";
 
 const client = new OpenAI();
 
-/** @returns {OpenAI.Responses.ResponseInput} */
 function buildSupportPrompt({ customerName, issue }) {
   return [
     {

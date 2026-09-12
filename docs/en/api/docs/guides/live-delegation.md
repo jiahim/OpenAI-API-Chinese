@@ -48,7 +48,6 @@ Choose the mode when you create the session; to change modes, start a new sessio
 Add this delegation configuration when [creating your Live session](https://developers.openai.com/api/docs/guides/live). Choose the Responses model independently of the voice model:
 
 ```javascript
-/** @type {import("openai/resources/live/live").SessionConfig} */
 ```
 
 ```python
@@ -117,9 +116,6 @@ Track the response ID from nested `response.created` alongside the outer `delega
 After executing the authorized operation, append the result as a Responses item:
 
 ```javascript
-/**
- * @param {import("openai/resources/live/ws").LiveWS | import("openai/resources/live/sideband/ws").SidebandWS} connection
- */
 export function sendUpdate(connection) {
   connection.send({
     type: "response.item.create",
@@ -157,9 +153,6 @@ async def send_update(
 Then explicitly continue the response:
 
 ```javascript
-/**
- * @param {import("openai/resources/live/ws").LiveWS | import("openai/resources/live/sideband/ws").SidebandWS} connection
- */
 export function sendUpdate(connection) {
   connection.send({
     type: "response.create",
@@ -196,7 +189,6 @@ Submit every required result for the pending tool calls before continuing. Appen
 Set `delegation` when [creating your Live session](https://developers.openai.com/api/docs/guides/live):
 
 ```javascript
-/** @type {import("openai/resources/live/live").SessionConfig} */
 ```
 
 ```python
@@ -242,9 +234,6 @@ Read `event.delegation.id`. The delegation object contains metadata, not task te
 Return a result using that ID:
 
 ```javascript
-/**
- * @param {import("openai/resources/live/ws").LiveWS | import("openai/resources/live/sideband/ws").SidebandWS} connection
- */
 export function sendUpdate(connection) {
   connection.send({
     type: "session.commentary.append",
@@ -320,9 +309,6 @@ An appended instruction can interrupt the model's current speech or behavior. Us
 For quiet progress during a client-managed task:
 
 ```javascript
-/**
- * @param {import("openai/resources/live/ws").LiveWS | import("openai/resources/live/sideband/ws").SidebandWS} connection
- */
 export function sendUpdate(connection) {
   connection.send({
     type: "session.thinking.append",
@@ -352,9 +338,6 @@ async def send_update(
 For a confirmed booking, send the result the user should hear:
 
 ```javascript
-/**
- * @param {import("openai/resources/live/ws").LiveWS | import("openai/resources/live/sideband/ws").SidebandWS} connection
- */
 export function sendUpdate(connection) {
   connection.send({
     type: "session.commentary.append",
@@ -386,9 +369,6 @@ Only send that result after the booking has actually succeeded. For a session-wi
 For example, after your application blocks a request under its guardrails, you can redirect the conversation:
 
 ```javascript
-/**
- * @param {import("openai/resources/live/ws").LiveWS | import("openai/resources/live/sideband/ws").SidebandWS} connection
- */
 export function sendUpdate(connection) {
   connection.send({
     type: "session.instructions.append",
@@ -465,9 +445,6 @@ If a caller types an exact value, such as an order number, pass it to the backen
 With Responses delegation, queue a user message for the backend:
 
 ```javascript
-/**
- * @param {import("openai/resources/live/ws").LiveWS | import("openai/resources/live/sideband/ws").SidebandWS} connection
- */
 export function sendUpdate(connection) {
   connection.send({
     type: "response.item.create",

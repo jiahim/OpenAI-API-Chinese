@@ -14,6 +14,8 @@ Prompt caching is enabled by default for supported OpenAI models. Use the [Promp
 
 Agents API model calls use the same prompt-caching behavior as the Responses API. Reusing context within a session can preserve a shared prompt prefix, but maintaining a session doesn't guarantee a cache hit. See [Observability and usage](https://developers.openai.com/api/docs/guides/agents-api/observability) for session usage fields and subagent accounting.
 
+Prompt caching pricing varies by model. See [API pricing](https://developers.openai.com/api/docs/pricing) for current cached-input and cache-write rates. Cache-write pricing is not an additive fee: input tokens use the uncached-input, cached-input, or cache-write rate.
+
 ## What is the prompt cache?
 
 When the model processes input tokens, it must calculate intermediate states, known as key-value (KV) states. These states let the model refer back to earlier tokens while processing new input and generating output tokens.
@@ -199,7 +201,7 @@ OpenAI handles routing automatically. Within an organization and processing regi
 
 - Current machine load and available capacity.
 - A hash of the initial tokens after the hidden OpenAI content, including tool definitions when present. The number of tokens hashed varies by model.
-- An optional [`prompt_cache_key`](#prompt-cache-keys), which separates cache reuse between groups of requests.
+- A supplied [`prompt_cache_key`](#prompt-cache-keys), which separates cache reuse between groups of requests and helps optimize cache routing on models before GPT-5.6.
 
 
 
@@ -211,7 +213,9 @@ OpenAI handles routing automatically. Within an organization and processing regi
 
 
 
-[`prompt_cache_key`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20prompt_cache_key%20%3E%20%28schema%29) is an optional control for maintaining separate cache accounting for customers or users within your application. OpenAI handles cache routing automatically; you can omit the key for normal caching.
+On models before GPT-5.6, use a stable [`prompt_cache_key`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20prompt_cache_key%20%3E%20%28schema%29) for requests that share a reusable prefix to help route related requests to the same cache. For busy groups, aim for about 15 requests per minute in total across all prefixes using each key. Partition higher-volume traffic across multiple keys using a stable, deterministic mapping. Keep related requests on the same `prompt_cache_key` so they can reuse its cache. Keys influence routing; they do not pin requests to a machine or guarantee a cache hit.
+
+On GPT-5.6 and later, OpenAI handles cache routing automatically; the key is not needed to optimize caching. You can use separate keys to maintain separate cache accounting for customers or users within your application.
 
 Using separate keys can make cached token usage and billing easier to explain for each customer or user. For example, separate keys help prevent cache-hit probing across users: submitting candidate prompts and observing cache hits to learn whether matching content was previously cached. See [Separate cache accounting with keys](#separate-prompts-with-cache-keys).
 
@@ -227,6 +231,7 @@ Using separate keys can make cached token usage and billing easier to explain fo
 | -------------------------- | --------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | Implicit breakpoints       | At the end of the latest eligible message.          | Spaced at regular 2,048-token intervals.                    | Spaced at regular, model-dependent intervals.                                   |
 | Explicit breakpoints       | Supported                                           | Not supported                                               | Not supported                                                                   |
+| `prompt_cache_key`         | Optional for separate cache accounting              | Use a stable key to optimize cache routing                  | Use a stable key to optimize cache routing                                      |
 | Minimum cacheable prefix   | 1,024 visible input tokens                          | Varies by request settings                                  | Varies by request settings                                                      |
 | Cached-token reporting     | Exact eligible boundary, excluding hidden tokens    | Excludes hidden tokens and rounds down to a multiple of 128 | Excludes hidden tokens and rounds down to a multiple of 128                     |
 | Cache read charge          | 0.1× the uncached input-token rate                  | Model-dependent cached-input rate                           | Model-dependent cached-input rate                                               |
@@ -257,7 +262,7 @@ Ask ChatGPT to find the cache minimum for my request
 
 ## How to optimize prompt caching
 
-Focus on [preserving conversation history](#preserve-conversation-history), [keeping tool definitions stable](#manage-tools-with-append-only-updates), and choosing where caching occurs. Use [`prompt_cache_options.mode` and `prompt_cache_breakpoint`](#choose-a-caching-mode) to control cache breakpoints. If your application needs separate cache accounting for customers, you can also use an optional [`prompt_cache_key`](#separate-prompts-with-cache-keys).
+Focus on [preserving conversation history](#preserve-conversation-history), [keeping tool definitions stable](#manage-tools-with-append-only-updates), and choosing where caching occurs. On GPT-5.6 and later, use [`prompt_cache_options.mode` and `prompt_cache_breakpoint`](#choose-a-caching-mode) to control cache breakpoints. You can also use an optional [`prompt_cache_key`](#separate-prompts-with-cache-keys) if your application needs separate cache accounting for customers. On models before GPT-5.6, use a stable `prompt_cache_key` to optimize cache routing for requests that share a reusable prefix.
 
 
 
@@ -410,11 +415,13 @@ On GPT-5.6 and later, two controls determine where cache breakpoints are placed:
 
 
 
-Use `prompt_cache_key` when you want to maintain separate cache accounting for customers, users, or workspaces within your application. This can make cached token usage and billing easier to explain within each group. The key is optional and is not needed to optimize caching.
+On GPT-5.6 and later, use `prompt_cache_key` when you want to maintain separate cache accounting for customers, users, or workspaces within your application. This can make cached token usage and billing easier to explain within each group. The key is optional and is not needed to optimize caching on these models.
 
 - **Choose how to separate cache accounting.** Assign a distinct key to each customer or user whose cache accounting should remain separate. For example, `support:customer_123` and `support:customer_456` maintain separate cache accounting for two customers, even when their requests contain the same prefix.
 - **Keep keys stable within each group.** Reuse the same key for a customer's related requests. Generate a separate key for a session or thread only when it needs its own cache accounting.
 - **Apply keys consistently.** Use the customer's key across their requests to maintain separate cache accounting. This also helps prevent cache-hit probing across customers.
+
+On models before GPT-5.6, `prompt_cache_key` is important for optimizing cache hit rates. Use a stable key for requests that share a reusable prefix to help route them to the same cache. For busy groups, follow the [guidance for distributing traffic across more keys](#prompt-cache-keys).
 
 
 
@@ -589,6 +596,8 @@ end
 
 
 ## Examples
+
+The following examples apply to GPT-5.6 and later models.
 
 
 

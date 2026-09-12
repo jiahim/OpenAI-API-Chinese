@@ -119,7 +119,7 @@ import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
 const openai = new OpenAI();
 
 // 1. Define a list of callable tools for the model
-/** @type {OpenAI.Responses.Tool[]} */
+
 const tools = [
   {
     type: "function",
@@ -145,7 +145,7 @@ function getHoroscope(sign) {
 }
 
 // Create a running input list we will add to over time
-/** @type {OpenAI.Responses.ResponseInput} */
+
 let input = [
   { role: "user", content: "What is my horoscope? I am an Aquarius." },
 ];
@@ -1154,7 +1154,6 @@ import { OpenAI } from "openai";
 
 const openai = new OpenAI();
 
-/** @type {OpenAI.Responses.Tool[]} */
 const tools = [
   {
     type: "function",

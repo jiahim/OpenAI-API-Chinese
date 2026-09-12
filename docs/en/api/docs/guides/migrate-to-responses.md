@@ -219,7 +219,6 @@ If you are not using functions or multimodal inputs, simple message inputs are c
 Reuse simple message input
 
 ```javascript
-/** @type {OpenAI.ChatCompletionMessageParam[] & OpenAI.Responses.ResponseInput} */
 const context = [
   { role: "system", content: "You are a helpful assistant." },
   { role: "user", content: "Hello!" },
@@ -711,7 +710,6 @@ Chat Completions
     Multi-turn conversation
 
 ```javascript
-/** @type {OpenAI.ChatCompletionMessageParam[]} */
 let messages = [
   { role: "system", content: "You are a helpful assistant." },
   { role: "user", content: "What is the capital of France?" },
@@ -873,7 +871,6 @@ Responses
 ```javascript
 import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
 
-/** @type {OpenAI.Responses.ResponseInput} */
 let context = [{ role: "user", content: "What is the capital of France?" }];
 
 const res1 = await client.responses.create({

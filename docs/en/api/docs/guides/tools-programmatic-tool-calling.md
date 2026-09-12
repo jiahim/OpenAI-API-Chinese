@@ -234,7 +234,6 @@ const implementations = {
   get_demand: async ({ sku }) => ({ sku, requested_units: 31 }),
 };
 
-/** @type {OpenAI.Responses.Tool[]} */
 const tools = [
   {
     type: "function",
@@ -285,7 +284,6 @@ const tools = [
   { type: "programmatic_tool_calling" },
 ];
 
-/** @type {OpenAI.Responses.ResponseInput} */
 const input = [
   {
     role: "user",
@@ -326,13 +324,13 @@ while (true) {
       if (!run) throw new Error(`Unknown tool: ${call.name}`);
 
       const result = await run(JSON.parse(call.arguments));
-      return /** @type {const} */ ({
+      return {
         type: "function_call_output",
         call_id: call.call_id,
         output: JSON.stringify(result),
         // Preserve caller so the runtime can resume the correct program.
         caller: call.caller,
-      });
+      };
     })
   );
 

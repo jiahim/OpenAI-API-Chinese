@@ -144,7 +144,7 @@ import OpenAI from "openai";
 async function runComputerUse(endpoint, prompt, model = "gpt-6-astra") {
   const client = new OpenAI();
   const sessionId = randomUUID();
-  /** @type {OpenAI.Responses.Tool[]} */
+
   const tools = [
     {
       type: "function",
@@ -164,7 +164,7 @@ text with console.log(). The context viewport is 1440x900.`,
       strict: true,
     },
   ];
-  /** @type {OpenAI.Responses.ResponseInput} */
+
   let nextInput = [{ role: "user", content: prompt }];
   let previousResponseId;
 
@@ -465,11 +465,11 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 async function sendComputerScreenshot(response, callId, screenshotBase64) {
-  const output = /** @type {const} */ ({
+  const output = {
     type: "computer_screenshot",
     image_url: `data:image/png;base64,${screenshotBase64}`,
     detail: "original",
-  });
+  };
 
   return await client.responses.create({
     model: "gpt-5.6-sol",

@@ -5,6 +5,8 @@
 Stream image generation and editing in real time with server-sent events.
 [Learn more about image streaming](https://developers.openai.com/api/docs/guides/image-generation).
 
+<a id="image_edit.partial_image"></a>
+
 ## image_edit.partial_image
 
 Emitted when a partial image is available during image editing streaming.
@@ -13,451 +15,77 @@ Emitted when a partial image is available during image editing streaming.
 
 Schema name: `ImageEditPartialImageEvent`
 
-```json
-{
-  "(resource) images > (model) image_edit_partial_image_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent",
-    "docstring": "Emitted when a partial image is available during image editing streaming.\n",
-    "ident": "ImageEditPartialImageEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "b64_json"
-        },
-        {
-          "ident": "background"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "output_format"
-        },
-        {
-          "ident": "partial_image_index"
-        },
-        {
-          "ident": "quality"
-        },
-        {
-          "ident": "size"
-        },
-        {
-          "ident": "type"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) b64_json",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) background",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) created_at",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) output_format",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) partial_image_index",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) quality",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) size",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) type"
-    ]
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) b64_json": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/b64_json",
-    "deprecated": false,
-    "key": "b64_json",
-    "docstring": "Base64-encoded partial image data, suitable for rendering as an image.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) background": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/background",
-    "deprecated": false,
-    "key": "background",
-    "docstring": "The background setting for the requested edited image.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/background",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "transparent"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "opaque"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "auto"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) background > (member) 0",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) background > (member) 1",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) background > (member) 2"
-    ]
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp when the event was created.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) output_format": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/output_format",
-    "deprecated": false,
-    "key": "output_format",
-    "docstring": "The output format for the requested edited image.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/output_format",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "png"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "webp"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "jpeg"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) output_format > (member) 0",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) output_format > (member) 1",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) output_format > (member) 2"
-    ]
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) partial_image_index": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/partial_image_index",
-    "deprecated": false,
-    "key": "partial_image_index",
-    "docstring": "0-based index for the partial image (streaming).\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) quality": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/quality",
-    "deprecated": false,
-    "key": "quality",
-    "docstring": "The quality setting for the requested edited image.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/quality",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "low"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "medium"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "high"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "xhigh"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "max"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "auto"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) quality > (member) 0",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) quality > (member) 1",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) quality > (member) 2",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) quality > (member) 3",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) quality > (member) 4",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) quality > (member) 5"
-    ]
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) size": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/size",
-    "deprecated": false,
-    "key": "size",
-    "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/size",
-      "types": [
-        {
-          "kind": "HttpTypeString"
-        },
-        {
-          "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/size/anyOf/1",
-          "types": [
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "1024x1024"
-            },
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "1024x1536"
-            },
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "1536x1024"
-            },
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "auto"
-            }
-          ]
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "union",
-    "childrenParentSchema": "union",
-    "children": [
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) size > (variant) 0",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) size > (variant) 1"
-    ]
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `image_edit.partial_image`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "image_edit.partial_image"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) background > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "transparent"
-    }
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) background > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "opaque"
-    }
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) background > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "auto"
-    }
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) output_format > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "png"
-    }
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) output_format > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "webp"
-    }
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) output_format > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "jpeg"
-    }
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) quality > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "low"
-    }
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) quality > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "medium"
-    }
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) quality > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "high"
-    }
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) quality > (member) 3": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "xhigh"
-    }
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) quality > (member) 4": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "max"
-    }
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) quality > (member) 5": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "auto"
-    }
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) size > (variant) 0": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/size/anyOf/0",
-    "ident": "UnionMember0",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "children": []
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) size > (variant) 1": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/size/anyOf/1",
-    "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
-    "ident": "UnionMember1",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/size/anyOf/1",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "1024x1024"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "1024x1536"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "1536x1024"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "auto"
-        }
-      ]
-    },
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 0",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 1",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 2",
-      "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 3"
-    ]
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "image_edit.partial_image"
-    }
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "1024x1024"
-    }
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "1024x1536"
-    }
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "1536x1024"
-    }
-  },
-  "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 3": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "auto"
-    }
-  }
-}
-```
+- `b64_json: string`
+
+  Base64-encoded partial image data, suitable for rendering as an image.
+
+- `background: "transparent" or "opaque" or "auto"`
+
+  The background setting for the requested edited image.
+
+  - `"transparent"`
+
+  - `"opaque"`
+
+  - `"auto"`
+
+- `created_at: number`
+
+  The Unix timestamp when the event was created.
+
+- `output_format: "png" or "webp" or "jpeg"`
+
+  The output format for the requested edited image.
+
+  - `"png"`
+
+  - `"webp"`
+
+  - `"jpeg"`
+
+- `partial_image_index: number`
+
+  0-based index for the partial image (streaming).
+
+- `quality: "low" or "medium" or "high" or 3 more`
+
+  The quality setting for the requested edited image.
+
+  - `"low"`
+
+  - `"medium"`
+
+  - `"high"`
+
+  - `"xhigh"`
+
+  - `"max"`
+
+  - `"auto"`
+
+- `size: string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+  The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+  - `string`
+
+  - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+    The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+    - `"1024x1024"`
+
+    - `"1024x1536"`
+
+    - `"1536x1024"`
+
+    - `"auto"`
+
+- `type: "image_edit.partial_image"`
+
+  The type of the event. Always `image_edit.partial_image`.
+
+  - `"image_edit.partial_image"`
 
 ### Example
 
@@ -474,6 +102,8 @@ Schema name: `ImageEditPartialImageEvent`
 }
 ```
 
+<a id="image_edit.completed"></a>
+
 ## image_edit.completed
 
 Emitted when image editing has completed and the final image is available.
@@ -482,567 +112,101 @@ Emitted when image editing has completed and the final image is available.
 
 Schema name: `ImageEditCompletedEvent`
 
-```json
-{
-  "(resource) images > (model) image_edit_completed_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent",
-    "docstring": "Emitted when image editing has completed and the final image is available.\n",
-    "ident": "ImageEditCompletedEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "b64_json"
-        },
-        {
-          "ident": "background"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "output_format"
-        },
-        {
-          "ident": "quality"
-        },
-        {
-          "ident": "size"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "usage"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) b64_json",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) background",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) created_at",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) output_format",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) quality",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) size",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) type",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage"
-    ]
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) b64_json": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/b64_json",
-    "deprecated": false,
-    "key": "b64_json",
-    "docstring": "Base64-encoded final edited image data, suitable for rendering as an image.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) background": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/background",
-    "deprecated": false,
-    "key": "background",
-    "docstring": "The background setting for the edited image.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/background",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "transparent"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "opaque"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "auto"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) background > (member) 0",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) background > (member) 1",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) background > (member) 2"
-    ]
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp when the event was created.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) output_format": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/output_format",
-    "deprecated": false,
-    "key": "output_format",
-    "docstring": "The output format for the edited image.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/output_format",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "png"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "webp"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "jpeg"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) output_format > (member) 0",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) output_format > (member) 1",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) output_format > (member) 2"
-    ]
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) quality": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/quality",
-    "deprecated": false,
-    "key": "quality",
-    "docstring": "The quality setting for the edited image.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/quality",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "low"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "medium"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "high"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "xhigh"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "max"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "auto"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) quality > (member) 0",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) quality > (member) 1",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) quality > (member) 2",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) quality > (member) 3",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) quality > (member) 4",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) quality > (member) 5"
-    ]
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) size": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/size",
-    "deprecated": false,
-    "key": "size",
-    "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/size",
-      "types": [
-        {
-          "kind": "HttpTypeString"
-        },
-        {
-          "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/size/anyOf/1",
-          "types": [
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "1024x1024"
-            },
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "1024x1536"
-            },
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "1536x1024"
-            },
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "auto"
-            }
-          ]
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "union",
-    "childrenParentSchema": "union",
-    "children": [
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) size > (variant) 0",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) size > (variant) 1"
-    ]
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `image_edit.completed`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "image_edit.completed"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/usage",
-    "deprecated": false,
-    "key": "usage",
-    "docstring": "For the GPT image models only, the token usage information for the image generation.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "input_tokens"
-        },
-        {
-          "ident": "input_tokens_details"
-        },
-        {
-          "ident": "output_tokens"
-        },
-        {
-          "ident": "total_tokens"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) input_tokens",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) input_tokens_details",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) output_tokens",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) total_tokens"
-    ]
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) background > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "transparent"
-    }
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) background > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "opaque"
-    }
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) background > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "auto"
-    }
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) output_format > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "png"
-    }
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) output_format > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "webp"
-    }
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) output_format > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "jpeg"
-    }
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) quality > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "low"
-    }
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) quality > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "medium"
-    }
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) quality > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "high"
-    }
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) quality > (member) 3": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "xhigh"
-    }
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) quality > (member) 4": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "max"
-    }
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) quality > (member) 5": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "auto"
-    }
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) size > (variant) 0": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/size/anyOf/0",
-    "ident": "UnionMember0",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "children": []
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) size > (variant) 1": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/size/anyOf/1",
-    "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
-    "ident": "UnionMember1",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/size/anyOf/1",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "1024x1024"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "1024x1536"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "1536x1024"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "auto"
-        }
-      ]
-    },
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) size > (variant) 1 > (member) 0",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) size > (variant) 1 > (member) 1",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) size > (variant) 1 > (member) 2",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) size > (variant) 1 > (member) 3"
-    ]
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "image_edit.completed"
-    }
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) input_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImagesUsage/properties/input_tokens",
-    "deprecated": false,
-    "key": "input_tokens",
-    "docstring": "The number of tokens (images and text) in the input prompt.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) input_tokens_details": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImagesUsage/properties/input_tokens_details",
-    "deprecated": false,
-    "key": "input_tokens_details",
-    "docstring": "The input tokens detailed information for the image generation.",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "image_tokens"
-        },
-        {
-          "ident": "text_tokens"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) input_tokens_details > (property) image_tokens",
-      "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) input_tokens_details > (property) text_tokens"
-    ]
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) output_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImagesUsage/properties/output_tokens",
-    "deprecated": false,
-    "key": "output_tokens",
-    "docstring": "The number of image tokens in the output image.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) total_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImagesUsage/properties/total_tokens",
-    "deprecated": false,
-    "key": "total_tokens",
-    "docstring": "The total number of tokens (images and text) used for the image generation.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) size > (variant) 1 > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "1024x1024"
-    }
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) size > (variant) 1 > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "1024x1536"
-    }
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) size > (variant) 1 > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "1536x1024"
-    }
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) size > (variant) 1 > (member) 3": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "auto"
-    }
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) input_tokens_details > (property) image_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImagesUsage/properties/input_tokens_details/properties/image_tokens",
-    "deprecated": false,
-    "key": "image_tokens",
-    "docstring": "The number of image tokens in the input prompt.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) input_tokens_details > (property) text_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImagesUsage/properties/input_tokens_details/properties/text_tokens",
-    "deprecated": false,
-    "key": "text_tokens",
-    "docstring": "The number of text tokens in the input prompt.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  }
-}
-```
+- `b64_json: string`
+
+  Base64-encoded final edited image data, suitable for rendering as an image.
+
+- `background: "transparent" or "opaque" or "auto"`
+
+  The background setting for the edited image.
+
+  - `"transparent"`
+
+  - `"opaque"`
+
+  - `"auto"`
+
+- `created_at: number`
+
+  The Unix timestamp when the event was created.
+
+- `output_format: "png" or "webp" or "jpeg"`
+
+  The output format for the edited image.
+
+  - `"png"`
+
+  - `"webp"`
+
+  - `"jpeg"`
+
+- `quality: "low" or "medium" or "high" or 3 more`
+
+  The quality setting for the edited image.
+
+  - `"low"`
+
+  - `"medium"`
+
+  - `"high"`
+
+  - `"xhigh"`
+
+  - `"max"`
+
+  - `"auto"`
+
+- `size: string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+  The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+  - `string`
+
+  - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+    The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+    - `"1024x1024"`
+
+    - `"1024x1536"`
+
+    - `"1536x1024"`
+
+    - `"auto"`
+
+- `type: "image_edit.completed"`
+
+  The type of the event. Always `image_edit.completed`.
+
+  - `"image_edit.completed"`
+
+- `usage: object { input_tokens, input_tokens_details, output_tokens, total_tokens }`
+
+  For the GPT image models only, the token usage information for the image generation.
+
+  - `input_tokens: number`
+
+    The number of tokens (images and text) in the input prompt.
+
+  - `input_tokens_details: object { image_tokens, text_tokens }`
+
+    The input tokens detailed information for the image generation.
+
+    - `image_tokens: number`
+
+      The number of image tokens in the input prompt.
+
+    - `text_tokens: number`
+
+      The number of text tokens in the input prompt.
+
+  - `output_tokens: number`
+
+    The number of image tokens in the output image.
+
+  - `total_tokens: number`
+
+    The total number of tokens (images and text) used for the image generation.
 
 ### Example
 

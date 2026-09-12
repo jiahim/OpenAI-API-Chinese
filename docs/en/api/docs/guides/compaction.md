@@ -58,7 +58,6 @@ import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
 
 const client = new OpenAI();
 
-/** @type {import("openai/resources/responses/responses").ResponseInput} */
 const conversation = [
   {
     type: "message",
@@ -302,7 +301,6 @@ import OpenAI from "openai";
 
 const client = new OpenAI();
 
-/** @type {import("openai/resources/responses/responses").ResponseInput} */
 const conversation = [{ role: "user", content: "Plan a trip to Kyoto." }];
 
 const compacted = await client.responses.compact({
@@ -310,14 +308,8 @@ const compacted = await client.responses.compact({
   input: conversation,
 });
 
-/** @type {import("openai/resources/responses/responses").ResponseInput} */
 const nextInput = [
-  ...compacted.output.map(
-    (item) =>
-      /** @type {import("openai/resources/responses/responses").ResponseInputItem} */ (
-        item
-      )
-  ),
+  ...compacted.output.map((item) => item),
   { role: "user", content: "Add two more days to the itinerary." },
 ];
 

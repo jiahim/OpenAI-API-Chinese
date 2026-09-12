@@ -229,13 +229,12 @@ audio.autoplay = true;
 audio.controls = true;
 document.body.append(start, stop, status, audio);
 
-/** @type {RTCPeerConnection | undefined} */
 let peer;
-/** @type {RTCDataChannel | undefined} */
+
 let events;
-/** @type {MediaStream | undefined} */
+
 let microphone;
-/** @type {ReturnType<typeof setTimeout> | undefined} */
+
 let closeTimeout;
 let ready = false;
 let finalized = false;
@@ -273,7 +272,6 @@ start.addEventListener("click", async () => {
     // Create the event channel before creating the SDP offer.
     events = connection.createDataChannel("oai-events");
     events.addEventListener("message", ({ data }) => {
-      /** @type {import("openai/resources/live/live").ServerEvent} */
       const event = JSON.parse(data);
       if (event.type === "session.started") {
         ready = true;
@@ -324,7 +322,7 @@ start.addEventListener("click", async () => {
       body: JSON.stringify({ sdp }),
     });
     if (!response.ok) throw new Error(await response.text());
-    /** @type {import("openai/resources/live/live").LiveCreateResponse} */
+
     const result = await response.json();
     console.log("Created session", result.session.id);
     await connection.setRemoteDescription({

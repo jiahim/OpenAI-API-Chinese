@@ -152,9 +152,6 @@ For example, after `check_availability` returns one verified slot, your result c
 **After: GPT-Live result**
 
 ```javascript
-/**
- * @param {import("openai/resources/live/ws").LiveWS | import("openai/resources/live/sideband/ws").SidebandWS} connection
- */
 export function sendUpdate(connection) {
   connection.send({
     type: "response.item.create",
@@ -192,9 +189,6 @@ async def send_update(
 After submitting every required function result, continue the backend:
 
 ```javascript
-/**
- * @param {import("openai/resources/live/ws").LiveWS | import("openai/resources/live/sideband/ws").SidebandWS} connection
- */
 export function sendUpdate(connection) {
   connection.send({
     type: "response.create",
@@ -264,13 +258,6 @@ In a text application, you might pass the user's latest message directly to your
 Connect a client delegation to your agent
 
 ```javascript
-/**
- * @typedef {{revision: number, recentConversation: string, task: string}} Context
- * @typedef {import("openai/resources/live/live").ServerEvent} Notice
- * @typedef {import("openai/resources/live/live").CommentaryAppendEvent} Update
- * @param {Notice} event
- * @param {{readContext: () => Context | null, runAgent: (context: Context) => Promise<string>, currentRevision: () => number, send: (event: Update) => void}} app
- */
 async function handleDelegation(event, app) {
   if (
     event.type !== "session.delegation.created" ||

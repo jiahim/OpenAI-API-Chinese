@@ -185,10 +185,6 @@ Delete a session
 // Replace the illustrative IDs and URLs below with your own resource values.
 import OpenAI from "openai";
 
-/**
- * @param {OpenAI} client
- * @param {string} sessionId
- */
 async function deleteSession(client, sessionId) {
   return client.beta.agents.sessions.delete(sessionId);
 }

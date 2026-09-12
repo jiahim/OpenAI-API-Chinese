@@ -460,7 +460,6 @@ const wifAudience = audience;
 
 const sts = new STSClient({ region: awsRegion });
 
-/** @returns {import("openai/auth/index").SubjectTokenProvider} */
 function awsOutboundWebIdentityTokenProvider() {
   return {
     tokenType: "jwt",
@@ -1230,7 +1229,6 @@ if (!identityProviderId || !serviceAccountId) {
   );
 }
 
-/** @returns {import("openai/auth/index").SubjectTokenProvider} */
 function mountedEksServiceAccountTokenProvider(path) {
   return {
     tokenType: "jwt",

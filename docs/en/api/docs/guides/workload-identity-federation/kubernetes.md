@@ -439,7 +439,6 @@ if (!identityProviderId || !serviceAccountId) {
   );
 }
 
-/** @returns {import("openai/auth/index").SubjectTokenProvider} */
 function mountedServiceAccountTokenProvider(path) {
   return {
     tokenType: "jwt",

@@ -32,7 +32,6 @@ import OpenAI from "openai";
 const client = new OpenAI();
 const model = "gpt-6-astra";
 
-/** @type {OpenAI.Responses.FunctionTool[]} */
 const tools = [
   {
     type: "function",

@@ -12,7 +12,9 @@ Some benefits of Structured Outputs include:
 1. **Explicit refusals:** Safety-based model refusals are now programmatically detectable
 1. **Simpler prompting:** No need for strongly worded prompts to achieve consistent formatting
 
-In addition to supporting JSON Schema in the REST API, the OpenAI SDKs for [Python](https://github.com/openai/openai-python/blob/main/helpers.md#structured-outputs-parsing-helpers) and [JavaScript](https://github.com/openai/openai-node/blob/master/helpers.md#structured-outputs-parsing-helpers) also make it easy to define object schemas using [Pydantic](https://docs.pydantic.dev/latest/) and [Zod](https://zod.dev/) respectively. Below, you can see how to extract information from unstructured text that conforms to a schema defined in code.
+In addition to supporting JSON Schema in the REST API, the OpenAI libraries for [Python](https://github.com/openai/openai-python/blob/main/helpers.md#structured-outputs-parsing-helpers) and [JavaScript](https://github.com/openai/openai-node/blob/master/helpers.md#structured-outputs-parsing-helpers) also let you define object schemas using [`pydantic.BaseModel`](https://docs.pydantic.dev/latest/) and [`z.object`](https://zod.dev/) respectively. Below, you can see how to extract information from unstructured text that conforms to a schema defined in code.
+
+The Ruby SDK supports schemas defined with Sorbet `T::Struct` and returns typed parsed results.
 
 
 
@@ -236,22 +238,18 @@ Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
+# gem install openai sorbet-runtime
 require "openai"
+require "openai/helpers/sorbet"
+
+class CalendarEvent < T::Struct
+  const :name, String
+  const :date, String
+  const :participants, T::Array[String]
+end
 
 client = OpenAI::Client.new
-event_schema = {
-  type: :object,
-  properties: {
-    name: { type: :string },
-    date: { type: :string },
-    participants: {
-      type: :array,
-      items: { type: :string }
-    }
-  },
-  required: %w[name date participants],
-  additionalProperties: false
-}
+schema = OpenAI::StructuredOutput.from_sorbet(CalendarEvent)
 
 response = client.responses.create(
   model: "gpt-6-astra",
@@ -265,17 +263,17 @@ response = client.responses.create(
       content: "Alice and Bob are going to a science fair on Friday."
     }
   ],
-  text: {
-    format: {
-      type: :json_schema,
-      name: "event",
-      strict: true,
-      schema: event_schema
-    }
-  }
+  text: schema
 )
 
-puts(response.output_text)
+raise "Response ended with status: #{response.status}" unless response.status == OpenAI::Responses::ResponseStatus::COMPLETED
+
+message = response.output.grep(OpenAI::Responses::ResponseOutputMessage).fetch(0)
+output_text = message.content.grep(OpenAI::Responses::ResponseOutputText).first
+raise "No structured output returned (the model may have refused)" unless output_text
+
+event = T.cast(output_text.parsed, CalendarEvent)
+puts(event.name, event.date, event.participants.join(", "))
 ```
 
 
@@ -309,7 +307,7 @@ Conversely, Structured Outputs via `response_format` are more suitable when you 
 
 For example, if you are building a math tutoring application, you might want the assistant to respond to your user using a specific JSON Schema so that you can generate a UI that displays different parts of the model's output in distinct ways.
 
-Put simply:
+In practice:
 
 
 
@@ -1195,7 +1193,6 @@ const ui = response.output_parsed;
 
 ```python
 from enum import Enum
-from typing import List
 
 from openai import OpenAI
 from pydantic import BaseModel
@@ -1220,8 +1217,8 @@ class Attribute(BaseModel):
 class UI(BaseModel):
     type: UIType
     label: str
-    children: List["UI"]
-    attributes: List[Attribute]
+    children: list["UI"]
+    attributes: list[Attribute]
 
 
 UI.model_rebuild()  # This is required to enable recursive types
@@ -1706,7 +1703,6 @@ const compliance = response.output_parsed;
 
 ```python
 from enum import Enum
-from typing import Optional
 
 from openai import OpenAI
 from pydantic import BaseModel
@@ -1722,8 +1718,8 @@ class Category(str, Enum):
 
 class ContentCompliance(BaseModel):
     is_violating: bool
-    category: Optional[Category]
-    explanation_if_violating: Optional[str]
+    category: Category | None
+    explanation_if_violating: str | None
 
 
 response = client.responses.parse(
@@ -3331,9 +3327,9 @@ Structured Outputs can still contain mistakes. If you see mistakes, try adjustin
 
 #### Avoid JSON schema divergence
 
-To prevent your JSON Schema and corresponding types in your programming language from diverging, we strongly recommend using the native Pydantic/zod sdk support.
+To prevent your JSON Schema and corresponding types in your programming language from diverging, we strongly recommend using native SDK schema helpers where available.
 
-If you prefer to specify the JSON schema directly, you could add CI rules that flag when either the JSON schema or underlying data objects are edited, or add a CI step that auto-generates the JSON Schema from type definitions (or vice-versa).
+If you prefer to specify the JSON schema directly, you could add CI rules that flag when either the JSON schema or underlying data objects are edited, or add a CI step that automatically generates the JSON Schema from type definitions (or vice-versa).
 
 ## Streaming
 
@@ -3390,16 +3386,14 @@ console.log(result);
 ```
 
 ```python
-from typing import List
-
 from openai import OpenAI
 from pydantic import BaseModel
 
 
 class EntitiesModel(BaseModel):
-    attributes: List[str]
-    colors: List[str]
-    animals: List[str]
+    attributes: list[str]
+    colors: list[str]
+    animals: list[str]
 
 
 client = OpenAI()

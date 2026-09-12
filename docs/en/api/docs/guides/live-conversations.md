@@ -69,7 +69,6 @@ Use startup history to resume a topic, and append relevant context as the conver
 Include prior text messages in `session.input` when you create the session. For example, add this `input` field to your [session creation configuration](https://developers.openai.com/api/docs/guides/live#connect-your-first-session):
 
 ```javascript
-/** @type {import("openai/resources/live/live").SessionConfig} */
 ```
 
 ```python
@@ -118,9 +117,6 @@ Choose an event based on how the model should use the update:
 Each event takes plain-string `content` of up to 500 tokens and a required `delegation_id`. Use `null` for session-wide context. For example, send this after your application has verified the user's acceptance and started the lookup:
 
 ```javascript
-/**
- * @param {import("openai/resources/live/ws").LiveWS | import("openai/resources/live/sideband/ws").SidebandWS} connection
- */
 export function sendUpdate(connection) {
   connection.send({
     type: "session.thinking.append",
@@ -224,9 +220,6 @@ Test the display with overlapping speech, short acknowledgments, interruptions, 
 Send `session.input_audio.mute` to mute input without ending the session:
 
 ```javascript
-/**
- * @param {import("openai/resources/live/ws").LiveWS | import("openai/resources/live/sideband/ws").SidebandWS} connection
- */
 export function sendUpdate(connection) {
   connection.send({
     type: "session.input_audio.mute",
@@ -272,9 +265,6 @@ Instructions request a greeting; they do not guarantee exact wording or uninterr
 Use `session.instructions.append` to request specific spoken wording for a disclosure. `session.commentary.append` may paraphrase the text. After `session.started`, for example, send:
 
 ```javascript
-/**
- * @param {import("openai/resources/live/ws").LiveWS | import("openai/resources/live/sideband/ws").SidebandWS} connection
- */
 export function sendUpdate(connection) {
   connection.send({
     type: "session.instructions.append",

@@ -183,7 +183,6 @@ Example apply_patch_call object
 Apply the patch and return results
 
 ```javascript
-/** @type {import("openai/resources/responses/responses").ResponseInput} */
 const results = patchCalls.map((call) => {
   const { success, output } = applyOperation(call.operation);
 
@@ -364,7 +363,6 @@ Use the apply patch tool with the Agents SDK
 import { applyDiff, Agent, run, applyPatchTool } from "@openai/agents";
 
 class WorkspaceEditor {
-  /** @returns {Promise<import("@openai/agents").ApplyPatchResult>} */
   async createFile(operation) {
     // convert the diff to the file content
     const content = applyDiff("", operation.diff, "create");
@@ -372,7 +370,6 @@ class WorkspaceEditor {
     return { status: "completed", output: `Created ${operation.path}` };
   }
 
-  /** @returns {Promise<import("@openai/agents").ApplyPatchResult>} */
   async updateFile(operation) {
     // read the file content from the file system
     const current = "";
@@ -382,7 +379,6 @@ class WorkspaceEditor {
     return { status: "completed", output: `Updated ${operation.path}` };
   }
 
-  /** @returns {Promise<import("@openai/agents").ApplyPatchResult>} */
   async deleteFile(operation) {
     // delete the file from the file system
     return { status: "completed", output: `Deleted ${operation.path}` };

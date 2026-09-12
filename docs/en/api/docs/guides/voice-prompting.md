@@ -1949,12 +1949,12 @@ This approach reduces the model’s cognitive load, making it easier for it to h
 #### Example
 
 ```python
-from typing import Dict, List, Literal
+from typing import Literal
 
 State = Literal["verify", "resolve"]
 
 # Allowed transitions
-TRANSITIONS: Dict[State, List[State]] = {
+TRANSITIONS: dict[State, list[State]] = {
     "verify": ["resolve"],
     "resolve": [],  # terminal
 }
@@ -1980,7 +1980,7 @@ def build_state_change_tool(current: State) -> dict:
 
 
 # Minimal business tools per state
-TOOLS_BY_STATE: Dict[State, List[dict]] = {
+TOOLS_BY_STATE: dict[State, list[dict]] = {
     "verify": [
         {
             "type": "function",
@@ -2011,7 +2011,7 @@ TOOLS_BY_STATE: Dict[State, List[dict]] = {
 }
 
 # Short, phase-specific instructions
-INSTRUCTIONS_BY_STATE: Dict[State, str] = {
+INSTRUCTIONS_BY_STATE: dict[State, str] = {
     "verify": (
         "# Role & Objective\n"
         "Verify identity to access the account.\n\n"

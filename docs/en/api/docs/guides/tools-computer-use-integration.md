@@ -1456,11 +1456,11 @@ async function computerUseLoop(target, response) {
 
     const screenshot = await captureScreenshot(target);
     const screenshotBase64 = Buffer.from(screenshot).toString("base64");
-    const output = /** @type {const} */ ({
+    const output = {
       type: "computer_screenshot",
       image_url: `data:image/png;base64,${screenshotBase64}`,
       detail: "original",
-    });
+    };
 
     response = await client.responses.create({
       model: "gpt-5.6-sol",
@@ -1909,7 +1909,6 @@ const executionOutput = z
   )
   .nonempty();
 
-/** @returns {Promise<import("openai/resources/responses/responses").ResponseFunctionCallOutputItemList>} */
 async function executeInSandbox(code, sessionId, endpoint) {
   console.log(code);
   const terminal = readline.createInterface({

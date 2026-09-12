@@ -84,7 +84,6 @@ import OpenAI from "openai";
 
 const client = new OpenAI();
 
-/** @type {OpenAI.Responses.NamespaceTool} */
 const crmNamespace = {
   type: "namespace",
   name: "crm",
@@ -451,7 +450,6 @@ if (!searchCall) {
   throw new Error("The response did not include a tool search call.");
 }
 
-/** @type {OpenAI.Responses.Tool[]} */
 const loadedTools = [
   {
     type: "function",
@@ -470,7 +468,6 @@ const loadedTools = [
   },
 ];
 
-/** @type {OpenAI.Responses.ResponseToolSearchOutputItemParam} */
 const searchOutput = {
   type: "tool_search_output",
   execution: "client",

@@ -413,7 +413,6 @@ if (!identityProviderId || !serviceAccountId || !audience) {
   );
 }
 
-/** @returns {import("openai/auth/index").SubjectTokenProvider} */
 function googleMetadataIdentityTokenProvider(audience) {
   return {
     tokenType: "jwt",
@@ -1255,7 +1254,6 @@ if (!identityProviderId || !serviceAccountId) {
   );
 }
 
-/** @returns {import("openai/auth/index").SubjectTokenProvider} */
 function mountedGkeServiceAccountTokenProvider(path) {
   return {
     tokenType: "jwt",

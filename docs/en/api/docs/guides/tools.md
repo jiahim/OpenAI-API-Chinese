@@ -280,7 +280,6 @@ import OpenAI from "openai";
 
 const client = new OpenAI();
 
-/** @type {OpenAI.Responses.NamespaceTool} */
 const crmNamespace = {
   type: "namespace",
   name: "crm",
@@ -547,7 +546,6 @@ Function calling
 import OpenAI from "openai";
 const client = new OpenAI();
 
-/** @type {OpenAI.Responses.Tool[]} */
 const tools = [
   {
     type: "function",

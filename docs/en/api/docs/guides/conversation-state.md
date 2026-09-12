@@ -188,7 +188,6 @@ import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
 
 const openai = new OpenAI();
 
-/** @type {OpenAI.Responses.ResponseInput} */
 let history = [
   {
     role: "user",

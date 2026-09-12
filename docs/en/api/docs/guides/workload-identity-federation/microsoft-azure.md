@@ -429,7 +429,6 @@ if (!identityProviderId || !serviceAccountId || !audience) {
   );
 }
 
-/** @returns {import("openai/auth/index").SubjectTokenProvider} */
 function azureManagedIdentityTokenProvider(resource) {
   return {
     tokenType: "jwt",
@@ -1300,7 +1299,6 @@ if (!identityProviderId || !serviceAccountId) {
   );
 }
 
-/** @returns {import("openai/auth/index").SubjectTokenProvider} */
 function mountedAksServiceAccountTokenProvider(path) {
   return {
     tokenType: "jwt",

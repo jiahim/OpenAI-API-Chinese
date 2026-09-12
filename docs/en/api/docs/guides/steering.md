@@ -192,54 +192,42 @@ asyncio.run(main())
 
 ```ruby
 require "async"
-require "async/http/endpoint"
-require "async/websocket/client"
-require "json"
+require "openai"
 
-endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
-headers = { "Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}" }
+client = OpenAI::Client.new
 Sync do |task|
   task.with_timeout(120) do
-    Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
-      connection.write(
-        JSON.generate(
-          type: "response.create", model: "gpt-6-astra", reasoning: { effort: "medium" },
-          input: "Draft a project plan for building a task-tracking app."
-        )
+    client.responses.connect(request_options: { timeout: 10 }) do |connection|
+      connection.response.create(
+        model: "gpt-6-astra", reasoning: { effort: "medium" },
+        input: "Draft a project plan for building a task-tracking app."
       )
-      connection.flush
       state = {}
-      while (message = connection.read)
-        event = JSON.parse(message.to_str)
-        response = event["response"]
-        case event.fetch("type")
-        when "response.created"
+      while (event = connection.receive)
+        case event
+        when OpenAI::Responses::ResponseCreatedEvent
+          response = event.response
           if !state[:initial_id]
-            state[:initial_id] = response.fetch("id")
-            connection.write(
-              JSON.generate(
-                type: "response.steer", previous_response_id: state[:initial_id],
-                input: "Keep the scope small enough for one developer to finish in two weeks."
-              )
+            state[:initial_id] = response.id
+            connection.send_event(
+              type: "response.steer", previous_response_id: state[:initial_id],
+              input: "Keep the scope small enough for one developer to finish in two weeks."
             )
-            connection.flush
           else
-            state[:successor_id] = response.fetch("id")
+            state[:successor_id] = response.id
           end
-        when "response.steer.failed", "response.failed", "error"
-          raise "Steering failed: #{JSON.generate(event)}"
-        when "response.incomplete"
-          unless response.fetch("id") == state[:initial_id] && response.dig("incomplete_details", "reason") == "steered"
-            raise "Response incomplete: #{JSON.generate(event)}"
+        when OpenAI::Responses::ResponseSteerFailedEvent, OpenAI::Responses::ResponseFailedEvent, OpenAI::Responses::ResponsesServerEvent::ResponseWsError
+          raise "Steering failed: #{event.to_json}"
+        when OpenAI::Responses::ResponseIncompleteEvent
+          response = event.response
+          unless response.id == state[:initial_id] && response.incomplete_details&.reason.to_s == "steered"
+            raise "Response incomplete: #{event.to_json}"
           end
-        when "response.completed"
-          next unless state[:successor_id] && response.fetch("id") == state[:successor_id]
+        when OpenAI::Responses::ResponseCompletedEvent
+          response = event.response
+          next unless state[:successor_id] && response.id == state[:successor_id]
 
-          response.fetch("output").each do |item|
-            next unless item["type"] == "message"
-
-            item.fetch("content").each { |part| puts(part.fetch("text")) if part["type"] == "output_text" }
-          end
+          puts(response.output_text)
           state[:completed] = true
           break
         end
