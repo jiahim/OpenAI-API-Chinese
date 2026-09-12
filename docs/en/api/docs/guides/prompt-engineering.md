@@ -312,7 +312,7 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   instructions: "Talk like a pirate.",
-  reasoning: {effort: :low},
+  reasoning: { effort: :low },
   input: "Are semicolons optional in JavaScript?"
 )
 
@@ -488,10 +488,16 @@ require "openai"
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
-  reasoning: {effort: :low},
+  reasoning: { effort: :low },
   input: [
-    {role: :developer, content: "Talk like a pirate."},
-    {role: :user, content: "Are semicolons optional in JavaScript?"}
+    {
+      role: :developer,
+      content: "Talk like a pirate."
+    },
+    {
+      role: :user,
+      content: "Are semicolons optional in JavaScript?"
+    }
   ]
 )
 

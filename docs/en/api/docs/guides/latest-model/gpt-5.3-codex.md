@@ -404,7 +404,7 @@ input = <<~PROMPT
 PROMPT
 response = client.responses.create(
   model: "gpt-5.3-codex", input: input,
-  tools: [{type: :apply_patch}], parallel_tool_calls: false
+  tools: [{ type: :apply_patch }], parallel_tool_calls: false
 )
 response.output.each do |item|
   pp(item.operation) if item.is_a?(OpenAI::Responses::ResponseApplyPatchToolCall)
@@ -436,11 +436,18 @@ GRAMMAR
 
 response = client.responses.create(
   model: "gpt-5.3-codex", input: input,
-  tools: [{
-    type: :custom, name: "apply_patch",
-    description: "Apply a patch to update files.",
-    format: {type: :grammar, syntax: :lark, definition: APPLY_PATCH_GRAMMAR}
-  }],
+  tools: [
+    {
+      type: :custom,
+      name: "apply_patch",
+      description: "Apply a patch to update files.",
+      format: {
+        type: :grammar,
+        syntax: :lark,
+        definition: APPLY_PATCH_GRAMMAR
+      }
+    }
+  ],
   parallel_tool_calls: false
 )
 response.output.each do |item|

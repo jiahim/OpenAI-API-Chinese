@@ -14,6 +14,8 @@ inspect and change.
 Sandbox agents are available in the TypeScript and Python Agents SDKs. They
   are in beta, so API details, defaults, and supported capabilities may change.
 
+This guide covers sandboxes in the Agents SDK, where your application runs the harness. For an OpenAI-managed harness, use [Agents API: Connect a sandbox](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted).
+
 Use sandboxes when the agent needs to manipulate files, run commands, mount a
 data room, produce artifacts, expose a service, or continue stateful work
 later.

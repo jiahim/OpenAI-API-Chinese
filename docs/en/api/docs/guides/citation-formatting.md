@@ -232,27 +232,11 @@ const CITATION_STOP = "\uE201";
 const SOURCE_ID_RE = /^[A-Za-z0-9_-]+$/;
 const LINE_LOCATOR_RE = /^L\d+(?:-L\d+)?$/;
 
-/**
- * @typedef {Object} Citation
- * @property {string} raw
- * @property {string} family
- * @property {string[]} source_ids
- * @property {string | null} locator
- * @property {number} start
- * @property {number} end
- */
-
-/**
- * Extract citations such as:
- *
- *   {CITATION_START}cite{CITATION_DELIMITER}turn0file0{CITATION_STOP}
- *   {CITATION_START}cite{CITATION_DELIMITER}turn0file0{CITATION_DELIMITER}L8-L13{CITATION_STOP}
- *   {CITATION_START}cite{CITATION_DELIMITER}turn0search0{CITATION_DELIMITER}turn1news2{CITATION_STOP}
- *
- * @param {string} text
- * @param {{ families?: string[] }} [options]
- * @returns {Citation[]}
- */
+// Extract citations such as:
+//
+//   {CITATION_START}cite{CITATION_DELIMITER}turn0file0{CITATION_STOP}
+//   {CITATION_START}cite{CITATION_DELIMITER}turn0file0{CITATION_DELIMITER}L8-L13{CITATION_STOP}
+//   {CITATION_START}cite{CITATION_DELIMITER}turn0search0{CITATION_DELIMITER}turn1news2{CITATION_STOP}
 function extractCitations(text, { families = ["cite"] } = {}) {
   if (families.length === 0) {
     return [];
@@ -267,7 +251,6 @@ function extractCitations(text, { families = ["cite"] } = {}) {
     "g"
   );
 
-  /** @type {Citation[]} */
   const citations = [];
 
   for (const match of text.matchAll(tokenRe)) {
@@ -304,11 +287,6 @@ function extractCitations(text, { families = ["cite"] } = {}) {
   return citations;
 }
 
-/**
- * @param {string} text
- * @param {Iterable<Citation>} citations
- * @returns {string}
- */
 function stripCitations(text, citations) {
   let cleanText = text;
   const sortedCitations = Array.from(citations).sort(
@@ -326,7 +304,8 @@ function stripCitations(text, citations) {
 
 ```python
 import re
-from typing import Iterable, TypedDict
+from collections.abc import Iterable
+from typing import TypedDict
 
 CITATION_START = "\ue200"
 CITATION_DELIMITER = "\ue202"

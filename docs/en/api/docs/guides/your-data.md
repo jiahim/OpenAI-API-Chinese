@@ -61,6 +61,7 @@ The table below indicates when application state is stored for each endpoint. Ze
 | `/v1/conversations`        |           No           |       Until deleted        |         Until deleted          |               No               |                   No                   |
 | `/v1/conversations/items`  |           No           |       Until deleted        |         Until deleted          |               No               |                   No                   |
 | `/v1/chatkit/threads`      |           No           |       Until deleted        |         Until deleted          |               No               |                   No                   |
+| `/v1/agents`               |           No           |          30 days           |         Until deleted          |               No               |                   No                   |
 | `/v1/assistants`           |           No           |          30 days           |         Until deleted          |               No               |                   No                   |
 | `/v1/threads`              |           No           |          30 days           |         Until deleted          |               No               |                   No                   |
 | `/v1/threads/messages`     |           No           |          30 days           |         Until deleted          |               No               |                   No                   |

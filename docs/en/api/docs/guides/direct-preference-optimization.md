@@ -199,7 +199,7 @@ job = client.fine_tuning.jobs.create(
   training_file: "file-all-about-the-weather",
   method_: {
     type: :dpo,
-    dpo: {hyperparameters: {beta: 0.1}}
+    dpo: { hyperparameters: { beta: 0.1 } }
   }
 )
 puts(job.id)

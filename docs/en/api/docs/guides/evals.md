@@ -174,8 +174,14 @@ INSTRUCTIONS
 response = client.responses.create(
   model: "gpt-6-astra",
   input: [
-    {role: :developer, content: instructions},
-    {role: :user, content: "My monitor won't turn on - help!"}
+    {
+      role: :developer,
+      content: instructions
+    },
+    {
+      role: :user,
+      content: "My monitor won't turn on - help!"
+    }
   ]
 )
 puts(response.output_text)
@@ -282,8 +288,23 @@ require "openai"
 client = OpenAI::Client.new
 evaluation = client.evals.create(
   name: "Support answer quality",
-  data_source_config: {type: :custom, item_schema: {type: :object, properties: {input: {type: :string}}, required: ["input"]}},
-  testing_criteria: [{type: :string_check, name: "mentions_refund", input: "{{sample.output_text}}", operation: :contains, reference: "refund"}]
+  data_source_config: {
+    type: :custom,
+    item_schema: {
+      type: :object,
+      properties: { input: { type: :string } },
+      required: ["input"]
+    }
+  },
+  testing_criteria: [
+    {
+      type: :string_check,
+      name: "mentions_refund",
+      input: "{{sample.output_text}}",
+      operation: :contains,
+      reference: "refund"
+    }
+  ]
 )
 puts(evaluation.id)
 ```
@@ -605,7 +626,10 @@ run = client.evals.runs.create(
   name: "Categorization text run",
   data_source: {
     type: :responses,
-    source: {type: :file_id, id: "YOUR_FILE_ID"},
+    source: {
+      type: :file_id,
+      id: "YOUR_FILE_ID"
+    },
     input_messages: {
       type: :template,
       template: [
@@ -613,7 +637,10 @@ run = client.evals.runs.create(
           role: :developer,
           content: "Categorize the ticket as Hardware, Software, or Other."
         },
-        {role: :user, content: "{{ item.ticket_text }}"}
+        {
+          role: :user,
+          content: "{{ item.ticket_text }}"
+        }
       ]
     },
     model: "gpt-6-astra"

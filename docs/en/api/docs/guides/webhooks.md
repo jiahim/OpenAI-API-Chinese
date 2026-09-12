@@ -6,13 +6,15 @@ OpenAI [webhooks](http://chatgpt.com/?q=eli5+what+is+a+webhook?) allow you to re
 
 To receive misalignment monitoring notifications for an API project, see [Receive project safety alerts](https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring#receive-project-safety-alerts).
 
+For Agents API sessions, see [Session webhooks](https://developers.openai.com/api/docs/guides/agents-api/sessions/webhooks) for session events and recovery patterns. Use the endpoint setup, signature verification, and delivery guidance on this page for the webhook receiver.
+
 [API reference for webhook events
 
 
 
       View the full list of webhook events.](https://developers.openai.com/api/reference/resources/webhooks)
 
-Below are examples of simple servers capable of ingesting webhooks from OpenAI, specifically for the [`response.completed`](https://developers.openai.com/api/reference/resources/webhooks) event.
+Below are examples of servers capable of ingesting webhooks from OpenAI, specifically for the [`response.completed`](https://developers.openai.com/api/reference/resources/webhooks) event.
 
 For the Ruby examples, install the required dependencies with
 `gem install openai webrick`, then set `OPENAI_API_KEY` and

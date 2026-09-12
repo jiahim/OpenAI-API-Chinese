@@ -144,7 +144,7 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Rename fib() to fibonacci() in lib/fib.py and update run.py to use the new name.",
-  tools: [{type: :apply_patch}]
+  tools: [{ type: :apply_patch }]
 )
 
 patch_calls = response.output.select { |item| item.type == :apply_patch_call }
@@ -183,7 +183,6 @@ Example apply_patch_call object
 Apply the patch and return results
 
 ```javascript
-/** @type {import("openai/resources/responses/responses").ResponseInput} */
 const results = patchCalls.map((call) => {
   const { success, output } = applyOperation(call.operation);
 
@@ -292,13 +291,15 @@ patch_call_id = ENV.fetch("OPENAI_APPLY_PATCH_CALL_ID")
 response = client.responses.create(
   model: "gpt-6-astra",
   previous_response_id: response_id,
-  input: [{
-    type: :apply_patch_call_output,
-    call_id: patch_call_id,
-    status: :completed,
-    output: "Patch applied successfully."
-  }],
-  tools: [{type: :apply_patch}]
+  input: [
+    {
+      type: :apply_patch_call_output,
+      call_id: patch_call_id,
+      status: :completed,
+      output: "Patch applied successfully."
+    }
+  ],
+  tools: [{ type: :apply_patch }]
 )
 
 puts(response.output_text)
@@ -362,7 +363,6 @@ Use the apply patch tool with the Agents SDK
 import { applyDiff, Agent, run, applyPatchTool } from "@openai/agents";
 
 class WorkspaceEditor {
-  /** @returns {Promise<import("@openai/agents").ApplyPatchResult>} */
   async createFile(operation) {
     // convert the diff to the file content
     const content = applyDiff("", operation.diff, "create");
@@ -370,7 +370,6 @@ class WorkspaceEditor {
     return { status: "completed", output: `Created ${operation.path}` };
   }
 
-  /** @returns {Promise<import("@openai/agents").ApplyPatchResult>} */
   async updateFile(operation) {
     // read the file content from the file system
     const current = "";
@@ -380,7 +379,6 @@ class WorkspaceEditor {
     return { status: "completed", output: `Updated ${operation.path}` };
   }
 
-  /** @returns {Promise<import("@openai/agents").ApplyPatchResult>} */
   async deleteFile(operation) {
     // delete the file from the file system
     return { status: "completed", output: `Deleted ${operation.path}` };

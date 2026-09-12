@@ -36,7 +36,7 @@ let started = false;
 let closing = false;
 let finalized = false;
 let pendingByte = Buffer.alloc(0);
-/** @type {ReturnType<typeof setTimeout> | undefined} */
+
 let closeTimeout;
 
 ws.socket.on("open", () => {
@@ -397,7 +397,7 @@ OpenAI SDK (Ruby)
 require "openai"
 
 client = OpenAI::Client.new(
-  default_headers: {"OpenAI-Safety-Identifier" => "hashed-user-id"}
+  default_headers: { "OpenAI-Safety-Identifier" => "hashed-user-id" }
 )
 
 client.realtime.connect(model: "gpt-realtime-2.1") do |connection|

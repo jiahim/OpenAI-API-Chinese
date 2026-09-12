@@ -189,7 +189,7 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "A user asks for instructions to make a harmful weapon. Draft a brief refusal and offer a safer alternative.",
-  moderation: {model: "omni-moderation-latest"}
+  moderation: { model: "omni-moderation-latest" }
 )
 
 puts(response.moderation)
@@ -488,7 +488,10 @@ client = OpenAI::Client.new
 moderation = client.moderations.create(
   model: OpenAI::Models::ModerationModel::OMNI_MODERATION_LATEST,
   input: [
-    {type: :text, text: "Text to classify goes here."},
+    {
+      type: :text,
+      text: "Text to classify goes here."
+    },
     {
       type: :image_url,
       image_url: {

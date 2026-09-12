@@ -1,21 +1,21 @@
 # 图像生成
 
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。可在页面 URL 末尾添加后缀来获取文档页面的 Markdown 版本， `.md` 以获取该页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
 
-图像生成工具允许你使用文本提示（以及可选的图像输入）来生成图像。它使用 GPT Image 模型，包括 `gpt-image-2.5-sunburst`, `gpt-image-2.5-flare`, `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`，并且 `gpt-image-1-mini`，会自动优化文本输入以提升性能。
+图像生成工具允许你使用文本提示（可选地配合图像输入）来生成图像。它使用 GPT Image 模型，包括 `gpt-image-2.5-sunburst`, `gpt-image-2.5-flare`, `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`，并 `gpt-image-1-mini`，会自动优化文本输入以提升性能。
 
-设置该 `image_generation` 工具的 `model` 为 `gpt-image-2.5-sunburst` 以进行精确编辑，或使用 `gpt-image-2.5-flare` 进行快速、高质量的图像生成。在顶层 Responses 中使用受支持的主流模型 `model` 字段。
+将 `image_generation` 工具的 `model` 设为 `gpt-image-2.5-sunburst` 进行精确编辑，或设为 `gpt-image-2.5-flare` 以进行快速且高质量的图像生成。在顶层 Responses 的 model 字段中使用受支持的主线模型。 `model` 字段。
 
-要详细了解图像生成，请参阅我们的专文 [图像生成
+要了解关于图像生成的更多信息，请参阅我们的专属 [图像生成
   指南](https://developers.openai.com/api/docs/guides/image-generation?api=responses).
 
 ## 用法
 
-当你在请求中包含该 `image_generation` 工具时，模型可以根据对话内容决定何时以及如何生成图像，并使用你的提示词和任何提供的图像输入。
+当你在请求中包含 `image_generation` 工具时，模型可以根据你的提示和任何提供的图像输入，决定在对话中何时以及如何生成图像。
 
 该 `image_generation_call` 工具调用结果将包含一个 base64 编码的图像。
 
-生成图像
+Generate an image
 
 ```javascript
 import OpenAI from "openai";
@@ -167,7 +167,12 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst"
+    }
+  ]
 )
 
 image_call = response.output.find do |item|
@@ -182,36 +187,36 @@ File.binwrite("otter.png", Base64.strict_decode64(encoded_image))
 ```
 
 
-你可以 [提供输入图像](https://developers.openai.com/api/docs/guides/image-generation?image-generation-model=gpt-image#edit-images) 使用文件 ID 或 base64 数据。
+你可以 [提供输入图像](https://developers.openai.com/api/docs/guides/image-generation?image-generation-model=gpt-image#edit-images) ，方式是使用文件 ID 或 base64 数据。
 
-若要强制调用图像生成工具，可以设置参数 `tool_choice` 为 `{"type": "image_generation"}`.
+若要强制进行图像生成工具调用，你可以设置参数 `tool_choice` 设为 `{"type": "image_generation"}`.
 
 ### 工具选项
 
-你可以将以下输出选项配置为 [图像生成工具](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-tools):
+你可以将以下输出选项作为参数用于 [图像生成工具](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-tools):
 
-- Size：图像尺寸，例如 1024 × 1024 或 1024 × 1536
-- Quality：渲染质量，例如 low、medium 或 high
-- Format：文件输出格式
-- Compression：JPEG 和 WebP 格式的压缩级别（0-100%）
-- Background：透明、不透明或自动
-- Action：请求应自动选择、生成还是编辑图像
+- Size:图像尺寸,例如 1024 × 1024 或 1024 × 1536
+- Quality:渲染质量,例如 low、medium 或 high
+- Format:文件输出格式
+- Compression:JPEG 和 WebP 格式的压缩级别(0-100%)
+- Background:透明、不透明或自动
+- Action:请求是自动选择、生成还是编辑图像
 
-`size`, `quality`，并且 `background` 支持 `auto` 选项，模型会根据提示自动选择最佳选项。
+`size`, `quality`，并 `background` 支持 `auto` 选项，此时模型会根据提示自动选择最合适的选项。
 
-对于 `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`, `quality` 还接受 `xhigh` 和 `max`。这些值不受更早的 GPT Image 模型支持。默认质量仍为 `auto`.
+对于 `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`, `quality` 还接受 `xhigh` 和 `max`。这些值不被更早的 GPT Image 模型支持。默认质量仍为 `auto`.
 
-`gpt-image-2` 支持灵活的 `size` 值，以满足其 [分辨率要求](https://developers.openai.com/api/docs/guides/image-generation#earlier-gpt-image-models)。透明背景处于预览阶段；可设置 `background: "transparent"` 来请求。使用 `png` （默认值）或 `webp`; `jpeg` 不支持透明背景。
+`gpt-image-2` 支持灵活的 `size` 值，以满足其 [分辨率约束](https://developers.openai.com/api/docs/guides/image-generation#earlier-gpt-image-models)。透明背景目前为预览功能；可设置 `background: "transparent"` 以请求透明背景。使用 `png` （默认值）或 `webp`; `jpeg` 不支持透明背景。
 
 有关可用选项的更多详细信息，请参阅 [图像生成指南](https://developers.openai.com/api/docs/guides/image-generation#customize-image-output).
 
-在使用 Responses API 图像生成工具时，受支持的 GPT Image 模型可以选择生成新图像或编辑对话中已有的图像。可选的 `action` 参数用于控制此行为：保留 `action` 设置为 `auto` 以让模型自行选择是生成还是编辑，或将其设置为 `generate` 或 `edit` 以强制该行为。如果未指定，默认值为 `auto`.
+使用 Responses API 图像生成工具时，受支持的 GPT Image 模型可以选择生成新图像或编辑对话中已有的图像。可选参数 `action` 用于控制该行为：将 `action` 设置为 `auto` ，让模型自行决定是生成还是编辑；或将其设置为 `generate` 或 `edit` 以强制该行为。如果未指定，则默认为 `auto`.
 
 ### 修订后的提示
 
-使用图像生成工具时，主线模型（例如， `gpt-5.5`，会自动修改你的提示词以提升性能。
+在使用图像生成工具时，主线模型（例如， `gpt-5.5`）会自动改写你的提示，以提升效果。
 
-你可以在图像生成调用的 `revised_prompt` 字段中查看修改后的提示词：
+你可以在图像生成调用的 `revised_prompt` 字段中查看改写后的提示：
 
 ```json
 {
@@ -225,17 +230,17 @@ File.binwrite("otter.png", Base64.strict_decode64(encoded_image))
 
 ### 提示技巧
 
-在提示中使用以下词语时，图像生成效果最佳，例如 `draw` 或 `edit` 放入你的提示中。
+在提示中使用以下术语时，图像生成效果最佳 `draw` 或 `edit` 。
 
-例如，如果你想合成图像，不要说 `combine` 或 `merge`，而是可以这样表述：“编辑第一张图像，从第二张图像中添加这个元素”。
+例如，如果你想要合并图像，与其说 `combine` 或 `merge`，不如说"编辑第一张图像，把第二张图像中的这个元素加进去"。
 
 ## 多轮编辑
 
-你可以通过引用之前的响应或图像 ID 来迭代地编辑图像。这使你能够在多个对话轮次中不断完善图像。
+你可以通过引用之前的 response 或 image ID 来迭代编辑图像，从而在多轮对话中逐步完善图像。
 
 
 
-使用之前的响应 ID
+使用上一个 response ID
 
     Multi-turn image generation
 
@@ -491,7 +496,12 @@ client = OpenAI::Client.new
 first = client.responses.create(
   model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst"
+    }
+  ]
 )
 
 first_image = first.output.find do |item|
@@ -508,7 +518,12 @@ follow_up = client.responses.create(
   model: "gpt-6-astra",
   input: "Now make it look realistic.",
   previous_response_id: first.id,
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst"
+    }
+  ]
 )
 
 follow_up_image = follow_up.output.find do |item|
@@ -527,7 +542,7 @@ File.binwrite("cat_and_otter_realistic.png", Base64.strict_decode64(encoded_imag
   
 
     
-使用图像 ID
+使用 image ID
 
     Multi-turn image generation
 
@@ -826,7 +841,12 @@ client = OpenAI::Client.new
 first = client.responses.create(
   model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst"
+    }
+  ]
 )
 
 first_image = first.output.find do |item|
@@ -844,11 +864,24 @@ follow_up = client.responses.create(
   input: [
     {
       role: :user,
-      content: [{type: :input_text, text: "Now make it look realistic."}]
+      content: [
+        {
+          type: :input_text,
+          text: "Now make it look realistic."
+        }
+      ]
     },
-    {type: :image_generation_call, id: first_image.id}
+    {
+      type: :image_generation_call,
+      id: first_image.id
+    }
   ],
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst"
+    }
+  ]
 )
 
 follow_up_image = follow_up.output.find do |item|
@@ -866,11 +899,11 @@ File.binwrite("cat_and_otter_realistic.png", Base64.strict_decode64(encoded_imag
 
 ## 流式传输
 
-图像生成工具支持在生成最终结果的同时流式传输部分图像。这能为用户提供更快的视觉反馈，并改善感知延迟。
+图像生成工具在生成最终结果的同时支持流式输出部分图像。这能为用户提供更快的视觉反馈，并改善感知延迟。
 
-你可以通过以下参数设置部分图像的数量（1-3）： `partial_images` 参数。
+你可以通过 `partial_images` 参数设置部分图像的数量（1-3）。
 
-流式传输图像
+流式输出图像
 
 ```javascript
 import OpenAI from "openai";
@@ -1053,7 +1086,13 @@ client = OpenAI::Client.new
 stream = client.responses.stream(
   model: "gpt-6-astra",
   input: "Generate an image of a river made of white owl feathers.",
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst", partial_images: 2}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst",
+      partial_images: 2
+    }
+  ]
 )
 
 stream.each do |event|
@@ -1076,7 +1115,7 @@ end
 ```
 
 
-## Supported models
+## 支持的模型
 
 以下模型支持图像生成工具：
 

@@ -286,7 +286,10 @@ def generate_prompt(client, meta_prompt, task_or_prompt)
   completion = client.chat.completions.create(
     model: "gpt-6-astra",
     messages: [
-      {role: :system, content: meta_prompt},
+      {
+        role: :system,
+        content: meta_prompt
+      },
       {
         role: :user,
         content: "Task, Goal, or Current Prompt:\n#{task_or_prompt}"
@@ -533,7 +536,10 @@ def generate_prompt(client, meta_prompt, task_or_prompt)
   completion = client.chat.completions.create(
     model: "gpt-6-astra",
     messages: [
-      {role: :system, content: meta_prompt},
+      {
+        role: :system,
+        content: meta_prompt
+      },
       {
         role: :user,
         content: "Task, Goal, or Current Prompt:\n#{task_or_prompt}"
@@ -894,7 +900,10 @@ def generate_prompt(client, meta_prompt, task_or_prompt)
   completion = client.chat.completions.create(
     model: "gpt-6-astra",
     messages: [
-      {role: :system, content: meta_prompt},
+      {
+        role: :system,
+        content: meta_prompt
+      },
       {
         role: :user,
         content: "Task, Goal, or Current Prompt:\n#{task_or_prompt}"
@@ -1218,7 +1227,10 @@ def generate_prompt(client, meta_prompt, task_or_prompt)
   completion = client.chat.completions.create(
     model: "gpt-6-astra",
     messages: [
-      {role: :system, content: meta_prompt},
+      {
+        role: :system,
+        content: meta_prompt
+      },
       {
         role: :user,
         content: "Task, Goal, or Current Prompt:\n#{task_or_prompt}"
@@ -2205,14 +2217,16 @@ META_SCHEMA = {
         }
       },
       "items" => {
-        "anyOf" => [{
-          "$ref" => "#/$defs/schema_definition"
-        }, {
-          "type" => "array",
-          "items" => {
+        "anyOf" => [
+          {
             "$ref" => "#/$defs/schema_definition"
+          }, {
+            "type" => "array",
+            "items" => {
+              "$ref" => "#/$defs/schema_definition"
+            }
           }
-        }]
+        ]
       },
       "required" => {
         "type" => "array",
@@ -2251,14 +2265,16 @@ META_SCHEMA = {
             }
           },
           "items" => {
-            "anyOf" => [{
-              "$ref" => "#/$defs/schema_definition"
-            }, {
-              "type" => "array",
-              "items" => {
+            "anyOf" => [
+              {
                 "$ref" => "#/$defs/schema_definition"
+              }, {
+                "type" => "array",
+                "items" => {
+                  "$ref" => "#/$defs/schema_definition"
+                }
               }
-            }]
+            ]
           },
           "required" => {
             "type" => "array",
@@ -2456,14 +2472,24 @@ PROMPT
 client = OpenAI::Client.new
 completion = client.chat.completions.create(
   model: "gpt-5.6-terra",
-  response_format: {type: :json_schema, json_schema: META_SCHEMA},
+  response_format: {
+    type: :json_schema,
+    json_schema: META_SCHEMA
+  },
   messages: [
-    {role: :system, content: META_PROMPT},
-    {role: :user, content: "Description: Schedule a meeting with a title and start time."}
+    {
+      role: :system,
+      content: META_PROMPT
+    },
+    {
+      role: :user,
+      content: "Description: Schedule a meeting with a title and start time."
+    }
   ]
 )
 message = completion.choices.fetch(0).message
 raise "Schema generation refused: #{message.refusal}" if message.refusal
+
 puts(JSON.pretty_generate(JSON.parse(message.content || raise("No schema returned"))))
 ```
 
@@ -3166,14 +3192,16 @@ META_SCHEMA = {
             }
           },
           "items" => {
-            "anyOf" => [{
-              "$ref" => "#/$defs/schema_definition"
-            }, {
-              "type" => "array",
-              "items" => {
+            "anyOf" => [
+              {
                 "$ref" => "#/$defs/schema_definition"
+              }, {
+                "type" => "array",
+                "items" => {
+                  "$ref" => "#/$defs/schema_definition"
+                }
               }
-            }]
+            ]
           },
           "required" => {
             "type" => "array",
@@ -3332,13 +3360,23 @@ PROMPT
 client = OpenAI::Client.new
 completion = client.chat.completions.create(
   model: "gpt-5.6-terra",
-  response_format: {type: :json_schema, json_schema: META_SCHEMA},
+  response_format: {
+    type: :json_schema,
+    json_schema: META_SCHEMA
+  },
   messages: [
-    {role: :system, content: META_PROMPT},
-    {role: :user, content: "Description: Schedule a meeting with a title and start time."}
+    {
+      role: :system,
+      content: META_PROMPT
+    },
+    {
+      role: :user,
+      content: "Description: Schedule a meeting with a title and start time."
+    }
   ]
 )
 message = completion.choices.fetch(0).message
 raise "Schema generation refused: #{message.refusal}" if message.refusal
+
 puts(JSON.pretty_generate(JSON.parse(message.content || raise("No schema returned"))))
 ```

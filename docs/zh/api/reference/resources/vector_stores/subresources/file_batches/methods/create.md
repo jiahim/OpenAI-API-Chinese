@@ -1,4 +1,4 @@
-> 完整文档索引请参见 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 获取文档页面的 Markdown 版本。
+> 如需完整文档索引,请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
 
 ## 创建向量存储文件批次
 
@@ -10,15 +10,15 @@
 
 - `vector_store_id: string`
 
-### 正文参数
+### 请求体参数
 
 - `attributes: optional map[string or number or boolean] or null`
 
-  可附加到对象的 16 组键值对。可用于
-  以结构化格式存储关于对象的附加信息，并通过
-  格式存储关于对象的附加信息，并通过 API 或控制面板查询对象。键为字符串，
-  最大长度为 64 个字符。值为字符串，最大
-  长度为 512 个字符、布尔值或数字。
+  由 16 组键值对组成的集合，可以附加到对象上。它可用于
+  以结构化格式存储对象的附加信息，并通过
+  API 或控制面板查询对象。键为字符串，
+  最大长度为 64 个字符。值为最大长度为 512 个字符的字符串、
+  布尔值或数字。
 
   - `string`
 
@@ -28,21 +28,21 @@
 
 - `chunking_strategy: optional FileChunkingStrategyParam`
 
-  用于对文件进行分块的分块策略。如果未设置，将使用 `auto` 该策略。
+  用于对文件进行分块的分块策略。若未设置，将使用 `auto` 策略。
 
   - `AutoFileChunkingStrategyParam object { type }`
 
-    默认策略。此策略当前使用 `max_chunk_size_tokens` 的 `800` 和 `chunk_overlap_tokens` 的 `400`.
+    默认策略。该策略目前使用 `max_chunk_size_tokens` 的 `800` 和 `chunk_overlap_tokens` 的 `400`.
 
     - `type: "auto"`
 
-      Always `auto`.
+      始终 `auto`.
 
       - `"auto"`
 
   - `StaticFileChunkingStrategyObjectParam object { static, type }`
 
-    通过设置块大小和块重叠来自定义你自己的分块策略。
+    通过设置 chunk 大小和 chunk 重叠来自定义你自己的分块策略。
 
     - `static: StaticFileChunkingStrategy`
 
@@ -58,29 +58,29 @@
 
     - `type: "static"`
 
-      Always `static`.
+      始终 `static`.
 
       - `"static"`
 
 - `file_ids: optional array of string`
 
-  一个 [File](/docs/api-reference/files) ID 列表，向量存储应使用这些 ID。适用于 `file_search` 可以访问文件。如果 `attributes` 或 `chunking_strategy` 已提供，它们将应用于该批中的所有文件。最大批大小为 2000 个文件。此端点推荐用于多文件导入，有助于减少每个向量存储的写入请求压力。与 `files`.
+  由 [File](/api/reference/resources/files) ID 组成的列表，vector store 应使用这些 ID。适用于 `file_search` 可以访问文件。如果 `attributes` 或 `chunking_strategy` 已提供，它们将应用于该批次中的所有文件。最大批次大小为 2000 个文件。建议使用此端点进行多文件摄入，有助于降低每个向量存储的写入请求压力。与 `files`.
 
 - `files: optional array of object { file_id, attributes, chunking_strategy }`
 
-  一个对象列表，其中每个对象都包含一个 `file_id` 以及可选的 `attributes` 或 `chunking_strategy`. 用于需要在特定文件上覆盖元数据时。全局 `attributes` 或 `chunking_strategy` 会被忽略，并且必须为每个文件单独指定。单批次最大文件数为 2000。建议在多文件接入场景中使用此端点，以降低每个向量存储写入请求的压力。与以下操作互斥： `file_ids`.
+  每个对象包含一个 `file_id` 以及可选的 `attributes` 或 `chunking_strategy`。当你需要为特定文件覆盖元数据时使用。全局 `attributes` 或 `chunking_strategy` 将被忽略，必须为每个文件单独指定。最大批次大小为 2000 个文件。建议使用此端点进行多文件摄入，有助于降低每个向量存储的写入请求压力。与 `file_ids`.
 
   - `file_id: string`
 
-    一个 [File](/docs/api-reference/files) ，即向量存储应使用的 ID。可用于类似 `file_search` 之类的工具访问文件。对于多文件接入，我们推荐使用 [`file_batches`](/docs/api-reference/vector-stores-file-batches/createBatch) ，以最大程度减少每个向量存储的写入请求。
+    一个 [File](/api/reference/resources/files) 向量存储应使用的 ID。适用于类似 `file_search` 可以访问文件的工具。对于多文件摄入，我们建议 [`file_batches`](/api/reference/resources/vector_stores/subresources/file_batches/methods/create) 以尽量减少每个向量存储的写入请求。
 
   - `attributes: optional map[string or number or boolean] or null`
 
-    可附加到对象的 16 组键值对。可用于
-    以结构化格式存储关于对象的附加信息，并通过
-    格式存储关于对象的附加信息，并通过 API 或控制面板查询对象。键为字符串，
-    最大长度为 64 个字符。值为字符串，最大
-    长度为 512 个字符、布尔值或数字。
+    由 16 组键值对组成的集合，可以附加到对象上。它可用于
+    以结构化格式存储对象的附加信息，并通过
+    API 或控制面板查询对象。键为字符串，
+    最大长度为 64 个字符。值为最大长度为 512 个字符的字符串、
+    布尔值或数字。
 
     - `string`
 
@@ -90,9 +90,9 @@
 
   - `chunking_strategy: optional FileChunkingStrategyParam`
 
-    用于对文件进行分块的分块策略。如果未设置，将使用 `auto` 该策略。
+    用于对文件进行分块的分块策略。若未设置，将使用 `auto` 策略。
 
-### 返回
+### Returns
 
 - `VectorStoreFileBatch object { id, created_at, file_counts, 3 more }`
 
@@ -100,7 +100,7 @@
 
   - `id: string`
 
-    该标识符，可在 API 端点中引用。
+    可在 API 端点中引用的标识符。
 
   - `created_at: number`
 
@@ -110,7 +110,7 @@
 
     - `cancelled: number`
 
-      已取消的文件数量。
+      已被取消的文件数量。
 
     - `completed: number`
 
@@ -118,15 +118,15 @@
 
     - `failed: number`
 
-      处理失败的的文件数量。
+      处理失败的文件数量。
 
     - `in_progress: number`
 
-      当前正在处理的的文件数量。
+      当前正在处理的文件数量。
 
     - `total: number`
 
-      文件的总数。
+      文件总数。
 
   - `object: "vector_store.files_batch"`
 
@@ -136,7 +136,7 @@
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
-    向量存储文件批次的，可以为 `in_progress`, `completed`, `cancelled` 或 `failed`.
+    向量存储文件批次的状态，可为 `in_progress`, `completed`, `cancelled` 或 `failed`.
 
     - `"in_progress"`
 
@@ -148,7 +148,7 @@
 
   - `vector_store_id: string`
 
-    所附加到的 [向量存储](/docs/api-reference/vector-stores/object) 的 ID。 [File](/docs/api-reference/files) 。
+    的 ID [vector store](/api/reference/resources/vector_stores) 所属的 [File](/api/reference/resources/files) 所附加到的。
 
 ### 示例
 

@@ -89,21 +89,23 @@ ws.send(json.dumps(event))
 connection.session.update(
   type: :realtime,
   model: "gpt-realtime-2.1",
-  tools: [{
-    type: :function,
-    name: "lookup_order",
-    description: "Look up an order by its order number.",
-    parameters: {
-      type: "object",
-      properties: {
-        order_number: {
-          type: "string",
-          description: "The customer-facing order number."
-        }
-      },
-      required: ["order_number"]
+  tools: [
+    {
+      type: :function,
+      name: "lookup_order",
+      description: "Look up an order by its order number.",
+      parameters: {
+        type: "object",
+        properties: {
+          order_number: {
+            type: "string",
+            description: "The customer-facing order number."
+          }
+        },
+        required: ["order_number"]
+      }
     }
-  }],
+  ],
   tool_choice: :auto
 )
 ```
@@ -228,13 +230,15 @@ connection.session.update(
   type: :realtime,
   model: "gpt-realtime-2.1",
   output_modalities: [:text],
-  tools: [{
-    type: :mcp,
-    server_label: "openai_docs",
-    server_url: "https://developers.openai.com/mcp",
-    allowed_tools: ["search_openai_docs", "fetch_openai_doc"],
-    require_approval: :never
-  }]
+  tools: [
+    {
+      type: :mcp,
+      server_label: "openai_docs",
+      server_url: "https://developers.openai.com/mcp",
+      allowed_tools: ["search_openai_docs", "fetch_openai_doc"],
+      require_approval: :never
+    }
+  ]
 )
 ```
 
@@ -305,14 +309,16 @@ connection.session.update(
   type: :realtime,
   model: "gpt-realtime-2.1",
   output_modalities: [:text],
-  tools: [{
-    type: :mcp,
-    server_label: "google_calendar",
-    connector_id: "connector_googlecalendar",
-    authorization: access_token,
-    allowed_tools: ["search_events", "read_event"],
-    require_approval: :never
-  }]
+  tools: [
+    {
+      type: :mcp,
+      server_label: "google_calendar",
+      connector_id: "connector_googlecalendar",
+      authorization: access_token,
+      allowed_tools: ["search_events", "read_event"],
+      require_approval: :never
+    }
+  ]
 )
 ```
 
@@ -503,14 +509,18 @@ connection.each do |event|
     puts("MCP tools ready for item: #{event.item_id}")
     connection.response.create(
       output_modalities: [:text],
-      input: [{
-        type: :message,
-        role: :user,
-        content: [{
-          type: :input_text,
-          text: "Which Realtime API transport should browser clients use?"
-        }]
-      }],
+      input: [
+        {
+          type: :message,
+          role: :user,
+          content: [
+            {
+              type: :input_text,
+              text: "Which Realtime API transport should browser clients use?"
+            }
+          ]
+        }
+      ],
       tool_choice: :required
     )
   when OpenAI::Realtime::ConversationItemDone
@@ -585,6 +595,7 @@ function approveMcpRequest(approvalRequestId) {
 ```
 
 ```python
+# Use the ID from the received MCP approval-request item.
 def approve_mcp_request(ws, approval_request_id):
     event = {
         "type": "conversation.item.create",
@@ -600,6 +611,7 @@ def approve_mcp_request(ws, approval_request_id):
 ```
 
 ```ruby
+# Use the ID from the received MCP approval-request item.
 approval_request_id = item.id
 
 connection.conversation.items.create(
@@ -686,21 +698,27 @@ ws.send(json.dumps(event))
 ```ruby
 connection.response.create(
   output_modalities: [:text],
-  input: [{
-    type: :message,
-    role: :user,
-    content: [{
-      type: :input_text,
-      text: "Which Realtime API transport should browser clients use?"
-    }]
-  }],
-  tools: [{
-    type: :mcp,
-    server_label: "openai_docs",
-    server_url: "https://developers.openai.com/mcp",
-    allowed_tools: ["search_openai_docs", "fetch_openai_doc"],
-    require_approval: :never
-  }]
+  input: [
+    {
+      type: :message,
+      role: :user,
+      content: [
+        {
+          type: :input_text,
+          text: "Which Realtime API transport should browser clients use?"
+        }
+      ]
+    }
+  ],
+  tools: [
+    {
+      type: :mcp,
+      server_label: "openai_docs",
+      server_url: "https://developers.openai.com/mcp",
+      allowed_tools: ["search_openai_docs", "fetch_openai_doc"],
+      require_approval: :never
+    }
+  ]
 )
 ```
 
@@ -781,12 +799,24 @@ ws.send(json.dumps(event))
 ```ruby
 connection.response.create(
   output_modalities: [:text],
-  input: [{
-    type: :message,
-    role: :user,
-    content: [{type: :input_text, text: "Check my schedule this afternoon."}]
-  }],
-  tools: [{type: :mcp, server_label: "google_calendar"}]
+  input: [
+    {
+      type: :message,
+      role: :user,
+      content: [
+        {
+          type: :input_text,
+          text: "Check my schedule this afternoon."
+        }
+      ]
+    }
+  ],
+  tools: [
+    {
+      type: :mcp,
+      server_label: "google_calendar"
+    }
+  ]
 )
 ```
 

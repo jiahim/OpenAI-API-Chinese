@@ -94,9 +94,6 @@ See [Transcript deltas](https://developers.openai.com/api/docs/guides/live-conve
 Use `session.instructions.append` for guardrail steering. It can interrupt speech in progress and apply a new instruction. For example, after your application blocks a request, send:
 
 ```javascript
-/**
- * @param {import("openai/resources/live/ws").LiveWS | import("openai/resources/live/sideband/ws").SidebandWS} connection
- */
 export function sendUpdate(connection) {
   connection.send({
     type: "session.instructions.append",

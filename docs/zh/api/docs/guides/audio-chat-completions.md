@@ -1,16 +1,16 @@
 # Chat Completions 中的音频
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。你也可以在页面 URL 末尾添加 `.md` 来获取该页面的 Markdown 版本。
 
-如果你已经拥有一个基于文本的 LLM 应用，使用 [Chat Completions 端点](https://developers.openai.com/api/reference/resources/chat)，可以为其添加音频功能。例如，如果你的聊天应用支持文本输入，你可以增加音频输入和输出：在 `audio` 数组中加入 `modalities` 字段并使用支持音频的模型，例如 [`gpt-audio-1.5`](https://developers.openai.com/api/docs/models/gpt-audio-1.5).
+如果你已经有一个基于文本的 LLM 应用，使用 [Chat Completions endpoint](https://developers.openai.com/api/reference/resources/chat)，你可以为其添加音频功能。例如，如果你的聊天应用支持文本输入，你可以添加音频输入和输出：在 `audio` 数组中加入 `modalities` 并使用音频模型，例如 [`gpt-audio-1.5`](https://developers.openai.com/api/docs/models/gpt-audio-1.5).
 
 该 [Responses API](https://developers.openai.com/api/reference/resources/responses) 文档目前描述的是
-  文本和图像输入与文本输出。对于这种音频聊天模式，请使用 Chat
-  Completions 并选择支持音频的模型。
+  文本和图像输入配合文本输出。对于这种音频聊天模式，请使用 Chat
+  Completions 并搭配支持音频的模型。
 
 
 
-模型输出的音频
+Audio output from model
 
     Create a human-like audio response to a prompt
 
@@ -168,9 +168,17 @@ require "openai"
 client = OpenAI::Client.new
 completion = client.chat.completions.create(
   model: "gpt-audio-1.5",
-  messages: [{role: :user, content: "Is a golden retriever a good family dog?"}],
+  messages: [
+    {
+      role: :user,
+      content: "Is a golden retriever a good family dog?"
+    }
+  ],
   modalities: [:text, :audio],
-  audio: {voice: :alloy, format: :wav},
+  audio: {
+    voice: :alloy,
+    format: :wav
+  },
   store: true
 )
 
@@ -200,7 +208,7 @@ curl "https://api.openai.com/v1/chat/completions" \
   
 
     
-模型的音频输入
+Audio input to model
 
     Use audio inputs for prompting a model
 
@@ -412,15 +420,29 @@ client = OpenAI::Client.new
 audio = Base64.strict_encode64(File.binread("audio.wav"))
 completion = client.chat.completions.create(
   model: "gpt-audio-1.5",
-  messages: [{
-    role: :user,
-    content: [
-      {type: :text, text: "What is in this recording?"},
-      {type: :input_audio, input_audio: {data: audio, format: :wav}}
-    ]
-  }],
+  messages: [
+    {
+      role: :user,
+      content: [
+        {
+          type: :text,
+          text: "What is in this recording?"
+        },
+        {
+          type: :input_audio,
+          input_audio: {
+            data: audio,
+            format: :wav
+          }
+        }
+      ]
+    }
+  ],
   modalities: [:text, :audio],
-  audio: {voice: :alloy, format: :wav},
+  audio: {
+    voice: :alloy,
+    format: :wav
+  },
   store: true
 )
 

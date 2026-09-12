@@ -1,18 +1,20 @@
 # 结构化模型输出
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
+> 如需完整文档索引,请参阅 [llms.txt](/llms.txt)。可在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-JSON 是全球应用程序之间交换数据时使用最广泛的格式之一。
+JSON 是全球应用间数据交换最常用的格式之一。
 
-Structured Outputs 是一项功能，可确保模型生成的响应始终符合你提供的 [JSON Schema](https://json-schema.org/overview/what-is-jsonschema)，因此你无需担心模型遗漏必填字段或生成无效的枚举值。
+Structured Outputs 是一项功能，可确保模型始终生成遵循你所提供的 [JSON Schema](https://json-schema.org/overview/what-is-jsonschema)，的响应，因此你无需担心模型遗漏必需字段，或产生无效的枚举值。
 
 Structured Outputs 的一些优势包括：
 
-1. **可靠的类型安全：** 无需校验或重试格式错误的响应
-1. **明确的拒绝：** 基于安全模型的拒绝现在可以编程方式检测
-1. **更简洁的提示：** 无需使用措辞强硬的提示来获得一致的格式
+1. **可靠的类型安全：** 无需验证或重试格式错误的响应
+1. **显式拒绝：** 基于安全考量的模型拒绝现在可通过编程方式检测
+1. **更简单的提示：** 无需使用措辞强硬的提示即可实现一致的格式输出
 
-除了在 REST API 中支持 JSON Schema 外，OpenAI 的 SDK 也为 [Python](https://github.com/openai/openai-python/blob/main/helpers.md#structured-outputs-parsing-helpers) 和 [JavaScript](https://github.com/openai/openai-node/blob/master/helpers.md#structured-outputs-parsing-helpers) 提供了便捷的代码方式定义对象模式，使用 [Pydantic](https://docs.pydantic.dev/latest/) 和 [Zod](https://zod.dev/) 分别实现。下面，你可以看到如何从符合代码中定义模式（schema）的非结构化文本中提取信息。
+除了在 REST API 中支持 JSON Schema 外，OpenAI 的 [Python](https://github.com/openai/openai-python/blob/main/helpers.md#structured-outputs-parsing-helpers) 和 [JavaScript](https://github.com/openai/openai-node/blob/master/helpers.md#structured-outputs-parsing-helpers) 库同样支持使用对象模式定义 [`pydantic.BaseModel`](https://docs.pydantic.dev/latest/) 和 [`z.object`](https://zod.dev/) 分别对应。下面你可以看到如何从符合代码中定义的结构化模式（schema）的非结构化文本中提取信息。
+
+Ruby SDK 支持使用 Sorbet 定义的结构化模式（schema） `T::Struct` 并返回类型化的解析结果。
 
 
 
@@ -236,51 +238,56 @@ Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
+# gem install openai sorbet-runtime
 require "openai"
+require "openai/helpers/sorbet"
+
+class CalendarEvent < T::Struct
+  const :name, String
+  const :date, String
+  const :participants, T::Array[String]
+end
 
 client = OpenAI::Client.new
-event_schema = {
-  type: :object,
-  properties: {
-    name: {type: :string},
-    date: {type: :string},
-    participants: {type: :array, items: {type: :string}}
-  },
-  required: %w[name date participants],
-  additionalProperties: false
-}
+schema = OpenAI::StructuredOutput.from_sorbet(CalendarEvent)
 
 response = client.responses.create(
   model: "gpt-6-astra",
   input: [
-    {role: :system, content: "Extract the event information."},
-    {role: :user, content: "Alice and Bob are going to a science fair on Friday."}
-  ],
-  text: {
-    format: {
-      type: :json_schema,
-      name: "event",
-      strict: true,
-      schema: event_schema
+    {
+      role: :system,
+      content: "Extract the event information."
+    },
+    {
+      role: :user,
+      content: "Alice and Bob are going to a science fair on Friday."
     }
-  }
+  ],
+  text: schema
 )
 
-puts(response.output_text)
+raise "Response ended with status: #{response.status}" unless response.status == OpenAI::Responses::ResponseStatus::COMPLETED
+
+message = response.output.grep(OpenAI::Responses::ResponseOutputMessage).fetch(0)
+output_text = message.content.grep(OpenAI::Responses::ResponseOutputText).first
+raise "No structured output returned (the model may have refused)" unless output_text
+
+event = T.cast(output_text.parsed, CalendarEvent)
+puts(event.name, event.date, event.participants.join(", "))
 ```
 
 
 
 ### 支持的模型
 
-结构化输出可在我们的 [最新大语言模型](https://developers.openai.com/api/docs/models)，中使用，从 GPT-4o 开始。对于新项目，请使用 [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra)。较早的模型如 `gpt-4-turbo` 及更早版本可以使用 [JSON 模式](#json-mode) 代替。
+结构化输出可在我们的 [最新大语言模型](https://developers.openai.com/api/docs/models)，中使用，从 GPT-4o 开始。对于新项目，建议从 [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra)。入手。像 `gpt-4-turbo` 及更早的模型可改用 [JSON 模式](#json-mode) 。
 
 
 
 
   
 
-何时通过函数调用与通过 
+何时通过函数调用使用结构化输出，何时通过 
     
 text.format
 
@@ -292,52 +299,52 @@ text.format
 1. 使用 [函数调用](https://developers.openai.com/api/docs/guides/function-calling)
 2. 使用 `json_schema` 响应格式
 
-当你构建的应用需要在模型与你应用的功能之间架起桥梁时，函数调用非常有用。
+当你构建的应用需要在模型和你的应用功能之间搭建桥梁时，函数调用非常有用。
 
-例如，你可以让模型访问用于查询数据库的函数，从而构建一个能帮助用户处理订单的 AI 助手；或者让它访问能与 UI 交互的函数。
+例如，你可以让模型访问用于查询数据库的函数，从而构建一个能够帮助用户处理订单的 AI 助手；也可以访问能够与 UI 交互的函数。
 
-反过来，通过 `response_format` 提供的结构化输出更适合在你希望为模型的回复指定一个结构化 schema 时使用，而不是在模型调用工具时使用。
+反过来，通过 `response_format` 提供的结构化输出更适合在模型回复用户时（而非调用工具时）指定结构化的 schema。
 
-例如，如果你正在构建一个数学辅导应用，你可能希望助手使用特定的 JSON Schema 来回复用户，从而生成一个能以不同方式展示模型输出各部分内容的 UI。
+例如，如果你正在构建一个数学辅导应用，你可能希望助手使用特定的 JSON Schema 回复你的用户，这样你就可以生成一个 UI，以不同方式展示模型输出的各个部分。
 
-简单来说：
-
-
+实际应用中：
 
 
-  - 如果你要将模型连接到系统中的工具、函数、数据等，那么
-  你应该使用函数调用 - 如果你希望在模型响应用户时组织其
-  输出内容，那么你应该使用结构化
+
+
+  - 如果你要将模型连接到你的
+  系统中的工具、函数、数据等，那么应该使用 function calling - 如果你希望在模型
+  响应用户时对其输出进行结构化，那么应该使用结构化
   `text.format`
 
 
 
 
 
-  本指南的其余部分将聚焦于以下场景中的非函数调用用例：
-    Responses API。若要了解如何将结构化输出与
-    函数调用结合使用，请参阅 
-    [函数调用指南](https://developers.openai.com/api/docs/guides/function-calling#strict-mode) 
-    。
+  本指南的其余部分将聚焦于非函数调用用例在
+    Responses API 中的使用。若要了解如何在
+    函数调用中使用 Structured Outputs，请参阅 
+    [函数调用](https://developers.openai.com/api/docs/guides/function-calling#strict-mode) 
+    指南。
 
 
-### Structured Outputs 与 JSON 模式
+### Structured Outputs vs JSON mode
 
-结构化输出是 [JSON 模式](#json-mode)。的演进。两者都能确保生成有效的 JSON，但只有结构化输出能确保遵循模式。结构化输出和 JSON 模式都在 Responses API、Chat Completions API、Assistants API、Fine-tuning API 和 Batch API 中受支持。
+Structured Outputs 是 [JSON 模式](#json-mode)。的演进。虽然两者都能确保生成有效的 JSON，但只有 Structured Outputs 能确保遵循模式。Structured Outputs 和 JSON 模式都受 Responses API、Chat Completions API、Assistants API、Fine-tuning API 和 Batch API 支持。
 
-建议在可能的情况下始终使用结构化输出，而不是 JSON 模式。
+我们建议尽可能始终使用 Structured Outputs 而不是 JSON 模式。
 
-但是，结构化输出与 `response_format: {type: "json_schema", ...}` 仅支持 `gpt-4o-mini`, `gpt-4o-mini-2024-07-18`，以及 `gpt-4o-2024-08-06` 模型快照及更高版本。
-
-
+然而，Structured Outputs 与 `response_format: {type: "json_schema", ...}` 仅在 `gpt-4o-mini`, `gpt-4o-mini-2024-07-18`，以及 `gpt-4o-2024-08-06` 模型快照及更高版本中受支持。
 
 
-|                                            | Structured Outputs                                                                                                             | JSON 模式                                  |
+
+
+|                                            | 结构化输出                                                                                                             | JSON 模式                                  |
 |--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------|
 | **输出有效的 JSON**                     | 是                                                                                                                            | 是                                        |
-| **符合 schema**                      | 是（参见 [支持的 schema](#supported-schemas))                                               | 否                                         |
-| **兼容的模型**                      | `gpt-4o-mini`, `gpt-4o-2024-08-06`，及更高版本                                                                                  | `gpt-3.5-turbo`, `gpt-4-*`, `gpt-4o-*`，以及兼容的 GPT-5 模型 |
-| **启用方式**                               | `text: { format: { type: "json_schema", "strict": true, "schema": ... } }`                                       | `text: { format: { type: "json_object" } }` |
+| **遵循 schema**                      | 是（参见 [支持的 schema](#supported-schemas))                                               | 否                                         |
+| **兼容的模型**                      | `gpt-4o-mini`, `gpt-4o-2024-08-06`，以及更高版本                                                                                  | `gpt-3.5-turbo`, `gpt-4-*`, `gpt-4o-*`，以及兼容的 GPT-5 模型 |
+| **启用**                               | `text: { format: { type: "json_schema", "strict": true, "schema": ... } }`                                       | `text: { format: { type: "json_object" } }` |
 
 
 ## 示例
@@ -350,12 +357,12 @@ text.format
 
 ### 思维链
 
-你可以要求模型以结构化的、循序渐进的方式输出答案，从而引导用户理解解题过程。
+你可以让模型以结构化、循序渐进的方式输出答案，引导用户理解解题过程。
 
 
 
 
-  用于链式思维数学辅导的结构化输出
+  用于思维链数学辅导的结构化输出
 
 ```javascript
 import OpenAI from "openai";
@@ -615,8 +622,8 @@ client = OpenAI::Client.new
 step_schema = {
   type: :object,
   properties: {
-    explanation: {type: :string},
-    output: {type: :string}
+    explanation: { type: :string },
+    output: { type: :string }
   },
   required: %w[explanation output],
   additionalProperties: false
@@ -624,8 +631,11 @@ step_schema = {
 math_schema = {
   type: :object,
   properties: {
-    steps: {type: :array, items: step_schema},
-    final_answer: {type: :string}
+    steps: {
+      type: :array,
+      items: step_schema
+    },
+    final_answer: { type: :string }
   },
   required: %w[steps final_answer],
   additionalProperties: false
@@ -638,7 +648,10 @@ response = client.responses.create(
       role: :system,
       content: "You are a helpful math tutor. Guide the user through the solution step by step."
     },
-    {role: :user, content: "How can I solve 8x + 7 = -23?"}
+    {
+      role: :user,
+      content: "How can I solve 8x + 7 = -23?"
+    }
   ],
   text: {
     format: {
@@ -701,7 +714,7 @@ curl https://api.openai.com/v1/responses \
 
 
 
-#### 示例响应
+#### 响应示例
 
 ```json
 {
@@ -743,7 +756,7 @@ curl https://api.openai.com/v1/responses \
 
 ### 结构化数据提取
 
-你可以定义结构化字段，用于从非结构化输入数据（例如研究论文）中提取信息。
+你可以定义结构化字段，从非结构化的输入数据（例如研究论文）中提取信息。
 
 
 
@@ -1015,10 +1028,16 @@ TEXT
 paper_schema = {
   type: :object,
   properties: {
-    title: {type: :string},
-    authors: {type: :array, items: {type: :string}},
-    abstract: {type: :string},
-    keywords: {type: :array, items: {type: :string}}
+    title: { type: :string },
+    authors: {
+      type: :array,
+      items: { type: :string }
+    },
+    abstract: { type: :string },
+    keywords: {
+      type: :array,
+      items: { type: :string }
+    }
   },
   required: %w[title authors abstract keywords],
   additionalProperties: false
@@ -1031,7 +1050,10 @@ response = client.responses.create(
       role: :system,
       content: "Extract structured data from the supplied research paper text."
     },
-    {role: :user, content: research_paper}
+    {
+      role: :user,
+      content: research_paper
+    }
   ],
   text: {
     format: {
@@ -1091,7 +1113,7 @@ curl https://api.openai.com/v1/responses \
 
 
 
-#### 示例响应
+#### 响应示例
 
 ```json
 {
@@ -1121,7 +1143,7 @@ UI 生成
 
 ### UI 生成
 
-你可以通过将 HTML 表示为带有约束（如枚举）的递归数据结构来生成有效的 HTML。
+你可以通过将 HTML 表示为带约束的递归数据结构（例如枚举）来生成有效的 HTML。
 
 
 
@@ -1171,7 +1193,6 @@ const ui = response.output_parsed;
 
 ```python
 from enum import Enum
-from typing import List
 
 from openai import OpenAI
 from pydantic import BaseModel
@@ -1196,8 +1217,8 @@ class Attribute(BaseModel):
 class UI(BaseModel):
     type: UIType
     label: str
-    children: List["UI"]
-    attributes: List[Attribute]
+    children: list["UI"]
+    attributes: list[Attribute]
 
 
 UI.model_rebuild()  # This is required to enable recursive types
@@ -1433,15 +1454,18 @@ ui_schema = {
       type: :string,
       enum: %w[div button header section field form]
     },
-    label: {type: :string},
-    children: {type: :array, items: {"$ref" => "#"}},
+    label: { type: :string },
+    children: {
+      type: :array,
+      items: { "$ref" => "#" }
+    },
     attributes: {
       type: :array,
       items: {
         type: :object,
         properties: {
-          name: {type: :string},
-          value: {type: :string}
+          name: { type: :string },
+          value: { type: :string }
         },
         required: %w[name value],
         additionalProperties: false
@@ -1455,8 +1479,14 @@ ui_schema = {
 response = client.responses.create(
   model: "gpt-6-astra",
   input: [
-    {role: :system, content: "Convert the user request into a UI definition."},
-    {role: :user, content: "Make a user profile form."}
+    {
+      role: :system,
+      content: "Convert the user request into a UI definition."
+    },
+    {
+      role: :user,
+      content: "Make a user profile form."
+    }
   ],
   text: {
     format: {
@@ -1541,7 +1571,7 @@ curl https://api.openai.com/v1/responses \
 
 
 
-#### 示例响应
+#### 响应示例
 
 ```json
 {
@@ -1628,9 +1658,9 @@ Moderation
 
     
 
-### Moderation
+### 审核
 
-你可以对输入进行多类别分类，这是实现审核的一种常见方式。
+你可以对输入进行多类别分类，这是常见的审核方式。
 
 
 
@@ -1673,7 +1703,6 @@ const compliance = response.output_parsed;
 
 ```python
 from enum import Enum
-from typing import Optional
 
 from openai import OpenAI
 from pydantic import BaseModel
@@ -1689,8 +1718,8 @@ class Category(str, Enum):
 
 class ContentCompliance(BaseModel):
     is_violating: bool
-    category: Optional[Category]
-    explanation_if_violating: Optional[str]
+    category: Category | None
+    explanation_if_violating: str | None
 
 
 response = client.responses.parse(
@@ -1907,7 +1936,10 @@ response = client.responses.create(
       role: :system,
       content: "Determine whether the user input violates the guidelines and explain any violation."
     },
-    {role: :user, content: "How do I prepare for a job interview?"}
+    {
+      role: :user,
+      content: "How do I prepare for a job interview?"
+    }
   ],
   text: {
     format: {
@@ -1972,7 +2004,7 @@ curl https://api.openai.com/v1/responses \
 
 
 
-#### 示例响应
+#### 响应示例
 
 ```json
 {
@@ -1995,21 +2027,21 @@ text.format
 
 
 
-## Step 1: Define your schema
+## 第 1 步：定义你的架构
 
 
 
-首先，你必须设计模型应当遵循的 JSON Schema。参阅本指南开头的 [示例](https://developers.openai.com/api/docs/guides/structured-outputs#examples) 以获取参考。
+首先，你需要设计模型应遵循的 JSON Schema。参见本指南开头的 [示例](https://developers.openai.com/api/docs/guides/structured-outputs#examples) 以供参考。
 
-虽然 Structured Outputs 支持 JSON Schema 的许多特性，但出于性能或技术原因，部分功能不可用。详见 [此处](https://developers.openai.com/api/docs/guides/structured-outputs#supported-schemas) 了解详细信息。
+虽然 Structured Outputs 支持 JSON Schema 的绝大部分功能，但出于性能或技术原因，某些功能不可用。详见 [此处](https://developers.openai.com/api/docs/guides/structured-outputs#supported-schemas) 了解更多。
 
 #### JSON Schema 使用提示
 
-为了最大化模型生成的质量，我们建议遵循以下原则：
+为了最大化模型生成的质量，我们建议如下：
 
-- 清晰直观地命名键
+- 清晰且直观地命名键
 - 为结构中的重要键创建清晰的标题和描述
-- 创建并使用 evals 来确定最适合你用例的结构
+- 创建并使用评估来确定最适合你用例的结构
 
 
 
@@ -2017,13 +2049,13 @@ text.format
 
 
 
-## 步骤 2：在 API 调用中提供你的 schema
+## 步骤 2：在 API 调用中提供你的架构
 
 
 
 
 
-要使用 Structured Outputs，只需指定
+要使用结构化输出，只需指定
 
 
 
@@ -2311,14 +2343,14 @@ math_schema = {
       items: {
         type: :object,
         properties: {
-          explanation: {type: :string},
-          output: {type: :string}
+          explanation: { type: :string },
+          output: { type: :string }
         },
         required: %w[explanation output],
         additionalProperties: false
       }
     },
-    final_answer: {type: :string}
+    final_answer: { type: :string }
   },
   required: %w[steps final_answer],
   additionalProperties: false
@@ -2331,7 +2363,10 @@ response = client.responses.create(
       role: :system,
       content: "You are a helpful math tutor. Guide the user through the solution step by step."
     },
-    {role: :user, content: "How can I solve 8x + 7 = -23?"}
+    {
+      role: :user,
+      content: "How can I solve 8x + 7 = -23?"
+    }
   ],
   text: {
     format: {
@@ -2394,7 +2429,7 @@ curl https://api.openai.com/v1/responses \
 
 
 
-**注意：** 你使用任何 schema 发出的首个请求都会因 API 处理该 schema 而产生额外延迟，但使用相同 schema 发出的后续请求不会产生额外延迟。
+**注意：** 你使用任何 schema 发起的首次请求都会因为我们的 API 处理该 schema 而产生额外的延迟，但后续使用相同 schema 的请求不会再产生额外延迟。
 
 
 
@@ -2408,9 +2443,9 @@ curl https://api.openai.com/v1/responses \
 
 
 
-在某些情况下，模型可能无法生成与所提供 JSON schema 匹配的有效响应。
+在某些情况下，模型可能不会生成与你提供的 JSON 模式匹配的有效响应。
 
-这种情况可能发生在模型因安全原因拒绝回答时，或者例如你达到了 max tokens 限制导致响应不完整时。
+例如在模型因安全原因拒绝回答的情况下，或者当你达到 max tokens 上限导致响应不完整时，就可能发生这种情况。
 
 
 
@@ -2802,8 +2837,8 @@ client = OpenAI::Client.new
 step_schema = {
   type: :object,
   properties: {
-    explanation: {type: :string},
-    output: {type: :string}
+    explanation: { type: :string },
+    output: { type: :string }
   },
   required: %w[explanation output],
   additionalProperties: false
@@ -2811,8 +2846,11 @@ step_schema = {
 math_schema = {
   type: :object,
   properties: {
-    steps: {type: :array, items: step_schema},
-    final_answer: {type: :string}
+    steps: {
+      type: :array,
+      items: step_schema
+    },
+    final_answer: { type: :string }
   },
   required: %w[steps final_answer],
   additionalProperties: false
@@ -2825,7 +2863,10 @@ response = client.responses.create(
       role: :system,
       content: "You are a helpful math tutor. Guide the user through the solution step by step."
     },
-    {role: :user, content: "How can I solve 8x + 7 = -23?"}
+    {
+      role: :user,
+      content: "How can I solve 8x + 7 = -23?"
+    }
   ],
   max_output_tokens: 1_024,
   text: {
@@ -2863,13 +2904,13 @@ end
 
 
 
-结构化输出的拒绝情况
+结构化输出中的拒绝
 
 
 
-在将结构化输出用于用户生成内容时，OpenAI 模型偶尔可能出于安全原因拒绝完成请求。由于拒绝响应不一定遵循你在 `response_format`，中提供的 schema，API 响应将包含一个新字段，用于 `refusal` 指示模型拒绝了该请求。
+当对用户生成的输入使用结构化输出时，OpenAI 模型有时可能出于安全原因拒绝完成请求。由于拒绝响应并不一定会遵循你在 `response_format`，中提供的模式，API 响应将包含一个新字段 `refusal` ，用于表示模型拒绝了该请求。
 
-当该 `refusal` 属性出现在你的输出对象中时，你可以在 UI 中展示该拒绝信息，或者在使用该响应的代码中加入条件逻辑来处理请求被拒绝的情况。
+当 `refusal` 属性出现在你的输出对象中时，你可以在 UI 中展示该拒绝信息，或者在使用响应的代码中加入条件逻辑来处理请求被拒绝的情况。
 
 
 
@@ -3172,14 +3213,14 @@ math_schema = {
       items: {
         type: :object,
         properties: {
-          explanation: {type: :string},
-          output: {type: :string}
+          explanation: { type: :string },
+          output: { type: :string }
         },
         required: %w[explanation output],
         additionalProperties: false
       }
     },
-    final_answer: {type: :string}
+    final_answer: { type: :string }
   },
   required: %w[steps final_answer],
   additionalProperties: false
@@ -3192,7 +3233,10 @@ response = client.responses.create(
       role: :system,
       content: "You are a helpful math tutor. Guide the user through the solution step by step."
     },
-    {role: :user, content: "How can I solve 8x + 7 = -23?"}
+    {
+      role: :user,
+      content: "How can I solve 8x + 7 = -23?"
+    }
   ],
   text: {
     format: {
@@ -3220,7 +3264,7 @@ end
 
 
 
-来自拒绝响应的 API 响应大致如下：
+拒绝时 API 响应大致如下：
 
 
 
@@ -3265,38 +3309,38 @@ end
 
 
 
-建议与最佳实践
+技巧与最佳实践
 
 
 
 #### 处理用户输入
 
-如果你的应用使用了用户生成的输入，请确保你的提示中包含相关说明，以处理输入无法产生有效响应的情况。
+如果你的应用使用了用户生成的输入，请确保你的提示中包含相关说明，以指导模型在输入无法产生有效响应的情况下如何处理。
 
-模型总会尝试遵循所提供的 schema，如果输入与 schema 完全无关，则可能导致幻觉。
+模型始终会尝试遵循所提供的 schema，但如果输入与 schema 完全无关，则可能导致幻觉。
 
-你可以在提示中加入相应措辞，指定当模型检测到输入与任务不兼容时返回空参数或返回一句特定的话。
+你可以在提示中加入说明，指定当模型检测到输入与任务不兼容时，返回空参数或返回某个特定句子。
 
 #### 处理错误
 
-结构化输出仍可能包含错误。如果你发现错误，可以尝试调整你的指令、在系统指令中提供示例，或将任务拆分为更简单的子任务。请参阅 [提示工程指南](https://developers.openai.com/api/docs/guides/prompt-engineering) 以获取有关如何调整输入的更多指导。
+结构化输出仍然可能包含错误。如果你看到错误，请尝试调整你的指令、在系统指令中提供示例，或将任务拆分为更简单的子任务。参考 [提示工程指南](https://developers.openai.com/api/docs/guides/prompt-engineering) 以获取关于如何调整输入的更多指导。
 
-#### 避免 JSON schema 分歧
+#### 避免 JSON 模式的偏差
 
-为了防止你的 JSON Schema 以及对应编程语言中的类型发生分歧，我们强烈建议使用 Pydantic/zod 原生的 开发工具包 支持。
+为了防止你的 JSON Schema 与编程语言中对应的类型发生偏离，我们强烈建议在可用时使用原生的 SDK schema 辅助方法。
 
-如果你希望直接指定 JSON schema，可以添加 CI 规则，在 JSON schema 或底层数据对象被修改时给出提示，或者添加一个 CI 步骤以从类型定义自动生成 JSON Schema（或反向生成）。
+如果你倾向于直接指定 JSON schema，可以添加 CI 规则，在 JSON schema 或底层数据对象被修改时发出标记，或者添加一个 CI 步骤，自动根据类型定义生成 JSON Schema（或反向生成）。
 
 ## 流式传输
 
 
 
-你可以使用流式传输，在模型响应或函数调用参数生成的同时对其进行处理，并将其解析为结构化数据。
+你可以使用流式输出来处理正在生成的模型响应或函数调用参数，并将其解析为结构化数据。
 
-这样，你就不必等待整个响应完成后再处理它。
-如果你希望逐个显示 JSON 字段，或在函数调用参数可用时立即处理它们，这种方式尤其有用。
+这样，你就不必等待整个响应完成后再进行处理。
+如果你希望逐个显示 JSON 字段，或在函数调用参数一可用时就立即处理它们，这一点尤其有用。
 
-我们建议依赖 SDK 来处理结构化输出的流式传输。
+我们建议依赖SDK来处理带结构化输出的流式响应。
 
 
 
@@ -3342,16 +3386,14 @@ console.log(result);
 ```
 
 ```python
-from typing import List
-
 from openai import OpenAI
 from pydantic import BaseModel
 
 
 class EntitiesModel(BaseModel):
-    attributes: List[str]
-    colors: List[str]
-    animals: List[str]
+    attributes: list[str]
+    colors: list[str]
+    animals: list[str]
 
 
 client = OpenAI()
@@ -3477,9 +3519,18 @@ client = OpenAI::Client.new
 entities_schema = {
   type: :object,
   properties: {
-    attributes: {type: :array, items: {type: :string}},
-    colors: {type: :array, items: {type: :string}},
-    animals: {type: :array, items: {type: :string}}
+    attributes: {
+      type: :array,
+      items: { type: :string }
+    },
+    colors: {
+      type: :array,
+      items: { type: :string }
+    },
+    animals: {
+      type: :array,
+      items: { type: :string }
+    }
   },
   required: %w[attributes colors animals],
   additionalProperties: false
@@ -3488,7 +3539,10 @@ entities_schema = {
 stream = client.responses.stream(
   model: "gpt-6-astra",
   input: [
-    {role: :system, content: "Extract entities from the input text."},
+    {
+      role: :system,
+      content: "Extract entities from the input text."
+    },
     {
       role: :user,
       content: "The quick brown fox jumps over the lazy dog with piercing blue eyes."
@@ -3523,24 +3577,24 @@ end
 
 
 
-Structured Outputs 支持以下功能的子集 [JSON Schema](https://json-schema.org/docs) 语言。
+Structured Outputs 支持以下语言的子集 [JSON Schema](https://json-schema.org/docs) 。
 
 #### 支持的类型
 
-Structured Outputs 支持以下类型：
+以下类型受 Structured Outputs 支持：
 
-- String
-- Number
-- Boolean
-- Integer
-- Object
-- Array
-- Enum
+- 字符串
+- 数字
+- 布尔值
+- 整数
+- 对象
+- 数组
+- 枚举
 - anyOf
 
 #### 支持的属性
 
-除了指定属性的类型外，你还可以指定一组额外的约束：
+除了指定属性的类型外，你还可以指定一系列额外的约束：
 
 **支持的 `string` 属性：**
 
@@ -3566,8 +3620,8 @@ Structured Outputs 支持以下类型：
 
 **支持的 `array` 属性：**
 
-- `minItems` — 数组至少必须包含该数量的元素。
-- `maxItems` — 数组最多只能包含该数量的元素。
+- `minItems` — 数组必须至少包含此数量的元素。
+- `maxItems` — 数组最多只能包含此数量的元素。
 
 以下是一些关于如何使用这些类型限制的示例：
 
@@ -3614,7 +3668,7 @@ Structured Outputs 支持以下类型：
   
 
     
-数值限制
+数字限制
 
 ```json
 {
@@ -3651,12 +3705,12 @@ Structured Outputs 支持以下类型：
 
 
 
-请注意，这些约束 [尚不支持用于微调
+请注意，这些约束目前尚不支持 [微调
   模型](#some-type-specific-keywords-are-not-yet-supported).
 
-#### 根对象不能是 `anyOf` 且必须是对象
+#### Root 对象不能是 `anyOf` 且必须是一个对象
 
-注意，schema 的根级对象必须是对象，不能使用 `anyOf`。在 Zod 中（作为示例）一种常见的模式是使用可辨识联合（discriminated union），这会在 `anyOf` 的顶层生成一个。因此类似下面的代码无法工作：
+请注意，schema 的根级对象必须是对象，且不能使用 `anyOf`。在 Zod 中（例如）常见的做法是使用可辨识联合（discriminated union），它会在顶层生成一个 `anyOf` 。因此类似下面的代码将无法工作：
 
 ```javascript
 import { z } from "zod";
@@ -3679,7 +3733,7 @@ const json = zodResponseFormat(finalSchema, "final_schema");
 ```
 
 
-#### 所有字段均为必填 `required`
+#### 所有字段必须是 `required`
 
 要使用结构化输出，所有字段或函数参数都必须指定为 `required`.
 
@@ -3710,7 +3764,7 @@ const json = zodResponseFormat(finalSchema, "final_schema");
 ```
 
 
-尽管所有字段都必须是必需的（并且模型将为每个参数返回值），但可以使用联合类型来模拟可选参数，方法是使用 `null`.
+虽然所有字段都必须是必填项（并且模型将为每个参数返回一个值），但可以通过使用联合类型来模拟可选参数，方法是将该参数与 `null`.
 
 ```json
 {
@@ -3741,25 +3795,25 @@ const json = zodResponseFormat(finalSchema, "final_schema");
 ```
 
 
-#### 对象在嵌套深度和大小上存在限制
+#### 对象对嵌套深度和大小有限制
 
 一个 schema 最多可包含 5000 个对象属性，嵌套层级最多为 10 层。
 
-#### 字符串总大小限制
+#### 对总字符串大小的限制
 
-在 schema 中，所有属性名、定义名、枚举值和 const 值的字符串总长度不能超过 120,000 个字符。
+在 schema 中，所有属性名称、定义名称、枚举值和 const 值的字符串总长度不能超过 120,000 个字符。
 
-#### 对枚举大小的限制
+#### 枚举大小的限制
 
 一个 schema 在所有枚举属性中最多可包含 1000 个枚举值。
 
-对于具有字符串值的单个枚举属性，当枚举值超过 250 个时，所有枚举值的字符串总长度不得超过 15,000 个字符。
+对于包含字符串值的单个枚举属性，当枚举值超过 250 个时，所有枚举值的字符串总长度不能超过 15000 个字符。
 
-#### `additionalProperties: false` 在对象中必须始终设置
+#### `additionalProperties: false` 必须在对象中设置
 
-`additionalProperties` 控制是否允许对象包含 JSON Schema 中未定义的其他键 / 值。
+`additionalProperties` 控制在 JSON Schema 中未定义的对象是否可以包含额外的键 / 值。
 
-Structured Outputs 仅支持生成指定的键 / 值，因此我们要求开发者设置 `additionalProperties: false` 以启用 Structured Outputs。
+结构化输出仅支持生成指定的键 / 值，因此我们要求开发者设置 `additionalProperties: false` 以启用结构化输出。
 
 ```json
 {
@@ -3790,13 +3844,13 @@ Structured Outputs 仅支持生成指定的键 / 值，因此我们要求开发�
 ```
 
 
-#### 键的顺序
+#### 键排序
 
 使用 Structured Outputs 时，输出将按照 schema 中键的顺序生成。
 
-#### 某些特定类型的关键词尚不受支持
+#### 某些类型特有的关键字尚不支持
 
-- **组成：** `allOf`, `not`, `dependentRequired`, `dependentSchemas`, `if`, `then`, `else`
+- **组合：** `allOf`, `not`, `dependentRequired`, `dependentSchemas`, `if`, `then`, `else`
 
 对于微调模型，我们另外不支持以下内容：
 
@@ -3805,11 +3859,11 @@ Structured Outputs 仅支持生成指定的键 / 值，因此我们要求开发�
 - **对于对象：** `patternProperties`
 - **对于数组：** `minItems`, `maxItems`
 
-如果你通过提供 `strict: true` 来开启 Structured Outputs，并使用不受支持的 JSON Schema 调用 API，则会收到错误。
+如果你通过提供 `strict: true` 并使用不受支持的 JSON Schema 调用 API，则会收到错误。
 
-#### 关于 `anyOf`,嵌套的 schema 必须分别符合本子集的 JSON Schema
+#### 对于 `anyOf`, 嵌套的 schema 必须各自符合本节所定义的 JSON Schema 子集
 
-下面是一个受支持的 anyOf schema 示例：
+下面是一个支持 anyOf 的 schema 示例：
 
 ```json
 {
@@ -3873,7 +3927,7 @@ Structured Outputs 仅支持生成指定的键 / 值，因此我们要求开发�
 
 #### 支持定义
 
-你可以使用定义（definitions）来定义整个 schema 中引用的子 schema。以下是一个简单的示例。
+你可以使用 definitions 来定义子 schema，并在整个 schema 中引用它们。下面是一个简单的示例。
 
 ```json
 {
@@ -3918,7 +3972,7 @@ Structured Outputs 仅支持生成指定的键 / 值，因此我们要求开发�
 
 #### 支持递归 schema
 
-使用以下方式表示根递归的示例递归 schema： `#` 用于指示根递归。
+使用以下方式表示的递归示例模式 `#` 以表示根级递归。
 
 ```json
 {
@@ -3971,7 +4025,7 @@ Structured Outputs 仅支持生成指定的键 / 值，因此我们要求开发�
 ```
 
 
-使用显式递归的示例递归 schema：
+使用显式递归的递归示例模式：
 
 ```json
 {
@@ -4017,28 +4071,28 @@ Structured Outputs 仅支持生成指定的键 / 值，因此我们要求开发�
 
 ## JSON mode
 
-JSON 模式是 Structured Outputs 功能的一个更基础的版本。虽然
-  JSON 模式确保模型输出是有效的 JSON，Structured Outputs 则能可靠地
-  使模型的输出与你指定的 schema 相匹配。如果你的用例支持，我们建议你使用
-  Structured Outputs。
+JSON 模式是结构化输出（Structured Outputs）功能的一个更基础版本。虽然
+  JSON 模式能确保模型输出的是合法 JSON，但结构化输出能可靠地将模型
+  输出与你指定的模式进行匹配。我们建议你
+  在用例支持的情况下使用结构化输出。
 
-当开启 JSON 模式时，模型的输出会被确保为有效的 JSON，但存在一些边界情况需要你自行检测并妥善处理。
-
-
+启用 JSON 模式后，模型的输出会被确保是合法 JSON，不过在一些边界情况下仍可能例外，你需要自行检测并妥善处理。
 
 
-要使用 Responses API 开启 JSON 模式，你可以设置 `text.format` 为 `{ "type": "json_object" }`。如果你使用的是函数调用，JSON 模式会始终处于开启状态。
+
+
+要使用 Responses API 启用 JSON 模式，你可以设置 `text.format` 为 `{ "type": "json_object" }`。如果你正在使用函数调用功能，则 JSON 模式始终处于启用状态。
 
 
 重要提示：
 
-- 使用 JSON 模式时，你必须始终通过会话中的某条消息（例如系统消息）指示模型生成 JSON。如果不显式指示生成 JSON，模型可能会生成无终止的空白流，请求也会持续运行直到达到 token 上限。为帮助你避免遗漏，API 会在上下文中任何位置未出现字符串 "JSON" 时抛出错误。
-- JSON 模式不会保证输出匹配任何特定 schema，只能保证输出是有效的并且可以无错误地解析。你应使用 Structured Outputs 来确保其与你的 schema 匹配；如果无法做到，则应使用校验库并视情况配合重试，以确保输出符合你期望的 schema。
+- 使用 JSON 模式时，你必须始终通过对话中的某条消息（例如系统消息）指示模型生成 JSON。如果未明确指示生成 JSON，模型可能会产生无终止的空白流，请求也会持续运行，直到达到 token 上限。为帮助你避免遗漏，API 会在上下文中任何位置都没有出现字符串 "JSON" 时抛出错误。
+- JSON 模式不会保证输出符合任何特定 schema，只保证它是有效的，并且可以无错误地解析。你应使用 Structured Outputs 来确保其符合你的 schema；如果无法做到这一点，则应使用验证库，并结合可能的重试，以确保输出符合你期望的 schema。
 - 你的应用必须检测并处理可能导致模型输出不是完整 JSON 对象的边界情况（见下文）。
 
 
 
-### 处理边缘情况
+### 处理边界情况
 
 
 
@@ -4342,22 +4396,25 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: [
-    {role: :system, content: "You are a helpful assistant designed to output JSON."},
+    {
+      role: :system,
+      content: "You are a helpful assistant designed to output JSON."
+    },
     {
       role: :user,
       content: "Who won the World Series in 2020? Respond in the format {winner: ...}."
     }
   ],
-  text: {format: {type: :json_object}}
+  text: { format: { type: :json_object } }
 )
 
 if response.status == OpenAI::Responses::ResponseStatus::INCOMPLETE
   warn("The JSON response is incomplete.")
 else
   refusal = response.output
-    .grep(OpenAI::Models::Responses::ResponseOutputMessage)
-    .flat_map(&:content)
-    .find { |content| content.is_a?(OpenAI::Models::Responses::ResponseOutputRefusal) }
+                    .grep(OpenAI::Models::Responses::ResponseOutputMessage)
+                    .flat_map(&:content)
+                    .find { |content| content.is_a?(OpenAI::Models::Responses::ResponseOutputRefusal) }
 
   if refusal.is_a?(OpenAI::Models::Responses::ResponseOutputRefusal)
     puts(refusal.refusal)
@@ -4375,7 +4432,7 @@ end
 
 ## 资源
 
-要详细了解 Structured Outputs，我们建议浏览以下资源：
+要了解关于 Structured Outputs 的更多信息，我们建议你浏览以下资源：
 
-- 查看我们的 [入门 Cookbook](https://developers.openai.com/cookbook/examples/structured_outputs_intro) 了解 Structured Outputs
-- 了解 [如何构建多智能体系统](https://developers.openai.com/cookbook/examples/structured_outputs_multi_agent) 使用结构化输出
+- 查看我们的 [结构化输出入门指南](https://developers.openai.com/cookbook/examples/structured_outputs_intro) ，了解
+- 如何 [使用结构化输出构建多智能体系统](https://developers.openai.com/cookbook/examples/structured_outputs_multi_agent) 搭配结构化输出

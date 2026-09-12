@@ -162,13 +162,17 @@ require "async/websocket/client"
 require "json"
 
 endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/realtime/translations?model=gpt-realtime-translate", timeout: 10, alpn_protocols: ["http/1.1"])
-headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}", "OpenAI-Safety-Identifier" => "hashed-user-id"}
+headers = {
+  "Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}",
+  "OpenAI-Safety-Identifier" => "hashed-user-id"
+}
 Sync do |task|
   task.with_timeout(120) do
     Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
       message = connection.read or raise "Connection closed before session creation"
       event = JSON.parse(message.to_str)
       raise "Expected session.created: #{event}" unless event["type"] == "session.created"
+
       puts(event.fetch("type"))
     end
   end
@@ -219,7 +223,7 @@ ws.send(
 ```
 
 ```ruby
-connection.write(JSON.generate(type: "session.update", session: {audio: {output: {language: "es"}}}))
+connection.write(JSON.generate(type: "session.update", session: { audio: { output: { language: "es" } } }))
 connection.flush
 ```
 

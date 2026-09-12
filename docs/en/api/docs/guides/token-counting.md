@@ -233,9 +233,18 @@ require "openai"
 
 client = OpenAI::Client.new
 conversation = [
-  {role: :user, content: "What is 2 + 2?"},
-  {role: :assistant, content: "2 + 2 equals 4."},
-  {role: :user, content: "What about 3 + 3?"}
+  {
+    role: :user,
+    content: "What is 2 + 2?"
+  },
+  {
+    role: :assistant,
+    content: "2 + 2 equals 4."
+  },
+  {
+    role: :user,
+    content: "What about 3 + 3?"
+  }
 ]
 
 count = client.responses.input_tokens.count(
@@ -524,7 +533,10 @@ count = client.responses.input_tokens.count(
           image_url: "https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg",
           detail: :auto
         },
-        {type: :input_text, text: "Summarize this chart."}
+        {
+          type: :input_text,
+          text: "Summarize this chart."
+        }
       ]
     }
   ]
@@ -715,7 +727,7 @@ count = client.responses.input_tokens.count(
       strict: true,
       parameters: {
         type: "object",
-        properties: {location: {type: "string"}},
+        properties: { location: { type: "string" } },
         required: ["location"],
         additionalProperties: false
       }

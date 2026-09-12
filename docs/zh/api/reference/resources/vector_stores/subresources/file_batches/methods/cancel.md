@@ -1,6 +1,6 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 后追加 `.md` 来获取。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
 
-## 取消向量存储文件批次
+## 取消向量存储文件批处理
 
 **post** `/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel`
 
@@ -20,17 +20,17 @@
 
   - `id: string`
 
-    该标识符，可在 API 端点中引用。
+    可在 API 端点中引用的标识符。
 
   - `created_at: number`
 
-    向量存储文件批次的创建 Unix 时间戳（以秒为单位）。
+    向量存储文件批次的创建时间（Unix 时间戳，以秒为单位）。
 
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
     - `cancelled: number`
 
-      已取消的文件数量。
+      已被取消的文件数量。
 
     - `completed: number`
 
@@ -38,15 +38,15 @@
 
     - `failed: number`
 
-      处理失败的文件数量。
+      处理失败的的文件数量。
 
     - `in_progress: number`
 
-      当前正在处理的文件数量。
+      当前正在处理中的文件数量。
 
     - `total: number`
 
-      文件总数。
+      文件的总数。
 
   - `object: "vector_store.files_batch"`
 
@@ -68,7 +68,7 @@
 
   - `vector_store_id: string`
 
-    所关联的 [向量存储](/docs/api-reference/vector-stores/object) 的 ID，该 [文件](/docs/api-reference/files) 附加到该向量存储。
+    所附加到的 [向量存储](/api/reference/resources/vector_stores) 的 [文件](/api/reference/resources/files) 的 ID。
 
 ### 示例
 

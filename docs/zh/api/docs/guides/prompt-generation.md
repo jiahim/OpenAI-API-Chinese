@@ -1,23 +1,23 @@
-# 提示词生成
+# Prompt generation
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取文档页面的 Markdown 版本。
 
-该 **生成** 按钮在 [Playground](https://platform.openai.com/chat/edit) 可让你根据任务描述生成提示词、 [函数](https://developers.openai.com/api/docs/guides/function-calling)，和 [架构](https://developers.openai.com/api/docs/guides/structured-outputs#supported-schemas) 。本指南将逐步讲解其具体工作原理。
+该 **Generate** Playground 中的 [Playground](https://platform.openai.com/chat/edit) 可让你根据任务描述直接生成提示词、 [functions](https://developers.openai.com/api/docs/guides/function-calling)，和 [schemas](https://developers.openai.com/api/docs/guides/structured-outputs#supported-schemas) 。本指南将逐步讲解其具体工作原理。
 
 ## 概述
 
-从零开始创建提示和模式可能很耗时，因此生成它们可以帮助你快速入门。“生成”按钮使用两种主要方法：
+从零开始创建提示词和模式可能非常耗时，因此自动生成可以帮助你快速上手。生成（Generate）按钮主要采用两种方式：
 
-1. **提示词：** 我们使用 **元提示词** 结合最佳实践来生成或改进提示词。
-1. **模式：** 我们使用 **元模式** 用于生成合法的 JSON 和函数语法。
+1. **Prompts:** 我们使用 **元提示** 来融入最佳实践，以生成或改进提示。
+1. **Schemas:** 我们使用 **元架构** 用于生成有效的 JSON 和函数语法。
 
 虽然我们目前使用元提示和模式，但未来可能会集成更先进的技术，例如 [DSPy](https://arxiv.org/abs/2310.03714) 和 ["Gradient Descent"](https://arxiv.org/abs/2305.03495).
 
 ## 提示词
 
-一个 **meta-prompt** 指示模型根据你的任务描述创建一个好的提示，或改进已有的提示。Playground 中的 meta-prompt 借鉴了我们的 [prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering) 最佳实践以及与用户合作积累的实战经验。
+一个 **meta-prompt** 指导模型根据你的任务描述创建合适的提示，或改进已有的提示。Playground 中的元提示借鉴了我们的 [提示工程](https://developers.openai.com/api/docs/guides/prompt-engineering) 最佳实践以及与用户合作的真实经验。
 
-我们会针对不同输出类型（例如音频）使用专门的 meta-prompt，以确保生成的提示符合预期格式。
+我们针对不同的输出类型（例如音频）使用特定的元提示，以确保生成的提示符合预期格式。
 
 ### 元提示
 
@@ -286,7 +286,10 @@ def generate_prompt(client, meta_prompt, task_or_prompt)
   completion = client.chat.completions.create(
     model: "gpt-6-astra",
     messages: [
-      {role: :system, content: meta_prompt},
+      {
+        role: :system,
+        content: meta_prompt
+      },
       {
         role: :user,
         content: "Task, Goal, or Current Prompt:\n#{task_or_prompt}"
@@ -533,7 +536,10 @@ def generate_prompt(client, meta_prompt, task_or_prompt)
   completion = client.chat.completions.create(
     model: "gpt-6-astra",
     messages: [
-      {role: :system, content: meta_prompt},
+      {
+        role: :system,
+        content: meta_prompt
+      },
       {
         role: :user,
         content: "Task, Goal, or Current Prompt:\n#{task_or_prompt}"
@@ -549,9 +555,9 @@ puts(generate_prompt(client, meta_prompt, "Create a friendly voice assistant for
 
 
 
-### Prompt edits
+### 提示词编辑
 
-为了编辑提示词，我们使用了一个略微修改过的元提示词。虽然直接应用的修改比较容易，但对于更开放式的修订，识别所需的更改可能具有挑战性。为了解决这个问题，我们会在 **推理部分** 放在响应的开头。该部分通过评估现有提示词的清晰度、思维链顺序、整体结构和具体性等因素，引导模型确定需要进行哪些更改。推理部分会提出改进建议，然后在最终响应中解析出来。
+为了编辑提示词，我们使用一个稍作修改的元提示。直接编辑虽然易于应用，但识别开放式修订所需的必要更改可能颇具挑战。为此，我们加入了一段 **推理部分** 位于响应开头。本节通过评估现有提示的清晰度、思维链顺序、整体结构和具体性等因素，引导模型判断需要做哪些更改。推理部分会给出改进建议，然后从最终响应中解析出去。
 
 
 
@@ -894,7 +900,10 @@ def generate_prompt(client, meta_prompt, task_or_prompt)
   completion = client.chat.completions.create(
     model: "gpt-6-astra",
     messages: [
-      {role: :system, content: meta_prompt},
+      {
+        role: :system,
+        content: meta_prompt
+      },
       {
         role: :user,
         content: "Task, Goal, or Current Prompt:\n#{task_or_prompt}"
@@ -1218,7 +1227,10 @@ def generate_prompt(client, meta_prompt, task_or_prompt)
   completion = client.chat.completions.create(
     model: "gpt-6-astra",
     messages: [
-      {role: :system, content: meta_prompt},
+      {
+        role: :system,
+        content: meta_prompt
+      },
       {
         role: :user,
         content: "Task, Goal, or Current Prompt:\n#{task_or_prompt}"
@@ -1236,55 +1248,55 @@ puts(generate_prompt(client, meta_prompt, "Make this voice assistant prompt warm
 
 ## Schemas
 
-[结构化输出](https://developers.openai.com/api/docs/guides/structured-outputs) 模式和函数模式本身都是 JSON 对象，因此我们借助结构化输出（Structured Outputs）来生成它们。
-这需要为期望的输出定义一个模式，而在这种情况下，该输出本身也是一个模式。为此，我们使用一个自描述模式——即一个 **元模式**.
+[Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) schema 和 function schema 本身也是 JSON 对象，因此我们借助 Structured Outputs 来生成它们。
+这需要为期望的输出定义一个 schema，而这里的期望输出本身就是一个 schema。为此，我们使用自描述的 schema —— 即一个 **meta-schema**.
 
-由于函数模式中的 `parameters` 字段本身也是一个模式，因此我们使用相同的元模式来生成函数。
+由于 function schema 中的 `parameters` 字段本身就是一个 schema，我们使用同一个 meta-schema 来生成 functions。
 
 ### 定义受限的元模式
 
-[结构化输出](https://developers.openai.com/api/docs/guides/structured-outputs) 支持两种模式： `strict=true` 和 `strict=false`。两种模式都使用经过相同模型训练的模型来遵循所提供的 schema，但只有“严格模式”通过受限采样保证完全遵循。
+[Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) 支持两种模式： `strict=true` 和 `strict=false`。两种模式都使用经过训练的同一模型来遵循所提供的 schema，但只有“strict mode（严格模式）”通过受限采样保证完美遵从。
 
-我们的目标是使用严格模式本身为严格模式生成 schema。然而，由 [JSON Schema 规范](https://json-schema.org/specification#meta-schemas) 依赖于一些 [目前尚不支持的](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported) 严格模式中的功能。这带来了影响输入和输出 schema 的挑战。
+我们的目标是使用 strict mode 自身来为 strict mode 生成 schema。然而，由 [JSON Schema 规范](https://json-schema.org/specification#meta-schemas) 提供的官方 meta-schema 依赖某些 [目前尚不支持](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported) 的功能（在 strict mode 中）。这带来了影响输入和输出 schema 两方面的挑战。
 
-1. **输入 schema：** 我们无法使用 [unsupported features](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported) 中的功能来描述输出 schema。
-2. **输出 schema：** 生成的 schema 不得包含 [unsupported features](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported).
+1. **输入架构：** 我们无法在输入架构中使用 [不支持的功能](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported) 来描述输出架构。
+2. **输出架构：** 生成的架构不得包含 [不支持的功能](https://developers.openai.com/api/docs/guides/structured-outputs#some-type-specific-keywords-are-not-yet-supported).
 
-由于我们需要在输出 schema 中生成新的键，因此输入元 schema 必须使用 `additionalProperties`。这意味着我们目前无法使用严格模式来生成 schema。不过，我们仍希望生成的 schema 符合严格模式的约束。
+由于我们需要在输出 schema 中生成新的键，因此输入的元 schema 必须使用 `additionalProperties`。这意味着我们目前无法使用 strict 模式来生成 schema。不过，我们仍然希望生成的 schema 能够符合 strict 模式的约束。
 
-为克服这一限制，我们定义了一个 **伪元 schema** ——一种元 schema，它使用严格模式不支持的功能来描述严格模式支持的功能。从本质上讲，这种方法在定义元 schema 时跳出严格模式，同时仍确保生成的 schema 遵循严格模式的约束。
-
-
-
-构建受约束的元 schema 是一项极具挑战性的任务，因此我们借助模型来提供帮助。
-
-我们首先使用 `o1-preview` 和 `gpt-4o` 的 JSON 模式，并参考 Structured Outputs 文档向其描述了我们的目标。
-经过几次迭代，我们开发出了第一个可正常运行的元 schema。
-
-随后，我们使用 `gpt-4o` 和 Structured Outputs，并为其提供 _该初始 schema_ 以及我们的任务说明和文档，以生成更好的候选版本。每次迭代，我们都使用更好的 schema 生成下一个版本，直到最终由人工进行仔细审查。
-
-最后，在清理输出内容后，我们使用一组针对 schema 和函数的评估对这些 schema 进行了验证。
+为了克服这一限制，我们定义了一个 **伪元 schema** ——一种使用 strict 模式不支持的特性来描述 strict 模式所支持特性的元 schema。本质上，这种方法在元 schema 定义中突破了 strict 模式，同时仍然确保生成的 schema 遵循 strict 模式的约束。
 
 
 
-### 输出清理
+构建一个受约束的元 schema 是一项具有挑战性的任务，因此我们借助模型来提供帮助。
 
-严格模式可保证对 schema 的完全遵循。不过，由于我们在生成过程中无法使用它，因此需要在生成后对输出进行校验和转换。
+我们首先给 `o1-preview` 和 `gpt-4o` （在 JSON 模式下）提供了 Structured Outputs 文档中对我们目标的描述。
+经过几轮迭代后，我们开发出了第一个可用的元 schema。
 
-生成一个 schema 后，我们会执行以下步骤：
+然后我们使用 `gpt-4o` 结合 Structured Outputs，并提供 _该初始 schema_ 以及我们的任务描述和文档，以生成更好的候选方案。每一轮迭代我们都使用更好的 schema 来生成下一个，直到最终由我们人工仔细审阅。
 
-1. **Set `additionalProperties` 为 `false`** 所有对象。
+最后，在清理输出后，我们针对一组 schema 和函数的评测对生成的 schema 进行了验证。
+
+
+
+### 输出清洗
+
+严格模式可保证模式完全一致。但由于我们无法在生成过程中使用它，因此需要在生成后对输出进行校验和转换。
+
+生成模式后，我们会执行以下步骤：
+
+1. **将 `additionalProperties` 设置为 `false`** 适用于所有对象。
 1. **将所有属性标记为必填**.
-1. **对于结构化输出 schema**，请将它们包装在 [`json_schema`](https://developers.openai.com/api/docs/guides/structured-outputs?context=without_parse#how-to-use) 对象中。
-1. **对于函数**，请将它们包装在 [`function`](https://developers.openai.com/api/docs/guides/function-calling#defining-functions) 对象中。
+1. **对于结构化输出 schema**，需将它们包裹在 [`json_schema`](https://developers.openai.com/api/docs/guides/structured-outputs?context=without_parse#how-to-use) 对象中。
+1. **对于函数**，需将它们包裹在一个 [`function`](https://developers.openai.com/api/docs/guides/function-calling#defining-functions) 对象中。
 
-Realtime API
-  [function](https://developers.openai.com/api/docs/guides/realtime-conversations#function-calling) object
-  与 Chat Completions API 略有不同，但使用相同的 schema。
+实时 API
+  [函数](https://developers.openai.com/api/docs/guides/realtime-conversations#function-calling) 对象
+  与 Chat Completions API 略有不同，但使用相同的架构。
 
 ### 元模式
 
-每个元架构都有对应的提示，其中包含 few-shot 示例。结合 Structured Outputs 的可靠性——即使没有严格模式——我们也能够生成架构。
+每个元架构都有一个对应的提示，其中包含 few-shot 示例。结合 Structured Outputs 的可靠性 —— 即便未使用严格模式 —— 我们也能够生成架构。
 
 
 
@@ -2205,14 +2217,16 @@ META_SCHEMA = {
         }
       },
       "items" => {
-        "anyOf" => [{
-          "$ref" => "#/$defs/schema_definition"
-        }, {
-          "type" => "array",
-          "items" => {
+        "anyOf" => [
+          {
             "$ref" => "#/$defs/schema_definition"
+          }, {
+            "type" => "array",
+            "items" => {
+              "$ref" => "#/$defs/schema_definition"
+            }
           }
-        }]
+        ]
       },
       "required" => {
         "type" => "array",
@@ -2251,14 +2265,16 @@ META_SCHEMA = {
             }
           },
           "items" => {
-            "anyOf" => [{
-              "$ref" => "#/$defs/schema_definition"
-            }, {
-              "type" => "array",
-              "items" => {
+            "anyOf" => [
+              {
                 "$ref" => "#/$defs/schema_definition"
+              }, {
+                "type" => "array",
+                "items" => {
+                  "$ref" => "#/$defs/schema_definition"
+                }
               }
-            }]
+            ]
           },
           "required" => {
             "type" => "array",
@@ -2456,14 +2472,24 @@ PROMPT
 client = OpenAI::Client.new
 completion = client.chat.completions.create(
   model: "gpt-5.6-terra",
-  response_format: {type: :json_schema, json_schema: META_SCHEMA},
+  response_format: {
+    type: :json_schema,
+    json_schema: META_SCHEMA
+  },
   messages: [
-    {role: :system, content: META_PROMPT},
-    {role: :user, content: "Description: Schedule a meeting with a title and start time."}
+    {
+      role: :system,
+      content: META_PROMPT
+    },
+    {
+      role: :user,
+      content: "Description: Schedule a meeting with a title and start time."
+    }
   ]
 )
 message = completion.choices.fetch(0).message
 raise "Schema generation refused: #{message.refusal}" if message.refusal
+
 puts(JSON.pretty_generate(JSON.parse(message.content || raise("No schema returned"))))
 ```
 
@@ -3166,14 +3192,16 @@ META_SCHEMA = {
             }
           },
           "items" => {
-            "anyOf" => [{
-              "$ref" => "#/$defs/schema_definition"
-            }, {
-              "type" => "array",
-              "items" => {
+            "anyOf" => [
+              {
                 "$ref" => "#/$defs/schema_definition"
+              }, {
+                "type" => "array",
+                "items" => {
+                  "$ref" => "#/$defs/schema_definition"
+                }
               }
-            }]
+            ]
           },
           "required" => {
             "type" => "array",
@@ -3332,13 +3360,23 @@ PROMPT
 client = OpenAI::Client.new
 completion = client.chat.completions.create(
   model: "gpt-5.6-terra",
-  response_format: {type: :json_schema, json_schema: META_SCHEMA},
+  response_format: {
+    type: :json_schema,
+    json_schema: META_SCHEMA
+  },
   messages: [
-    {role: :system, content: META_PROMPT},
-    {role: :user, content: "Description: Schedule a meeting with a title and start time."}
+    {
+      role: :system,
+      content: META_PROMPT
+    },
+    {
+      role: :user,
+      content: "Description: Schedule a meeting with a title and start time."
+    }
   ]
 )
 message = completion.choices.fetch(0).message
 raise "Schema generation refused: #{message.refusal}" if message.refusal
+
 puts(JSON.pretty_generate(JSON.parse(message.content || raise("No schema returned"))))
 ```

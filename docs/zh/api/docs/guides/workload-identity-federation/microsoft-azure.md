@@ -1,33 +1,33 @@
 # 为 Microsoft Azure 配置工作负载身份联合
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt). 文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 来获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
 
-在以下任一场景中，可将 Microsoft Azure 用作工作负载身份提供方：
+在以下任意场景中，可将 Microsoft Azure 用作 Workload Identity Provider：
 
-- **Azure 托管标识：** 将为托管标识颁发的 Microsoft Entra ID 访问令牌交换为短时效的 OpenAI 访问令牌。
-- **AKS：** 将投影的 Azure Kubernetes Service (AKS) 服务账户令牌交换为短时效的 OpenAI 访问令牌。
+- **Azure 托管标识：** 将为托管标识颁发的 Microsoft Entra ID 访问令牌交换为短时 OpenAI 访问令牌。
+- **AKS：** 将 Azure Kubernetes Service (AKS) 服务账户的投影令牌交换为短时 OpenAI 访问令牌。
 
-对于 Codex，使用此页面获取并检查 Microsoft Entra 令牌。然后 [配置 Codex 工作负载身份](https://developers.openai.com/codex/enterprise/workload-identity) 将该令牌写入文件并指向 Codex。本页面上的服务账号映射和 SDK 示例适用于 OpenAI API。
+对于 Codex，使用此页面获取并检查 Microsoft Entra 令牌，然后 [配置 Codex 工作负载身份](https://developers.openai.com/codex/enterprise/workload-identity) 将该令牌写入文件并指向 Codex。本页面中的服务账号映射和 SDK 示例适用于 OpenAI API。
 
 
 
-## Azure 托管标识
+## Azure managed identity
 
-Azure 托管标识允许 Azure 托管的工作负载请求 Microsoft Entra 令牌，而无需存储长期有效的密钥。在 OpenAI 工作负载标识联合中，托管标识令牌是 OpenAI 在颁发 OpenAI 访问令牌之前验证的主体令牌。
+Azure 托管标识使 Azure 上托管的工作负载无需存储长期密钥即可请求 Microsoft Entra 令牌。在 OpenAI 工作负载身份联合中，托管标识令牌是 OpenAI 在颁发 OpenAI 访问令牌之前进行验证的 subject token。
 
-### 设置 Azure 托管标识
+### 配置 Azure 托管标识
 
-创建一个或使用一个现有的 Microsoft Entra 应用程序注册，用于表示 OpenAI 应信任的令牌受众。配置其 **应用程序 ID URI**；此 URI 是你的工作负载从 Azure 实例元数据服务 (IMDS) 请求的 `resource` 值，并作为已颁发令牌中的 `aud` 声明出现。有关 Microsoft 配置步骤，请参阅 Microsoft Entra 指南中的 [创建新的 Entra ID 应用程序和服务主体](https://learn.microsoft.com/en-au/entra/identity-platform/howto-create-service-principal-portal#register-an-application-with-azure-ad-and-create-a-service-principal).
+创建一个 Microsoft Entra 应用注册或使用现有的应用注册来表示 OpenAI 应信任的令牌受众，并配置其 **Application ID URI**；此 URI 是你的工作负载从 Azure 实例元数据服务（IMDS）请求的 `resource` 值，它会作为 `aud` 声明出现在已颁发的令牌中。有关 Microsoft 的设置步骤，请参阅 Microsoft Entra 指南中关于 [创建新的 Entra ID 应用程序和服务主体的内容](https://learn.microsoft.com/en-au/entra/identity-platform/howto-create-service-principal-portal#register-an-application-with-azure-ad-and-create-a-service-principal).
 
-在 Microsoft Entra ID 中配置的应用程序 ID URI、IMDS 的 `resource`
-  参数、生成的令牌中的 `aud` 声明，以及 OpenAI 工作负载身份
-  提供程序受众必须全部匹配。
+在 Microsoft Entra ID 中配置的 Application ID URI、IMDS 的 `resource`
+  参数、生成的令牌中的 `aud` 声明，以及 OpenAI Workload Identity
+  Provider 的受众必须全部匹配。
 
-[创建](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/manage-user-assigned-managed-identities-azure-portal?pivots=identity-mi-methods-azp) 一个托管标识，然后 [将该](https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/qs-configure-portal-windows-vm#user-assigned-managed-identity) 托管标识分配给运行你的应用程序的 Azure 资源，例如虚拟机。该资源必须能够在运行时调用 IMDS。有关 Azure 配置详情，请参阅 Microsoft 的 [托管标识概述](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview) 以及相关的 Azure 资源文档以分配该标识。
+[创建](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/manage-user-assigned-managed-identities-azure-portal?pivots=identity-mi-methods-azp) 一个托管标识，然后 [分配](https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/qs-configure-portal-windows-vm#user-assigned-managed-identity) 该托管标识到运行你应用程序的 Azure 资源（例如虚拟机）。该资源必须能够在运行时调用 IMDS。有关 Azure 设置的详细信息，请参阅 Microsoft 的 [托管标识概述](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview) 以及有关分配标识的相关 Azure 资源文档。
 
 ### 获取 Azure 托管标识令牌
 
-在已分配托管标识的 Azure 资源中，使用 Application ID URI 作为参数从 IMDS 请求令牌。 `resource` parameter。该令牌是 OpenAI 用来换取 OpenAI 颁发的访问令牌的主体令牌。
+在已分配托管标识的 Azure 资源上，使用 Application ID URI 作为参数向 IMDS 请求令牌。 `resource` 该令牌是 OpenAI 用于交换 OpenAI 颁发的访问令牌的 subject token。
 
 ```bash
 APPLICATION_ID_URI="api://<application-client-id>"
@@ -40,11 +40,11 @@ TOKEN=$(curl -sS -G -H "Metadata: true" \
 export TOKEN
 ```
 
-如果资源具有多个用户分配的托管标识，请添加 `client_id`, `object_id`，或 `msi_res_id` 查询参数，以指定要使用的托管标识。Microsoft 在 [使用虚拟机上的托管标识获取访问令牌](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-to-use-vm-token).
+如果该资源有多个用户分配的托管标识，请添加 `client_id`, `object_id`，或 `msi_res_id` 查询参数来指定要使用的托管标识。Microsoft 在 [在虚拟机上使用托管标识获取访问令牌](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-to-use-vm-token).
 
 ### 验证令牌
 
-在配置工作负载身份联合之前，将 Microsoft Entra 令牌导出为 `TOKEN`，然后在本地运行以下脚本来检查其声明：
+在配置工作负载身份联合之前，将 Microsoft Entra 令牌导出为 `TOKEN`，然后在本地运行此脚本以检查其声明：
 
 ```javascript
 const parts = process.env.TOKEN?.split(".") ?? [];
@@ -329,6 +329,7 @@ end
 unless Base64.urlsafe_encode64(payload, padding: false) == parts[1]
   raise "JWT payload is not valid Base64URL"
 end
+
 payload.force_encoding(Encoding::UTF_8)
 raise "JWT payload is not valid UTF-8" unless payload.valid_encoding?
 
@@ -339,9 +340,9 @@ puts(payload)
 ```
 
 
-此命令会解码 JWT 负载，但不会验证令牌签名。生产令牌请使用本地解码器，避免将生产令牌粘贴到第三方工具中。
+此命令解码 JWT 负载而不验证令牌签名。对生产令牌使用本地解码器，避免将生产令牌粘贴到第三方工具中。
 
-解码后的 Microsoft Entra ID 托管标识令牌如下所示：
+解码后的 Microsoft Entra ID 托管标识令牌类似于：
 
 ```json
 {
@@ -359,59 +360,59 @@ puts(payload)
 
 验证你计划在 OpenAI 中配置的声明：
 
-- `iss`: 使用令牌中精确的 issuer 值。issuer 可能是 `https://login.microsoftonline.com/<tenant-id>/v2.0`，但不要假设该后缀。
-- `aud`: 必须与 Application ID URI、IMDS `resource` 参数以及 OpenAI Workload Identity Provider 的受众匹配。
+- `iss`: 使用令牌中的确切 issuer 值。该 issuer 可能 `https://login.microsoftonline.com/<tenant-id>/v2.0`，但不要假设存在此前缀。
+- `aud`: 必须与 Application ID URI、IMDS `resource` 参数以及 OpenAI Workload Identity Provider 受众匹配。
 - `tid`: Microsoft Entra 租户 ID。
-- `appid`: 托管标识的应用程序/客户端 ID（如果存在）。
-- `iat` 和 `exp`: 检查令牌的完整生命周期， `exp - iat`，单位为秒。
+- `appid`: 托管标识的 application/client ID（如果存在）。
+- `iat` 与 `exp`: 检查令牌的完整生命周期， `exp - iat`，单位为秒。
 
-对于 Codex，将提供方的 `max_assertion_lifetime_seconds` 设置为经过批准的
-，以覆盖颁发方预期的令牌生命周期范围。不要使用
+对于 Codex，设置提供方的 `max_assertion_lifetime_seconds` 为一个已批准的
+覆盖颁发者预期令牌有效时长范围的限制。不要使用该
 令牌的剩余有效期，也不要假设每个 Entra 令牌都持续一小时。
-Microsoft 文档 [中说明了可变访问令牌
+Microsoft 文档 [变量访问令牌
 生命周期](https://learn.microsoft.com/en-us/entra/identity-platform/access-tokens#token-lifetime)
 并且不支持 [配置托管标识令牌
 生命周期](https://learn.microsoft.com/en-us/entra/identity-platform/configurable-token-lifetimes).
 请参阅 [Admin API 提供方
 示例](https://developers.openai.com/api/docs/guides/workload-identity-federation/admin-api#create-an-oidc-provider).
 
-托管标识令牌还可以包含声明，例如 `azp`, `oid`, `sub`，或 `xms_mirid`。请将解码后的令牌作为真实来源，并选择能够标识你所信任的托管标识和资源边界的声明。
+托管标识令牌还可以包含如下声明 `azp`, `oid`, `sub`，或 `xms_mirid`。请将解码后的令牌作为真实来源，并选择能够标识你信任的精确托管标识和资源边界的声明。
 
-使用解码后的负载，将收到的令牌与 OpenAI 中配置的颁发者、受众和映射值进行比较。大多数配置问题在兑换令牌前都可以在 `iss`, `aud`, `tid`，以及托管标识声明中看到。
+使用解码后的负载，将你收到的令牌与 OpenAI 中配置的颁发者、受众和映射值进行比较。大多数配置问题在交换令牌之前就可以在 `iss`, `aud`, `tid`，以及托管标识声明中看到。
 
-### 设置工作负载身份联合
+### Setting up workload identity federation
 
-在 OpenAI 中为 Microsoft Entra ID 颁发者创建工作负载身份提供者,然后添加一个与托管身份令牌中稳定声明匹配的服务账号映射。
+在 OpenAI 中为 Microsoft Entra ID 颁发方创建一个 Workload Identity Provider，然后添加一个与受管身份令牌中稳定声明相匹配的服务账号映射。
 
-请先配置工作负载身份提供者,然后再创建服务账号映射。
+先配置 Workload Identity Provider，然后创建服务账号映射。
 
-#### 配置 Workload Identity Provider
+#### 设置 Workload Identity Provider
 
-1. **创建工作负载身份提供者。** 设置 **Name** 为一个唯一值，例如 `azure-managed-identity-prod`。使用 **Description**，例如 `Production Azure managed identity workloads`，以帮助管理员识别该提供者。
+1. **创建 Workload Identity Provider。** 设置 **Name** 为唯一值，例如 `azure-managed-identity-prod`。使用 **Description**，例如 `Production Azure managed identity workloads`，以帮助管理员识别该提供方。
 
-2. **设置 issuer 和 audience。** 设置 **OIDC Issuer URL** 为令牌的 `iss` 声明的确切值。先获取一个示例托管身份令牌并检查其声明。例如，issuer 可能为 `https://login.microsoftonline.com/<tenant-id>/v2.0`。设置 **Audience** 为你配置的 Microsoft Entra 应用程序 ID URI，例如 `api://<application-client-id>`。此值必须与令牌的 `aud` 声明匹配。
+2. **设置 issuer 和 audience。** 设置 **OIDC Issuer URL** 为令牌中 `iss` 声明的精确值。先获取一个托管身份令牌样本并检查其声明。例如，issuer 可能是 `https://login.microsoftonline.com/<tenant-id>/v2.0`。设置 **Audience** 为你配置的 Microsoft Entra 应用程序 ID URI，例如 `api://<application-client-id>`。该值必须与令牌的 `aud` 声明匹配。
 
-3. **使用 Microsoft Entra 令牌验证。** 将 **Use uploaded JWKS for token verification** disabled。OpenAI 使用 Microsoft Entra issuer 元数据和 JWKS 来验证托管身份令牌。
+3. **使用 Microsoft Entra 令牌验证。** 将 **Use uploaded JWKS for token verification** 已禁用。OpenAI 使用 Microsoft Entra 颁发者元数据和 JWKS 来验证托管身份令牌。
 
-4. **如果需要派生映射属性，请添加属性转换。** 例如，输入 `managed_identity_client_id` 并附带表达式 `assertion.appid` 以创建 `openai.managed_identity_client_id` 从托管身份 application/client ID 声明中获取。仪表板会自动应用 `openai.` 前缀。原始令牌声明中如果已经以 `openai.` 开头的，将被忽略用于 `openai.` 映射键，除非配置了匹配的转换。
+4. **如果需要派生映射属性，请添加属性转换。** 例如，输入 `managed_identity_client_id` 并附带表达式 `assertion.appid` 以创建 `openai.managed_identity_client_id` 从托管身份应用程序/客户端 ID 声明派生而来。仪表板会自动应用 `openai.` 前缀。已经以 `openai.` 开头的原始令牌声明会用于 `openai.` 映射键，除非配置了匹配的转换。
 
 #### 设置服务账户映射
 
-1. **创建一个服务账号映射。** 设置 **Name** 为一个在该 Workload Identity Provider 内唯一的值，例如 `vm-openai-wif`。使用 **Description**，例如 `Production VM Azure managed identity workload`，以说明哪个工作负载可以使用该映射。
+1. **创建服务账号映射。** 设置 **Name** 为该值，使其在该 Workload Identity Provider 中唯一，例如 `vm-openai-wif`。使用 **Description**，例如 `Production VM Azure managed identity workload`，以说明哪个工作负载可以使用该映射。
 
-2. **匹配稳定的管理标识声明。** 添加一个 **键** 和 **值** 行，对每个必须匹配的声明分别设置一行。如果令牌包含 `appid`，请将 **键** 设置为 `appid` 和 **值** 为管理标识的客户端 ID。 `appid` 声明用于标识管理标识的应用程序/客户端 ID，通常是将映射绑定到特定管理标识时最稳定的声明。如果你的令牌不包含 `appid`，请使用解码后令牌中的其他稳定声明，例如 `azp`, `oid`, `sub`，或 `xms_mirid`。若要将映射绑定到一个租户，还需设置 **键** 设置为 `tid` 和 **值** 为 Microsoft Entra 租户 ID。从 IMDS 解码一个示例令牌，并使用对于你所信任的管理标识和资源稳定的声明。
+2. **匹配稳定的管理标识声明。** 添加一个 **Key** 与 **Value** 行，对应每个必须匹配的声明。如果令牌包含 `appid`，则将 **Key** 设为 `appid` 与 **Value** 为管理标识的客户端 ID。OpenAI `appid` 声明标识管理标识的应用程序/客户端 ID，通常是将映射绑定到特定管理标识最稳定的声明。如果你的令牌不包含 `appid`，请使用解码令牌中的另一个稳定声明，例如 `azp`, `oid`, `sub`，或 `xms_mirid`。若要将映射绑定到单个租户，还要将 **Key** 设为 `tid` 与 **Value** 设置为 Microsoft Entra 租户 ID。从 IMDS 解码一个示例令牌，并使用对你所信任的管理标识和资源稳定的声明。
 
-3. **选择 OpenAI 目标。** 设置 **项目** 为拥有目标服务账号的 OpenAI 项目。设置 **服务账号** 可供 Azure 工作负载使用的 OpenAI 服务帐户，例如 `azure-managed-identity-prod-openai-wif`.
+3. **选择 该公司 目标。** 设置 **Project** 为拥有目标服务账号的 OpenAI 项目。设置 **Service account** Azure 工作负载可使用的 OpenAI 服务帐户，例如 `azure-managed-identity-prod-openai-wif`.
 
-4. **根据需要收窄 API 权限。** 选择适当的 **权限** ，例如 `api.model.request` 和 `api.vector_store.read` 以进一步收窄从此映射颁发的访问令牌。将权限留空可避免添加 WIF 特定的 scope 限制；该令牌仍会以映射的服务帐户身份进行授权。
+4. **如需要，收窄 API 权限。** 选择合适的 **权限** 例如 `api.model.request` 与 `api.vector_store.read` 以进一步收窄从此映射颁发的访问令牌。将权限留空可避免添加 WIF 特定的 scope 限制；令牌仍会以映射的服务帐户身份进行授权。
 
-### 在代码中使用 token
+### 在代码中使用令牌
 
-配置你的 OpenAI SDK 客户端，从 IMDS 请求一个 Azure 托管身份令牌，并将其交换为 OpenAI 颁发的访问令牌。
+配置你的 OpenAI SDK 客户端，从 IMDS 请求 Azure 托管身份令牌，并将其交换为由 OpenAI 颁发的访问令牌。
 
-设置为 `OPENAI_WIF_AUDIENCE` 配置为 Workload Identity Provider 受众的 Microsoft Entra Application ID URI。SDK 会为该受众请求一个托管身份令牌，将其交换为 OpenAI 颁发的访问令牌，并使用 OpenAI 令牌对 API 请求进行身份验证。
+将 `OPENAI_WIF_AUDIENCE` 设置为配置为 Workload Identity Provider 受众的 Microsoft Entra Application ID URI。SDK 会为该受众请求托管身份令牌，将其交换为 OpenAI 颁发的访问令牌，并使用该 OpenAI 令牌对 API 请求进行身份验证。
 
-使用 Azure 托管身份令牌进行身份验证
+通过 Azure 托管身份令牌进行身份验证
 
 ```javascript
 import OpenAI from "openai";
@@ -428,7 +429,6 @@ if (!identityProviderId || !serviceAccountId || !audience) {
   );
 }
 
-/** @returns {import("openai/auth/index").SubjectTokenProvider} */
 function azureManagedIdentityTokenProvider(resource) {
   return {
     tokenType: "jwt",
@@ -847,19 +847,19 @@ puts(response.output_text)
 
 ## Azure Kubernetes Service (AKS)
 
-通过将 AKS 颁发的投影服务账户令牌交换为短期 OpenAI 访问令牌，将 AKS 用作 Workload Identity Provider。
+使用 AKS 作为工作负载身份提供方，通过将 AKS 颁发的投射服务账户令牌交换为短期 OpenAI 访问令牌。
 
-AKS 工作负载还可以使用 Azure Workload Identity 获取附加到该工作负载的托管身份的 Microsoft Entra
-  ID 访问令牌。在该
-  配置中，OpenAI 验证的是 Microsoft Entra 令牌，而不是
-  投影的 Kubernetes 服务账户令牌。配置 OpenAI workload identity
-  联合身份认证，使用以下步骤 [Azure 托管
-  标识](#azure-managed-identity)，并根据 Microsoft 的文档配置 Azure Workload Identity
-  。
+AKS 工作负载也可以使用 Azure Workload Identity 获取用于附加到该工作负载的托管身份的 Microsoft Entra
+  ID 访问令牌。在该配置中，OpenAI 会验证 Microsoft Entra 令牌而不是投射的 Kubernetes 服务账户令牌。请按照以下步骤配置 OpenAI 工作负载身份
+  联合，并按照 Microsoft 文档配置 Azure Workload Identity。
+  projected Kubernetes service account token. Configure 该公司 workload identity
+  联合，请按照以下步骤进行： [Azure 托管
+  身份](#azure-managed-identity)，并根据 Microsoft 的文档配置 Azure Workload Identity。
+  根据 Microsoft 的文档进行配置。
 
 ### 设置 AKS
 
-检索与该 AKS 集群关联的 OIDC 颁发者 URL：
+检索与 AKS 集群关联的 OIDC 颁发者 URL：
 
 ```bash
 az aks show \
@@ -878,15 +878,15 @@ az aks update \
     --enable-oidc-issuer
 ```
 
-你在 OpenAI Workload Identity Provider 中配置的颁发者必须与此颁发者 URL 以及 `iss` 投影的 AKS 服务账户令牌中的 claim 相匹配。
+你在 OpenAI Workload Identity Provider 中配置的颁发者必须与此颁发者 URL 以及 `iss` 投射的 AKS 服务账户令牌中的 claim 相匹配。
 
-为需要调用 OpenAI API 的 AKS 工作负载使用一个 Kubernetes `ServiceAccount` 。如果你还没有，请创建一个：
+为需要调用 OpenAI API 的 AKS 工作负载使用一个 Kubernetes `ServiceAccount` 。如果还没有，请创建一个：
 
 ```bash
 kubectl create serviceaccount openai-wif --namespace default
 ```
 
-使用 OpenAI 期望的受众以及适合你的工作负载的过期时间来配置投影的服务账户令牌。OpenAI 会校验令牌的颁发者、签名、受众和过期时间。在本示例中，令牌文件挂载在 `/var/run/secrets/tokens/token`，使用受众 `https://api.openai.com/v1`，并在 3600 秒后过期。如果投影令牌的受众与 OpenAI Workload Identity Provider 的受众一致，你也可以使用其他受众。
+使用 OpenAI 期望的 audience 和适合你的工作负载的过期时间配置投射的服务账户令牌。OpenAI 会校验令牌的颁发者、签名、audience 和过期时间。在本示例中，令牌文件挂载于 `/var/run/secrets/tokens/token`，使用的 audience 为 `https://api.openai.com/v1`，并在 3600 秒后过期。如果投射令牌的 audience 与 OpenAI Workload Identity Provider 的 audience 一致，你也可以使用其他 audience。
 
 ```yaml
 apiVersion: v1
@@ -915,14 +915,14 @@ spec:
 
 ### 验证令牌
 
-在配置工作负载身份联合之前，请在本地解码一个投影的服务账户令牌样本并检查其声明。从一个已挂载投影令牌的运行中 Pod 里，检索令牌并将其导出为 `TOKEN`:
+在配置工作负载身份联合之前，请在本地解码一个示例投射的服务账户令牌并检查其 claim。从一个已挂载投射令牌的运行中的 pod 中，检索该令牌并导出为 `TOKEN`:
 
 ```bash
 TOKEN=$(kubectl exec -n default openai-wif-app -- cat /var/run/secrets/tokens/token)
 export TOKEN
 ```
 
-然后运行此脚本：
+然后运行以下脚本：
 
 ```javascript
 const parts = process.env.TOKEN?.split(".") ?? [];
@@ -1207,6 +1207,7 @@ end
 unless Base64.urlsafe_encode64(payload, padding: false) == parts[1]
   raise "JWT payload is not valid Base64URL"
 end
+
 payload.force_encoding(Encoding::UTF_8)
 raise "JWT payload is not valid UTF-8" unless payload.valid_encoding?
 
@@ -1217,9 +1218,9 @@ puts(payload)
 ```
 
 
-此命令会解码 JWT 负载，但不会验证令牌签名。生产令牌请使用本地解码器，避免将生产令牌粘贴到第三方工具中。
+此命令解码 JWT 负载而不验证令牌签名。对生产令牌使用本地解码器，避免将生产令牌粘贴到第三方工具中。
 
-解码后的 AKS 投影服务账户令牌类似于：
+解码后的 AKS 投射服务账户令牌类似如下：
 
 ```json
 {
@@ -1240,47 +1241,47 @@ puts(payload)
 
 验证你计划在 OpenAI 中配置的声明：
 
-- `iss`: 必须与 OpenAI Workload Identity Provider 中配置的 AKS issuer URL 相匹配。
-- `aud`: 必须与 projected service account token audience 以及 OpenAI Workload Identity Provider audience 相匹配。
-- `sub`: 必须与你在服务账号映射中配置的 Kubernetes 服务账号 subject 相匹配。
+- `iss`: 必须与 OpenAI Workload Identity Provider 中配置的 AKS issuer URL 一致。
+- `aud`: 必须与投射的服务账户令牌受众以及 OpenAI Workload Identity Provider 的受众一致。
+- `sub`: 必须与你在服务账户映射中配置的 Kubernetes 服务账户主体一致。
 
-使用解码后的负载，将收到的令牌与 OpenAI 中配置的颁发者、受众和映射值进行比较。大多数配置问题在兑换令牌前都可以在 `iss`, `aud`，并且 `sub` 在交换 token 之前进行声明校验。
+使用解码后的负载，将你收到的令牌与 OpenAI 中配置的颁发者、受众和映射值进行比较。大多数配置问题在交换令牌之前就可以在 `iss`, `aud`，并且 `sub` 在交换令牌之前声明它们。
 
-### 设置工作负载身份联合
+### Setting up workload identity federation
 
-在 OpenAI 中为 AKS 签发者创建一个 Workload Identity Provider，然后添加一个与服务账号的映射，使其匹配所投影 token 中的属性。
+在 OpenAI 中为 AKS 颁发者创建工作负载身份提供方，然后添加一个服务账号映射，使其与投影令牌中的属性匹配。
 
-请先配置工作负载身份提供者,然后再创建服务账号映射。
+先配置 Workload Identity Provider，然后创建服务账号映射。
 
-#### 配置 Workload Identity Provider
+#### 设置 Workload Identity Provider
 
-1. **创建工作负载身份提供者。** 设置 **Name** 为一个唯一值，例如 `azure-aks-prod`。使用 **Description**，例如 `Production AKS cluster`，帮助管理员识别集群。
+1. **创建 Workload Identity Provider。** 设置 **Name** 为唯一值，例如 `azure-aks-prod`。使用 **Description**，例如 `Production AKS cluster`，以帮助管理员识别集群。
 
-2. **设置 issuer 和 audience。** 设置 **OIDC Issuer URL** 设置为 `az aks show --query "oidcIssuerProfile.issuerUrl"`。此值必须与投影的 `iss` 声明中的值一致。AKS 服务账户令牌中的相应声明。将 **Audience** 设置为与投影的服务账户令牌卷上配置的 audience 相同的值。在本例中，该值为 `https://api.openai.com/v1`.
+2. **设置 issuer 和 audience。** 设置 **OIDC Issuer URL** 到返回的 issuer `az aks show --query "oidcIssuerProfile.issuerUrl"`。该值必须与 `iss` 投影 AKS 服务账号令牌中的声明匹配。设置 **Audience** 为与投影服务账号令牌卷上配置的 audience 相同的值。在本示例中，该值为 `https://api.openai.com/v1`.
 
-3. **使用 AKS OIDC 发现。** 将 **Use uploaded JWKS for token verification** 默认禁用。OpenAI 使用 AKS issuer 的 OIDC 发现元数据和 JWKS 来验证投影的服务账户令牌。
+3. **使用 AKS OIDC 发现。** 将 **Use uploaded JWKS for token verification** 禁用。OpenAI 使用 AKS issuer 的 OIDC 发现元数据和 JWKS 来验证投影的服务账号令牌。
 
-4. **如果需要派生映射属性，请添加属性转换。** 例如，输入 `aks_subject` 并附带表达式 `assertion.sub` 以创建 `openai.aks_subject`。仪表板会应用 `openai.` 前缀。原始令牌声明中如果已经以 `openai.` 开头的，将被忽略用于 `openai.` 映射键，除非配置了匹配的转换。
+4. **如果需要派生映射属性，请添加属性转换。** 例如，输入 `aks_subject` 并附带表达式 `assertion.sub` 以创建 `openai.aks_subject`。仪表板将应用 `openai.` 前缀。已经以 `openai.` 开头的原始令牌声明会用于 `openai.` 映射键，除非配置了匹配的转换。
 
 #### 设置服务账户映射
 
-1. **创建一个服务账号映射。** 设置 **Name** 为一个在该 Workload Identity Provider 内唯一的值，例如 `default-openai-wif`。使用 **Description**，例如 `Default namespace AKS OpenAI API workload`，以说明哪个工作负载可以使用该映射。
+1. **创建服务账号映射。** 设置 **Name** 为该值，使其在该 Workload Identity Provider 中唯一，例如 `default-openai-wif`。使用 **Description**，例如 `Default namespace AKS OpenAI API workload`，以说明哪个工作负载可以使用该映射。
 
-2. **匹配 AKS 服务账户 subject。** 设置 **键** 设置为 `sub` 和 **值** 设置为 `system:serviceaccount:default:openai-wif`。对于 AKS 服务账户，subject 格式为 `system:serviceaccount:<namespace>:<service-account-name>`.
+2. **匹配 AKS 服务账号 subject。** 设置 **Key** 设为 `sub` 与 **Value** 设为 `system:serviceaccount:default:openai-wif`。对于 AKS 服务账号，subject 格式为 `system:serviceaccount:<namespace>:<service-account-name>`.
 
-   工作负载身份提供程序将令牌限制为已配置的 AKS issuer。服务账户映射进一步将访问权限限制为指定的 Kubernetes 服务账户 subject。
+   Workload Identity Provider 将令牌限制为配置的 AKS issuer。服务账号映射进一步将访问限制为指定的 Kubernetes 服务账号 subject。
 
-3. **选择 OpenAI 目标。** 设置 **项目** 为拥有目标服务账号的 OpenAI 项目。设置 **服务账号** 设置为 AKS 工作负载可以使用的 OpenAI 服务账户，例如 `azure-aks-prod-openai-wif`.
+3. **选择 该公司 目标。** 设置 **Project** 为拥有目标服务账号的 OpenAI 项目。设置 **Service account** 为 AKS 工作负载可以使用的 OpenAI 服务账号，例如 `azure-aks-prod-openai-wif`.
 
-4. **根据需要收窄 API 权限。** 选择适当的 **权限** ，例如 `api.model.request` 和 `api.vector_store.read` 以进一步收窄从此映射颁发的访问令牌。将权限留空可避免添加 WIF 特定的 scope 限制；该令牌仍会以映射的服务帐户身份进行授权。
+4. **如需要，收窄 API 权限。** 选择合适的 **权限** 例如 `api.model.request` 与 `api.vector_store.read` 以进一步收窄从此映射颁发的访问令牌。将权限留空可避免添加 WIF 特定的 scope 限制；令牌仍会以映射的服务帐户身份进行授权。
 
-### 在代码中使用 token
+### 在代码中使用令牌
 
-配置你的 OpenAI SDK 客户端，使其读取投影的 AKS 服务账户令牌，并将其交换为 OpenAI 颁发的访问令牌。
+配置你的 OpenAI SDK 客户端，以读取已投影的 AKS 服务账户令牌，并将其交换为 OpenAI 颁发的访问令牌。
 
-使用挂载的令牌路径，例如 `/var/run/secrets/tokens/token`，作为 SDK 工作负载身份联合提供方的主体令牌来源。SDK 会将该 AKS 令牌交换为 OpenAI 颁发的访问令牌，并使用该 OpenAI 令牌对 API 请求进行身份验证。
+将已挂载的令牌路径（例如 `/var/run/secrets/tokens/token`）用作 SDK 工作负载身份联合提供程序的 subject token 来源。SDK 会将该 AKS 令牌交换为 OpenAI 颁发的访问令牌，并使用该 OpenAI 令牌对 API 请求进行身份验证。
 
-下面的示例使用自定义主体令牌提供方初始化 OpenAI 客户端。该提供方从挂载的文件路径读取投影的 AKS 服务账户令牌，并将其用作工作负载身份联合的主体令牌。
+以下示例使用自定义 subject token 提供程序初始化 OpenAI 客户端。该提供程序从已挂载的文件路径读取已投影的 AKS 服务账户令牌，并将其用作工作负载身份联合的 subject token。
 
 使用 AKS 投影的服务账户令牌进行身份验证
 
@@ -1298,7 +1299,6 @@ if (!identityProviderId || !serviceAccountId) {
   );
 }
 
-/** @returns {import("openai/auth/index").SubjectTokenProvider} */
 function mountedAksServiceAccountTokenProvider(path) {
   return {
     tokenType: "jwt",
@@ -1573,9 +1573,9 @@ puts(response.output_text)
 ## Microsoft Azure 最佳实践
 
 - 尽可能使用托管标识。托管标识提供比手动分发凭据更简单、更安全的身份验证模型。
-- 为不同的应用和环境使用单独的托管标识、Microsoft Entra 应用程序以及 OpenAI 映射。避免在开发、预发布和生产工作负载之间共享同一个标识。
-- 限制接受的受众。仅配置 OpenAI 工作负载标识联合所需的受众。
-- 使用专用的 Microsoft Entra ID 应用程序来划定安全边界。分离的应用程序能够提供更清晰的所有权、审计和访问管理。
-- 优先使用针对特定工作负载的映射。根据特定工作负载的声明进行匹配，而不是使用范围广泛的租户级属性。
-- 定期审查联合凭据配置。陈旧的联合凭据在工作负载退役后很久仍可能无意中持续授予访问权限。
-- 分离生产与非生产标识。生产工作负载应通过不同的联合标识和 OpenAI 服务帐户进行身份验证。
+- 为不同的应用和环境使用单独的托管标识、Microsoft Entra 应用以及 OpenAI 映射。避免在开发、预生产和生产工作负载之间共享同一个标识。
+- 限制接受的受众。仅配置 OpenAI 工作负载身份联合所需的受众。
+- 使用专用的 Microsoft Entra ID 应用来划定安全边界。独立的应用可以提供更清晰的所有权、审计和访问管理。
+- 优先采用针对特定工作负载的映射。根据工作负载特定的声明进行匹配，而不是使用范围广泛的租户级属性。
+- 定期审查联合凭据配置。过期的联合凭据可能在工作负载下线后很长时间内仍然无意地授予访问权限。
+- 分离生产与非生产环境的标识。生产工作负载应通过不同的联合标识和 OpenAI 服务账号进行身份验证。

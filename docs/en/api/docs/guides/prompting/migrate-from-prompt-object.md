@@ -32,12 +32,12 @@ const response = await client.responses.create({
 ```
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 
 from openai import OpenAI
 
 client = OpenAI()
-prompt_id = os.environ["OPENAI_PROMPT_ID"]
+prompt_id = "pmpt_123"
 
 response = client.responses.create(
     prompt={
@@ -349,7 +349,6 @@ import OpenAI from "openai";
 
 const client = new OpenAI();
 
-/** @returns {OpenAI.Responses.ResponseInput} */
 function buildSupportPrompt({ customerName, issue }) {
   return [
     {

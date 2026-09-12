@@ -13,7 +13,7 @@ For GPT Image generation and editing costs, use the [image generation calculator
 3. Select an image detail level supported by the model.
 4. Read the image input tokens and estimated cost. If the processed image exceeds the [30,000-patch limit](https://developers.openai.com/api/docs/guides/images-vision#image-input-requirements), the calculator shows a rejection message instead of an estimate. Expand **Calculation details** to see the resized dimensions and token calculation.
 
-For example, a 6000 × 6000 image on GPT-5.6 exceeds the limit with `original` detail (35,344 patches), but fits after resizing with `high` detail (2,500 patches). Choose `high` only when your task does not require original resolution or precise image coordinates.
+For example, a 6000 × 6000 image on `gpt-6-astra` exceeds the limit with `original` detail (35,344 patches), but fits after resizing with `high` detail (2,500 patches). Choose `high` only when your task does not require original resolution or precise image coordinates.
 
 ## Understand the estimate
 
