@@ -1,187 +1,49 @@
-# Webhook 事件
+# Webhooks 事件
 
-> 完整的文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
 
-Webhooks 是在使用过程中发生某些事件时，由 OpenAI 向你指定的 URL 发起的 HTTP 请求。
-了解更多关于 API 使用的事件。
+当 OpenAI 在使用过程中发生某些事件时，会向你指定的 URL 发送 HTTP 请求，这类请求称为 webhook。
+事件发生在 API 使用过程中。
 
-[了解更多关于 webhook](https://developers.openai.com/api/docs/guides/webhooks).
+[了解有关 webhook 的更多信息](https://developers.openai.com/api/docs/guides/webhooks).
+
+<a id="response.completed"></a>
 
 ## response.completed
 
-在后台响应完成时发送。
+当后台响应已完成时发送。
 
 ### Schema
 
-Schema 名称： `WebhookResponseCompleted`
+Schema name: `WebhookResponseCompleted`
 
-```json
-{
-  "(resource) webhooks > (model) response_completed_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/response_completed/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when a background response has been completed.\n",
-    "ident": "ResponseCompletedWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "object"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) response_completed_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) response_completed_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) response_completed_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) response_completed_webhook_event > (schema) > (property) type",
-      "(resource) webhooks > (model) response_completed_webhook_event > (schema) > (property) object"
-    ]
-  },
-  "(resource) webhooks > (model) response_completed_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseCompleted/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the event.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) response_completed_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseCompleted/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp (in seconds) of when the model response was completed.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) response_completed_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseCompleted/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "docstring": "Event data payload.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) response_completed_webhook_event > (schema) > (property) data > (property) id"
-    ]
-  },
-  "(resource) webhooks > (model) response_completed_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseCompleted/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `response.completed`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookResponseCompleted/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "response.completed"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) response_completed_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) response_completed_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseCompleted/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object of the event. Always `event`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookResponseCompleted/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) response_completed_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) response_completed_webhook_event > (schema) > (property) data > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseCompleted/properties/data/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the model response.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) response_completed_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "response.completed"
-    }
-  },
-  "(resource) webhooks > (model) response_completed_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  }
-}
-```
+- `id: string`
+
+  事件的唯一 ID。
+
+- `created_at: number`
+
+  模型响应完成时的 Unix 时间戳（以秒为单位）。
+
+- `data: object { id }`
+
+  事件数据载荷。
+
+  - `id: string`
+
+    模型响应的唯一 ID。
+
+- `type: "response.completed"`
+
+  事件的类型。始终为 `response.completed`.
+
+  - `"response.completed"`
+
+- `object: optional "event"`
+
+  事件的对象。始终为 `event`.
+
+  - `"event"`
 
 ### 示例
 
@@ -196,181 +58,43 @@ Schema 名称： `WebhookResponseCompleted`
 }
 ```
 
+<a id="response.cancelled"></a>
+
 ## response.cancelled
 
-在后台响应被取消时发送。
+当后台响应被取消时发送。
 
 ### Schema
 
-Schema 名称： `WebhookResponseCancelled`
+Schema name: `WebhookResponseCancelled`
 
-```json
-{
-  "(resource) webhooks > (model) response_cancelled_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/response_cancelled/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when a background response has been cancelled.\n",
-    "ident": "ResponseCancelledWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "object"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) response_cancelled_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) response_cancelled_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) response_cancelled_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) response_cancelled_webhook_event > (schema) > (property) type",
-      "(resource) webhooks > (model) response_cancelled_webhook_event > (schema) > (property) object"
-    ]
-  },
-  "(resource) webhooks > (model) response_cancelled_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseCancelled/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the event.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) response_cancelled_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseCancelled/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp (in seconds) of when the model response was cancelled.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) response_cancelled_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseCancelled/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "docstring": "Event data payload.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) response_cancelled_webhook_event > (schema) > (property) data > (property) id"
-    ]
-  },
-  "(resource) webhooks > (model) response_cancelled_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseCancelled/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `response.cancelled`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookResponseCancelled/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "response.cancelled"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) response_cancelled_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) response_cancelled_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseCancelled/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object of the event. Always `event`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookResponseCancelled/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) response_cancelled_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) response_cancelled_webhook_event > (schema) > (property) data > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseCancelled/properties/data/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the model response.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) response_cancelled_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "response.cancelled"
-    }
-  },
-  "(resource) webhooks > (model) response_cancelled_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  }
-}
-```
+- `id: string`
+
+  事件的唯一 ID。
+
+- `created_at: number`
+
+  模型响应被取消时的 Unix 时间戳（以秒为单位）。
+
+- `data: object { id }`
+
+  事件数据载荷。
+
+  - `id: string`
+
+    模型响应的唯一 ID。
+
+- `type: "response.cancelled"`
+
+  事件的类型。始终为 `response.cancelled`.
+
+  - `"response.cancelled"`
+
+- `object: optional "event"`
+
+  事件的对象。始终为 `event`.
+
+  - `"event"`
 
 ### 示例
 
@@ -385,181 +109,43 @@ Schema 名称： `WebhookResponseCancelled`
 }
 ```
 
+<a id="response.failed"></a>
+
 ## response.failed
 
-当后台响应失败时发送。
+当后台响应失败时触发。
 
 ### Schema
 
-Schema 名称： `WebhookResponseFailed`
+Schema name: `WebhookResponseFailed`
 
-```json
-{
-  "(resource) webhooks > (model) response_failed_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/response_failed/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when a background response has failed.\n",
-    "ident": "ResponseFailedWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "object"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) response_failed_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) response_failed_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) response_failed_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) response_failed_webhook_event > (schema) > (property) type",
-      "(resource) webhooks > (model) response_failed_webhook_event > (schema) > (property) object"
-    ]
-  },
-  "(resource) webhooks > (model) response_failed_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseFailed/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the event.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) response_failed_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseFailed/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp (in seconds) of when the model response failed.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) response_failed_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseFailed/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "docstring": "Event data payload.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) response_failed_webhook_event > (schema) > (property) data > (property) id"
-    ]
-  },
-  "(resource) webhooks > (model) response_failed_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseFailed/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `response.failed`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookResponseFailed/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "response.failed"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) response_failed_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) response_failed_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseFailed/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object of the event. Always `event`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookResponseFailed/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) response_failed_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) response_failed_webhook_event > (schema) > (property) data > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseFailed/properties/data/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the model response.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) response_failed_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "response.failed"
-    }
-  },
-  "(resource) webhooks > (model) response_failed_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  }
-}
-```
+- `id: string`
+
+  事件的唯一 ID。
+
+- `created_at: number`
+
+  模型响应失败时的 Unix 时间戳（以秒为单位）。
+
+- `data: object { id }`
+
+  事件数据载荷。
+
+  - `id: string`
+
+    模型响应的唯一 ID。
+
+- `type: "response.failed"`
+
+  事件的类型。始终为 `response.failed`.
+
+  - `"response.failed"`
+
+- `object: optional "event"`
+
+  事件的对象。始终为 `event`.
+
+  - `"event"`
 
 ### 示例
 
@@ -574,181 +160,43 @@ Schema 名称： `WebhookResponseFailed`
 }
 ```
 
+<a id="response.incomplete"></a>
+
 ## response.incomplete
 
 当后台响应被中断时发送。
 
 ### Schema
 
-Schema 名称： `WebhookResponseIncomplete`
+Schema name: `WebhookResponseIncomplete`
 
-```json
-{
-  "(resource) webhooks > (model) response_incomplete_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/response_incomplete/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when a background response has been interrupted.\n",
-    "ident": "ResponseIncompleteWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "object"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) response_incomplete_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) response_incomplete_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) response_incomplete_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) response_incomplete_webhook_event > (schema) > (property) type",
-      "(resource) webhooks > (model) response_incomplete_webhook_event > (schema) > (property) object"
-    ]
-  },
-  "(resource) webhooks > (model) response_incomplete_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseIncomplete/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the event.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) response_incomplete_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseIncomplete/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp (in seconds) of when the model response was interrupted.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) response_incomplete_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseIncomplete/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "docstring": "Event data payload.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) response_incomplete_webhook_event > (schema) > (property) data > (property) id"
-    ]
-  },
-  "(resource) webhooks > (model) response_incomplete_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseIncomplete/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `response.incomplete`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookResponseIncomplete/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "response.incomplete"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) response_incomplete_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) response_incomplete_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseIncomplete/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object of the event. Always `event`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookResponseIncomplete/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) response_incomplete_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) response_incomplete_webhook_event > (schema) > (property) data > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookResponseIncomplete/properties/data/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the model response.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) response_incomplete_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "response.incomplete"
-    }
-  },
-  "(resource) webhooks > (model) response_incomplete_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  }
-}
-```
+- `id: string`
+
+  事件的唯一 ID。
+
+- `created_at: number`
+
+  模型响应被中断时的 Unix 时间戳（单位为秒）。
+
+- `data: object { id }`
+
+  事件数据载荷。
+
+  - `id: string`
+
+    模型响应的唯一 ID。
+
+- `type: "response.incomplete"`
+
+  事件的类型。始终为 `response.incomplete`.
+
+  - `"response.incomplete"`
+
+- `object: optional "event"`
+
+  事件的对象。始终为 `event`.
+
+  - `"event"`
 
 ### 示例
 
@@ -763,181 +211,43 @@ Schema 名称： `WebhookResponseIncomplete`
 }
 ```
 
+<a id="batch.completed"></a>
+
 ## batch.completed
 
-当批量 API 请求已完成时发送。
+当批处理 API 请求已完成时发送。
 
 ### Schema
 
-Schema 名称： `WebhookBatchCompleted`
+Schema name: `WebhookBatchCompleted`
 
-```json
-{
-  "(resource) webhooks > (model) batch_completed_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/batch_completed/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when a batch API request has been completed.\n",
-    "ident": "BatchCompletedWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "object"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) batch_completed_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) batch_completed_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) batch_completed_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) batch_completed_webhook_event > (schema) > (property) type",
-      "(resource) webhooks > (model) batch_completed_webhook_event > (schema) > (property) object"
-    ]
-  },
-  "(resource) webhooks > (model) batch_completed_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchCompleted/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the event.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) batch_completed_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchCompleted/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp (in seconds) of when the batch API request was completed.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) batch_completed_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchCompleted/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "docstring": "Event data payload.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) batch_completed_webhook_event > (schema) > (property) data > (property) id"
-    ]
-  },
-  "(resource) webhooks > (model) batch_completed_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchCompleted/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `batch.completed`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookBatchCompleted/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "batch.completed"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) batch_completed_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) batch_completed_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchCompleted/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object of the event. Always `event`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookBatchCompleted/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) batch_completed_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) batch_completed_webhook_event > (schema) > (property) data > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchCompleted/properties/data/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the batch API request.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) batch_completed_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "batch.completed"
-    }
-  },
-  "(resource) webhooks > (model) batch_completed_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  }
-}
-```
+- `id: string`
+
+  事件的唯一 ID。
+
+- `created_at: number`
+
+  该 batch API 请求完成时的 Unix 时间戳（单位为秒）。
+
+- `data: object { id }`
+
+  事件数据载荷。
+
+  - `id: string`
+
+    该 batch API 请求的唯一 ID。
+
+- `type: "batch.completed"`
+
+  事件的类型。始终为 `batch.completed`.
+
+  - `"batch.completed"`
+
+- `object: optional "event"`
+
+  事件的对象。始终为 `event`.
+
+  - `"event"`
 
 ### 示例
 
@@ -952,181 +262,43 @@ Schema 名称： `WebhookBatchCompleted`
 }
 ```
 
+<a id="batch.cancelled"></a>
+
 ## batch.cancelled
 
 当批处理 API 请求被取消时发送。
 
 ### Schema
 
-Schema 名称： `WebhookBatchCancelled`
+Schema name: `WebhookBatchCancelled`
 
-```json
-{
-  "(resource) webhooks > (model) batch_cancelled_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/batch_cancelled/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when a batch API request has been cancelled.\n",
-    "ident": "BatchCancelledWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "object"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) batch_cancelled_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) batch_cancelled_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) batch_cancelled_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) batch_cancelled_webhook_event > (schema) > (property) type",
-      "(resource) webhooks > (model) batch_cancelled_webhook_event > (schema) > (property) object"
-    ]
-  },
-  "(resource) webhooks > (model) batch_cancelled_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchCancelled/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the event.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) batch_cancelled_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchCancelled/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp (in seconds) of when the batch API request was cancelled.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) batch_cancelled_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchCancelled/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "docstring": "Event data payload.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) batch_cancelled_webhook_event > (schema) > (property) data > (property) id"
-    ]
-  },
-  "(resource) webhooks > (model) batch_cancelled_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchCancelled/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `batch.cancelled`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookBatchCancelled/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "batch.cancelled"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) batch_cancelled_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) batch_cancelled_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchCancelled/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object of the event. Always `event`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookBatchCancelled/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) batch_cancelled_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) batch_cancelled_webhook_event > (schema) > (property) data > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchCancelled/properties/data/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the batch API request.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) batch_cancelled_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "batch.cancelled"
-    }
-  },
-  "(resource) webhooks > (model) batch_cancelled_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  }
-}
-```
+- `id: string`
+
+  事件的唯一 ID。
+
+- `created_at: number`
+
+  批次 API 请求被取消时的 Unix 时间戳（以秒为单位）。
+
+- `data: object { id }`
+
+  事件数据载荷。
+
+  - `id: string`
+
+    该 batch API 请求的唯一 ID。
+
+- `type: "batch.cancelled"`
+
+  事件的类型。始终为 `batch.cancelled`.
+
+  - `"batch.cancelled"`
+
+- `object: optional "event"`
+
+  事件的对象。始终为 `event`.
+
+  - `"event"`
 
 ### 示例
 
@@ -1141,181 +313,43 @@ Schema 名称： `WebhookBatchCancelled`
 }
 ```
 
+<a id="batch.expired"></a>
+
 ## batch.expired
 
-当批量 API 请求已过期时发送。
+当某个批处理 API 请求已过期时发送。
 
 ### Schema
 
-Schema 名称： `WebhookBatchExpired`
+Schema name: `WebhookBatchExpired`
 
-```json
-{
-  "(resource) webhooks > (model) batch_expired_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/batch_expired/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when a batch API request has expired.\n",
-    "ident": "BatchExpiredWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "object"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) batch_expired_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) batch_expired_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) batch_expired_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) batch_expired_webhook_event > (schema) > (property) type",
-      "(resource) webhooks > (model) batch_expired_webhook_event > (schema) > (property) object"
-    ]
-  },
-  "(resource) webhooks > (model) batch_expired_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchExpired/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the event.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) batch_expired_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchExpired/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp (in seconds) of when the batch API request expired.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) batch_expired_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchExpired/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "docstring": "Event data payload.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) batch_expired_webhook_event > (schema) > (property) data > (property) id"
-    ]
-  },
-  "(resource) webhooks > (model) batch_expired_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchExpired/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `batch.expired`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookBatchExpired/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "batch.expired"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) batch_expired_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) batch_expired_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchExpired/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object of the event. Always `event`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookBatchExpired/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) batch_expired_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) batch_expired_webhook_event > (schema) > (property) data > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchExpired/properties/data/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the batch API request.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) batch_expired_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "batch.expired"
-    }
-  },
-  "(resource) webhooks > (model) batch_expired_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  }
-}
-```
+- `id: string`
+
+  事件的唯一 ID。
+
+- `created_at: number`
+
+  批处理 API 请求过期时的 Unix 时间戳（以秒为单位）。
+
+- `data: object { id }`
+
+  事件数据载荷。
+
+  - `id: string`
+
+    该 batch API 请求的唯一 ID。
+
+- `type: "batch.expired"`
+
+  事件的类型。始终为 `batch.expired`.
+
+  - `"batch.expired"`
+
+- `object: optional "event"`
+
+  事件的对象。始终为 `event`.
+
+  - `"event"`
 
 ### 示例
 
@@ -1330,181 +364,43 @@ Schema 名称： `WebhookBatchExpired`
 }
 ```
 
+<a id="batch.failed"></a>
+
 ## batch.failed
 
-当批量 API 请求失败时发送。
+当批处理 API 请求失败时发送。
 
 ### Schema
 
-Schema 名称： `WebhookBatchFailed`
+Schema name: `WebhookBatchFailed`
 
-```json
-{
-  "(resource) webhooks > (model) batch_failed_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/batch_failed/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when a batch API request has failed.\n",
-    "ident": "BatchFailedWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "object"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) batch_failed_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) batch_failed_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) batch_failed_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) batch_failed_webhook_event > (schema) > (property) type",
-      "(resource) webhooks > (model) batch_failed_webhook_event > (schema) > (property) object"
-    ]
-  },
-  "(resource) webhooks > (model) batch_failed_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchFailed/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the event.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) batch_failed_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchFailed/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp (in seconds) of when the batch API request failed.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) batch_failed_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchFailed/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "docstring": "Event data payload.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) batch_failed_webhook_event > (schema) > (property) data > (property) id"
-    ]
-  },
-  "(resource) webhooks > (model) batch_failed_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchFailed/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `batch.failed`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookBatchFailed/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "batch.failed"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) batch_failed_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) batch_failed_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchFailed/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object of the event. Always `event`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookBatchFailed/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) batch_failed_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) batch_failed_webhook_event > (schema) > (property) data > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookBatchFailed/properties/data/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the batch API request.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) batch_failed_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "batch.failed"
-    }
-  },
-  "(resource) webhooks > (model) batch_failed_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  }
-}
-```
+- `id: string`
+
+  事件的唯一 ID。
+
+- `created_at: number`
+
+  该批量 API 请求失败时的 Unix 时间戳（以秒为单位）。
+
+- `data: object { id }`
+
+  事件数据载荷。
+
+  - `id: string`
+
+    该 batch API 请求的唯一 ID。
+
+- `type: "batch.failed"`
+
+  事件的类型。始终为 `batch.failed`.
+
+  - `"batch.failed"`
+
+- `object: optional "event"`
+
+  事件的对象。始终为 `event`.
+
+  - `"event"`
 
 ### 示例
 
@@ -1519,181 +415,43 @@ Schema 名称： `WebhookBatchFailed`
 }
 ```
 
+<a id="fine_tuning.job.succeeded"></a>
+
 ## fine_tuning.job.succeeded
 
 当微调任务成功时发送。
 
 ### Schema
 
-Schema 名称： `WebhookFineTuningJobSucceeded`
+Schema name: `WebhookFineTuningJobSucceeded`
 
-```json
-{
-  "(resource) webhooks > (model) fine_tuning_job_succeeded_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/fine_tuning_job_succeeded/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when a fine-tuning job has succeeded.\n",
-    "ident": "FineTuningJobSucceededWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "object"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) fine_tuning_job_succeeded_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) fine_tuning_job_succeeded_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) fine_tuning_job_succeeded_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) fine_tuning_job_succeeded_webhook_event > (schema) > (property) type",
-      "(resource) webhooks > (model) fine_tuning_job_succeeded_webhook_event > (schema) > (property) object"
-    ]
-  },
-  "(resource) webhooks > (model) fine_tuning_job_succeeded_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobSucceeded/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the event.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) fine_tuning_job_succeeded_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobSucceeded/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp (in seconds) of when the fine-tuning job succeeded.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) fine_tuning_job_succeeded_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobSucceeded/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "docstring": "Event data payload.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) fine_tuning_job_succeeded_webhook_event > (schema) > (property) data > (property) id"
-    ]
-  },
-  "(resource) webhooks > (model) fine_tuning_job_succeeded_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobSucceeded/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `fine_tuning.job.succeeded`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookFineTuningJobSucceeded/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "fine_tuning.job.succeeded"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) fine_tuning_job_succeeded_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) fine_tuning_job_succeeded_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobSucceeded/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object of the event. Always `event`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookFineTuningJobSucceeded/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) fine_tuning_job_succeeded_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) fine_tuning_job_succeeded_webhook_event > (schema) > (property) data > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobSucceeded/properties/data/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the fine-tuning job.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) fine_tuning_job_succeeded_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "fine_tuning.job.succeeded"
-    }
-  },
-  "(resource) webhooks > (model) fine_tuning_job_succeeded_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  }
-}
-```
+- `id: string`
+
+  事件的唯一 ID。
+
+- `created_at: number`
+
+  微调任务成功时的 Unix 时间戳（以秒为单位）。
+
+- `data: object { id }`
+
+  事件数据载荷。
+
+  - `id: string`
+
+    该微调任务的唯一 ID。
+
+- `type: "fine_tuning.job.succeeded"`
+
+  事件的类型。始终为 `fine_tuning.job.succeeded`.
+
+  - `"fine_tuning.job.succeeded"`
+
+- `object: optional "event"`
+
+  事件的对象。始终为 `event`.
+
+  - `"event"`
 
 ### 示例
 
@@ -1708,181 +466,43 @@ Schema 名称： `WebhookFineTuningJobSucceeded`
 }
 ```
 
+<a id="fine_tuning.job.failed"></a>
+
 ## fine_tuning.job.failed
 
-当微调任务失败时发送。
+当微调作业失败时发送。
 
 ### Schema
 
-Schema 名称： `WebhookFineTuningJobFailed`
+Schema name: `WebhookFineTuningJobFailed`
 
-```json
-{
-  "(resource) webhooks > (model) fine_tuning_job_failed_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/fine_tuning_job_failed/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when a fine-tuning job has failed.\n",
-    "ident": "FineTuningJobFailedWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "object"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) fine_tuning_job_failed_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) fine_tuning_job_failed_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) fine_tuning_job_failed_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) fine_tuning_job_failed_webhook_event > (schema) > (property) type",
-      "(resource) webhooks > (model) fine_tuning_job_failed_webhook_event > (schema) > (property) object"
-    ]
-  },
-  "(resource) webhooks > (model) fine_tuning_job_failed_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobFailed/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the event.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) fine_tuning_job_failed_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobFailed/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp (in seconds) of when the fine-tuning job failed.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) fine_tuning_job_failed_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobFailed/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "docstring": "Event data payload.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) fine_tuning_job_failed_webhook_event > (schema) > (property) data > (property) id"
-    ]
-  },
-  "(resource) webhooks > (model) fine_tuning_job_failed_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobFailed/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `fine_tuning.job.failed`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookFineTuningJobFailed/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "fine_tuning.job.failed"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) fine_tuning_job_failed_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) fine_tuning_job_failed_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobFailed/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object of the event. Always `event`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookFineTuningJobFailed/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) fine_tuning_job_failed_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) fine_tuning_job_failed_webhook_event > (schema) > (property) data > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobFailed/properties/data/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the fine-tuning job.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) fine_tuning_job_failed_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "fine_tuning.job.failed"
-    }
-  },
-  "(resource) webhooks > (model) fine_tuning_job_failed_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  }
-}
-```
+- `id: string`
+
+  事件的唯一 ID。
+
+- `created_at: number`
+
+  微调任务失败时的 Unix 时间戳（以秒为单位）。
+
+- `data: object { id }`
+
+  事件数据载荷。
+
+  - `id: string`
+
+    该微调任务的唯一 ID。
+
+- `type: "fine_tuning.job.failed"`
+
+  事件的类型。始终为 `fine_tuning.job.failed`.
+
+  - `"fine_tuning.job.failed"`
+
+- `object: optional "event"`
+
+  事件的对象。始终为 `event`.
+
+  - `"event"`
 
 ### 示例
 
@@ -1897,181 +517,43 @@ Schema 名称： `WebhookFineTuningJobFailed`
 }
 ```
 
+<a id="fine_tuning.job.cancelled"></a>
+
 ## fine_tuning.job.cancelled
 
 当微调任务被取消时发送。
 
 ### Schema
 
-Schema 名称： `WebhookFineTuningJobCancelled`
+Schema name: `WebhookFineTuningJobCancelled`
 
-```json
-{
-  "(resource) webhooks > (model) fine_tuning_job_cancelled_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/fine_tuning_job_cancelled/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when a fine-tuning job has been cancelled.\n",
-    "ident": "FineTuningJobCancelledWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "object"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) fine_tuning_job_cancelled_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) fine_tuning_job_cancelled_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) fine_tuning_job_cancelled_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) fine_tuning_job_cancelled_webhook_event > (schema) > (property) type",
-      "(resource) webhooks > (model) fine_tuning_job_cancelled_webhook_event > (schema) > (property) object"
-    ]
-  },
-  "(resource) webhooks > (model) fine_tuning_job_cancelled_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobCancelled/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the event.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) fine_tuning_job_cancelled_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobCancelled/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp (in seconds) of when the fine-tuning job was cancelled.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) fine_tuning_job_cancelled_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobCancelled/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "docstring": "Event data payload.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) fine_tuning_job_cancelled_webhook_event > (schema) > (property) data > (property) id"
-    ]
-  },
-  "(resource) webhooks > (model) fine_tuning_job_cancelled_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobCancelled/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `fine_tuning.job.cancelled`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookFineTuningJobCancelled/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "fine_tuning.job.cancelled"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) fine_tuning_job_cancelled_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) fine_tuning_job_cancelled_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobCancelled/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object of the event. Always `event`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookFineTuningJobCancelled/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) fine_tuning_job_cancelled_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) fine_tuning_job_cancelled_webhook_event > (schema) > (property) data > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookFineTuningJobCancelled/properties/data/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the fine-tuning job.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) fine_tuning_job_cancelled_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "fine_tuning.job.cancelled"
-    }
-  },
-  "(resource) webhooks > (model) fine_tuning_job_cancelled_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  }
-}
-```
+- `id: string`
+
+  事件的唯一 ID。
+
+- `created_at: number`
+
+  微调任务被取消时的 Unix 时间戳（以秒为单位）。
+
+- `data: object { id }`
+
+  事件数据载荷。
+
+  - `id: string`
+
+    该微调任务的唯一 ID。
+
+- `type: "fine_tuning.job.cancelled"`
+
+  事件的类型。始终为 `fine_tuning.job.cancelled`.
+
+  - `"fine_tuning.job.cancelled"`
+
+- `object: optional "event"`
+
+  事件的对象。始终为 `event`.
+
+  - `"event"`
 
 ### 示例
 
@@ -2086,181 +568,43 @@ Schema 名称： `WebhookFineTuningJobCancelled`
 }
 ```
 
+<a id="eval.run.succeeded"></a>
+
 ## eval.run.succeeded
 
-在评测运行成功时发送。
+当评测运行成功时发送。
 
 ### Schema
 
-Schema 名称： `WebhookEvalRunSucceeded`
+Schema name: `WebhookEvalRunSucceeded`
 
-```json
-{
-  "(resource) webhooks > (model) eval_run_succeeded_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/eval_run_succeeded/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when an eval run has succeeded.\n",
-    "ident": "EvalRunSucceededWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "object"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) eval_run_succeeded_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) eval_run_succeeded_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) eval_run_succeeded_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) eval_run_succeeded_webhook_event > (schema) > (property) type",
-      "(resource) webhooks > (model) eval_run_succeeded_webhook_event > (schema) > (property) object"
-    ]
-  },
-  "(resource) webhooks > (model) eval_run_succeeded_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunSucceeded/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the event.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) eval_run_succeeded_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunSucceeded/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp (in seconds) of when the eval run succeeded.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) eval_run_succeeded_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunSucceeded/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "docstring": "Event data payload.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) eval_run_succeeded_webhook_event > (schema) > (property) data > (property) id"
-    ]
-  },
-  "(resource) webhooks > (model) eval_run_succeeded_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunSucceeded/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `eval.run.succeeded`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookEvalRunSucceeded/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "eval.run.succeeded"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) eval_run_succeeded_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) eval_run_succeeded_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunSucceeded/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object of the event. Always `event`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookEvalRunSucceeded/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) eval_run_succeeded_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) eval_run_succeeded_webhook_event > (schema) > (property) data > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunSucceeded/properties/data/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the eval run.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) eval_run_succeeded_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "eval.run.succeeded"
-    }
-  },
-  "(resource) webhooks > (model) eval_run_succeeded_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  }
-}
-```
+- `id: string`
+
+  事件的唯一 ID。
+
+- `created_at: number`
+
+  评估运行成功时的 Unix 时间戳（以秒为单位）。
+
+- `data: object { id }`
+
+  事件数据载荷。
+
+  - `id: string`
+
+    评估运行的唯一 ID。
+
+- `type: "eval.run.succeeded"`
+
+  事件的类型。始终为 `eval.run.succeeded`.
+
+  - `"eval.run.succeeded"`
+
+- `object: optional "event"`
+
+  事件的对象。始终为 `event`.
+
+  - `"event"`
 
 ### 示例
 
@@ -2275,181 +619,43 @@ Schema 名称： `WebhookEvalRunSucceeded`
 }
 ```
 
+<a id="eval.run.failed"></a>
+
 ## eval.run.failed
 
-当评估运行失败时发送。
+在评估运行失败时发送。
 
 ### Schema
 
-Schema 名称： `WebhookEvalRunFailed`
+Schema name: `WebhookEvalRunFailed`
 
-```json
-{
-  "(resource) webhooks > (model) eval_run_failed_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/eval_run_failed/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when an eval run has failed.\n",
-    "ident": "EvalRunFailedWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "object"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) eval_run_failed_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) eval_run_failed_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) eval_run_failed_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) eval_run_failed_webhook_event > (schema) > (property) type",
-      "(resource) webhooks > (model) eval_run_failed_webhook_event > (schema) > (property) object"
-    ]
-  },
-  "(resource) webhooks > (model) eval_run_failed_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunFailed/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the event.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) eval_run_failed_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunFailed/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp (in seconds) of when the eval run failed.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) eval_run_failed_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunFailed/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "docstring": "Event data payload.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) eval_run_failed_webhook_event > (schema) > (property) data > (property) id"
-    ]
-  },
-  "(resource) webhooks > (model) eval_run_failed_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunFailed/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `eval.run.failed`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookEvalRunFailed/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "eval.run.failed"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) eval_run_failed_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) eval_run_failed_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunFailed/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object of the event. Always `event`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookEvalRunFailed/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) eval_run_failed_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) eval_run_failed_webhook_event > (schema) > (property) data > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunFailed/properties/data/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the eval run.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) eval_run_failed_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "eval.run.failed"
-    }
-  },
-  "(resource) webhooks > (model) eval_run_failed_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  }
-}
-```
+- `id: string`
+
+  事件的唯一 ID。
+
+- `created_at: number`
+
+  评估运行失败时的 Unix 时间戳（以秒为单位）。
+
+- `data: object { id }`
+
+  事件数据载荷。
+
+  - `id: string`
+
+    评估运行的唯一 ID。
+
+- `type: "eval.run.failed"`
+
+  事件的类型。始终为 `eval.run.failed`.
+
+  - `"eval.run.failed"`
+
+- `object: optional "event"`
+
+  事件的对象。始终为 `event`.
+
+  - `"event"`
 
 ### 示例
 
@@ -2464,181 +670,43 @@ Schema 名称： `WebhookEvalRunFailed`
 }
 ```
 
+<a id="eval.run.canceled"></a>
+
 ## eval.run.canceled
 
-当评测运行被取消时发送。
+在评估运行被取消时发送。
 
 ### Schema
 
-Schema 名称： `WebhookEvalRunCanceled`
+Schema name: `WebhookEvalRunCanceled`
 
-```json
-{
-  "(resource) webhooks > (model) eval_run_canceled_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/eval_run_canceled/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when an eval run has been canceled.\n",
-    "ident": "EvalRunCanceledWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "object"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) eval_run_canceled_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) eval_run_canceled_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) eval_run_canceled_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) eval_run_canceled_webhook_event > (schema) > (property) type",
-      "(resource) webhooks > (model) eval_run_canceled_webhook_event > (schema) > (property) object"
-    ]
-  },
-  "(resource) webhooks > (model) eval_run_canceled_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunCanceled/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the event.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) eval_run_canceled_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunCanceled/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp (in seconds) of when the eval run was canceled.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) eval_run_canceled_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunCanceled/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "docstring": "Event data payload.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) eval_run_canceled_webhook_event > (schema) > (property) data > (property) id"
-    ]
-  },
-  "(resource) webhooks > (model) eval_run_canceled_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunCanceled/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `eval.run.canceled`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookEvalRunCanceled/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "eval.run.canceled"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) eval_run_canceled_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) eval_run_canceled_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunCanceled/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object of the event. Always `event`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookEvalRunCanceled/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) eval_run_canceled_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) eval_run_canceled_webhook_event > (schema) > (property) data > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookEvalRunCanceled/properties/data/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the eval run.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) eval_run_canceled_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "eval.run.canceled"
-    }
-  },
-  "(resource) webhooks > (model) eval_run_canceled_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  }
-}
-```
+- `id: string`
+
+  事件的唯一 ID。
+
+- `created_at: number`
+
+  评估运行被取消时的 Unix 时间戳（以秒为单位）。
+
+- `data: object { id }`
+
+  事件数据载荷。
+
+  - `id: string`
+
+    评估运行的唯一 ID。
+
+- `type: "eval.run.canceled"`
+
+  事件的类型。始终为 `eval.run.canceled`.
+
+  - `"eval.run.canceled"`
+
+- `object: optional "event"`
+
+  事件的对象。始终为 `event`.
+
+  - `"event"`
 
 ### 示例
 
@@ -2653,245 +721,62 @@ Schema 名称： `WebhookEvalRunCanceled`
 }
 ```
 
+<a id="realtime.call.incoming"></a>
+
 ## realtime.call.incoming
 
-当有传入的 API SIP 会话可被 Realtime 接受时发送。
-同一待处理会话也可以发出 `live.transport.incoming`；首个
-成功的 Realtime 或 Live accept 端点将选定运行时表面。
+当有传入的 API SIP 会话可供 Realtime 接受时发送。
+同一待处理会话还可以发出 `live.transport.incoming`；首次
+成功的 Realtime 或 Live 接受端点将选择运行时表面。
 
 ### Schema
 
-Schema 名称： `WebhookRealtimeCallIncoming`
+Schema name: `WebhookRealtimeCallIncoming`
 
-```json
-{
-  "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/realtime_call_incoming/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when an incoming API SIP session is available for Realtime acceptance.\nThe same pending session can also emit `live.transport.incoming`; the first\nsuccessful Realtime or Live accept endpoint selects the runtime surface.\n",
-    "ident": "RealtimeCallIncomingWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "object"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) type",
-      "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) object"
-    ]
-  },
-  "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the event.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp (in seconds) of when the model response was completed.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "docstring": "Event data payload.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "call_id"
-        },
-        {
-          "ident": "sip_headers"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) data > (property) call_id",
-      "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) data > (property) sip_headers"
-    ]
-  },
-  "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `realtime.call.incoming`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "realtime.call.incoming"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object of the event. Always `event`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) data > (property) call_id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/data/properties/call_id",
-    "deprecated": false,
-    "key": "call_id",
-    "docstring": "The Transceiver `rtc_...` ID of the pending SIP session. The paired\n`live.transport.incoming` event derives its `session_id` by replacing the\n`rtc_` prefix with `live_`. Use the ID returned by the event with the\ncorresponding Realtime or Live API.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) data > (property) sip_headers": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/data/properties/sip_headers",
-    "deprecated": false,
-    "key": "sip_headers",
-    "docstring": "Headers from the SIP INVITE, excluding SIP authorization headers.\nRetained names, values, repeated entries, and order are preserved.\nTreat these values as untrusted call metadata.\n",
-    "type": {
-      "kind": "HttpTypeArray",
-      "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/data/properties/sip_headers",
-      "elementType": {
-        "kind": "HttpTypeObject",
-        "members": [
-          {
-            "ident": "name"
-          },
-          {
-            "ident": "value"
-          }
-        ]
-      }
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "array",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) data > (property) sip_headers > (items) > (property) name",
-      "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) data > (property) sip_headers > (items) > (property) value"
-    ]
-  },
-  "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "realtime.call.incoming"
-    }
-  },
-  "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  },
-  "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) data > (property) sip_headers > (items) > (property) name": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/data/properties/sip_headers/items/properties/name",
-    "deprecated": false,
-    "key": "name",
-    "docstring": "Name of the SIP Header.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) realtime_call_incoming_webhook_event > (schema) > (property) data > (property) sip_headers > (items) > (property) value": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookRealtimeCallIncoming/properties/data/properties/sip_headers/items/properties/value",
-    "deprecated": false,
-    "key": "value",
-    "docstring": "Value of the SIP Header.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  }
-}
-```
+- `id: string`
+
+  事件的唯一 ID。
+
+- `created_at: number`
+
+  模型响应完成时的 Unix 时间戳（以秒为单位）。
+
+- `data: object { call_id, sip_headers }`
+
+  事件数据载荷。
+
+  - `call_id: string`
+
+    Transceiver `rtc_...` 待处理 SIP 会话的 ID。配对的
+    `live.transport.incoming` 事件由对应的 Realtime 事件派生出， `session_id` 将事件名的
+    `rtc_` 前缀替换为 `live_`。得到。请使用 Realtime 或 Live API 事件返回的 ID。
+    对应的 Realtime 或 Live 接口。
+
+  - `sip_headers: array of object { name, value }`
+
+    SIP INVITE 中的请求头，不含 SIP 授权相关请求头。
+    保留的字段名、值、重复条目及顺序均会原样保留。
+    请将这些值视为不可信的通话元数据。
+
+    - `name: string`
+
+      SIP 请求头的名称。
+
+    - `value: string`
+
+      SIP 请求头的值。
+
+- `type: "realtime.call.incoming"`
+
+  事件的类型。始终为 `realtime.call.incoming`.
+
+  - `"realtime.call.incoming"`
+
+- `object: optional "event"`
+
+  事件的对象。始终为 `event`.
+
+  - `"event"`
 
 ### 示例
 
@@ -2911,247 +796,63 @@ Schema 名称： `WebhookRealtimeCallIncoming`
 }
 ```
 
+<a id="live.call.incoming"></a>
+
 ## live.call.incoming
 
-已弃用：请使用 `live.transport.incoming`。仅为现有订阅保留
-迁移期间；不允许新订阅此事件。
-当有传入的 API SIP 会话可被 Live 接受时发送。该
-同一待处理会话也会触发 `realtime.call.incoming`；首个
-成功的 Realtime 或 Live accept 端点将选定运行时表面。
+已弃用：使用 `live.transport.incoming`。为已有订阅保留
+在迁移期间保留；不允许为此事件创建新订阅。
+当有传入的 API SIP 会话可供 Live 接受时发送。
+同一待处理会话也会发出 `realtime.call.incoming`；首次
+成功的 Realtime 或 Live 接受端点将选择运行时表面。
 
 ### Schema
 
-Schema 名称： `WebhookLiveCallIncoming`
+Schema name: `WebhookLiveCallIncoming`
 
-```json
-{
-  "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/live_call_incoming/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Deprecated: use `live.transport.incoming`. Retained for existing subscriptions\nduring migration; new subscriptions to this event are not allowed.\nSent when an incoming API SIP session is available for Live acceptance. The\nsame pending session can also emit `realtime.call.incoming`; the first\nsuccessful Realtime or Live accept endpoint selects the runtime surface.\n",
-    "ident": "LiveCallIncomingWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "object"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) type",
-      "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) object"
-    ]
-  },
-  "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the event.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp (in seconds) of when the event was created.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "docstring": "Event data payload.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "session_id"
-        },
-        {
-          "ident": "sip_headers"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) data > (property) session_id",
-      "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) data > (property) sip_headers"
-    ]
-  },
-  "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `live.call.incoming`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "live.call.incoming"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object of the event. Always `event`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) data > (property) session_id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/data/properties/session_id",
-    "deprecated": false,
-    "key": "session_id",
-    "docstring": "The `live_...` ID of the pending SIP session. Pass this value unchanged\nto Live call controls and sideband connections. The corresponding\n`realtime.call.incoming` event uses a separate `rtc_...` call ID.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) data > (property) sip_headers": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/data/properties/sip_headers",
-    "deprecated": false,
-    "key": "sip_headers",
-    "docstring": "Headers from the SIP INVITE, excluding SIP authorization headers.\nRetained names, values, repeated entries, and order are preserved.\nTreat these values as untrusted call metadata.\n",
-    "type": {
-      "kind": "HttpTypeArray",
-      "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/data/properties/sip_headers",
-      "elementType": {
-        "kind": "HttpTypeObject",
-        "members": [
-          {
-            "ident": "name"
-          },
-          {
-            "ident": "value"
-          }
-        ]
-      }
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "array",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) data > (property) sip_headers > (items) > (property) name",
-      "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) data > (property) sip_headers > (items) > (property) value"
-    ]
-  },
-  "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "live.call.incoming"
-    }
-  },
-  "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  },
-  "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) data > (property) sip_headers > (items) > (property) name": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/data/properties/sip_headers/items/properties/name",
-    "deprecated": false,
-    "key": "name",
-    "docstring": "Name of the SIP Header.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) live_call_incoming_webhook_event > (schema) > (property) data > (property) sip_headers > (items) > (property) value": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveCallIncoming/properties/data/properties/sip_headers/items/properties/value",
-    "deprecated": false,
-    "key": "value",
-    "docstring": "Value of the SIP Header.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  }
-}
-```
+- `id: string`
+
+  事件的唯一 ID。
+
+- `created_at: number`
+
+  事件创建时的 Unix 时间戳（以秒为单位）。
+
+- `data: object { session_id, sip_headers }`
+
+  事件数据载荷。
+
+  - `session_id: string`
+
+    该 `live_...` 待处理 SIP 会话的 ID。原样传递该值
+    到 Live 通话控制和边带连接。对应的
+    `realtime.call.incoming` 事件使用单独的 `rtc_...` 通话 ID。
+
+  - `sip_headers: array of object { name, value }`
+
+    SIP INVITE 中的请求头，不含 SIP 授权相关请求头。
+    保留的字段名、值、重复条目及顺序均会原样保留。
+    请将这些值视为不可信的通话元数据。
+
+    - `name: string`
+
+      SIP 请求头的名称。
+
+    - `value: string`
+
+      SIP 请求头的值。
+
+- `type: "live.call.incoming"`
+
+  事件的类型。始终为 `live.call.incoming`.
+
+  - `"live.call.incoming"`
+
+- `object: optional "event"`
+
+  事件的对象。始终为 `event`.
+
+  - `"event"`
 
 ### 示例
 
@@ -3171,280 +872,66 @@ Schema 名称： `WebhookLiveCallIncoming`
 }
 ```
 
+<a id="live.transport.incoming"></a>
+
 ## live.transport.incoming
 
-当有传入的 API SIP 会话可被 Live 接受时发送。该
-同一待处理会话也会触发 `realtime.call.incoming`；首个
-成功的 Realtime 或 Live accept 端点将选定运行时表面。
+当有传入的 API SIP 会话可供 Live 接受时发送。
+同一待处理会话也会发出 `realtime.call.incoming`；首次
+成功的 Realtime 或 Live 接受端点将选择运行时表面。
 
 ### Schema
 
-Schema 名称： `WebhookLiveTransportIncoming`
+Schema name: `WebhookLiveTransportIncoming`
 
-```json
-{
-  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/live_transport_incoming/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when an incoming API SIP session is available for Live acceptance. The\nsame pending session can also emit `realtime.call.incoming`; the first\nsuccessful Realtime or Live accept endpoint selects the runtime surface.\n",
-    "ident": "LiveTransportIncomingWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "object"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) type",
-      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) object"
-    ]
-  },
-  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the event.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp (in seconds) of when the event was created.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "docstring": "Event data payload.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "session_id"
-        },
-        {
-          "ident": "sip_headers"
-        },
-        {
-          "ident": "type"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) session_id",
-      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) sip_headers",
-      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) type"
-    ]
-  },
-  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `live.transport.incoming`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "live.transport.incoming"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object of the event. Always `event`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) session_id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/data/properties/session_id",
-    "deprecated": false,
-    "key": "session_id",
-    "docstring": "The `live_...` ID of the pending SIP session. Forward this value\nunchanged when accepting or rejecting the call through the Live API.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) sip_headers": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/data/properties/sip_headers",
-    "deprecated": false,
-    "key": "sip_headers",
-    "docstring": "Headers from the SIP INVITE, excluding SIP authorization headers.\nRetained names, values, repeated entries, and order are preserved.\nTreat these values as untrusted call metadata.\n",
-    "type": {
-      "kind": "HttpTypeArray",
-      "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/data/properties/sip_headers",
-      "elementType": {
-        "kind": "HttpTypeObject",
-        "members": [
-          {
-            "ident": "name"
-          },
-          {
-            "ident": "value"
-          }
-        ]
-      }
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "array",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) sip_headers > (items) > (property) name",
-      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) sip_headers > (items) > (property) value"
-    ]
-  },
-  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/data/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The incoming transport type. Always `sip`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/data/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "sip"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "live.transport.incoming"
-    }
-  },
-  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  },
-  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) sip_headers > (items) > (property) name": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/data/properties/sip_headers/items/properties/name",
-    "deprecated": false,
-    "key": "name",
-    "docstring": "Name of the SIP Header.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) sip_headers > (items) > (property) value": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookLiveTransportIncoming/properties/data/properties/sip_headers/items/properties/value",
-    "deprecated": false,
-    "key": "value",
-    "docstring": "Value of the SIP Header.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) live_transport_incoming_webhook_event > (schema) > (property) data > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "sip"
-    }
-  }
-}
-```
+- `id: string`
+
+  事件的唯一 ID。
+
+- `created_at: number`
+
+  事件创建时的 Unix 时间戳（以秒为单位）。
+
+- `data: object { session_id, sip_headers, type }`
+
+  事件数据载荷。
+
+  - `session_id: string`
+
+    该 `live_...` 待处理 SIP 会话的 ID。通过 Live API 接听或拒绝通话时，请原样转发此值
+    。
+
+  - `sip_headers: array of object { name, value }`
+
+    SIP INVITE 中的请求头，不含 SIP 授权相关请求头。
+    保留的字段名、值、重复条目及顺序均会原样保留。
+    请将这些值视为不可信的通话元数据。
+
+    - `name: string`
+
+      SIP 请求头的名称。
+
+    - `value: string`
+
+      SIP 请求头的值。
+
+  - `type: "sip"`
+
+    来电的传输类型。始终为 `sip`.
+
+    - `"sip"`
+
+- `type: "live.transport.incoming"`
+
+  事件的类型。始终为 `live.transport.incoming`.
+
+  - `"live.transport.incoming"`
+
+- `object: optional "event"`
+
+  事件的对象。始终为 `event`.
+
+  - `"event"`
 
 ### 示例
 
@@ -3465,180 +952,41 @@ Schema 名称： `WebhookLiveTransportIncoming`
 }
 ```
 
+<a id="safety.alert.created"></a>
+
 ## safety.alert.created
 
-当 API 项目有已批准的安全提醒时发送。
+当 API 项目存在已批准的安全警报时发送。
 
 ### Schema
 
-Schema 名称： `WebhookSafetyAlertCreated`
+Schema name: `WebhookSafetyAlertCreated`
 
-```json
-{
-  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/safety_alert_created/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when an approved safety alert is available for an API project.",
-    "ident": "SafetyAlertCreatedWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "object"
-        },
-        {
-          "ident": "type"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) object",
-      "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) type"
-    ]
-  },
-  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookSafetyAlertCreated/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the webhook event.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookSafetyAlertCreated/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp in seconds when the event was created.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookSafetyAlertCreated/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) data > (property) id"
-    ]
-  },
-  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookSafetyAlertCreated/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "Always `event`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookSafetyAlertCreated/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookSafetyAlertCreated/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "Always `safety.alert.created`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookSafetyAlertCreated/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "safety.alert.created"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) data > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookSafetyAlertCreated/properties/data/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The safety alert ID to pass to `GET /v1/safety/alerts/{id}`.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  },
-  "(resource) webhooks > (model) safety_alert_created_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "safety.alert.created"
-    }
-  }
-}
-```
+- `id: string`
+
+  该 Webhook 事件的唯一 ID。
+
+- `created_at: number`
+
+  事件创建时的 Unix 时间戳（秒）。
+
+- `data: object { id }`
+
+  - `id: string`
+
+    传递给以下接口的安全告警 ID： `GET /v1/safety/alerts/{id}`.
+
+- `object: "event"`
+
+  始终为 `event`.
+
+  - `"event"`
+
+- `type: "safety.alert.created"`
+
+  始终为 `safety.alert.created`.
+
+  - `"safety.alert.created"`
 
 ### 示例
 
@@ -3652,180 +1000,41 @@ Schema 名称： `WebhookSafetyAlertCreated`
 }
 ```
 
+<a id="safety.org_alert.created"></a>
+
 ## safety.org_alert.created
 
-当企业工作区有已批准的安全提醒可用时发送。
+当企业工作区有已批准的安全警报可用时发送。
 
 ### Schema
 
-Schema 名称： `WebhookSafetyOrgAlertCreated`
+Schema name: `WebhookSafetyOrgAlertCreated`
 
-```json
-{
-  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/webhooks/safety_org_alert_created/post/requestBody/content/application%2Fjson/schema",
-    "docstring": "Sent when an approved safety alert is available for an enterprise workspace.",
-    "ident": "SafetyOrgAlertCreatedWebhookEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "data"
-        },
-        {
-          "ident": "object"
-        },
-        {
-          "ident": "type"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) id",
-      "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) created_at",
-      "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) data",
-      "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) object",
-      "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) type"
-    ]
-  },
-  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookSafetyOrgAlertCreated/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The unique ID of the webhook event.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookSafetyOrgAlertCreated/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp in seconds when the event was created.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) data": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookSafetyOrgAlertCreated/properties/data",
-    "deprecated": false,
-    "key": "data",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) data > (property) id"
-    ]
-  },
-  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookSafetyOrgAlertCreated/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "Always `event`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookSafetyOrgAlertCreated/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "event"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookSafetyOrgAlertCreated/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "Always `safety.org_alert.created`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/WebhookSafetyOrgAlertCreated/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "safety.org_alert.created"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) data > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/WebhookSafetyOrgAlertCreated/properties/data/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The safety alert ID to pass to `GET /v1/safety/alerts/{id}`.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "event"
-    }
-  },
-  "(resource) webhooks > (model) safety_org_alert_created_webhook_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "safety.org_alert.created"
-    }
-  }
-}
-```
+- `id: string`
+
+  该 Webhook 事件的唯一 ID。
+
+- `created_at: number`
+
+  事件创建时的 Unix 时间戳（秒）。
+
+- `data: object { id }`
+
+  - `id: string`
+
+    传递给以下接口的安全告警 ID： `GET /v1/safety/alerts/{id}`.
+
+- `object: "event"`
+
+  始终为 `event`.
+
+  - `"event"`
+
+- `type: "safety.org_alert.created"`
+
+  始终为 `safety.org_alert.created`.
+
+  - `"safety.org_alert.created"`
 
 ### 示例
 
