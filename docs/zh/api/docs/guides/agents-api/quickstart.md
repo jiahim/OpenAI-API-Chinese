@@ -1,25 +1,25 @@
 # 智能体 API 快速入门
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 来获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 获取。
 
-构建一个能够编写代码的编程助手 `tree.py`，运行它，并展示目录树。OpenAI 管理 智能体、其对话以及它运行所在的沙箱。
+构建一个编码助手，它能编写 `tree.py`，运行它，并显示目录树。OpenAI 管理 智能体，管理它的对话，以及它工作的沙箱。
 
-## 前置条件
+## 前提条件
 
-创建 [应用 API 密钥](https://platform.openai.com/api-keys) 在你的 OpenAI Platform 项目中。并授予 `api.agents.read` 和 `api.agents.write` 权限用于会话操作，以及 `api.responses.write` 权限用于模型推理，然后导出它：
+创建一个 [应用程序 API 密钥](https://platform.openai.com/api-keys) 在你的 OpenAI Platform 项目中。授予 `api.agents.read` 以及 `api.agents.write` 用于会话操作，以及 `api.responses.write` 用于模型推理权限，然后导出：
 
 ```bash
 export OPENAI_API_KEY="your-api-key"
 ```
 
-将此密钥保留在 智能体 的沙箱之外。参见 [OpenAI 托管沙箱](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted#configure-the-sandbox) 了解沙箱配置和限制。
+将此密钥保留在 智能体 的沙箱之外。另请参阅 [OpenAI 托管的沙箱](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted#configure-the-sandbox) 了解沙箱配置和限制。
 
-请求需要 `OpenAI-Beta: agents=v1` 请求头。OpenAI SDK 会自动添加该请求头
-  ；使用 cURL 时请显式添加。
+请求需要 `OpenAI-Beta: agents=v1` 请求头。OpenAI SDK 会自动添加它
+  使用 cURL 时需显式添加。
 
-## 1. 运行一个任务
+## 1. 运行任务
 
-选择一种语言，安装 OpenAI SDK，然后运行示例。SDK 示例使用 `beta.agents` 命名空间。该请求会创建一个会话、提交任务并流式输出进度。
+选择一种语言，安装 OpenAI SDK，然后运行示例。SDK 示例使用 `beta.agents` 命名空间。该请求创建一个会话，提交一个任务，并流式传输进度。
 
 
 
@@ -32,7 +32,7 @@ Python
 pip install --upgrade openai
 ```
 
-将示例保存为 `quickstart.py`:
+将示例另存为 `quickstart.py`:
 
 创建并运行 tree.py
 
@@ -54,7 +54,7 @@ with OpenAI() as client:
 ```
 
 
-在终端中运行：
+在你的终端中运行它：
 
 ```bash
 python quickstart.py
@@ -75,7 +75,7 @@ JavaScript
 npm install openai
 ```
 
-将示例保存为 `quickstart.mjs`:
+将示例另存为 `quickstart.mjs`:
 
 创建并运行 tree.py
 
@@ -103,7 +103,7 @@ try {
 ```
 
 
-在终端中运行：
+在你的终端中运行它：
 
 ```bash
 node quickstart.mjs
@@ -118,14 +118,14 @@ node quickstart.mjs
 Go
 
 
-在一个新目录中创建一个 Go 模块并安装 SDK：
+在新目录中，创建一个 Go 模块并安装 SDK：
 
 ```bash
 go mod init agents-quickstart
 go get github.com/openai/openai-go/v3@latest
 ```
 
-将示例保存为 `main.go`:
+将示例另存为 `main.go`:
 
 创建并运行 tree.py
 
@@ -163,7 +163,7 @@ if err := events.Err(); err != nil {
 ```
 
 
-在终端中运行：
+在你的终端中运行它：
 
 ```bash
 go run .
@@ -178,7 +178,7 @@ go run .
 Java
 
 
-将 OpenAI SDK 添加到你的 Maven 项目的 `pom.xml`:
+将 OpenAI SDK 添加到 Maven 项目的 `pom.xml`:
 
 ```xml
 <dependency>
@@ -189,7 +189,7 @@ Java
 ```
 
 
-将示例保存为 `src/main/java/AgentsApiSessionsStreamConversationExample.java`:
+将示例另存为 `src/main/java/AgentsApiSessionsStreamConversationExample.java`:
 
 创建并运行 tree.py
 
@@ -230,7 +230,7 @@ try (StreamResponse<AgentSessionEvent> events =
 ```
 
 
-在终端中运行：
+在你的终端中运行它：
 
 ```bash
 mvn compile exec:java -Dexec.mainClass=AgentsApiSessionsStreamConversationExample
@@ -251,7 +251,7 @@ Ruby
 gem install openai
 ```
 
-将示例保存为 `quickstart.rb`:
+将示例另存为 `quickstart.rb`:
 
 创建并运行 tree.py
 
@@ -278,7 +278,7 @@ end
 ```
 
 
-在终端中运行：
+在你的终端中运行它：
 
 ```bash
 ruby quickstart.rb
@@ -293,7 +293,7 @@ ruby quickstart.rb
 cURL
 
 
-在终端中使用 cURL，无需安装 SDK：
+在你的终端中使用 cURL，无需安装 SDK：
 
 创建并运行 tree.py
 
@@ -305,24 +305,29 @@ curl --no-buffer --fail-with-body https://api.openai.com/v1/agents/sessions \\\n
   
 
 
-## 2. 跟进进度
+**不需要沙箱？** 将 `environment.type` 设置为 `none` 适用于那些智能体，这些智能体
+  用于回答问题或调用外部工具，而无需运行命令或处理
+  本地文件。 [了解
+  详情](https://developers.openai.com/api/docs/guides/agents-api/architecture#start-without-an-environment).
 
-终端会显示流式事件。SDK 示例会输出 JSON；cURL 则显示原始事件流。成功运行后，智能体 会创建 `tree.py`，并执行该文件，然后报告包含该文件的目录树。其他文件和输出取决于沙箱环境。
+## 2. 跟踪进度
 
-查找 `agent.session.turn.completed`，然后检查 智能体 报告的执行结果。完成一个回合并不代表每个工具都成功执行。以 `turn.failed`, `turn.cancelled`，或 `session.failed` 结尾的事件表示失败或被取消； `agent.session.idle` 单独出现并不代表成功。如果流提前断开， [检索该会话及其已保存的项](https://developers.openai.com/api/docs/guides/agents-api/sessions#how-to-recover-a-disconnected-stream) 后再重试。
+终端会显示流式事件。SDK 示例会输出 JSON；cURL 显示原始事件流。在成功运行时，智能体 会创建 `tree.py`、执行，并报告包含该文件的目录树。其他文件和输出取决于沙箱。
 
-## 3. 继续会话
+查找 `agent.session.turn.completed`，然后查看 智能体 报告的执行结果。回合已完成并不代表每个工具都成功。以 `turn.failed`, `turn.cancelled`，或 `session.failed` 结尾的事件表示失败或取消； `agent.session.idle` 单独出现并不意味着成功。如果流提前断开， [检索该会话及其已保存的条目](https://developers.openai.com/api/docs/guides/agents-api/sessions#how-to-recover-a-disconnected-stream) 后再重试。
 
-保存从事件中获取的 `session_id` 。使用它来 [发送后续](https://developers.openai.com/api/docs/guides/agents-api/sessions#send-input) 例如“向 `tree.py`，中添加一个最大深度选项，运行它，并把输出展示给我”。在发送后续输入之前打开事件流，以免错过早期事件。
+## 3. 继续该会话
+
+保存从事件中获取的 `session_id` 。使用它来 [发送后续](https://developers.openai.com/api/docs/guides/agents-api/sessions#send-input) ，例如“给 `tree.py`，添加一个最大深度选项，运行它，并把输出展示给我”。在发送后续输入之前先打开事件流，以免错过早期事件。
 
 
 
 
 ## 4. 清理
 
-保留会话以用于更多任务，或在完成后将其删除。 [保存所需文件](https://developers.openai.com/api/docs/guides/agents-api/environments/files) 。
+保留会话以用于更多任务，或在完成后将其删除。 [保存你需要的文件](https://developers.openai.com/api/docs/guides/agents-api/environments/files) 。
 
-将示例中的说明性 `sess_123` 值替换为你保存的会话 ID。
+替换示例中 `sess_123` 的占位值为你保存的会话 ID。
 
   
 
@@ -468,10 +473,10 @@ curl -X DELETE "https://api.openai.com/v1/agents/sessions/sess_123" \\\n  -H "Op
 
 
 
-## 下一步
+## Next steps
 
 - [浏览示例应用](https://developers.openai.com/api/docs/guides/agents-api/overview#try-an-example).
-- [配置 OpenAI 托管的沙箱](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted)：添加软件包和输入文件，控制网络访问，并下载制品。
-- [与子智能体比较发布说明](https://developers.openai.com/api/docs/guides/agents-api/multi-agent#example-compare-release-notes).
+- [配置 OpenAI 托管的沙盒](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted)：添加包和输入文件，控制网络访问，并下载制品。
+- [使用子智能体比较发布说明](https://developers.openai.com/api/docs/guides/agents-api/multi-agent#example-compare-release-notes).
 - [处理文件和制品](https://developers.openai.com/api/docs/guides/agents-api/environments/files).
-- [选择环境](https://developers.openai.com/api/docs/guides/agents-api/configuration#environment-settings),或 [连接你自己的沙箱](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted).
+- [选择环境](https://developers.openai.com/api/docs/guides/agents-api/configuration#environment-settings)，或 [连接你自己的沙盒](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted).
