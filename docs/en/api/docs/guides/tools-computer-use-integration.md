@@ -1456,11 +1456,11 @@ async function computerUseLoop(target, response) {
 
     const screenshot = await captureScreenshot(target);
     const screenshotBase64 = Buffer.from(screenshot).toString("base64");
-    const output = /** @type {const} */ ({
+    const output = {
       type: "computer_screenshot",
       image_url: `data:image/png;base64,${screenshotBase64}`,
       detail: "original",
-    });
+    };
 
     response = await client.responses.create({
       model: "gpt-5.6-sol",
@@ -1909,7 +1909,6 @@ const executionOutput = z
   )
   .nonempty();
 
-/** @returns {Promise<import("openai/resources/responses/responses").ResponseFunctionCallOutputItemList>} */
 async function executeInSandbox(code, sessionId, endpoint) {
   console.log(code);
   const terminal = readline.createInterface({
@@ -2017,8 +2016,14 @@ def execute_in_sandbox(code, session_id, endpoint)
   puts(code)
   print("Run this code in the isolated runtime? Type yes: ")
   unless $stdin.gets&.strip == "yes"
-    return [{type: "input_text", text: "The user declined this execution."}]
+    return [
+      {
+        type: "input_text",
+        text: "The user declined this execution."
+      }
+    ]
   end
+
   uri = URI(endpoint)
   request = Net::HTTP::Post.new(uri)
   request["Content-Type"] = "application/json"
@@ -2032,12 +2037,21 @@ def execute_in_sandbox(code, session_id, endpoint)
   payload = JSON.parse(response.body)
   output = payload.is_a?(Hash) && payload["output"]
   raise "The execution service returned no observations" unless output.is_a?(Array) && !output.empty?
+
   output.map do |item|
     raise "Invalid execution-service output item" unless item.is_a?(Hash)
+
     if item["type"] == "input_text" && item["text"].is_a?(String)
-      {type: "input_text", text: item["text"]}
+      {
+        type: "input_text",
+        text: item["text"]
+      }
     elsif item["type"] == "input_image" && item["image_url"].is_a?(String) && item["detail"] == "original"
-      {type: "input_image", image_url: item["image_url"], detail: "original"}
+      {
+        type: "input_image",
+        image_url: item["image_url"],
+        detail: "original"
+      }
     else
       raise "Expected input_text or input_image with original detail"
     end
@@ -2307,12 +2321,14 @@ response = client.responses.create(
   model: "computer-use-preview",
   input: "Check whether the Filters panel is open.",
   truncation: :auto,
-  tools: [{
-    type: :computer_use_preview,
-    display_width: 1024,
-    display_height: 768,
-    environment: :browser
-  }]
+  tools: [
+    {
+      type: :computer_use_preview,
+      display_width: 1024,
+      display_height: 768,
+      environment: :browser
+    }
+  ]
 )
 
 puts(response.output)

@@ -55,6 +55,7 @@ authenticate your application's users and pass a unique identifier for them in t
    This example starts a service that creates a ChatKit session through the OpenAI API and returns the session's client secret:
 
 ```python
+# Replace the illustrative IDs and URLs below with your own resource values.
 import hmac
 import json
 import os
@@ -67,7 +68,7 @@ from pydantic import BaseModel
 
 
 api_key = os.environ["OPENAI_API_KEY"]
-workflow_id = os.environ["OPENAI_CHATKIT_WORKFLOW_ID"]
+workflow_id = "wf_123"
 authenticated_users: dict[str, str] = json.loads(
     os.environ["CHATKIT_AUTHENTICATED_USERS"]
 )
@@ -117,13 +118,14 @@ def create_chatkit_session(
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "json"
 require "net/http"
 require "openssl"
 require "webrick"
 
 api_key = ENV.fetch("OPENAI_API_KEY")
-workflow_id = ENV.fetch("OPENAI_CHATKIT_WORKFLOW_ID")
+workflow_id = "wf_123"
 # Demo authentication mapping. Replace this with your application's session authentication.
 authenticated_users = JSON.parse(ENV.fetch("CHATKIT_AUTHENTICATED_USERS"))
 server = WEBrick::HTTPServer.new(
@@ -153,7 +155,7 @@ server.mount_proc("/api/chatkit/session") do |request, response|
   upstream["Authorization"] = "Bearer #{api_key}"
   upstream["Content-Type"] = "application/json"
   upstream["OpenAI-Beta"] = "chatkit_beta=v1"
-  upstream.body = JSON.generate(workflow: {id: workflow_id}, user: user.fetch(1))
+  upstream.body = JSON.generate(workflow: { id: workflow_id }, user: user.fetch(1))
   begin
     result = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true, open_timeout: 10, read_timeout: 30) do |http|
       http.request(upstream)
@@ -161,6 +163,7 @@ server.mount_proc("/api/chatkit/session") do |request, response|
     result.value
     secret = JSON.parse(result.body).fetch("client_secret")
     raise "Missing session secret" unless secret.is_a?(String) && !secret.empty?
+
     response.body = JSON.generate(client_secret: secret)
   rescue
     response.status = 502
@@ -177,7 +180,7 @@ server.start
 
    For Ruby, install WEBrick with `gem install webrick`.
 
-   Before starting the service, set `OPENAI_API_KEY`, `OPENAI_CHATKIT_WORKFLOW_ID`, and `CHATKIT_AUTHENTICATED_USERS`. The last value is a JSON map from your application's bearer tokens to stable user IDs. In production, replace this environment-backed map with your application's authentication or session lookup.
+   Before starting the service, replace `wf_123` with your workflow ID and set `OPENAI_API_KEY` and `CHATKIT_AUTHENTICATED_USERS`. The latter value is a JSON map from your application's bearer tokens to stable user IDs. In production, replace this environment-backed map with your application's authentication or session lookup.
 
 2. In your server-side code, pass in your workflow ID and secret key to the session endpoint.
 

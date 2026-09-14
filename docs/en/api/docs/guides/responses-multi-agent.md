@@ -195,7 +195,7 @@ const proposals = {
   alpha: { estimated_weeks: 6, risk: "medium" },
   beta: { estimated_weeks: 8, risk: "low" },
 };
-/** @type {import("openai/resources/beta/responses").BetaTool[]} */
+
 const tools = [
   {
     type: "function",
@@ -216,12 +216,7 @@ const tools = [
     strict: true,
   },
 ];
-/**
- * @type {Array<
- *   import("openai/resources/beta/responses").BetaResponseInputItem |
- *   import("openai/resources/beta/responses").BetaResponseOutputItem
- * >}
- */
+
 const history = [
   {
     role: "user",
@@ -250,10 +245,7 @@ while (true) {
   const stream = await client.beta.responses.create({
     model: "gpt-5.6-sol",
     // Beta output items can be replayed as input on the next request.
-    input:
-      /** @type {import("openai/resources/beta/responses").BetaResponseInput} */ (
-        history
-      ),
+    input: history,
     tools,
     store: false,
     multi_agent: {

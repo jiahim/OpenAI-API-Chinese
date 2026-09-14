@@ -1,6 +1,6 @@
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。如需文档页面的 Markdown 版本，可在页面 URL 末尾添加 `.md` 获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
 
-## Retrieve video
+## 检索视频
 
 **get** `/videos/{video_id}`
 
@@ -14,15 +14,15 @@
 
 - `Video object { id, completed_at, created_at, 10 more }`
 
-  描述已生成视频任务的结构化信息。
+  描述生成的视频任务的结构化信息。
 
   - `id: string`
 
-    视频任务的唯一标识符。
+    该视频任务的唯一标识符。
 
   - `completed_at: number or null`
 
-    任务完成时的 Unix 时间戳（秒），如果已完成。
+    任务完成时的 Unix 时间戳（秒），如果已完成则提供。
 
   - `created_at: number`
 
@@ -30,7 +30,7 @@
 
   - `error: VideoCreateError or null`
 
-    解释生成失败原因的错误载荷（如适用）。
+    用于解释生成失败原因的错误负载（如适用）。
 
     - `code: string`
 
@@ -44,17 +44,17 @@
 
       - `detailed_explanation: optional string`
 
-        针对此阻止的公开说明。
+        该封禁的公开说明。
 
       - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-        可选的分类；客户端必须接受其他取值。
+        一个可选的分类；客户端必须接受额外的取值。
 
         - `string`
 
         - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-          可选的分类；客户端必须接受其他取值。
+          一个可选的分类；客户端必须接受额外的取值。
 
           - `"potentially_unintended_data_transfer"`
 
@@ -74,7 +74,7 @@
 
   - `expires_at: number or null`
 
-    可下载资源到期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源到期时的 Unix 时间戳（秒），如果已设置则提供。
 
   - `model: VideoModel`
 
@@ -110,15 +110,15 @@
 
   - `remixed_from_video_id: string or null`
 
-    若此视频为再混合，则为源视频的标识符。
+    如果该视频是 remix，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成片段的时长（秒）。对于扩展，这是拼接后的总时长。
+    生成片段的时长（秒）。对于扩展视频，这是拼接后的总时长。
 
   - `size: VideoSize`
 
-    生成视频的分辨率。
+    所生成视频的分辨率。
 
     - `"720x1280"`
 

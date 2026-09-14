@@ -1,2171 +1,440 @@
 # Chat Completions 流式事件
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。每个文档页面都提供 Markdown 版本，可通过在页面 URL 末尾追加 `.md` 来获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾附加 `.md` 获取文档页面的 Markdown 版本。
 
-实时流式传输 Chat Completions。通过服务端发送的事件接收模型返回的补全块。
-了解更多。
+实时流式调用 Chat Completions。使用服务端发送事件接收模型返回的补全分块
+。
 [了解更多](https://developers.openai.com/api/docs/guides/streaming-responses).
+
+<a id="chat.completion.chunk"></a>
 
 ## chat.completion.chunk
 
-表示基于所提供的输入由模型返回的聊天补全响应的流式分块。
-by the model, based on the provided input.
+表示 chat completion 响应返回的流式分块
+由模型根据所提供的输入生成。
 [了解更多](https://developers.openai.com/api/docs/guides/streaming-responses).
 
 ### Schema
 
 Schema name: `CreateChatCompletionStreamResponse`
 
-```json
-{
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse",
-    "docstring": "Represents a streamed chunk of a chat completion response returned\nby the model, based on the provided input.\n[Learn more](/api/docs/guides/streaming-responses).\n",
-    "ident": "ChatCompletionChunk",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "id"
-        },
-        {
-          "ident": "choices"
-        },
-        {
-          "ident": "created"
-        },
-        {
-          "ident": "model"
-        },
-        {
-          "ident": "object"
-        },
-        {
-          "ident": "moderation"
-        },
-        {
-          "ident": "obfuscation"
-        },
-        {
-          "ident": "service_tier"
-        },
-        {
-          "ident": "system_fingerprint"
-        },
-        {
-          "ident": "usage"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) id",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) created",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) model",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) object",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) obfuscation",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) service_tier",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) system_fingerprint",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) usage"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "A unique identifier for the chat completion. Each chunk has the same ID.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/choices",
-    "deprecated": false,
-    "key": "choices",
-    "docstring": "A list of chat completion choices. Can contain more than one elements if `n` is greater than 1. Can also be empty for the\nlast chunk if you set `stream_options: {\"include_usage\": true}`.\n",
-    "type": {
-      "kind": "HttpTypeArray",
-      "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/choices",
-      "elementType": {
-        "kind": "HttpTypeObject",
-        "members": [
-          {
-            "ident": "delta"
-          },
-          {
-            "ident": "finish_reason"
-          },
-          {
-            "ident": "index"
-          },
-          {
-            "ident": "logprobs"
-          }
-        ]
-      }
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "array",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) finish_reason",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) index",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) logprobs"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) created": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/created",
-    "deprecated": false,
-    "key": "created",
-    "docstring": "The Unix timestamp (in seconds) of when the chat completion was created. Each chunk has the same timestamp.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) model": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/model",
-    "deprecated": false,
-    "key": "model",
-    "docstring": "The model to generate the completion.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) object": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/object",
-    "deprecated": false,
-    "key": "object",
-    "docstring": "The object type, which is always `chat.completion.chunk`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/object",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "chat.completion.chunk"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) object > (member) 0"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/moderation",
-    "deprecated": false,
-    "key": "moderation",
-    "docstring": "Moderation results for the request input and generated output. Present\non the moderation chunk when moderated completions are requested.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "input"
-        },
-        {
-          "ident": "output"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) obfuscation": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/obfuscation",
-    "deprecated": false,
-    "key": "obfuscation",
-    "docstring": "An obfuscation string added to normalize the size of streamed chunks as a\nmitigation to certain side-channel attacks. The field is included by\ndefault and omitted when `stream_options.include_obfuscation` is `false`.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) service_tier": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/service_tier",
-    "deprecated": false,
-    "key": "service_tier",
-    "docstring": "Specifies the processing type used for serving the request.\n  - If set to 'auto', then the request will be processed with the service tier configured in the Project settings. Unless otherwise configured, the Project will use 'default'.\n  - If set to 'default', then the request will be processed with the standard pricing and performance for the selected model.\n  - If set to '[flex](/api/docs/guides/flex-processing)', then the request will be processed with the Flex Processing service tier.\n  - To opt-in to [Fast mode](/api/docs/guides/fast-mode) at the request level, include the `service_tier=fast` or `service_tier=priority` parameter for Responses or Chat Completions. The response will show `service_tier=priority` regardless of if you specify `service_tier=fast` or `priority` in your request.\n  - When not set, the default behavior is 'auto'.\n\n  When the `service_tier` parameter is set, the response body will include the `service_tier` value based on the processing mode actually used to serve the request. This response value may be different from the value set in the parameter.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/service_tier",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "auto"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "default"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "flex"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "scale"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "priority"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "fast"
-        }
-      ]
-    },
-    "default": "auto",
-    "optional": true,
-    "nullable": true,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) service_tier > (member) 0",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) service_tier > (member) 1",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) service_tier > (member) 2",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) service_tier > (member) 3",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) service_tier > (member) 4",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) service_tier > (member) 5"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) system_fingerprint": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/system_fingerprint",
-    "deprecated": true,
-    "key": "system_fingerprint",
-    "docstring": "This fingerprint represents the backend configuration that the model runs with.\nCan be used in conjunction with the `seed` request parameter to understand when backend changes have been made that might impact determinism.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) usage": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/usage",
-    "deprecated": false,
-    "key": "usage",
-    "docstring": "An optional field that will only be present when you set\n`stream_options: {\"include_usage\": true}` in your request. When present, it\ncontains a null value **except for the last chunk** which contains the\ntoken usage statistics for the entire request.\n\n**NOTE:** If the stream is interrupted or cancelled, you may not\nreceive the final usage chunk which contains the total token usage for\nthe request.\n",
-    "type": {
-      "kind": "HttpTypeReference",
-      "ident": "CompletionUsage",
-      "$ref": "(resource) completions > (model) completion_usage > (schema)"
-    },
-    "optional": true,
-    "nullable": true,
-    "modelImplicit": false,
-    "schemaType": "object",
-    "modelPath": "(resource) completions > (model) completion_usage",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens",
-      "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens",
-      "(resource) completions > (model) completion_usage > (schema) > (property) total_tokens",
-      "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details",
-      "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/choices/items/properties/delta",
-    "deprecated": false,
-    "key": "delta",
-    "docstring": "A chat completion delta generated by streamed model responses.",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "content"
-        },
-        {
-          "ident": "function_call"
-        },
-        {
-          "ident": "refusal"
-        },
-        {
-          "ident": "role"
-        },
-        {
-          "ident": "tool_calls"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) content",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) function_call",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) refusal",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) role",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) tool_calls"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) finish_reason": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/choices/items/properties/finish_reason",
-    "deprecated": false,
-    "key": "finish_reason",
-    "docstring": "The reason the model stopped generating tokens. This will be `stop` if the model hit a natural stop point or a provided stop sequence,\n`length` if the maximum number of tokens specified in the request was reached,\n`content_filter` if content was omitted due to a flag from our content filters,\n`tool_calls` if the model called a tool, or `function_call` (deprecated) if the model called a function.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/choices/items/properties/finish_reason",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "stop"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "length"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "tool_calls"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "content_filter"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "function_call"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": true,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) finish_reason > (member) 0",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) finish_reason > (member) 1",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) finish_reason > (member) 2",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) finish_reason > (member) 3",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) finish_reason > (member) 4"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) index": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/choices/items/properties/index",
-    "deprecated": false,
-    "key": "index",
-    "docstring": "The index of the choice in the list of choices.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) logprobs": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/choices/items/properties/logprobs",
-    "deprecated": false,
-    "key": "logprobs",
-    "docstring": "Log probability information for the choice.",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "content"
-        },
-        {
-          "ident": "refusal"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) logprobs > (property) content",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) logprobs > (property) refusal"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) object > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "chat.completion.chunk"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionModeration/properties/input",
-    "deprecated": false,
-    "key": "input",
-    "docstring": "Moderation for the request input.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ChatCompletionModeration/properties/input",
-      "types": [
-        {
-          "kind": "HttpTypeObject",
-          "members": [
-            {
-              "ident": "model"
-            },
-            {
-              "ident": "results"
-            },
-            {
-              "ident": "type"
-            }
-          ]
-        },
-        {
-          "kind": "HttpTypeObject",
-          "members": [
-            {
-              "ident": "code"
-            },
-            {
-              "ident": "message"
-            },
-            {
-              "ident": "type"
-            }
-          ]
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "union",
-    "childrenParentSchema": "union",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 1"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionModeration/properties/output",
-    "deprecated": false,
-    "key": "output",
-    "docstring": "Moderation for the generated output.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ChatCompletionModeration/properties/output",
-      "types": [
-        {
-          "kind": "HttpTypeObject",
-          "members": [
-            {
-              "ident": "model"
-            },
-            {
-              "ident": "results"
-            },
-            {
-              "ident": "type"
-            }
-          ]
-        },
-        {
-          "kind": "HttpTypeObject",
-          "members": [
-            {
-              "ident": "code"
-            },
-            {
-              "ident": "message"
-            },
-            {
-              "ident": "type"
-            }
-          ]
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "union",
-    "childrenParentSchema": "union",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 1"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) service_tier > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "auto"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) service_tier > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "default"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) service_tier > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "flex"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) service_tier > (member) 3": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "scale"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) service_tier > (member) 4": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "priority"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) service_tier > (member) 5": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "fast"
-    }
-  },
-  "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CompletionUsage/properties/completion_tokens",
-    "deprecated": false,
-    "key": "completion_tokens",
-    "docstring": "Number of tokens in the generated completion.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "default": 0,
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CompletionUsage/properties/prompt_tokens",
-    "deprecated": false,
-    "key": "prompt_tokens",
-    "docstring": "Number of tokens in the prompt.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "default": 0,
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) completions > (model) completion_usage > (schema) > (property) total_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CompletionUsage/properties/total_tokens",
-    "deprecated": false,
-    "key": "total_tokens",
-    "docstring": "Total number of tokens used in the request (prompt + completion).",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "default": 0,
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CompletionUsage/properties/completion_tokens_details",
-    "deprecated": false,
-    "key": "completion_tokens_details",
-    "docstring": "Breakdown of tokens used in a completion.",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "accepted_prediction_tokens"
-        },
-        {
-          "ident": "audio_tokens"
-        },
-        {
-          "ident": "reasoning_tokens"
-        },
-        {
-          "ident": "rejected_prediction_tokens"
-        },
-        {
-          "ident": "text_tokens"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details > (property) accepted_prediction_tokens",
-      "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details > (property) audio_tokens",
-      "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details > (property) reasoning_tokens",
-      "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details > (property) rejected_prediction_tokens",
-      "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details > (property) text_tokens"
-    ]
-  },
-  "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CompletionUsage/properties/prompt_tokens_details",
-    "deprecated": false,
-    "key": "prompt_tokens_details",
-    "docstring": "Breakdown of tokens used in the prompt.",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "audio_tokens"
-        },
-        {
-          "ident": "cache_write_tokens"
-        },
-        {
-          "ident": "cached_tokens"
-        },
-        {
-          "ident": "image_tokens"
-        },
-        {
-          "ident": "text_tokens"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details > (property) audio_tokens",
-      "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details > (property) cache_write_tokens",
-      "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details > (property) cached_tokens",
-      "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details > (property) image_tokens",
-      "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details > (property) text_tokens"
-    ]
-  },
-  "(resource) completions > (model) completion_usage > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/CompletionUsage",
-    "docstring": "Usage statistics for the completion request.",
-    "ident": "CompletionUsage",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "completion_tokens"
-        },
-        {
-          "ident": "prompt_tokens"
-        },
-        {
-          "ident": "total_tokens"
-        },
-        {
-          "ident": "completion_tokens_details"
-        },
-        {
-          "ident": "prompt_tokens_details"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens",
-      "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens",
-      "(resource) completions > (model) completion_usage > (schema) > (property) total_tokens",
-      "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details",
-      "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) content": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionStreamResponseDelta/properties/content",
-    "deprecated": false,
-    "key": "content",
-    "docstring": "The contents of the chunk message.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) function_call": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionStreamResponseDelta/properties/function_call",
-    "deprecated": true,
-    "key": "function_call",
-    "docstring": "Deprecated and replaced by `tool_calls`. The name and arguments of a function that should be called, as generated by the model.",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "arguments"
-        },
-        {
-          "ident": "name"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) function_call > (property) arguments",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) function_call > (property) name"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) refusal": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionStreamResponseDelta/properties/refusal",
-    "deprecated": false,
-    "key": "refusal",
-    "docstring": "The refusal message generated by the model.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) role": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionStreamResponseDelta/properties/role",
-    "deprecated": false,
-    "key": "role",
-    "docstring": "The role of the author of this message.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ChatCompletionStreamResponseDelta/properties/role",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "developer"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "system"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "user"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "assistant"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "tool"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) role > (member) 0",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) role > (member) 1",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) role > (member) 2",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) role > (member) 3",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) role > (member) 4"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) tool_calls": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionStreamResponseDelta/properties/tool_calls",
-    "deprecated": false,
-    "key": "tool_calls",
-    "type": {
-      "kind": "HttpTypeArray",
-      "oasRef": "#/components/schemas/ChatCompletionStreamResponseDelta/properties/tool_calls",
-      "elementType": {
-        "kind": "HttpTypeObject",
-        "members": [
-          {
-            "ident": "index"
-          },
-          {
-            "ident": "id"
-          },
-          {
-            "ident": "function"
-          },
-          {
-            "ident": "type"
-          }
-        ]
-      }
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "array",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) tool_calls > (items) > (property) index",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) tool_calls > (items) > (property) id",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) tool_calls > (items) > (property) function",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) tool_calls > (items) > (property) type"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) finish_reason > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "stop"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) finish_reason > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "length"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) finish_reason > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "tool_calls"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) finish_reason > (member) 3": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "content_filter"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) finish_reason > (member) 4": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "function_call"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) logprobs > (property) content": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/choices/items/properties/logprobs/properties/content",
-    "deprecated": false,
-    "key": "content",
-    "docstring": "A list of message content tokens with log probability information.",
-    "type": {
-      "kind": "HttpTypeArray",
-      "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/choices/items/properties/logprobs/properties/content",
-      "elementType": {
-        "kind": "HttpTypeReference",
-        "ident": "ChatCompletionTokenLogprob",
-        "$ref": "(resource) chat.completions > (model) chat_completion_token_logprob > (schema)"
-      }
-    },
-    "optional": false,
-    "nullable": true,
-    "schemaType": "array",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) token",
-      "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) bytes",
-      "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) logprob",
-      "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) top_logprobs"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) logprobs > (property) refusal": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/choices/items/properties/logprobs/properties/refusal",
-    "deprecated": false,
-    "key": "refusal",
-    "docstring": "A list of message refusal tokens with log probability information.",
-    "type": {
-      "kind": "HttpTypeArray",
-      "oasRef": "#/components/schemas/CreateChatCompletionStreamResponse/properties/choices/items/properties/logprobs/properties/refusal",
-      "elementType": {
-        "kind": "HttpTypeReference",
-        "ident": "ChatCompletionTokenLogprob",
-        "$ref": "(resource) chat.completions > (model) chat_completion_token_logprob > (schema)"
-      }
-    },
-    "optional": false,
-    "nullable": true,
-    "schemaType": "array",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) token",
-      "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) bytes",
-      "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) logprob",
-      "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) top_logprobs"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ChatCompletionModeration/properties/input/oneOf/0",
-    "docstring": "Successful moderation results for the request input or generated output.",
-    "ident": "ModerationResults",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "model"
-        },
-        {
-          "ident": "results"
-        },
-        {
-          "ident": "type"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) model",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) type"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 1": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ChatCompletionModeration/properties/input/oneOf/1",
-    "docstring": "An error produced while attempting moderation.",
-    "ident": "Error",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "code"
-        },
-        {
-          "ident": "message"
-        },
-        {
-          "ident": "type"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 1 > (property) code",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 1 > (property) message",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 1 > (property) type"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ChatCompletionModeration/properties/output/oneOf/0",
-    "docstring": "Successful moderation results for the request input or generated output.",
-    "ident": "ModerationResults",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "model"
-        },
-        {
-          "ident": "results"
-        },
-        {
-          "ident": "type"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) model",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) type"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 1": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ChatCompletionModeration/properties/output/oneOf/1",
-    "docstring": "An error produced while attempting moderation.",
-    "ident": "Error",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "code"
-        },
-        {
-          "ident": "message"
-        },
-        {
-          "ident": "type"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 1 > (property) code",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 1 > (property) message",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 1 > (property) type"
-    ]
-  },
-  "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details > (property) accepted_prediction_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CompletionUsage/properties/completion_tokens_details/properties/accepted_prediction_tokens",
-    "deprecated": false,
-    "key": "accepted_prediction_tokens",
-    "docstring": "When using Predicted Outputs, the number of tokens in the\nprediction that appeared in the completion.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "default": 0,
-    "optional": true,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details > (property) audio_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CompletionUsage/properties/completion_tokens_details/properties/audio_tokens",
-    "deprecated": false,
-    "key": "audio_tokens",
-    "docstring": "Audio input tokens generated by the model.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "default": 0,
-    "optional": true,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details > (property) reasoning_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CompletionUsage/properties/completion_tokens_details/properties/reasoning_tokens",
-    "deprecated": false,
-    "key": "reasoning_tokens",
-    "docstring": "Tokens generated by the model for reasoning.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "default": 0,
-    "optional": true,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details > (property) rejected_prediction_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CompletionUsage/properties/completion_tokens_details/properties/rejected_prediction_tokens",
-    "deprecated": false,
-    "key": "rejected_prediction_tokens",
-    "docstring": "When using Predicted Outputs, the number of tokens in the\nprediction that did not appear in the completion. However, like\nreasoning tokens, these tokens are still counted in the total\ncompletion tokens for purposes of billing, output, and context window\nlimits.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "default": 0,
-    "optional": true,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) completions > (model) completion_usage > (schema) > (property) completion_tokens_details > (property) text_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CompletionUsage/properties/completion_tokens_details/properties/text_tokens",
-    "deprecated": false,
-    "key": "text_tokens",
-    "docstring": "Text output tokens generated by the model.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details > (property) audio_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CompletionUsage/properties/prompt_tokens_details/properties/audio_tokens",
-    "deprecated": false,
-    "key": "audio_tokens",
-    "docstring": "Audio input tokens present in the prompt.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "default": 0,
-    "optional": true,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details > (property) cache_write_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CompletionUsage/properties/prompt_tokens_details/properties/cache_write_tokens",
-    "deprecated": false,
-    "key": "cache_write_tokens",
-    "docstring": "The unadjusted number of prompt tokens written to cache.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "default": 0,
-    "optional": true,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details > (property) cached_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CompletionUsage/properties/prompt_tokens_details/properties/cached_tokens",
-    "deprecated": false,
-    "key": "cached_tokens",
-    "docstring": "Cached tokens present in the prompt.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "default": 0,
-    "optional": true,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details > (property) image_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CompletionUsage/properties/prompt_tokens_details/properties/image_tokens",
-    "deprecated": false,
-    "key": "image_tokens",
-    "docstring": "Image input tokens present in the prompt.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) completions > (model) completion_usage > (schema) > (property) prompt_tokens_details > (property) text_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/CompletionUsage/properties/prompt_tokens_details/properties/text_tokens",
-    "deprecated": false,
-    "key": "text_tokens",
-    "docstring": "Text input tokens present in the prompt.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) function_call > (property) arguments": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionStreamResponseDelta/properties/function_call/properties/arguments",
-    "deprecated": false,
-    "key": "arguments",
-    "docstring": "The arguments to call the function with, as generated by the model in JSON format. Note that the model does not always generate valid JSON, and may hallucinate parameters not defined by your function schema. Validate the arguments in your code before calling your function.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) function_call > (property) name": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionStreamResponseDelta/properties/function_call/properties/name",
-    "deprecated": false,
-    "key": "name",
-    "docstring": "The name of the function to call.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) role > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "developer"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) role > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "system"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) role > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "user"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) role > (member) 3": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "assistant"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) role > (member) 4": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "tool"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) tool_calls > (items) > (property) index": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionMessageToolCallChunk/properties/index",
-    "deprecated": false,
-    "key": "index",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) tool_calls > (items) > (property) id": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionMessageToolCallChunk/properties/id",
-    "deprecated": false,
-    "key": "id",
-    "docstring": "The ID of the tool call.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) tool_calls > (items) > (property) function": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionMessageToolCallChunk/properties/function",
-    "deprecated": false,
-    "key": "function",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "arguments"
-        },
-        {
-          "ident": "name"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) tool_calls > (items) > (property) function > (property) arguments",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) tool_calls > (items) > (property) function > (property) name"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) tool_calls > (items) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionMessageToolCallChunk/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the tool. Currently, only `function` is supported.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ChatCompletionMessageToolCallChunk/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "function"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) tool_calls > (items) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) token": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionTokenLogprob/properties/token",
-    "deprecated": false,
-    "key": "token",
-    "docstring": "The token.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) bytes": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionTokenLogprob/properties/bytes",
-    "deprecated": false,
-    "key": "bytes",
-    "docstring": "A list of integers representing the UTF-8 bytes representation of the token. Useful in instances where characters are represented by multiple tokens and their byte representations must be combined to generate the correct text representation. Can be `null` if there is no bytes representation for the token.",
-    "type": {
-      "kind": "HttpTypeArray",
-      "oasRef": "#/components/schemas/ChatCompletionTokenLogprob/properties/bytes",
-      "elementType": {
-        "kind": "HttpTypeNumber"
-      }
-    },
-    "optional": false,
-    "nullable": true,
-    "schemaType": "array",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) logprob": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionTokenLogprob/properties/logprob",
-    "deprecated": false,
-    "key": "logprob",
-    "docstring": "The log probability of this token, if it is within the top 20 most likely tokens. Otherwise, the value `-9999.0` is used to signify that the token is very unlikely.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "number",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) top_logprobs": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionTokenLogprob/properties/top_logprobs",
-    "deprecated": false,
-    "key": "top_logprobs",
-    "docstring": "List of the most likely tokens and their log probability, at this token position. The number of entries may be fewer than the requested `top_logprobs`.",
-    "type": {
-      "kind": "HttpTypeArray",
-      "oasRef": "#/components/schemas/ChatCompletionTokenLogprob/properties/top_logprobs",
-      "elementType": {
-        "kind": "HttpTypeObject",
-        "members": [
-          {
-            "ident": "token"
-          },
-          {
-            "ident": "bytes"
-          },
-          {
-            "ident": "logprob"
-          }
-        ]
-      }
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "array",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) top_logprobs > (items) > (property) token",
-      "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) top_logprobs > (items) > (property) bytes",
-      "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) top_logprobs > (items) > (property) logprob"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_token_logprob > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ChatCompletionTokenLogprob",
-    "ident": "ChatCompletionTokenLogprob",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "token"
-        },
-        {
-          "ident": "bytes"
-        },
-        {
-          "ident": "logprob"
-        },
-        {
-          "ident": "top_logprobs"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) token",
-      "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) bytes",
-      "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) logprob",
-      "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) top_logprobs"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) model": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionModerationResults/properties/model",
-    "deprecated": false,
-    "key": "model",
-    "docstring": "The moderation model used to generate the results.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionModerationResults/properties/results",
-    "deprecated": false,
-    "key": "results",
-    "docstring": "A list of moderation results.",
-    "type": {
-      "kind": "HttpTypeArray",
-      "oasRef": "#/components/schemas/ChatCompletionModerationResults/properties/results",
-      "elementType": {
-        "kind": "HttpTypeObject",
-        "members": [
-          {
-            "ident": "categories"
-          },
-          {
-            "ident": "category_applied_input_types"
-          },
-          {
-            "ident": "category_scores"
-          },
-          {
-            "ident": "flagged"
-          },
-          {
-            "ident": "model"
-          },
-          {
-            "ident": "type"
-          }
-        ]
-      }
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "array",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) categories",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) category_applied_input_types",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) category_scores",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) flagged",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) model",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) type"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionModerationResults/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The object type, which is always `moderation_results`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ChatCompletionModerationResults/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "moderation_results"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) type > (member) 0"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 1 > (property) code": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionModerationError/properties/code",
-    "deprecated": false,
-    "key": "code",
-    "docstring": "The error code.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 1 > (property) message": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionModerationError/properties/message",
-    "deprecated": false,
-    "key": "message",
-    "docstring": "The error message.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 1 > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionModerationError/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The object type, which is always `error`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ChatCompletionModerationError/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "error"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 1 > (property) type > (member) 0"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) model": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionModerationResults/properties/model",
-    "deprecated": false,
-    "key": "model",
-    "docstring": "The moderation model used to generate the results.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionModerationResults/properties/results",
-    "deprecated": false,
-    "key": "results",
-    "docstring": "A list of moderation results.",
-    "type": {
-      "kind": "HttpTypeArray",
-      "oasRef": "#/components/schemas/ChatCompletionModerationResults/properties/results",
-      "elementType": {
-        "kind": "HttpTypeObject",
-        "members": [
-          {
-            "ident": "categories"
-          },
-          {
-            "ident": "category_applied_input_types"
-          },
-          {
-            "ident": "category_scores"
-          },
-          {
-            "ident": "flagged"
-          },
-          {
-            "ident": "model"
-          },
-          {
-            "ident": "type"
-          }
-        ]
-      }
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "array",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) categories",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) category_applied_input_types",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) category_scores",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) flagged",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) model",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) type"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionModerationResults/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The object type, which is always `moderation_results`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ChatCompletionModerationResults/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "moderation_results"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) type > (member) 0"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 1 > (property) code": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionModerationError/properties/code",
-    "deprecated": false,
-    "key": "code",
-    "docstring": "The error code.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 1 > (property) message": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionModerationError/properties/message",
-    "deprecated": false,
-    "key": "message",
-    "docstring": "The error message.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 1 > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionModerationError/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The object type, which is always `error`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ChatCompletionModerationError/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "error"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 1 > (property) type > (member) 0"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) tool_calls > (items) > (property) function > (property) arguments": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionMessageToolCallChunk/properties/function/properties/arguments",
-    "deprecated": false,
-    "key": "arguments",
-    "docstring": "The arguments to call the function with, as generated by the model in JSON format. Note that the model does not always generate valid JSON, and may hallucinate parameters not defined by your function schema. Validate the arguments in your code before calling your function.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) tool_calls > (items) > (property) function > (property) name": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionMessageToolCallChunk/properties/function/properties/name",
-    "deprecated": false,
-    "key": "name",
-    "docstring": "The name of the function to call.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) choices > (items) > (property) delta > (property) tool_calls > (items) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "function"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) top_logprobs > (items) > (property) token": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionTokenLogprob/properties/top_logprobs/items/properties/token",
-    "deprecated": false,
-    "key": "token",
-    "docstring": "The token.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) top_logprobs > (items) > (property) bytes": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionTokenLogprob/properties/top_logprobs/items/properties/bytes",
-    "deprecated": false,
-    "key": "bytes",
-    "docstring": "A list of integers representing the UTF-8 bytes representation of the token. Useful in instances where characters are represented by multiple tokens and their byte representations must be combined to generate the correct text representation. Can be `null` if there is no bytes representation for the token.",
-    "type": {
-      "kind": "HttpTypeArray",
-      "oasRef": "#/components/schemas/ChatCompletionTokenLogprob/properties/top_logprobs/items/properties/bytes",
-      "elementType": {
-        "kind": "HttpTypeNumber"
-      }
-    },
-    "optional": false,
-    "nullable": true,
-    "schemaType": "array",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_token_logprob > (schema) > (property) top_logprobs > (items) > (property) logprob": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ChatCompletionTokenLogprob/properties/top_logprobs/items/properties/logprob",
-    "deprecated": false,
-    "key": "logprob",
-    "docstring": "The log probability of this token, if it is within the top 20 most likely tokens. Otherwise, the value `-9999.0` is used to signify that the token is very unlikely.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "number",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) categories": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ModerationResultBody/properties/categories",
-    "deprecated": false,
-    "key": "categories",
-    "docstring": "A dictionary of moderation categories to booleans, True if the input is flagged under this category.",
-    "type": {
-      "kind": "HttpTypeReference",
-      "oasRef": "#/components/schemas/ModerationResultBody/properties/categories",
-      "ident": "Record",
-      "typeParameters": [
-        {
-          "kind": "HttpTypeString"
-        },
-        {
-          "kind": "HttpTypeBoolean"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "map",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) category_applied_input_types": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ModerationResultBody/properties/category_applied_input_types",
-    "deprecated": false,
-    "key": "category_applied_input_types",
-    "docstring": "Which modalities of input are reflected by the score for each category.",
-    "type": {
-      "kind": "HttpTypeReference",
-      "oasRef": "#/components/schemas/ModerationResultBody/properties/category_applied_input_types",
-      "ident": "Record",
-      "typeParameters": [
-        {
-          "kind": "HttpTypeString"
-        },
-        {
-          "kind": "HttpTypeArray",
-          "oasRef": "#/components/schemas/ModerationResultBody/properties/category_applied_input_types/additionalProperties",
-          "elementType": {
-            "kind": "HttpTypeUnion",
-            "oasRef": "#/components/schemas/ModerationResultBody/properties/category_applied_input_types/additionalProperties/items",
-            "types": [
-              {
-                "kind": "HttpTypeLiteral",
-                "literal": "text"
-              },
-              {
-                "kind": "HttpTypeLiteral",
-                "literal": "image"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "map",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) category_applied_input_types > (items) > (items) > (member) 0",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) category_applied_input_types > (items) > (items) > (member) 1"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) category_scores": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ModerationResultBody/properties/category_scores",
-    "deprecated": false,
-    "key": "category_scores",
-    "docstring": "A dictionary of moderation categories to scores.",
-    "type": {
-      "kind": "HttpTypeReference",
-      "oasRef": "#/components/schemas/ModerationResultBody/properties/category_scores",
-      "ident": "Record",
-      "typeParameters": [
-        {
-          "kind": "HttpTypeString"
-        },
-        {
-          "kind": "HttpTypeNumber"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "map",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) flagged": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ModerationResultBody/properties/flagged",
-    "deprecated": false,
-    "key": "flagged",
-    "docstring": "A boolean indicating whether the content was flagged by any category.",
-    "type": {
-      "kind": "HttpTypeBoolean"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "boolean",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) model": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ModerationResultBody/properties/model",
-    "deprecated": false,
-    "key": "model",
-    "docstring": "The moderation model that produced this result.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ModerationResultBody/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The object type, which was always `moderation_result` for successful moderation results.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ModerationResultBody/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "moderation_result"
-        }
-      ]
-    },
-    "default": "moderation_result",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "moderation_results"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 1 > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "error"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) categories": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ModerationResultBody/properties/categories",
-    "deprecated": false,
-    "key": "categories",
-    "docstring": "A dictionary of moderation categories to booleans, True if the input is flagged under this category.",
-    "type": {
-      "kind": "HttpTypeReference",
-      "oasRef": "#/components/schemas/ModerationResultBody/properties/categories",
-      "ident": "Record",
-      "typeParameters": [
-        {
-          "kind": "HttpTypeString"
-        },
-        {
-          "kind": "HttpTypeBoolean"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "map",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) category_applied_input_types": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ModerationResultBody/properties/category_applied_input_types",
-    "deprecated": false,
-    "key": "category_applied_input_types",
-    "docstring": "Which modalities of input are reflected by the score for each category.",
-    "type": {
-      "kind": "HttpTypeReference",
-      "oasRef": "#/components/schemas/ModerationResultBody/properties/category_applied_input_types",
-      "ident": "Record",
-      "typeParameters": [
-        {
-          "kind": "HttpTypeString"
-        },
-        {
-          "kind": "HttpTypeArray",
-          "oasRef": "#/components/schemas/ModerationResultBody/properties/category_applied_input_types/additionalProperties",
-          "elementType": {
-            "kind": "HttpTypeUnion",
-            "oasRef": "#/components/schemas/ModerationResultBody/properties/category_applied_input_types/additionalProperties/items",
-            "types": [
-              {
-                "kind": "HttpTypeLiteral",
-                "literal": "text"
-              },
-              {
-                "kind": "HttpTypeLiteral",
-                "literal": "image"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "map",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) category_applied_input_types > (items) > (items) > (member) 0",
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) category_applied_input_types > (items) > (items) > (member) 1"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) category_scores": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ModerationResultBody/properties/category_scores",
-    "deprecated": false,
-    "key": "category_scores",
-    "docstring": "A dictionary of moderation categories to scores.",
-    "type": {
-      "kind": "HttpTypeReference",
-      "oasRef": "#/components/schemas/ModerationResultBody/properties/category_scores",
-      "ident": "Record",
-      "typeParameters": [
-        {
-          "kind": "HttpTypeString"
-        },
-        {
-          "kind": "HttpTypeNumber"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "map",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) flagged": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ModerationResultBody/properties/flagged",
-    "deprecated": false,
-    "key": "flagged",
-    "docstring": "A boolean indicating whether the content was flagged by any category.",
-    "type": {
-      "kind": "HttpTypeBoolean"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "boolean",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) model": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ModerationResultBody/properties/model",
-    "deprecated": false,
-    "key": "model",
-    "docstring": "The moderation model that produced this result.",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ModerationResultBody/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The object type, which was always `moderation_result` for successful moderation results.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ModerationResultBody/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "moderation_result"
-        }
-      ]
-    },
-    "default": "moderation_result",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "moderation_results"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 1 > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "error"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) category_applied_input_types > (items) > (items) > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "text"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) category_applied_input_types > (items) > (items) > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "image"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0 > (property) results > (items) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "moderation_result"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) category_applied_input_types > (items) > (items) > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "text"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) category_applied_input_types > (items) > (items) > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "image"
-    }
-  },
-  "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0 > (property) results > (items) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "moderation_result"
-    }
-  }
-}
-```
+- `id: string`
+
+  对话补全的唯一标识符。每个数据块具有相同的 ID。
+
+- `choices: array of object { delta, finish_reason, index, logprobs }`
+
+  对话补全选项列表。当 n `n` 大于 1 时可以包含多个元素。如果你设置了 stream: false
+  最后一个数据块也可能为空。 `stream_options: {"include_usage": true}`.
+
+  - `delta: object { content, function_call, refusal, 2 more }`
+
+    由流式模型响应生成的对话补全增量。
+
+    - `content: optional string or null`
+
+      数据块消息的内容。
+
+    - `function_call: optional object { arguments, name }`
+
+      已弃用，由 tool_calls `tool_calls`。取代。应调用的函数的名称和参数，由模型生成。
+
+      - `arguments: optional string`
+
+        调用该函数时使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是会生成有效的 JSON，并且可能会虚构你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+
+      - `name: optional string`
+
+        要调用的函数名称。
+
+    - `refusal: optional string or null`
+
+      模型生成的拒绝消息。
+
+    - `role: optional "developer" or "system" or "user" or 2 more`
+
+      此消息作者的角色。
+
+      - `"developer"`
+
+      - `"system"`
+
+      - `"user"`
+
+      - `"assistant"`
+
+      - `"tool"`
+
+    - `tool_calls: optional array of object { index, id, function, type }`
+
+      - `index: number`
+
+      - `id: optional string`
+
+        工具调用的 ID。
+
+      - `function: optional object { arguments, name }`
+
+        - `arguments: optional string`
+
+          调用该函数时使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是会生成有效的 JSON，并且可能会虚构你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+
+        - `name: optional string`
+
+          要调用的函数名称。
+
+      - `type: optional "function"`
+
+        工具的类型。目前，仅支持 function `function` 。
+
+        - `"function"`
+
+  - `finish_reason: "stop" or "length" or "tool_calls" or 2 more or null`
+
+    模型停止生成 token 的原因。如果模型遇到自然停止点或提供了停止序列，该值将为 stop； `stop` 如果达到请求中指定的最大 token 数，该值将为 length；
+    `length` 如果因内容过滤器标记而省略内容，该值将为 content_filter；
+    `content_filter` 如果模型调用了工具，该值将为 tool_calls，
+    `tool_calls` 或 function_call（已弃用）。 `function_call` (已弃用) 如果模型调用了函数。
+
+    - `"stop"`
+
+    - `"length"`
+
+    - `"tool_calls"`
+
+    - `"content_filter"`
+
+    - `"function_call"`
+
+  - `index: number`
+
+    该选项在选项列表中的索引。
+
+  - `logprobs: optional object { content, refusal }  or null`
+
+    该选项的对数概率信息。
+
+    - `content: array of ChatCompletionTokenLogprob or null`
+
+      包含对数概率信息的消息内容 token 列表。
+
+      - `token: string`
+
+        该 token。
+
+      - `bytes: array of number or null`
+
+        一个整数列表，表示该 token 的 UTF-8 字节表示。当某个字符由多个 token 表示时，需要将它们的字节表示组合起来才能生成正确的文本表示。可以为 `null` 如果该 token 没有字节表示。
+
+      - `logprob: number`
+
+        该 token 的对数概率(如果它位于最可能的 20 个 token 之内)。否则,值 `-9999.0` 用于表示该 token 出现的可能性极低。
+
+      - `top_logprobs: array of object { token, bytes, logprob }`
+
+        在该 token 位置处,最可能的 token 及其对数概率的列表。条目数量可能少于请求的 `top_logprobs`.
+
+        - `token: string`
+
+          该 token。
+
+        - `bytes: array of number or null`
+
+          一个整数列表，表示该 token 的 UTF-8 字节表示。当某个字符由多个 token 表示时，需要将它们的字节表示组合起来才能生成正确的文本表示。可以为 `null` 如果该 token 没有字节表示。
+
+        - `logprob: number`
+
+          该 token 的对数概率(如果它位于最可能的 20 个 token 之内)。否则,值 `-9999.0` 用于表示该 token 出现的可能性极低。
+
+    - `refusal: array of ChatCompletionTokenLogprob or null`
+
+      包含对数概率信息的消息拒绝 token 列表。
+
+      - `token: string`
+
+        该 token。
+
+      - `bytes: array of number or null`
+
+        一个整数列表，表示该 token 的 UTF-8 字节表示。当某个字符由多个 token 表示时，需要将它们的字节表示组合起来才能生成正确的文本表示。可以为 `null` 如果该 token 没有字节表示。
+
+      - `logprob: number`
+
+        该 token 的对数概率(如果它位于最可能的 20 个 token 之内)。否则,值 `-9999.0` 用于表示该 token 出现的可能性极低。
+
+      - `top_logprobs: array of object { token, bytes, logprob }`
+
+        在该 token 位置处,最可能的 token 及其对数概率的列表。条目数量可能少于请求的 `top_logprobs`.
+
+- `created: number`
+
+  创建该聊天补全时的 Unix 时间戳(以秒为单位)。每个分块具有相同的时间戳。
+
+- `model: string`
+
+  用于生成补全的模型。
+
+- `object: "chat.completion.chunk"`
+
+  对象类型,始终为 `chat.completion.chunk`.
+
+  - `"chat.completion.chunk"`
+
+- `moderation: optional object { input, output }  or null`
+
+  请求输入和生成输出的审核结果。当请求了已审核补全时出现
+  在审核分块上。
+
+  - `input: object { model, results, type }  or object { code, message, type }`
+
+    请求输入的审核结果。
+
+    - `ModerationResults object { model, results, type }`
+
+      请求输入或生成输出的成功审核结果。
+
+      - `model: string`
+
+        用于生成结果的审核模型。
+
+      - `results: array of object { categories, category_applied_input_types, category_scores, 3 more }`
+
+        审核结果列表。
+
+        - `categories: map[boolean]`
+
+          一个将审核类别映射到布尔值的字典，如果输入在该类别下被标记则为 True。
+
+        - `category_applied_input_types: map[array of "text" or "image"]`
+
+          每个类别的得分反映了哪些输入模态。
+
+          - `"text"`
+
+          - `"image"`
+
+        - `category_scores: map[number]`
+
+          一个将审核类别映射到得分的字典。
+
+        - `flagged: boolean`
+
+          一个布尔值，指示内容是否被任何类别标记。
+
+        - `model: string`
+
+          生成此结果的审核模型。
+
+        - `type: "moderation_result"`
+
+          对象类型，对于成功的审核结果始终为 `moderation_result` 。
+
+          - `"moderation_result"`
+
+      - `type: "moderation_results"`
+
+        对象类型,始终为 `moderation_results`.
+
+        - `"moderation_results"`
+
+    - `Error object { code, message, type }`
+
+      尝试审核时产生的错误。
+
+      - `code: string`
+
+        错误代码。
+
+      - `message: string`
+
+        错误消息。
+
+      - `type: "error"`
+
+        对象类型,始终为 `error`.
+
+        - `"error"`
+
+  - `output: object { model, results, type }  or object { code, message, type }`
+
+    对生成输出的审核。
+
+    - `ModerationResults object { model, results, type }`
+
+      请求输入或生成输出的成功审核结果。
+
+      - `model: string`
+
+        用于生成结果的审核模型。
+
+      - `results: array of object { categories, category_applied_input_types, category_scores, 3 more }`
+
+        审核结果列表。
+
+        - `categories: map[boolean]`
+
+          一个将审核类别映射到布尔值的字典，如果输入在该类别下被标记则为 True。
+
+        - `category_applied_input_types: map[array of "text" or "image"]`
+
+          每个类别的得分反映了哪些输入模态。
+
+          - `"text"`
+
+          - `"image"`
+
+        - `category_scores: map[number]`
+
+          一个将审核类别映射到得分的字典。
+
+        - `flagged: boolean`
+
+          一个布尔值，指示内容是否被任何类别标记。
+
+        - `model: string`
+
+          生成此结果的审核模型。
+
+        - `type: "moderation_result"`
+
+          对象类型，对于成功的审核结果始终为 `moderation_result` 。
+
+          - `"moderation_result"`
+
+      - `type: "moderation_results"`
+
+        对象类型,始终为 `moderation_results`.
+
+        - `"moderation_results"`
+
+    - `Error object { code, message, type }`
+
+      尝试审核时产生的错误。
+
+      - `code: string`
+
+        错误代码。
+
+      - `message: string`
+
+        错误消息。
+
+      - `type: "error"`
+
+        对象类型,始终为 `error`.
+
+        - `"error"`
+
+- `obfuscation: optional string`
+
+  添加的混淆字符串，用于将流式分块的大小归一化，作为针对某些侧信道攻击的缓解措施。该字段默认包含，在
+  为
+  时被省略。 `stream_options.include_obfuscation` is `false`.
+
+- `service_tier: optional "auto" or "default" or "flex" or 3 more or null`
+
+  指定用于处理该请求的处理类型。
+
+  - 如果设置为 'auto'，则请求将使用项目设置中配置的服务层级进行处理。除非另行配置，否则该项目将使用 'default'。
+  - 如果设置为 'default'，则请求将以所选模型的标准定价和性能进行处理。
+  - 如果设置为 '[flex](https://developers.openai.com/api/docs/guides/flex-processing)'，那么该请求将使用 Flex Processing 服务层级进行处理。
+  - 要在请求级别启用 [Fast mode](https://developers.openai.com/api/docs/guides/fast-mode) ，请为 Responses 或 Chat Completions 添加 `service_tier=fast` 或 `service_tier=priority` 参数。响应将显示 `service_tier=priority` ，无论你是否在请求中指定了 `service_tier=fast` 或 `priority` 。
+  - 未设置时，默认行为为 'auto'。
+
+  当设置了 `service_tier` 参数时，响应体将包含根据实际用于处理该请求的处理模式得出的 `service_tier` 值。该响应值可能与参数中设置的值不同。
+
+  - `"auto"`
+
+  - `"default"`
+
+  - `"flex"`
+
+  - `"scale"`
+
+  - `"priority"`
+
+  - `"fast"`
+
+- `system_fingerprint: optional string`
+
+  此指纹表示模型运行所使用的后端配置。
+  可与 `seed` 请求参数结合使用，以了解后端何时发生了可能影响确定性的更改。
+
+- `usage: optional CompletionUsage or null`
+
+  一个可选字段，仅当你在请求中设置了
+  `stream_options: {"include_usage": true}` 时才会出现。如果出现，它
+  包含一个空值， **除了最后一个数据块** 包含
+  整个请求的 token 使用统计。
+
+  **注意：** 如果流被中断或取消，你可能无法
+  收到包含请求总 token 使用量的最终 usage 分片，
+  即整个请求的 token 使用情况。
+
+  - `completion_tokens: number`
+
+    生成的 completion 中的 token 数。
+
+  - `prompt_tokens: number`
+
+    提示词中的 token 数。
+
+  - `total_tokens: number`
+
+    请求中使用的 token 总数（提示词 + completion）。
+
+  - `completion_tokens_details: optional object { accepted_prediction_tokens, audio_tokens, reasoning_tokens, 2 more }`
+
+    completion 中使用的 token 明细。
+
+    - `accepted_prediction_tokens: optional number`
+
+      使用 Predicted Outputs 时，
+      出现在 completion 中的预测 token 数。
+
+    - `audio_tokens: optional number`
+
+      模型生成的音频输入 token 数。
+
+    - `reasoning_tokens: optional number`
+
+      模型为推理生成的 token 数。
+
+    - `rejected_prediction_tokens: optional number`
+
+      使用 Predicted Outputs 时，
+      未出现在 completion 中的预测 token 数。但是，与
+      推理 token 一样，这些 token 仍计入总
+      completion token 中，用于计费、输出和上下文窗口
+      限制。
+
+    - `text_tokens: optional number`
+
+      模型生成的文本输出 token 数。
+
+  - `prompt_tokens_details: optional object { audio_tokens, cache_write_tokens, cached_tokens, 2 more }`
+
+    提示词中使用的 token 明细。
+
+    - `audio_tokens: optional number`
+
+      提示词中包含的音频输入 token 数。
+
+    - `cache_write_tokens: optional number`
+
+      写入缓存的、未经过调整的提示 token 数量。
+
+    - `cached_tokens: optional number`
+
+      提示中已缓存的 token。
+
+    - `image_tokens: optional number`
+
+      提示中的图像输入 token。
+
+    - `text_tokens: optional number`
+
+      提示中的文本输入 token。
 
 ### 示例
 

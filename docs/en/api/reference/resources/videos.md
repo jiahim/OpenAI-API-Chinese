@@ -2,7 +2,7 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-## Create video
+## Create a video
 
 **post** `/videos`
 
@@ -260,7 +260,7 @@ curl https://api.openai.com/v1/videos \
 }
 ```
 
-## Create a character from an uploaded video.
+## Create a character
 
 **post** `/videos/characters`
 
@@ -300,7 +300,7 @@ curl https://api.openai.com/v1/videos/characters \
 }
 ```
 
-## Delete video
+## Delete a video
 
 **delete** `/videos/{video_id}`
 
@@ -344,7 +344,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 }
 ```
 
-## Retrieve video content
+## Download video content
 
 **get** `/videos/{video_id}/content`
 
@@ -375,7 +375,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID/content \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-## Create a new video generation job by editing a source video or existing generated video.
+## Create a video edit
 
 **post** `/videos/edits`
 
@@ -569,7 +569,7 @@ curl https://api.openai.com/v1/videos/edits \
 }
 ```
 
-## Create an extension of a completed video.
+## Create a video extension
 
 **post** `/videos/extensions`
 
@@ -774,7 +774,7 @@ curl https://api.openai.com/v1/videos/extensions \
 }
 ```
 
-## Fetch a character.
+## Retrieve a character
 
 **get** `/videos/characters/{character_id}`
 
@@ -1055,7 +1055,7 @@ curl https://api.openai.com/v1/videos \
 }
 ```
 
-## Remix video
+## Create a video remix
 
 **post** `/videos/{video_id}/remix`
 
@@ -1269,7 +1269,7 @@ curl -X POST https://api.openai.com/v1/videos/video_123/remix \
 }
 ```
 
-## Retrieve video
+## Retrieve a video
 
 **get** `/videos/{video_id}`
 

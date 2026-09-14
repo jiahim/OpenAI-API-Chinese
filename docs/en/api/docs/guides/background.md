@@ -381,6 +381,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
+// Replace this illustrative ID with the background response to cancel.
 string responseId = "resp_123";
 
 ResponseResult response = await client.CancelResponseAsync(responseId);

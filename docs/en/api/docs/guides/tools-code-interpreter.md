@@ -138,7 +138,10 @@ response = client.responses.create(
   tools: [
     {
       type: :code_interpreter,
-      container: {type: :auto, memory_limit: "4g"}
+      container: {
+        type: :auto,
+        memory_limit: "4g"
+      }
     }
   ]
 )
@@ -309,7 +312,12 @@ client = OpenAI::Client.new
 container = client.containers.create(name: "analysis", memory_limit: "4g")
 response = client.responses.create(
   model: "gpt-6-astra",
-  tools: [{type: :code_interpreter, container: container.id}],
+  tools: [
+    {
+      type: :code_interpreter,
+      container: container.id
+    }
+  ],
   tool_choice: :required,
   input: "Calculate 4 * 3.82, then take the square root twice."
 )

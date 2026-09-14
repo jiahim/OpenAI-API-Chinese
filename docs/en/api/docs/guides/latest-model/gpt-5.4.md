@@ -167,7 +167,7 @@ require "openai"
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-5.4",
-  reasoning: {effort: :minimal},
+  reasoning: { effort: :minimal },
   input: "Explain the bug and propose a fix."
 )
 puts(response.output_text)
@@ -282,7 +282,7 @@ require "openai"
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-5.4",
-  text: {verbosity: :low},
+  text: { verbosity: :low },
   input: "Explain the bug and propose a fix."
 )
 puts(response.output_text)
@@ -579,7 +579,7 @@ require "openai"
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-5.4",
-  reasoning: {effort: :medium},
+  reasoning: { effort: :medium },
   input: "Explain the bug and propose a fix."
 )
 puts(response.output_text)

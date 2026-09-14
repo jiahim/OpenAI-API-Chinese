@@ -1,14 +1,14 @@
-# 从 prompt 对象迁移
+# 从提示对象迁移
 
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。你可以通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
 
-OpenAI 正在弃用 API 中可复用的 prompt 对象。Prompt 创建功能
-  将于 2026 年 6 月 3 日起被弱化，并 `v1/prompts` 计划于
-  2026 年 11 月 30 日关闭。详见 [弃用
-  页面](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 以了解当前的
-  时间表。
+OpenAI 正在弃用 API 中的可复用提示对象。提示创建将于
+  2026 年 6 月 3 日起被弱化，并 `v1/prompts` 计划于
+  2026 年 11 月 30 日关停。详见 [弃用
+  页面](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 了解当前的时间表。
+  若要从。
 
-要从 **Prompts** 迁出 OpenAI API 平台，请将 prompt 内容从托管 `prompt` 对象移至你的应用代码中。这样你可以更灵活地控制审核、测试、部署和版本管理。
+中迁移，请在 OpenAI API 平台中将提示内容从托管对象移出，放入你自己的应用代码中。这样你可以更好地掌控审阅、测试、部署与版本管理。 **提示** 在 该公司 接口 平台中，将提示内容从托管对象移出，放入你自己的应用代码中。这样你可以更好地掌控审阅、测试、部署与版本管理。 `prompt` 这样你可以更好地掌控审阅、测试、部署与版本管理。
 
 ## Before：使用 Prompt 对象
 
@@ -32,12 +32,12 @@ const response = await client.responses.create({
 ```
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 
 from openai import OpenAI
 
 client = OpenAI()
-prompt_id = os.environ["OPENAI_PROMPT_ID"]
+prompt_id = "pmpt_123"
 
 response = client.responses.create(
     prompt={
@@ -147,9 +147,9 @@ curl https://api.openai.com/v1/responses \
 ```
 
 
-## After：在代码中内联提示词
+## 之后：在代码中内联提示词
 
-在代码中内联该提示词
+将提示内联到代码中
 
 ```javascript
 import OpenAI from "openai";
@@ -324,7 +324,7 @@ curl https://api.openai.com/v1/responses \
 
 ## 使用 Codex 进行迁移
 
-使用 [OpenAI Developers 插件](https://developers.openai.com/learn/developers-codex-plugin) 和 [OpenAI Docs 技能](https://github.com/openai/skills/tree/main/skills/.curated/openai-docs) 自动化迁移并加速基于 OpenAI API 的开发。
+使用 [OpenAI Developers 插件](https://developers.openai.com/learn/developers-codex-plugin) 和 [OpenAI Docs 技能](https://github.com/openai/skills/tree/main/skills/.curated/openai-docs) 来自动完成迁移，并加速基于 OpenAI API 的构建。
 
 ```text
 $openai-docs update this project to store prompts in code instead of using a prompts object
@@ -332,24 +332,23 @@ $openai-docs update this project to store prompts in code instead of using a pro
 
 ## 变更内容
 
-不要从API请求中引用已保存的提示对象，而是将提示文本存储在代码库中，并将生成的消息直接作为 `input` 参数传递给 Responses API 调用。
+不要从 API 请求中引用已保存的提示对象，而是将提示文本存储在代码库中，并将生成的消息直接作为 `input` 传递给 Responses API 调用。
 
-- **将提示词内容移入源代码** 以便提示词的变更与产品逻辑遵循相同的评审和发布流程。
-- **将提示词变量替换为函数参数** 以便动态值在你的应用中显式声明并带有类型。
-- **在调用 Responses API 时传递消息， `input`** 而不是使用该对象 `prompt` （object）。
+- **将提示内容移入源代码** 从而使提示变更与产品逻辑走相同的评审和发布流程。
+- **用函数参数替换提示变量** 从而使动态值在你的应用中显式且带有类型。
+- **在调用时通过消息传递 `input`** 在 Responses API 调用中传入消息，而不是使用 `prompt` 对象。
 - **将版本管理迁移到你的代码仓库** 使用 git 提交、PR 评审以及测试或评估。
-- **将静态内容放在前面，动态内容放在后面** 以保留提示词缓存带来的收益，因为缓存命中依赖于精确的前缀匹配。
+- **先保留静态内容，再放置动态内容** 以保留提示缓存带来的收益，因为缓存命中依赖于精确的前缀匹配。
 
 ## 示例
 
-使用辅助函数构建提示
+使用辅助函数构建提示词
 
 ```javascript
 import OpenAI from "openai";
 
 const client = new OpenAI();
 
-/** @returns {OpenAI.Responses.ResponseInput} */
 function buildSupportPrompt({ customerName, issue }) {
   return [
     {
@@ -524,8 +523,8 @@ puts(response.output_text)
 ```
 
 
-## 你能获得什么
+## 你能获得的能力
 
-你将获得更精细的工程控制：提示与产品代码放在一起，变更通过 PR 流程进行，测试和评估可以在 CI 中运行，上线或实验可以通过你自己的配置或功能开关来管理。
+你可以获得更精细的工程控制：提示与产品代码放在一起，更改通过 PR 流程进行，测试和评估可在 CI 中运行，上线或实验可通过你自己的配置或功能开关来管理。
 
-不要把提示零散地散落在代码库各处。创建一个小的 `prompts/` 模块，把每个提示作为命名的构建函数，并加入轻量的评估固件，使提示的变更能像产品逻辑一样被评审。
+不要把提示分散写在代码库的各个位置。创建一个 `prompts/` 模块，将每个提示作为命名构建器函数，并添加轻量的评估固定数据，这样提示的更改就能像产品逻辑一样接受评审。

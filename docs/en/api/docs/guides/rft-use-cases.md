@@ -152,7 +152,7 @@ Grader code
 # Note this file gets uploaded to the OpenAI API as a grader
 from ast_grep_py import SgRoot
 from pydantic import BaseModel, Field  # type: ignore
-from typing import Any, List, Optional
+from typing import Any
 import re
 
 SUPPORTED_LANGUAGES = ['typescript', 'javascript', 'ts', 'js']
@@ -173,12 +173,12 @@ class CodeBlock(BaseModel):
 class ASTGrepPattern(BaseModel):
     file_path_mask: str = Field(..., description="The file path pattern to match against")
     pattern: str = Field(..., description="The main AST grep pattern to search for")
-    additional_greps: Optional[List[str]] = Field(
+    additional_greps: list[str] | None = Field(
         default=None,
         description="Additional patterns that must also be present in the matched code"
     )
 
-def extract_code_blocks(llm_output: str) -> List[CodeBlock]:
+def extract_code_blocks(llm_output: str) -> list[CodeBlock]:
     # Regular expression to match code blocks with optional language and path
     try:
         pattern = r"```(\w+\s+)?([\w./-]+)?\n([\s\S]*?)\n```"
@@ -246,13 +246,13 @@ def extract_code_blocks(llm_output: str) -> List[CodeBlock]:
     return code_blocks
 
 
-def calculate_ast_grep_score(code_blocks: List[CodeBlock], ast_greps: Any) -> float:
+def calculate_ast_grep_score(code_blocks: list[CodeBlock], ast_greps: Any) -> float:
     # Convert ast_greps to list if it's a dict
     if isinstance(ast_greps, dict):
         ast_greps = [ast_greps]
 
     # Parse each grep pattern into the Pydantic model
-    parsed_patterns: List[ASTGrepPattern] = []
+    parsed_patterns: list[ASTGrepPattern] = []
     for grep in ast_greps:
         try:
             pattern = ASTGrepPattern(**grep)
@@ -400,7 +400,7 @@ def grade(sample: Any, item: Any) -> float:
         code_start = output_text.find('<code>')
         code_end = output_text.find('</code>')
         code_to_grade: str = output_text[code_start + len('<code>'):code_end].strip()
-        code_blocks: List[CodeBlock] = []
+        code_blocks: list[CodeBlock] = []
         try:
             code_blocks = extract_code_blocks(code_to_grade)
         except Exception as e:

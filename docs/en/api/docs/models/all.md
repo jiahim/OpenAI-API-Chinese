@@ -121,3 +121,4 @@ See [how OpenAI uses your data](/api/docs/guides/your-data.md) and review [depre
 - [TTS-1](/api/docs/models/tts-1.md): Text-to-speech model optimized for speed
 - [TTS-1 HD](/api/docs/models/tts-1-hd.md): Text-to-speech model optimized for quality
 - [Whisper](/api/docs/models/whisper-1.md): General-purpose speech recognition model
+- [GPT-Rosalind](/api/docs/pricing#specialized-models): Life sciences reasoning for approved organizations. Model ID: `gpt-rosalind-research`.

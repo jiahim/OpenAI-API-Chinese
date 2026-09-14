@@ -1,35 +1,35 @@
 # 迁移到 Responses API
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt). 文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-该 [Responses API](https://developers.openai.com/api/reference/resources/responses) 是我们新的 API 原语，是 [Chat Completions](https://developers.openai.com/api/reference/resources/chat) 的演进，为你的集成带来更简洁的体验和强大的智能体原语。
+该 [Responses API](https://developers.openai.com/api/reference/resources/responses) 是我们推出的全新 API 原语，是 [Chat Completions](https://developers.openai.com/api/reference/resources/chat) 的演进，为你的集成带来更简洁的体验和更强大的智能体原语。
 
-**虽然 Chat Completions 仍受支持，但建议所有新项目使用 Responses。**
+**虽然 Chat Completions 仍然受支持，但建议所有新项目使用 Responses。**
 
 ## 关于 Responses API
 
 Responses API 是一个用于构建强大的智能体类应用的统一接口。它包含：
 
-- 内置工具，例如 [网页搜索](https://developers.openai.com/api/docs/guides/tools-web-search), [文件搜索](https://developers.openai.com/api/docs/guides/tools-file-search), [computer use](https://developers.openai.com/api/docs/guides/tools-computer-use), [code interpreter](https://developers.openai.com/api/docs/guides/tools-code-interpreter)，以及 [远程 MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp).
-- 支持无缝的多轮交互，你可以在请求中传入之前的响应，以获得更准确的推理结果。
-- 原生支持文本和图像的多模态输入。
+- 内置工具，例如 [网页搜索](https://developers.openai.com/api/docs/guides/tools-web-search), [文件搜索](https://developers.openai.com/api/docs/guides/tools-file-search), [computer use](https://developers.openai.com/api/docs/guides/tools-computer-use), [code interpreter](https://developers.openai.com/api/docs/guides/tools-code-interpreter)，以及 [remote MCPs](https://developers.openai.com/api/docs/guides/tools-connectors-mcp).
+- 支持多轮无缝交互，你可将之前的响应一并传入，从而获得更准确的推理结果。
+- 原生支持文本和图像的多模态能力。
 
-## Responses 优势
+## Responses 的优势
 
-Responses API 相较于 Chat Completions 具有以下几项优势：
+Responses API 相较于 Chat Completions 具有以下几个优势：
 
-- **更佳性能**：使用 GPT-5 等推理模型配合 Responses，相比 Chat Completions 将带来更强的模型智能水平。我们的内部评估显示，在相同提示和设置条件下，SWE-bench 提升了 3%。
-- **默认具备智能体能力**：Responses API 是一个智能体循环，允许模型在单次 API 请求中调用多个工具，例如 `web_search`, `image_generation`, `file_search`, `code_interpreter`、远程 MCP 服务器以及你自己的自定义函数。
-- **更低成本**：得益于更高的缓存命中率，成本更低（内部测试显示相比 Chat Completions 提升了 40% 到 80%）。
-- **有状态的上下文**：使用 `store: true` 在多轮之间维持会话状态，保留跨轮的推理与工具上下文。
-- **灵活的输入**：可以传入字符串形式的输入或消息列表；使用 instructions 提供系统级指引。
-- **加密的推理**：可以选择关闭有状态行为，同时仍享受先进的推理能力。
-- **面向未来**：为未来的模型做好兼容准备。
-
-
+- **更佳性能**：在 Responses 中使用 GPT-5 等推理模型，会比 Chat Completions 提供更强的模型智能。我们在内部评估中观察到，使用相同提示词和配置时，SWE-bench 提升了 3%。
+- **默认面向智能体**：Responses API 本身就是一个智能体循环，允许模型在单次 API 请求中调用多个工具，例如 `web_search`, `image_generation`, `file_search`, `code_interpreter`、远程 MCP 服务器以及你自己的自定义函数。
+- **更低的成本**：得益于缓存利用率的提升，成本更低（内部测试中相比 Chat Completions 提升了 40% 至 80%）。
+- **有状态的上下文**：使用 `store: true` 在多轮之间保持状态，跨轮保留推理与工具上下文。
+- **灵活的输入**：传入字符串形式的 input，或传入消息列表；使用 instructions 提供系统级指导。
+- **加密的推理**：可选择退出有状态特性，同时仍然享受高级推理带来的好处。
+- **面向未来**：为未来的模型做好准备。
 
 
-| 能力        | Chat Completions API  | Responses API         |
+
+
+| 功能        | Chat Completions API  | Responses API         |
 | ------------------- | --------------------- | --------------------- |
 | 文本生成     | | |
 | 音频               | | 即将推出           |
@@ -53,12 +53,12 @@ Responses API 相较于 Chat Completions 具有以下几项优势：
 
 #### 消息与条目
 
-这两个 API 都能轻松地从我们的模型生成输出。Chat completions 调用的输入和结果都是一个 _Messages_，数组，而
-Responses API 使用 _Items_. An Item 是一个由多种类型组成的联合类型，表示模型动作的各种可能性。
-其中 `message` 是 Item 的一种类型， `function_call` 也是。 `function_call_output`。与 Chat Completions 的 Message 不同的是，
-在那里许多关注点被糅合到一个对象中，Items 之间彼此独立，能够更好地表示模型上下文的基本单元。
+两个 API 都能让你轻松地使用我们的模型生成输出。Chat completions 的输入和结果都是一个 _Messages_，数组，而
+Responses API 使用 _Items_。Item 是多种类型的联合，表示模型动作的多种可能。一个
+是一类 Item，一个 `message` 也是一类 Item，还包括 `function_call` 或 `function_call_output`。与 Chat Completions 的 Message 不同，在 Message 中
+许多关注点被粘合到一个对象中，而 Items 之间彼此独立，能更好地表示模型上下文的基本单元。
 
-此外，Chat Completions 可以通过 `choices`，参数返回多个并行生成结果， `n` 即 n 参数。在 Responses 中，我们去掉了该参数，只保留单次生成。
+此外，Chat Completions 可以通过 `choices`，参数返回多个 `n` 并行的生成结果。在 Responses 中，我们移除了这个参数，只保留一个生成结果。
 
 
 
@@ -88,7 +88,12 @@ require "openai"
 client = OpenAI::Client.new
 completion = client.chat.completions.create(
   model: "gpt-6-astra",
-  messages: [{role: :user, content: "Write a one-sentence bedtime story about a unicorn."}]
+  messages: [
+    {
+      role: :user,
+      content: "Write a one-sentence bedtime story about a unicorn."
+    }
+  ]
 )
 puts(completion.choices.fetch(0).message.content)
 ```
@@ -122,13 +127,13 @@ puts(response.output_text)
 
 
 
-当你从 Responses API 获取响应时，返回的字段略有不同。
-你收到的不是 `message`，而是一个带有自身 `response` 字段的类型化 `id`.
+当你从 Responses API 获得响应时，字段略有不同。
+你收到的不是 `message`，而是一个带类型的 `response` 对象，该对象带有自己的 `id`.
 响应默认会被存储。新账户的聊天补全默认也会被存储。
 在使用 API 时，若要禁用存储，请设置 `store: false`.
 
-从这些 API 返回的对象会略有不同。在 Chat Completions 中，你收到的是一个
-`choices`，每个都包含一个 `message`。在 Responses 中，你将收到一个标记为的 Item 数组 `output`.
+从这些 API 获取到的对象会略有不同。在 Chat Completions 中，你会收到一个包含
+`choices`，的数组，其中每个元素包含一个 `message`。在 Responses 中，你会收到一个标记为 `output`.
 
 
 
@@ -194,27 +199,26 @@ puts(response.output_text)
 
 ### 其他差异
 
-- 响应默认会被存储。新账户的 Chat Completions 默认也会被存储。要在上述任一 API 中禁用存储，请设置 `store: false`.
-- [推理](https://developers.openai.com/api/docs/guides/reasoning) 模型在 Responses API 中拥有更丰富的体验，并具备 [改进的工具使用](https://developers.openai.com/api/docs/guides/reasoning#keeping-reasoning-items-in-context)。从 GPT-5.4 开始，Chat Completions 不再支持除 `reasoning_effort` 以外的取值，工具调用需配合 `none`.
-- Structured Outputs 使用，API 格式有所不同。请改用 Responses 中的相应字段，而非 `response_format`, use `text.format` 。更多信息请参阅 [结构化输出](https://developers.openai.com/api/docs/guides/structured-outputs) 指南。
-- 函数调用的 API 形式不同，包括请求中的函数配置以及响应中返回的函数调用。完整差异请参阅 [函数调用指南](https://developers.openai.com/api/docs/guides/function-calling).
-- Responses SDK 提供了一个 `output_text` 辅助工具，而 Chat Completions SDK 没有该工具。
-- 在 Chat Completions 中，必须手动管理对话状态。Responses API 与 [Conversations API](https://developers.openai.com/api/docs/guides/conversation-state?api-mode=responses#using-the-conversations-api) 兼容，可用于持久化对话，或能够传递 `previous_response_id` 以轻松串联多个 Responses。
+- 响应默认会被存储。新账号的 Chat Completions 默认也会被存储。若要在任一 API 中禁用存储，请设置 `store: false`.
+- [推理](https://developers.openai.com/api/docs/guides/reasoning) 模型在 Responses API 中拥有更丰富的体验，并提供 [改进的工具使用](https://developers.openai.com/api/docs/guides/reasoning#keeping-reasoning-items-in-context)。从 GPT-5.4 开始，Chat Completions 不支持使用以下以外取值的工具调用 `reasoning_effort` 以外的值 `none`.
+- Structured Outputs API 的格式有所不同。请改用 Responses 中的 `response_format`，请使用 `text.format` 。详见 [结构化输出](https://developers.openai.com/api/docs/guides/structured-outputs) 指南。
+- 函数调用 API 的格式有所不同，无论是在请求中的函数配置上，还是在响应中返回的函数调用上。完整差异请参阅 [函数调用指南](https://developers.openai.com/api/docs/guides/function-calling).
+- Responses SDK 提供了一个 `output_text` 助手方法，而 Chat Completions SDK 没有该方法。
+- 在 Chat Completions 中，会话状态必须手动管理。Responses API 与以下接口兼容 [Conversations API](https://developers.openai.com/api/docs/guides/conversation-state?api-mode=responses#using-the-conversations-api) 用于持久化会话，或支持传入 `previous_response_id` 以轻松串联多个 Responses。
 
 ## 从 Chat Completions 迁移
 
-将迁移视为三项相关变更：向 `/v1/responses`，发送请求，从类型化的 `output` 数组读取输出，并选择应用在多轮之间传递状态的方式。
+将迁移视为三个相关变更：将请求发送至 `/v1/responses`，从类型化的 `output` 数组读取输出，并选择你的应用如何在各轮之间携带状态。
 
-### 1. 更新生成接口端点
+### 1. 更新生成接口
 
-首先将生成端点从 `post /v1/chat/completions` 更新为 `post /v1/responses`.
+首先将生成接口从 `post /v1/chat/completions` 更新为 `post /v1/responses`.
 
-如果不使用函数或多模态输入，简单的消息输入在不同 API 之间是兼容的：
+如果未使用函数或多模态输入，简单的消息输入可以在两种 API 之间直接兼容：
 
 复用简单的消息输入
 
 ```javascript
-/** @type {OpenAI.ChatCompletionMessageParam[] & OpenAI.Responses.ResponseInput} */
 const context = [
   { role: "system", content: "You are a helpful assistant." },
   { role: "user", content: "Hello!" },
@@ -366,8 +370,14 @@ require "openai"
 
 client = OpenAI::Client.new
 messages = [
-  {role: :system, content: "You are a helpful assistant."},
-  {role: :user, content: "Hello!"}
+  {
+    role: :system,
+    content: "You are a helpful assistant."
+  },
+  {
+    role: :user,
+    content: "Hello!"
+  }
 ]
 
 completion = client.chat.completions.create(
@@ -513,8 +523,14 @@ client = OpenAI::Client.new
 completion = client.chat.completions.create(
   model: "gpt-6-astra",
   messages: [
-    {role: :system, content: "You are a helpful assistant."},
-    {role: :user, content: "Hello!"}
+    {
+      role: :system,
+      content: "You are a helpful assistant."
+    },
+    {
+      role: :user,
+      content: "Hello!"
+    }
   ]
 )
 
@@ -661,28 +677,28 @@ curl https://api.openai.com/v1/responses \
 
 
 
-### 2. 将消息映射为 Items
+### 2. 将消息映射到 Items
 
-聊天补全接口 使用 `messages` 同时作为输入和输出。响应接口 使用 `input` 和 `output` 类型化 Items 数组。A `message` 是一种 Item 类型，类似于 Items 例如 `reasoning`, `function_call`,以及 `function_call_output`.
+Chat Completions 使用 `messages` 同时作为输入和输出。Responses 使用 `input` 和 `output` 类型化 Item 数组。一个 `message` 是一类 Item，其他 Item 还包括 `reasoning`, `function_call`，以及 `function_call_output`.
 
 | Chat Completions 概念      | Responses 映射                                                                                      |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `messages[]`                  | `input`，作为字符串或输入 Items 数组                                                        |
-| 系统或开发者指引  | 顶层 `instructions`，或在需要保留已有对话记录时使用兼容的 message Items |
-| 用户消息                  | 包含以下字段的输入消息 Item `role: "user"`                                                              |
-| 助手消息             | 中的输出消息 Item `response.output`；通过以下字段传回 `input` ，前提是你手动管理状态      |
-| 工具或函数调用         | 一个 `function_call` 输出 Item                                                                          |
-| 工具或函数结果       | 一个 `function_call_output` 通过以下字段链接到该调用的输入 Item `call_id`                                  |
-| 使用以下字段的多次生成 `n` | Responses 中不可用；如果需要多个候选输出，请发起单独的请求              |
+| `messages[]`                  | `input`，以字符串或 input Item 数组形式传入                                                        |
+| 系统或开发者指引  | 顶层 `instructions`，或在需要保留既有对话记录时使用兼容的消息 Item |
+| 用户消息                  | 一个 input 消息 Item，包含 `role: "user"`                                                              |
+| 助手消息             | 在 响应接口 中的一个 output 消息 Item `response.output`；在手动管理状态时，将它传回 `input` 中的 input 项      |
+| 工具或函数调用         | 一个 `function_call` output Item                                                                          |
+| 工具或函数结果       | 一个 `function_call_output` 通过以下字段关联到该调用的 input Item `call_id`                                  |
+| 使用 n 进行多次生成 `n` | Responses 中不可用；如需多个候选输出，请分别发起请求              |
 
-当你只需要最终文本时，使用 SDK `output_text` 助手。当你的工作流涉及推理、工具或多模态输出时，可迭代 `response.output` 并根据其类型处理每个 Item `type`.
+当你只需要最终文本时，使用 SDK `output_text` helper。当你的工作流涉及推理、工具或多模态输出时，遍历 `response.output` 并按其类型处理每个 Item `type`.
 
 ### 3. 更新多轮对话
 
-如果你的应用中存在多轮对话，请更新你的上下文逻辑。Responses 为你提供三种常见的会话状态管理选项：
+如果你的应用中存在多轮对话，请更新你的上下文逻辑。Responses 提供了三种常用的状态管理选项：
 
-- 使用 `previous_response_id` 当你希望 OpenAI 管理先前的响应上下文时使用。每次请求时重新发送稳定的 `instructions` ，因为 `previous_response_id` 不会延续上一次响应的顶层 `instructions`.
-- 传递先前的 `output` 。当你需要自行管理或裁剪上下文时，将 Items 重新传入下一次请求。
+- 使用 `previous_response_id` 当你希望 OpenAI 管理上一次响应的上下文时使用。每次请求都要重新发送稳定的 `instructions` ，因为 `previous_response_id` 不会沿用上一次响应的顶层 `instructions`.
+- 在下一个请求中将上一次的响应 `output` 项传回，以便你自行管理或裁剪上下文。
 - 使用 [Conversations API](https://developers.openai.com/api/docs/guides/conversation-state?api-mode=responses#using-the-conversations-api) 当你需要一个持久的对话对象时使用。
 
 
@@ -694,7 +710,6 @@ Chat Completions
     Multi-turn conversation
 
 ```javascript
-/** @type {OpenAI.ChatCompletionMessageParam[]} */
 let messages = [
   { role: "system", content: "You are a helpful assistant." },
   { role: "user", content: "What is the capital of France?" },
@@ -810,16 +825,28 @@ require "openai"
 
 client = OpenAI::Client.new
 messages = [
-  {role: :system, content: "You are a helpful assistant."},
-  {role: :user, content: "What is the capital of France?"}
+  {
+    role: :system,
+    content: "You are a helpful assistant."
+  },
+  {
+    role: :user,
+    content: "What is the capital of France?"
+  }
 ]
 
 first = client.chat.completions.create(
   model: "gpt-6-astra",
   messages: messages
 )
-messages << {role: :assistant, content: first.choices.fetch(0).message.content}
-messages << {role: :user, content: "And its population?"}
+messages << {
+  role: :assistant,
+  content: first.choices.fetch(0).message.content
+}
+messages << {
+  role: :user,
+  content: "And its population?"
+}
 
 second = client.chat.completions.create(
   model: "gpt-6-astra",
@@ -842,7 +869,8 @@ Responses
     Multi-turn conversation
 
 ```javascript
-/** @type {OpenAI.Responses.ResponseInput} */
+import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
+
 let context = [{ role: "user", content: "What is the capital of France?" }];
 
 const res1 = await client.responses.create({
@@ -851,7 +879,7 @@ const res1 = await client.responses.create({
 });
 
 // Append the first response’s output to context
-context = context.concat(res1.output);
+context = context.concat(toResponseInputItems(res1.output));
 
 // Add the next user message
 context.push({ role: "user", content: "And its population?" });
@@ -997,14 +1025,22 @@ Console.WriteLine(second.GetOutputText());
 require "openai"
 
 client = OpenAI::Client.new
-context = [{role: :user, content: "What is the capital of France?"}]
+context = [
+  {
+    role: :user,
+    content: "What is the capital of France?"
+  }
+]
 
 first = client.responses.create(
   model: "gpt-6-astra",
   input: context
 )
 context.concat(first.output)
-context << {role: :user, content: "And its population?"}
+context << {
+  role: :user,
+  content: "And its population?"
+}
 
 second = client.responses.create(
   model: "gpt-6-astra",
@@ -1157,30 +1193,30 @@ puts(second.output_text)
 
 
 
-即使使用 `previous_response_id`，链中所有先前响应的输入 token 都会计入 API 的输入 token 计费。
+即使使用 `previous_response_id`, 链中所有先前响应的输入 token 在 API 中都会作为输入 token 计费。
 
-### 4. 决定何时使用有状态特性
+### 4. 决定何时使用有状态
 
-默认会存储响应。对于新账户，Chat Completions 默认也会存储。要在任一 API 中禁用存储，请设置 `store: false`.
+响应默认会被存储。新账户的 Chat Completions 默认也会被存储。如需在以上任一 API 中禁用存储功能，请设置 `store: false`.
 
-某些组织（例如采用零数据保留 (ZDR) 要求的组织）受合规或数据保留策略限制，无法以有状态方式使用 Responses API。为了支持这些场景，OpenAI 提供了加密的推理项，让你能够使 工作流 保持无状态，同时仍可利用推理项。
+部分组织（例如具有零数据保留 (ZDR) 要求的组织）由于合规或数据保留策略的限制，无法以有状态方式使用 Responses API。为支持此类场景，OpenAI 提供了加密的推理项，使你能够在保持 工作流 无状态的同时，仍可受益于推理项。
 
-要禁用有状态，但仍利用推理能力：
+若需禁用有状态行为，但仍希望利用推理能力：
 
-- Set `store: false` 在 [store 字段](https://developers.openai.com/api/reference/resources/responses/methods/create#responses_create-store).
-- 保留并重放每个返回的推理项。每个项都包含 `encrypted_content` ，默认在创建响应时包含。
+- 在 `store: false` 字段中 [store](https://developers.openai.com/api/reference/resources/responses/methods/create#responses_create-store).
+- 默认情况下，当你创建 response 时，会保留并回放每个返回的推理项。每个项目包括 `encrypted_content` 默认情况下，当你创建 response 时。
 
-该 API 将返回推理令牌的加密版本，你可以像普通推理项一样在后续请求中原样传回。
-对于 ZDR 组织，OpenAI 会强制执行 `store: false` 自动执行。当请求中包含 `encrypted_content`，时，它会在内存中解密，用于生成下一个响应，然后被安全地丢弃。任何新的推理令牌都会立即加密并返回给你，确保不会持久化任何中间状态。
+然后 API 将返回加密后的推理 token，你可以在后续请求中像常规推理项一样将其传回。
+对于 ZDR 组织，OpenAI 会强制执行 `store: false` 。当请求中包含 `encrypted_content`，时，会在内存中解密，用于生成下一次响应，然后安全地丢弃。任何新的推理 token 都会立即被加密并返回给你，确保不会持久化任何中间状态。
 
-### 5. 更新函数定义与输出
+### 5. 更新函数定义和输出
 
-在 Chat Completions 与 Responses 中，函数的定义方式存在两处细微但值得注意的差异。
+Chat Completions 与 Responses 在函数定义方式上存在两处细微但值得注意的差异。
 
-1. 在 Chat Completions 中，函数定义使用外部标签。在 Responses 中，它们使用内部标签。
-2. 在 Chat Completions 中，函数默认是非严格模式的。在 Responses 中，省略 `strict` 会尝试启用严格模式；如果无法使模式兼容，Responses 会回退到非严格、尽力而为的函数调用，并返回已解析的工具及其 `strict: false`。若要在 Responses 中显式保留非严格行为，请设置 `strict: false`.
+1. 在 Chat Completions 中，函数定义使用外部标签。在 Responses 中，函数定义使用内部标签。
+2. 在 Chat Completions 中，函数默认为非严格模式。在 Responses 中， `strict` 省略则视为尝试启用严格模式；如果模式无法兼容，Responses 会回退到非严格的尽力而为函数调用，并以 `strict: false`。的形式返回解析后的工具。如需在 Responses 中显式保留非严格行为，可设置 `strict: false`.
 
-右侧的 Responses API 函数示例在功能上等同于左侧的 Chat Completions 示例。
+右侧的 Responses API 函数示例在功能上与左侧的 Chat Completions 示例等效。
 
 
 
@@ -1235,8 +1271,8 @@ puts(second.output_text)
 
 #### 遵循函数调用的最佳实践
 
-在 Responses 中，工具调用及其输出是两类不同的 Item，通过一个 `call_id`。进行关联。详见
-该 [函数调用文档](https://developers.openai.com/api/docs/guides/function-calling#function-tool-example) ，了解 Responses 中函数调用工作原理的更多细节。
+在 Responses 中，工具调用及其输出是两种不同类型的 Item，它们通过一个 `call_id`。进行关联。参见
+该 [function calling docs](https://developers.openai.com/api/docs/guides/function-calling#function-tool-example) 了解 Responses 中 function calling 工作原理的更多详情。
 
 ### 6. 更新 Structured Outputs 定义
 
@@ -1452,8 +1488,15 @@ client = OpenAI::Client.new
 schema = {
   type: "object",
   properties: {
-    name: {type: "string", minLength: 1},
-    age: {type: "number", minimum: 0, maximum: 130}
+    name: {
+      type: "string",
+      minLength: 1
+    },
+    age: {
+      type: "number",
+      minimum: 0,
+      maximum: 130
+    }
   },
   required: ["name", "age"],
   additionalProperties: false
@@ -1462,10 +1505,19 @@ schema = {
 completion = client.chat.completions.create(
   model: "gpt-6-astra",
   reasoning_effort: :medium,
-  messages: [{role: :user, content: "Jane, 54 years old"}],
+  messages: [
+    {
+      role: :user,
+      content: "Jane, 54 years old"
+    }
+  ],
   response_format: {
     type: :json_schema,
-    json_schema: {name: "person", strict: true, schema: schema}
+    json_schema: {
+      name: "person",
+      strict: true,
+      schema: schema
+    }
   }
 )
 
@@ -1710,8 +1762,15 @@ client = OpenAI::Client.new
 schema = {
   type: "object",
   properties: {
-    name: {type: "string", minLength: 1},
-    age: {type: "number", minimum: 0, maximum: 130}
+    name: {
+      type: "string",
+      minLength: 1
+    },
+    age: {
+      type: "number",
+      minimum: 0,
+      maximum: 130
+    }
   },
   required: ["name", "age"],
   additionalProperties: false
@@ -1773,20 +1832,20 @@ curl https://api.openai.com/v1/responses \
 
 ### 7. 更新流式消费者
 
-Chat Completions 流式响应会增量返回带有 `delta` 字段的数据块。Responses 流式响应使用类型化的服务端发送事件。更新流式响应处理程序，根据每个事件的 `type` 进行分支处理，并处理你的 UI 或编排层需要的事件。
+Chat Completions 流式返回带有 `delta` 字段的增量分块。Responses 流式使用类型化的服务端发送事件。请更新流消费者，根据每个事件的 `type` 进行分支处理，以满足你的 UI 或编排层所需的事件。
 
-对于文本流式响应，请监听以下事件：
+对于文本流式，请监听如下事件：
 
 - `response.created`
 - `response.output_text.delta`
 - `response.completed`
 - `error`
 
-函数调用流还可以发出以下事件 `response.function_call_arguments.delta` 和 `response.function_call_arguments.done`。请参阅 [Responses 流式响应指南](https://developers.openai.com/api/docs/guides/streaming-responses?api-mode=responses) 和 [Responses 流式响应事件参考](https://developers.openai.com/api/reference/resources/responses).
+函数调用流同样可以发出事件，例如 `response.function_call_arguments.delta` 和 `response.function_call_arguments.done`。请参阅 [流式 Responses 指南](https://developers.openai.com/api/docs/guides/streaming-responses?api-mode=responses) 和 [Responses 流式事件参考](https://developers.openai.com/api/reference/resources/responses).
 
 ### 8. 升级到原生工具
 
-如果你的应用场景适合使用 OpenAI 原生的 [工具](https://developers.openai.com/api/docs/guides/tools)，你可以将你的工具调用更新为直接使用 OpenAI 的工具。
+如果你的应用场景适合使用 OpenAI 原生的 [工具](https://developers.openai.com/api/docs/guides/tools)，你可以更新你的工具调用以直接使用 OpenAI 的工具。
 
 
 
@@ -1936,8 +1995,14 @@ completion = client.chat.completions.create(
   model: "gpt-5.6",
   reasoning_effort: :none,
   messages: [
-    {role: :system, content: "You are a helpful assistant."},
-    {role: :user, content: "Who is the current president of France?"}
+    {
+      role: :system,
+      content: "You are a helpful assistant."
+    },
+    {
+      role: :user,
+      content: "Who is the current president of France?"
+    }
   ],
   functions: [
     {
@@ -1945,7 +2010,7 @@ completion = client.chat.completions.create(
       description: "Search the web for information",
       parameters: {
         type: "object",
-        properties: {query: {type: "string"}},
+        properties: { query: { type: "string" } },
         required: ["query"]
       }
     }
@@ -2064,7 +2129,7 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Who is the current president of France?",
-  tools: [{type: :web_search}]
+  tools: [{ type: :web_search }]
 )
 
 puts(response.output_text)
@@ -2085,34 +2150,34 @@ curl https://api.openai.com/v1/responses \
 
 ### 9. 检查常见的迁移错误
 
-在将代码从 Chat Completions 迁移到 Responses 时，请注意以下问题：
+将代码从 Chat Completions 迁移到 Responses 时，请留意以下问题：
 
-- 读取 `choices[0].message.content` 而不是 `response.output_text` 或 `response.output`.
-- 将每一条 `output` 条目视为一条消息。推理、工具和函数调用是单独的 Item 类型。
-- 在手动将上下文带入下一次响应时，丢弃推理、函数调用或函数调用输出 Item。
-- 发送没有匹配的 `call_id`.
-- 在 Responses 请求中使用 `response_format` 而不是使用 `text.format`.
-- 复用 Chat Completions 流式分块处理逻辑，而没有处理类型化的 Responses 事件。
-- 假设 `previous_response_id` 会免除先前上下文的计费。响应链中先前的输入 token 仍会作为输入 token 计费。
+- 阅读 `choices[0].message.content` 而不是 `response.output_text` 或 `response.output`.
+- 将每一条 `output` 视为消息。推理、工具和函数调用是独立的 Item 类型。
+- 在手动将上下文延续到下一个响应时，丢弃推理、函数调用或函数调用输出 Items。
+- 发送函数结果时未附带匹配的 `call_id`.
+- 使用 `response_format` 在 Responses 请求中，而不是 `text.format`.
+- 复用 Chat Completions 流式分块处理器，而不处理类型化的 Responses 事件。
+- 假设 `previous_response_id` 会免除先前上下文的计费。响应链中的先前输入令牌仍会作为输入令牌计费。
 
 ## 增量发布清单
 
 Chat Completions 仍受支持，因此你可以一次迁移一个用户流程。
 
-- [ ] 从简单的文本生成工作流开始。
-- [ ] 更新端点、请求体和输出处理逻辑。
-- [ ] 判断该工作流使用 `previous_response_id`，手动 Item 复现，或者 Conversations API。
-- [ ] 如果工作流是无状态的或 ZDR，添加 `store: false` ，并在推理上下文必须跨轮次延续时包含加密的推理项。
-- [ ] 迁移函数定义，并验证函数调用输出包含正确的 `call_id`.
-- [ ] 将 Structured Outputs 的 schema 从 `response_format` 迁移到 `text.format`.
-- [ ] 更新流式消费者以处理类型化的 Responses 事件。
-- [ ] 在合适的场景下，使用 OpenAI 托管工具替代自定义编排。工作流
-- [ ] 在将更多流量切换到 Responses 之前，比较行为、延迟、token 使用量和错误情况。
+- [ ] 从一个简单的文本生成流程开始。
+- [ ] 更新端点、请求体和输出处理方式。
+- [ ] 判断该流程使用 `previous_response_id`、手动 Item 重放，还是 Conversations API。
+- [ ] 如果该流程是无状态的或 ZDR，请添加 `store: false` ，并在需要跨轮次延续推理上下文时包含加密的推理项。
+- [ ] 迁移函数定义，并确认函数调用输出中包含正确的 `call_id`.
+- [ ] 将结构化输出模式从 `response_format` 迁移到 `text.format`.
+- [ ] 更新流式消费端以处理类型化的 Responses 事件。
+- [ ] 在合适的情况下，将自定义编排替换为 OpenAI 托管工具，以匹配 工作流。
+- [ ] 在向 Responses 路由更多流量之前，对行为、延迟、token 使用量和错误情况进行比较。
 
-我们建议随着时间的推移将所有工作流迁移到 Responses API，以利用最新的 OpenAI 功能和改进。
+我们建议你随着时间的推移，将所有工作流迁移到 Responses API，以充分利用 OpenAI 的最新功能和改进。
 
 ## Assistants API
 
-根据来自 [Assistants API](https://developers.openai.com/api/reference/resources/beta/subresources/assistants) 测试版的开发者反馈，我们将关键改进纳入到 Responses API，使其更加灵活、更快速且更易使用。Responses API 代表了在 OpenAI 上构建 智能体 的未来方向。
+根据来自 [Assistants API](https://developers.openai.com/api/reference/resources/beta/subresources/assistants) beta 版的开发者反馈，我们将关键改进纳入了 Responses API，使其更加灵活、更快速且更易于使用。Responses API 代表了在 OpenAI 上构建 智能体 的未来方向。
 
-Assistants API 已于 2026 年 8 月 26 日正式下线，不再可用。请参阅 [迁移指南](https://developers.openai.com/api/docs/assistants/migration) 以将你的集成更新到 Responses API。
+Assistants API 已于 2026 年 8 月 26 日正式下线，不再可用。请参阅 [迁移指南](https://developers.openai.com/api/docs/assistants/migration) ，将你的集成更新为 Responses API。

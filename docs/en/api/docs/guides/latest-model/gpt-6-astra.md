@@ -139,13 +139,13 @@ Run tests appropriate to the change and complete required checks. Once those pas
 
 ### Migrate with Codex
 
-Codex can apply the recommended changes in this guide with the [OpenAI Docs skill](https://github.com/openai/skills/tree/main/skills/.curated/openai-docs).
+Codex can apply the recommended changes in this guide with the [OpenAI Docs skill](https://github.com/openai/codex/tree/main/codex-rs/skills/src/assets/samples/openai-docs).
 
 ```text
 $openai-docs migrate this project to GPT-6 Astra
 ```
 
-To use this skill in other coding agents, download it from the [OpenAI skills repository](https://github.com/openai/skills/tree/main/skills/.curated/openai-docs).
+To use this skill in other coding agents, download it from the [Codex repository](https://github.com/openai/codex/tree/main/codex-rs/skills/src/assets/samples/openai-docs).
 
 ### Update API and model parameters
 

@@ -58,7 +58,6 @@ import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
 
 const client = new OpenAI();
 
-/** @type {import("openai/resources/responses/responses").ResponseInput} */
 const conversation = [
   {
     type: "message",
@@ -220,17 +219,24 @@ client
 require "openai"
 
 client = OpenAI::Client.new
-conversation = [{
-  type: :message,
-  role: :user,
-  content: "Let's begin a long coding task."
-}]
+conversation = [
+  {
+    type: :message,
+    role: :user,
+    content: "Let's begin a long coding task."
+  }
+]
 
 response = client.responses.create(
   model: "gpt-5.3-codex",
   input: conversation,
   store: false,
-  context_management: [{type: :compaction, compact_threshold: 200_000}]
+  context_management: [
+    {
+      type: :compaction,
+      compact_threshold: 200_000
+    }
+  ]
 )
 conversation.concat(response.output)
 conversation << {
@@ -242,7 +248,12 @@ next_response = client.responses.create(
   model: "gpt-5.3-codex",
   input: conversation,
   store: false,
-  context_management: [{type: :compaction, compact_threshold: 200_000}]
+  context_management: [
+    {
+      type: :compaction,
+      compact_threshold: 200_000
+    }
+  ]
 )
 puts(next_response.output_text)
 ```
@@ -290,7 +301,6 @@ import OpenAI from "openai";
 
 const client = new OpenAI();
 
-/** @type {import("openai/resources/responses/responses").ResponseInput} */
 const conversation = [{ role: "user", content: "Plan a trip to Kyoto." }];
 
 const compacted = await client.responses.compact({
@@ -298,14 +308,8 @@ const compacted = await client.responses.compact({
   input: conversation,
 });
 
-/** @type {import("openai/resources/responses/responses").ResponseInput} */
 const nextInput = [
-  ...compacted.output.map(
-    (item) =>
-      /** @type {import("openai/resources/responses/responses").ResponseInputItem} */ (
-        item
-      )
-  ),
+  ...compacted.output.map((item) => item),
   { role: "user", content: "Add two more days to the itinerary." },
 ];
 
@@ -461,14 +465,23 @@ client
 require "openai"
 
 client = OpenAI::Client.new
-long_input = [{role: :user, content: "Plan a trip to Kyoto."}]
+long_input = [
+  {
+    role: :user,
+    content: "Plan a trip to Kyoto."
+  }
+]
 compaction = client.responses.compact(
   model: "gpt-6-astra",
   input: long_input
 )
 next_input = [
   *compaction.output,
-  {type: :message, role: :user, content: "Add restaurant recommendations."}
+  {
+    type: :message,
+    role: :user,
+    content: "Add restaurant recommendations."
+  }
 ]
 response = client.responses.create(
   model: "gpt-6-astra",

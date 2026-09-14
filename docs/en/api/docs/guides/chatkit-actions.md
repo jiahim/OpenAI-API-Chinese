@@ -55,6 +55,7 @@ class MyChatKitServer(ChatKitServer[RequestContext]):
                 thread.id,
                 HiddenContextItem(
                     id="item_123",
+                    thread_id=thread.id,
                     created_at=datetime.now(),
                     content="<USER_ACTION>The user did a thing</USER_ACTION>",
                 ),

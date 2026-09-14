@@ -331,6 +331,23 @@ or call the token exchange endpoint directly. For request and response fields,
 authorization behavior, and current limitations, see the
 [workload identity token exchange reference](https://developers.openai.com/api/reference/workload-identity-federation).
 
+#### Renew the access token
+
+If you manage token exchange directly, keep `access_token` and `expires_at`
+together when passing the credential from a token service to an application.
+The `expires_at` field is an absolute UTC expiration expressed as a Unix
+timestamp in seconds. Schedule renewal before that time, allowing for clock
+differences and request latency.
+
+The `expires_in` field is the token's lifetime in seconds from issuance. For
+example, a token issued at 12:00 UTC with `expires_in: 3600` expires at 13:00
+UTC, even if another service receives it at 12:05 UTC. Transport and processing
+time don't extend the token's lifetime. See the [response
+fields](https://developers.openai.com/api/reference/workload-identity-federation#response) for details.
+
+Token exchange doesn't return a refresh token. To renew, repeat the exchange
+with a valid external identity token or client certificate.
+
 ## Use workload identity with Codex
 
 Use this path for trusted Codex automation in a managed ChatGPT workspace.

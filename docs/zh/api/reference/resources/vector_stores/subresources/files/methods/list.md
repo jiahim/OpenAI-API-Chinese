@@ -1,10 +1,10 @@
-> 完整的文档索引请参阅 [llms.txt](/llms.txt)。通过在页面 URL 后追加 `.md` 即可获取该页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt). 文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
 
 ## 列出向量存储文件
 
 **get** `/vector_stores/{vector_store_id}/files`
 
-返回向量存储文件的列表。
+返回向量存储文件列表。
 
 ### 路径参数
 
@@ -14,11 +14,11 @@
 
 - `after: optional string`
 
-  用于分页的光标。 `after` 是一个对象 ID，用于标识你在列表中的位置。例如，如果你发起一次列表请求并收到 100 个对象，最后一个为 obj_foo，那么后续调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页游标的对象。 `after` 是一个用于定义你在列表中位置的对象 ID。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，则后续调用可以包含 after=obj_foo 以便获取列表的下一页。
 
 - `before: optional string`
 
-  用于分页的光标。 `before` 是一个对象 ID，用于标识你在列表中的位置。例如，如果你发起一次列表请求并收到 100 个对象，开头一个为 obj_foo，那么后续调用可以包含 before=obj_foo 以获取列表的上一页。
+  用于分页游标的对象。 `before` 是一个用于定义你在列表中位置的对象 ID。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 开头，则后续调用可以包含 before=obj_foo 以便获取列表的上一页。
 
 - `filter: optional "in_progress" or "completed" or "failed" or "cancelled"`
 
@@ -34,7 +34,7 @@
 
 - `limit: optional number`
 
-  返回对象数量的上限。取值范围为 1 到 100，默认为 20。
+  要返回对象数量的上限。Limit 范围为 1 到 100，默认值为 20。
 
 - `order: optional "asc" or "desc"`
 
@@ -44,13 +44,13 @@
 
   - `"desc"`
 
-### 返回
+### 返回值
 
 - `data: array of VectorStoreFile`
 
   - `id: string`
 
-    该标识符，可在 API 端点中引用。
+    可在 API 端点中引用的标识符。
 
   - `created_at: number`
 
@@ -58,11 +58,11 @@
 
   - `last_error: object { code, message }  or null`
 
-    与该向量存储文件关联的最后一个错误。若无错误则为 `null` 空。
+    与该向量存储文件关联的最后一个错误。如果无错误则为 `null` 。
 
     - `code: "server_error" or "unsupported_file" or "invalid_file"`
 
-      以下值之一： `server_error`, `unsupported_file`，或 `invalid_file`.
+      以下之一： `server_error`, `unsupported_file`，或 `invalid_file`.
 
       - `"server_error"`
 
@@ -82,7 +82,7 @@
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
-    向量存储文件的状态，可能为 `in_progress`, `completed`, `cancelled`，或 `failed`。状态 `completed` 表示该向量存储文件已可供使用。
+    向量存储文件的状态，可为 `in_progress`, `completed`, `cancelled`，或 `failed`。状态 `completed` 表示向量存储文件已可供使用。
 
     - `"in_progress"`
 
@@ -98,15 +98,15 @@
 
   - `vector_store_id: string`
 
-    所关联的 [向量存储](/docs/api-reference/vector-stores/object) 的 ID， [文件](/docs/api-reference/files) 即附加至该向量存储。
+    所附加的 [向量存储](/api/reference/resources/vector_stores) 的 ID，该 [文件](/api/reference/resources/files) 被附加到该向量存储。
 
   - `attributes: optional map[string or number or boolean] or null`
 
-    可附加到对象的 16 个键值对。可用于
-    以结构化格式存储对象的附加信息，并通过
-    API 或仪表板查询对象。键为字符串
-    最大长度为 64 个字符。值为字符串，每个值的最大
-    长度为 512 个字符，或为布尔值或数字。
+    可附加到对象的 16 个键值对集合。可用于
+    以结构化格式存储对象的附加信息，并通过 API 或仪表板查询对象。键为字符串，
+    最长为 64 个字符。
+    最大长度为 64 个字符。值可以是最大
+    长度为 512 个字符的字符串、布尔值或数字。
 
     - `string`
 
@@ -116,7 +116,7 @@
 
   - `chunking_strategy: optional StaticFileChunkingStrategyObject or OtherFileChunkingStrategyObject`
 
-    用于对文件进行分块（chunking）的策略。
+    用于对文件进行分块的策略。
 
     - `StaticFileChunkingStrategyObject object { static, type }`
 
@@ -124,27 +124,27 @@
 
         - `chunk_overlap_tokens: number`
 
-          块（chunk）之间重叠的 token 数量。默认值为 `400`.
+          块之间重叠的 token 数。默认值为 `400`.
 
-          注意，重叠部分不得超过 `max_chunk_size_tokens`.
+          请注意，重叠部分不得超过 `max_chunk_size_tokens`.
 
         - `max_chunk_size_tokens: number`
 
-          每个块（chunk）的最大 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+          每个块中的最大 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
       - `type: "static"`
 
-        始终为 `static`.
+        始终 `static`.
 
         - `"static"`
 
     - `OtherFileChunkingStrategyObject object { type }`
 
-      当分块（chunking）策略未知时返回该值。通常是因为文件在被引入 API `chunking_strategy` 概念之前就已经被索引。
+      当分块策略未知时返回。通常是因为该文件是在引入 API `chunking_strategy` 概念之前被索引的。
 
       - `type: "other"`
 
-        始终为 `other`.
+        始终 `other`.
 
         - `"other"`
 

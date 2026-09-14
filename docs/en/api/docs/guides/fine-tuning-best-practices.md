@@ -158,7 +158,7 @@ job = client.fine_tuning.jobs.create(
   training_file: "file-abc123",
   method_: {
     type: :supervised,
-    supervised: {hyperparameters: {n_epochs: 2}}
+    supervised: { hyperparameters: { n_epochs: 2 } }
   }
 )
 puts(job.id)

@@ -48,6 +48,10 @@ The OpenAI API uses API keys for authentication. Visit your [API keys](https://p
 
 This is a relatively straightforward way to control access, but you must be vigilant about securing these keys. Avoid exposing the API keys in your code or in public repositories; instead, store them in a secure location. You should expose your keys to your application using environment variables or secret management service, so that you don't need to hard-code them in your codebase. Read more in our [Best practices for API key safety](https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety).
 
+We strongly recommend setting an expiration date when you create a project API key and establishing a regular key rotation process. Before a key expires, create a replacement, update your applications to use it, and revoke the old key once you've verified that the replacement works.
+
+Administrators can enforce a maximum API key lifetime at the organization or project level in [Platform settings](https://platform.openai.com/settings/organization/general). New keys must expire within the configured limit, preventing them from remaining valid indefinitely. Project limits cannot exceed the organization limit.
+
 API key usage can be monitored on the [Usage page](https://platform.openai.com/usage) once tracking is enabled. If you are using an API key generated prior to Dec 20, 2023 tracking will not be enabled by default. You can enable tracking going forward on the [API key management dashboard](https://platform.openai.com/api-keys). All API keys generated past Dec 20, 2023 have tracking enabled. Any previous untracked usage will be displayed as `Untracked` in the dashboard.
 
 ### Staging projects
@@ -56,11 +60,11 @@ As you scale, you may want to create separate projects for your staging and prod
 
 ## Scaling your solution architecture
 
-When designing your application or service for production that uses our API, it's important to consider how you will scale to meet traffic demands. There are a few key areas you will need to consider regardless of the cloud service provider of your choice:
+When designing your application or service for production that uses our API, it's important to consider how you will scale to meet traffic demands. You will need to consider a few key areas regardless of the cloud service provider of your choice:
 
 - **Horizontal scaling**: You may want to scale your application out horizontally to accommodate requests to your application that come from multiple sources. This could involve deploying additional servers or containers to distribute the load. If you opt for this type of scaling, make sure that your architecture is designed to handle multiple nodes and that you have mechanisms in place to balance the load between them.
 - **Vertical scaling**: Another option is to scale your application up vertically, meaning you can beef up the resources available to a single node. This would involve upgrading your server's capabilities to handle the additional load. If you opt for this type of scaling, make sure your application is designed to take advantage of these additional resources.
-- **Caching**: By storing frequently accessed data, you can improve response times without needing to make repeated calls to our API. Your application will need to be designed to use cached data whenever possible and invalidate the cache when new information is added. There are a few different ways you could do this. For example, you could store data in a database, filesystem, or in-memory cache, depending on what makes the most sense for your application.
+- **Caching**: By storing frequently accessed data, you can improve response times without needing to make repeated calls to our API. Your application will need to be designed to use cached data whenever possible and invalidate the cache when new information is added. For example, you could store data in a database, filesystem, or in-memory cache, depending on what makes the most sense for your application.
 - **Load balancing**: Finally, consider load-balancing techniques to ensure requests are distributed evenly across your available servers. This could involve using a load balancer in front of your servers or using DNS round-robin. Balancing the load will help improve performance and reduce bottlenecks.
 
 ### Managing rate limits
@@ -85,11 +89,11 @@ The latency of a completion request is mostly influenced by two factors: the mod
 
 The bulk of the latency typically arises from the token generation step.
 
-> **Intuition**: Prompt tokens add very little latency to completion calls. Time to generate completion tokens is much longer, as tokens are generated one at a time. Longer generation lengths will accumulate latency due to generation required for each token.
+> **Intuition**: Prompt tokens add little latency to completion calls. Time to generate completion tokens is much longer, as tokens are generated one at a time. Longer generation lengths will accumulate latency due to generation required for each token.
 
 ### Common factors affecting latency and possible mitigation techniques
 
-Now that we have looked at the basics of latency, let’s take a look at various factors that can affect latency, broadly ordered from most impactful to least impactful.
+Now that we have looked at the basics of latency, let’s take a look at various factors that can affect latency, broadly ordered from greatest to least impact.
 
 #### Model
 
@@ -124,13 +128,13 @@ To monitor your costs, you can set a [notification threshold](https://platform.o
 
 One of the challenges of moving your prototype into production is budgeting for the costs associated with running your application. OpenAI offers a [pay-as-you-go pricing model](https://openai.com/api/pricing/), with prices per 1,000 tokens (roughly equal to 750 words). To estimate your costs, you will need to project the token utilization. Consider factors such as traffic levels, the frequency with which users will interact with your application, and the amount of data you will be processing.
 
-**One useful framework for thinking about reducing costs is to consider costs as a function of the number of tokens and the cost per token.** There are two potential avenues for reducing costs using this framework. First, you could work to reduce the cost per token by switching to smaller models for some tasks in order to reduce costs. Alternatively, you could try to reduce the number of tokens required. There are a few ways you could do this, such as by using shorter prompts, [fine-tuning](https://developers.openai.com/api/docs/guides/model-optimization) models, or caching common user queries so that they don't need to be processed repeatedly.
+**One useful framework for thinking about reducing costs is to consider costs as a function of the number of tokens and the cost per token.** You can approach cost reduction in two ways using this framework. First, you could work to reduce the cost per token by switching to smaller models for some tasks in order to reduce costs. Alternatively, you could try to reduce the number of tokens required. You could do this in a few ways, such as by using shorter prompts, [fine-tuning](https://developers.openai.com/api/docs/guides/model-optimization) models, or caching common user queries so that they don't need to be processed repeatedly.
 
 You can experiment with our interactive [tokenizer tool](https://platform.openai.com/tokenizer) to help you estimate costs. The API and playground also returns token counts as part of the response. Once you’ve got things working with our most capable model, you can see if the other models can produce the same results with lower latency and costs. Learn more in our [token usage help article](https://help.openai.com/en/articles/6614209-how-do-i-check-my-token-usage).
 
 ## MLOps strategy
 
-As you move your prototype into production, you may want to consider developing an MLOps strategy. MLOps (machine learning operations) refers to the process of managing the end-to-end life cycle of your machine learning models, including any models you may be fine-tuning using our API. There are a number of areas to consider when designing your MLOps strategy. These include
+As you move your prototype into production, you may want to consider developing an MLOps strategy. MLOps (machine learning operations) refers to the process of managing the end-to-end life cycle of your machine learning models, including any models you may be fine-tuning using our API. Consider the following areas when designing your MLOps strategy:
 
 - Data and model management: managing the data used to train or fine-tune your model and tracking versions and changes.
 - Model monitoring: tracking your model's performance over time and detecting any potential issues or degradation.

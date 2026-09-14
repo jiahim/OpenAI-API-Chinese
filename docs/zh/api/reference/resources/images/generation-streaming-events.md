@@ -1,463 +1,91 @@
 # 图像生成流式事件
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 获取文档页面的 Markdown 版本。
 
 通过服务端发送事件实时流式生成和编辑图像。
-[详细了解图像流式传输](https://developers.openai.com/api/docs/guides/image-generation).
+[了解有关图像流式处理的更多信息](https://developers.openai.com/api/docs/guides/image-generation).
+
+<a id="image_generation.partial_image"></a>
 
 ## image_generation.partial_image
 
-在图像生成流式传输过程中，当有部分图像可用时发出。
+在图像生成流式传输期间，当有部分图像可用时触发。
 
 ### Schema
 
 Schema name: `ImageGenPartialImageEvent`
 
-```json
-{
-  "(resource) images > (model) image_gen_partial_image_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenPartialImageEvent",
-    "docstring": "Emitted when a partial image is available during image generation streaming.\n",
-    "ident": "ImageGenPartialImageEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "b64_json"
-        },
-        {
-          "ident": "background"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "output_format"
-        },
-        {
-          "ident": "partial_image_index"
-        },
-        {
-          "ident": "quality"
-        },
-        {
-          "ident": "size"
-        },
-        {
-          "ident": "type"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) b64_json",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) background",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) created_at",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) output_format",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) partial_image_index",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) type"
-    ]
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) b64_json": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/b64_json",
-    "deprecated": false,
-    "key": "b64_json",
-    "docstring": "Base64-encoded partial image data, suitable for rendering as an image.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) background": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/background",
-    "deprecated": false,
-    "key": "background",
-    "docstring": "The background setting for the requested image.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/background",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "transparent"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "opaque"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "auto"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) background > (member) 0",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) background > (member) 1",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) background > (member) 2"
-    ]
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp when the event was created.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) output_format": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/output_format",
-    "deprecated": false,
-    "key": "output_format",
-    "docstring": "The output format for the requested image.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/output_format",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "png"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "webp"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "jpeg"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) output_format > (member) 0",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) output_format > (member) 1",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) output_format > (member) 2"
-    ]
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) partial_image_index": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/partial_image_index",
-    "deprecated": false,
-    "key": "partial_image_index",
-    "docstring": "0-based index for the partial image (streaming).\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/quality",
-    "deprecated": false,
-    "key": "quality",
-    "docstring": "The quality setting for the requested image.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/quality",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "low"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "medium"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "high"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "xhigh"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "max"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "auto"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 0",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 1",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 2",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 3",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 4",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 5"
-    ]
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/size",
-    "deprecated": false,
-    "key": "size",
-    "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/size",
-      "types": [
-        {
-          "kind": "HttpTypeString"
-        },
-        {
-          "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/size/anyOf/1",
-          "types": [
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "1024x1024"
-            },
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "1024x1536"
-            },
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "1536x1024"
-            },
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "auto"
-            }
-          ]
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "union",
-    "childrenParentSchema": "union",
-    "children": [
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 0",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1"
-    ]
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `image_generation.partial_image`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "image_generation.partial_image"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) background > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "transparent"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) background > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "opaque"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) background > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "auto"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) output_format > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "png"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) output_format > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "webp"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) output_format > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "jpeg"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "low"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "medium"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "high"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 3": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "xhigh"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 4": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "max"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) quality > (member) 5": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "auto"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 0": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/size/anyOf/0",
-    "ident": "UnionMember0",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "children": []
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/size/anyOf/1",
-    "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
-    "ident": "UnionMember1",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenPartialImageEvent/properties/size/anyOf/1",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "1024x1024"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "1024x1536"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "1536x1024"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "auto"
-        }
-      ]
-    },
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 0",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 1",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 2",
-      "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 3"
-    ]
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "image_generation.partial_image"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "1024x1024"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "1024x1536"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "1536x1024"
-    }
-  },
-  "(resource) images > (model) image_gen_partial_image_event > (schema) > (property) size > (variant) 1 > (member) 3": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "auto"
-    }
-  }
-}
-```
+- `b64_json: string`
+
+  经过 Base64 编码的部分图像数据，适合作为图像进行渲染。
+
+- `background: "transparent" or "opaque" or "auto"`
+
+  所请求图像的背景设置。
+
+  - `"transparent"`
+
+  - `"opaque"`
+
+  - `"auto"`
+
+- `created_at: number`
+
+  事件创建时的 Unix 时间戳。
+
+- `output_format: "png" or "webp" or "jpeg"`
+
+  所请求图像的输出格式。
+
+  - `"png"`
+
+  - `"webp"`
+
+  - `"jpeg"`
+
+- `partial_image_index: number`
+
+  部分图像的 0-based 索引（流式）。
+
+- `quality: "low" or "medium" or "high" or 3 more`
+
+  所请求图像的质量设置。
+
+  - `"low"`
+
+  - `"medium"`
+
+  - `"high"`
+
+  - `"xhigh"`
+
+  - `"max"`
+
+  - `"auto"`
+
+- `size: string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+  以 `WIDTHxHEIGHT` 字符串形式表示的图像尺寸，例如 `1536x864`.
+
+  - `string`
+
+  - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+    以 `WIDTHxHEIGHT` 字符串形式表示的图像尺寸，例如 `1536x864`.
+
+    - `"1024x1024"`
+
+    - `"1024x1536"`
+
+    - `"1536x1024"`
+
+    - `"auto"`
+
+- `type: "image_generation.partial_image"`
+
+  事件的类型。始终为 `image_generation.partial_image`.
+
+  - `"image_generation.partial_image"`
 
 ### 示例
 
@@ -474,575 +102,111 @@ Schema name: `ImageGenPartialImageEvent`
 }
 ```
 
+<a id="image_generation.completed"></a>
+
 ## image_generation.completed
 
-在图像生成完成且最终图像可用时发出。
+在图像生成已完成且最终图像可用时发出。
 
 ### Schema
 
 Schema name: `ImageGenCompletedEvent`
 
-```json
-{
-  "(resource) images > (model) image_gen_completed_event > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenCompletedEvent",
-    "docstring": "Emitted when image generation has completed and the final image is available.\n",
-    "ident": "ImageGenCompletedEvent",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "b64_json"
-        },
-        {
-          "ident": "background"
-        },
-        {
-          "ident": "created_at"
-        },
-        {
-          "ident": "output_format"
-        },
-        {
-          "ident": "quality"
-        },
-        {
-          "ident": "size"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "usage"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) b64_json",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) background",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) created_at",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) output_format",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) size",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) type",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) usage"
-    ]
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) b64_json": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/b64_json",
-    "deprecated": false,
-    "key": "b64_json",
-    "docstring": "Base64-encoded image data, suitable for rendering as an image.\n",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "string",
-    "children": []
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) background": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/background",
-    "deprecated": false,
-    "key": "background",
-    "docstring": "The background setting for the generated image.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/background",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "transparent"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "opaque"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "auto"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) background > (member) 0",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) background > (member) 1",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) background > (member) 2"
-    ]
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) created_at": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/created_at",
-    "deprecated": false,
-    "key": "created_at",
-    "docstring": "The Unix timestamp when the event was created.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "constraints": {
-      "format": "unixtime"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) output_format": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/output_format",
-    "deprecated": false,
-    "key": "output_format",
-    "docstring": "The output format for the generated image.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/output_format",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "png"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "webp"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "jpeg"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) output_format > (member) 0",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) output_format > (member) 1",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) output_format > (member) 2"
-    ]
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/quality",
-    "deprecated": false,
-    "key": "quality",
-    "docstring": "The quality setting for the generated image.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/quality",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "low"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "medium"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "high"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "xhigh"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "max"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "auto"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 0",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 1",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 2",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 3",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 4",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 5"
-    ]
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) size": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/size",
-    "deprecated": false,
-    "key": "size",
-    "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/size",
-      "types": [
-        {
-          "kind": "HttpTypeString"
-        },
-        {
-          "kind": "HttpTypeUnion",
-          "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/size/anyOf/1",
-          "types": [
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "1024x1024"
-            },
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "1024x1536"
-            },
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "1536x1024"
-            },
-            {
-              "kind": "HttpTypeLiteral",
-              "literal": "auto"
-            }
-          ]
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "union",
-    "childrenParentSchema": "union",
-    "children": [
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 0",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1"
-    ]
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) type": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/type",
-    "deprecated": false,
-    "key": "type",
-    "docstring": "The type of the event. Always `image_generation.completed`.\n",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/type",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "image_generation.completed"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) type > (member) 0"
-    ]
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) usage": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/usage",
-    "deprecated": false,
-    "key": "usage",
-    "docstring": "For the GPT image models only, the token usage information for the image generation.\n",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "input_tokens"
-        },
-        {
-          "ident": "input_tokens_details"
-        },
-        {
-          "ident": "output_tokens"
-        },
-        {
-          "ident": "total_tokens"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) usage > (property) input_tokens",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) usage > (property) input_tokens_details",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) usage > (property) output_tokens",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) usage > (property) total_tokens"
-    ]
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) background > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "transparent"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) background > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "opaque"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) background > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "auto"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) output_format > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "png"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) output_format > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "webp"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) output_format > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "jpeg"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "low"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "medium"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "high"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 3": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "xhigh"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 4": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "max"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) quality > (member) 5": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "auto"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 0": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/size/anyOf/0",
-    "ident": "UnionMember0",
-    "type": {
-      "kind": "HttpTypeString"
-    },
-    "children": []
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/size/anyOf/1",
-    "docstring": "The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.",
-    "ident": "UnionMember1",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/ImageGenCompletedEvent/properties/size/anyOf/1",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "1024x1024"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "1024x1536"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "1536x1024"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "auto"
-        }
-      ]
-    },
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1 > (member) 0",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1 > (member) 1",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1 > (member) 2",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1 > (member) 3"
-    ]
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) type > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "image_generation.completed"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) usage > (property) input_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImagesUsage/properties/input_tokens",
-    "deprecated": false,
-    "key": "input_tokens",
-    "docstring": "The number of tokens (images and text) in the input prompt.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) usage > (property) input_tokens_details": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImagesUsage/properties/input_tokens_details",
-    "deprecated": false,
-    "key": "input_tokens_details",
-    "docstring": "The input tokens detailed information for the image generation.",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "image_tokens"
-        },
-        {
-          "ident": "text_tokens"
-        }
-      ]
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) usage > (property) input_tokens_details > (property) image_tokens",
-      "(resource) images > (model) image_gen_completed_event > (schema) > (property) usage > (property) input_tokens_details > (property) text_tokens"
-    ]
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) usage > (property) output_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImagesUsage/properties/output_tokens",
-    "deprecated": false,
-    "key": "output_tokens",
-    "docstring": "The number of image tokens in the output image.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) usage > (property) total_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImagesUsage/properties/total_tokens",
-    "deprecated": false,
-    "key": "total_tokens",
-    "docstring": "The total number of tokens (images and text) used for the image generation.\n",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1 > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "1024x1024"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1 > (member) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "1024x1536"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1 > (member) 2": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "1536x1024"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) size > (variant) 1 > (member) 3": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "auto"
-    }
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) usage > (property) input_tokens_details > (property) image_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImagesUsage/properties/input_tokens_details/properties/image_tokens",
-    "deprecated": false,
-    "key": "image_tokens",
-    "docstring": "The number of image tokens in the input prompt.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  },
-  "(resource) images > (model) image_gen_completed_event > (schema) > (property) usage > (property) input_tokens_details > (property) text_tokens": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/ImagesUsage/properties/input_tokens_details/properties/text_tokens",
-    "deprecated": false,
-    "key": "text_tokens",
-    "docstring": "The number of text tokens in the input prompt.",
-    "type": {
-      "kind": "HttpTypeNumber"
-    },
-    "optional": false,
-    "nullable": false,
-    "schemaType": "integer",
-    "children": []
-  }
-}
-```
+- `b64_json: string`
+
+  Base64 编码的图像数据，适合作为图像进行渲染。
+
+- `background: "transparent" or "opaque" or "auto"`
+
+  生成图像的背景设置。
+
+  - `"transparent"`
+
+  - `"opaque"`
+
+  - `"auto"`
+
+- `created_at: number`
+
+  事件创建时的 Unix 时间戳。
+
+- `output_format: "png" or "webp" or "jpeg"`
+
+  生成图像的输出格式。
+
+  - `"png"`
+
+  - `"webp"`
+
+  - `"jpeg"`
+
+- `quality: "low" or "medium" or "high" or 3 more`
+
+  生成图像的质量设置。
+
+  - `"low"`
+
+  - `"medium"`
+
+  - `"high"`
+
+  - `"xhigh"`
+
+  - `"max"`
+
+  - `"auto"`
+
+- `size: string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+  以 `WIDTHxHEIGHT` 字符串形式表示的图像尺寸，例如 `1536x864`.
+
+  - `string`
+
+  - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+
+    以 `WIDTHxHEIGHT` 字符串形式表示的图像尺寸，例如 `1536x864`.
+
+    - `"1024x1024"`
+
+    - `"1024x1536"`
+
+    - `"1536x1024"`
+
+    - `"auto"`
+
+- `type: "image_generation.completed"`
+
+  事件的类型。始终为 `image_generation.completed`.
+
+  - `"image_generation.completed"`
+
+- `usage: object { input_tokens, input_tokens_details, output_tokens, total_tokens }`
+
+  仅适用于 GPT 图像模型，图像生成的 token 使用信息。
+
+  - `input_tokens: number`
+
+    输入提示中的 token（图像和文本）数量。
+
+  - `input_tokens_details: object { image_tokens, text_tokens }`
+
+    图像生成的输入 token 详细信息。
+
+    - `image_tokens: number`
+
+      输入提示中的图像 token 数量。
+
+    - `text_tokens: number`
+
+      输入提示中的文本 token 数量。
+
+  - `output_tokens: number`
+
+    输出图像中的图像 token 数量。
+
+  - `total_tokens: number`
+
+    用于图像生成的 token（图像和文本）总数。
 
 ### 示例
 

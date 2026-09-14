@@ -357,6 +357,7 @@ end
 unless Base64.urlsafe_encode64(payload, padding: false) == parts[1]
   raise "JWT payload is not valid Base64URL"
 end
+
 payload.force_encoding(Encoding::UTF_8)
 raise "JWT payload is not valid UTF-8" unless payload.valid_encoding?
 
@@ -459,7 +460,6 @@ const wifAudience = audience;
 
 const sts = new STSClient({ region: awsRegion });
 
-/** @returns {import("openai/auth/index").SubjectTokenProvider} */
 function awsOutboundWebIdentityTokenProvider() {
   return {
     tokenType: "jwt",
@@ -1143,6 +1143,7 @@ end
 unless Base64.urlsafe_encode64(payload, padding: false) == parts[1]
   raise "JWT payload is not valid Base64URL"
 end
+
 payload.force_encoding(Encoding::UTF_8)
 raise "JWT payload is not valid UTF-8" unless payload.valid_encoding?
 
@@ -1228,7 +1229,6 @@ if (!identityProviderId || !serviceAccountId) {
   );
 }
 
-/** @returns {import("openai/auth/index").SubjectTokenProvider} */
 function mountedEksServiceAccountTokenProvider(path) {
   return {
     tokenType: "jwt",

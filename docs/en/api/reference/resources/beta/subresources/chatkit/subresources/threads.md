@@ -2,7 +2,7 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-## Delete ChatKit thread
+## Delete a ChatKit thread
 
 **delete** `/chatkit/threads/{thread_id}`
 
@@ -750,7 +750,7 @@ curl "https://api.openai.com/v1/chatkit/threads/cthr_abc123/items?limit=3" \
 }
 ```
 
-## Retrieve ChatKit thread
+## Retrieve a ChatKit thread
 
 **get** `/chatkit/threads/{thread_id}`
 

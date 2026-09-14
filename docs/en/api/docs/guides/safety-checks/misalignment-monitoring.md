@@ -54,50 +54,50 @@ The webhook contains an alert ID, rather than the alert details:
 }
 ```
 
-After verifying and acknowledging the webhook, retrieve the alert in your background processing. Set `SAFETY_ALERT_ID` to `data.id`, not the event's `id`. Use an API key authorized for the same project with the `api.safety.alerts.read` permission:
+After verifying and acknowledging the webhook, retrieve the alert in your background processing. Replace the illustrative `salert_123` value with `data.id` from the webhook. The event's `id` identifies the webhook event rather than the alert. Use an API key authorized for the same project with the `api.safety.alerts.read` permission:
 
 ```bash
-curl "https://api.openai.com/v1/safety/alerts/${SAFETY_ALERT_ID}" \
+curl "https://api.openai.com/v1/safety/alerts/salert_123" \
   -H "Authorization: Bearer ${OPENAI_API_KEY}"
 ```
 
 Retrieve a project safety alert
 
 ```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
 import OpenAI from "openai";
 
 const client = new OpenAI();
-const alertId = process.env.SAFETY_ALERT_ID;
-if (!alertId) throw new Error("Set SAFETY_ALERT_ID.");
+const alertId = "salert_123";
 
 const alert = await client.safety.alerts.retrieve(alertId);
 console.log(alert.error_type, alert.reason, alert.response_id);
 ```
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 
 from openai import OpenAI
 
 client = OpenAI()
-alert = client.safety.alerts.retrieve(os.environ["SAFETY_ALERT_ID"])
+alert = client.safety.alerts.retrieve("salert_123")
 print(alert.error_type, alert.reason)
 ```
 
 ```go
+// Replace the illustrative IDs and URLs below with your own resource values.
 package main
 
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/openai/openai-go/v3"
 )
 
 func main() {
 	client := openai.NewClient()
-	alert, err := client.Safety.Alerts.Get(context.Background(), os.Getenv("SAFETY_ALERT_ID"))
+	alert, err := client.Safety.Alerts.Get(context.Background(), "salert_123")
 	if err != nil {
 		panic(err)
 	}
@@ -108,19 +108,21 @@ func main() {
 ```
 
 ```java
+// Replace the illustrative IDs and URLs below with your own resource values.
 import com.openai.models.safety.alerts.SafetyAlert;
 
-SafetyAlert alert = client.safety().alerts().retrieve(System.getenv("SAFETY_ALERT_ID"));
+SafetyAlert alert = client.safety().alerts().retrieve("salert_123");
 System.out.println(alert.errorType());
 alert.reason().ifPresent(System.out::println);
 System.out.println(alert.requestPaused());
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
 
 client = OpenAI::Client.new
-alert = client.safety.alerts.retrieve(ENV.fetch("SAFETY_ALERT_ID"))
+alert = client.safety.alerts.retrieve("salert_123")
 puts(alert.error_type)
 puts(alert.reason)
 puts(alert.request_paused)

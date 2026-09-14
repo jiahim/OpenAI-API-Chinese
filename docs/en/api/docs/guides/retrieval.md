@@ -126,13 +126,12 @@ require "pathname"
 
 client = OpenAI::Client.new
 store = client.vector_stores.create(name: "Support FAQ")
-source = Pathname("customer_policies.txt")
-uploaded = client.files.create(file: source, purpose: :assistants)
-file = client.vector_stores.files.create(store.id, file_id: uploaded.id)
-until [:completed, :failed, :cancelled].include?(file.status)
-  sleep(1)
-  file = client.vector_stores.files.retrieve(file.id, vector_store_id: store.id)
-end
+file = client.vector_stores.files.upload_and_poll(
+  store.id,
+  file: Pathname("customer_policies.txt"),
+  timeout: 600
+)
+raise "File ingestion ended with status: #{file.status}" unless file.status == OpenAI::VectorStores::VectorStoreFile::Status::COMPLETED
 
 puts(store.id)
 ```
@@ -1020,19 +1019,13 @@ require "openai"
 require "pathname"
 
 client = OpenAI::Client.new
-file = Pathname("customer_policies.txt")
-uploaded = client.files.create(file: file, purpose: :assistants)
-vector_store_file = client.vector_stores.files.create(
+vector_store_file = client.vector_stores.files.upload_and_poll(
   "vs_123",
-  file_id: uploaded.id
+  file: Pathname("customer_policies.txt"),
+  timeout: 600
 )
-until [:completed, :failed, :cancelled].include?(vector_store_file.status)
-  sleep(1)
-  vector_store_file = client.vector_stores.files.retrieve(
-    vector_store_file.id,
-    vector_store_id: "vs_123"
-  )
-end
+raise "File ingestion ended with status: #{vector_store_file.status}" unless vector_store_file.status == OpenAI::VectorStores::VectorStoreFile::Status::COMPLETED
+
 puts(vector_store_file.id)
 ```
 
@@ -1185,7 +1178,7 @@ System.out.println(file.id());
 require "openai"
 
 client = OpenAI::Client.new
-file = client.vector_stores.files.update("file_123", vector_store_id: "vs_123", attributes: {category: "policy"})
+file = client.vector_stores.files.update("file_123", vector_store_id: "vs_123", attributes: { category: "policy" })
 puts(file.id)
 ```
 
@@ -1455,27 +1448,39 @@ System.out.println(batch.status());
 require "openai"
 
 client = OpenAI::Client.new
-batch = client.vector_stores.file_batches.create(
+batch = client.vector_stores.file_batches.create_and_poll(
   "vs_123",
   files: [
-    {file_id: "file_123", attributes: {department: "finance"}},
+    {
+      file_id: "file_123",
+      attributes: { department: "finance" }
+    },
     {
       file_id: "file_456",
       chunking_strategy: {
         type: :static,
-        max_chunk_size_tokens: 1_200,
-        chunk_overlap_tokens: 200
+        static: {
+          max_chunk_size_tokens: 1_200,
+          chunk_overlap_tokens: 200
+        }
       }
     }
-  ]
+  ],
+  timeout: 600
 )
-until [:completed, :failed, :cancelled].include?(batch.status)
-  sleep(1)
-  batch = client.vector_stores.file_batches.retrieve(
-    batch.id,
-    vector_store_id: "vs_123"
-  )
+raise "File ingestion ended with status: #{batch.status}" unless batch.status == OpenAI::VectorStores::VectorStoreFileBatch::Status::COMPLETED
+
+raise "File ingestion failed for #{batch.file_counts.failed} file(s)" if batch.file_counts.failed.positive?
+
+# Live validation of per-file batches returned default chunking despite overrides.
+file = client.vector_stores.files.retrieve("file_456", vector_store_id: "vs_123")
+strategy = file.chunking_strategy
+unless strategy.is_a?(OpenAI::StaticFileChunkingStrategyObject) &&
+       strategy.static.max_chunk_size_tokens == 1_200 &&
+       strategy.static.chunk_overlap_tokens == 200
+  raise "Requested chunking was not applied to #{file.id}: #{strategy.to_json}"
 end
+
 puts(batch.status)
 ```
 
@@ -1791,7 +1796,7 @@ System.out.println(file.id());
 require "openai"
 
 client = OpenAI::Client.new
-file = client.vector_stores.files.create("<vector_store_id>", file_id: "file_123", attributes: {category: "policy"})
+file = client.vector_stores.files.create("<vector_store_id>", file_id: "file_123", attributes: { category: "policy" })
 puts(file.id)
 ```
 
@@ -1873,7 +1878,10 @@ require "openai"
 client = OpenAI::Client.new
 store = client.vector_stores.update(
   "vs_123",
-  expires_after: {anchor: :last_active_at, days: 7}
+  expires_after: {
+    anchor: :last_active_at,
+    days: 7
+  }
 )
 puts(store.expires_after)
 ```
@@ -2041,6 +2049,7 @@ console.log(completion.choices[0].message.content);
 ```
 
 ```python
+# Use results and user_query from the preceding search step.
 formatted_results = format_results(results.data)
 
 "\n".join("\n".join(c.text for c in result.content) for result in results.data)
@@ -2176,7 +2185,10 @@ completion = client.chat.completions.create(
       role: :developer,
       content: "Answer the query concisely using only the provided sources."
     },
-    {role: :user, content: "Sources: <sources>#{sources}</sources>\n\nQuery: #{query}"}
+    {
+      role: :user,
+      content: "Sources: <sources>#{sources}</sources>\n\nQuery: #{query}"
+    }
   ]
 )
 puts(completion.choices.fetch(0).message.content)
@@ -2258,7 +2270,7 @@ results = [
   {
     file_id: "file-12345",
     filename: "woodchuck_policy.txt",
-    content: [{text: "Each passenger may carry up to two woodchucks."}]
+    content: [{ text: "Each passenger may carry up to two woodchucks." }]
   }
 ]
 

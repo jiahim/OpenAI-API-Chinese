@@ -1,18 +1,18 @@
-# 为 Oracle 云基础设施配置工作负载身份联合
+# 为 Oracle Cloud Infrastructure 配置工作负载身份联合
 
-> 有关完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后添加 `.md` 获取文档页面的 Markdown 版本。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 来获取。
 
-使用 Oracle Cloud Infrastructure (OCI) 作为工作负载身份提供方，通过将 Oracle Identity Cloud Service (IDCS) 访问令牌交换为短期 OpenAI 访问令牌。OCI 实例主体对同一租户中身份域的令牌交换请求进行签名。OpenAI 验证生成的令牌，并授权该 OCI 工作负载作为已映射的 OpenAI 服务账号进行操作。
+使用 Oracle Cloud Infrastructure (OCI) 作为工作负载身份提供方，通过将 Oracle Identity Cloud Service (IDCS) 访问令牌交换为短期 OpenAI 访问令牌。OCI 实例主体对同一租户中身份域的令牌交换请求进行签名。OpenAI 验证生成的令牌，并授权 OCI 工作负载作为已映射的 OpenAI 服务帐号进行操作。
 
-对于 Codex，使用此页面获取并检查 Oracle 令牌。然后 [配置 Codex 工作负载身份](https://developers.openai.com/codex/enterprise/workload-identity) 将该令牌写入文件并指向它。本页面中的服务账号映射和 SDK 示例适用于 OpenAI API。
+对于 Codex，使用本页获取并检查 Oracle 令牌。然后 [配置 Codex 工作负载身份](https://developers.openai.com/codex/enterprise/workload-identity) 以将该令牌写入文件并指向 Codex。本页中的服务帐号映射和 SDK 示例适用于 OpenAIAPI。
 
-此设置不需要 OpenAI API 密钥、自定义 Oracle OAuth 资源应用程序，或对自定义应用程序的动态组授权。
+此设置不需要 OpenAIAPI 密钥、自定义 Oracle OAuth 资源应用，或对自定义应用的动态组授权。
 
 ## 设置 OCI 工作负载
 
-使用实例主体在 OCI Compute 实例上运行你的工作负载。对于 Oracle Kubernetes Engine (OKE)，请确认是哪个身份签署请求：标准的实例主体签署者通常标识的是工作节点，而不是单个 Kubernetes Pod。
+使用实例主体在 OCI 计算实例上运行你的工作负载。对于 Oracle Kubernetes Engine (OKE)，请确认哪个身份为请求签名：标准的实例主体签名者通常标识的是工作节点，而不是单个 Kubernetes Pod。
 
-签署者从 [OCI 实例元数据服务](https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/gettingmetadata.htm)。获取凭证。请验证工作负载能否访问 link-local 元数据端点：
+签名者从 [OCI 实例元数据服务](https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/gettingmetadata.htm)。获取凭证。请验证工作负载能够访问链路本地元数据端点：
 
 ```bash
 curl --fail --silent \
@@ -24,7 +24,7 @@ curl --fail --silent \
 
 ### 请求 Oracle 身份令牌
 
-使用 `InstancePrincipalsSecurityTokenSigner` OCI Python SDK 对发往你身份域的 OAuth 令牌交换请求进行签名：
+使用 `InstancePrincipalsSecurityTokenSigner` OCI Python SDK 向你的身份域发起 OAuth 令牌交换请求的签名：
 
 ```text
 POST https://<identity-domain>/oauth2/v1/token
@@ -35,11 +35,11 @@ scope=urn:opc:idm:__myscopes__
 requested_token_type=urn:ietf:params:oauth:token-type:access_token
 ```
 
-该 `urn:opc:idm:__myscopes__` scope 使用实例主体已有的授权。将返回的 IDCS 访问令牌作为 OpenAI 工作负载身份联合的 subject token 使用。不要将 Oracle 令牌的受众替换为 `https://api.openai.com/v1`；请将 OpenAI 提供方配置为使用一个在实际 Oracle 令牌中出现的受众。
+该 `urn:opc:idm:__myscopes__` 作用域使用实例主体已有的授权。将返回的 IDCS 访问令牌用作 OpenAI 工作负载身份联合的 subject token。不要将 Oracle 令牌的受众替换为 `https://api.openai.com/v1`；请将 OpenAI 提供方配置为使用实际 Oracle 令牌中出现的受众。
 
 ### 验证令牌
 
-设置 `TOKEN` 为由实际 OCI 工作负载生成的访问令牌，然后使用现有的本地 JWT 解码器来检查其声明：
+Set `TOKEN` 为实际 OCI 工作负载生成的访问令牌，然后使用现有的本地 JWT 解码器检查其声明：
 
 ```javascript
 const parts = process.env.TOKEN?.split(".") ?? [];
@@ -324,6 +324,7 @@ end
 unless Base64.urlsafe_encode64(payload, padding: false) == parts[1]
   raise "JWT payload is not valid Base64URL"
 end
+
 payload.force_encoding(Encoding::UTF_8)
 raise "JWT payload is not valid UTF-8" unless payload.valid_encoding?
 
@@ -334,9 +335,9 @@ puts(payload)
 ```
 
 
-该解码器在不验证令牌签名的情况下检查令牌。请将原始令牌视为敏感信息，不要记录它们，也不要将生产令牌粘贴到第三方 JWT 解码器中。
+该解码器会在不验证签名的情况下检查令牌。请将原始令牌视为敏感信息，不要记录它们，也不要将生产令牌粘贴到第三方 JWT 解码器中。
 
-已解码的 Oracle 访问令牌可以包含以下声明：
+解码后的 Oracle 访问令牌可以包含以下声明：
 
 ```json
 {
@@ -356,49 +357,49 @@ puts(payload)
 }
 ```
 
-使用由你自己的身份域颁发的令牌作为权威来源。配置确切的 `iss` 值和令牌中某个 `aud` 值。优先使用不可变的 `ipst_instance`, `ipst_compartment`, `domain_id`，以及 `ca_ocid` 声明来授权工作负载。
+使用你自己身份域颁发的令牌作为权威来源。配置精确的 `iss` 值以及令牌中的其中一个 `aud` 值。优先使用不可变的 `ipst_instance`, `ipst_compartment`, `domain_id`，以及 `ca_ocid` 声明来对工作负载进行授权。
 
 ## 设置工作负载身份联合
 
-为你的 Oracle 身份域创建工作负载身份提供方，然后为可使用目标 OpenAI 服务账号的 OCI 实例或 compartment 添加映射。
+为你的 Oracle 身份域创建一个工作负载身份提供方，然后为可以使用目标 OpenAI 服务账户的 OCI 实例或 compartment 添加映射。
 
 ### 设置 Workload Identity Provider
 
-1. **创建 Workload Identity Provider。** 将 **Name** 设置为唯一值，例如 `oracle-cloud-prod`。使用 **Description**，例如 `Production OCI instance principal`，以标识可信工作负载。
+1. **创建工作负载身份提供方。** 将 **名称** 设置为唯一值，例如 `oracle-cloud-prod`。使用 **说明**，例如 `Production OCI instance principal`，以标识受信的工作负载。
 
-2. **设置 issuer 和 audience。** 将 **OIDC Issuer URL** 为令牌中的 `iss` 声明，例如 `https://identity.oraclecloud.com/`。将 **Audience** 设置为同一令牌中 `aud` 值之一。
+2. **设置颁发方和受众。** 将 **OIDC 颁发方 URL** 为该令牌的 `iss` 声明，例如 `https://identity.oraclecloud.com/`。将 **受众** 设置为同一令牌中的某个 `aud` 值。
 
-3. **在可用时配置租户专属的 OIDC 发现。** 如果 **Use custom URL for OIDC discovery** 出现在 **Advanced**，启用它。将 **Custom OIDC discovery URL** 设置为你的租户专属身份域，例如 `https://idcs-example.identity.oraclecloud.com`。OpenAI 会检索 `https://idcs-example.identity.oraclecloud.com/.well-known/openid-configuration`，然后使用发现文档中的 `jwks_uri` 来检索该租户的公钥签名密钥。如果未显示自定义发现选项，请启用 **Use uploaded JWKS for token verification** 并上传来自 `https://<identity-domain>/admin/v1/SigningCert/jwk` 的公钥 JWKS 来代替。
+3. **在可用时配置租户专属的 OIDC 发现。** 如果 **为 OIDC 发现使用自定义 URL** 出现在 **Advanced**，启用它。将 **Custom OIDC discovery URL** 设置为你的租户专属身份域，例如 `https://idcs-example.identity.oraclecloud.com`。OpenAI 会检索 `https://idcs-example.identity.oraclecloud.com/.well-known/openid-configuration`，然后使用发现文档的 `jwks_uri` 来检索租户的公钥签名密钥。如果没有出现自定义发现选项，请启用 **Use uploaded JWKS for token verification** ，并上传来自 `https://<identity-domain>/admin/v1/SigningCert/jwk` 的公钥 JWKS 来代替。
 
-4. **仅在需要派生属性时才添加属性转换。** 你可以在服务账户映射断言中直接使用原始 Oracle 声明，例如 `ipst_instance`, `ipst_compartment`, `domain_id`，以及 `ca_ocid` 。对于显式派生的实例属性，请输入 `instance` 并附带表达式 `assertion.ipst_instance` 来创建 `openai.instance`.
+4. **仅当需要派生属性时，才添加属性转换。** 你可以直接在服务账号映射断言中使用原始的 Oracle 声明，例如 `ipst_instance`, `ipst_compartment`, `domain_id`，以及 `ca_ocid` 。对于显式派生的实例属性，输入 `instance` ，并使用表达式 `assertion.ipst_instance` 来创建 `openai.instance`.
 
-Oracle 的 [OpenID Connect 发现参考](https://docs.oracle.com/en/cloud/paas/identity-cloud/idcsa/op-well-known-openid-configuration-get.html) 说明了为什么自定义发现很重要：发现文档可以声明全局 issuer `https://identity.oraclecloud.com/` 同时发布令牌端点以及 `jwks_uri` 使用租户专属身份域。将全局 issuer 保留在 **OIDC Issuer URL** 并对租户域使用 **Custom OIDC discovery URL**.
+Oracle 的 [OpenID Connect 发现参考](https://docs.oracle.com/en/cloud/paas/identity-cloud/idcsa/op-well-known-openid-configuration-get.html) 说明了为何自定义发现很重要：发现文档可以声明全局颁发者 `https://identity.oraclecloud.com/` 同时在租户特定的 `jwks_uri` 身份域上发布令牌端点和。请在 **OIDC 颁发者 URL** 中保留全局颁发者，并 **为自定义 OIDC 发现 URL 使用租户域**.
 
-如果你的身份域在令牌 issuer 处发布发现元数据，
+如果你的身份域在令牌颁发者处发布发现元数据，
   请禁用自定义发现并使用标准 OIDC 发现。如果 OpenAI
   无法访问租户发现文档或签名密钥端点，请禁用
-  自定义发现，并启用 **Use uploaded JWKS for token verification**，以及
-  从以下位置上传租户的公钥 JWKS：
-  `https://<identity-domain>/admin/v1/SigningCert/jwk`。自定义发现与
-  上传的 JWKS 不能同时启用。当
-  Oracle 轮换其签名证书时，请更新已上传的密钥。
+  自定义发现，启用 **使用上传的 JWKS 进行令牌验证**，以及
+  从以下位置上传租户的公共 JWKS：
+  `https://<identity-domain>/admin/v1/SigningCert/jwk`。自定义发现和
+  上传的 JWKS 不能同时启用。请在
+  Oracle 轮换其签名证书时更新上传的密钥。
 
 ### 设置服务账号映射
 
-1. **创建一个服务账户映射。** 将 **Name** 设置为唯一值，例如 `oracle-instance-prod`，并添加用于标识受信 OCI 工作负载的描述。
+1. **创建服务账户映射。** 将 **名称** 设置为唯一值，例如 `oracle-instance-prod`,并添加一个用于标识可信 OCI 工作负载的描述。
 
-2. **匹配最窄且稳定的 OCI 身份。** 若要向单个实例授予访问权限，请将 **Key** 设置为 `ipst_instance` 并将 **Value** 设置为已验证令牌中的精确实例 OCID。若要向同一可用区内的实例授予访问权限，请将 **Key** 设置为 `ipst_compartment` 并将 **Value** 设置为精确的可用区 OCID。
+2. **匹配最窄的稳定 OCI 标识。** 若要授予对单个实例的访问权限,请将 **Key** 设置为 `ipst_instance` ,并将 **Value** 设置为已验证令牌中该实例的精确 OCID。若要授予对同一 compartment 中多个实例的访问权限,请将 **Key** 设置为 `ipst_compartment` ,并将 **Value** 设置为该 compartment 的精确 OCID。
 
-3. **根据需要添加域和租户边界。** 添加更多映射行以匹配 `domain_id` 或 `ca_ocid` ，从而将工作负载限制到特定的 Oracle 身份域或租户。当令牌包含该声明且你希望要求使用实例主体时，请添加 `sub_type` 并设置值为 `instance` 。所有映射行都必须匹配。
+3. **根据需要添加域和租户边界。** 针对以下情况添加更多映射行: `domain_id` 或 `ca_ocid` ,以将工作负载限制在特定的 Oracle 身份域或租户内。添加 `sub_type` 值为 `instance` 的行,用于在令牌包含该声明并且你希望要求使用实例主体时启用。所有映射行都必须匹配。
 
-4. **选择 OpenAI 目标。** 将 **Project** 设置为拥有该服务账户的项目，然后选择 **Service account** 受信任的 OCI 工作负载可以使用。
+4. **选择 OpenAI 目标。** 将 **Project** 设置为拥有该服务账户的项目,然后选择 **Service account** 受信任的 OCI 工作负载可以使用。
 
-5. **如需 API 权限，请缩小其范围。** 仅选择 **工作负载所需的** 权限。映射权限可以限制所选服务账户，但不能授予该服务账户原本没有的权限。
+5. **如有需要，可收窄API权限。** 仅选择工作负载所需的 **权限** 。映射权限可以限制所选服务账号，但无法授予该服务账号原本不具备的权限。
 
 使用标准实例主体签名者的 OKE 工作负载会继承
-  工作节点的标识。实例级别的映射会授权该节点，而
-  不仅仅是单个 Pod。当你在同一工作节点上需要 Pod 之间的隔离时，请使用更具体、
-  受支持的 OCI 工作负载标识。
+  工作节点的身份。实例级别的映射授权的是该节点，而非
+  仅仅是某个 Pod。当你在共享同一工作节点的 Pod 之间
+  需要隔离时，请使用更具体且受支持的 OCI 工作负载身份。
 
 ## 在代码中使用该 token
 
@@ -408,15 +409,15 @@ Oracle 的 [OpenID Connect 发现参考](https://docs.oracle.com/en/cloud/paas/i
 pip install openai oci requests
 ```
 
-对于 Ruby，安装 OpenAI 和 OCI gem：
+对于 Ruby，安装 OpenAI 和 OCI gems：
 
 ```bash
 gem install openai oci
 ```
 
-设置 `OCI_IDENTITY_DOMAIN_URL` 设置为与工作负载同一租户中身份域的基础 URL。设置 `OPENAI_IDENTITY_PROVIDER_ID` 和 `OPENAI_SERVICE_ACCOUNT_ID` 为你的 OpenAI 提供方和服务账号映射中的 ID。
+Set `OCI_IDENTITY_DOMAIN_URL` 到与该工作负载同一租户中身份域的基础 URL。设置 `OPENAI_IDENTITY_PROVIDER_ID` 和 `OPENAI_SERVICE_ACCOUNT_ID` 为你 OpenAI 提供方和服务账户映射中的 ID。
 
-下面的示例使用 OCI 实例主体对 Oracle 令牌交换请求进行签名，将 IDCS 访问令牌返回给 OpenAI SDK，并在需要时由 SDK 将其交换为短时效的 OpenAI 访问令牌：
+以下示例使用 OCI 实例主体对 Oracle 令牌交换请求进行签名，将 IDCS 访问令牌返回给 OpenAI SDK，并允许该 SDK 在需要时将其交换为短期 OpenAI 访问令牌：
 
 使用 OCI 实例主体进行身份验证
 
@@ -585,14 +586,14 @@ puts(response.output_text)
 ```
 
 
-当 OpenAI SDK 需要续期工作负载身份凭据时，主体令牌提供方会请求一个新的 Oracle 令牌。切勿打印或持久化 Oracle 主体令牌以及生成的 OpenAI 访问令牌。
+当 OpenAI SDK 需要续期工作负载身份凭证时，主体令牌提供方会请求一个新的 Oracle 令牌。切勿打印或持久化 Oracle 主体令牌及生成的 OpenAI 访问令牌。
 
 ## OCI 安全建议
 
-- 使用 `ipst_instance` 映射单个实例，当只有一项工作负载应拥有访问权限时使用。
-- 使用 `ipst_compartment` 仅在该隔离舱中每个符合资格的实例都应共享该映射时使用。
-- 添加 `domain_id` 或 `ca_ocid` 以强制身份域和租户边界。
-- 为每个应用程序和环境使用一个单独的 OpenAI 服务账号。
-- 在依赖 Pod 级隔离之前，先验证 OKE 令牌是否代表工作节点。
-- 使用所颁发 Oracle 令牌中存在的受众，而不是假设使用 OpenAI 专属的受众。
-- 如果你的身份域无法使用 OIDC 发现，请在 Oracle 轮换其签名密钥时轮换已上传的公钥。
+- 映射一个实例，使用 `ipst_instance` 仅当只有一个工作负载应具有访问权限时。
+- 使用 `ipst_compartment` 仅当该区间中的每个符合条件的实例都应共享该映射时。
+- 添加 `domain_id` 或 `ca_ocid` 以强制实施身份域和租户边界。
+- 为每个应用和环境使用一个单独的 OpenAI 服务账户。
+- 在依赖 Pod 级别隔离之前，验证 OKE 令牌是否代表工作节点。
+- 使用已签发的 Oracle 令牌中存在的受众，而不是假设一个 OpenAI 特定的受众。
+- 当 Oracle 轮换其签名密钥时，如果你的身份域无法使用 OIDC 发现，请轮换已上传的公钥。

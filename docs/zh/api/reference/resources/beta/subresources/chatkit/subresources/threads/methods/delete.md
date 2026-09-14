@@ -1,16 +1,16 @@
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取该页面的 Markdown 版本。
 
 ## 删除 ChatKit 会话
 
 **delete** `/chatkit/threads/{thread_id}`
 
-删除一个 ChatKit 会话及其项目和已存储的附件。
+删除 ChatKit 会话及其项目和已存储的附件。
 
 ### 路径参数
 
 - `thread_id: string`
 
-### 返回值
+### 返回
 
 - `id: string`
 
@@ -22,7 +22,7 @@
 
 - `object: "chatkit.thread.deleted"`
 
-  类型判别字段，固定为 `chatkit.thread.deleted`.
+  始终为的类型判别字段 `chatkit.thread.deleted`.
 
   - `"chatkit.thread.deleted"`
 

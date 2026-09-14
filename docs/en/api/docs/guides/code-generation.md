@@ -174,7 +174,7 @@ PYTHON
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Find the null pointer exception in this code:\n\n#{code}",
-  reasoning: {effort: :high}
+  reasoning: { effort: :high }
 )
 
 puts(response.output_text)

@@ -185,8 +185,8 @@ CreateResponseOptions options = new()
     BackgroundModeEnabled = true,
 };
 options.Tools.Add(ResponseTool.CreateWebSearchPreviewTool());
-string vectorStoreId = Environment.GetEnvironmentVariable("OPENAI_EXAMPLE_VECTOR_STORE_ID")
-    ?? throw new InvalidOperationException("Set OPENAI_EXAMPLE_VECTOR_STORE_ID to search your research documents.");
+// Replace this illustrative value with your research data source.
+string vectorStoreId = "vs_123";
 options.Tools.Add(ResponseTool.CreateFileSearchTool([vectorStoreId]));
 options.Tools.Add(ResponseTool.CreateCodeInterpreterTool(container));
 options.InputItems.Add(
@@ -220,17 +220,24 @@ Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
 
 client = OpenAI::Client.new
-vector_store_id = ENV.fetch("OPENAI_VECTOR_STORE_ID")
+vector_store_id = "vs_123"
 response = client.responses.create(
   model: "o3-deep-research",
   input: "Research the economic impact of semaglutide on global healthcare systems. Include measurable outcomes and cite primary sources.",
   tools: [
-    {type: :web_search_preview},
-    {type: :file_search, vector_store_ids: [vector_store_id]},
-    {type: :code_interpreter, container: {type: :auto}}
+    { type: :web_search_preview },
+    {
+      type: :file_search,
+      vector_store_ids: [vector_store_id]
+    },
+    {
+      type: :code_interpreter,
+      container: { type: :auto }
+    }
   ],
   background: true
 )
@@ -1064,6 +1071,7 @@ func main() {
 ```
 
 ```java
+// Replace the illustrative IDs and URLs below with your own resource values.
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.Reasoning;
@@ -1081,7 +1089,7 @@ ResponseCreateParams params =
         .addTool(
             Tool.Mcp.builder()
                 .serverLabel("mycompany_mcp_server")
-                .serverUrl(System.getenv("OPENAI_MCP_SERVER_URL"))
+                .serverUrl("https://mcp.example.com/mcp")
                 .requireApproval(Tool.Mcp.RequireApproval.McpToolApprovalSetting.NEVER)
                 .build())
         .build();
@@ -1121,8 +1129,8 @@ CreateResponseOptions options = new()
         ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Auto,
     },
 };
-string serverUrl = Environment.GetEnvironmentVariable("OPENAI_MCP_SERVER_URL")
-    ?? throw new InvalidOperationException("Set OPENAI_MCP_SERVER_URL to connect your research data source.");
+// Replace this illustrative value with your research data source.
+string serverUrl = "https://mcp.example.com/mcp";
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         "mycompany_mcp_server",
@@ -1150,21 +1158,24 @@ Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
 
 client = OpenAI::Client.new
-mcp_server_url = ENV.fetch("OPENAI_MCP_SERVER_URL")
+mcp_server_url = "https://mcp.example.com/mcp"
 response = client.responses.create(
   model: "o3-deep-research",
   input: "What patterns appear in our closed-lost Salesforce opportunities?",
   instructions: "Produce a source-backed deep research report.",
-  reasoning: {summary: :auto},
-  tools: [{
-    type: :mcp,
-    server_label: "mycompany_mcp_server",
-    server_url: mcp_server_url,
-    require_approval: :never
-  }],
+  reasoning: { summary: :auto },
+  tools: [
+    {
+      type: :mcp,
+      server_label: "mycompany_mcp_server",
+      server_url: mcp_server_url,
+      require_approval: :never
+    }
+  ],
   background: true
 )
 

@@ -192,7 +192,7 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
-  tools: [{type: :image_generation}]
+  tools: [{ type: :image_generation }]
 )
 
 image_call = response.output.find do |item|
@@ -412,7 +412,10 @@ response = client.responses.create(
     {
       role: :user,
       content: [
-        {type: :input_text, text: "What's in this image?"},
+        {
+          type: :input_text,
+          text: "What's in this image?"
+        },
         {
           type: :input_image,
           detail: :auto,
@@ -690,7 +693,10 @@ response = client.responses.create(
     {
       role: :user,
       content: [
-        {type: :input_text, text: "What's in this image?"},
+        {
+          type: :input_text,
+          text: "What's in this image?"
+        },
         {
           type: :input_image,
           detail: :auto,
@@ -946,8 +952,15 @@ response = client.responses.create(
     {
       role: :user,
       content: [
-        {type: :input_text, text: "What's in this image?"},
-        {type: :input_image, detail: :auto, file_id: uploaded.id}
+        {
+          type: :input_text,
+          text: "What's in this image?"
+        },
+        {
+          type: :input_image,
+          detail: :auto,
+          file_id: uploaded.id
+        }
       ]
     }
   ]
@@ -1005,13 +1018,32 @@ For tasks that require fine visual detail or precise coordinates, such as optica
 
 ### Model sizing behavior
 
-The following table covers the general-purpose vision models available in the [image input cost calculator](https://developers.openai.com/api/docs/guides/image-cost-calculator). Other models and specialized variants can use different limits. All resizing preserves aspect ratio without enlarging smaller images.
+The following table summarizes sizing behavior for general-purpose vision models. Other models and specialized variants can use different limits. All resizing preserves aspect ratio without enlarging smaller images.
 
 <table>
   <tr>
     <th>Model family</th>
     <th>Supported detail levels</th>
     <th>Patch and resizing behavior</th>
+  </tr>
+  <tr>
+    <td>
+      `gpt-6-astra`
+    </td>
+    <td>
+      `low`, `high`, `original`,
+      `auto`
+    </td>
+    <td>
+      `low` fits within 512 × 512 pixels. `high` allows up
+      to 2,500 patches and a 65,535-pixel maximum dimension. Both limits apply. 
+      `original` preserves the image's dimensions, except that images
+      larger than 65,535 pixels on either side are scaled down to fit that
+      limit. If the resulting image requires more than 
+      [30,000 patches](#image-input-requirements), the API rejects
+      the request; the image is not resized to fit the patch limit. 
+      `auto` uses the same sizing behavior as `original`.
+    </td>
   </tr>
   <tr>
     <td>
@@ -1137,6 +1169,7 @@ D. Multiply the patch count by the model's multiplier and round up to get the bi
 
 | Model                                  | Multiplier |
 | -------------------------------------- | ---------- |
+| `gpt-6-astra`                          | 1.2        |
 | `gpt-5.6-sol`                          | 1.2        |
 | `gpt-5.6-terra`                        | 1.2        |
 | `gpt-5.6-luna`                         | 1.2        |
@@ -1155,12 +1188,13 @@ _For `gpt-4.1-mini`, this applies to the 2025-04-14 snapshot._
 
 \* Deprecated and scheduled for shutdown. See the [deprecation schedule](https://developers.openai.com/api/docs/deprecations) for dates and replacements. These models aren't included in the calculator or the model sizing table above.
 
-**Cost calculation examples for `gpt-5.4` with `detail: high`**
+**Image token calculation examples for `gpt-6-astra` with `detail: high`**
 
-This combination uses a 2048-pixel maximum dimension, a 2,500-patch budget, and a 1.2× multiplier.
+This combination uses a 65,535-pixel maximum dimension, a 2,500-patch budget, and a 1.2× multiplier.
 
 - A 1024 × 1024 image needs `32 × 32 = 1024` patches. No resizing is needed. The billable image input is `ceil(1024 × 1.2) = 1229` tokens.
 - A 2048 × 2048 image initially needs `64 × 64 = 4096` patches. The patch budget reduces it to 1600 × 1600 pixels, or `50 × 50 = 2500` patches. The estimate is `ceil(2500 × 1.2) = 3000` tokens.
+- A 4096 × 512 image stays at its original size: `128 × 16 = 2048` patches and `ceil(2048 × 1.2) = 2458` tokens.
 
 Floating-point rounding in billing can make the final count differ from the estimate by one token.
 

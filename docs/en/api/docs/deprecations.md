@@ -34,6 +34,14 @@ We use the term "legacy" to refer to models and endpoints that no longer receive
 
 Upcoming deprecations are listed below, with the most recent announcements at the top.
 
+### 2026-09-11: GPT-5.4-Cyber
+
+The `gpt-5.4-cyber` model is deprecated and will be removed from the API on October 1, 2026. Migrate to `gpt-5.6-cyber` before the shutdown date.
+
+| Shutdown date | Model / system  | Recommended replacement |
+| ------------- | --------------- | ----------------------- |
+| Oct 1, 2026   | `gpt-5.4-cyber` | `gpt-5.6-cyber`         |
+
 ### 2026-08-26: Transcription models
 
 On August 26, 2026, we notified developers using `whisper-1`, `gpt-4o-transcribe`, `gpt-4o-mini-transcribe`, and `gpt-4o-transcribe-diarize` of their deprecation and removal from the API on February 26, 2027.
@@ -191,7 +199,7 @@ To improve reliability and make it easier for developers to choose the right mod
 
 Past deprecations are listed below, with the most recent announcements at the top.
 
-### 2026-05-08: gpt-5.2-chat-latest and gpt-5.3-chat-latest model snapshots
+### 2026-05-08: `gpt-5.2-chat-latest` and `gpt-5.3-chat-latest` model snapshots
 
 On May 8th, 2026, we notified developers using `gpt-5.2-chat-latest` and `gpt-5.3-chat-latest` model snapshots of their deprecation and removal from the API.
 
@@ -221,7 +229,7 @@ On April 22, 2026, we announced the deprecation of the following older OpenAI mo
 | July 23, 2026 | `o4-mini-deep-research-2025-06-26` \| `o4-mini-deep-research` | `gpt-5.6-sol`           |
 | July 23, 2026 | `gpt-5.2-codex`                                               | `gpt-5.6-sol`           |
 
-### 2025-11-18: chatgpt-4o-latest snapshot
+### 2025-11-18: `chatgpt-4o-latest` snapshot
 
 On November 18th, 2025, we notified developers using `chatgpt-4o-latest` model snapshot of its deprecation and removal from the API on February 17, 2026.
 
@@ -229,7 +237,7 @@ On November 18th, 2025, we notified developers using `chatgpt-4o-latest` model s
 | ------------- | ------------------- | ----------------------- |
 | 2026-02-17    | `chatgpt-4o-latest` | `gpt-5.1-chat-latest`   |
 
-### 2025-11-17: codex-mini-latest model snapshot
+### 2025-11-17: `codex-mini-latest` model snapshot
 
 On November 17th, 2025, we notified developers using `codex-mini-latest` model of its deprecation and removal from the API on February 12, 2026. As part of this deprecation, we will no longer support our legacy local shell tool, which is only available for use with `codex-mini-latest`. For new use cases, please use our latest shell tool.
 
@@ -262,24 +270,24 @@ To improve reliability and make it easier for developers to choose the right mod
 
 The Realtime API Beta was deprecated and removed from the API on May 12, 2026.
 
-There are a few key differences between the interfaces in the Realtime beta API and the released GA API. See [the migration guide](https://developers.openai.com/api/docs/guides/realtime#beta-to-ga-migration) for the current GA interface and related Realtime docs.
+The interfaces in the Realtime beta API and the released GA API have a few key differences. See [the migration guide](https://developers.openai.com/api/docs/guides/realtime#beta-to-ga-migration) for the current GA interface and related Realtime docs.
 
 | Shutdown date | Model / system           | Recommended replacement |
 | ------------- | ------------------------ | ----------------------- |
 | 2026‑05‑12    | OpenAI-Beta: realtime=v1 | Realtime API            |
 
-### 2025-09-15: gpt-4o-realtime-preview models
+### 2025-09-15: `gpt-4o-realtime-preview` models
 
-In September, 2025, we notified developers using gpt-4o-realtime-preview models of their deprecation and removal from the API in six months.
+In September, 2025, we notified developers using `gpt-4o-realtime-preview` models of their deprecation and removal from the API in six months.
 
-| Shutdown date | Model / system                     | Recommended replacement |
-| ------------- | ---------------------------------- | ----------------------- |
-| 2026-05-07    | gpt-4o-realtime-preview            | gpt-realtime-1.5        |
-| 2026-05-07    | gpt-4o-realtime-preview-2025-06-03 | gpt-realtime-1.5        |
-| 2026-05-07    | gpt-4o-realtime-preview-2024-12-17 | gpt-realtime-1.5        |
-| 2026-05-07    | gpt-4o-mini-realtime-preview       | gpt-realtime-mini       |
-| 2026-05-07    | gpt-4o-audio-preview               | gpt-audio-1.5           |
-| 2026-05-07    | gpt-4o-mini-audio-preview          | gpt-audio-mini          |
+| Shutdown date | Model / system                       | Recommended replacement |
+| ------------- | ------------------------------------ | ----------------------- |
+| 2026-05-07    | `gpt-4o-realtime-preview`            | `gpt-realtime-1.5`      |
+| 2026-05-07    | `gpt-4o-realtime-preview-2025-06-03` | `gpt-realtime-1.5`      |
+| 2026-05-07    | `gpt-4o-realtime-preview-2024-12-17` | `gpt-realtime-1.5`      |
+| 2026-05-07    | `gpt-4o-mini-realtime-preview`       | `gpt-realtime-mini`     |
+| 2026-05-07    | `gpt-4o-audio-preview`               | `gpt-audio-1.5`         |
+| 2026-05-07    | `gpt-4o-mini-audio-preview`          | `gpt-audio-mini`        |
 
 ### 2025-08-20: Assistants API
 
@@ -293,15 +301,15 @@ See the Assistants to Conversations [migration guide](https://developers.openai.
 | ------------- | -------------- | ----------------------------------- |
 | 2026‑08‑26    | Assistants API | Responses API and Conversations API |
 
-### 2025-06-10: gpt-4o-realtime-preview-2024-10-01
+### 2025-06-10: `gpt-4o-realtime-preview-2024-10-01`
 
-On June 10th, 2025, we notified developers using gpt-4o-realtime-preview-2024-10-01 of its deprecation and removal from the API in three months.
+On June 10th, 2025, we notified developers using `gpt-4o-realtime-preview-2024-10-01` of its deprecation and removal from the API in three months.
 
-| Shutdown date | Model / system                     | Recommended replacement |
-| ------------- | ---------------------------------- | ----------------------- |
-| 2025-10-10    | gpt-4o-realtime-preview-2024-10-01 | gpt-realtime-1.5        |
+| Shutdown date | Model / system                       | Recommended replacement |
+| ------------- | ------------------------------------ | ----------------------- |
+| 2025-10-10    | `gpt-4o-realtime-preview-2024-10-01` | `gpt-realtime-1.5`      |
 
-### 2025-06-10: gpt-4o-audio-preview-2024-10-01
+### 2025-06-10: `gpt-4o-audio-preview-2024-10-01`
 
 On June 10th, 2025, we notified developers using `gpt-4o-audio-preview-2024-10-01` of its deprecation and removal from the API in three months.
 
@@ -309,7 +317,7 @@ On June 10th, 2025, we notified developers using `gpt-4o-audio-preview-2024-10-0
 | ------------- | --------------------------------- | ----------------------- |
 | 2025-10-10    | `gpt-4o-audio-preview-2024-10-01` | `gpt-audio-1.5`         |
 
-### 2025-04-28: text-moderation
+### 2025-04-28: `text-moderation`
 
 On April 28th, 2025, we notified developers using `text-moderation` of its deprecation and removal from the API in six months.
 
@@ -319,7 +327,7 @@ On April 28th, 2025, we notified developers using `text-moderation` of its depre
 | 2025-10-27    | `text-moderation-stable` | `omni-moderation`       |
 | 2025-10-27    | `text-moderation-latest` | `omni-moderation`       |
 
-### 2025-04-28: o1-preview and o1-mini
+### 2025-04-28: `o1-preview` and `o1-mini`
 
 On April 28th, 2025, we notified developers using `o1-preview` and `o1-mini` of their deprecations and removal from the API in three months and six months respectively.
 

@@ -1,26 +1,26 @@
 # 网页搜索
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-网页搜索允许模型访问互联网上的最新信息，并提供附带来源引用的回答。要启用此功能，请在 Responses API 或某些情况下的 Chat Completions 中使用 网页搜索 工具。
+网页搜索允许模型访问互联网上的最新信息，并提供带有来源引用的回答。要启用此功能，请在 Responses API 或（在某些情况下）Chat Completions 中使用 网页搜索 工具。
 
-使用 OpenAI 模型可用的 网页搜索 主要有三种类型：
+OpenAI 模型提供三种主要的 网页搜索 类型：
 
-1. 非推理 网页搜索：非推理模型将用户的查询发送给 网页搜索 工具，该工具根据热门结果返回响应。没有内部规划过程，模型只是直接传递搜索工具的响应。这种方法速度很快，适合快速查询。
-2. 使用推理模型进行智能体搜索是一种由模型主动管理搜索过程的方法。它可以在其思维链过程中执行网页搜索，分析结果，并决定是否继续搜索。这种灵活性使智能体搜索非常适合复杂的工作流，但也意味着搜索比快速查询耗时更长。例如，你可以在类似以下模型上调整推理等级： `gpt-5.5` 以同时改变搜索的深度和延迟。
-3. 深度研究是一种专门的、由 智能体驱动的推理模型方法，用于进行深入且扩展性的调查。模型在其思维链过程中执行网页搜索，通常会查阅数百个来源。深度研究可以持续运行数分钟，最适合与后台模式配合使用。使用 `gpt-5.5` 并将推理设置为 `high` 或 `xhigh`.
+1. 非推理 网页搜索：非推理模型将用户的查询发送到 网页搜索 工具，由该工具基于热门结果返回响应。此过程不涉及内部规划，模型只是直接传递搜索工具的响应。这种方式速度快，适合快速查询。
+2. 使用推理模型的智能体搜索是一种由模型主动管理搜索过程的方法。它可以在思维链中执行网页搜索、分析结果，并决定是否继续搜索。这种灵活性使得智能体搜索非常适合复杂的工作流，但也意味着搜索所需时间比快速查询更长。例如，你可以调整以下模型的推理级别： `gpt-5.5` 以同时改变搜索的深度和延迟。
+3. 深度研究是一种由 智能体驱动的专业化方法，适用于推理模型进行的深入、长时间的调研。模型会在其思维链中执行网页搜索，通常会查阅数百个来源。深度研究可能持续数分钟，最适合与后台模式配合使用。使用 `gpt-5.5` 并将推理设置为 `high` 或 `xhigh`.
 
 ## 选择集成方式
 
-| 使用场景                                      | 推荐路径                              | 备注                                                                                                       |
+| 用例                                      | 推荐路径                              | 备注                                                                                                       |
 | --------------------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| 新增 网页搜索 集成                    | Responses API，搭配 `web_search` 和 `gpt-5.5` | 支持 网页搜索 控件，例如过滤器、来源、实时访问控制以及更长时间的研究运行 |
-| 现有的 Chat Completions 搜索集成  | Chat Completions，搭配 `gpt-5-search-api`      | 仅在需要保留 Chat Completions 集成时使用                                      |
-| 多步研究或长时间运行的报告 | `gpt-5.5` 搭配 `high` 或 `xhigh` 推理    | 对可能耗时数分钟的报告使用后台模式                                               |
+| 新增的 网页搜索 集成                    | Responses API 配合 `web_search` 和 `gpt-5.5` | 支持托管的 网页搜索 控制，例如筛选器、来源、实时访问控制以及更长时间的研究运行 |
+| 现有的 Chat Completions 搜索集成  | Chat Completions 配合 `gpt-5-search-api`      | 仅在需要保留 Chat Completions 集成时使用                                      |
+| 多步骤研究或长时间运行的报告 | `gpt-5.5` 配合 `high` 或 `xhigh` 推理    | 对于耗时数分钟的报告使用后台模式                                               |
 
-使用 [Responses API](https://developers.openai.com/api/reference/resources/responses)，你可以通过在 API 请求的 `tools` 数组中配置来启用 网页搜索。与其他工具一样，模型可以根据输入提示的内容自行决定是否进行网页搜索。
+使用 [Responses API](https://developers.openai.com/api/reference/resources/responses)，你可以在 API 请求的 `tools` 数组中配置它来启用 网页搜索，从而生成内容。与任何其他工具一样，模型可以根据输入提示的内容选择是否进行网页搜索。
 
-对于新的 Responses API 集成，请使用 `{ "type": "web_search" }`。较早的 `web_search_preview` 工具仍可供旧版集成使用，但不支持较新的控件，例如 `filters`, `external_web_access`，以及 `return_token_budget`.
+对于新的 Responses API 集成，请使用 `{ "type": "web_search" }`。较早的 `web_search_preview` 工具仍然可用于旧版集成，但不支持较新的控制项，例如 `filters`, `external_web_access`，以及 `return_token_budget`.
 
 网页搜索工具示例
 
@@ -123,7 +123,7 @@ openai = OpenAI::Client.new
 
 response = openai.responses.create(
   model: "gpt-6-astra",
-  tools: [{type: "web_search"}],
+  tools: [{ type: "web_search" }],
   input: "What was a positive news story from today?"
 )
 
@@ -157,17 +157,17 @@ YAML
 
 使用网页搜索工具的模型响应将包含两个部分：
 
-- 一个 `web_search_call` 包含搜索调用 ID 的输出项，以及所执行的操作 `web_search_call.action`。该操作是以下之一：
-  - `search`，表示一次 网页搜索。它通常（但不总是）包含搜索 `queries` 中所搜索的关键词。搜索操作会产生工具调用费用（参见 [定价](https://developers.openai.com/api/docs/pricing#built-in-tools)).
-  - `open_page`，表示打开了一个页面。在推理模型中受支持。
-  - `find_in_page`，表示在页面内进行搜索。在推理模型中受支持。
-- 一个 `message` 包含以下内容的输出项：
+- 一个 `web_search_call` 输出项包含搜索调用的 ID 以及所执行的操作 `web_search_call.action`。该操作是以下之一：
+  - `search`，表示一次网页搜索。它通常（但不总是）包含搜索 `queries` 被搜索的内容。搜索操作会产生工具调用费用（参见 [定价](https://developers.openai.com/api/docs/pricing#built-in-tools)).
+  - `open_page`，表示打开了一个页面。推理模型支持此操作。
+  - `find_in_page`，表示在页面内进行搜索。推理模型支持此操作。
+- 一个 `message` 输出项包含：
   - 中的文本结果 `message.content[0].text`
-  - 注释 `message.content[0].annotations` ，用于引用 URL
+  - 注释 `message.content[0].annotations` 用于被引用的 URL
 
-默认情况下，模型的响应将包含对在 网页搜索 结果中找到的 URL 的内联引用。除此之外， `url_citation` annotation 对象将包含所引用来源的 URL、标题和位置。
+默认情况下，模型的响应会为 网页搜索 结果中找到的 URL 包含内联引用。除此之外， `url_citation` annotation 对象将包含被引用来源的 URL、标题和位置。
 
-当向最终用户展示网页结果或网页结果中包含的信息时，
+在向最终用户展示网页结果或网页结果中包含的信息时，
   内联引用必须在你的用户界面中清晰可见且可点击，
   以便用户访问。
 
@@ -212,15 +212,15 @@ YAML
 
 ## 从旧版网页搜索迁移
 
-| 如果你使用                                              | 推荐路径                                                                                        | 备注                                                                                                    |
+| 如果使用                                              | 推荐路径                                                                                        | 备注                                                                                                    |
 | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | `web_search_preview` 在 Responses 中                       | 迁移到 `web_search`                                                                                 | `web_search` 支持较新的控件，例如 `filters`, `external_web_access`，以及 `return_token_budget` |
-| `gpt-4o-search-preview` 或 `gpt-4o-mini-search-preview` | 迁移到 Responses `web_search`，或使用 `gpt-5-search-api` 如果你必须继续使用 Chat Completions       | 预览版搜索模型已弃用，并将于 2026-07-23 停用                                     |
-| Chat Completions 搜索集成                    | 使用 `gpt-5-search-api`，或迁移到 Responses `web_search` 以获得更多工具控制和可选搜索 | Chat Completions 搜索模型始终在响应前执行搜索；Responses 搜索是一种工具               |
+| `gpt-4o-search-preview` 或 `gpt-4o-mini-search-preview` | 迁移到 Responses `web_search`，或使用 `gpt-5-search-api` 如果你必须继续使用 Chat Completions       | 预览版搜索模型已弃用，并将于 2026-07-23 下线                                     |
+| Chat Completions 搜索集成                    | 使用 `gpt-5-search-api`，或迁移到 Responses `web_search` 以获得更多工具控件和可选搜索 | Chat Completions 搜索模型总是在响应前进行搜索；Responses 搜索是一种工具               |
 
-## 搜索上下文大小
+## Search context size
 
-`search_context_size` 控制在模型生成响应之前，网页搜索 结果中有多少上下文可被提供给模型。使用 `low` 用于简单的查询， `medium` 作为均衡的默认值， `high` 当答案可能需要来自搜索结果的更多细节时使用。该设置不会设定精确的 token 数量，也不保证具体的来源或引用数量。
+`search_context_size` 控制在模型生成响应之前，网页搜索结果中有多少可用的上下文。可使用 `low` 用于简单的查询， `medium` 用于平衡的默认值，以及 `high` 用于答案可能需要搜索结果中更多细节的场景。该设置不会设定具体的 token 数量，也无法保证特定数量的来源或引用。
 
 
 
@@ -343,7 +343,12 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "What movie won best picture in 2025?",
-  tools: [{type: :web_search, search_context_size: :low}]
+  tools: [
+    {
+      type: :web_search,
+      search_context_size: :low
+    }
+  ]
 )
 
 puts(response.output_text)
@@ -368,16 +373,16 @@ curl "https://api.openai.com/v1/responses" \
 
 ## 运行更长时间的网络研究
 
-`return_token_budget` 控制在使用 GPT-5+ 推理模型的 Responses API 搜索运行期间，工具可以返回多少 网页搜索 结果内容。大多数请求请保持默认值。仅在需要将其设置为 `unlimited` 用于需要检查大量页面、否则可能在标准返回 token 上限处停止的高投入研究或评估运行。
+`return_token_budget` 控制在使用 GPT-5+ 推理模型的 Responses API 搜索运行期间，工具可以返回多少 网页搜索 结果内容。大多数请求请保留默认值。仅在需要检查大量页面的高投入度研究或评估运行中将其设置为 `unlimited` ，否则这些任务可能在标准的返回 token 上限时停止。
 
-请谨慎使用 `unlimited` ，因为它可能会增加延迟和成本。对于长时间运行的多搜索任务，请使用后台模式（`background: true`），以便请求可以异步持续运行，并稍后检索最终响应。
+请谨慎 `unlimited` 使用它，因为它会增加延迟和成本。对于长时间运行的多搜索任务，请使用后台模式（`background: true`），以便请求可以异步持续运行，并让你稍后获取最终响应。
 
-| 值       | 行为                                                                                                                     |
+| Value       | Behavior                                                                                                                     |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `default`   | 使用 网页搜索 结果的标准返回 token 预算。这与省略时的行为相同。 `return_token_budget`. |
-| `unlimited` | 移除 网页搜索 运行的默认返回 token 预算。                                                            |
+| `default`   | 使用网页搜索结果的标准返回 token 预算。这与省略时的行为相同 `return_token_budget`. |
+| `unlimited` | 移除网页搜索运行的默认返回 token 预算。                                                            |
 
-该参数仅适用于托管的 Responses API `web_search` 与 GPT-5+ 推理 网页搜索 配合使用的工具。它不会改变搜索上下文窗口，也不适用于非推理 网页搜索、传统的 Search API 路径、容器 网页搜索、Chat Completions 搜索模型或 `web_search_preview`。仅支持 `default` 和 `unlimited` 这两个值； `null`、数字以及其他字符串均会被拒绝。
+此参数仅适用于托管的 Responses API `web_search` 工具与 GPT-5+ 推理 网页搜索 配合使用。它不会改变搜索上下文窗口，也同样不适用于非推理 网页搜索、旧版 Search API 路径、容器 网页搜索、Chat Completions 搜索模型，或者 `web_search_preview`。仅支持 `default` 和 `unlimited` 作为合法取值； `null`、数字以及其他字符串均会被拒绝。
 
 
 
@@ -514,8 +519,13 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Research the economic impact of semaglutide on global healthcare systems. Include current figures and citations.",
-  reasoning: {effort: :xhigh},
-  tools: [{type: :web_search, return_token_budget: :unlimited}]
+  reasoning: { effort: :xhigh },
+  tools: [
+    {
+      type: :web_search,
+      return_token_budget: :unlimited
+    }
+  ]
 )
 
 puts(response.output_text)
@@ -541,18 +551,18 @@ curl "https://api.openai.com/v1/responses" \
 
 
 
-## Domain filtering
+## 域名过滤
 
-在网页搜索中使用域名过滤，可以将结果限制在一组指定的域名内。配合 `filters` 参数，你最多可以配置 100 `allowed_domains` 或最多 100 `blocked_domains`。格式化域名时，请省略 HTTP 或 HTTPS 前缀。例如，使用 `openai.com` 而不是 `https://openai.com/`。这种方式也会包含搜索中的子域名。请注意，域名过滤仅在Responses API中配合 `web_search` 工具使用。
+在 网页搜索 中的域名过滤功能可让你将结果限制在特定的域名集合内。使用 `filters` 参数最多可以配置 100 个 `allowed_domains` ，或最多 100 个 `blocked_domains`。在格式化域名时，请省略 HTTP 或 HTTPS 前缀。例如，使用 `openai.com` 而不是 `https://openai.com/`。这种方式还会将子域名纳入搜索范围。请注意，域名过滤仅在使用 Responses API 并配合 `web_search` 工具时可用。
 
 
 
-## 来源
+## Sources
 
-要查看在 网页搜索 期间检索到的所有 URL，请使用 `sources` 字段。与内联引用不同，内联引用只显示最相关的参考来源，而 sources 会返回模型在形成回复时所查阅的完整 URL 列表。
-来源的数量通常大于引用的数量。实时第三方信息源也会在此处显示，并被标记为 `oai-sports`, `oai-weather`，或 `oai-finance`。sources 字段可用于 `web_search` 和 `web_search_preview` 工具。
+若要查看在一次 网页搜索 中检索到的所有 URL，请使用 `sources` 字段。与仅展示最相关参考的内联引用不同，sources 会返回模型在生成响应时查阅的完整 URL 列表。
+sources 的数量通常大于引用的数量。实时第三方信息源也会在此处显示，并被标记为 `oai-sports`, `oai-weather`，或 `oai-finance`。sources 字段在以下两种工具中均可用： `web_search` 和 `web_search_preview` 工具。
 
-列出来源
+列出 sources
 
 ```javascript
 import OpenAI from "openai";
@@ -710,7 +720,7 @@ client = OpenAI::Client.new
 
 response = client.responses.create(
   model: "gpt-6-astra",
-  reasoning: {effort: :low},
+  reasoning: { effort: :low },
   input: "Search for how semaglutide is used in the treatment of diabetes.",
   include: ["web_search_call.action.sources"],
   tools: [
@@ -732,15 +742,15 @@ response = client.responses.create(
 
 puts(response.output_text)
 response.output
-  .grep(OpenAI::Models::Responses::ResponseFunctionWebSearch)
-  .each do |search_call|
-    action = search_call.action
-    next unless action.is_a?(
-      OpenAI::Models::Responses::ResponseFunctionWebSearch::Action::Search
-    )
+        .grep(OpenAI::Models::Responses::ResponseFunctionWebSearch)
+        .each do |search_call|
+          action = search_call.action
+          next unless action.is_a?(
+            OpenAI::Models::Responses::ResponseFunctionWebSearch::Action::Search
+          )
 
-    Array(action.sources).each { |source| puts(source.url) }
-  end
+          Array(action.sources).each { |source| puts(source.url) }
+        end
 ```
 
 ```bash
@@ -780,18 +790,18 @@ curl "https://api.openai.com/v1/responses" \
 
 
 
-## 图像搜索结果
+## 图片搜索结果
 
-网页搜索可以在常规文本结果之外返回图片结果。当你的应用需要当前或基于网络的视觉内容（例如商品照片、地标、地点、事件或视觉参考）时，可以使用图片搜索。
+网页搜索可以在常规文本结果之外返回图片结果。当你的应用需要当前或来自网页的可视化内容（例如商品照片、地标、地点、事件或视觉参考）时，可以使用图片搜索。
 
-要使用图片搜索，请设置 `search_content_types` 为包含 `image`。如果还希望获得辅助性的文本结果，以帮助模型对检索到的图片进行总结、排序或解释，可以添加 `text` ，以便在需要支持性文本结果时使用，这些结果可帮助模型对检索到的图片进行总结、排序或解释。
+要使用图片搜索，请设置 `search_content_types` 以包含 `image`。添加 `text` 当你还希望获得能帮助模型总结、排序或解释检索到的图片的辅助文本结果时。
 
-请谨慎使用 `image_settings` 以控制图片相关的行为：
+请谨慎 `image_settings` 来控制与图片相关的行为：
 
-- `max_results`: 请求返回正数个图像结果。
-- `caption`: 在可用时请求简短的图像描述。
+- `max_results`: 请求返回正数个图片结果。
+- `caption`: 在可用时请求简短的图片描述。
 
-若要查看原始图像结果，请在请求中包含 `web_search_call.results` 并从响应中读取 `web_search_call.results[]` 。图像结果与助手消息分开返回，因此当你的应用需要这些 URL 或元数据时，请直接解析该 `web_search_call` 项。
+若要检查原始图片结果，请在请求中包含 `web_search_call.results` 并读取响应中的 `web_search_call.results[]` 。图片结果与助手消息分开返回，因此当你的应用需要这些 URL 或 metadata 时，请直接解析该 `web_search_call` 项。
 
 搜索图片
 
@@ -921,14 +931,17 @@ client = OpenAI::Client.new
 
 response = client.responses.create(
   model: "gpt-6-astra",
-  reasoning: {effort: :low},
+  reasoning: { effort: :low },
   input: "Search for recent images and supporting text sources about the Golden Gate Bridge at sunset.",
   include: ["web_search_call.results"],
   tools: [
     {
       type: :web_search,
       search_content_types: ["image", "text"],
-      image_settings: {max_results: 3, caption: true}
+      image_settings: {
+        max_results: 3,
+        caption: true
+      }
     }
   ]
 )
@@ -990,14 +1003,14 @@ curl "https://api.openai.com/v1/responses" \
 
 ## 用户位置
 
-若要根据地理位置优化搜索结果，你可以使用国家、城市、地区和/或时区来指定一个近似的用户位置。
+若要根据地理位置优化搜索结果，你可以使用国家、城市、地区和/或时区来指定一个近似用户位置。
 
-- 该 `city` 和 `region` 字段是自由文本字符串，例如 `Minneapolis` 和 `Minnesota` 分别对应。
-- 该 `country` 字段是一个两位字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1)，例如 `US`.
+- 该 `city` 并且 `region` 字段是自由文本字符串，例如 `Minneapolis` 并且 `Minnesota` 分别对应。
+- 该 `country` 字段是一个两字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1)，例如 `US`.
 - 该 `timezone` 字段是一个 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 例如 `America/Chicago`.
 
-请注意，使用 deep research 模型进行网页搜索时不支持用户位置。
-  search.
+请注意，使用深度研究模型进行网页搜索时不支持用户位置。
+  搜索。
 
 
 
@@ -1185,13 +1198,13 @@ curl "https://api.openai.com/v1/responses" \
 
 
 
-## 实时联网访问
+## 实时互联网访问
 
-控制 网页搜索 工具在 Responses API 中是抓取实时内容还是仅使用缓存/索引结果。
+控制 网页搜索 工具在 Responses API 中是抓取实时内容，还是仅使用缓存或已编入索引的结果。
 
-- Set `external_web_access: false` on the `web_search` tool to run in offline/cache‑only mode.
-- Default is `true` (live access) if you do not set it.
-- Preview variants (`web_search_preview`) ignore this parameter and behave as if `external_web_access` is `true`.
+- 将 `external_web_access: false` 设置为 `web_search` 以使工具以离线/仅缓存模式运行。
+- 默认值为 `true` （在线访问，前提是你未进行设置）。
+- 预览变体（`web_search_preview`）忽略此参数，表现如同 `external_web_access` 为 `true`.
 
 
 
@@ -1299,7 +1312,12 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Find when the Eiffel Tower opened to the public and cite the source.",
-  tools: [{type: :web_search, external_web_access: false}]
+  tools: [
+    {
+      type: :web_search,
+      external_web_access: false
+    }
+  ]
 )
 
 puts(response.output_text)
@@ -1308,37 +1326,37 @@ puts(response.output_text)
 
 
 
-## 局限性
+## 限制
 
 #### Chat Completions API
 
-Chat Completions API仅支持专用的网页搜索模型。这些模型不支持Responses API `web_search` 功能，例如域筛选、完整来源列表、实时访问控制和返回令牌预算控制。
+Chat Completions API 仅支持用于网页搜索的专用搜索模型。这些模型不支持 Responses API `web_search` 诸如域名过滤器、完整来源列表、实时访问控制以及返回 token 预算控制等功能。
 
-| 模型                        | 上下文窗口 | 限制                                                                                                                                   |
+| Model                        | 上下文窗口 | 限制                                                                                                                                   |
 | ---------------------------- | -------------: | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | `gpt-5-search-api`           |           200k | 使用 Chat Completions 搜索模型路径                                                                                                  |
-| `gpt-4o-search-preview`      |           128k | 使用 Chat Completions 搜索模型路径； [已弃用,2026-07-23 下线](https://developers.openai.com/api/docs/deprecations#2026-04-22-legacy-gpt-model-snapshots) |
-| `gpt-4o-mini-search-preview` |           128k | 使用 Chat Completions 搜索模型路径； [已弃用,2026-07-23 下线](https://developers.openai.com/api/docs/deprecations#2026-04-22-legacy-gpt-model-snapshots) |
+| `gpt-4o-search-preview`      |           128k | 使用 Chat Completions 搜索模型路径； [已弃用，2026-07-23 关停](https://developers.openai.com/api/docs/deprecations#2026-04-22-legacy-gpt-model-snapshots) |
+| `gpt-4o-mini-search-preview` |           128k | 使用 Chat Completions 搜索模型路径； [已弃用，2026-07-23 关停](https://developers.openai.com/api/docs/deprecations#2026-04-22-legacy-gpt-model-snapshots) |
 
 #### Responses API
 
-使用托管 `web_search` 工具。Responses API 仍然接受 `web_search_preview` 用于旧版集成，但请使用 `web_search` 用于新的集成。
+使用 hosted `web_search` 工具。Responses API 仍然接受 `web_search_preview` 用于旧版集成，但请使用 `web_search` 用于新集成。
 
-如需更大的模型上下文窗口，请使用 `gpt-5.5`。网页搜索 上下文窗口仍为 128k。
+如果需要更大的模型上下文窗口，请使用 `gpt-5.5`。网页搜索 上下文窗口仍为 128k。
 
-| 模型          | 模型上下文窗口 | 限制                                                                                                                         |
+| Model          | 模型上下文窗口 | 限制                                                                                                                         |
 | -------------- | -------------------: | ---------------------------------------------------------------------------------------------------------------------------------- |
 | `gpt-4.1`      |                   1M | 搜索上下文限制为 128k                                                                                                  |
 | `gpt-4.1-mini` |                   1M | 搜索上下文限制为 128k                                                                                                  |
-| `o4-mini`      |                 200k | 搜索上下文限制为 128k； [已弃用，2026-10-23 下线](https://developers.openai.com/api/docs/deprecations#2026-04-22-legacy-gpt-model-snapshots) |
+| `o4-mini`      |                 200k | 搜索上下文限制为 128k； [已弃用,将于 2026-10-23 下线](https://developers.openai.com/api/docs/deprecations#2026-04-22-legacy-gpt-model-snapshots) |
 
 对于 Responses API 网页搜索，搜索上下文窗口限制为 128k，即使模型上下文窗口更大也是如此。
 
-- 网页搜索不支持 [`gpt-5`](https://developers.openai.com/api/docs/models/gpt-5) 使用 `minimal` 推理。
-- [`gpt-5.4`](https://developers.openai.com/api/docs/models/gpt-5.4) 将推理力度设置为 `none` 可能会产生质量较低的结果。
+- 网页搜索不支持 [`gpt-5`](https://developers.openai.com/api/docs/models/gpt-5) 与 `minimal` 推理。
+- [`gpt-5.4`](https://developers.openai.com/api/docs/models/gpt-5.4) 当推理力度设置为 `none` 时，可能会产生质量较低的结果。
 - Responses API 的 网页搜索 使用底层模型的分级速率限制。
-- `web_search_preview` 不支持 `filters` 或 `return_token_budget`，并忽略 `external_web_access`.
-- 使用 `tool_choice: "auto"`，时，搜索为可选项。需要执行搜索时，请使用 `tool_choice: "required"` 或特定的 网页搜索 工具选项。
+- `web_search_preview` 不支持 `filters` 或 `return_token_budget`，并且会忽略 `external_web_access`.
+- 使用 `tool_choice: "auto"`，时，搜索是可选的。在必须执行搜索时，请使用 `tool_choice: "required"` 或特定的 网页搜索 工具选项。
 
 ## 使用说明
 

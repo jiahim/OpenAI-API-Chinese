@@ -49,6 +49,8 @@ Automatic continuations inherit the original request settings. Token and tool-ca
 
 ## Run a complete example
 
+The .NET SDK does not provide a Responses WebSocket client, so a C# SDK variant is not available for this example.
+
 Update a project plan while it runs
 
 ```javascript
@@ -188,160 +190,44 @@ async def main():
 asyncio.run(main())
 ```
 
-```csharp
-using System.Net.WebSockets;
-using System.Text.Json;
-
-// Set OPENAI_API_KEY before running this example.
-// ClientWebSocket is built in; no extra package is required.
-
-using ClientWebSocket socket = new();
-string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-socket.Options.SetRequestHeader("Authorization", $"Bearer {key}");
-Uri endpoint = new("wss://api.openai.com/v1/responses");
-
-using CancellationTokenSource timeout = new(TimeSpan.FromSeconds(120));
-await socket.ConnectAsync(endpoint, timeout.Token);
-string? initialResponseId = null;
-string? successorResponseId = null;
-
-await SendAsync(new
-{
-    type = "response.create",
-    model = "gpt-6-astra",
-    reasoning = new { effort = "medium" },
-    input = "Draft a project plan for building a task-tracking app.",
-});
-
-while (true)
-{
-    using JsonDocument message = await ReceiveAsync();
-    JsonElement data = message.RootElement;
-    string? eventType = data.GetProperty("type").GetString();
-    if (eventType == "response.created")
-    {
-        string? responseId = data.GetProperty("response").GetProperty("id").GetString();
-        if (initialResponseId is null)
-        {
-            initialResponseId = responseId;
-            // Simulate a user adding instructions while the response runs.
-            await SendAsync(new
-            {
-                type = "response.steer",
-                previous_response_id = initialResponseId,
-                input = "Keep the scope small enough for one developer to finish in two weeks.",
-            });
-        }
-        else
-        {
-            successorResponseId = responseId;
-        }
-    }
-    else if (eventType is "response.steer.failed" or "response.failed" or "error")
-    {
-        throw new InvalidOperationException(data.GetRawText());
-    }
-    else if (eventType == "response.incomplete")
-    {
-        JsonElement response = data.GetProperty("response");
-        if (response.GetProperty("id").GetString() != initialResponseId
-            || !response.TryGetProperty("incomplete_details", out JsonElement details)
-            || !details.TryGetProperty("reason", out JsonElement reason)
-            || reason.GetString() != "steered")
-        {
-            throw new InvalidOperationException(data.GetRawText());
-        }
-    }
-    else if (eventType == "response.completed"
-        && data.GetProperty("response").GetProperty("id").GetString() == successorResponseId)
-    {
-        foreach (JsonElement item in data.GetProperty("response").GetProperty("output").EnumerateArray())
-        {
-            if (item.GetProperty("type").GetString() != "message") continue;
-            foreach (JsonElement part in item.GetProperty("content").EnumerateArray())
-            {
-                if (part.GetProperty("type").GetString() == "output_text")
-                {
-                    Console.Write(part.GetProperty("text").GetString());
-                }
-            }
-        }
-        Console.WriteLine();
-        break;
-    }
-    // Acceptance only queues the input. Keep reading past the first response.
-}
-
-async Task SendAsync<T>(T data)
-{
-    byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(data);
-    await socket.SendAsync(bytes.AsMemory(), WebSocketMessageType.Text, true, timeout.Token);
-}
-
-async Task<JsonDocument> ReceiveAsync()
-{
-    using MemoryStream message = new();
-    byte[] buffer = new byte[8192];
-    ValueWebSocketReceiveResult result;
-    do
-    {
-        result = await socket.ReceiveAsync(buffer.AsMemory(), timeout.Token);
-        if (result.MessageType == WebSocketMessageType.Close)
-        {
-            throw new InvalidOperationException(
-                "Connection closed before the steered response finished.");
-        }
-        message.Write(buffer, 0, result.Count);
-    } while (!result.EndOfMessage);
-    message.Position = 0;
-    return await JsonDocument.ParseAsync(message, cancellationToken: timeout.Token);
-}
-```
-
 ```ruby
 require "async"
-require "async/http/endpoint"
-require "async/websocket/client"
-require "json"
+require "openai"
 
-endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
-headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+client = OpenAI::Client.new
 Sync do |task|
   task.with_timeout(120) do
-    Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
-      connection.write(JSON.generate(
-        type: "response.create", model: "gpt-6-astra", reasoning: {effort: "medium"},
+    client.responses.connect(request_options: { timeout: 10 }) do |connection|
+      connection.response.create(
+        model: "gpt-6-astra", reasoning: { effort: "medium" },
         input: "Draft a project plan for building a task-tracking app."
-      ))
-      connection.flush
+      )
       state = {}
-      while (message = connection.read)
-        event = JSON.parse(message.to_str)
-        response = event["response"]
-        case event.fetch("type")
-        when "response.created"
+      while (event = connection.receive)
+        case event
+        when OpenAI::Responses::ResponseCreatedEvent
+          response = event.response
           if !state[:initial_id]
-            state[:initial_id] = response.fetch("id")
-            connection.write(JSON.generate(
+            state[:initial_id] = response.id
+            connection.send_event(
               type: "response.steer", previous_response_id: state[:initial_id],
               input: "Keep the scope small enough for one developer to finish in two weeks."
-            ))
-            connection.flush
+            )
           else
-            state[:successor_id] = response.fetch("id")
+            state[:successor_id] = response.id
           end
-        when "response.steer.failed", "response.failed", "error"
-          raise "Steering failed: #{JSON.generate(event)}"
-        when "response.incomplete"
-          unless response.fetch("id") == state[:initial_id] && response.dig("incomplete_details", "reason") == "steered"
-            raise "Response incomplete: #{JSON.generate(event)}"
+        when OpenAI::Responses::ResponseSteerFailedEvent, OpenAI::Responses::ResponseFailedEvent, OpenAI::Responses::ResponsesServerEvent::ResponseWsError
+          raise "Steering failed: #{event.to_json}"
+        when OpenAI::Responses::ResponseIncompleteEvent
+          response = event.response
+          unless response.id == state[:initial_id] && response.incomplete_details&.reason.to_s == "steered"
+            raise "Response incomplete: #{event.to_json}"
           end
-        when "response.completed"
-          next unless state[:successor_id] && response.fetch("id") == state[:successor_id]
-          response.fetch("output").each do |item|
-            next unless item["type"] == "message"
-            item.fetch("content").each { |part| puts(part.fetch("text")) if part["type"] == "output_text" }
-          end
+        when OpenAI::Responses::ResponseCompletedEvent
+          response = event.response
+          next unless state[:successor_id] && response.id == state[:successor_id]
+
+          puts(response.output_text)
           state[:completed] = true
           break
         end

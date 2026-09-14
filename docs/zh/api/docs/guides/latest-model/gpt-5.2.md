@@ -1,60 +1,60 @@
 # 使用 GPT-5.2
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。你可以通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt). 可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 简介
 
-GPT-5.2 作为一款面向通用与智能体任务的旗舰级通用模型发布。与 GPT-5.1 相比，它在以下方面有所改进：
+GPT-5.2 作为面向通用与智能体任务的旗舰通用模型发布。相比 GPT-5.1，它在以下方面有所改进：
 
 - 通用智能
-- 遵循指令
+- 指令遵循
 - 准确性与 token 效率
-- 多模态——尤其是视觉能力
+- 多模态——尤其是视觉
 - 代码生成——尤其是前端 UI 创建
-- API中的工具调用与上下文管理
-- 电子表格理解与创建
+- 工具调用与 API 中的上下文管理
+- 电子表格的理解与创建
 
-与之前的 GPT-5.1 模型不同，GPT-5.2 新增了用于管理模型 "已知" 和 "记忆" 内容的功能，以提高准确性。
+与之前的 GPT-5.1 模型不同，GPT-5.2 提供了用于管理模型“已知”和“记忆”内容的新功能，以提升准确性。
 
-本指南介绍 GPT-5 模型系列的关键功能，以及如何充分发挥 GPT-5.2 的性能。
+本指南介绍 GPT-5 模型系列的关键功能，以及如何充分发挥 GPT-5.2 的能力。
 
-## 探索代码示例
+## 浏览代码示例
 
-点击查看几个完全通过单个提示词生成、未手动编写任何代码的演示应用。请注意，这些示例均由 GPT-5.2 或我们此前的旗舰模型 GPT-5 生成。
+点击浏览一些完全由单个提示生成、且未手写任何代码的演示应用。请注意，这些示例要么由 GPT-5.2 生成，要么由我们之前的旗舰模型 GPT-5 生成。
 
 ## 模型、API 和功能更新
 
-GPT-5.2 系列包含 `gpt-5.2` 适用于需要广泛世界知识的复杂任务， `gpt-5.2-chat-latest` 适用于与 ChatGPT 对齐的行为，以及 `gpt-5.2-pro` 适用于可从更多计算中受益的问题。
+GPT-5.2 系列包含 `gpt-5.2` 用于需要广泛世界知识的复杂任务， `gpt-5.2-chat-latest` 用于与 ChatGPT 对齐的行为，以及 `gpt-5.2-pro` 用于受益于更多算力的问题。
 
-如需较小的模型，请使用 `gpt-5-mini`.
+如果需要更小的模型，请使用 `gpt-5-mini`.
 
-为了帮助你选择最适合用例的模型，请考虑以下权衡：
+为了帮助你挑选最适合用例的模型，请考虑以下权衡：
 
-| Variant                                           | Best for                                                                             |
+| 变体                                           | 最适合                                                                             |
 | ------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| [`gpt-5.2`](https://developers.openai.com/api/docs/models/gpt-5.2)             | 复杂推理、广泛的世界知识，以及代码密集型或多步骤的智能体任务 |
-| [`gpt-5.2-pro`](https://developers.openai.com/api/docs/models/gpt-5.2-pro)     | 可能需要更长时间解决、但需要更深入思考的难题             |
+| [`gpt-5.2`](https://developers.openai.com/api/docs/models/gpt-5.2)             | 复杂推理、广泛的世界知识，以及代码密集或多步骤的智能体任务 |
+| [`gpt-5.2-pro`](https://developers.openai.com/api/docs/models/gpt-5.2-pro)     | 需要更长时间解决、但要求更深思考的难题             |
 | [`gpt-5.2-codex`](https://developers.openai.com/api/docs/models/gpt-5.2-codex) | 构建交互式编码产品的公司；覆盖全谱系的编码任务        |
-| [`gpt-5-mini`](https://developers.openai.com/api/docs/models/gpt-5-mini)       | 成本优化的推理与聊天；在速度、成本和能力之间取得平衡              |
+| [`gpt-5-mini`](https://developers.openai.com/api/docs/models/gpt-5-mini)       | 成本优化的推理与对话；在速度、成本和能力之间取得平衡              |
 | [`gpt-5-nano`](https://developers.openai.com/api/docs/models/gpt-5-nano)       | 高吞吐量任务，尤其是聚焦的指令遵循或分类    |
 
 ### GPT-5.2 中的新功能
 
-和 GPT-5.1 一样，全新的 GPT-5.2 同样具备 API 功能，例如自定义工具、可控制冗长度和推理强度的参数，以及允许使用的工具列表。5.2 的新变化在于新增了 `xhigh` 推理力度等级、简洁的推理摘要，以及利用 _compaction_.
+与 GPT-5.1 类似，新的 GPT-5.2 同样提供了 API 功能，例如自定义工具、可控制详细程度和推理强度的参数，以及一个允许使用的工具列表。5.2 的全新特性是一个新的 `xhigh` 推理强度等级、简洁的推理摘要，以及利用以下方式实现的新上下文管理： _压缩_.
 
-本指南将带你了解 GPT-5 模型系列的一些关键功能，以及如何充分发挥 5.2 的优势。
+本指南将介绍 GPT-5 模型系列的一些关键特性，以及如何充分发挥 5.2 的优势。
 
-对于编码任务，GPT-5.2-Codex 是我们在 Codex 或类 Codex 环境中为智能体工作流优化的编码版本。
+对于编码任务，GPT-5.2-Codex 是我们面向 Codex 或类似 Codex 环境中的智能体工作流所优化的编码变体。
 
-### 降低推理力度
+### 较低推理力度
 
-该 `reasoning.effort` 参数控制模型在生成响应之前生成多少推理token。早期的推理模型（如 o3）仅支持 `low`, `medium`，并且 `high`: `low` 倾向于更快的速度和更少的 token，而 `high` 倾向于更充分的推理。
+该 `reasoning.effort` 参数用于控制模型在生成响应之前生成的推理 token 数量。早期的推理模型（如 o3）仅支持 `low`, `medium`，并且 `high`: `low` 倾向于更快的速度和更少的 token，而 `high` 倾向于更充分的推理。
 
-在 GPT-5.2 中，最低设置为 `none` 以提供更低延迟的交互。这是 GPT-5.2 中的默认设置。如果你需要更多推理，可以缓慢地增加到 `medium` 并试验效果。
+在 GPT-5.2 中，最低设置是 `none` ，以提供更低延迟的交互。这是 GPT-5.2 中的默认设置。如果需要更多思考，可以逐步提升到 `medium` 并进行实验。
 
-当推理强度设置为 `none`，时，提示词非常重要。即使在默认设置下，为了提升模型的推理质量，也要鼓励它在回答前先“思考”或列出步骤。
+当推理力度设置为 `none`，时，提示非常重要。为了提升模型的推理质量，即使使用默认设置，也应鼓励它在回答之前先“思考”或列出步骤。
 
-将推理强度设置为 none
+推理力度设置为 none
 
 ```javascript
 import OpenAI from "openai";
@@ -164,7 +164,7 @@ require "openai"
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-5.2",
-  reasoning: {effort: :minimal},
+  reasoning: { effort: :minimal },
   input: "Explain the bug and propose a fix."
 )
 puts(response.output_text)
@@ -185,18 +185,18 @@ curl --request POST \
 ```
 
 
-### Verbosity
+### 详细程度
 
-详细程度决定了会生成多少输出 token。减少 token 数量可以降低整体延迟。虽然模型的推理方式基本不变，但模型会找到更简洁地作答的方法——这可能会提升或降低回答质量，具体取决于你的使用场景。下面列出详细程度光谱两端的一些场景：
+详细程度决定了生成的输出 token 数量。减少 token 数量可以降低整体延迟。虽然模型的推理方式基本保持不变，但模型会找到更简洁的回答方式——这可能会根据你的用例改善或降低回答质量。以下是详细程度两个极端场景下的一些示例：
 
-- **高详细程度：** 当你需要模型对文档提供详尽解释或执行大量代码重构时使用。
-- **低详细程度：** 最适合需要简洁回答或聚焦式代码生成（例如 SQL 查询）的场景。
+- **高详细度：** 在你需要模型提供详尽的文档解释或执行大规模代码重构时使用。
+- **低详细度：** 最适合需要简洁回答或聚焦式代码生成的场景，例如 SQL 查询。
 
-GPT-5 使该选项可配置为以下之一 `high`, `medium`，或 `low`。在 GPT-5.2 中，详细程度仍然可配置，且默认为 `medium`.
+GPT-5 将此选项设为可配置项之一，包括 `high`, `medium`，或 `low`。在 GPT-5.2 中，冗长程度仍然可配置，默认值为 `medium`.
 
-在使用 GPT-5.2 生成代码时， `medium` 和 `high` 详细程度会产生更长、结构更清晰的代码，并附带内联解释，而 `low` 详细程度会生成更短、更精炼的代码，并附以最少的注释。
+使用 GPT-5.2 生成代码时， `medium` 和 `high` 冗长程度会生成更长、结构更清晰的代码，并附带内联说明，而 `low` 冗长程度则会生成更短、更简洁的代码，仅附带极少的注释。
 
-控制详细程度
+控制冗长程度
 
 ```javascript
 import OpenAI from "openai";
@@ -279,7 +279,7 @@ require "openai"
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-5.2",
-  text: {verbosity: :low},
+  text: { verbosity: :low },
   input: "Explain the bug and propose a fix."
 )
 puts(response.output_text)
@@ -300,25 +300,25 @@ curl --request POST \
 ```
 
 
-在将该参数设置为 `low` 之后，你仍然可以通过提示来引导API中的详细程度。详细程度参数在系统提示级别定义了一个总体 token 区间，但实际输出在该区间内对开发者提示和用户提示均保持灵活。
+在将冗长程度设置为 `low` 后，你仍然可以通过提示语在 API 中对其进行引导。冗长程度参数在系统提示层面定义了一个通用的 token 范围，但实际输出在该范围内会同时响应开发者提示和用户提示。
 
-### 在 GPT-5.2 中使用工具
+### 将工具与 GPT-5.2 配合使用
 
 GPT-5.2 已针对特定工具进行了后训练。详见 [工具文档](https://developers.openai.com/api/docs/guides/tools) 以获取更具体的指导。
 
 #### apply patch 工具
 
-该 `apply_patch` 该工具让 GPT-5.2 能够使用结构化差异在你的代码库中创建、更新和删除文件。模型不再只是建议修改，而是发出补丁操作，由你的应用执行后再回报结果，从而支持迭代式的、多步骤代码编辑工作流。 [阅读文档](https://developers.openai.com/api/docs/guides/tools-apply-patch).
+该 `apply_patch` 工具让 GPT-5.2 能够使用结构化差异在你的代码库中创建、更新和删除文件。模型不只是建议编辑，而是发出补丁操作，由你的应用执行后再回报结果，从而支持迭代式、多步骤的代码编辑工作流。 [阅读文档](https://developers.openai.com/api/docs/guides/tools-apply-patch).
 
-在底层，该实现使用的是自由格式的函数调用而非 JSON 格式。测试中，使用具名函数使 `apply_patch` 失败率降低了 35%。
+在底层，该实现使用的是自由格式函数调用而非 JSON 格式。经测试，使用具名函数后， `apply_patch` 失败率降低了 35%。
 
-#### Shell 工具
+#### Shell tool
 
-GPT-5.2 支持本地 shell。shell 工具允许模型通过受控的命令行界面与你的本地计算机进行交互。 [阅读文档](https://developers.openai.com/api/docs/guides/tools-shell) 以了解更多信息。
+GPT-5.2 支持本地 shell。Shell 工具允许模型通过受控的命令行界面与你的本地计算机进行交互。 [阅读文档](https://developers.openai.com/api/docs/guides/tools-shell) 了解更多。
 
 ### 自定义工具
 
-随着 GPT-5 模型家族的发布，我们引入了一项名为自定义工具的新能力，它允许模型将任意原始文本作为工具调用输入发送，同时仍可在需要时对输出进行约束。此工具行为在 GPT-5.2 中依然成立。
+当 GPT-5 模型系列发布时，我们引入了一项名为自定义工具的新能力，它允许模型将任何原始文本作为工具调用输入发送，同时仍可在需要时对输出进行约束。这一工具行为在 GPT-5.2 中依然成立。
 
 [函数调用指南
 
@@ -328,7 +328,7 @@ GPT-5.2 支持本地 shell。shell 工具允许模型通过受控的命令行界
 
 #### Freeform inputs
 
-使用以下方式定义你的工具 `type: custom` 以使模型能够将明文输入直接发送到你的工具，而不是仅限于结构化 JSON。模型可以将任何原始文本——代码、SQL 查询、Shell 命令、配置文件或长篇散文——直接发送到你的工具。
+通过以下方式定义你的工具 `type: custom` 以允许模型将明文输入直接发送到你的工具，而不是仅限于结构化的 JSON。模型可以将任何原始文本（代码、SQL 查询、shell 命令、配置文件或长篇散文）直接发送到你的工具。
 
 ```json
 {
@@ -340,18 +340,18 @@ GPT-5.2 支持本地 shell。shell 工具允许模型通过受控的命令行界
 
 #### 约束输出
 
-GPT-5.2 支持上下文无关文法 (`CFGs`) 用于自定义工具，让你可以提供 Lark 文法来将输出约束到特定语法或 DSL。例如，附加 CFG（如 SQL 或 DSL 文法）可确保助手的文本与你的文法匹配。
+GPT-5.2 支持上下文无关文法（`CFGs`），可用于自定义工具，让你提供 Lark 文法以将输出约束到特定语法或 DSL。例如，附加 CFG（如 SQL 或 DSL 文法）可确保助手文本与你的文法一致。
 
-这可以实现精确、受约束的工具调用或结构化响应，并让你直接在 GPT-5.2 的函数调用中强制执行严格的语法或领域特定格式，从而在复杂或受限领域中提升可控性和可靠性。
+这使得精确、受约束的工具调用或结构化响应成为可能，并让你直接在 GPT-5.2 的函数调用中强制执行严格的语法或领域特定格式，从而在复杂或受约束的场景中提升可控性与可靠性。
 
 #### 自定义工具的最佳实践
 
-- **编写简洁、明确的工具描述。** 模型会根据你的描述决定发送什么；如果希望它始终调用该工具，请明确说明。
-- **在服务端校验输出**。自由格式的字符串功能强大，但需要防止注入或不安全的命令。
+- **编写简洁、明确的工具描述。** 模型会根据你的描述决定发送什么；如果希望始终调用该工具，请明确说明。
+- **在服务端验证输出**。自由格式字符串功能强大，但需要防范注入或不安全命令的风险。
 
-### 允许的工具
+### Allowed tools
 
-该 `allowed_tools` 下的参数 `tool_choice` 允许你传入 N 个工具定义，但将模型限制为只能使用其中的 M 个（&lt; N)。在 `tools`，中列出你的完整工具集，然后使用 `allowed_tools` 块来命名该子集并指定模式——可以是 `auto` （模型可以从中任选其一）或 `required` （模型必须调用其中一个）。
+该 `allowed_tools` parameter under `tool_choice` 可以让你传入 N 个工具定义，但限制模型只能使用其中的 M 个（&lt; N）个。在 `tools`，中列出你的完整工具集，然后使用一个 `allowed_tools` 块来指定该子集并设定模式——可以是 `auto` （模型可从这些工具中任选其一），也可以是 `required` （模型必须调用其中一个）。
 
 [函数调用指南
 
@@ -359,13 +359,13 @@ GPT-5.2 支持上下文无关文法 (`CFGs`) 用于自定义工具，让你可�
 
       Learn about the allowed tools option in the function calling guide.](https://developers.openai.com/api/docs/guides/function-calling)
 
-通过将所有可能的工具与当前可用的子集分开 _开来_，你可以获得更高的安全性、可预测性以及改进的提示缓存效果。同时也避免了脆弱的提示工程，例如硬编码的调用顺序。GPT-5.2 会在对话过程中动态调用或要求使用特定函数，同时降低在长上下文场景下意外调用工具的风险。
+通过将所有可选工具与当前可用的子集分开 _处理_，你可以获得更高的安全性、可预测性以及更好的提示缓存效果。同时也避免了脆弱的提示工程，例如硬编码的调用顺序。GPT-5.2 能够在对话中间动态调用或要求使用特定函数，同时降低在长上下文下意外调用工具的风险。
 
-|                  | **Standard Tools**                        | **Allowed Tools**                                             |
+|                  | **标准工具**                        | **允许的工具**                                             |
 | ---------------- | ----------------------------------------- | ------------------------------------------------------------- |
-| 模型的可选工具集 | 下列所有工具： **`"tools": […]`** | 仅限下列子集： **`"tools": […]`** 中的 **`tool_choice`** |
-| 工具调用  | 模型可以调用也可以不调用任何工具        | 模型只能调用（或必须调用）所选的工具        |
-| 用途          | 声明可用的能力            | 限制实际使用的能力                |
+| 模型的能力范围 | 下所列的全部工具 **`"tools": […]`** | 仅其中的子集 **`"tools": […]`** 中 **`tool_choice`** |
+| 工具调用  | 模型可调用任意工具，也可不调用        | 模型被限制（或必须）调用所选工具        |
+| 用途          | 声明可用的能力            | 限制实际可调用的能力                |
 
 ```json
 {
@@ -382,43 +382,43 @@ GPT-5.2 支持上下文无关文法 (`CFGs`) 用于自定义工具，让你可�
 
 有关所有这些新功能的更详细概述，请参阅 [配套 cookbook](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5-2_prompting_guide).
 
-### Preambles
+### 前导
 
-前言是 GPT-5.2 在调用任何工具或函数之前生成的、面向用户的简短说明，用于概述其意图或计划——例如，“我为什么要调用这个工具”。前言出现在思维链之后、实际工具调用之前，使模型的推理更易于理解和调试，同时支持精确引导。
+前言是 GPT-5.2 在调用任何工具或函数之前生成的简短、面向用户的说明，用于概述其意图或计划——例如“为什么要调用这个工具”。它们出现在思维链之后、实际工具调用之前，让模型的推理更易于理解和调试，同时支持精确引导。
 
-通过让 GPT-5.2 在每次工具调用之前“先说出来”，前言可以提高工具调用的准确性（以及整体任务成功率），而不会显著增加推理开销。要启用前言，请添加系统指令或开发者指令——例如：“在调用工具之前，请解释你为什么调用它。”GPT-5.2 会为每个指定的工具调用添加一段简洁的理由说明。该模型还可能在工具调用之间输出多条消息，从而改善交互体验——尤其适用于追求极简推理或对延迟敏感的使用场景。
+通过让 GPT-5.2 在每次工具调用前“边想边说”，前言可以提升工具调用准确率（以及整体任务成功率），同时不会显著增加推理开销。若要启用前言，请添加系统或开发者指令，例如：“在调用工具之前，先解释你为什么要调用它。”GPT-5.2 会为每个指定的工具调用添加简明的理由。模型还可能在工具调用之间输出多条消息，从而提升交互体验——尤其适合对推理要求较低或对延迟敏感的使用场景。
 
-有关使用前言的更多信息，请参阅 [GPT-5 提示词指南](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide#tool-preambles).
+有关使用前言的更多信息，请参阅 [GPT-5 提示词 cookbook](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide#tool-preambles).
 
 ## 迁移快速入门
 
-GPT-5.2 与 Responses API 配合效果最佳，后者支持在多轮对话之间保留推理上下文。请阅读下文，了解如何从你当前使用的模型或 API 进行迁移。
+GPT-5.2 与 Responses API 配合使用时效果最佳，后者支持在多轮之间保留推理上下文。请阅读下文，了解如何从你当前使用的模型或 API 进行迁移。
 
 ### 从其他模型迁移到 GPT-5.2
 
-虽然该模型应该很接近 GPT-5.1 的可直接替换版本，但仍有几项关键变化需要说明。请参阅 [GPT-5.2 提示指南](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5-2_prompting_guide) ，了解需要在提示中进行哪些具体更新。
+虽然该模型应该可以非常接近 GPT-5.1 的直接替代品，但仍有一些关键变化需要指出。请参阅 [GPT-5.2 提示指南](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5-2_prompting_guide) 了解需要在你的提示中做出的具体更新。
 
-将 GPT-5 模型与 Responses API 配合使用，由于 API 的设计，可以获得更高的智能水平。Responses API 可以将上一轮的 CoT 传递给模型。这会带来更少生成的推理 token、更高的缓存命中率以及更低的延迟。了解更多信息，请参阅一篇 [深入指南](https://developers.openai.com/cookbook/examples/responses_api/reasoning_items) ，了解 Responses API 的优势。
+使用 GPT-5 系列模型配合 Responses API 可以借助 API 的设计获得更高的智能水平。Responses API 可以将上一轮的思维链传递给模型。这会带来更少的推理 token、更高的缓存命中率以及更低的延迟。要了解更多，请参阅关于 Responses API 优势的 [深入指南](https://developers.openai.com/cookbook/examples/responses_api/reasoning_items) 。
 
-在从更早的 OpenAI 模型迁移到 GPT-5.2 时，请先试验推理等级和提示策略。根据我们的测试，我们建议使用我们的 [提示优化器](https://platform.openai.com/chat/edit?models=gpt-5.2&optimize=true)——它会根据我们的最佳实践自动更新你的 GPT-5.2 提示——并遵循以下针对该模型的指引：
+从旧版 OpenAI 模型迁移到 GPT-5.2 时，建议从推理级别和提示策略开始试验。根据我们的测试，我们推荐使用我们的 [提示优化器](https://platform.openai.com/chat/edit?models=gpt-5.2&optimize=true)——它会根据我们的最佳实践自动为 GPT-5.2 更新你的提示——并遵循以下针对该模型的指导：
 
-- **`gpt-5.1`**: `gpt-5.2` 使用默认设置可作为直接替换方案。
-- **o3**: `gpt-5.2` 配合 `medium` 或 `high` 推理。建议从 `medium` 进行带提示调优的推理，如果效果不理想可提升至 `high` ，如果没有获得理想结果。
-- **`gpt-4.1`**: `gpt-5.2` 配合 `none` 推理。建议从 `none` 并进行提示调优；如果需要更好的效果，可提升推理等级。
-- **`o4-mini` 或 `gpt-4.1-mini`**: `gpt-5-mini` 配合提示调优是一个非常合适的替代方案。
-- **`gpt-4.1-nano`**: `gpt-5-nano` 配合提示调优是一个非常合适的替代方案。
+- **`gpt-5.1`**: `gpt-5.2` 在默认设置下可直接作为替代品使用。
+- **o3**: `gpt-5.2` 配合 `medium` 或 `high` 推理。从 `medium` 推理配合提示调优开始，如果效果不理想再提升到 `high` 。
+- **`gpt-4.1`**: `gpt-5.2` 配合 `none` 推理。从 `none` 并对你的提示进行调优；如果需要更好的性能，可提升到。
+- **`o4-mini` 或 `gpt-4.1-mini`**: `gpt-5-mini` 配合提示调优是很好的替代方案。
+- **`gpt-4.1-nano`**: `gpt-5-nano` 配合提示调优是很好的替代方案。
 
 ### GPT-5.2 参数兼容性
 
-以下参数仅在 **使用 GPT-5.2 并将推理力度设置为** 时支持 `none`:
+以下参数 **仅支持** 在使用 GPT-5.2 且将推理力度设置为 `none`:
 
 - `temperature`
 - `top_p`
 - `logprobs`
 
-对 GPT-5.2 或 GPT-5.1 使用其他推理力度设置，或对更早的 GPT-5 模型——例如， `gpt-5`, `gpt-5-mini`，或 `gpt-5-nano`——发出的包含这些字段的请求将引发错误。
+对 GPT-5.2 或 GPT-5.1 使用任何其他推理力度设置，或对更早的 GPT-5 模型（例如， `gpt-5`, `gpt-5-mini`，或 `gpt-5-nano`）发出的请求如果包含这些字段将引发错误。
 
-若要在更高的推理力度下，或使用其他 GPT-5 系列模型获得类似的结果，可以尝试以下替代参数：
+若要在更高的推理力度下，或在另一个 GPT-5 系列模型上获得类似的结果，可以尝试以下替代参数：
 
 - **推理深度：** `reasoning: { effort: "none" | "low" | "medium" | "high" | "xhigh" }`
 - **输出详细程度：** `text: { verbosity: "low" | "medium" | "high" }`
@@ -426,11 +426,11 @@ GPT-5.2 与 Responses API 配合效果最佳，后者支持在多轮对话之间
 
 ### 从 Chat Completions 迁移到 Responses API
 
-最大的区别，也是从 Chat Completions 迁移到 Responses API 以使用 GPT-5.2 的主要原因，是支持在轮次之间传递思维链（CoT）。请参阅 API 的完整对比， [comparison of the 接口s](https://developers.openai.com/api/docs/guides/migrate-to-responses).
+最大的区别，也是从 Chat Completions 迁移到 Responses API 以使用 GPT-5.2 的主要原因，是对跨轮次传递思维链（CoT）的支持。查看完整的 [API 对比](https://developers.openai.com/api/docs/guides/migrate-to-responses).
 
-传递 CoT 仅存在于 Responses API 中，这样做之后我们观察到了更强的智能、更少的生成推理 token、更高的缓存命中率以及更低的延迟。大多数其他参数保持一致，只是格式有所不同。以下是 Chat Completions 与 Responses API 之间处理新参数的方式差异：
+传递 CoT 仅在 Responses API 中可用，并且我们观察到这样做带来了更强的智能、更少的生成推理 token、更高的缓存命中率以及更低的延迟。大多数其他参数保持对等，只是格式有所不同。以下是 Chat Completions 与 Responses API 之间新参数处理方式的差异：
 
-**推理力度**
+**推理强度**
 
 
 
@@ -599,23 +599,23 @@ curl --request POST \
 
 **与上一代模型（例如 GPT-5 和 GPT-5.1）相比，GPT-5.2 在以下方面有所提升：**
 
-- **更周全的脚手架：** 默认会构建更清晰的计划和中间结构；可通过显式指定范围和详细程度约束来进一步提升效果。
-- **总体更简洁：** 更简洁、聚焦于任务本身，但仍对提示敏感，需在提示中明确说明偏好。
-- **更强的指令遵循能力：** 更不易偏离用户意图；格式化和理由说明有所改进。
-- **工具效率权衡：** 在交互流程中相比 GPT-5.1 会执行更多额外的工具动作，可通过提示进一步优化。
-- **保守的接地倾向：** 倾向于优先保证正确性并进行显式推理；通过澄清提示可改善对歧义的处理。
+- **更加审慎的脚手架：** 默认情况下构建更清晰的计划与中间结构；得益于明确的作用域与详略约束。
+- **总体上更简洁：** 更简洁、更聚焦任务，但仍对提示敏感，需要在提示中明确表达偏好。
+- **更强的指令遵循能力：** 更少偏离用户意图；格式与理由阐述有所改进。
+- **工具效率权衡：** 在交互流程中相比 GPT-5.1 会执行额外的工具动作，可通过提示进一步优化。
+- **保守的真实性倾向：** 倾向于追求正确性与显式推理；通过澄清提示可改善歧义处理。
 
-本指南重点介绍如何对 GPT-5.2 进行提示，以最大化其优势——更高的智能、准确性、可信度和严谨性——同时缓解仍存在的低效问题。现有的 GPT-5 / GPT-5.1 提示指南大部分仍然适用并可继续沿用。
+本指南聚焦于如何对 GPT-5.2 进行提示，以最大化其优势 —— 更高的智能、准确性、扎实度和规范性 —— 同时缓解其仍存在的低效之处。现有针对 GPT-5 / GPT-5.1 的提示指南在很大程度上仍然适用。
 
-### 3. 提示模式
+### 3. 提示词模式
 
-Adapt following themes into your prompts for better steer on GPT-5.2
+在提示中适配以下主题，以便更好地引导 GPT-5.2
 
-#### 3.1 控制详细程度与输出形式
+#### 3.1 控制详细程度与输出形状
 
-给出 **清晰且具体的长度约束** 尤其是在企业和编码场景下的智能体中。
+提供 **清晰且具体的长度约束** 尤其是在企业和编码场景下的智能体中。
 
-根据所需详细程度调整的示例限制：
+根据期望的详细程度调整示例 clamp：
 
 ```text
 <output_verbosity_spec>
@@ -630,9 +630,9 @@ Adapt following themes into your prompts for better steer on GPT-5.2
 </output_verbosity_spec>
 ```
 
-#### 3.2 防止范围漂移（例如，前端任务中的 UX / 设计）
+#### 3.2 防止范围漂移（例如前端任务中的 UX / 设计）
 
-GPT-5.2 在结构化代码方面能力更强，但可能生成超出最小 UX 规范和设计系统范围的代码。为保持范围可控，明确禁止额外功能和不受控的样式。
+GPT-5.2 在结构化代码方面更强，但可能会生成超出最小化 UX 规范和设计系统范围的代码。为了保持在范围内，明确禁止额外的功能和不受控的样式。
 
 ```text
 <design_and_scope_constraints>
@@ -645,11 +645,11 @@ GPT-5.2 在结构化代码方面能力更强，但可能生成超出最小 UX �
 </design_and_scope_constraints>
 ```
 
-为强制遵守设计系统，可复用你 5.1 `<design_system_enforcement>` 中的指令块，并额外强调“禁止额外功能”和“仅使用 token 颜色”。
+为了强制执行设计系统，请复用你的 5.1 `<design_system_enforcement>` 代码块，并添加 “no extra features” 和 “tokens-only colors” 以进一步强调。
 
 #### 3.3 长上下文与召回
 
-对于长上下文任务，提示词可能会受益于 **强制进行摘要与重新锚定**. 这种模式可以减少“滚动中迷失”的问题，并提升在密集上下文中的召回率。
+对于长上下文任务，提示词可能会受益于 **强制摘要和重新基于上下文**。这种模式可以减少“滚动中迷失”的错误，并提高在密集上下文中的召回率。
 
 ```text
 <long_context_handling>
@@ -663,9 +663,9 @@ GPT-5.2 在结构化代码方面能力更强，但可能生成超出最小 UX �
 
 #### 3.4 处理歧义与幻觉风险
 
-针对模糊查询（例如需求不明确、缺少约束条件，或需要最新数据但未调用工具的情况）配置抑制过度自信幻觉的提示词。
+为模糊查询（例如需求不明确、缺少约束条件，或需要新数据但未调用任何工具的提问）下的过度自信幻觉配置提示词。
 
-抑制提示词：
+缓解提示词：
 
 ```text
 <uncertainty_and_ambiguity>
@@ -679,7 +679,7 @@ GPT-5.2 在结构化代码方面能力更强，但可能生成超出最小 UX �
 </uncertainty_and_ambiguity>
 ```
 
-你还可以针对高风险输出添加一个简短的自我检查步骤：
+你也可以为高风险输出添加一个简短的自我检查步骤：
 
 ```text
 <high_risk_self_check>
@@ -692,45 +692,45 @@ Before finalizing an answer in legal, financial, compliance, or safety-sensitive
 </high_risk_self_check>
 ```
 
-### 4. 压缩（扩展有效上下文）
+### 4. 压缩（延长有效上下文）
 
-对于超出标准上下文窗口的长时间运行、工具密集型工作流，搭载 Reasoning 的 GPT-5.2 支持通过 /responses/compact 端点进行响应压缩。该压缩会对先前的对话状态执行一次可感知损失的压缩过程，返回经过加密且不透明的项目，这些项目在大幅缩减 token 占用的同时保留了与任务相关的信息。这使模型能够在扩展工作流中持续推理，而不会触及上下文上限。
+对于超过标准上下文窗口的长时间运行、工具密集型工作流，GPT-5.2 在启用 Reasoning 后，可通过 /responses/compact 端点支持响应压缩。该压缩会对先前的对话状态执行一次有损感知的压缩过程，并返回经过加密且不透明的项目（item），这些项目在大幅减少 token 占用的同时保留了与任务相关的信息。这使得模型能够在跨扩展工作流进行推理时不会触达上下文上限。
 
 **何时使用压缩**
 
-- 多步骤 智能体 工作流，包含大量工具调用
-- 需要保留较早对话轮次的长对话
+- 包含多次工具调用的多步骤智能体工作流
+- 需要保留较早轮次的长对话
 - 超出最大上下文窗口的迭代推理
 
 **关键属性**
 
-- 生成不透明、加密的项（内部逻辑可能会演进）
-- 专为 延续 设计，而非用于检查
-- 兼容 GPT-5.2 和 Responses API
-- 可在长会话中安全地反复运行
+- 生成不透明且加密的条目（内部逻辑可能演变）
+- 专为延续而设计，而非用于检查
+- 兼容 GPT-5.2 和Responses API
+- 可在长时间会话中安全重复运行
 
 **压缩响应**
 
-端点
+Endpoint
 
 ```text
 POST https://api.openai.com/v1/responses/compact
 ```
 
-**功能说明**
+**What it does**
 
-对一次对话运行一次压缩，并返回压缩后的响应对象。将压缩后的输出传入你的下一次请求，以在更小的上下文规模下延续工作流。
+Runs a compaction pass over a conversation and returns a compacted response object. Pass the compacted output into your next request to continue the 工作流 with reduced context size.
 
-**最佳实践**
+**Best practices**
 
-- 监控上下文使用情况并提前规划，避免触及上下文窗口上限
-- 在重大里程碑（例如工具密集型阶段）之后进行压缩，而不是每轮都压缩
-- 恢复时保持提示功能一致，避免行为漂移
-- 将已压缩项视为不透明对象；不要解析或依赖其内部结构
+- 监控上下文使用情况并提前规划，避免触达上下文窗口上限
+- 在重大里程碑（例如工具密集阶段）后进行压缩，而非每轮都压缩
+- 恢复时保持提示在功能上完全一致，以避免行为漂移
+- 将压缩后的内容视为不透明对象；不要解析或依赖其内部结构
 
-有关何时以及如何在生产环境中进行压缩的指导，请参阅 [会话状态](https://developers.openai.com/api/docs/guides/conversation-state?api-mode=responses) 指南和 [压缩响应](https://developers.openai.com/api/reference/resources/responses/methods/compact) 页面。
+有关何时以及如何在生产环境中进行压缩的指导，请参阅 [对话状态](https://developers.openai.com/api/docs/guides/conversation-state?api-mode=responses) 指南以及 [压缩 Response](https://developers.openai.com/api/reference/resources/responses/methods/compact) 页面。
 
-以下是一个示例:
+以下是一个示例：
 
 ```python
 from openai import OpenAI
@@ -811,12 +811,20 @@ require "openai"
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-5.2",
-  input: [{role: :user, content: "Write a very long poem about a dog."}]
+  input: [
+    {
+      role: :user,
+      content: "Write a very long poem about a dog."
+    }
+  ]
 )
 compaction = client.responses.compact(
   model: "gpt-5.2",
   input: [
-    {role: :user, content: "Write a very long poem about a dog."},
+    {
+      role: :user,
+      content: "Write a very long poem about a dog."
+    },
     *response.output
   ]
 )
@@ -825,16 +833,16 @@ puts(compaction.output)
 ```
 
 
-### 5. 智能体的可控性与用户更新
+### 5. 智能体的可引导性与用户更新
 
-GPT-5.2 在智能体脚手架和多步执行方面表现出色，前提是提示得当。你可以复用你的 GPT-5.1 `<user_updates_spec>` 和 `<solution_persistence>` 块。
+GPT-5.2 在智能体脚手架与多步骤执行方面表现强劲，前提是提示得当。你可以复用你的 GPT-5.1 `<user_updates_spec>` 和 `<solution_persistence>` blocks。
 
-可以添加两个关键调整，以进一步提升 GPT-5.2 的性能：
+可以添加两个关键的调整，以进一步提升 GPT-5.2 的性能：
 
-- 限制更新的冗长度（更短、更聚焦）。
-- 明确范围规范（不要扩展问题的范围）。
+- 限制更新的详细程度（更简短、更聚焦）。
+- 明确范围约束（不要扩大问题覆盖面）。
 
-已更新的示例规范：
+示例更新规范：
 
 ```text
 <user_updates_spec>
@@ -849,12 +857,12 @@ GPT-5.2 在智能体脚手架和多步执行方面表现出色，前提是提示
 
 ### 6. 工具调用与并行
 
-GPT-5.2 在工具可靠性和脚手架方面相较于 5.1 有所改进，特别是在 MCP/Atlas 风格的环境中。
+GPT-5.2 在工具可靠性和脚手架方面相较 5.1 有所提升，尤其是在 MCP/Atlas 类环境中。
 适用于 GPT-5 / 5.1 的最佳实践：
 
-- 用简洁的 1–2 句话描述工具的功能以及适用场景。
-- 在扫描代码库、向量存储或多实体操作时，明确鼓励并行处理。
-- 对高影响操作（下单、计费、基础设施变更）要求设置验证步骤。
+- 简明扼要地描述工具：使用 1–2 句话说明它们的功能和适用场景。
+- 在扫描代码库、向量存储或多实体操作时，明确鼓励并行执行。
+- 对高风险操作（订单、计费、基础设施变更）要求进行验证步骤。
 
 示例工具使用章节：
 
@@ -871,13 +879,13 @@ GPT-5.2 在工具可靠性和脚手架方面相较于 5.1 有所改进，特别�
 </tool_usage_rules>
 ```
 
-### 7. 结构化提取、PDF 与 Office 工作流
+### 7. 结构化抽取、PDF 与 Office 工作流
 
-这是 GPT-5.2 明显展现出显著改进的领域。为了充分发挥其优势：
+这是一个 GPT-5.2 明显展现出显著改进的领域。为了充分发挥它的能力：
 
-- 始终为输出提供 schema 或 JSON 结构。你可以使用结构化输出以严格遵守 schema。
+- 始终为输出提供 schema 或 JSON 结构。可以使用结构化输出以严格遵循 schema。
 - 区分必填字段和可选字段。
-- 要求“抽取完整性”，并显式处理缺失字段。
+- 要求“提取完整性”，并显式处理缺失字段。
 
 示例：
 
@@ -897,46 +905,46 @@ You will extract structured data from tables/PDFs/emails into JSON.
 </extraction_spec>
 ```
 
-对于多表/多文件提取，请向以下内容添加指导：
+对于多表/多文件提取，请添加以下指导：
 
 - 按文档分别序列化结果。
-- 包含稳定的 ID（文件名、合同标题、页码范围）。
+- 包含一个稳定的 ID（文件名、合同标题、页码范围）。
 
-### 8. 迁移至 GPT-5.2 的提示词指南
+### 8. 迁移至 GPT-5.2 的 Prompt 指南
 
-本部分帮助你将提示词和模型配置迁移到 GPT-5.2，同时保持行为稳定以及成本/延迟的可预测性。GPT-5 系列模型支持 reasoning_effort 旋钮（例如 none|minimal|low|medium|high|xhigh），用于在速度/成本与更深层推理之间进行权衡。
+本部分可帮助你在保持行为稳定以及成本/延迟可预测的前提下，将提示词和模型配置迁移到 GPT-5.2。GPT-5 类模型支持 reasoning_effort 旋钮（例如 none|minimal|low|medium|high|xhigh），用于在速度/成本与更深层次的推理之间进行权衡。
 
 迁移映射
-升级到 GPT-5.2 时使用以下默认映射
+升级到 GPT-5.2 时，请使用以下默认映射
 
 | 当前模型 | 目标模型 | 目标 reasoning_effort          | 备注                                                                                                 |
 | ------------- | ------------ | -------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| GPT-4o        | GPT-5.2      | none                             | 默认将 4o/4.1 迁移视为“快速/低推理”；仅当评估结果回退时才提高推理力度。 |
-| GPT-4.1       | GPT-5.2      | none                             | 与 GPT-4o 的映射一致，以保持响应迅捷的行为。                                                   |
-| GPT-5         | GPT-5.2      | same value except minimal → none | 保留 none/low/medium/high，以保持延迟与质量的一致性。                             |
-| GPT-5.1       | GPT-5.2      | same value                       | 保留现有的推理力度选择；仅在运行评估后再进行调整。                                  |
+| GPT-4o        | GPT-5.2      | none                             | 默认将 4o/4.1 迁移视为“快速/低推理深度”；仅在评估结果回退时再提高推理深度。 |
+| GPT-4.1       | GPT-5.2      | none                             | 与 GPT-4o 相同的映射，以保持响应的即时性。                                                   |
+| GPT-5         | GPT-5.2      | 相同取值，但 minimal 映射为 none | 保留 none/low/medium/high，以保持延迟与质量特征的一致性。                             |
+| GPT-5.1       | GPT-5.2      | 相同取值                       | 保留现有的推理深度选择；仅在运行评估后再做调整。                                  |
 
-\*请注意，GPT-5 的默认推理级别为 medium，而 GPT-5.1 和 GPT-5.2 的默认推理级别为 none。
+\*注意，GPT-5 的默认推理级别为 medium，而 GPT-5.1 和 GPT-5.2 的默认推理级别为 none。
 
-我们在 Playground 中推出了 [Prompt Optimizer](https://platform.openai.com/chat/edit?optimize=true) ，以帮助用户快速改进现有提示，并在 GPT-5 与其他 OpenAI 模型之间进行迁移。迁移到新模型的一般步骤如下：
+我们推出了 [Prompt Optimizer](https://platform.openai.com/chat/edit?optimize=true) ，可在 Playground 中帮助用户快速优化现有提示，并在 GPT-5 与其他 OpenAI 模型之间进行迁移。迁移到新模型的一般步骤如下：
 
-- 步骤 1：切换模型，但暂不要修改提示词。保持提示词在功能上完全一致，这样才能测试的是模型变更——而不是提示词编辑。一次只做一项修改。
-- 步骤 2：固定 reasoning_effort。显式设置 GPT-5.2 的 reasoning_effort，使其与先前模型的延迟/深度特征匹配（避免供应商默认的 “thinking” 陷阱，以免其扭曲成本/冗长度/结构）。
-- 步骤 3：运行 Evals 取得基线。在模型与推理强度对齐后，运行你的评估套件。若结果看起来良好（在中/高强度下通常更佳），就可以发布了。
-- 步骤 4：若出现回归，调整提示词。使用 Prompt Optimizer 与针对性约束（冗长度/格式/模式、范围约束）来恢复等同表现或进一步改善。
-- 步骤 5：每次小幅修改后重新运行 Evals。通过将 reasoning_effort 调高一档或对提示词进行渐进式微调来迭代——然后重新测量。
+- Step 1: 切换模型，先不要改动提示词。保持提示词在功能上完全一致，这样你测试的是模型变更本身，而不是提示词的修改。每次只改一处。
+- Step 2: 固定 reasoning_effort。显式设置 GPT-5.2 的 reasoning_effort，使其匹配之前模型的延迟/深度特征（避免服务商默认的“thinking”陷阱导致成本/输出量/结构出现偏差）。
+- Step 3: 运行 Evals 建立基线。在模型与 effort 对齐之后，运行你的评测套件。如果结果看起来不错（在中/高 effort 下常常更优），就可以准备发布了。
+- Step 4: 如果出现回归，微调提示词。使用 Prompt Optimizer 以及针对性约束（输出量/格式/Schema、范围纪律）来恢复对齐或进一步改进。
+- Step 5: 每次小幅改动后重新运行 Evals。可以将 reasoning_effort 调高一档，或者对提示词进行增量微调，然后再次测量。
 
 ### 9. 网页搜索与研究
 
-GPT-5.2 在跨多个来源综合信息方面更加可控且能力更强。
+GPT-5.2 在跨多个来源综合信息方面更具可引导性和能力。
 
 应遵循的最佳实践：
 
-- 提前明确研究范围：告诉模型你希望它如何执行搜索。是否要追踪二阶线索、解决矛盾并附带引用。明确说明研究要做到什么程度，比如：附加研究应持续到边际价值下降为止。
+- 预先指定研究范围：告诉模型你希望它如何执行搜索。是否需要追踪次级线索、解决矛盾并附上引用。明确说明研究要深入到什么程度，例如：附加研究应一直继续，直到边际价值下降为止。
 
-- 通过指令而非提问来限制歧义：指示模型全面覆盖所有合理的意图，而不是提出澄清性问题。在存在不确定性时，要求广度和深度。
+- 通过指令而非提问来限制模糊性：指示模型全面覆盖所有合理的意图，而不要提出澄清性问题。在存在不确定性时，要求广度与深度兼具。
 
-- 规定输出形式和语调：对结构（用于比较的 Markdown、标题、表格）、清晰度（定义缩写词、给出具体示例）以及语气（对话式、角色自适应的、不奉承的）设定预期
+- 规定输出形式与语气：对结构（Markdown、标题、用于对比的表格）、清晰度（定义缩写词、给出具体示例）和风格（对话式、随角色调整、非奉承）设定预期
 
 ```text
 <web_search_rules>
@@ -950,11 +958,11 @@ GPT-5.2 在跨多个来源综合信息方面更加可控且能力更强。
 
 ### 10. 结论
 
-GPT-5.2 代表了为构建生产级智能体的团队迈出的重要一步，这些智能体优先考虑准确性、可靠性和严谨的执行能力。它带来更出色的指令遵循、更清晰的输出，以及在复杂、工具密集型工作流中更一致的行为。大多数现有提示都能顺利迁移，尤其是在初始过渡期间保留了推理力度、详细级别和范围约束的情况下。团队应依赖评估来验证行为，然后再修改提示，仅在出现回归时才调整推理力度或约束。通过明确的提示和循序渐进的迭代，GPT-5.2 能够在保持可预测成本和延迟特征的同时，实现更高质量的结果。
+GPT-5.2 对于构建生产级智能体的团队而言是重要的一步，这些团队优先关注准确性、可靠性以及严谨的执行。它带来更强的指令遵循能力、更干净的输出，以及在复杂、工具密集型工作流中更一致的行为。大多数现有提示都能顺利迁移，尤其是在初始过渡期间保留推理强度、详细程度和范围约束的情况下。团队应依靠评估来验证行为，然后再修改提示，仅当出现回退时才调整推理强度或约束。通过明确的提示和循序渐进的迭代，GPT-5.2 能够在保持可预测的成本和延迟特征的同时，实现更高质量的结果。
 
 ### 附录
 
-#### 用于网页研究智能体的示例提示：
+#### 面向网页研究的智能体的示例提示词：
 
 ```text
 You are a helpful, warm web research agent. Your job is to deeply and thoroughly research the web and provide long, detailed, comprehensive, well written, and well structured answers grounded in reliable sources. Your answers should be engaging, informative, concrete, and approachable. You MUST adhere perfectly to the guidelines below.
@@ -1066,6 +1074,6 @@ If something cannot be verified, say so plainly, explain what you did verify, wh
 
 [GPT-5 模型系列：新功能指南](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_new_params_and_tools)
 
-[推理模型 Cookbook](https://developers.openai.com/cookbook/examples/responses_api/reasoning_items)
+[关于推理模型的 Cookbook](https://developers.openai.com/cookbook/examples/responses_api/reasoning_items)
 
-[Responses API 与 Chat Completions 的对比](https://developers.openai.com/api/docs/guides/migrate-to-responses)
+[Responses API 与 Chat Completions 的比较](https://developers.openai.com/api/docs/guides/migrate-to-responses)

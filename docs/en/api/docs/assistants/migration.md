@@ -284,13 +284,13 @@ Start new chats with the Conversations API and Responses API. To preserve earlie
 The example below shows how thread history could be migrated before the sunset. The Assistants API call that retrieves thread messages no longer works; use your stored messages instead.
 
 ```python
-import os
+# Replace the illustrative IDs and URLs below with your own resource values.
 
 from openai import OpenAI
 
 openai = OpenAI()
 messages = []
-thread_id = os.environ["OPENAI_THREAD_ID"]
+thread_id = "thread_123"
 
 for page in openai.beta.threads.messages.list(
     thread_id=thread_id, order="asc"
@@ -326,10 +326,11 @@ conversation = openai.conversations.create(items=items)
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
 
 client = OpenAI::Client.new
-thread_id = ENV.fetch("OPENAI_THREAD_ID")
+thread_id = "thread_123"
 messages = client.beta.threads.messages.list(thread_id, order: :asc)
 items = []
 messages.auto_paging_each do |message|
@@ -337,11 +338,14 @@ messages.auto_paging_each do |message|
     case part
     when OpenAI::Models::Beta::Threads::TextContentBlock
       type = if message.role == OpenAI::Models::Beta::Threads::Message::Role::USER
-        :input_text
-      else
-        :output_text
-      end
-      {type: type, text: part.text.value}
+               :input_text
+             else
+               :output_text
+             end
+      {
+        type: type,
+        text: part.text.value
+      }
     when OpenAI::Models::Beta::Threads::ImageURLContentBlock
       {
         type: :input_image,
@@ -350,7 +354,10 @@ messages.auto_paging_each do |message|
       }
     end
   end
-  items << {role: message.role, content: content}
+  items << {
+    role: message.role,
+    content: content
+  }
 end
 conversation = client.conversations.create(
   items: items
@@ -370,6 +377,7 @@ Here are a few examples of integrations using both the Assistants API and the Re
 Assistants API
 
 ```python
+# Replace the illustrative IDs and URLs below with your own resource values.
 threads_by_session: dict[str, str] = {}
 
 
@@ -386,8 +394,9 @@ async def message(message: Message):
         content=message.content,
     )
 
+    example_assistant_id = "asst_123"
     run = openai.beta.threads.runs.create(
-        assistant_id=os.environ["OPENAI_ASSISTANT_ID"],
+        assistant_id=example_assistant_id,
         thread_id=thread_id,
     )
     while run.status in ("queued", "in_progress"):
@@ -407,10 +416,11 @@ async def message(message: Message):
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
 
 client = OpenAI::Client.new
-assistant_id = ENV.fetch("OPENAI_ASSISTANT_ID")
+assistant_id = "asst_123"
 threads_by_session = {}
 
 handle_message = lambda do |session_id:, content:|
@@ -439,13 +449,15 @@ handle_message = lambda do |session_id:, content:|
     order: :desc,
     limit: 1
   )
-  {content: messages.data&.first&.content}
+  { content: messages.data&.first&.content }
 end
 
-puts(handle_message.call(
-  session_id: "example-session",
-  content: "What are the five Ds of dodgeball?"
-))
+puts(
+  handle_message.call(
+    session_id: "example-session",
+    content: "What are the five Ds of dodgeball?"
+  )
+)
 ```
 
 
@@ -457,6 +469,7 @@ puts(handle_message.call(
 Responses API
 
 ```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
 import express from "express";
 import OpenAI from "openai";
 
@@ -494,11 +507,7 @@ app.post("/messages", async (request, response) => {
   }
   const conversationId = await conversationIdPromise;
 
-  const promptId = process.env.OPENAI_PROMPT_ID;
-  if (!promptId) {
-    response.status(500).json({ error: "OPENAI_PROMPT_ID is required." });
-    return;
-  }
+  const promptId = "pmpt_123";
 
   const result = await client.responses.create({
     prompt: { id: promptId },
@@ -513,6 +522,7 @@ app.listen(Number(process.env.OPENAI_EXAMPLE_PORT ?? 8000), "127.0.0.1");
 ```
 
 ```python
+# Replace the illustrative IDs and URLs below with your own resource values.
 conversations_by_session: dict[str, str] = {}
 
 
@@ -523,8 +533,9 @@ async def message(message: Message):
         conversation_id = openai.conversations.create().id
         conversations_by_session[message.session_id] = conversation_id
 
+    example_prompt_id = "pmpt_123"
     response = openai.responses.create(
-        prompt={"id": os.environ["OPENAI_PROMPT_ID"]},
+        prompt={"id": example_prompt_id},
         input=[{"role": "user", "content": message.content}],
         conversation=conversation_id,
     )
@@ -533,6 +544,7 @@ async def message(message: Message):
 ```
 
 ```ruby
+# Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
 
 client = OpenAI::Client.new
@@ -546,15 +558,22 @@ handle_message = lambda do |session_id:, content:|
   end
 
   response = client.responses.create(
-    prompt: {id: ENV.fetch("OPENAI_PROMPT_ID")},
-    input: [{role: :user, content: content}],
+    prompt: { id: "pmpt_123" },
+    input: [
+      {
+        role: :user,
+        content: content
+      }
+    ],
     conversation: conversation_id
   )
-  {content: response.output_text}
+  { content: response.output_text }
 end
 
-puts(handle_message.call(
-  session_id: "example-session",
-  content: "What are the five Ds of dodgeball?"
-))
+puts(
+  handle_message.call(
+    session_id: "example-session",
+    content: "What are the five Ds of dodgeball?"
+  )
+)
 ```

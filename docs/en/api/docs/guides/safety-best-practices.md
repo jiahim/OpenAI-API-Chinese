@@ -140,7 +140,12 @@ require "openai"
 client = OpenAI::Client.new
 completion = client.chat.completions.create(
   model: "gpt-6-astra",
-  messages: [{role: :user, content: "Help me plan a study schedule."}],
+  messages: [
+    {
+      role: :user,
+      content: "Help me plan a study schedule."
+    }
+  ],
   safety_identifier: "user_1234"
 )
 

@@ -164,7 +164,7 @@ require "openai"
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-5.2",
-  reasoning: {effort: :minimal},
+  reasoning: { effort: :minimal },
   input: "Explain the bug and propose a fix."
 )
 puts(response.output_text)
@@ -279,7 +279,7 @@ require "openai"
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-5.2",
-  text: {verbosity: :low},
+  text: { verbosity: :low },
   input: "Explain the bug and propose a fix."
 )
 puts(response.output_text)
@@ -811,12 +811,20 @@ require "openai"
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-5.2",
-  input: [{role: :user, content: "Write a very long poem about a dog."}]
+  input: [
+    {
+      role: :user,
+      content: "Write a very long poem about a dog."
+    }
+  ]
 )
 compaction = client.responses.compact(
   model: "gpt-5.2",
   input: [
-    {role: :user, content: "Write a very long poem about a dog."},
+    {
+      role: :user,
+      content: "Write a very long poem about a dog."
+    },
     *response.output
   ]
 )

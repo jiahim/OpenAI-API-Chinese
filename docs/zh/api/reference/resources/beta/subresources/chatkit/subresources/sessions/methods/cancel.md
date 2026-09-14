@@ -1,18 +1,18 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 获取文档页面的 Markdown 版本。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
 
-## 取消聊天会话
+## 取消 ChatKit 会话
 
 **post** `/chatkit/sessions/{session_id}/cancel`
 
-取消活动的 ChatKit 会话并返回其最新元数据。
+取消一个活跃的 ChatKit 会话，并返回其最新的元数据。
 
-取消后可阻止新请求使用已颁发的客户端密钥。
+取消后可以阻止新请求使用已颁发的客户端密钥。
 
 ### 路径参数
 
 - `session_id: string`
 
-### 返回
+### 返回值
 
 - `ChatSession object { id, chatkit_configuration, client_secret, 7 more }`
 
@@ -24,7 +24,7 @@
 
   - `chatkit_configuration: ChatSessionChatKitConfiguration`
 
-    为该会话解析的 ChatKit 功能配置。
+    会话的已解析 ChatKit 功能配置。
 
     - `automatic_thread_titling: ChatSessionAutomaticThreadTitling`
 
@@ -40,15 +40,15 @@
 
       - `enabled: boolean`
 
-        指示该会话是否启用了上传。
+        指示会话是否允许上传。
 
       - `max_file_size: number or null`
 
-        最大上传大小（以 MB 为单位）。
+        最大上传大小（以兆字节为单位）。
 
       - `max_files: number or null`
 
-        会话期间允许的最大上传数量。
+        会话期间允许的最大上传次数。
 
     - `history: ChatSessionHistory`
 
@@ -56,15 +56,15 @@
 
       - `enabled: boolean`
 
-        指示是否为该会话保留聊天历史记录。
+        指示是否为会话持久化聊天历史记录。
 
       - `recent_threads: number or null`
 
-        在历史记录视图中展示的过往会话数量。当保留所有历史记录时，默认为 null。
+        在历史记录视图中展示的先前会话数量。保留全部历史记录时默认为 null。
 
   - `client_secret: string`
 
-    用于验证会话请求的临时客户端密钥。
+    用于认证会话请求的临时客户端密钥。
 
   - `expires_at: number`
 
@@ -76,7 +76,7 @@
 
   - `object: "chatkit.session"`
 
-    类型鉴别符，始终为 `chatkit.session`.
+    始终为 `chatkit.session`.
 
     - `"chatkit.session"`
 
@@ -100,7 +100,7 @@
 
   - `user: string`
 
-    与该会话关联的用户标识符。
+    与会话关联的用户标识符。
 
   - `workflow: ChatKitWorkflow`
 
@@ -108,11 +108,11 @@
 
     - `id: string`
 
-      支撑该会话的 工作流 的标识符。
+      支持该会话的 工作流 的标识符。
 
     - `state_variables: map[string or boolean or number] or null`
 
-      调用 工作流 时应用的状态变量键值对。如果未提供任何覆盖值，则默认为 null。
+      调用 工作流 时应用的状态变量键值对。未提供覆盖时默认为 null。
 
       - `string`
 
@@ -126,11 +126,11 @@
 
       - `enabled: boolean`
 
-        指示是否启用了 追踪。
+        指示是否已启用 追踪。
 
     - `version: string or null`
 
-      该会话使用的特定 工作流 版本。使用最新部署时默认为 null。
+      会话使用的特定 工作流 版本。使用最新部署时默认为 null。
 
 ### 示例
 

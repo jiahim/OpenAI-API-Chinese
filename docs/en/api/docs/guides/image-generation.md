@@ -369,7 +369,12 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst"
+    }
+  ]
 )
 
 image_call = response.output.find do |item|
@@ -552,7 +557,13 @@ client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst", action: :generate}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst",
+      action: :generate
+    }
+  ]
 )
 
 image_call = response.output.find do |item|
@@ -829,7 +840,12 @@ client = OpenAI::Client.new
 first = client.responses.create(
   model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst"
+    }
+  ]
 )
 
 first_image = first.output.find do |item|
@@ -846,7 +862,12 @@ follow_up = client.responses.create(
   model: "gpt-6-astra",
   input: "Now make it look realistic.",
   previous_response_id: first.id,
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst"
+    }
+  ]
 )
 
 follow_up_image = follow_up.output.find do |item|
@@ -1164,7 +1185,12 @@ client = OpenAI::Client.new
 first = client.responses.create(
   model: "gpt-6-astra",
   input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst"
+    }
+  ]
 )
 
 first_image = first.output.find do |item|
@@ -1182,11 +1208,24 @@ follow_up = client.responses.create(
   input: [
     {
       role: :user,
-      content: [{type: :input_text, text: "Now make it look realistic."}]
+      content: [
+        {
+          type: :input_text,
+          text: "Now make it look realistic."
+        }
+      ]
     },
-    {type: :image_generation_call, id: first_image.id}
+    {
+      type: :image_generation_call,
+      id: first_image.id
+    }
   ],
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst"
+    }
+  ]
 )
 
 follow_up_image = follow_up.output.find do |item|
@@ -1438,7 +1477,13 @@ client = OpenAI::Client.new
 stream = client.responses.stream(
   model: "gpt-6-astra",
   input: "Generate an image of a river made of white owl feathers.",
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst", partial_images: 2}]
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst",
+      partial_images: 2
+    }
+  ]
 )
 
 stream.each do |event|
@@ -2113,19 +2158,35 @@ prompt = <<~PROMPT
 PROMPT
 response = client.responses.create(
   model: "gpt-6-astra",
-  input: [{
-    role: :user,
-    content: [
-      {type: :input_text, text: prompt},
-      *base64_images.map do |image|
-        {type: :input_image, image_url: "data:image/png;base64,#{image}"}
-      end,
-      *file_ids.map do |file_id|
-        {type: :input_image, file_id: file_id}
-      end
-    ]
-  }],
-  tools: [{type: :image_generation, model: "gpt-image-2.5-sunburst"}]
+  input: [
+    {
+      role: :user,
+      content: [
+        {
+          type: :input_text,
+          text: prompt
+        },
+        *base64_images.map do |image|
+          {
+            type: :input_image,
+            image_url: "data:image/png;base64,#{image}"
+          }
+        end,
+        *file_ids.map do |file_id|
+          {
+            type: :input_image,
+            file_id: file_id
+          }
+        end
+      ]
+    }
+  ],
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst"
+    }
+  ]
 )
 
 image_call = response.output.find do |item|
@@ -2664,17 +2725,28 @@ image = client.files.create(file: Pathname("sunlit_lounge.png"), purpose: :visio
 mask = client.files.create(file: Pathname("mask.png"), purpose: :vision)
 response = client.responses.create(
   model: "gpt-6-astra",
-  input: [{
-    role: :user,
-    content: [
-      {type: :input_text, text: "Add a flamingo to the pool."},
-      {type: :input_image, file_id: image.id}
-    ]
-  }],
-  tools: [{
-    type: :image_generation, model: "gpt-image-2.5-sunburst",
-    input_image_mask: {file_id: mask.id}
-  }]
+  input: [
+    {
+      role: :user,
+      content: [
+        {
+          type: :input_text,
+          text: "Add a flamingo to the pool."
+        },
+        {
+          type: :input_image,
+          file_id: image.id
+        }
+      ]
+    }
+  ],
+  tools: [
+    {
+      type: :image_generation,
+      model: "gpt-image-2.5-sunburst",
+      input_image_mask: { file_id: mask.id }
+    }
+  ]
 )
 
 image_call = response.output.find do |item|

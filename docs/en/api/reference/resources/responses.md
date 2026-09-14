@@ -9876,7 +9876,7 @@ curl -X POST https://api.openai.com/v1/responses/resp_123/cancel \
 }
 ```
 
-## Compact a response
+## Compact conversation
 
 **post** `/responses/compact`
 

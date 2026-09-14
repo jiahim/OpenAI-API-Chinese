@@ -238,10 +238,19 @@ PROMPT
 completion = client.chat.completions.create(
   model: "gpt-4.1",
   messages: [
-    {role: :user, content: refactor_prompt},
-    {role: :user, content: code}
+    {
+      role: :user,
+      content: refactor_prompt
+    },
+    {
+      role: :user,
+      content: code
+    }
   ],
-  prediction: {type: :content, content: code},
+  prediction: {
+    type: :content,
+    content: code
+  },
   store: true
 )
 
@@ -540,10 +549,19 @@ PROMPT
 stream = client.chat.completions.stream(
   model: "gpt-4.1",
   messages: [
-    {role: :user, content: refactor_prompt},
-    {role: :user, content: code}
+    {
+      role: :user,
+      content: refactor_prompt
+    },
+    {
+      role: :user,
+      content: code
+    }
   ],
-  prediction: {type: :content, content: code},
+  prediction: {
+    type: :content,
+    content: code
+  },
   store: true
 )
 

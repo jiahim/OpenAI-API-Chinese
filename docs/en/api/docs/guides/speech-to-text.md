@@ -317,16 +317,14 @@ const openai = new OpenAI();
 
 const agentRef = fs.readFileSync("fixtures/agent.wav").toString("base64");
 
-const transcript = /** @type {OpenAI.Audio.TranscriptionDiarized} */ (
-  await openai.audio.transcriptions.create({
-    file: fs.createReadStream("fixtures/meeting.wav"),
-    model: "gpt-4o-transcribe-diarize",
-    response_format: "diarized_json",
-    chunking_strategy: "auto",
-    known_speaker_names: ["agent"],
-    known_speaker_references: ["data:audio/wav;base64," + agentRef],
-  })
-);
+const transcript = await openai.audio.transcriptions.create({
+  file: fs.createReadStream("fixtures/meeting.wav"),
+  model: "gpt-4o-transcribe-diarize",
+  response_format: "diarized_json",
+  chunking_strategy: "auto",
+  known_speaker_names: ["agent"],
+  known_speaker_references: ["data:audio/wav;base64," + agentRef],
+});
 
 for (const segment of transcript.segments) {
   if (!("speaker" in segment)) continue;
@@ -490,14 +488,16 @@ transcript = client.audio.transcriptions.create(
   known_speaker_names: ["agent"],
   known_speaker_references: ["data:audio/wav;base64,#{speaker_reference}"]
 )
-segments = Array(transcript.to_h.fetch(:segments) do
-  raise "The transcription did not include speaker segments"
-end)
+segments = Array(
+  transcript.to_h.fetch(:segments) do
+    raise "The transcription did not include speaker segments"
+  end
+)
 segments.each do |segment|
   segment = Hash.try_convert(segment) or raise "Invalid speaker segment"
   puts(
     "#{segment.fetch(:speaker)}: #{segment.fetch(:text)} " \
-      "(#{segment.fetch(:start)}-#{segment.fetch(:end)})"
+      "(#{segment.fetch(:start)}-#{segment.fetch(:end_)})"
   )
 end
 ```
