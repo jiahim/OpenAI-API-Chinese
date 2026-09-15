@@ -190,7 +190,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.63.1</version>
+  <version>4.63.2</version>
 </dependency>
 ```
 

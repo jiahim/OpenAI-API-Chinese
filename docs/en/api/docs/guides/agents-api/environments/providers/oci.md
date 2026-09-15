@@ -58,7 +58,7 @@ export OPENAI_API_KEY="..."
 export OPENAI_EXECUTOR_API_KEY="..."
 ```
 
-Use the application key for Agents API requests. Pass only the separate restricted executor key into the sandbox as `CODEX_API_KEY`. Both keys must have the same owner, organization, and project. See [executor authentication](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication).
+Use `OPENAI_API_KEY` for application requests. Set `OPENAI_EXECUTOR_API_KEY` to an [environment key](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication), and pass only that key into the sandbox as `CODEX_API_KEY`.
 
 Oracle's example reads the `Sandbox` profile and uses `us-chicago-1`. To override its defaults:
 
@@ -85,7 +85,7 @@ Use the [self-hosted connection guide](https://developers.openai.com/api/docs/gu
 1. Create a self-hosted Agents API session with `/workspace` as its working directory. Save the session ID and environment ID.
 2. Create an OCI GenAI Sandbox and wait for it to reach `RUNNING`.
 3. Install Codex and write `/workspace/brief.txt` into the sandbox.
-4. Start `codex exec-server` using the session's environment ID and the restricted executor key.
+4. Start `codex exec-server` using the session's environment ID and the environment key.
 5. Open the session event stream, then send input asking the agent to turn `brief.txt` into a migration plan. Wait for completion and read the generated `/workspace/plan.md`.
 6. Stop and delete the OCI sandbox, then [delete the Agents API session](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage#delete-a-session). Attempt both cleanup operations even if one fails.
 

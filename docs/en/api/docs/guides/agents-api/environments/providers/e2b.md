@@ -13,7 +13,7 @@ See [Sandbox lifecycle](https://developers.openai.com/api/docs/guides/agents-api
 
 ## Before you begin
 
-Set `E2B_API_KEY`, `OPENAI_API_KEY`, and a separate restricted `OPENAI_EXECUTOR_API_KEY`. Keep the application key outside the worker sandbox. The executor key must match the session owner's organization, project, and user or service account. See [executor authentication](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication).
+Set `E2B_API_KEY` and use `OPENAI_API_KEY` for application requests. Set `OPENAI_EXECUTOR_API_KEY` to an [environment key](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication), and pass only that key into the sandbox as `CODEX_API_KEY`.
 
 ## Webhook-managed
 
@@ -27,7 +27,7 @@ Use the E2B SDK or API from your application to manage the sandbox:
 
 1. [Create a self-hosted session](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#create-or-reuse-a-session) and save its environment ID.
 2. Create an isolated E2B sandbox with the session's working directory and install the Codex CLI inside it.
-3. [Start the executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#start-the-executor) in the sandbox using the environment ID and restricted executor key.
+3. [Start the executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#start-the-executor) in the sandbox using the environment ID and environment key.
 4. Use [Run and continue sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions) to send input and check the turn's outcome.
 5. [Delete the session](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage#delete-a-session) and stop the E2B sandbox when finished.
 

@@ -16,9 +16,9 @@ M.A.R.S. is in invite-only private preview. Request access through [DigitalOcean
 
 You need a sandbox-enabled DigitalOcean account with access to `codex-agentapi` and an OpenAI project with Agents API access.
 
-Set `OPENAI_API_KEY` for your application or CLI and a separate restricted `OPENAI_EXECUTOR_API_KEY` for the sandbox. The keys must have the same owner, organization, and project. Store only the executor key in the sandbox's `CODEX_API_KEY` secret. See [executor authentication](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication).
+Use `OPENAI_API_KEY` for your application or CLI. Set `OPENAI_EXECUTOR_API_KEY` to an [environment key](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication). Pass only the environment key into the sandbox as `CODEX_API_KEY`.
 
-For webhook controllers or Python applications, set `DIGITALOCEAN_TOKEN` and install the [PyDo beta SDK](https://github.com/digitalocean/pydo/releases/tag/v0.40.0-beta.7) with async support (`pydo[aio]`). Use the [OpenAI SDK](https://developers.openai.com/api/docs/libraries#install-an-official-sdk) for Agents API requests. CLI installation is needed only for the CLI flow.
+For webhook controllers or Python applications, set `DIGITALOCEAN_TOKEN` and install the [PyDo beta SDK](https://github.com/digitalocean/pydo/releases) with async support (`pydo[aio]`). Use the [OpenAI SDK](https://developers.openai.com/api/docs/libraries#install-an-official-sdk) for Agents API requests. CLI installation is needed only for the CLI flow.
 
 ## Webhook-managed
 
@@ -33,7 +33,7 @@ The image connects the executor to the session's environment. Your application s
 
 The CLI creates both resources and lets you interact with the agent from your terminal. It provisions the sandbox directly, without a webhook controller.
 
-Install the [`doctl` beta release](https://github.com/digitalocean/doctl/releases/tag/v1.168.0-beta.8) that includes `harness-runtime`, then authenticate:
+Install the [`doctl` beta release](https://github.com/digitalocean/doctl/releases) that includes `harness-runtime`, then authenticate:
 
 ```bash
 doctl auth init
@@ -60,7 +60,7 @@ secrets:
   CODEX_API_KEY: ${OPENAI_EXECUTOR_API_KEY}
 ```
 
-The `config` block is the OpenAI create-session request. The CLI authenticates that request with `OPENAI_API_KEY`, fills `${ENV_ID}` from the response, and passes only the restricted executor key to the sandbox. Keep resolved manifests out of logs and source control. Add any destinations your tools need to `egress`.
+The `config` block is the OpenAI create-session request. The CLI authenticates that request with `OPENAI_API_KEY`, fills `${ENV_ID}` from the response, and passes only the environment key to the sandbox. Keep resolved manifests out of logs and source control. Add any destinations your tools need to `egress`.
 
 Create the session and sandbox:
 
@@ -222,6 +222,6 @@ Remove the OpenAI webhook registration before deleting a webhook controller.
 
 ## References
 
-- Read [DigitalOcean sandbox setup](https://github.com/digitalocean/pydo/tree/v0.40.0-beta.7/examples/agents/doc_python_sdk)
+- Read [DigitalOcean sandbox setup](https://github.com/digitalocean/pydo/tree/v0.40.0-beta.8/examples/agents/doc_python_sdk)
 - Read [DigitalOcean Python SDK](https://github.com/digitalocean/pydo)
-- Read [DigitalOcean CLI beta release](https://github.com/digitalocean/doctl/releases/tag/v1.168.0-beta.8)
+- Read [DigitalOcean CLI beta release](https://github.com/digitalocean/doctl/releases)

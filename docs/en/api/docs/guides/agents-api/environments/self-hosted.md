@@ -23,7 +23,7 @@ The executor registers with the API using an environment ID and a restricted API
   <img src="https://developers.openai.com/images/api/agents-api/self-hosted-sandboxes-1.webp"
     width="1400"
     height="444"
-    alt="The sandbox executor initiates an outbound connection to the Agents API and exchanges commands and results. The sandbox holds the restricted executor key and environment ID."
+    alt="The sandbox executor initiates an outbound connection to the Agents API and exchanges commands and results. The sandbox holds the environment key and environment ID."
     loading="lazy"
   />
 </picture>
@@ -54,11 +54,13 @@ Allow outbound connections to these hosts:
 
 ### Authentication
 
-Create a separate restricted executor key. It must belong to the same organization, project, and user or service account that owns the session.
+Use `OPENAI_API_KEY` for application requests. Grant it `api.agents.read` and `api.agents.write` for session operations, plus `api.responses.write` for model inference. Add `api.vaults.read` and `api.vaults.write` if your application manages vaults.
 
-Create an environment key on the [Agents tab](https://platform.openai.com/agents?tab=environments&environment_view=keys) in the platform dashboard. Set every other permission to **None**. Supply this key to the environment as `CODEX_API_KEY`. Keep your broader application API key outside the environment.
+Create a separate environment key on the [Agents tab](https://platform.openai.com/agents?tab=environments&environment_view=keys) in the platform dashboard. It must belong to the same organization, project, and user or service account that owns the session. Set every other permission to **None**.
 
-Agent-generated code can read the executor key, but the key only permits connecting environments. It cannot authorize any other API action. Keep it out of source code, container images, and logs. Rotate or revoke it when needed.
+Set `OPENAI_EXECUTOR_API_KEY` to this environment key in your application or provisioning service. Pass its value into the sandbox as `CODEX_API_KEY`, which `codex exec-server` reads. Keep your application's `OPENAI_API_KEY` outside the sandbox.
+
+Agent-generated code can read the environment key, but the key only permits connecting environments. It cannot authorize any other API action. Keep it out of source code, container images, and logs. Rotate or revoke it when needed.
 
 
 
@@ -185,7 +187,7 @@ You can reuse your environment image, `workspace_directory`, and `capability_dir
 
 ## Start the executor
 
-Open the [session event stream](https://developers.openai.com/api/docs/guides/agents-api/sessions/events#consume-a-stream) from your application to receive connection events. Then run this command inside the environment with the restricted `CODEX_API_KEY` configured above. Replace the placeholders with the environment values returned by the API:
+Open the [session event stream](https://developers.openai.com/api/docs/guides/agents-api/sessions/events#consume-a-stream) from your application to receive connection events. Then run this command inside the environment with the environment key configured as `CODEX_API_KEY` above. Replace the placeholders with the environment values returned by the API:
 
 ```bash
 codex exec-server \
