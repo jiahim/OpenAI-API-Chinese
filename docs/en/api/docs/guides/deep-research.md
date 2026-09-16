@@ -1135,7 +1135,7 @@ options.Tools.Add(
     ResponseTool.CreateMcpTool(
         "mycompany_mcp_server",
         new Uri(serverUrl),
-        toolCallApprovalPolicy: GlobalMcpToolCallApprovalPolicy.NeverRequireApproval
+        toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.NeverRequireApproval
     )
 );
 options.InputItems.Add(

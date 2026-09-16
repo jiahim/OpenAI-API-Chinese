@@ -163,7 +163,7 @@ options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "dmcp",
         serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
-        toolCallApprovalPolicy: GlobalMcpToolCallApprovalPolicy.NeverRequireApproval
+        toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.NeverRequireApproval
     )
 );
 options.InputItems.Add(ResponseItem.CreateUserMessageItem("Roll 2d4+1"));
@@ -355,7 +355,7 @@ options.Tools.Add(
         serverLabel: "Dropbox",
         connectorId: McpToolConnectorId.Dropbox,
         authorizationToken: dropboxToken,
-        toolCallApprovalPolicy: GlobalMcpToolCallApprovalPolicy.NeverRequireApproval
+        toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.NeverRequireApproval
     )
 );
 options.InputItems.Add(
@@ -624,7 +624,7 @@ options.Tools.Add(
         serverLabel: "dmcp",
         serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
         allowedTools: new McpToolFilter() { ToolNames = { "roll" } },
-        toolCallApprovalPolicy: GlobalMcpToolCallApprovalPolicy.NeverRequireApproval
+        toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.NeverRequireApproval
     )
 );
 options.InputItems.Add(ResponseItem.CreateUserMessageItem("Roll 2d4+1"));
@@ -865,7 +865,7 @@ options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "dmcp",
         serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
-        toolCallApprovalPolicy: GlobalMcpToolCallApprovalPolicy.AlwaysRequireApproval
+        toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.AlwaysRequireApproval
     )
 );
 
@@ -1466,7 +1466,7 @@ options.Tools.Add(
         serverLabel: "google_calendar",
         connectorId: McpToolConnectorId.GoogleCalendar,
         authorizationToken: authToken,
-        toolCallApprovalPolicy: GlobalMcpToolCallApprovalPolicy.NeverRequireApproval
+        toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.NeverRequireApproval
     )
 );
 options.InputItems.Add(

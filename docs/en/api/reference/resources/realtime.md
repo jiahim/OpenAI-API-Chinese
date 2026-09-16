@@ -5141,6 +5141,10 @@
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
+
             Currently supported `connector_id` values are:
 
             - Dropbox: `connector_dropbox`
@@ -5694,6 +5698,10 @@
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
               about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
+
+              This field is deprecated for models released after September 1, 2026.
+              Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+              connect through a Secure MCP Tunnel.
 
               Currently supported `connector_id` values are:
 
@@ -8273,6 +8281,10 @@
         Identifier for service connectors, like those available in ChatGPT. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
         about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
+
+        This field is deprecated for models released after September 1, 2026.
+        Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+        connect through a Secure MCP Tunnel.
 
         Currently supported `connector_id` values are:
 
@@ -10909,6 +10921,10 @@
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
               about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
+              This field is deprecated for models released after September 1, 2026.
+              Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+              connect through a Secure MCP Tunnel.
+
               Currently supported `connector_id` values are:
 
               - Dropbox: `connector_dropbox`
@@ -12801,6 +12817,10 @@
         `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
         about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
+        This field is deprecated for models released after September 1, 2026.
+        Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+        connect through a Secure MCP Tunnel.
+
         Currently supported `connector_id` values are:
 
         - Dropbox: `connector_dropbox`
@@ -13113,6 +13133,10 @@
       `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
       about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
+      This field is deprecated for models released after September 1, 2026.
+      Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+      connect through a Secure MCP Tunnel.
+
       Currently supported `connector_id` values are:
 
       - Dropbox: `connector_dropbox`
@@ -13296,6 +13320,10 @@
       Identifier for service connectors, like those available in ChatGPT. One of
       `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
       about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
+
+      This field is deprecated for models released after September 1, 2026.
+      Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+      connect through a Secure MCP Tunnel.
 
       Currently supported `connector_id` values are:
 
@@ -16473,6 +16501,10 @@
           Identifier for service connectors, like those available in ChatGPT. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
           about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
+
+          This field is deprecated for models released after September 1, 2026.
+          Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+          connect through a Secure MCP Tunnel.
 
           Currently supported `connector_id` values are:
 
@@ -19848,6 +19880,10 @@
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
+
             Currently supported `connector_id` values are:
 
             - Dropbox: `connector_dropbox`
@@ -20826,6 +20862,10 @@
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
+
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
 
             Currently supported `connector_id` values are:
 
@@ -21806,6 +21846,10 @@
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
+
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
 
             Currently supported `connector_id` values are:
 
@@ -23049,6 +23093,10 @@ handle it.
       `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
       about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
+      This field is deprecated for models released after September 1, 2026.
+      Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+      connect through a Secure MCP Tunnel.
+
       Currently supported `connector_id` values are:
 
       - Dropbox: `connector_dropbox`
@@ -24101,6 +24149,10 @@ Returns the created client secret and the effective session object. The client s
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
           about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
+          This field is deprecated for models released after September 1, 2026.
+          Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+          connect through a Secure MCP Tunnel.
+
           Currently supported `connector_id` values are:
 
           - Dropbox: `connector_dropbox`
@@ -25065,6 +25117,10 @@ Returns the created client secret and the effective session object. The client s
           Identifier for service connectors, like those available in ChatGPT. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
           about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
+
+          This field is deprecated for models released after September 1, 2026.
+          Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+          connect through a Secure MCP Tunnel.
 
           Currently supported `connector_id` values are:
 
@@ -26177,6 +26233,10 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
+
             Currently supported `connector_id` values are:
 
             - Dropbox: `connector_dropbox`
@@ -27116,6 +27176,10 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
         Identifier for service connectors, like those available in ChatGPT. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
         about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
+
+        This field is deprecated for models released after September 1, 2026.
+        Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+        connect through a Secure MCP Tunnel.
 
         Currently supported `connector_id` values are:
 
