@@ -1,11 +1,11 @@
 # Webhooks 事件
 
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。各文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
-当 OpenAI 在使用过程中发生某些事件时，会向你指定的 URL 发送 HTTP 请求，这类请求称为 webhook。
-事件发生在 API 使用过程中。
+Webhooks 是 OpenAI 在特定
+事件发生时向你指定的 URL 发送的 HTTP 请求，该事件发生在使用 API 的过程中。
 
-[了解有关 webhook 的更多信息](https://developers.openai.com/api/docs/guides/webhooks).
+[详细了解 Webhooks](https://developers.openai.com/api/docs/guides/webhooks).
 
 <a id="response.completed"></a>
 
@@ -15,7 +15,7 @@
 
 ### Schema
 
-Schema name: `WebhookResponseCompleted`
+Schema 名称： `WebhookResponseCompleted`
 
 - `id: string`
 
@@ -62,11 +62,11 @@ Schema name: `WebhookResponseCompleted`
 
 ## response.cancelled
 
-当后台响应被取消时发送。
+在后台响应被取消时发送。
 
 ### Schema
 
-Schema name: `WebhookResponseCancelled`
+Schema 名称： `WebhookResponseCancelled`
 
 - `id: string`
 
@@ -74,7 +74,7 @@ Schema name: `WebhookResponseCancelled`
 
 - `created_at: number`
 
-  模型响应被取消时的 Unix 时间戳（以秒为单位）。
+  模型响应被取消时的 Unix 时间戳（单位：秒）。
 
 - `data: object { id }`
 
@@ -113,11 +113,11 @@ Schema name: `WebhookResponseCancelled`
 
 ## response.failed
 
-当后台响应失败时触发。
+当后台响应失败时发送。
 
 ### Schema
 
-Schema name: `WebhookResponseFailed`
+Schema 名称： `WebhookResponseFailed`
 
 - `id: string`
 
@@ -168,7 +168,7 @@ Schema name: `WebhookResponseFailed`
 
 ### Schema
 
-Schema name: `WebhookResponseIncomplete`
+Schema 名称： `WebhookResponseIncomplete`
 
 - `id: string`
 
@@ -176,7 +176,7 @@ Schema name: `WebhookResponseIncomplete`
 
 - `created_at: number`
 
-  模型响应被中断时的 Unix 时间戳（单位为秒）。
+  模型响应被中断时的 Unix 时间戳（以秒为单位）。
 
 - `data: object { id }`
 
@@ -215,11 +215,11 @@ Schema name: `WebhookResponseIncomplete`
 
 ## batch.completed
 
-当批处理 API 请求已完成时发送。
+当某个批 API 请求已完成时发送。
 
 ### Schema
 
-Schema name: `WebhookBatchCompleted`
+Schema 名称： `WebhookBatchCompleted`
 
 - `id: string`
 
@@ -227,7 +227,7 @@ Schema name: `WebhookBatchCompleted`
 
 - `created_at: number`
 
-  该 batch API 请求完成时的 Unix 时间戳（单位为秒）。
+  批量 API 请求完成时的 Unix 时间戳（单位：秒）。
 
 - `data: object { id }`
 
@@ -235,7 +235,7 @@ Schema name: `WebhookBatchCompleted`
 
   - `id: string`
 
-    该 batch API 请求的唯一 ID。
+    批量 API 请求的唯一 ID。
 
 - `type: "batch.completed"`
 
@@ -266,11 +266,11 @@ Schema name: `WebhookBatchCompleted`
 
 ## batch.cancelled
 
-当批处理 API 请求被取消时发送。
+当批量 API 请求被取消时发送。
 
 ### Schema
 
-Schema name: `WebhookBatchCancelled`
+Schema 名称： `WebhookBatchCancelled`
 
 - `id: string`
 
@@ -278,7 +278,7 @@ Schema name: `WebhookBatchCancelled`
 
 - `created_at: number`
 
-  批次 API 请求被取消时的 Unix 时间戳（以秒为单位）。
+  批次 API 请求被取消时的 Unix 时间戳（单位为秒）。
 
 - `data: object { id }`
 
@@ -286,7 +286,7 @@ Schema name: `WebhookBatchCancelled`
 
   - `id: string`
 
-    该 batch API 请求的唯一 ID。
+    批量 API 请求的唯一 ID。
 
 - `type: "batch.cancelled"`
 
@@ -321,7 +321,7 @@ Schema name: `WebhookBatchCancelled`
 
 ### Schema
 
-Schema name: `WebhookBatchExpired`
+Schema 名称： `WebhookBatchExpired`
 
 - `id: string`
 
@@ -329,7 +329,7 @@ Schema name: `WebhookBatchExpired`
 
 - `created_at: number`
 
-  批处理 API 请求过期时的 Unix 时间戳（以秒为单位）。
+  该批次 API 请求过期时的 Unix 时间戳（以秒为单位）。
 
 - `data: object { id }`
 
@@ -337,7 +337,7 @@ Schema name: `WebhookBatchExpired`
 
   - `id: string`
 
-    该 batch API 请求的唯一 ID。
+    批量 API 请求的唯一 ID。
 
 - `type: "batch.expired"`
 
@@ -368,11 +368,11 @@ Schema name: `WebhookBatchExpired`
 
 ## batch.failed
 
-当批处理 API 请求失败时发送。
+当批量 API 请求失败时发送。
 
 ### Schema
 
-Schema name: `WebhookBatchFailed`
+Schema 名称： `WebhookBatchFailed`
 
 - `id: string`
 
@@ -380,7 +380,7 @@ Schema name: `WebhookBatchFailed`
 
 - `created_at: number`
 
-  该批量 API 请求失败时的 Unix 时间戳（以秒为单位）。
+  批 API 请求失败时的 Unix 时间戳（以秒为单位）。
 
 - `data: object { id }`
 
@@ -388,7 +388,7 @@ Schema name: `WebhookBatchFailed`
 
   - `id: string`
 
-    该 batch API 请求的唯一 ID。
+    批量 API 请求的唯一 ID。
 
 - `type: "batch.failed"`
 
@@ -423,7 +423,7 @@ Schema name: `WebhookBatchFailed`
 
 ### Schema
 
-Schema name: `WebhookFineTuningJobSucceeded`
+Schema 名称： `WebhookFineTuningJobSucceeded`
 
 - `id: string`
 
@@ -439,7 +439,7 @@ Schema name: `WebhookFineTuningJobSucceeded`
 
   - `id: string`
 
-    该微调任务的唯一 ID。
+    微调任务的唯一 ID。
 
 - `type: "fine_tuning.job.succeeded"`
 
@@ -470,11 +470,11 @@ Schema name: `WebhookFineTuningJobSucceeded`
 
 ## fine_tuning.job.failed
 
-当微调作业失败时发送。
+当微调任务失败时发送。
 
 ### Schema
 
-Schema name: `WebhookFineTuningJobFailed`
+Schema 名称： `WebhookFineTuningJobFailed`
 
 - `id: string`
 
@@ -490,7 +490,7 @@ Schema name: `WebhookFineTuningJobFailed`
 
   - `id: string`
 
-    该微调任务的唯一 ID。
+    微调任务的唯一 ID。
 
 - `type: "fine_tuning.job.failed"`
 
@@ -521,11 +521,11 @@ Schema name: `WebhookFineTuningJobFailed`
 
 ## fine_tuning.job.cancelled
 
-当微调任务被取消时发送。
+在微调任务被取消时发送。
 
 ### Schema
 
-Schema name: `WebhookFineTuningJobCancelled`
+Schema 名称： `WebhookFineTuningJobCancelled`
 
 - `id: string`
 
@@ -541,7 +541,7 @@ Schema name: `WebhookFineTuningJobCancelled`
 
   - `id: string`
 
-    该微调任务的唯一 ID。
+    微调任务的唯一 ID。
 
 - `type: "fine_tuning.job.cancelled"`
 
@@ -572,11 +572,11 @@ Schema name: `WebhookFineTuningJobCancelled`
 
 ## eval.run.succeeded
 
-当评测运行成功时发送。
+在评测运行成功时发送。
 
 ### Schema
 
-Schema name: `WebhookEvalRunSucceeded`
+Schema 名称： `WebhookEvalRunSucceeded`
 
 - `id: string`
 
@@ -627,7 +627,7 @@ Schema name: `WebhookEvalRunSucceeded`
 
 ### Schema
 
-Schema name: `WebhookEvalRunFailed`
+Schema 名称： `WebhookEvalRunFailed`
 
 - `id: string`
 
@@ -635,7 +635,7 @@ Schema name: `WebhookEvalRunFailed`
 
 - `created_at: number`
 
-  评估运行失败时的 Unix 时间戳（以秒为单位）。
+  评估运行失败时的 Unix 时间戳（单位：秒）。
 
 - `data: object { id }`
 
@@ -674,11 +674,11 @@ Schema name: `WebhookEvalRunFailed`
 
 ## eval.run.canceled
 
-在评估运行被取消时发送。
+当 eval 运行被取消时发送。
 
 ### Schema
 
-Schema name: `WebhookEvalRunCanceled`
+Schema 名称： `WebhookEvalRunCanceled`
 
 - `id: string`
 
@@ -686,7 +686,7 @@ Schema name: `WebhookEvalRunCanceled`
 
 - `created_at: number`
 
-  评估运行被取消时的 Unix 时间戳（以秒为单位）。
+  评估运行被取消时的 Unix 时间戳（单位为秒）。
 
 - `data: object { id }`
 
@@ -725,13 +725,13 @@ Schema name: `WebhookEvalRunCanceled`
 
 ## realtime.call.incoming
 
-当有传入的 API SIP 会话可供 Realtime 接受时发送。
-同一待处理会话还可以发出 `live.transport.incoming`；首次
-成功的 Realtime 或 Live 接受端点将选择运行时表面。
+当一个传入的 API SIP 会话可被 Realtime 接受时发送。
+同一个待处理会话也可以发出 `live.transport.incoming`；第一个
+成功的 Realtime 或 Live accept 端点会选定运行时界面。
 
 ### Schema
 
-Schema name: `WebhookRealtimeCallIncoming`
+Schema 名称： `WebhookRealtimeCallIncoming`
 
 - `id: string`
 
@@ -747,16 +747,15 @@ Schema name: `WebhookRealtimeCallIncoming`
 
   - `call_id: string`
 
-    Transceiver `rtc_...` 待处理 SIP 会话的 ID。配对的
-    `live.transport.incoming` 事件由对应的 Realtime 事件派生出， `session_id` 将事件名的
-    `rtc_` 前缀替换为 `live_`。得到。请使用 Realtime 或 Live API 事件返回的 ID。
-    对应的 Realtime 或 Live 接口。
+    待处理 SIP 呼叫的 ID。通过 Realtime API 接受或拒绝呼叫时，请原样传入此值。对于
+    accepting or rejecting the call through the Realtime 接口. For the
+    Live API，请改用 `session_id` from `live.transport.incoming` 字段。
 
   - `sip_headers: array of object { name, value }`
 
-    SIP INVITE 中的请求头，不含 SIP 授权相关请求头。
-    保留的字段名、值、重复条目及顺序均会原样保留。
-    请将这些值视为不可信的通话元数据。
+    SIP INVITE 中的请求头，不含 SIP 授权头。
+    保留的名称、值、重复条目及其顺序均会被保留。
+    请将这些值视为不可信的呼叫元数据。
 
     - `name: string`
 
@@ -786,7 +785,7 @@ Schema name: `WebhookRealtimeCallIncoming`
   "type": "realtime.call.incoming",
   "created_at": 1719168000,
   "data": {
-    "call_id": "rtc_479a275623b54bdb9b6fbae2f7cbd408",
+    "call_id": "rtc_u0_479a275623b54bdb9b6fbae2f7cbd408",
     "sip_headers": [
       {"name": "Max-Forwards", "value": "63"},
       {"name": "CSeq", "value": "851287 INVITE"},
@@ -800,15 +799,15 @@ Schema name: `WebhookRealtimeCallIncoming`
 
 ## live.call.incoming
 
-已弃用：使用 `live.transport.incoming`。为已有订阅保留
-在迁移期间保留；不允许为此事件创建新订阅。
-当有传入的 API SIP 会话可供 Live 接受时发送。
-同一待处理会话也会发出 `realtime.call.incoming`；首次
-成功的 Realtime 或 Live 接受端点将选择运行时表面。
+已弃用：请使用 `live.transport.incoming`。为现有订阅保留
+以在迁移期间使用；不允许将此事件用于新订阅。
+当有传入的 API SIP 会话可供 Live 接受时发送。该
+同一待处理会话也可以发出 `realtime.call.incoming`；第一个
+成功的 Realtime 或 Live accept 端点会选定运行时界面。
 
 ### Schema
 
-Schema name: `WebhookLiveCallIncoming`
+Schema 名称： `WebhookLiveCallIncoming`
 
 - `id: string`
 
@@ -824,15 +823,15 @@ Schema name: `WebhookLiveCallIncoming`
 
   - `session_id: string`
 
-    该 `live_...` 待处理 SIP 会话的 ID。原样传递该值
-    到 Live 通话控制和边带连接。对应的
+    该 `live_...` 待处理 SIP 会话的 ID。将该值原样传递
+    到 Live 通话控件和边带连接。相应的
     `realtime.call.incoming` 事件使用单独的 `rtc_...` 通话 ID。
 
   - `sip_headers: array of object { name, value }`
 
-    SIP INVITE 中的请求头，不含 SIP 授权相关请求头。
-    保留的字段名、值、重复条目及顺序均会原样保留。
-    请将这些值视为不可信的通话元数据。
+    SIP INVITE 中的请求头，不含 SIP 授权头。
+    保留的名称、值、重复条目及其顺序均会被保留。
+    请将这些值视为不可信的呼叫元数据。
 
     - `name: string`
 
@@ -876,13 +875,13 @@ Schema name: `WebhookLiveCallIncoming`
 
 ## live.transport.incoming
 
-当有传入的 API SIP 会话可供 Live 接受时发送。
-同一待处理会话也会发出 `realtime.call.incoming`；首次
-成功的 Realtime 或 Live 接受端点将选择运行时表面。
+当有传入的 API SIP 会话可供 Live 接受时发送。该
+同一待处理会话也可以发出 `realtime.call.incoming`；第一个
+成功的 Realtime 或 Live accept 端点会选定运行时界面。
 
 ### Schema
 
-Schema name: `WebhookLiveTransportIncoming`
+Schema 名称： `WebhookLiveTransportIncoming`
 
 - `id: string`
 
@@ -898,14 +897,14 @@ Schema name: `WebhookLiveTransportIncoming`
 
   - `session_id: string`
 
-    该 `live_...` 待处理 SIP 会话的 ID。通过 Live API 接听或拒绝通话时，请原样转发此值
-    。
+    该 `live_...` 待处理 SIP 会话的 ID。通过 Live API 接听或拒接通话时,请原样转发此值。
+    接听或拒接通话时,此值保持不变。
 
   - `sip_headers: array of object { name, value }`
 
-    SIP INVITE 中的请求头，不含 SIP 授权相关请求头。
-    保留的字段名、值、重复条目及顺序均会原样保留。
-    请将这些值视为不可信的通话元数据。
+    SIP INVITE 中的请求头，不含 SIP 授权头。
+    保留的名称、值、重复条目及其顺序均会被保留。
+    请将这些值视为不可信的呼叫元数据。
 
     - `name: string`
 
@@ -917,7 +916,7 @@ Schema name: `WebhookLiveTransportIncoming`
 
   - `type: "sip"`
 
-    来电的传输类型。始终为 `sip`.
+    传入传输类型。始终为 `sip`.
 
     - `"sip"`
 
@@ -956,15 +955,15 @@ Schema name: `WebhookLiveTransportIncoming`
 
 ## safety.alert.created
 
-当 API 项目存在已批准的安全警报时发送。
+当已批准的安全预警可用于 API 项目时发送。
 
 ### Schema
 
-Schema name: `WebhookSafetyAlertCreated`
+Schema 名称： `WebhookSafetyAlertCreated`
 
 - `id: string`
 
-  该 Webhook 事件的唯一 ID。
+  webhook 事件的唯一 ID。
 
 - `created_at: number`
 
@@ -974,17 +973,17 @@ Schema name: `WebhookSafetyAlertCreated`
 
   - `id: string`
 
-    传递给以下接口的安全告警 ID： `GET /v1/safety/alerts/{id}`.
+    要传递给以下对象的安全警报 ID： `GET /v1/safety/alerts/{id}`.
 
 - `object: "event"`
 
-  始终为 `event`.
+  始终 `event`.
 
   - `"event"`
 
 - `type: "safety.alert.created"`
 
-  始终为 `safety.alert.created`.
+  始终 `safety.alert.created`.
 
   - `"safety.alert.created"`
 
@@ -1008,11 +1007,11 @@ Schema name: `WebhookSafetyAlertCreated`
 
 ### Schema
 
-Schema name: `WebhookSafetyOrgAlertCreated`
+Schema 名称： `WebhookSafetyOrgAlertCreated`
 
 - `id: string`
 
-  该 Webhook 事件的唯一 ID。
+  webhook 事件的唯一 ID。
 
 - `created_at: number`
 
@@ -1022,17 +1021,17 @@ Schema name: `WebhookSafetyOrgAlertCreated`
 
   - `id: string`
 
-    传递给以下接口的安全告警 ID： `GET /v1/safety/alerts/{id}`.
+    要传递给以下对象的安全警报 ID： `GET /v1/safety/alerts/{id}`.
 
 - `object: "event"`
 
-  始终为 `event`.
+  始终 `event`.
 
   - `"event"`
 
 - `type: "safety.org_alert.created"`
 
-  始终为 `safety.org_alert.created`.
+  始终 `safety.org_alert.created`.
 
   - `"safety.org_alert.created"`
 
