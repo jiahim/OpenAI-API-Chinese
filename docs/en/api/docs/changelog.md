@@ -8,6 +8,12 @@ Upcoming deprecations are listed on the [deprecations page](/api/docs/deprecatio
 
 ## September, 2026
 
+### Sep 15
+
+Feature
+
+Added API key creation governance controls at the organization and project levels. Administrators can allow only service-account keys, allow only user-owned project keys, or disable all new API key creation. Organization restrictions take precedence over project settings, and existing API keys are unaffected. See [production best practices](https://developers.openai.com/api/docs/guides/production-best-practices#api-keys) for details.
+
 ### Sep 10
 
 Feature
@@ -447,9 +453,9 @@ Released `gpt-5.3-chat-latest` to the Chat Completions and Responses API. This m
 
 ### Feb 24
 
-Feature · API: v1/responses · API: v1/chat/completions
+Feature · API: v1/responses
 
-Expanded `input_file` support to accept more document, presentation, spreadsheet, code, and text file types. Learn more [here](https://developers.openai.com/api/docs/guides/file-inputs).
+Expanded `input_file` support in the Responses API to accept more document, presentation, spreadsheet, code, and text file types. Learn more [here](https://developers.openai.com/api/docs/guides/file-inputs).
 
 ### Feb 24
 

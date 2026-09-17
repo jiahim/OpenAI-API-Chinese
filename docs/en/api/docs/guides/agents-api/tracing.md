@@ -8,7 +8,7 @@ The [tracing dashboard](https://platform.openai.com/logs?api=agents) shows what 
 
 For session status, live events, saved output, and usage through the API, start with [Observability](https://developers.openai.com/api/docs/guides/agents-api/observability).
 
-Tracing is enabled by default for new sessions. The public beta API does not expose tracing configuration or external trace exporters.
+Tracing is enabled by default for new sessions. You can inspect traces in the dashboard or export them through the API.
 
 ## Open a trace
 
@@ -87,6 +87,54 @@ Usage can arrive after the turn ends. A blank value or `null` means the count is
 Traces are built after a turn ends. The agent's answer can appear before its trace or token usage is ready.
 
 [Live session events](https://developers.openai.com/api/docs/guides/agents-api/sessions/events) show progress while the agent is still working.
+
+## Export session traces
+
+Download session traces to inspect them in another tracing tool. The endpoint `GET /v1/agents/sessions/{session_id}/traces` returns a page of traces containing OpenTelemetry Protocol (OTLP) JSON.
+
+Trace export must be enabled for your organization. Use an API key for the
+  session's project with either traces read permission (`api.traces.read`) or
+  the broader agents read permission (`api.agents.read`).
+
+Set `OPENAI_API_KEY` and replace `sess_123` with your session ID. This example uses cURL and `jq` to save one page as `traces.otlp.json`:
+
+Download a page of session traces
+
+```bash
+curl --fail-with-body \
+  "https://api.openai.com/v1/agents/sessions/sess_123/traces?limit=20&order=asc" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "OpenAI-Beta: agents=v1" \
+  --output trace-page.json && \
+jq '{resourceSpans: [.data[].otlp.resourceSpans[]]}' trace-page.json > traces.otlp.json
+```
+
+
+The command combines the traces from that page into one OTLP payload. Send it to your tracing provider's OTLP/HTTP endpoint using the provider's authentication.
+
+To export the whole session, check `trace-page.json`. When `has_more` is `true`, request the next page with `last_id` as `after`, keeping the same `order`. Save or upload each page before fetching the next, and repeat until `has_more` is `false`.
+
+Exports include only traces available when you make each request. For a historical export, wait for the session's turns to finish and allow time for traces to appear. Exporting does not set up automatic delivery of future traces.
+
+### Export traces for an agent
+
+To export traces across an agent's sessions, first [list sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage#find-sessions) with the `agent_id` filter. Replace `agent_123` with your agent's ID:
+
+Find sessions for an agent
+
+```bash
+curl --fail-with-body \
+  "https://api.openai.com/v1/agents/sessions?agent_id=agent_123&limit=100&order=asc" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "OpenAI-Beta: agents=v1"
+```
+
+
+1. For each session in `data`, use its `id` to export every page of session traces as described above.
+2. When the session list has `has_more: true`, pass that list's `last_id` as `after` to fetch the next page. Keep the same `agent_id` and `order`.
+3. Repeat until the session list has `has_more: false`.
+
+The filter matches the session's root agent. Keep the session-list cursor separate from each session's trace cursor.
 
 ## Example: One turn with two subagents
 

@@ -2,11 +2,19 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-OpenAI models can accept files as `input_file` items. In the Responses API, you can send a file as Base64-encoded data, a file ID returned by the Files API (`/v1/files`), or an external URL.
+File input support depends on the API endpoint. The Responses API accepts the file types listed below as `input_file` items. Chat Completions accepts only PDF files as `file` content parts.
+
+| Input method                           | Responses API                     | Chat Completions |
+| -------------------------------------- | --------------------------------- | ---------------- |
+| Base64-encoded file data (`file_data`) | Supported file types listed below | PDF only         |
+| Uploaded file ID (`file_id`)           | Supported file types listed below | PDF only         |
+| External file URL (`file_url`)         | Supported file types listed below | Not supported    |
+
+Use the Responses API for non-PDF file inputs. To use text from a file in Chat Completions, read the file in your application and send its contents as a `text` content part.
 
 ## How it works
 
-`input_file` processing depends on the file type:
+In the Responses API, `input_file` processing depends on the file type:
 
 - **PDF files**: On models with vision capabilities, such as `gpt-4o` and later models, the API extracts both text and page images and sends both to the model.
 - **Non-PDF document and text files** (for example, `.docx`, `.pptx`, `.txt`, and code files): the API extracts text only.
@@ -19,8 +27,8 @@ Use these related tools when they better match your task:
 
 ## Non-PDF image and chart limitations
 
-For non-PDF files, the API doesn't extract embedded images or charts into the
-model context.
+For non-PDF files, the Responses API doesn't extract embedded images or charts
+into the model context.
 
 To preserve chart and diagram fidelity, convert the file to PDF first, then
 send the PDF as `input_file`.
@@ -28,7 +36,7 @@ send the PDF as `input_file`.
 ## How spreadsheet augmentation works
 
 For spreadsheet-like files (such as `.xlsx`, `.xls`, `.csv`, `.tsv`, and
-`.iif`), `input_file` uses a spreadsheet-specific augmentation process.
+`.iif`), the Responses API uses a spreadsheet-specific augmentation process.
 
 Instead of passing entire sheets to the model, the API parses up to the first
 1,000 rows per sheet and adds model-generated summary and header metadata so the
@@ -73,8 +81,10 @@ A minimal Responses API request body with explicit high detail looks like this:
 
 ## Accepted file types
 
-The following table lists common file types accepted in `input_file`. The full
-list of extensions and MIME types appears later on this page.
+The following table lists common file types accepted by the Responses API as
+`input_file` items. The full list of extensions and MIME types appears later on
+this page. Chat Completions supports only `.pdf` (`application/pdf`) for both
+`file_data` and `file_id`.
 
 | Category       | Common extensions                                   |
 | -------------- | --------------------------------------------------- |
@@ -835,6 +845,9 @@ Keep these constraints in mind when you use file inputs:
 - **File upload purpose:** You can upload files with any supported [purpose](https://developers.openai.com/api/reference/resources/files/methods/create#files-create-purpose), but use `user_data` for files you plan to pass as model inputs.
 
 ## Full list of accepted file types
+
+This list applies to the Responses API. Chat Completions supports only `.pdf`
+(`application/pdf`) for both `file_data` and `file_id`.
 
 | Category       | Extensions                                                                                                                                                                                                                                                                                                                                                 | MIME types                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

@@ -15725,6 +15725,11 @@ curl https://api.openai.com/v1/responses \
     -H 'Content-Type: application/json' \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
+          "context_management": [
+            {
+              "type": "type"
+            }
+          ],
           "model": "gpt-6-astra",
           "prompt_cache_key": "prompt-cache-key-1234",
           "safety_identifier": "safety-identifier-1234",

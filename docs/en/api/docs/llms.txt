@@ -128,8 +128,8 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Manage service accounts with Terraform](https://developers.openai.com/api/docs/guides/terraform/service-accounts.md): Create OpenAI project service accounts, assign least-privilege roles, and manage API keys outside Terraform state.
 - [Manage sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage.md): Find sessions, handle required actions, and delete saved work.
 - [Managing GPT-Live sessions](https://developers.openai.com/api/docs/guides/live-conversations.md): Configure GPT-Live sessions, provide history and context, build transcript and microphone controls, and handle long conversations, errors, and recovery.
-- [MCP and Connectors](https://developers.openai.com/api/docs/guides/tools-connectors-mcp.md): Use remote MCP servers and OpenAI-maintained connectors for popular services to give models new capabilities.
 - [MCP connections](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp.md): Connect MCP servers from OpenAI or your environment.
+- [MCP servers](https://developers.openai.com/api/docs/guides/tools-connectors-mcp.md): Use remote MCP servers or Secure MCP Tunnel to give models access to external tools.
 - [Mid-turn steering](https://developers.openai.com/api/docs/guides/steering.md): Steer a Responses API workflow over WebSockets, follow continuations, and handle queued input and tool results.
 - [Migrate from Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder/migrate-from-agent-builder.md): Learn how to export an Agent Builder workflow and continue with ChatGPT Workspace Agents or the Agents SDK.
 - [Migrate from prompt objects](https://developers.openai.com/api/docs/guides/prompting/migrate-from-prompt-object.md): Learn how to migrate from reusable prompt objects to versioned prompts in your application code.
@@ -172,7 +172,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Realtime conversations](https://developers.openai.com/api/docs/guides/realtime-conversations.md): Learn how to manage Realtime speech-to-speech conversations.
 - [Realtime transcription](https://developers.openai.com/api/docs/guides/realtime-transcription.md): Learn how to transcribe live audio with realtime transcription sessions.
 - [Realtime translation](https://developers.openai.com/api/docs/guides/realtime-translation.md): Learn how to build live speech translation with Realtime translation sessions.
-- [Realtime with tools](https://developers.openai.com/api/docs/guides/realtime-mcp.md): Learn how to configure function tools, MCP tools, and connectors in a Realtime session.
+- [Realtime with tools](https://developers.openai.com/api/docs/guides/realtime-mcp.md): Learn how to configure function tools and MCP tools in a Realtime session.
 - [Reasoning best practices](https://developers.openai.com/api/docs/guides/reasoning-best-practices.md): Explore best practices for using o-series reasoning models, like o1 and o3-mini, vs. GPT models—including use cases, how to choose a model, and prompting guidance.
 - [Reasoning models](https://developers.openai.com/api/docs/guides/reasoning.md): Learn how to use OpenAI reasoning models in the Responses API, choose a reasoning effort, manage reasoning tokens, and keep reasoning state across turns.
 - [Red teaming](https://developers.openai.com/api/docs/guides/red-teaming.md): Learn how red teaming fits into AI evaluation, including Promptfoo open source and OpenAI Red Teaming for enterprise teams.
@@ -206,7 +206,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Theming and customization in ChatKit](https://developers.openai.com/api/docs/guides/chatkit-themes.md): Configure colors, typography, density, and component variants in your ChatKit implementation.
 - [Tool search](https://developers.openai.com/api/docs/guides/tools-tool-search.md): Use tool search to defer large tool surfaces, group related tools with namespaces, and load only the relevant functions at runtime.
 - [Trace grading](https://developers.openai.com/api/docs/guides/trace-grading.md): Use trace grading to create datasets, configure graders, and track evaluation runs for your models.
-- [Tracing](https://developers.openai.com/api/docs/guides/agents-api/tracing.md): Inspect agent turns, model responses, and tool calls in the tracing dashboard.
+- [Tracing](https://developers.openai.com/api/docs/guides/agents-api/tracing.md): Inspect agent activity in the dashboard and export session traces as OTLP JSON.
 - [Transcription](https://developers.openai.com/api/docs/guides/transcription.md): Choose between file transcription and realtime transcription, then start with the recommended model for your audio.
 - [Under-18 guidance](https://developers.openai.com/api/docs/guides/safety-checks/under-18-api-guidance.md): Review regulatory standards, safety standards, and best practices for API applications that serve users under 18.
 - [Upgrading to GPT-5.4](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p4.md): Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.4.

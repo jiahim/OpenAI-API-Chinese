@@ -122,7 +122,7 @@ The practical split is:
 - Use **hosted MCP** for public remote servers that fit the platform trust model.
 - Use **local or private MCP** when your runtime should own connectivity, filtering, or approvals.
 
-For the platform-wide concept, trust model, and product support story, keep [MCP and Connectors](https://developers.openai.com/api/docs/guides/tools-connectors-mcp) as the canonical reference.
+For the platform-wide concept, trust model, and product support story, keep [MCP servers](https://developers.openai.com/api/docs/guides/tools-connectors-mcp) as the canonical reference.
 
 ## Tracing
 
