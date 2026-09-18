@@ -783,15 +783,11 @@ For stateless reasoning-model requests, replay every returned reasoning item. Ea
 - Give tools specific names and descriptions so the model can compose them correctly.
 - Require application-level approval before high-impact actions, regardless of the caller.
 
-{/* vale Vale.Terms = NO */}
-
 ## Evaluate Programmatic Tool Calling
 
 Programmatic Tool Calling can reduce the amount of intermediate tool output added to model context, but the effect depends on the task and tool responses. Start with direct tool calling as a baseline, then compare both approaches on representative tasks.
 
 Define the final-answer quality bar and required evidence before measuring efficiency. Evaluate token use and tool calls alongside correctness, completeness, and evidence coverage, and make any accepted quality tradeoff explicit.
-
-{/* vale Vale.Terms = YES */}
 
 Measure:
 

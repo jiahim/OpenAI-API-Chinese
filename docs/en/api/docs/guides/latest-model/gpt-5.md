@@ -32,7 +32,6 @@ We’ve seen significant gains from applying these best practices and adopting o
 - GPT-5 introduced custom tools that accept freeform input and can constrain outputs with a context-free grammar.
 - The model supports function calling and OpenAI-hosted tools, including web search, file search, image generation, code interpreter, and remote MCP.
 
-
 ## Prompting best practices
 
 ### Agentic workflow predictability
@@ -592,4 +591,3 @@ Efficiency is key. You have a time limit. Be meticulous in your planning, tool c
 Never use editor tools to edit files. Always use the \`apply_patch\` tool.
 </final_instructions>
 ```
-

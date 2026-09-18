@@ -190,7 +190,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.64.0</version>
+  <version>4.65.0</version>
 </dependency>
 ```
 
@@ -357,7 +357,6 @@ StatsigClient.logEvent("quickstart_add_credits_billing_click", null, null)
   Go to billing
 
 
-{/* prettier-ignore */}
 
 Congrats on running a free test API request! Start building real applications with higher limits and use [our models](https://developers.openai.com/api/docs/models) to generate text, audio, images, videos and more.
 

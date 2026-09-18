@@ -33,7 +33,6 @@ Please read on for prompt examples you can use as a reference, and remember that
 - GPT-4.1 and GPT-4.1 mini support supervised fine-tuning.
 - Supported tools include function calling, web search, file search, image generation, code interpreter, and remote MCP.
 
-
 ## Prompting best practices
 
 ### 1. Agentic Workflows
@@ -1597,5 +1596,3 @@ def search():
 `</edit>`
 """
 ````
-
-

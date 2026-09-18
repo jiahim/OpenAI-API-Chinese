@@ -1908,8 +1908,6 @@ You can adjust this by setting [`chunking_strategy`](https://developers.openai.c
 
 _For `text/` MIME types, the encoding must be one of `utf-8`, `utf-16`, or `ascii`._
 
-{/* Keep this table in sync with RETRIEVAL_SUPPORTED_EXTENSIONS in the agentapi service */}
-
 | File format | MIME type                                                                   |
 | ----------- | --------------------------------------------------------------------------- |
 | `.c`        | `text/x-c`                                                                  |

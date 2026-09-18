@@ -741,7 +741,7 @@ Schema name: `WebhookRealtimeCallIncoming`
 
   The Unix timestamp (in seconds) of when the model response was completed.
 
-- `data: object { call_id, sip_headers }`
+- `data: object { call_id, sip_headers, sip_media_security }`
 
   Event data payload.
 
@@ -765,6 +765,26 @@ Schema name: `WebhookRealtimeCallIncoming`
 
       Value of the SIP Header.
 
+  - `sip_media_security: optional "rtp" or "srtp" or string`
+
+    Media protection selected on the SIP leg during SDP negotiation. `srtp`
+    indicates SRTP; `rtp` indicates unencrypted RTP. Omitted when unknown.
+    This does not describe SIP signaling security or confirm that media has
+    flowed. Clients should handle unrecognized values as unknown.
+
+    - `"rtp" or "srtp"`
+
+      Media protection selected on the SIP leg during SDP negotiation. `srtp`
+      indicates SRTP; `rtp` indicates unencrypted RTP. Omitted when unknown.
+      This does not describe SIP signaling security or confirm that media has
+      flowed. Clients should handle unrecognized values as unknown.
+
+      - `"rtp"`
+
+      - `"srtp"`
+
+    - `string`
+
 - `type: "realtime.call.incoming"`
 
   The type of the event. Always `realtime.call.incoming`.
@@ -786,6 +806,7 @@ Schema name: `WebhookRealtimeCallIncoming`
   "created_at": 1719168000,
   "data": {
     "call_id": "rtc_u0_479a275623b54bdb9b6fbae2f7cbd408",
+    "sip_media_security": "srtp",
     "sip_headers": [
       {"name": "Max-Forwards", "value": "63"},
       {"name": "CSeq", "value": "851287 INVITE"},
@@ -817,7 +838,7 @@ Schema name: `WebhookLiveCallIncoming`
 
   The Unix timestamp (in seconds) of when the event was created.
 
-- `data: object { session_id, sip_headers }`
+- `data: object { session_id, sip_headers, sip_media_security }`
 
   Event data payload.
 
@@ -841,6 +862,26 @@ Schema name: `WebhookLiveCallIncoming`
 
       Value of the SIP Header.
 
+  - `sip_media_security: optional "rtp" or "srtp" or string`
+
+    Media protection selected on the SIP leg during SDP negotiation. `srtp`
+    indicates SRTP; `rtp` indicates unencrypted RTP. Omitted when unknown.
+    This does not describe SIP signaling security or confirm that media has
+    flowed. Clients should handle unrecognized values as unknown.
+
+    - `"rtp" or "srtp"`
+
+      Media protection selected on the SIP leg during SDP negotiation. `srtp`
+      indicates SRTP; `rtp` indicates unencrypted RTP. Omitted when unknown.
+      This does not describe SIP signaling security or confirm that media has
+      flowed. Clients should handle unrecognized values as unknown.
+
+      - `"rtp"`
+
+      - `"srtp"`
+
+    - `string`
+
 - `type: "live.call.incoming"`
 
   The type of the event. Always `live.call.incoming`.
@@ -862,6 +903,7 @@ Schema name: `WebhookLiveCallIncoming`
   "created_at": 1719168000,
   "data": {
     "session_id": "live_u0_479a275623b54bdb9b6fbae2f7cbd408",
+    "sip_media_security": "srtp",
     "sip_headers": [
       {"name": "From", "value": "<sip:alice@example.com>;tag=abc123"},
       {"name": "To", "value": "<sip:recipient@example.com>"},
@@ -891,7 +933,7 @@ Schema name: `WebhookLiveTransportIncoming`
 
   The Unix timestamp (in seconds) of when the event was created.
 
-- `data: object { session_id, sip_headers, type }`
+- `data: object { session_id, sip_headers, type, sip_media_security }`
 
   Event data payload.
 
@@ -920,6 +962,26 @@ Schema name: `WebhookLiveTransportIncoming`
 
     - `"sip"`
 
+  - `sip_media_security: optional "rtp" or "srtp" or string`
+
+    Media protection selected on the SIP leg during SDP negotiation. `srtp`
+    indicates SRTP; `rtp` indicates unencrypted RTP. Omitted when unknown.
+    This does not describe SIP signaling security or confirm that media has
+    flowed. Clients should handle unrecognized values as unknown.
+
+    - `"rtp" or "srtp"`
+
+      Media protection selected on the SIP leg during SDP negotiation. `srtp`
+      indicates SRTP; `rtp` indicates unencrypted RTP. Omitted when unknown.
+      This does not describe SIP signaling security or confirm that media has
+      flowed. Clients should handle unrecognized values as unknown.
+
+      - `"rtp"`
+
+      - `"srtp"`
+
+    - `string`
+
 - `type: "live.transport.incoming"`
 
   The type of the event. Always `live.transport.incoming`.
@@ -942,12 +1004,109 @@ Schema name: `WebhookLiveTransportIncoming`
   "data": {
     "type": "sip",
     "session_id": "live_u0_479a275623b54bdb9b6fbae2f7cbd408",
+    "sip_media_security": "srtp",
     "sip_headers": [
       {"name": "From", "value": "<sip:alice@example.com>;tag=abc123"},
       {"name": "To", "value": "<sip:recipient@example.com>"},
       {"name": "Call-ID", "value": "call-123@example.com"}
     ]
   }
+}
+```
+
+<a id="safety.warning_issued"></a>
+
+## safety.warning_issued
+
+Sent when a warning is issued for a safety identifier in your organization.
+
+### Schema
+
+Schema name: `WebhookSafetyWarningIssued`
+
+- `id: string`
+
+  The unique ID of the webhook event.
+
+- `created_at: number`
+
+  The Unix timestamp in seconds when the event was created.
+
+- `data: object { id }`
+
+  - `id: string`
+
+    The safety case ID to pass to `GET /v1/safety/cases/{id}`.
+
+- `object: "event"`
+
+  Always `event`.
+
+  - `"event"`
+
+- `type: "safety.warning_issued"`
+
+  Always `safety.warning_issued`.
+
+  - `"safety.warning_issued"`
+
+### Example
+
+```json
+{
+  "id": "evt_123",
+  "object": "event",
+  "created_at": 1787659200,
+  "type": "safety.warning_issued",
+  "data": {"id": "C-abc123"}
+}
+```
+
+<a id="safety.deactivation_issued"></a>
+
+## safety.deactivation_issued
+
+Sent when a deactivation is issued for a safety identifier in your organization.
+
+### Schema
+
+Schema name: `WebhookSafetyDeactivationIssued`
+
+- `id: string`
+
+  The unique ID of the webhook event.
+
+- `created_at: number`
+
+  The Unix timestamp in seconds when the event was created.
+
+- `data: object { id }`
+
+  - `id: string`
+
+    The safety case ID to pass to `GET /v1/safety/cases/{id}`.
+
+- `object: "event"`
+
+  Always `event`.
+
+  - `"event"`
+
+- `type: "safety.deactivation_issued"`
+
+  Always `safety.deactivation_issued`.
+
+  - `"safety.deactivation_issued"`
+
+### Example
+
+```json
+{
+  "id": "evt_123",
+  "object": "event",
+  "created_at": 1787659200,
+  "type": "safety.deactivation_issued",
+  "data": {"id": "C-abc123"}
 }
 ```
 
