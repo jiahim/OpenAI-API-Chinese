@@ -22,7 +22,7 @@ Secure MCP Tunnel keeps the MCP server private while giving supported OpenAI pro
 - Your MCP server runs on a private network, on-premises, on a developer machine, or behind existing access controls.
 - You want ChatGPT, Codex, the Responses API, or another supported OpenAI surface to use that server without making the MCP server public.
 - Your network allows the host running `tunnel-client` to make outbound HTTPS requests to `api.openai.com:443` by default, or `mtls.api.openai.com:443` when control-plane mTLS is configured, and reach the private MCP server.
-- Start with the [MCP and Connectors guide](https://developers.openai.com/api/docs/guides/tools-connectors-mcp) for general MCP concepts.
+- Start with the [MCP servers guide](https://developers.openai.com/api/docs/guides/tools-connectors-mcp) for general MCP concepts.
 
 ## How it works
 
@@ -191,7 +191,7 @@ Secure MCP Tunnel separates tunnel transport from app-level product logging:
 - Tunnel metadata changes are exposed through the API Platform [Audit logs](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/audit_logs) surface as `tunnel.created`, `tunnel.updated`, and `tunnel.deleted`.
 - When ChatGPT reaches a custom app through Secure MCP Tunnel, the tunnel remains only the transport path. Normal app-level compliance logging still applies on the app path, including app invocation logs and app auth lifecycle logs such as `APP_AUTH_LOG` when the app is linked or unlinked.
 
-## Advanced: allowlisted HTTP callouts
+## Advanced: Allowlisted HTTP callouts
 
 Secure MCP Tunnel can also support narrowly scoped HTTP callouts from supported agent or API flows into a customer network. `tunnel-client` includes an embedded MCP server, Harpoon, that exposes configured HTTP targets by label and lets callers invoke them through the tunnel with bounded request/response limits.
 

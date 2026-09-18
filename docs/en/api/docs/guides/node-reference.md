@@ -65,7 +65,7 @@ Guardrails are pass/fail by default, meaning they test the output from a previou
 
 Call third-party tools and services. Connect with OpenAI connectors or third-party servers, or add your own server. MCP connections are helpful in a workflow that needs to read or search data in another application, like Gmail or Zapier.
 
-Browse options in the Agent Builder. To learn more about MCP, see the [connectors and MCP documentation](https://developers.openai.com/api/docs/guides/tools-connectors-mcp).
+Browse options in the Agent Builder. To learn more about MCP, see the [MCP documentation](https://developers.openai.com/api/docs/guides/tools-connectors-mcp).
 
 ### Logic nodes
 
@@ -97,7 +97,7 @@ Data nodes let you define and manipulate data in your workflow. Reshape outputs 
 
 #### Transform
 
-Reshape outputs (e.g., object → array). Useful for enforcing types to adhere to your schema or reshaping outputs for agents to read and understand as inputs.
+Reshape outputs (for example, object → array). Useful for enforcing types to adhere to your schema or reshaping outputs for agents to read and understand as inputs.
 
 #### Set state
 

@@ -2,15 +2,7 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-{/* This guide necessarily discusses sexual abuse, so these profanity heuristics don't apply. */}
-{/* vale alex.ProfanityMaybe = NO */}
-{/* vale alex.ProfanityUnlikely = NO */}
-{/* "Potentially" preserves uncertainty in classifier and policy language. */}
-{/* vale Microsoft.Adverbs = NO */}
-
-
-
-    {"OpenAI developed this resource with expert input from the "}
+{"OpenAI developed this resource with expert input from the "}
     {", "}
     {", the "}
     {", and the "}

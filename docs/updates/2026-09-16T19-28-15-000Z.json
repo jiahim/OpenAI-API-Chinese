@@ -1,0 +1,302 @@
+{
+  "id": "2026-09-16T19-28-15-000Z",
+  "generatedAt": "2026-09-16T19:28:15Z",
+  "added": [],
+  "modified": [
+    {
+      "path": "docs/en/api/docs/guides/agents-api/configuration.md",
+      "route": "/api/docs/guides/agents-api/configuration",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/configuration.md",
+      "title": "Configuring Agents"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/blaxel.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/blaxel",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/blaxel.md",
+      "title": "Blaxel"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/cloudflare.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/cloudflare",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/cloudflare.md",
+      "title": "Cloudflare"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/daytona.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/daytona",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/daytona.md",
+      "title": "Daytona"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/digitalocean.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/digitalocean",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/digitalocean.md",
+      "title": "DigitalOcean"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/e2b.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/e2b",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/e2b.md",
+      "title": "E2B"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/modal.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/modal",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/modal.md",
+      "title": "Modal"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/oci.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/oci",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/oci.md",
+      "title": "Oracle Cloud Infrastructure (OCI)"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/runloop.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/runloop",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/runloop.md",
+      "title": "Runloop"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/vercel.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/vercel",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/vercel.md",
+      "title": "Vercel"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/self-hosted.md",
+      "route": "/api/docs/guides/agents-api/environments/self-hosted",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted.md",
+      "title": "Self-hosted sandboxes"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/quickstart.md",
+      "route": "/api/docs/guides/agents-api/quickstart",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/quickstart.md",
+      "title": "Agents API quickstart"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/sessions.md",
+      "route": "/api/docs/guides/agents-api/sessions",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/sessions.md",
+      "title": "Run and continue sessions"
+    },
+    {
+      "path": "docs/en/api/docs/guides/deep-research.md",
+      "route": "/api/docs/guides/deep-research",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/deep-research.md",
+      "title": "Deep research"
+    },
+    {
+      "path": "docs/en/api/docs/guides/moderation.md",
+      "route": "/api/docs/guides/moderation",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/moderation.md",
+      "title": "Moderation"
+    },
+    {
+      "path": "docs/en/api/docs/guides/token-counting.md",
+      "route": "/api/docs/guides/token-counting",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/token-counting.md",
+      "title": "Counting tokens"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools-connectors-mcp.md",
+      "route": "/api/docs/guides/tools-connectors-mcp",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools-connectors-mcp.md",
+      "title": "MCP and Connectors"
+    },
+    {
+      "path": "docs/en/api/docs/guides/tools.md",
+      "route": "/api/docs/guides/tools",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/tools.md",
+      "title": "Using tools"
+    },
+    {
+      "path": "docs/en/api/docs/libraries.md",
+      "route": "/api/docs/libraries",
+      "sourceUrl": "https://developers.openai.com/api/docs/libraries.md",
+      "title": "SDKs and CLI"
+    },
+    {
+      "path": "docs/en/api/docs/quickstart.md",
+      "route": "/api/docs/quickstart",
+      "sourceUrl": "https://developers.openai.com/api/docs/quickstart.md",
+      "title": "Developer quickstart"
+    },
+    {
+      "path": "docs/en/api/reference/resources/beta/subresources/responses/streaming-events.md",
+      "route": "/api/reference/resources/beta/subresources/responses/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/responses/streaming-events.md",
+      "title": "Beta Responses streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/beta/subresources/responses/websocket-events.md",
+      "route": "/api/reference/resources/beta/subresources/responses/websocket-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/responses/websocket-events.md",
+      "title": "Beta Responses WebSocket events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/chat.md",
+      "route": "/api/reference/resources/chat",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/chat.md",
+      "title": "Chat"
+    },
+    {
+      "path": "docs/en/api/reference/resources/conversations.md",
+      "route": "/api/reference/resources/conversations",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/conversations.md",
+      "title": "Conversations"
+    },
+    {
+      "path": "docs/en/api/reference/resources/conversations/methods/create.md",
+      "route": "/api/reference/resources/conversations/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/conversations/methods/create.md",
+      "title": "Conversations — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/conversations/subresources/items/methods/list.md",
+      "route": "/api/reference/resources/conversations/subresources/items/methods/list",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/conversations/subresources/items/methods/list.md",
+      "title": "Conversations Items — List"
+    },
+    {
+      "path": "docs/en/api/reference/resources/evals.md",
+      "route": "/api/reference/resources/evals",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/evals.md",
+      "title": "Evals"
+    },
+    {
+      "path": "docs/en/api/reference/resources/evals/subresources/runs/methods/cancel.md",
+      "route": "/api/reference/resources/evals/subresources/runs/methods/cancel",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/evals/subresources/runs/methods/cancel.md",
+      "title": "Evals Runs — Cancel"
+    },
+    {
+      "path": "docs/en/api/reference/resources/images.md",
+      "route": "/api/reference/resources/images",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/images.md",
+      "title": "Images"
+    },
+    {
+      "path": "docs/en/api/reference/resources/live/fork-websocket.md",
+      "route": "/api/reference/resources/live/fork-websocket",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/live/fork-websocket.md",
+      "title": "Live fork WebSocket"
+    },
+    {
+      "path": "docs/en/api/reference/resources/live/primary-websocket.md",
+      "route": "/api/reference/resources/live/primary-websocket",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/live/primary-websocket.md",
+      "title": "Live primary WebSocket"
+    },
+    {
+      "path": "docs/en/api/reference/resources/live/sideband-websocket.md",
+      "route": "/api/reference/resources/live/sideband-websocket",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/live/sideband-websocket.md",
+      "title": "Live sideband WebSocket"
+    },
+    {
+      "path": "docs/en/api/reference/resources/realtime.md",
+      "route": "/api/reference/resources/realtime",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/realtime.md",
+      "title": "Realtime"
+    },
+    {
+      "path": "docs/en/api/reference/resources/realtime/client-events.md",
+      "route": "/api/reference/resources/realtime/client-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/realtime/client-events.md",
+      "title": "Realtime client events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/realtime/server-events.md",
+      "route": "/api/reference/resources/realtime/server-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/realtime/server-events.md",
+      "title": "Realtime server events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/realtime/subresources/calls.md",
+      "route": "/api/reference/resources/realtime/subresources/calls",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/realtime/subresources/calls.md",
+      "title": "Realtime Calls"
+    },
+    {
+      "path": "docs/en/api/reference/resources/realtime/subresources/calls/methods/accept.md",
+      "route": "/api/reference/resources/realtime/subresources/calls/methods/accept",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/realtime/subresources/calls/methods/accept.md",
+      "title": "Realtime Calls — Accept"
+    },
+    {
+      "path": "docs/en/api/reference/resources/realtime/subresources/client_secrets.md",
+      "route": "/api/reference/resources/realtime/subresources/client_secrets",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets.md",
+      "title": "Realtime Client Secrets"
+    },
+    {
+      "path": "docs/en/api/reference/resources/realtime/subresources/client_secrets/methods/create.md",
+      "route": "/api/reference/resources/realtime/subresources/client_secrets/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets/methods/create.md",
+      "title": "Realtime Client Secrets — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses.md",
+      "route": "/api/reference/resources/responses",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses.md",
+      "title": "Responses"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/cancel.md",
+      "route": "/api/reference/resources/responses/methods/cancel",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/cancel.md",
+      "title": "Responses — Cancel"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/compact.md",
+      "route": "/api/reference/resources/responses/methods/compact",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/compact.md",
+      "title": "Responses — Compact"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/create.md",
+      "route": "/api/reference/resources/responses/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/create.md",
+      "title": "Responses — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/retrieve.md",
+      "route": "/api/reference/resources/responses/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/retrieve.md",
+      "title": "Responses — Retrieve"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/streaming-events.md",
+      "route": "/api/reference/resources/responses/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/streaming-events.md",
+      "title": "Responses streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/subresources/input_items/methods/list.md",
+      "route": "/api/reference/resources/responses/subresources/input_items/methods/list",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/subresources/input_items/methods/list.md",
+      "title": "Responses Input Items — List"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/subresources/input_tokens.md",
+      "route": "/api/reference/resources/responses/subresources/input_tokens",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/subresources/input_tokens.md",
+      "title": "Responses Input Tokens"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/websocket-events.md",
+      "route": "/api/reference/resources/responses/websocket-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/websocket-events.md",
+      "title": "Responses WebSocket events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/webhooks.md",
+      "route": "/api/reference/resources/webhooks",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/webhooks.md",
+      "title": "Webhooks events"
+    }
+  ],
+  "removed": []
+}

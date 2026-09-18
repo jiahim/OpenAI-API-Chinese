@@ -25,11 +25,11 @@ Handle `environment_connection` requests by starting or reconnecting the worker,
 
 You need an OpenAI project API key, a Daytona API key, and the Codex CLI package.
 
-Set `OPENAI_API_KEY`, a separate restricted `OPENAI_EXECUTOR_API_KEY`, and `DAYTONA_API_KEY` in your environment. Grant the application key `api.agents.read` and `api.agents.write` for session operations, plus `api.responses.write` for model inference. Add `api.vaults.read` and `api.vaults.write` if your application manages vaults. Create the executor's [environment key](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication) and use the same organization, project, and user or service account for both keys. Only the restricted executor key enters the sandbox.
+Set `DAYTONA_API_KEY` and use `OPENAI_API_KEY` for application requests. Set `OPENAI_EXECUTOR_API_KEY` to an [environment key](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication), and pass only that key into the sandbox as `CODEX_API_KEY`.
 
 ### 1. Set up the Daytona environment
 
-Create a [self-hosted session](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#create-or-reuse-a-session) and save its environment ID. Use the Daytona SDK or API to create an isolated sandbox with the configured working directory. Install the Codex CLI in the sandbox, then [start its executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#start-the-executor) with that environment ID and the restricted executor key.
+Create a [self-hosted session](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#create-or-reuse-a-session) and save its environment ID. Use the Daytona SDK or API to create an isolated sandbox with the configured working directory. Install the Codex CLI in the sandbox, then [start its executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#start-the-executor) with that environment ID and the environment key.
 
 The executor's connection to OpenAI is outbound and long-lived, and Daytona's inactivity tracking does not observe it. Set `auto_stop_interval=0` so the Sandbox is not stopped while the agent is working, and configure a lifetime limit so interrupted runs do not leave compute running indefinitely.
 

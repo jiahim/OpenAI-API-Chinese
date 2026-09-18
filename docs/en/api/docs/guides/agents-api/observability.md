@@ -15,7 +15,7 @@ Go to [platform.openai.com/logs?api=agents](https://platform.openai.com/logs?api
 
 Search for a session by ID to inspect its turns, tool calls, and subagents.
 
-Use the [Tracing guide](https://developers.openai.com/api/docs/guides/agents-api/tracing) to inspect recorded model responses, tool calls, and subagent activity in the dashboard. Trace retrieval and external trace exporters are not part of the public beta API.
+Use the [Tracing guide](https://developers.openai.com/api/docs/guides/agents-api/tracing) to inspect recorded model responses, tool calls, and subagent activity in the dashboard, or [export session traces](https://developers.openai.com/api/docs/guides/agents-api/tracing#export-session-traces) as OTLP JSON through the public API.
 
 ## Follow events and inspect session history
 
@@ -397,8 +397,7 @@ Command items contain `turn_id`. Retrieve that turn and read `subagent_id` to id
 ## Inspect a turn trace
 
 Use the Platform dashboard to inspect a completed turn and its agent activity.
-Detailed trace retrieval is not available through an ordinary project API key. Dashboard trace endpoints require separate access and are not a
-supported customer API.
+To retrieve recorded traces through the public API, use the [session trace export endpoint](https://developers.openai.com/api/docs/guides/agents-api/tracing#export-session-traces) with a project API key. Dashboard trace endpoints remain separate from the supported customer API.
 
 Turn resources include best-effort `usage` and a `subagent_id` that identifies delegated work. Usage can be `null` when unknown and may change. See [Inspect subagent token usage](#inspect-subagent-token-usage).
 

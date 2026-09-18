@@ -282,9 +282,21 @@ puts result
 
 Each session has its own conversation and work. See the [Agents API reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents) to list, retrieve, update, or delete saved agents. Credentials stay in [vaults](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults), separate from the saved configuration.
 
+## Update a saved agent
+
+Saved-agent updates apply only to new sessions. Each session copies the saved configuration when you create it and keeps those settings for later turns. To change an existing session, [update its settings](#update-settings-for-an-existing-session).
+
+When updating a saved agent:
+
+- Omitted fields keep their saved values. Changing only `model` preserves `reasoning`, `service_tier`, and `text`.
+- Supplied objects replace the whole field. Supplying `reasoning` with only `effort` also clears the saved `summary`.
+- `null` resets fields that accept it. For example, `reasoning: null` restores the model's default effort.
+
+Change or reset any settings the new model does not support in the same request.
+
 ## Override settings for one session
 
-Include both `agent_id` and `agent` to customize a session that uses a saved agent. The session inherits omitted settings, including the model.
+Include both `agent_id` and `agent` when creating a session to customize a saved agent's configuration. The session copies omitted settings, including the model, from the saved agent at creation time.
 
 Replace the illustrative `agent_123` value with the saved agent's ID before running this example:
 
@@ -433,6 +445,33 @@ puts result
 Overrides apply only to that session. They do not change the saved agent or other sessions. Supplied objects and arrays replace the entire field rather than merging with the saved value. For example, supplying `tools` replaces the saved tool list.
 
 See the [Create session reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/create) for request fields.
+
+## Update settings for an existing session
+
+Send `POST /v1/agents/sessions/{session_id}` with an `agent` object to change `model`, `reasoning.effort`, or `service_tier` for one session. These settings are available in the beta and GA API contracts. You can update `metadata` in the same request.
+
+Changes apply to new turns started by messages sent after the update completes. Messages already in flight can use the previous settings. An active turn keeps its settings, including when you send a steering message. The session keeps its conversation history. The selected model must support the resulting settings, or the update fails.
+
+- The `agent` and `reasoning` objects merge supplied fields into the current settings. Omitted fields stay unchanged, including reasoning summary. Changing only `model` preserves the session's reasoning effort and service tier.
+- `reasoning.effort: null` resets effort to the selected model's default.
+- `service_tier: null` restores automatic tier selection.
+- A model must remain set, so you cannot supply `model: null`. The `agent` and `reasoning` objects also reject `null`.
+- `metadata` replaces the full map. Omit it to preserve metadata, or pass `null` or `{}` to clear it.
+
+For example, this request changes reasoning effort and lets the API select the service tier automatically:
+
+```json
+{
+  "agent": {
+    "reasoning": { "effort": "low" },
+    "service_tier": null
+  }
+}
+```
+
+Updating a session does not change the saved agent or other sessions. Later saved-agent updates do not change the session.
+
+You cannot update `reasoning.summary`, `text`, `tools`, `instructions`, or `multi_agent` through this endpoint. Create a new session to change those settings.
 
 ## Environment settings
 

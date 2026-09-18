@@ -6,6 +6,8 @@ Use OpenAI moderation models to detect harmful content in text and images. You c
 
 The `omni-moderation-latest` model accepts text and image inputs. It doesn't classify audio. The moderation endpoint is free to use, and image files can be up to 20 MB.
 
+**Child safety:** Do not send known or suspected child sexual abuse material (CSAM) to the Moderation API. The API is not designed for CSAM detection or handling and is not a substitute for dedicated child-safety safeguards. See our [CSAM guidance](https://developers.openai.com/api/docs/guides/csam-guidance) for steps to prevent, detect, respond to, and report CSAM.
+
 ## Choose a moderation workflow
 
 | Workflow                                                        | Use when                                                                                                     |

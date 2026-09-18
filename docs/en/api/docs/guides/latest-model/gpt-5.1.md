@@ -35,7 +35,6 @@ We also released GPT-5.1-Codex. That model behaves differently from GPT-5.1; see
 - The model supports function calling and OpenAI-hosted tools, including web search, file search, image generation, code interpreter, and apply patch.
 - GPT-5.1-Codex variants are optimized separately for agentic coding workflows.
 
-
 ## Prompting best practices
 
 ### Agentic steerability
@@ -623,4 +622,3 @@ As you continue to grow your agentic systems (e.g., broadening scope or increasi
 To summarize, GPT-5.1 builds on the foundation set by GPT-5 and adds things like quicker thinking for easy questions, steerability when it comes to model output, new tools for coding use cases, and the option to set reasoning to `none` when your tasks don't require heavy thinking.
 
 Review the [GPT-5.1 model and API guidance](#model-api-and-feature-updates), or read the [blog post](https://openai.com/index/gpt-5-1-for-developers/) to learn more.
-

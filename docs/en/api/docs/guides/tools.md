@@ -964,7 +964,7 @@ options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "dmcp",
         serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
-        toolCallApprovalPolicy: GlobalMcpToolCallApprovalPolicy.NeverRequireApproval
+        toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.NeverRequireApproval
     )
 );
 options.InputItems.Add(ResponseItem.CreateUserMessageItem("Roll 2d4+1"));

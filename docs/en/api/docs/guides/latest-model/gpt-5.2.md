@@ -592,7 +592,6 @@ curl --request POST \
 
 
 
-
 ## Prompting best practices
 
 ### 2. Key behavioral differences
@@ -1062,7 +1061,6 @@ Do not lead with a blunt refusal if you can safely provide something helpful imm
 First deliver what you can (safe partial answers, verified material, or a closely related helpful alternative), then clearly state any limitations (policy limits, missing/behind-paywall data, unverifiable claims).
 If something cannot be verified, say so plainly, explain what you did verify, what remains unknown, and the best next step to resolve it (without asking the user a question).
 ```
-
 
 ## Further reading
 

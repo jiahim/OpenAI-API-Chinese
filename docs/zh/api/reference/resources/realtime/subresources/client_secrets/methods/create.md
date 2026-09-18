@@ -1,46 +1,46 @@
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
 
 ## 创建客户端密钥
 
 **post** `/realtime/client_secrets`
 
-创建一个 Realtime 客户端密钥并关联会话配置。
+创建一个 Realtime 客户端密钥，并关联会话配置。
 
-客户端密钥是短期有效的令牌，可以传递给客户端应用，
-例如 Web 前端或移动客户端，它授予对 Realtime API 的访问权限，而不会泄露你的主 API 密钥
-。你可以为每个客户端密钥配置自定义 TTL。
+客户端密钥是短期令牌，可以传递给客户端应用，
+例如 Web 前端或移动客户端，用于在不会泄露你的主 API 密钥的情况下访问 Realtime 接口。
+泄露你的主 API 密钥。你可以为每个客户端密钥配置自定义 TTL。
 
-你也可以将会话配置选项附加到客户端密钥上，这些选项将
-应用于使用该客户端密钥创建的任何会话，但也可以被客户端连接
+你也可以将会话配置选项附加到客户端密钥上，这些配置将应用于
+使用该客户端密钥创建的所有会话，但这些选项也可以被客户端连接
 覆盖。
 
-[详细了解通过 WebRTC 使用客户端密钥进行身份验证](/api/docs/guides/realtime-webrtc).
+[了解有关通过 WebRTC 使用客户端密钥进行身份验证的更多信息](/api/docs/guides/realtime-webrtc).
 
-返回创建的客户端密钥以及生效的会话对象。客户端密钥是一个字符串，形式如下 `ek_1234`.
+返回已创建的客户端密钥和生效的会话对象。客户端密钥是一个字符串，格式类似 `ek_1234`.
 
-### 请求体参数
+### Body Parameters
 
 - `expires_after: optional object { anchor, seconds }`
 
   客户端密钥过期的配置。过期指的是在此时间之后
-  客户端密钥将不再可用于创建会话。已开始
-  的会话在该时间之后仍可继续进行。一个密钥可用于创建多个会话，
-  直到它过期为止。
+  客户端密钥将无法再用于创建会话。一旦开始，会话本身可能会
+  在该时间之后继续进行。在过期之前，一个密钥可以用于创建多个会话
+  直到它过期。
 
   - `anchor: optional "created_at"`
 
-    客户端密钥过期的锚点， `seconds` 将被添加到客户端密钥 `created_at` 的创建时间以生成过期时间戳。当前仅支持 `created_at` 。
+    客户端密钥过期的锚点，意思是 `seconds` 将添加到 `created_at` 客户端密钥的时间，以生成过期时间戳。当前仅支持 `created_at` 。
 
     - `"created_at"`
 
   - `seconds: optional number`
 
-    从锚点到过期的秒数。选择介于 `10` 和 `7200` （2 小时）之间的值。如果未指定，则默认为 600 秒（10 分钟）。
+    从锚点到过期的秒数。选择介于 `10` 和 `7200` （2 小时）之间的值。如果未指定，默认为 600 秒（10 分钟）。
 
 - `session: optional RealtimeSessionCreateRequest or RealtimeTranscriptionSessionCreateRequest`
 
-  用于客户端密钥的会话配置。选择实时会话
-  或转录会话之一。
+  用于客户端密钥的会话配置。选择实时
+  会话或转录会话。
 
   - `RealtimeSessionCreateRequest object { type, audio, include, 11 more }`
 
@@ -48,7 +48,7 @@
 
     - `type: "realtime"`
 
-      要创建的会话类型。对于 Realtime API，始终为 `realtime` 。
+      要创建的会话类型。始终为 `realtime` （针对实时 API）。
 
       - `"realtime"`
 
@@ -74,7 +74,7 @@
 
             - `type: optional "audio/pcm"`
 
-              音频格式。始终为 `audio/pcm`.
+              音频格式。始终 `audio/pcm`.
 
               - `"audio/pcm"`
 
@@ -84,7 +84,7 @@
 
             - `type: optional "audio/pcmu"`
 
-              音频格式。始终为 `audio/pcmu`.
+              音频格式。始终 `audio/pcmu`.
 
               - `"audio/pcmu"`
 
@@ -94,19 +94,19 @@
 
             - `type: optional "audio/pcma"`
 
-              音频格式。始终为 `audio/pcma`.
+              音频格式。始终 `audio/pcma`.
 
               - `"audio/pcma"`
 
         - `noise_reduction: optional object { type }`
 
-          输入音频降噪的配置。可设置为 `null` 以关闭。
-          降噪会在输入音频发送到 VAD 和模型之前，对其中添加的音频进行过滤。
-          对音频进行过滤可以通过改善对输入音频的感知，提升 VAD 与轮次检测的准确性（减少误报）以及模型性能。
+          输入音频降噪的配置。可以设置为 `null` 以关闭。
+          降噪会在输入音频发送到 VAD 和模型之前，对添加到输入音频缓冲区中的音频进行过滤。
+          过滤音频可以通过改善对输入音频的感知，提高 VAD 和轮次检测的准确率（减少误报），并提升模型表现。
 
           - `type: optional NoiseReductionType`
 
-            降噪类型。 `near_field` 适用于近讲麦克风，例如耳机， `far_field` 适用于远场麦克风，例如笔记本电脑或会议室麦克风。
+            降噪类型。 `near_field` 适用于耳机等近讲麦克风， `far_field` 适用于笔记本电脑或会议室麦克风等远场麦克风。
 
             - `"near_field"`
 
@@ -114,13 +114,13 @@
 
         - `transcription: optional AudioTranscription`
 
-          输入音频转录的配置，默认为关闭，可设置为 `null` 以在启用后关闭。输入音频转录并非模型原生功能，因为模型直接消费音频。转录通过 [/audio/transcriptions 端点](/api/reference/resources/audio/subresources/transcriptions/methods/create) 异步运行，应被视为输入音频内容的参考，而非模型实际听到的精确内容。客户端可选择性地设置转录的语言和提示，以为转录服务提供额外指导。
+          输入音频转写的配置，默认关闭，可以设置为 `null` 以在开启后关闭。输入音频转写并非模型原生功能，因为模型直接消费音频。转写通过 [/audio/transcriptions 端点](/api/reference/resources/audio/subresources/transcriptions/methods/create) 异步进行，应被视为对输入音频内容的指引，而非模型所听到内容的精确呈现。客户端可以选择性地设置转写所用的语言和提示词，以为转写服务提供额外的指引。
 
           - `delay: optional "minimal" or "low" or "medium" or 2 more`
 
-            控制模型在输出转录文本之前等待的时长。
-            较高的值可以提高转录准确性，但会增加延迟。
-            仅在使用 `gpt-realtime-whisper` 的 GA Realtime 会话中受支持。
+            控制模型在输出转写文本之前的等待时长。
+            较高的值可以提高转写准确率，但会增加延迟。
+            仅在 GA Realtime 会话中与 `gpt-realtime-whisper` 一起使用时受支持。
 
             - `"minimal"`
 
@@ -134,27 +134,27 @@
 
           - `keywords: optional array of string`
 
-            用于指导输入音频转录的词语或短语。受 `gpt-transcribe` 和 `gpt-live-transcribe`.
+            用于引导输入音频转写的词语或短语。受 `gpt-transcribe` 和 `gpt-live-transcribe`.
 
           - `language: optional string`
 
             输入音频的语言。在
             [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) (例如。 `en`) 格式
-            会提高准确度并降低延迟。
+            可提高准确性和延迟表现。
 
           - `languages: optional array of string`
 
-            输入音频可能的语言，使用 [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) 格式。由以下模型支持： `gpt-transcribe` 和 `gpt-live-transcribe`.
+            输入音频可能的语言，采用 [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) 格式。支持 `gpt-transcribe` 和 `gpt-live-transcribe`.
 
           - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
-            用于转录的模型。当前可选项包括 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，和 `gpt-realtime-whisper`。当你需要 `gpt-4o-transcribe-diarize` 带说话人标签的说话人分离时，请使用。
+            用于转写的模型。当前可选的模型包括 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，以及 `gpt-realtime-whisper`。使用 `gpt-4o-transcribe-diarize` 当你需要带说话人标签的说话人分离时。
 
             - `string`
 
             - `"whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
-              用于转录的模型。当前可选项包括 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，和 `gpt-realtime-whisper`。当你需要 `gpt-4o-transcribe-diarize` 带说话人标签的说话人分离时，请使用。
+              用于转写的模型。当前可选的模型包括 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，以及 `gpt-realtime-whisper`。使用 `gpt-4o-transcribe-diarize` 当你需要带说话人标签的说话人分离时。
 
               - `"whisper-1"`
 
@@ -174,22 +174,22 @@
 
           - `prompt: optional string`
 
-            用于引导模型风格或延续先前音频片段的可选文本。
+            可选的文本，用于引导模型的风格或延续之前的音频
             片段。
-            对于 `whisper-1`，该 [prompt 是关键词列表](/api/docs/guides/speech-to-text#prompting).
-            对于 `gpt-4o-transcribe` 模型（不包括 `gpt-4o-transcribe-diarize`），prompt 是一个自由文本字符串，例如 "expect words related to technology"。
-            以下模型不支持 prompt： `gpt-realtime-whisper` 的 GA Realtime 会话中受支持。
+            对于 `whisper-1`，该 [prompt 是一个关键词列表](/api/docs/guides/speech-to-text#prompting).
+            对于 `gpt-4o-transcribe` 模型（不包括 `gpt-4o-transcribe-diarize`），prompt 是一个自由文本字符串，例如“expect words related to technology”。
+            Prompt 不支持用于 `gpt-realtime-whisper` 一起使用时受支持。
 
         - `turn_detection: optional RealtimeAudioInputTurnDetection or null`
 
-          轮次检测的配置，可以是 Server VAD 或 Semantic VAD。可设置为 `null` 以关闭，此时客户端必须手动触发模型响应。
+          轮次检测的配置，可以是 Server VAD 或 Semantic VAD。该项可设置为 `null` 以关闭，此时客户端必须自行触发模型响应。
 
           Server VAD 意味着模型会根据音频音量检测语音的开始和结束，并在用户语音结束时作出响应。
 
-          Semantic VAD 更为先进，它使用轮次检测模型（与 VAD 配合）从语义上估计用户是否已说完，然后根据该概率动态设置超时。例如，如果用户音频以 "uhhm" 收尾，模型会将轮次结束的概率评为较低，从而等待更长时间以便用户继续说话。这有助于实现更自然的对话，但可能会带来更高的延迟。
+          Semantic VAD 更为先进，它使用轮次检测模型（与 VAD 配合）来语义层面地判断用户是否已说完，然后根据该概率动态设置超时时间。例如，当用户语音渐弱并以 "uhhm" 收尾时，模型会给出较低的轮次结束概率评分，并等待更长时间以让用户继续说话。这有助于实现更自然的对话，但可能会带来更高的延迟。
 
-          对于 `gpt-realtime-whisper` transcription 会话中，turn detection 必须
-          设置为 `null`；不支持 VAD。
+          对于 `gpt-realtime-whisper` 转录会话中，turn detection 必须设为
+          设为 `null`；不支持 VAD。
 
           - `ServerVad object { type, create_response, idle_timeout_ms, 4 more }`
 
@@ -197,57 +197,57 @@
 
             - `type: "server_vad"`
 
-              轮次检测类型， `server_vad` 以开启简单的 Server VAD。
+              轮次检测类型， `server_vad` 以启用简单的 Server VAD。
 
               - `"server_vad"`
 
             - `create_response: optional boolean`
 
-              是否在 VAD 停止事件发生时自动生成响应。如果 `interrupt_response` 设置为 `false` ，在模型已经在响应时可能会无法创建响应。
+              是否在 VAD 停止事件发生时自动生成响应。若 `interrupt_response` 设为 `false` ，则在模型已经在响应时可能会无法创建响应。
 
-              如果同时将 `create_response` 和 `interrupt_response` 都设置为 `false`，模型将永远不会自动响应，但仍会发出 VAD 事件。
+              若同时将 `create_response` 和 `interrupt_response` 设为 `false`，模型将永远不会自动响应，但仍会发出 VAD 事件。
 
             - `idle_timeout_ms: optional number or null`
 
-              可选的超时时间，超过该时间后将自动触发模型响应。这在
-              用户长时间停顿并非预期的情况下很有用，例如电话
-              通话。模型将有效地根据当前上下文提示用户继续对话。
-              当前的上下文。
+              可选超时时间，超时后将自动触发模型响应。这在
+              用户出现长时间停顿并不符合预期的场景下非常有用，例如电话通话。模型将基于
+              当前上下文有效地提示用户继续对话。
+              当前上下文。
 
-              该超时值将在上一次模型响应的音频播放结束后生效，
-              即它被设置为 `response.done` 时间加上音频播放时长。
+              该超时值将在上一次模型响应的音频播放完毕后开始计时，
+              即它被设置为 `response.done` time 加上音频播放时长。
 
-              一个 `input_audio_buffer.timeout_triggered` 事件（以及 events
-              ）将在达到超时阈值时随 Response 一同发出。
+              一个 `input_audio_buffer.timeout_triggered` event （以及与该 Response 关联的 events
+              ）将在达到超时时被发出。
               空闲超时目前仅支持 `server_vad` 模式。
 
             - `interrupt_response: optional boolean`
 
-              当发生 VAD start 事件时，是否自动中断（取消）任何正在向默认
-              对话（即。 `conversation` 的 `auto`）输出的响应。如果设为 true `true` ，响应将被取消；否则将一直持续到完成。
+              当默认
+              会话（即。 `conversation` 的 `auto`）正在输出响应时，发生 VAD 起始事件时是否自动中断（取消）该响应。如果 `true` 则该响应将被取消，否则它将持续执行直至完成。
 
-              如果同时将 `create_response` 和 `interrupt_response` 都设置为 `false`，模型将永远不会自动响应，但仍会发出 VAD 事件。
+              若同时将 `create_response` 和 `interrupt_response` 设为 `false`，模型将永远不会自动响应，但仍会发出 VAD 事件。
 
             - `prefix_padding_ms: optional number`
 
-              仅用于 `server_vad` 模式。在 VAD 检测到语音之前要包含的音频时长（单位为
-              毫秒），默认为 300ms。
+              仅用于 `server_vad` 模式。VAD 检测到语音之前要包含的音频时长（单位：
+              毫秒）。默认为 300ms。
 
             - `silence_duration_ms: optional number`
 
-              仅用于 `server_vad` 模式。检测语音停止的静默时长（单位为毫秒），默认
-              为 500ms。使用较短的值时，模型的响应会更快，
-              但可能会在用户的短暂停顿时插话。
+              仅用于 `server_vad` 模式。用于检测语音停止的静音时长（单位：毫秒）。默认
+              为 500ms。该值越小，模型响应越快，
+              但可能会在用户的短暂停顿时抢话。
 
             - `threshold: optional number`
 
-              仅用于 `server_vad` 模式。VAD 的激活阈值（0.0 到 1.0），默认值为 0.5。较
-              高的阈值要求更大的声音才能激活模型，因此在嘈杂环境
-              中可能会有更好的表现。
+              仅用于 `server_vad` 模式。VAD 的激活阈值（0.0 到 1.0），默认为 0.5。较高的
+              阈值要求更大的音频音量才能激活模型，因此
+              在嘈杂环境中可能表现更好。
 
           - `SemanticVad object { type, create_response, eagerness, interrupt_response }`
 
-            服务端语义轮次检测，使用模型来判断用户何时结束说话。
+            服务端语义轮次检测，使用模型来判断用户何时已说完。
 
             - `type: "semantic_vad"`
 
@@ -257,11 +257,11 @@
 
             - `create_response: optional boolean`
 
-              是否在 VAD stop 事件发生时自动生成响应。
+              当 VAD 停止事件发生时是否自动生成响应。
 
             - `eagerness: optional "low" or "medium" or "high" or "auto"`
 
-              仅用于 `semantic_vad` 模式。模型响应的积极程度。 `low` 会等待更长时间以便用户继续说话， `high` 会更快地响应。 `auto` 为默认值，等同于 `medium`. `low`, `medium`，和 `high` 的最大超时时间分别为 8 秒、4 秒和 2 秒。
+              仅用于 `semantic_vad` 模式。模型响应的积极程度。 `low` 会更长时间等待用户继续说话， `high` 会更快速地响应。 `auto` 是默认值，等同于 `medium`. `low`, `medium`，以及 `high` 的最大超时分别为 8 秒、4 秒和 2 秒。
 
               - `"low"`
 
@@ -273,8 +273,8 @@
 
             - `interrupt_response: optional boolean`
 
-              是否在 VAD start 事件发生时，使用输出自动中断任何正在进行的对默认
-              对话（即。 `conversation` 的 `auto`) 的响应。
+              当向默认
+              会话（即。 `conversation` 的 `auto`）输出时，是否自动中断任何正在进行的响应（当 VAD 开始事件发生时）。
 
       - `output: optional RealtimeAudioConfigOutput`
 
@@ -284,20 +284,20 @@
 
         - `speed: optional number`
 
-          模型语音响应的速度，相对于原始速度的倍数。
-          1.0 为默认速度。0.25 为最低速度。1.5 为最高速度。该值只能在模型轮次之间更改，不能在响应进行中更改。
+          模型语音响应的速度，作为原始速度的倍数。
+          1.0 是默认速度。0.25 是最低速度。1.5 是最高速度。此值只能在模型轮次之间更改，不能在响应进行中修改。
 
-          该参数是对生成后音频的后处理调整，
-          也可以提示模型说得更快或更慢。
+          此参数是对生成后音频的后处理调整，
+          也可以通过提示让模型说得更快或更慢。
 
         - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or object { id }`
 
-          模型用于响应的声音。支持的内置声音包括
+          模型用于响应的语音。支持的内置语音包括
           `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`,
-          `marin`，和 `cedar`。你也可以使用以下字段提供自定义声音对象
-          一个 `id`，例如 `{ "id": "voice_1234" }`。声音无法更改
-          在会话过程中，一旦模型至少响应过一次音频后使用。
-          我们建议 `marin` 和 `cedar` 以获得最佳质量。
+          `marin`，以及 `cedar`。你也可以使用以下字段提供自定义语音对象
+          一个 `id`，例如 `{ "id": "voice_1234" }`。语音无法更改
+          在会话期间，一旦模型至少响应过一次音频后。
+          我们推荐 `marin` 和 `cedar` 以获得最佳质量。
 
           - `string`
 
@@ -335,22 +335,22 @@
 
       要在服务端输出中包含的附加字段。
 
-      `item.input_audio_transcription.logprobs`:为输入音频转录包含 logprobs。
+      `item.input_audio_transcription.logprobs`: 为输入音频转录包含 logprobs。
 
       - `"item.input_audio_transcription.logprobs"`
 
     - `instructions: optional string`
 
-      预置在模型调用前的默认系统指令（即系统消息）。该字段允许客户端引导模型给出期望的响应。可以指示模型响应的内容和格式（例如“极度简洁”、“表现得友好”、“以下是优秀响应的示例”），以及音频行为（例如“语速快”、“在声音中加入情感”、“经常笑”）。这些指令不保证会被模型遵循，但它们为模型期望的行为提供了指导。
+      预置于模型调用前的默认系统指令（即系统消息）。该字段允许客户端引导模型给出期望的响应。可以指示模型的响应内容和格式（例如“极其简洁”、“表现得友好”、“以下是良好响应的示例”），以及音频行为（例如“说话要快”、“在声音中注入情感”、“经常大笑”）。这些指令不保证会被模型遵循，但它们为模型期望的行为提供了指导。
 
-      请注意，服务端会设置默认指令，如果未设置该字段，将使用这些默认指令，这些指令在会话开头的 `session.created` 事件中可见。
+      请注意，服务端会设置默认指令，如果未设置该字段，则会使用这些默认指令，这些指令在 `session.created` 事件中可见，位于会话开始时。
 
     - `max_output_tokens: optional number or "inf"`
 
       单次助手响应的最大输出 token 数，
-      包含工具调用。请提供一个介于 1 到 4096 之间的整数以
-      限制输出 token 数，或 `inf` 用于指定模型的
-      最大可用 token 数。默认为 `inf`.
+      包含工具调用。请提供介于 1 和 4096 之间的整数以
+      限制输出 token，或 `inf` 表示对应模型可用的最大 token 数。默认为
+      。给定模型的 `inf`.
 
       - `number`
 
@@ -360,13 +360,13 @@
 
     - `model: optional string or "gpt-realtime" or "gpt-realtime-1.5" or "gpt-realtime-2" or 16 more`
 
-      本次会话所使用的 Realtime 模型。
+      用于本次会话的 Realtime 模型。
 
       - `string`
 
       - `"gpt-realtime" or "gpt-realtime-1.5" or "gpt-realtime-2" or 16 more`
 
-        本次会话所使用的 Realtime 模型。
+        用于本次会话的 Realtime 模型。
 
         - `"gpt-realtime"`
 
@@ -408,9 +408,9 @@
 
     - `output_modalities: optional array of "text" or "audio"`
 
-      模型可用来响应的模态集合。默认为 `["audio"]`，表示
-      模型将使用音频加上转录文本来响应。 `["text"]` 可用于使
-      模型仅以文本进行响应。无法同时请求两者 `text` 和 `audio` 同时进行。
+      模型可以响应的模态集合。默认为 `["audio"]`，表示
+      模型将以音频加上文字转录进行响应。 `["text"]` 可用于使
+      the model respond with text only. It is not possible to request both `text` 和 `audio` at the same time.
 
       - `"text"`
 
@@ -419,12 +419,12 @@
     - `parallel_tool_calls: optional boolean`
 
       模型是否可以并行调用多个工具。仅
-      推理 Realtime 模型支持，例如 `gpt-realtime-2`.
+      reasoning Realtime models such as `gpt-realtime-2`.
 
     - `prompt: optional ResponsePrompt or null`
 
       对提示模板及其变量的引用。
-      [了解更多信息](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
+      [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
       - `id: string`
 
@@ -433,18 +433,18 @@
       - `variables: optional map[string or ResponseInputText or ResponseInputImage or ResponseInputFile] or null`
 
         用于替换你
-        提示中变量的可选值映射。替换值可以是字符串，
-        也可以是其他响应输入类型，例如图片或文件。
+        prompt. The substitution values can either be strings, or other
+        Response input types like images or files.
 
         - `string`
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          模型的文本输入。
+          发送到模型的文本输入。
 
           - `text: string`
 
-            模型的文本输入。
+            发送到模型的文本输入。
 
           - `type: "input_text"`
 
@@ -454,7 +454,7 @@
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
             - `mode: "explicit"`
 
@@ -464,11 +464,11 @@
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          模型的图像输入。了解有关 [图像输入](/api/docs/guides/images-vision).
+          发送到模型的图像输入。了解 [image inputs](/api/docs/guides/images-vision).
 
           - `detail: ImageDetail`
 
-            发送给模型的图像的细节级别。可选值为 `high`, `low`, `auto`，或 `original`. 默认为 `auto`.
+            发送给模型的图像的详细程度。取值之一： `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
             - `"low"`
 
@@ -486,15 +486,15 @@
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            发送到模型的文件 ID。
 
           - `image_url: optional string or null`
 
-            要发送给模型的图片的 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图片。
+            发送到模型的图片 URL。可以是完整的 URL，也可以是 data URL 中的 base64 编码图片。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
             - `mode: "explicit"`
 
@@ -504,7 +504,7 @@
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-          模型的输入文件。
+          模型的文件输入。
 
           - `type: "input_file"`
 
@@ -514,7 +514,7 @@
 
           - `detail: optional "auto" or "low" or "high"`
 
-            要发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 用量。使用 `low` 可使用更低成本的渲染，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
+            发送到模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 用量。使用 `low` 以获得更低成本的渲染，或 `high` 以更高质量渲染文件。Defaults to `auto`.
 
             - `"auto"`
 
@@ -524,23 +524,23 @@
 
           - `file_data: optional string`
 
-            要发送给模型的文件内容。
+            发送到模型的文件内容。
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            发送到模型的文件 ID。
 
           - `file_url: optional string`
 
-            要发送给模型的文件的 URL。
+            发送到模型的文件的 URL。
 
           - `filename: optional string`
 
-            要发送给模型的文件的名称。
+            发送到模型的文件的名称。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
             - `mode: "explicit"`
 
@@ -554,11 +554,11 @@
 
     - `reasoning: optional RealtimeReasoning`
 
-      针对具备推理能力的 Realtime 模型（例如 `gpt-realtime-2`.
+      适用于具备推理能力的 Realtime 模型（例如 `gpt-realtime-2`.
 
       - `effort: optional RealtimeReasoningEffort`
 
-        针对具备推理能力的 Realtime 模型（例如
+        限制具备推理能力的 Realtime 模型（例如
         `gpt-realtime-2`.
 
         - `"minimal"`
@@ -573,16 +573,16 @@
 
     - `tool_choice: optional RealtimeToolChoiceConfig`
 
-      模型选择工具的方式。可提供字符串模式之一，或强制指定某个特定的
+      模型选择工具的方式。提供以下字符串模式之一，或强制指定某个
       函数/MCP 工具。
 
       - `ToolChoiceOptions = "none" or "auto" or "required"`
 
-        控制模型调用哪个工具（如果有）。
+        控制模型调用哪个工具（如果有的话）。
 
         `none` 表示模型将不调用任何工具，而是生成一条消息。
 
-        `auto` 表示模型可以在生成消息或调用一个或
+        `auto` 表示模型可以在生成消息与调用一个或多个工具之间进行选择。
         更多工具。
 
         `required` 表示模型必须调用一个或多个工具。
@@ -595,7 +595,7 @@
 
       - `ToolChoiceFunction object { name, type }`
 
-        使用此选项以强制模型调用特定函数。
+        使用此选项可以强制模型调用特定的函数。
 
         - `name: string`
 
@@ -609,7 +609,7 @@
 
       - `ToolChoiceMcp object { server_label, type, name }`
 
-        使用此选项以强制模型在远程 MCP 服务器上调用特定工具。
+        使用此选项可以强制模型调用远程 MCP 服务器上的特定工具。
 
         - `server_label: string`
 
@@ -627,23 +627,23 @@
 
     - `tools: optional RealtimeToolsConfig`
 
-      可供模型使用的工具。
+      模型可用的工具。
 
       - `RealtimeFunctionTool object { description, name, parameters, type }`
 
         - `description: optional string`
 
-          函数的描述，包括何时以及如何
-          调用它的指导，以及调用时
-          （如果有）应告知用户的内容。
+          函数说明，包括在何时以及如何
+          调用它的指导，以及在调用时告知用户什么
+          (如果有的话)。
 
         - `name: optional string`
 
-          函数的名称。
+          函数名称。
 
         - `parameters: optional unknown`
 
-          以 JSON Schema 表示的函数参数。
+          函数的参数，采用 JSON Schema 格式。
 
         - `type: optional "function"`
 
@@ -653,12 +653,12 @@
 
       - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
-        通过远程 Model Context Protocol
-        （MCP）服务器为模型提供额外的工具。 [了解更多关于 MCP 的信息](/api/docs/guides/tools-connectors-mcp).
+        通过远程模型上下文协议为模型提供对其他工具的访问
+        (MCP) 服务器。 [了解更多关于 MCP 的信息](/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
-          此 MCP 服务器的标签，用于在工具调用中标识它。
+          该 MCP 服务器的标签，用于在工具调用中识别它。
 
         - `type: "mcp"`
 
@@ -676,21 +676,21 @@
 
         - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
 
-          允许的工具名称列表或筛选器对象。
+          允许的工具名称列表或过滤对象。
 
           - `McpAllowedTools = array of string`
 
-            由允许的工具名称组成的字符串数组
+            允许的工具名称的字符串数组
 
           - `McpToolFilter object { read_only, tool_names }`
 
-            用于指定允许哪些工具的筛选器对象。
+            用于指定允许哪些工具的过滤对象。
 
             - `read_only: optional boolean`
 
-              指示工具是否会修改数据或是否为只读。如果某个
-              MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-              it will match this filter.
+              指示工具是否修改数据或是否为只读。如果 MCP 服务器
+              带有 [标注 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+              ，则将匹配此过滤器。
 
             - `tool_names: optional array of string`
 
@@ -698,26 +698,30 @@
 
         - `authorization: optional string`
 
-          可用于远程 MCP 服务器的 OAuth 访问令牌，配合自定义
-          MCP 服务器 URL 或服务连接器一起使用。你的应用
-          必须处理 OAuth 授权流程，并在此处提供该令牌。
+          可用于远程 MCP 服务器的 OAuth 访问令牌，可搭配
+          自定义 MCP 服务器 URL 或服务连接器使用。你的应用
+          必须处理 OAuth 授权流程，并在此处提供令牌。
 
         - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-          服务连接器的标识符，例如 ChatGPT 中可用的连接器。其中一项
-          `server_url`, `connector_id`，或 `tunnel_id` must be provided. Learn more
-          about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
+          服务连接器的标识符，例如 ChatGPT 中提供的那些。
+          `server_url`, `connector_id`, or `tunnel_id` 必须提供其中之一。了解更多
+          关于服务连接器 [此处](/api/docs/guides/tools-connectors-mcp#connectors).
 
-          Currently supported `connector_id` values are:
+          此字段已弃用，适用于 2026-09-01 之后发布的模型。
+          使用 `server_url` 连接到远程 MCP 服务器，或 `tunnel_id` 通过
+          安全 MCP 隧道进行连接。
 
-          - Dropbox: `connector_dropbox`
-          - Gmail: `connector_gmail`
-          - Google Calendar: `connector_googlecalendar`
-          - Google Drive: `connector_googledrive`
-          - Microsoft Teams: `connector_microsoftteams`
-          - Outlook Calendar: `connector_outlookcalendar`
-          - Outlook Email: `connector_outlookemail`
-          - SharePoint: `connector_sharepoint`
+          当前支持的 `connector_id` 取值包括：
+
+          - Dropbox： `connector_dropbox`
+          - Gmail： `connector_gmail`
+          - Google Calendar： `connector_googlecalendar`
+          - Google Drive： `connector_googledrive`
+          - Microsoft Teams： `connector_microsoftteams`
+          - Outlook Calendar： `connector_outlookcalendar`
+          - Outlook Email： `connector_outlookemail`
+          - SharePoint： `connector_sharepoint`
 
           - `"connector_dropbox"`
 
@@ -737,32 +741,32 @@
 
         - `defer_loading: optional boolean`
 
-          该 MCP 工具是否被延迟，并通过工具搜索发现。
+          此 MCP 工具是否延迟加载并通过工具搜索发现。
 
         - `headers: optional map[string] or null`
 
-          发送到 MCP 服务端的可选 HTTP 头。用于身份验证
+          发送到 MCP server 的可选 HTTP 头，用于身份验证
           或其他用途。
 
         - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
-          指定 MCP 服务端中哪些工具需要批准。
+          指定 MCP server 中哪些工具需要审批。
 
           - `McpToolApprovalFilter object { always, never }`
 
-            指定 MCP 服务端中哪些工具需要批准。可以是
-            `always`, `never`，或与工具关联的过滤对象
-            用于需要批准的工具。
+            指定 MCP server 中哪些工具需要审批。可以是
+            `always`, `never`，或与需要审批的工具关联的过滤对象
+            。
 
             - `always: optional object { read_only, tool_names }`
 
-              用于指定允许哪些工具的筛选器对象。
+              用于指定允许哪些工具的过滤对象。
 
               - `read_only: optional boolean`
 
-                指示工具是否会修改数据或是否为只读。如果某个
-                MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                it will match this filter.
+                指示工具是否修改数据或是否为只读。如果 MCP 服务器
+                带有 [标注 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，则将匹配此过滤器。
 
               - `tool_names: optional array of string`
 
@@ -770,13 +774,13 @@
 
             - `never: optional object { read_only, tool_names }`
 
-              用于指定允许哪些工具的筛选器对象。
+              用于指定允许哪些工具的过滤对象。
 
               - `read_only: optional boolean`
 
-                指示工具是否会修改数据或是否为只读。如果某个
-                MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                it will match this filter.
+                指示工具是否修改数据或是否为只读。如果 MCP 服务器
+                带有 [标注 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，则将匹配此过滤器。
 
               - `tool_names: optional array of string`
 
@@ -784,9 +788,9 @@
 
           - `McpToolApprovalSetting = "always" or "never"`
 
-            为所有工具指定统一的批准策略。可为 `always` 或
-            `never`。之一。当设置为 `always`，时，所有工具都需要批准。当
-            设置为 `never`，时，所有工具都不需要批准。
+            为所有工具指定统一的审批策略，取值为 `always` 或
+            `never`。当设置为 `always`，时，所有工具都需要审批。当
+            设为 `never`，时，所有工具都不需要审批。
 
             - `"always"`
 
@@ -794,25 +798,25 @@
 
         - `server_description: optional string`
 
-          MCP 服务端的可选描述，用于提供更多上下文。
+          MCP 服务器的可选描述，用于提供更多上下文。
 
         - `server_url: optional string`
 
-          MCP 服务器的 URL。需提供以下之一： `server_url`, `connector_id`，或
-          `tunnel_id` 。
+          MCP 服务器的 URL。需要提供以下之一： `server_url`, `connector_id`, or
+          `tunnel_id` 其中之一。
 
         - `tunnel_id: optional string`
 
-          用于替代直接服务器 URL 的安全 MCP 隧道 ID。需提供以下之一：
-          `server_url`, `connector_id`，或 `tunnel_id` 。
+          要使用的安全 MCP 隧道 ID，以替代直接的服务器 URL。需要提供以下之一：
+          `server_url`, `connector_id`, or `tunnel_id` 其中之一。
 
     - `tracing: optional RealtimeTracingConfig or null`
 
-      Realtime API 可以将会话追踪写入到 [追踪仪表盘](https://platform.openai.com/logs?api=traces). Set to null to disable 追踪。设置为 null 以禁用追踪。一旦为某个会话启用了
-      追踪，该配置便无法再修改。
+      Realtime API 可以将会话追踪写入 [追踪仪表板](https://platform.openai.com/logs?api=traces)。设置为 null 可禁用追踪。一旦为某个会话启用了
+      追踪，就无法再修改该配置。
 
       `auto` 将为该会话创建一个使用默认值的追踪，包括
-      工作流 名称、组 ID 和元数据。
+      工作流名称、group id 和元数据。
 
       - `Auto = "auto"`
 
@@ -822,36 +826,36 @@
 
       - `TracingConfiguration object { group_id, metadata, workflow_name }`
 
-        用于 追踪 的细粒度配置。
+        针对追踪的细粒度配置。
 
         - `group_id: optional string`
 
-          附加到此 追踪 的分组 ID，用于在 Traces Dashboard 中进行筛选和
-          分组。
+          附加到此追踪的 group id，用于在追踪仪表板中启用筛选和
+          在追踪仪表板中进行分组。
 
         - `metadata: optional unknown`
 
-          附加到此 追踪 的任意元数据，用于在 Traces Dashboard 中进行
-          筛选。
+          附加到此追踪的任意元数据，用于启用
+          在追踪仪表板中进行筛选。
 
         - `workflow_name: optional string`
 
-          附加到此 工作流 的 追踪 名称。用于在 Traces Dashboard 中
-          为该 追踪 命名。
+          要附加到此追踪的工作流的名称。它用于
+          在追踪仪表板中命名该追踪。
 
     - `truncation: optional RealtimeTruncation`
 
-      当对话中的 token 数超过模型的输入 token 上限时，对话将被截断，这意味着最早的消息将不会被纳入模型的上下文。具有 32k 上下文且最大输出 token 为 4,096 的模型，在截断发生之前，上下文中最多只能包含 28,224 个 token。
+      当对话中的 token 数量超过模型的输入 token 上限时，对话将被截断，意味着消息（从最早的开始）将不会包含在模型的上下文中。一个 32k 上下文模型，最大输出 token 为 4,096，在截断发生之前上下文中只能包含 28,224 个 token。
 
-      客户端可以将截断行为配置为以更低的最大 token 上限进行截断，这是控制 token 用量和成本的有效方式。
+      客户端可以配置截断行为，使用更低的最大 token 上限进行截断，这是控制 token 用量和成本的有效方法。
 
-      截断会减少下一轮中被缓存的 token 数量（使缓存失效），因为消息会从上下文的开头被丢弃。不过，客户端也可以将截断配置为保留最多达到最大上下文大小一定比例的消息，从而减少后续截断的需要，并因此提高缓存命中率。
+      截断会减少下一轮中的缓存 token 数量（破坏缓存），因为消息会从上下文的开头被丢弃。然而，客户端也可以将截断配置为保留消息至最大上下文大小的一定比例，从而减少未来截断的需要，进而提高缓存命中率。
 
-      可以完全禁用截断，这意味着服务端永远不会截断，但如果对话超过模型的输入 token 上限，则会返回错误。
+      截断可以被完全禁用，这意味着服务端永远不会截断，但当对话超过模型的输入 token 上限时，会改为返回错误。
 
       - `"auto" or "disabled"`
 
-        会话所使用的截断策略。 `auto` 是默认的截断策略。 `disabled` 会禁用截断，并在对话超过输入 token 上限时抛出错误。
+        会话使用的截断策略。 `auto` 是默认的截断策略。 `disabled` 将禁用截断，并在对话超过输入 token 上限时发出错误。
 
         - `"auto"`
 
@@ -859,11 +863,11 @@
 
       - `RetentionRatioTruncation object { retention_ratio, type, token_limits }`
 
-        当对话超过输入 token 上限时，保留一定比例的对话 token。这允许你在多个回合间分摊截断，从而有助于改善缓存 token 的使用率。
+        当对话超过输入 token 上限时，保留一定比例的对话 token。这允许你将截断分摊到多轮中，有助于改善缓存 token 的使用。
 
         - `retention_ratio: number`
 
-          当对话超过输入 token 上限时保留的指令后对话 token 比例（`0.0` - `1.0`）。当对话超过输入 token 上限时，设置此参数意味着会丢弃消息，直到使用到最大允许 token 数的 `0.8` （即 80%）。这有助于降低截断频率并提升缓存命中率。
+          当对话超过输入 token 上限时，保留指令后对话 token 的比例（`0.0` - `1.0`）。将其设置为 `0.8` 意味着消息将被丢弃，直到使用了最大允许 token 的 80%。这有助于减少截断频率并提高缓存命中率。
 
         - `type: "retention_ratio"`
 
@@ -873,19 +877,19 @@
 
         - `token_limits: optional object { post_instructions }`
 
-          此截断策略的可选自定义 token 上限。如果未提供，则使用模型的默认 token 上限。
+          此截断策略的可选自定义 token 上限。如果未提供，则将使用模型的默认 token 上限。
 
           - `post_instructions: optional number`
 
-            指令之后（含工具定义）对话所允许的最大 token 数。例如，将其设置为 5,000 表示当指令后的对话超过 5,000 token 时将进行截断。此值不能高于模型上下文窗口大小减去最大输出 token 数。
+            指令之后对话中允许的最大 token 数（包括工具定义）。例如，将其设置为 5,000 意味着当指令之后的对话超过 5,000 个 token 时将发生截断。该值不能高于模型的上下文窗口大小减去最大输出 token 数。
 
   - `RealtimeTranscriptionSessionCreateRequest object { type, audio, include }`
 
-    实时转写会话对象配置。
+    实时转录会话对象配置。
 
     - `type: "transcription"`
 
-      要创建的会话类型。对于 Realtime API，始终为 `transcription` 用于转写会话的。
+      要创建的会话类型。始终为 `transcription` 用于转录会话。
 
       - `"transcription"`
 
@@ -901,28 +905,28 @@
 
         - `noise_reduction: optional object { type }`
 
-          输入音频降噪的配置。可设置为 `null` 以关闭。
-          降噪会在输入音频发送到 VAD 和模型之前，对其中添加的音频进行过滤。
-          对音频进行过滤可以通过改善对输入音频的感知，提升 VAD 与轮次检测的准确性（减少误报）以及模型性能。
+          输入音频降噪的配置。可以设置为 `null` 以关闭。
+          降噪会在输入音频发送到 VAD 和模型之前，对添加到输入音频缓冲区中的音频进行过滤。
+          过滤音频可以通过改善对输入音频的感知，提高 VAD 和轮次检测的准确率（减少误报），并提升模型表现。
 
           - `type: optional NoiseReductionType`
 
-            降噪类型。 `near_field` 适用于近讲麦克风，例如耳机， `far_field` 适用于远场麦克风，例如笔记本电脑或会议室麦克风。
+            降噪类型。 `near_field` 适用于耳机等近讲麦克风， `far_field` 适用于笔记本电脑或会议室麦克风等远场麦克风。
 
         - `transcription: optional AudioTranscription`
 
-          输入音频转录的配置，默认为关闭，可设置为 `null` 以在启用后关闭。输入音频转录并非模型原生功能，因为模型直接消费音频。转录通过 [/audio/transcriptions 端点](/api/reference/resources/audio/subresources/transcriptions/methods/create) 异步运行，应被视为输入音频内容的参考，而非模型实际听到的精确内容。客户端可选择性地设置转录的语言和提示，以为转录服务提供额外指导。
+          输入音频转写的配置，默认关闭，可以设置为 `null` 以在开启后关闭。输入音频转写并非模型原生功能，因为模型直接消费音频。转写通过 [/audio/transcriptions 端点](/api/reference/resources/audio/subresources/transcriptions/methods/create) 异步进行，应被视为对输入音频内容的指引，而非模型所听到内容的精确呈现。客户端可以选择性地设置转写所用的语言和提示词，以为转写服务提供额外的指引。
 
         - `turn_detection: optional RealtimeTranscriptionSessionAudioInputTurnDetection or null`
 
-          轮次检测的配置，可以是 Server VAD 或 Semantic VAD。可设置为 `null` 以关闭，此时客户端必须手动触发模型响应。
+          轮次检测的配置，可以是 Server VAD 或 Semantic VAD。该项可设置为 `null` 以关闭，此时客户端必须自行触发模型响应。
 
           Server VAD 意味着模型会根据音频音量检测语音的开始和结束，并在用户语音结束时作出响应。
 
-          Semantic VAD 更为先进，它使用轮次检测模型（与 VAD 配合）从语义上估计用户是否已说完，然后根据该概率动态设置超时。例如，如果用户音频以 "uhhm" 收尾，模型会将轮次结束的概率评为较低，从而等待更长时间以便用户继续说话。这有助于实现更自然的对话，但可能会带来更高的延迟。
+          Semantic VAD 更为先进，它使用轮次检测模型（与 VAD 配合）来语义层面地判断用户是否已说完，然后根据该概率动态设置超时时间。例如，当用户语音渐弱并以 "uhhm" 收尾时，模型会给出较低的轮次结束概率评分，并等待更长时间以让用户继续说话。这有助于实现更自然的对话，但可能会带来更高的延迟。
 
-          对于 `gpt-realtime-whisper` transcription 会话中，turn detection 必须
-          设置为 `null`；不支持 VAD。
+          对于 `gpt-realtime-whisper` 转录会话中，turn detection 必须设为
+          设为 `null`；不支持 VAD。
 
           - `ServerVad object { type, create_response, idle_timeout_ms, 4 more }`
 
@@ -930,57 +934,57 @@
 
             - `type: "server_vad"`
 
-              轮次检测类型， `server_vad` 以开启简单的 Server VAD。
+              轮次检测类型， `server_vad` 以启用简单的 Server VAD。
 
               - `"server_vad"`
 
             - `create_response: optional boolean`
 
-              是否在 VAD 停止事件发生时自动生成响应。如果 `interrupt_response` 设置为 `false` ，在模型已经在响应时可能会无法创建响应。
+              是否在 VAD 停止事件发生时自动生成响应。若 `interrupt_response` 设为 `false` ，则在模型已经在响应时可能会无法创建响应。
 
-              如果同时将 `create_response` 和 `interrupt_response` 都设置为 `false`，模型将永远不会自动响应，但仍会发出 VAD 事件。
+              若同时将 `create_response` 和 `interrupt_response` 设为 `false`，模型将永远不会自动响应，但仍会发出 VAD 事件。
 
             - `idle_timeout_ms: optional number or null`
 
-              可选的超时时间，超过该时间后将自动触发模型响应。这在
-              用户长时间停顿并非预期的情况下很有用，例如电话
-              通话。模型将有效地根据当前上下文提示用户继续对话。
-              当前的上下文。
+              可选超时时间，超时后将自动触发模型响应。这在
+              用户出现长时间停顿并不符合预期的场景下非常有用，例如电话通话。模型将基于
+              当前上下文有效地提示用户继续对话。
+              当前上下文。
 
-              该超时值将在上一次模型响应的音频播放结束后生效，
-              即它被设置为 `response.done` 时间加上音频播放时长。
+              该超时值将在上一次模型响应的音频播放完毕后开始计时，
+              即它被设置为 `response.done` time 加上音频播放时长。
 
-              一个 `input_audio_buffer.timeout_triggered` 事件（以及 events
-              ）将在达到超时阈值时随 Response 一同发出。
+              一个 `input_audio_buffer.timeout_triggered` event （以及与该 Response 关联的 events
+              ）将在达到超时时被发出。
               空闲超时目前仅支持 `server_vad` 模式。
 
             - `interrupt_response: optional boolean`
 
-              当发生 VAD start 事件时，是否自动中断（取消）任何正在向默认
-              对话（即。 `conversation` 的 `auto`）输出的响应。如果设为 true `true` ，响应将被取消；否则将一直持续到完成。
+              当默认
+              会话（即。 `conversation` 的 `auto`）正在输出响应时，发生 VAD 起始事件时是否自动中断（取消）该响应。如果 `true` 则该响应将被取消，否则它将持续执行直至完成。
 
-              如果同时将 `create_response` 和 `interrupt_response` 都设置为 `false`，模型将永远不会自动响应，但仍会发出 VAD 事件。
+              若同时将 `create_response` 和 `interrupt_response` 设为 `false`，模型将永远不会自动响应，但仍会发出 VAD 事件。
 
             - `prefix_padding_ms: optional number`
 
-              仅用于 `server_vad` 模式。在 VAD 检测到语音之前要包含的音频时长（单位为
-              毫秒），默认为 300ms。
+              仅用于 `server_vad` 模式。VAD 检测到语音之前要包含的音频时长（单位：
+              毫秒）。默认为 300ms。
 
             - `silence_duration_ms: optional number`
 
-              仅用于 `server_vad` 模式。检测语音停止的静默时长（单位为毫秒），默认
-              为 500ms。使用较短的值时，模型的响应会更快，
-              但可能会在用户的短暂停顿时插话。
+              仅用于 `server_vad` 模式。用于检测语音停止的静音时长（单位：毫秒）。默认
+              为 500ms。该值越小，模型响应越快，
+              但可能会在用户的短暂停顿时抢话。
 
             - `threshold: optional number`
 
-              仅用于 `server_vad` 模式。VAD 的激活阈值（0.0 到 1.0），默认值为 0.5。较
-              高的阈值要求更大的声音才能激活模型，因此在嘈杂环境
-              中可能会有更好的表现。
+              仅用于 `server_vad` 模式。VAD 的激活阈值（0.0 到 1.0），默认为 0.5。较高的
+              阈值要求更大的音频音量才能激活模型，因此
+              在嘈杂环境中可能表现更好。
 
           - `SemanticVad object { type, create_response, eagerness, interrupt_response }`
 
-            服务端语义轮次检测，使用模型来判断用户何时结束说话。
+            服务端语义轮次检测，使用模型来判断用户何时已说完。
 
             - `type: "semantic_vad"`
 
@@ -990,11 +994,11 @@
 
             - `create_response: optional boolean`
 
-              是否在 VAD stop 事件发生时自动生成响应。
+              当 VAD 停止事件发生时是否自动生成响应。
 
             - `eagerness: optional "low" or "medium" or "high" or "auto"`
 
-              仅用于 `semantic_vad` 模式。模型响应的积极程度。 `low` 会等待更长时间以便用户继续说话， `high` 会更快地响应。 `auto` 为默认值，等同于 `medium`. `low`, `medium`，和 `high` 的最大超时时间分别为 8 秒、4 秒和 2 秒。
+              仅用于 `semantic_vad` 模式。模型响应的积极程度。 `low` 会更长时间等待用户继续说话， `high` 会更快速地响应。 `auto` 是默认值，等同于 `medium`. `low`, `medium`，以及 `high` 的最大超时分别为 8 秒、4 秒和 2 秒。
 
               - `"low"`
 
@@ -1006,34 +1010,34 @@
 
             - `interrupt_response: optional boolean`
 
-              是否在 VAD start 事件发生时，使用输出自动中断任何正在进行的对默认
-              对话（即。 `conversation` 的 `auto`) 的响应。
+              当向默认
+              会话（即。 `conversation` 的 `auto`）输出时，是否自动中断任何正在进行的响应（当 VAD 开始事件发生时）。
 
     - `include: optional array of "item.input_audio_transcription.logprobs"`
 
       要在服务端输出中包含的附加字段。
 
-      `item.input_audio_transcription.logprobs`:为输入音频转录包含 logprobs。
+      `item.input_audio_transcription.logprobs`: 为输入音频转录包含 logprobs。
 
       - `"item.input_audio_transcription.logprobs"`
 
-### 返回值
+### 返回
 
 - `expires_at: number`
 
-  客户端密钥的过期时间戳，以自纪元起的秒数表示。
+  客户端密钥的过期时间戳，以自纪元以来的秒数表示。
 
 - `session: RealtimeSessionCreateResponse or RealtimeTranscriptionSessionCreateResponse`
 
-  实时会话或转录会话的会话配置。
+  实时或转录会话的会话配置。
 
   - `RealtimeSessionCreateResponse object { id, object, type, 13 more }`
 
-    一个 Realtime 会话配置对象。
+    实时会话配置对象。
 
     - `id: string`
 
-      会话的唯一标识符，格式类似 `sess_1234567890abcdef`.
+      会话的唯一标识符，形如 `sess_1234567890abcdef`.
 
     - `object: "realtime.session"`
 
@@ -1043,7 +1047,7 @@
 
     - `type: "realtime"`
 
-      要创建的会话类型。对于 Realtime API，始终为 `realtime` 。
+      要创建的会话类型。始终为 `realtime` （针对实时 API）。
 
       - `"realtime"`
 
@@ -1069,7 +1073,7 @@
 
             - `type: optional "audio/pcm"`
 
-              音频格式。始终为 `audio/pcm`.
+              音频格式。始终 `audio/pcm`.
 
               - `"audio/pcm"`
 
@@ -1079,7 +1083,7 @@
 
             - `type: optional "audio/pcmu"`
 
-              音频格式。始终为 `audio/pcmu`.
+              音频格式。始终 `audio/pcmu`.
 
               - `"audio/pcmu"`
 
@@ -1089,19 +1093,19 @@
 
             - `type: optional "audio/pcma"`
 
-              音频格式。始终为 `audio/pcma`.
+              音频格式。始终 `audio/pcma`.
 
               - `"audio/pcma"`
 
         - `noise_reduction: optional object { type }`
 
-          输入音频降噪的配置。可设置为 `null` 以关闭。
-          降噪会在输入音频发送到 VAD 和模型之前，对其中添加的音频进行过滤。
-          对音频进行过滤可以通过改善对输入音频的感知，提升 VAD 与轮次检测的准确性（减少误报）以及模型性能。
+          输入音频降噪的配置。可以设置为 `null` 以关闭。
+          降噪会在输入音频发送到 VAD 和模型之前，对添加到输入音频缓冲区中的音频进行过滤。
+          过滤音频可以通过改善对输入音频的感知，提高 VAD 和轮次检测的准确率（减少误报），并提升模型表现。
 
           - `type: optional NoiseReductionType`
 
-            降噪类型。 `near_field` 适用于近讲麦克风，例如耳机， `far_field` 适用于远场麦克风，例如笔记本电脑或会议室麦克风。
+            降噪类型。 `near_field` 适用于耳机等近讲麦克风， `far_field` 适用于笔记本电脑或会议室麦克风等远场麦克风。
 
             - `"near_field"`
 
@@ -1109,7 +1113,7 @@
 
         - `transcription: optional object { language, languages, model, prompt }`
 
-          输入音频转录的配置，默认为关闭，可设置为 `null` 以在启用后关闭。输入音频转录并非模型原生功能，因为模型直接消费音频。转录通过 [/audio/transcriptions 端点](/api/reference/resources/audio/subresources/transcriptions/methods/create) 异步运行，应被视为输入音频内容的参考，而非模型实际听到的精确内容。客户端可选择性地设置转录的语言和提示，以为转录服务提供额外指导。
+          输入音频转写的配置，默认关闭，可以设置为 `null` 以在开启后关闭。输入音频转写并非模型原生功能，因为模型直接消费音频。转写通过 [/audio/transcriptions 端点](/api/reference/resources/audio/subresources/transcriptions/methods/create) 异步进行，应被视为对输入音频内容的指引，而非模型所听到内容的精确呈现。客户端可以选择性地设置转写所用的语言和提示词，以为转写服务提供额外的指引。
 
           - `language: optional string`
 
@@ -1117,17 +1121,17 @@
 
           - `languages: optional array of string`
 
-            为转录配置的可能的输入音频语言，以 [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) 格式表示。
+            为转录配置的可能输入音频语言，以 [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) 格式。
 
           - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
-            用于转录的模型。当前可选值为 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，和 `gpt-realtime-whisper`.
+            用于转录的模型。当前可选值为 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，以及 `gpt-realtime-whisper`.
 
             - `string`
 
             - `"whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
-              用于转录的模型。当前可选值为 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，和 `gpt-realtime-whisper`.
+              用于转录的模型。当前可选值为 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，以及 `gpt-realtime-whisper`.
 
               - `"whisper-1"`
 
@@ -1147,18 +1151,18 @@
 
           - `prompt: optional string`
 
-            在存在时，为输入音频转录配置的提示。
+            在为输入音频转录配置的提示（如果存在）。
 
         - `turn_detection: optional object { type, create_response, idle_timeout_ms, 4 more }  or object { type, create_response, eagerness, interrupt_response }  or null`
 
-          轮次检测的配置，可以是 Server VAD 或 Semantic VAD。可设置为 `null` 以关闭，此时客户端必须手动触发模型响应。
+          轮次检测的配置，可以是 Server VAD 或 Semantic VAD。该项可设置为 `null` 以关闭，此时客户端必须自行触发模型响应。
 
           Server VAD 意味着模型会根据音频音量检测语音的开始和结束，并在用户语音结束时作出响应。
 
-          Semantic VAD 更为先进，它使用轮次检测模型（与 VAD 配合）从语义上估计用户是否已说完，然后根据该概率动态设置超时。例如，如果用户音频以 "uhhm" 收尾，模型会将轮次结束的概率评为较低，从而等待更长时间以便用户继续说话。这有助于实现更自然的对话，但可能会带来更高的延迟。
+          Semantic VAD 更为先进，它使用轮次检测模型（与 VAD 配合）来语义层面地判断用户是否已说完，然后根据该概率动态设置超时时间。例如，当用户语音渐弱并以 "uhhm" 收尾时，模型会给出较低的轮次结束概率评分，并等待更长时间以让用户继续说话。这有助于实现更自然的对话，但可能会带来更高的延迟。
 
-          对于 `gpt-realtime-whisper` transcription 会话中，turn detection 必须
-          设置为 `null`；不支持 VAD。
+          对于 `gpt-realtime-whisper` 转录会话中，turn detection 必须设为
+          设为 `null`；不支持 VAD。
 
           - `ServerVad object { type, create_response, idle_timeout_ms, 4 more }`
 
@@ -1166,57 +1170,57 @@
 
             - `type: "server_vad"`
 
-              轮次检测类型， `server_vad` 以开启简单的 Server VAD。
+              轮次检测类型， `server_vad` 以启用简单的 Server VAD。
 
               - `"server_vad"`
 
             - `create_response: optional boolean`
 
-              是否在 VAD 停止事件发生时自动生成响应。如果 `interrupt_response` 设置为 `false` ，在模型已经在响应时可能会无法创建响应。
+              是否在 VAD 停止事件发生时自动生成响应。若 `interrupt_response` 设为 `false` ，则在模型已经在响应时可能会无法创建响应。
 
-              如果同时将 `create_response` 和 `interrupt_response` 都设置为 `false`，模型将永远不会自动响应，但仍会发出 VAD 事件。
+              若同时将 `create_response` 和 `interrupt_response` 设为 `false`，模型将永远不会自动响应，但仍会发出 VAD 事件。
 
             - `idle_timeout_ms: optional number or null`
 
-              可选的超时时间，超过该时间后将自动触发模型响应。这在
-              用户长时间停顿并非预期的情况下很有用，例如电话
-              通话。模型将有效地根据当前上下文提示用户继续对话。
-              当前的上下文。
+              可选超时时间，超时后将自动触发模型响应。这在
+              用户出现长时间停顿并不符合预期的场景下非常有用，例如电话通话。模型将基于
+              当前上下文有效地提示用户继续对话。
+              当前上下文。
 
-              该超时值将在上一次模型响应的音频播放结束后生效，
-              即它被设置为 `response.done` 时间加上音频播放时长。
+              该超时值将在上一次模型响应的音频播放完毕后开始计时，
+              即它被设置为 `response.done` time 加上音频播放时长。
 
-              一个 `input_audio_buffer.timeout_triggered` 事件（以及 events
-              ）将在达到超时阈值时随 Response 一同发出。
+              一个 `input_audio_buffer.timeout_triggered` event （以及与该 Response 关联的 events
+              ）将在达到超时时被发出。
               空闲超时目前仅支持 `server_vad` 模式。
 
             - `interrupt_response: optional boolean`
 
-              当发生 VAD start 事件时，是否自动中断（取消）任何正在向默认
-              对话（即。 `conversation` 的 `auto`）输出的响应。如果设为 true `true` ，响应将被取消；否则将一直持续到完成。
+              当默认
+              会话（即。 `conversation` 的 `auto`）正在输出响应时，发生 VAD 起始事件时是否自动中断（取消）该响应。如果 `true` 则该响应将被取消，否则它将持续执行直至完成。
 
-              如果同时将 `create_response` 和 `interrupt_response` 都设置为 `false`，模型将永远不会自动响应，但仍会发出 VAD 事件。
+              若同时将 `create_response` 和 `interrupt_response` 设为 `false`，模型将永远不会自动响应，但仍会发出 VAD 事件。
 
             - `prefix_padding_ms: optional number`
 
-              仅用于 `server_vad` 模式。在 VAD 检测到语音之前要包含的音频时长（单位为
-              毫秒），默认为 300ms。
+              仅用于 `server_vad` 模式。VAD 检测到语音之前要包含的音频时长（单位：
+              毫秒）。默认为 300ms。
 
             - `silence_duration_ms: optional number`
 
-              仅用于 `server_vad` 模式。检测语音停止的静默时长（单位为毫秒），默认
-              为 500ms。使用较短的值时，模型的响应会更快，
-              但可能会在用户的短暂停顿时插话。
+              仅用于 `server_vad` 模式。用于检测语音停止的静音时长（单位：毫秒）。默认
+              为 500ms。该值越小，模型响应越快，
+              但可能会在用户的短暂停顿时抢话。
 
             - `threshold: optional number`
 
-              仅用于 `server_vad` 模式。VAD 的激活阈值（0.0 到 1.0），默认值为 0.5。较
-              高的阈值要求更大的声音才能激活模型，因此在嘈杂环境
-              中可能会有更好的表现。
+              仅用于 `server_vad` 模式。VAD 的激活阈值（0.0 到 1.0），默认为 0.5。较高的
+              阈值要求更大的音频音量才能激活模型，因此
+              在嘈杂环境中可能表现更好。
 
           - `SemanticVad object { type, create_response, eagerness, interrupt_response }`
 
-            服务端语义轮次检测，使用模型来判断用户何时结束说话。
+            服务端语义轮次检测，使用模型来判断用户何时已说完。
 
             - `type: "semantic_vad"`
 
@@ -1226,11 +1230,11 @@
 
             - `create_response: optional boolean`
 
-              是否在 VAD stop 事件发生时自动生成响应。
+              当 VAD 停止事件发生时是否自动生成响应。
 
             - `eagerness: optional "low" or "medium" or "high" or "auto"`
 
-              仅用于 `semantic_vad` 模式。模型响应的积极程度。 `low` 会等待更长时间以便用户继续说话， `high` 会更快地响应。 `auto` 为默认值，等同于 `medium`. `low`, `medium`，和 `high` 的最大超时时间分别为 8 秒、4 秒和 2 秒。
+              仅用于 `semantic_vad` 模式。模型响应的积极程度。 `low` 会更长时间等待用户继续说话， `high` 会更快速地响应。 `auto` 是默认值，等同于 `medium`. `low`, `medium`，以及 `high` 的最大超时分别为 8 秒、4 秒和 2 秒。
 
               - `"low"`
 
@@ -1242,8 +1246,8 @@
 
             - `interrupt_response: optional boolean`
 
-              是否在 VAD start 事件发生时，使用输出自动中断任何正在进行的对默认
-              对话（即。 `conversation` 的 `auto`) 的响应。
+              当向默认
+              会话（即。 `conversation` 的 `auto`）输出时，是否自动中断任何正在进行的响应（当 VAD 开始事件发生时）。
 
       - `output: optional object { format, speed, voice }`
 
@@ -1253,28 +1257,28 @@
 
         - `speed: optional number`
 
-          模型语音响应的速度，相对于原始速度的倍数。
-          1.0 为默认速度。0.25 为最低速度。1.5 为最高速度。该值只能在模型轮次之间更改，不能在响应进行中更改。
+          模型语音响应的速度，作为原始速度的倍数。
+          1.0 是默认速度。0.25 是最低速度。1.5 是最高速度。此值只能在模型轮次之间更改，不能在响应进行中修改。
 
-          该参数是对生成后音频的后处理调整，
-          也可以提示模型说得更快或更慢。
+          此参数是对生成后音频的后处理调整，
+          也可以通过提示让模型说得更快或更慢。
 
         - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more`
 
-          模型用于回应的声音。一旦模型至少使用音频回应过一次，会话期间就
-          无法再更改声音。当前
-          可选的声音有 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
-          `shimmer`, `verse`, `marin`，和 `cedar`。我们推荐 `marin` 和 `cedar` 以获得
+          模型用于回复的语音。语音无法在会话中更改，
+          一旦模型至少用音频回复过一次。当前
+          语音选项为 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
+          `shimmer`, `verse`, `marin`，以及 `cedar`。我们建议 `marin` 和 `cedar` 用于
           最佳质量。
 
           - `string`
 
           - `"alloy" or "ash" or "ballad" or 7 more`
 
-            模型用于回应的声音。一旦模型至少使用音频回应过一次，会话期间就
-            无法再更改声音。当前
-            可选的声音有 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
-            `shimmer`, `verse`, `marin`，和 `cedar`。我们推荐 `marin` 和 `cedar` 以获得
+            模型用于回复的语音。语音无法在会话中更改，
+            一旦模型至少用音频回复过一次。当前
+            语音选项为 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
+            `shimmer`, `verse`, `marin`，以及 `cedar`。我们建议 `marin` 和 `cedar` 用于
             最佳质量。
 
             - `"alloy"`
@@ -1299,28 +1303,28 @@
 
     - `expires_at: optional number`
 
-      会话的过期时间戳，以自纪元起的秒数表示。
+      会话的过期时间戳，以自纪元以来的秒数表示。
 
     - `include: optional array of "item.input_audio_transcription.logprobs"`
 
       要在服务端输出中包含的附加字段。
 
-      `item.input_audio_transcription.logprobs`:为输入音频转录包含 logprobs。
+      `item.input_audio_transcription.logprobs`: 为输入音频转录包含 logprobs。
 
       - `"item.input_audio_transcription.logprobs"`
 
     - `instructions: optional string`
 
-      预置在模型调用前的默认系统指令（即系统消息）。该字段允许客户端引导模型给出期望的响应。可以指示模型响应的内容和格式（例如“极度简洁”、“表现得友好”、“以下是优秀响应的示例”），以及音频行为（例如“语速快”、“在声音中加入情感”、“经常笑”）。这些指令不保证会被模型遵循，但它们为模型期望的行为提供了指导。
+      预置于模型调用前的默认系统指令（即系统消息）。该字段允许客户端引导模型给出期望的响应。可以指示模型的响应内容和格式（例如“极其简洁”、“表现得友好”、“以下是良好响应的示例”），以及音频行为（例如“说话要快”、“在声音中注入情感”、“经常大笑”）。这些指令不保证会被模型遵循，但它们为模型期望的行为提供了指导。
 
-      请注意，服务端会设置默认指令，如果未设置该字段，将使用这些默认指令，这些指令在会话开头的 `session.created` 事件中可见。
+      请注意，服务端会设置默认指令，如果未设置该字段，则会使用这些默认指令，这些指令在 `session.created` 事件中可见，位于会话开始时。
 
     - `max_output_tokens: optional number or "inf"`
 
       单次助手响应的最大输出 token 数，
-      包含工具调用。请提供一个介于 1 到 4096 之间的整数以
-      限制输出 token 数，或 `inf` 用于指定模型的
-      最大可用 token 数。默认为 `inf`.
+      包含工具调用。请提供介于 1 和 4096 之间的整数以
+      限制输出 token，或 `inf` 表示对应模型可用的最大 token 数。默认为
+      。给定模型的 `inf`.
 
       - `number`
 
@@ -1330,13 +1334,13 @@
 
     - `model: optional string or "gpt-realtime" or "gpt-realtime-1.5" or "gpt-realtime-2" or 16 more`
 
-      本次会话所使用的 Realtime 模型。
+      用于本次会话的 Realtime 模型。
 
       - `string`
 
       - `"gpt-realtime" or "gpt-realtime-1.5" or "gpt-realtime-2" or 16 more`
 
-        本次会话所使用的 Realtime 模型。
+        用于本次会话的 Realtime 模型。
 
         - `"gpt-realtime"`
 
@@ -1378,9 +1382,9 @@
 
     - `output_modalities: optional array of "text" or "audio"`
 
-      模型可用来响应的模态集合。默认为 `["audio"]`，表示
-      模型将使用音频加上转录文本来响应。 `["text"]` 可用于使
-      模型仅以文本进行响应。无法同时请求两者 `text` 和 `audio` 同时进行。
+      模型可以响应的模态集合。默认为 `["audio"]`，表示
+      模型将以音频加上文字转录进行响应。 `["text"]` 可用于使
+      the model respond with text only. It is not possible to request both `text` 和 `audio` at the same time.
 
       - `"text"`
 
@@ -1389,7 +1393,7 @@
     - `prompt: optional ResponsePrompt or null`
 
       对提示模板及其变量的引用。
-      [了解更多信息](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
+      [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
       - `id: string`
 
@@ -1398,18 +1402,18 @@
       - `variables: optional map[string or ResponseInputText or ResponseInputImage or ResponseInputFile] or null`
 
         用于替换你
-        提示中变量的可选值映射。替换值可以是字符串，
-        也可以是其他响应输入类型，例如图片或文件。
+        prompt. The substitution values can either be strings, or other
+        Response input types like images or files.
 
         - `string`
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          模型的文本输入。
+          发送到模型的文本输入。
 
           - `text: string`
 
-            模型的文本输入。
+            发送到模型的文本输入。
 
           - `type: "input_text"`
 
@@ -1419,7 +1423,7 @@
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
             - `mode: "explicit"`
 
@@ -1429,11 +1433,11 @@
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          模型的图像输入。了解有关 [图像输入](/api/docs/guides/images-vision).
+          发送到模型的图像输入。了解 [image inputs](/api/docs/guides/images-vision).
 
           - `detail: ImageDetail`
 
-            发送给模型的图像的细节级别。可选值为 `high`, `low`, `auto`，或 `original`. 默认为 `auto`.
+            发送给模型的图像的详细程度。取值之一： `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
             - `"low"`
 
@@ -1451,15 +1455,15 @@
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            发送到模型的文件 ID。
 
           - `image_url: optional string or null`
 
-            要发送给模型的图片的 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图片。
+            发送到模型的图片 URL。可以是完整的 URL，也可以是 data URL 中的 base64 编码图片。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
             - `mode: "explicit"`
 
@@ -1469,7 +1473,7 @@
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-          模型的输入文件。
+          模型的文件输入。
 
           - `type: "input_file"`
 
@@ -1479,7 +1483,7 @@
 
           - `detail: optional "auto" or "low" or "high"`
 
-            要发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 用量。使用 `low` 可使用更低成本的渲染，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
+            发送到模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 用量。使用 `low` 以获得更低成本的渲染，或 `high` 以更高质量渲染文件。Defaults to `auto`.
 
             - `"auto"`
 
@@ -1489,23 +1493,23 @@
 
           - `file_data: optional string`
 
-            要发送给模型的文件内容。
+            发送到模型的文件内容。
 
           - `file_id: optional string or null`
 
-            要发送给模型的文件的 ID。
+            发送到模型的文件 ID。
 
           - `file_url: optional string`
 
-            要发送给模型的文件的 URL。
+            发送到模型的文件的 URL。
 
           - `filename: optional string`
 
-            要发送给模型的文件的名称。
+            发送到模型的文件的名称。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
             - `mode: "explicit"`
 
@@ -1519,11 +1523,11 @@
 
     - `reasoning: optional RealtimeReasoning`
 
-      针对具备推理能力的 Realtime 模型（例如 `gpt-realtime-2`.
+      适用于具备推理能力的 Realtime 模型（例如 `gpt-realtime-2`.
 
       - `effort: optional RealtimeReasoningEffort`
 
-        针对具备推理能力的 Realtime 模型（例如
+        限制具备推理能力的 Realtime 模型（例如
         `gpt-realtime-2`.
 
         - `"minimal"`
@@ -1538,16 +1542,16 @@
 
     - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp`
 
-      模型选择工具的方式。可提供字符串模式之一，或强制指定某个特定的
+      模型选择工具的方式。提供以下字符串模式之一，或强制指定某个
       函数/MCP 工具。
 
       - `ToolChoiceOptions = "none" or "auto" or "required"`
 
-        控制模型调用哪个工具（如果有）。
+        控制模型调用哪个工具（如果有的话）。
 
         `none` 表示模型将不调用任何工具，而是生成一条消息。
 
-        `auto` 表示模型可以在生成消息或调用一个或
+        `auto` 表示模型可以在生成消息与调用一个或多个工具之间进行选择。
         更多工具。
 
         `required` 表示模型必须调用一个或多个工具。
@@ -1560,7 +1564,7 @@
 
       - `ToolChoiceFunction object { name, type }`
 
-        使用此选项以强制模型调用特定函数。
+        使用此选项可以强制模型调用特定的函数。
 
         - `name: string`
 
@@ -1574,7 +1578,7 @@
 
       - `ToolChoiceMcp object { server_label, type, name }`
 
-        使用此选项以强制模型在远程 MCP 服务器上调用特定工具。
+        使用此选项可以强制模型调用远程 MCP 服务器上的特定工具。
 
         - `server_label: string`
 
@@ -1592,23 +1596,23 @@
 
     - `tools: optional array of RealtimeFunctionTool or object { server_label, type, allowed_callers, 9 more }`
 
-      可供模型使用的工具。
+      模型可用的工具。
 
       - `RealtimeFunctionTool object { description, name, parameters, type }`
 
         - `description: optional string`
 
-          函数的描述，包括何时以及如何
-          调用它的指导，以及调用时
-          （如果有）应告知用户的内容。
+          函数说明，包括在何时以及如何
+          调用它的指导，以及在调用时告知用户什么
+          (如果有的话)。
 
         - `name: optional string`
 
-          函数的名称。
+          函数名称。
 
         - `parameters: optional unknown`
 
-          以 JSON Schema 表示的函数参数。
+          函数的参数，采用 JSON Schema 格式。
 
         - `type: optional "function"`
 
@@ -1618,12 +1622,12 @@
 
       - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
-        通过远程 Model Context Protocol
-        （MCP）服务器为模型提供额外的工具。 [了解更多关于 MCP 的信息](/api/docs/guides/tools-connectors-mcp).
+        通过远程模型上下文协议为模型提供对其他工具的访问
+        (MCP) 服务器。 [了解更多关于 MCP 的信息](/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
-          此 MCP 服务器的标签，用于在工具调用中标识它。
+          该 MCP 服务器的标签，用于在工具调用中识别它。
 
         - `type: "mcp"`
 
@@ -1641,21 +1645,21 @@
 
         - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
 
-          允许的工具名称列表或筛选器对象。
+          允许的工具名称列表或过滤对象。
 
           - `McpAllowedTools = array of string`
 
-            由允许的工具名称组成的字符串数组
+            允许的工具名称的字符串数组
 
           - `McpToolFilter object { read_only, tool_names }`
 
-            用于指定允许哪些工具的筛选器对象。
+            用于指定允许哪些工具的过滤对象。
 
             - `read_only: optional boolean`
 
-              指示工具是否会修改数据或是否为只读。如果某个
-              MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-              it will match this filter.
+              指示工具是否修改数据或是否为只读。如果 MCP 服务器
+              带有 [标注 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+              ，则将匹配此过滤器。
 
             - `tool_names: optional array of string`
 
@@ -1663,26 +1667,30 @@
 
         - `authorization: optional string`
 
-          可用于远程 MCP 服务器的 OAuth 访问令牌，配合自定义
-          MCP 服务器 URL 或服务连接器一起使用。你的应用
-          必须处理 OAuth 授权流程，并在此处提供该令牌。
+          可用于远程 MCP 服务器的 OAuth 访问令牌，可搭配
+          自定义 MCP 服务器 URL 或服务连接器使用。你的应用
+          必须处理 OAuth 授权流程，并在此处提供令牌。
 
         - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-          服务连接器的标识符，例如 ChatGPT 中可用的连接器。其中一项
-          `server_url`, `connector_id`，或 `tunnel_id` must be provided. Learn more
-          about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
+          服务连接器的标识符，例如 ChatGPT 中提供的那些。
+          `server_url`, `connector_id`, or `tunnel_id` 必须提供其中之一。了解更多
+          关于服务连接器 [此处](/api/docs/guides/tools-connectors-mcp#connectors).
 
-          Currently supported `connector_id` values are:
+          此字段已弃用，适用于 2026-09-01 之后发布的模型。
+          使用 `server_url` 连接到远程 MCP 服务器，或 `tunnel_id` 通过
+          安全 MCP 隧道进行连接。
 
-          - Dropbox: `connector_dropbox`
-          - Gmail: `connector_gmail`
-          - Google Calendar: `connector_googlecalendar`
-          - Google Drive: `connector_googledrive`
-          - Microsoft Teams: `connector_microsoftteams`
-          - Outlook Calendar: `connector_outlookcalendar`
-          - Outlook Email: `connector_outlookemail`
-          - SharePoint: `connector_sharepoint`
+          当前支持的 `connector_id` 取值包括：
+
+          - Dropbox： `connector_dropbox`
+          - Gmail： `connector_gmail`
+          - Google Calendar： `connector_googlecalendar`
+          - Google Drive： `connector_googledrive`
+          - Microsoft Teams： `connector_microsoftteams`
+          - Outlook Calendar： `connector_outlookcalendar`
+          - Outlook Email： `connector_outlookemail`
+          - SharePoint： `connector_sharepoint`
 
           - `"connector_dropbox"`
 
@@ -1702,32 +1710,32 @@
 
         - `defer_loading: optional boolean`
 
-          该 MCP 工具是否被延迟，并通过工具搜索发现。
+          此 MCP 工具是否延迟加载并通过工具搜索发现。
 
         - `headers: optional map[string] or null`
 
-          发送到 MCP 服务端的可选 HTTP 头。用于身份验证
+          发送到 MCP server 的可选 HTTP 头，用于身份验证
           或其他用途。
 
         - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
-          指定 MCP 服务端中哪些工具需要批准。
+          指定 MCP server 中哪些工具需要审批。
 
           - `McpToolApprovalFilter object { always, never }`
 
-            指定 MCP 服务端中哪些工具需要批准。可以是
-            `always`, `never`，或与工具关联的过滤对象
-            用于需要批准的工具。
+            指定 MCP server 中哪些工具需要审批。可以是
+            `always`, `never`，或与需要审批的工具关联的过滤对象
+            。
 
             - `always: optional object { read_only, tool_names }`
 
-              用于指定允许哪些工具的筛选器对象。
+              用于指定允许哪些工具的过滤对象。
 
               - `read_only: optional boolean`
 
-                指示工具是否会修改数据或是否为只读。如果某个
-                MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                it will match this filter.
+                指示工具是否修改数据或是否为只读。如果 MCP 服务器
+                带有 [标注 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，则将匹配此过滤器。
 
               - `tool_names: optional array of string`
 
@@ -1735,13 +1743,13 @@
 
             - `never: optional object { read_only, tool_names }`
 
-              用于指定允许哪些工具的筛选器对象。
+              用于指定允许哪些工具的过滤对象。
 
               - `read_only: optional boolean`
 
-                指示工具是否会修改数据或是否为只读。如果某个
-                MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                it will match this filter.
+                指示工具是否修改数据或是否为只读。如果 MCP 服务器
+                带有 [标注 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                ，则将匹配此过滤器。
 
               - `tool_names: optional array of string`
 
@@ -1749,9 +1757,9 @@
 
           - `McpToolApprovalSetting = "always" or "never"`
 
-            为所有工具指定统一的批准策略。可为 `always` 或
-            `never`。之一。当设置为 `always`，时，所有工具都需要批准。当
-            设置为 `never`，时，所有工具都不需要批准。
+            为所有工具指定统一的审批策略，取值为 `always` 或
+            `never`。当设置为 `always`，时，所有工具都需要审批。当
+            设为 `never`，时，所有工具都不需要审批。
 
             - `"always"`
 
@@ -1759,25 +1767,25 @@
 
         - `server_description: optional string`
 
-          MCP 服务端的可选描述，用于提供更多上下文。
+          MCP 服务器的可选描述，用于提供更多上下文。
 
         - `server_url: optional string`
 
-          MCP 服务器的 URL。需提供以下之一： `server_url`, `connector_id`，或
-          `tunnel_id` 。
+          MCP 服务器的 URL。需要提供以下之一： `server_url`, `connector_id`, or
+          `tunnel_id` 其中之一。
 
         - `tunnel_id: optional string`
 
-          用于替代直接服务器 URL 的安全 MCP 隧道 ID。需提供以下之一：
-          `server_url`, `connector_id`，或 `tunnel_id` 。
+          要使用的安全 MCP 隧道 ID，以替代直接的服务器 URL。需要提供以下之一：
+          `server_url`, `connector_id`, or `tunnel_id` 其中之一。
 
     - `tracing: optional "auto" or object { group_id, metadata, workflow_name }  or null`
 
-      Realtime API 可以将会话追踪写入到 [追踪仪表盘](https://platform.openai.com/logs?api=traces). Set to null to disable 追踪。设置为 null 以禁用追踪。一旦为某个会话启用了
-      追踪，该配置便无法再修改。
+      Realtime API 可以将会话追踪写入 [追踪仪表板](https://platform.openai.com/logs?api=traces)。设置为 null 可禁用追踪。一旦为某个会话启用了
+      追踪，就无法再修改该配置。
 
       `auto` 将为该会话创建一个使用默认值的追踪，包括
-      工作流 名称、组 ID 和元数据。
+      工作流名称、group id 和元数据。
 
       - `Auto = "auto"`
 
@@ -1787,36 +1795,36 @@
 
       - `TracingConfiguration object { group_id, metadata, workflow_name }`
 
-        用于 追踪 的细粒度配置。
+        针对追踪的细粒度配置。
 
         - `group_id: optional string`
 
-          附加到此 追踪 的分组 ID，用于在 Traces Dashboard 中进行筛选和
-          分组。
+          附加到此追踪的 group id，用于在追踪仪表板中启用筛选和
+          在追踪仪表板中进行分组。
 
         - `metadata: optional unknown`
 
-          附加到此 追踪 的任意元数据，用于在 Traces Dashboard 中进行
-          筛选。
+          附加到此追踪的任意元数据，用于启用
+          在追踪仪表板中进行筛选。
 
         - `workflow_name: optional string`
 
-          附加到此 工作流 的 追踪 名称。用于在 Traces Dashboard 中
-          为该 追踪 命名。
+          要附加到此追踪的工作流的名称。它用于
+          在追踪仪表板中命名该追踪。
 
     - `truncation: optional RealtimeTruncation`
 
-      当对话中的 token 数超过模型的输入 token 上限时，对话将被截断，这意味着最早的消息将不会被纳入模型的上下文。具有 32k 上下文且最大输出 token 为 4,096 的模型，在截断发生之前，上下文中最多只能包含 28,224 个 token。
+      当对话中的 token 数量超过模型的输入 token 上限时，对话将被截断，意味着消息（从最早的开始）将不会包含在模型的上下文中。一个 32k 上下文模型，最大输出 token 为 4,096，在截断发生之前上下文中只能包含 28,224 个 token。
 
-      客户端可以将截断行为配置为以更低的最大 token 上限进行截断，这是控制 token 用量和成本的有效方式。
+      客户端可以配置截断行为，使用更低的最大 token 上限进行截断，这是控制 token 用量和成本的有效方法。
 
-      截断会减少下一轮中被缓存的 token 数量（使缓存失效），因为消息会从上下文的开头被丢弃。不过，客户端也可以将截断配置为保留最多达到最大上下文大小一定比例的消息，从而减少后续截断的需要，并因此提高缓存命中率。
+      截断会减少下一轮中的缓存 token 数量（破坏缓存），因为消息会从上下文的开头被丢弃。然而，客户端也可以将截断配置为保留消息至最大上下文大小的一定比例，从而减少未来截断的需要，进而提高缓存命中率。
 
-      可以完全禁用截断，这意味着服务端永远不会截断，但如果对话超过模型的输入 token 上限，则会返回错误。
+      截断可以被完全禁用，这意味着服务端永远不会截断，但当对话超过模型的输入 token 上限时，会改为返回错误。
 
       - `"auto" or "disabled"`
 
-        会话所使用的截断策略。 `auto` 是默认的截断策略。 `disabled` 会禁用截断，并在对话超过输入 token 上限时抛出错误。
+        会话使用的截断策略。 `auto` 是默认的截断策略。 `disabled` 将禁用截断，并在对话超过输入 token 上限时发出错误。
 
         - `"auto"`
 
@@ -1824,11 +1832,11 @@
 
       - `RetentionRatioTruncation object { retention_ratio, type, token_limits }`
 
-        当对话超过输入 token 上限时，保留一定比例的对话 token。这允许你在多个回合间分摊截断，从而有助于改善缓存 token 的使用率。
+        当对话超过输入 token 上限时，保留一定比例的对话 token。这允许你将截断分摊到多轮中，有助于改善缓存 token 的使用。
 
         - `retention_ratio: number`
 
-          当对话超过输入 token 上限时保留的指令后对话 token 比例（`0.0` - `1.0`）。当对话超过输入 token 上限时，设置此参数意味着会丢弃消息，直到使用到最大允许 token 数的 `0.8` （即 80%）。这有助于降低截断频率并提升缓存命中率。
+          当对话超过输入 token 上限时，保留指令后对话 token 的比例（`0.0` - `1.0`）。将其设置为 `0.8` 意味着消息将被丢弃，直到使用了最大允许 token 的 80%。这有助于减少截断频率并提高缓存命中率。
 
         - `type: "retention_ratio"`
 
@@ -1838,19 +1846,19 @@
 
         - `token_limits: optional object { post_instructions }`
 
-          此截断策略的可选自定义 token 上限。如果未提供，则使用模型的默认 token 上限。
+          此截断策略的可选自定义 token 上限。如果未提供，则将使用模型的默认 token 上限。
 
           - `post_instructions: optional number`
 
-            指令之后（含工具定义）对话所允许的最大 token 数。例如，将其设置为 5,000 表示当指令后的对话超过 5,000 token 时将进行截断。此值不能高于模型上下文窗口大小减去最大输出 token 数。
+            指令之后对话中允许的最大 token 数（包括工具定义）。例如，将其设置为 5,000 意味着当指令之后的对话超过 5,000 个 token 时将发生截断。该值不能高于模型的上下文窗口大小减去最大输出 token 数。
 
   - `RealtimeTranscriptionSessionCreateResponse object { id, object, type, 3 more }`
 
-    一个 Realtime 转录会话配置对象。
+    实时转录会话配置对象。
 
     - `id: string`
 
-      会话的唯一标识符，格式类似 `sess_1234567890abcdef`.
+      会话的唯一标识符，形如 `sess_1234567890abcdef`.
 
     - `object: string`
 
@@ -1858,7 +1866,7 @@
 
     - `type: "transcription"`
 
-      会话的类型。始终为 `transcription` 用于转写会话的。
+      会话类型。始终为 `transcription` 用于转录会话。
 
       - `"transcription"`
 
@@ -1878,7 +1886,7 @@
 
           - `type: optional NoiseReductionType`
 
-            降噪类型。 `near_field` 适用于近讲麦克风，例如耳机， `far_field` 适用于远场麦克风，例如笔记本电脑或会议室麦克风。
+            降噪类型。 `near_field` 适用于耳机等近讲麦克风， `far_field` 适用于笔记本电脑或会议室麦克风等远场麦克风。
 
         - `transcription: optional object { language, languages, model, prompt }`
 
@@ -1890,17 +1898,17 @@
 
           - `languages: optional array of string`
 
-            为转录配置的可能的输入音频语言，以 [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) 格式表示。
+            为转录配置的可能输入音频语言，以 [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) 格式。
 
           - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
-            用于转录的模型。当前可选值为 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，和 `gpt-realtime-whisper`.
+            用于转录的模型。当前可选值为 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，以及 `gpt-realtime-whisper`.
 
             - `string`
 
             - `"whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
-              用于转录的模型。当前可选值为 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，和 `gpt-realtime-whisper`.
+              用于转录的模型。当前可选值为 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，以及 `gpt-realtime-whisper`.
 
               - `"whisper-1"`
 
@@ -1920,44 +1928,44 @@
 
           - `prompt: optional string`
 
-            在存在时，为输入音频转录配置的提示。
+            在为输入音频转录配置的提示（如果存在）。
 
         - `turn_detection: optional RealtimeTranscriptionSessionTurnDetection or null`
 
           轮次检测的配置。可设置为 `null` 以关闭。服务端
           VAD 意味着模型将根据
-          音频音量检测语音的开始和结束，并在用户语音结束时做出响应。对于 `gpt-realtime-whisper`，这必须是 `null`；不支持 VAD。
+          音频音量检测语音的开始和结束，并在用户语音结束时进行响应。对于 `gpt-realtime-whisper`，这必须设置为 `null`；不支持 VAD。
 
           - `prefix_padding_ms: optional number`
 
-            在 VAD 检测到的语音之前包含的音频量（单位为
-            毫秒），默认为 300ms。
+            VAD 检测到语音之前要包含的音频量（以
+            毫秒）。默认为 300ms。
 
           - `silence_duration_ms: optional number`
 
-            检测语音停止的静默时长（单位为毫秒）。默认
-            为 500ms。使用较短的值时，模型的响应会更快，
-            但可能会在用户的短暂停顿时插话。
+            检测语音停止的静音持续时长（以毫秒为单位）。默认
+            为 500ms。该值越小，模型响应越快，
+            但可能会在用户的短暂停顿时抢话。
 
           - `threshold: optional number`
 
-            VAD 的激活阈值（0.0 到 1.0），默认值为 0.5。
-            高的阈值要求更大的声音才能激活模型，因此在嘈杂环境
-            中可能会有更好的表现。
+            VAD 的激活阈值（0.0 到 1.0），默认为 0.5。更
+            阈值要求更大的音频音量才能激活模型，因此
+            在嘈杂环境中可能表现更好。
 
           - `type: optional string`
 
-            轮次检测类型，仅 `server_vad` 。
+            轮次检测的类型，仅 `server_vad` 。
 
     - `expires_at: optional number`
 
-      会话的过期时间戳，以自纪元起的秒数表示。
+      会话的过期时间戳，以自纪元以来的秒数表示。
 
     - `include: optional array of "item.input_audio_transcription.logprobs"`
 
       要在服务端输出中包含的附加字段。
 
-      - `item.input_audio_transcription.logprobs`:为输入音频转录包含 logprobs。
+      - `item.input_audio_transcription.logprobs`: 为输入音频转录包含 logprobs。
 
       - `"item.input_audio_transcription.logprobs"`
 

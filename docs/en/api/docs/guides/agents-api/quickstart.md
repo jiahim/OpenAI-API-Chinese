@@ -305,6 +305,11 @@ curl --no-buffer --fail-with-body https://api.openai.com/v1/agents/sessions \\\n
   
 
 
+**Don't need a sandbox?** Set `environment.type` to `none` for agents that
+  answer questions or call external tools without running commands or working
+  with local files. [Learn
+  more](https://developers.openai.com/api/docs/guides/agents-api/architecture#start-without-an-environment).
+
 ## 2. Follow progress
 
 The terminal shows streamed events. The SDK examples print JSON; cURL shows the raw event stream. On a successful run, the agent creates `tree.py`, executes it, and reports a directory tree containing that file. Other files and output depend on the sandbox.

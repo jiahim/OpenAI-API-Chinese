@@ -21,11 +21,11 @@ Try these complete examples:
 
 Explore complete applications:
 
-- [Incident response agent](https://developers.openai.com/showcase/agents-api-sev-bot): investigate alerts and request approval for recovery actions.
-- [Slack bot](https://developers.openai.com/showcase/agents-api-slack-bot): investigate requests using connected workplace tools.
-- [Data analyst](https://developers.openai.com/showcase/agents-api-data-analyst): answer warehouse questions with read-only SQL.
-- [GitHub issue investigator](https://developers.openai.com/showcase/agents-api-github-issues): reproduce reported bugs and share findings on GitHub.
-- [Document reviewer](https://developers.openai.com/showcase/agents-api-document-review): review documents with policy skills and specialist agents.
+- [Incident response agent](https://developers.openai.com/cookbook/examples/agents_api/apps/sev_bot/readme): investigate alerts and request approval for recovery actions.
+- [Slack bot](https://developers.openai.com/cookbook/examples/agents_api/apps/slack_bot/readme): investigate requests using connected workplace tools.
+- [Data analyst](https://developers.openai.com/cookbook/examples/agents_api/apps/data_analyst/readme): answer warehouse questions with read-only SQL.
+- Use the [GitHub issue investigator](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/apps/github_issues) to reproduce reported bugs and share findings on GitHub.
+- Use the [document reviewer](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/apps/document_review) to review documents with policy skills and specialist agents.
 
 ## Core concepts
 

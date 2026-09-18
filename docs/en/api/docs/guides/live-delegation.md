@@ -40,9 +40,6 @@ Compare latency, task success, and cost on your own workload when [evaluating yo
 
 Choose the mode when you create the session; to change modes, start a new session.
 
-{/* prettier-ignore */}
-
-
 ## Configure Responses delegation
 
 Add this delegation configuration when [creating your Live session](https://developers.openai.com/api/docs/guides/live). Choose the Responses model independently of the voice model:
@@ -264,6 +261,9 @@ Use `session.thinking.append` to add information to the model's internal reasoni
 
 Repeated result appends can continue the same client delegation. An appended acknowledgment arrives after estimated context injection; it is not proof that the model has consumed or spoken the result, or that an external action succeeded.
 
+  
+
+
 
 
 ## Start with your existing backend prompt
@@ -439,7 +439,9 @@ In either delegation mode, use `session.thinking.append` with `delegation_id: nu
 
 If a caller types an exact value, such as an order number, pass it to the backend that handles the task. A voice-only application does not need this path. Keep the typed value as user data rather than a live-model instruction.
 
-{/* prettier-ignore */}
+
+
+  
 
 
 With Responses delegation, queue a user message for the backend:
@@ -493,13 +495,18 @@ Send `response.create` when ready to run or continue the backend. If it is waiti
 
 With client delegation, send the typed value directly to the backend that handles the conversation. If it corrects a running task, update that task instead of starting the same work again. You can mirror a short factual summary into the live session with `session.thinking.append`, or use `session.commentary.append` for a result the user should hear.
 
+  
+
+
 
 
 ## Add images and visual context
 
 To help a caller discuss a photo or screen, send the image and relevant context from your application to a vision-capable backend. The backend interprets the image and returns relevant text for GPT-Live to use in conversation. The Live audio frontend does not accept images directly.
 
-{/* prettier-ignore */}
+
+
+  
 
 
 With Responses delegation, configure a vision-capable backend model. Queue a supported Responses image input item with `response.item.create`, then send `response.create` to run or resume backend work. Return all required pending function results before continuing. See [Handle Responses delegation](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=responses#handle-responses-delegation).
@@ -511,6 +518,9 @@ With Responses delegation, configure a vision-capable backend model. Queue a sup
 
 With client delegation, send visual input to the backend that handles delegated requests, alongside the relevant conversation and application state. Return concise findings using the [client result flow](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=client#receive-a-client-delegation).
 
+  
+
+
 
 
 Keep backend image input separate from `session.input`, which seeds the Live frontend with text history at startup. See [Images and vision](https://developers.openai.com/api/docs/guides/images-vision) for supported image formats and model limitations.
@@ -519,7 +529,9 @@ Keep backend image input separate from `session.input`, which seeds the Live fro
 
 Reduce the time between a request for backend work and a useful result for the conversation. Measure [latency at each stage](https://developers.openai.com/api/docs/guides/voice-agents#measure-latency) to locate delays. Compare useful spoken response time and task success on the same scenarios, and see the [voice agent evaluation Cookbook](https://developers.openai.com/cookbook/examples/audio/voice_agent_evaluation) for evaluation guidance.
 
-{/* prettier-ignore */}
+
+
+  
 
 
 ### Responses delegation
@@ -550,6 +562,9 @@ Your application owns the path from delegation receipt to returning a result. Pr
 - **Avoid unnecessary buffering.** Forward a useful result as soon as it is ready. Buffer only enough to classify the output and form a coherent chunk. Prefer structured phase metadata; if you use text prefixes to distinguish progress from results, wait for the complete prefix before forwarding text.
 
 Measure the first useful spoken answer when comparing this path with Responses delegation.
+
+  
+
 
 
 
