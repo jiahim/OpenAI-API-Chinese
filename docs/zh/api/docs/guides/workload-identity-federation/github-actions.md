@@ -1,16 +1,14 @@
 # 为 GitHub Actions 配置工作负载身份联合
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-将 GitHub Actions 用作 Workload Identity Provider，通过将 GitHub 签发的 OIDC 令牌交换为短期 OpenAI 访问令牌。这使得工作流无需在 GitHub secrets 中存储长期有效的 API 密钥即可向 OpenAI API 进行身份验证。
+使用 GitHub Actions 作为 Workload Identity Provider，通过将 GitHub 颁发的 OIDC token 交换为短时 OpenAI access token。这样工作流可以在 GitHub secrets 中不存储长期 API key 的情况下，对 OpenAI API 进行身份验证。
 
-对于 Codex，使用此页面获取并检查 GitHub 令牌。然后 [配置 Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) 将该令牌写入文件并指向 Codex。本页面中的服务账户映射和 SDK 示例适用于 OpenAI API。
-
-GitHub 可以为拥有 `id-token: write` 权限并请求身份令牌的 工作流 作业签发已签名的 OIDC JWT。OpenAI 会校验令牌的颁发者、受众、签名以及映射属性，然后才签发 OpenAI 访问令牌。
+GitHub 可以为具有相应 `id-token: write` 权限并请求 identity token 的 工作流 job 签发签名 OIDC JWT。OpenAI 会在签发 OpenAI access token 之前，校验 token 的 issuer、audience、signature 以及 mapping 属性。
 
 ## 设置 GitHub Actions
 
-授予工作流或作业请求 GitHub OIDC 令牌的权限：
+授予 工作流 或任务请求 GitHub OIDC 令牌的权限：
 
 ```yaml
 permissions:
@@ -18,9 +16,9 @@ permissions:
   contents: read
 ```
 
-该 `id-token: write` 权限允许作业请求 OIDC JWT。它不授予对仓库内容的写访问权限。 `contents: read` 权限被 `actions/checkout`.
+该 `id-token: write` 权限允许任务请求 OIDC JWT。它不会授予对仓库内容的写访问权限。OpenAI `contents: read` 权限是必需的，用于 `actions/checkout`.
 
-需要，使用与你在 OpenAI Workload Identity Provider 中配置的完全一致的 audience 来请求令牌。自定义 JavaScript 操作可以调用 `core.getIDToken("your-wif-audience")`；shell 步骤可以直接调用 GitHub 的 OIDC 请求 URL。包含保留 URL 字符的 audience 值（例如 `https://api.openai.com/v1`）应在追加到请求 URL 之前进行 URL 编码：
+使用你在 该公司 工作负载身份提供方中配置的精确 audience 来请求令牌。自定义 JavaScript 操作可以调用 `core.getIDToken("your-wif-audience")`；shell 步骤可以直接调用 GitHub 的 OIDC 请求 URL。包含保留 URL 字符的 audience 值，例如 `https://api.openai.com/v1`，在追加到请求 URL 之前应进行 URL 编码：
 
 ```bash
 AUDIENCE="https://api.openai.com/v1"
@@ -33,22 +31,22 @@ export TOKEN
 
 重要的 GitHub OIDC 声明包括：
 
-- `iss`: 令牌颁发者。对于 GitHub Actions，此为 `https://token.actions.githubusercontent.com`.
-- `aud`: 工作流 请求的 audience 值。请将 OpenAI 配置为要求与你请求的完全一致的值，例如 `your-wif-audience` 或 `https://api.openai.com/v1`.
-- `sub`: 主要 subject 字符串。GitHub 会根据 工作流 元数据（例如仓库、分支、标签、拉取请求或环境）构建它。
-- `repository`: 运行该 工作流 的仓库，例如 `my-org/my-repo`.
+- `iss`: 令牌颁发者。对于 GitHub Actions，它是 `https://token.actions.githubusercontent.com`.
+- `aud`: 工作流所请求的 audience 值。请将 OpenAI 配置为要求与你请求的完全一致的值，例如 `your-wif-audience` 或 `https://api.openai.com/v1`.
+- `sub`: 主要主体字符串。GitHub 会根据 工作流 元数据（如仓库、分支、标签、拉取请求或环境）来构建它。
+- `repository`: 运行 工作流 的仓库，例如 `my-org/my-repo`.
 - `repository_owner`: 拥有该仓库的组织或用户，例如 `my-org`.
-- `ref`: 触发该 工作流 的 Git 引用，例如 `refs/heads/main` 或 `refs/tags/v1.0.0`.
-- `workflow`: 工作流 声明。请使用 GitHub 实际发出的声明值，例如 `deploy` ，如果这就是你作业中的 工作流 声明。
+- `ref`: 触发 工作流 的 Git 引用，例如 `refs/heads/main` 或 `refs/tags/v1.0.0`.
+- `workflow`: 工作流 声明。请使用 GitHub 实际发出的声明值，例如 `deploy` ，如果这就是你的任务中的 工作流 声明。
 - `workflow_ref`: 工作流 文件路径和引用，例如 `my-org/my-repo/.github/workflows/deploy.yml@refs/heads/main`.
-- `environment`: GitHub 环境名称，例如 `production`，当该作业使用了某个环境时。
-- `run_id`, `run_number`, `run_attempt`，以及 `job_workflow_ref`: 可用于审计或更高级信任规则的运行与作业标识符。
+- `environment`: GitHub 环境名称，例如 `production`，当任务使用某个环境时。
+- `run_id`, `run_number`, `run_attempt`，以及 `job_workflow_ref`: 可用于审计或更高级信任规则的运行和任务标识符。
 
-如需完整的声明列表和主题格式，请参阅 GitHub 的 [OpenID Connect 参考](https://docs.github.com/en/actions/reference/security/oidc).
+完整的声明列表和主题格式，请参阅 GitHub 的 [OpenID Connect 参考](https://docs.github.com/en/actions/reference/security/oidc).
 
 ## 验证令牌
 
-在配置工作负载身份联合之前，将 GitHub OIDC 令牌导出为 `TOKEN`，然后在该工作流运行器中运行此脚本以检查其声明：
+在配置工作负载身份联合之前，将 GitHub OIDC 令牌导出为 `TOKEN`，然后在 工作流 运行器中运行此脚本以检查其声明：
 
 ```javascript
 const parts = process.env.TOKEN?.split(".") ?? [];
@@ -344,9 +342,9 @@ puts(payload)
 ```
 
 
-该命令在不验证令牌签名的情况下解码 JWT 负载。请使用本地解码器处理生产令牌，并避免将生产令牌粘贴到第三方工具中。切勿记录原始的 GitHub OIDC 令牌或交换后得到的OpenAI访问令牌。
+此命令会解码 JWT 载荷，但不验证令牌签名。生产环境中的令牌请使用本地解码器，避免将生产令牌粘贴到第三方工具中。切勿记录原始的 GitHub OIDC 令牌或已交换的 OpenAI 访问令牌。
 
-解码后的 GitHub Actions OIDC 令牌将类似于：
+一个解码后的 GitHub Actions OIDC 令牌看起来类似如下：
 
 ```json
 {
@@ -364,29 +362,29 @@ puts(payload)
 }
 ```
 
-使用解码后的负载，将你收到的令牌与OpenAI中配置的颁发者、受众和映射值进行比较。大多数配置问题都可以在 `iss`, `aud`, `repository`, `ref`，和 `workflow_ref` 声明中看到，然后才能交换该令牌。
+使用解码后的载荷，将你收到的令牌与 OpenAI 中配置的颁发者、受众和映射值进行比较。大多数配置问题都会在 `iss`, `aud`, `repository`, `ref`、 `workflow_ref` 声明中显现，请在该处核对，然后再交换令牌。
 
 ## 设置工作负载身份联合
 
-在 OpenAI 中为 GitHub Actions 创建 Workload Identity Provider，然后添加一个服务账号映射，匹配你信任的 GitHub 工作流 claims。
+在 OpenAI 中为 GitHub Actions 创建工作负载身份提供方（Workload Identity Provider），然后添加一个服务账号映射，匹配你信任的 GitHub 工作流 声明。
 
-先配置 Workload Identity Provider，再创建服务账号映射。
+先配置工作负载身份提供方，再创建服务账号映射。
 
 ### 设置 Workload Identity Provider
 
-1. **创建 Workload Identity Provider。** 设置 **Name** 为唯一值,例如 `github-actions-prod`,使用 **Description**(例如 `Production GitHub Actions workflows`)帮助管理员识别该 Provider。
+1. **创建 Workload Identity Provider。** 将 **Name** 设置为唯一值，例如 `github-actions-prod`。使用 **Description**，例如 `Production GitHub Actions workflows`，以帮助管理员识别该 provider。
 
-2. **设置 issuer 和 audience。** 设置 **OIDC Issuer URL** 为 `https://token.actions.githubusercontent.com`,设置 **Audience** 为你的 工作流 所请求的精确 audience,例如 `your-wif-audience` 或 `https://api.openai.com/v1`.
+2. **设置 issuer 和 audience。** 将 **将 OIDC Issuer URL** 设置为 `https://token.actions.githubusercontent.com`。将 **Audience** 设置为你的 工作流 请求所使用的精确 audience，例如 `your-wif-audience` 或 `https://api.openai.com/v1`.
 
-3. **使用 GitHub OIDC discovery。** 将 **Use uploaded JWKS for token verification** 保持禁用。OpenAI 使用 GitHub 的 OIDC discovery 元数据和 JWKS 来验证 GitHub 签名的 token。
+3. **使用 GitHub OIDC 发现。** 将 **Use uploaded JWKS for token verification** 保持禁用。OpenAI 使用 GitHub 的 OIDC 发现元数据和 JWKS 来验证 GitHub 签名的 token。
 
-4. **仅在需要派生映射属性时添加属性转换。** 原始 GitHub 声明,例如 `repository`, `ref`，以及 `workflow` 可以直接在映射断言中使用。如果你创建派生属性,仪表板会自动应用 `openai.` 前缀;例如,输入 `github_repository` 并使用表达式 `assertion.repository` 来创建 `openai.github_repository`。以 `openai.` 开头的原始令牌声明在用于 `openai.` 映射键时会被忽略,除非配置了匹配的转换。
+4. **仅在需要派生映射属性时才添加属性转换。** 原始 GitHub 声明，例如 `repository`, `ref`，以及 `workflow` 可直接用于映射断言。如果创建派生属性，仪表板会自动应用 `openai.` 前缀；例如，输入 `github_repository` 并附带表达式 `assertion.repository` 即可创建 `openai.github_repository`。已经以 `openai.` 开头的原始 token 声明在 `openai.` 映射键时会被忽略，除非配置了匹配的转换。
 
 ### 设置服务账号映射
 
-1. **创建一个服务账号映射。** 设置 **Name** 为 Workload Identity Provider 中的唯一值，例如 `github-actions-main-deploy`,使用 **Description**(例如 `Production deploy workflow on main`，以说明哪个 工作流 可以使用该映射。
+1. **创建服务账号映射。** 将 **Name** 在 Workload Identity Provider 中将其设置为唯一值，例如 `github-actions-main-deploy`。使用 **Description**，例如 `Production deploy workflow on main`，用于说明哪个工作流可以使用该映射。
 
-2. **添加精确的声明断言。** 添加一项 **键** 和 **值** 行，对应每个必须匹配的 GitHub 声明。OpenAI 要求所有已配置的行都匹配后才会签发访问令牌。对于生产部署 工作流，请使用如下断言：
+2. **添加精确的声明断言。** 添加一行 **Key** 和 **Value** ，每个必须匹配的 GitHub 声明各占一行。OpenAI 要求所有已配置的条目都匹配后才会签发访问令牌。对于生产部署的工作流，请使用类似下面的断言：
 
 ```text
    iss == "https://token.actions.githubusercontent.com"
@@ -396,23 +394,23 @@ puts(payload)
    workflow_ref == "my-org/my-repo/.github/workflows/deploy.yml@refs/heads/main"
 ```
 
-   优先选择 `workflow_ref` 而不是 `workflow` 用于特权映射，因为管理员通常希望信任特定的 工作流 文件路径和 ref。工作流名称可以被重命名，并且多个 工作流 文件可以共享同一个名称。
+   优先选择 `workflow_ref` 而非 `workflow` 用于特权映射，因为管理员通常希望信任特定的工作流文件路径和 ref。工作流名称可以被重命名，并且多个工作流文件可以共享相同的名称。
 
-   在映射 UI 中，将这些输入为键/值行，例如 **键** `repository` 对应 **值** `my-org/my-repo`, **键** `ref` 对应 **值** `refs/heads/main`，和 **键** `workflow_ref` 对应 **值** `my-org/my-repo/.github/workflows/deploy.yml@refs/heads/main`。如果作业使用 GitHub 环境，还需添加 **键** `environment` 对应 **值** `production`.
+   在映射 UI 中，将这些输入为键/值行，例如 **Key** `repository` 对应 **Value** `my-org/my-repo`, **Key** `ref` 对应 **Value** `refs/heads/main`、 **Key** `workflow_ref` 对应 **Value** `my-org/my-repo/.github/workflows/deploy.yml@refs/heads/main`。如果任务使用了 GitHub 环境，还需要添加 **Key** `environment` 对应 **Value** `production`.
 
-   > **注意：** 避免过于宽泛的映射，例如仅信任 `repository_owner == "my-org"`，除非该所有者命名空间下的每个仓库都应该能够生成 OpenAI 访问令牌。
+   > **注意：** 避免过于宽泛的映射，例如仅信任 `repository_owner == "my-org"`，除非该所有者命名空间下的每个代码仓库都应该能够签发 OpenAI 访问令牌。
 
-3. **选择 OpenAI 目标。** 设置 **项目** 设置为拥有该目标服务账号的 OpenAI 项目。设置 **服务账号** 为 GitHub 工作流 可以使用的 OpenAI 服务账号，例如 `github-actions-prod-deploy`.
+3. **选择 OpenAI 目标。** 将 **项目** 为拥有目标服务账号的 OpenAI 项目。设置 **服务账号** 为 GitHub 工作流 可使用的 OpenAI 服务账号，例如 `github-actions-prod-deploy`.
 
-4. **如需要，收窄 API 权限。** 选择合适的 **权限** 例如 `api.model.request` 和 `api.vector_store.read` ，以进一步收窄从此映射中颁发的访问令牌的权限。将权限留空可避免添加 WIF 特定的范围限制；该令牌仍会以映射的服务账号身份进行授权。
+4. **根据需要缩小 API 权限。** 选择合适的 **权限** 例如 `api.model.request` 和 `api.vector_store.read` ，以进一步缩小从此映射生成的访问令牌的范围。将权限留空可避免添加 WIF 特定的 scope 限制；令牌仍会以映射的服务账号身份进行授权。
 
-## 在 工作流中使用该令牌
+## 在工作流中使用该令牌
 
 配置你的 OpenAI SDK 客户端以请求 GitHub OIDC 令牌，并将其交换为 OpenAI 颁发的访问令牌。
 
-该 工作流 必须授予 `id-token: write` 权限，并将工作负载身份联合配置传递给 SDK 代码。SDK 从 `ACTIONS_ID_TOKEN_REQUEST_URL` 以及 `ACTIONS_ID_TOKEN_REQUEST_TOKEN` 环境变量中请求 GitHub 向该任务暴露的 GitHub OIDC 令牌，然后使用交换得到的 OpenAI 访问令牌来认证 API 请求。
+该 工作流 必须授予 `id-token: write` 权限，并将 workload identity federation 设置传递给 SDK 代码。SDK 从 GitHub 暴露给作业的 `ACTIONS_ID_TOKEN_REQUEST_URL` 和 `ACTIONS_ID_TOKEN_REQUEST_TOKEN` 环境变量中请求 GitHub OIDC 令牌，然后使用交换得到的 OpenAI 访问令牌对 API 请求进行身份验证。
 
-例如，可以从类似这样的 工作流 中运行你的应用代码：
+例如，通过如下 工作流 运行你的应用程序代码：
 
 ```yaml
 name: deploy
@@ -442,11 +440,11 @@ jobs:
         run: node ./scripts/call-openai.js
 ```
 
-存储 `OPENAI_WIF_AUDIENCE`, `OPENAI_IDENTITY_PROVIDER_ID`，和 `OPENAI_SERVICE_ACCOUNT_ID` 作为 GitHub Actions 变量。它们用于标识提供方和服务账号，但不是持有者凭据。
+将 `OPENAI_WIF_AUDIENCE`, `OPENAI_IDENTITY_PROVIDER_ID`、 `OPENAI_SERVICE_ACCOUNT_ID` 存储为 GitHub Actions 变量。它们用于标识提供方和服务账号，但不是持有者凭据。
 
-以下示例使用自定义主体令牌提供方初始化 OpenAI 客户端。该提供方会为配置的受众请求一个 GitHub OIDC 令牌，并将其用作工作负载身份联合的主体令牌。
+以下示例使用自定义 subject token provider 初始化 OpenAI 客户端。该 provider 会为配置的 audience 请求 GitHub OIDC 令牌，并将其用作 workload identity federation 的 subject token。
 
-使用 GitHub Actions OIDC 令牌进行身份验证
+通过 GitHub Actions OIDC 令牌进行身份验证
 
 ```javascript
 import OpenAI from "openai";
@@ -889,11 +887,11 @@ puts(response.output_text)
 
 ## GitHub Actions 最佳实践
 
-- 对生产部署使用环境保护。要求在工作流能够访问生产 OpenAI 资源之前进行审批或分支限制。
-- 按仓库限制映射。尽可能基于仓库专属的声明进行匹配，而不是允许组织内所有仓库进行访问。
+- 为生产部署使用环境保护。要求在工作流访问生产 OpenAI 资源之前进行审批或分支限制。
+- 按存储库限制映射。尽可能按存储库特定的声明进行匹配，而不是允许组织内所有存储库访问。
 - 按分支或 工作流 限制映射。考虑匹配如下声明 `repository`, `ref`, `environment`，或 `workflow_ref` 以限制令牌签发。
-- 为 CI/CD 和生产工作负载使用单独的 OpenAI 服务账户。构建管道通常需要与已部署应用不同的权限。
-- 避免向来自不受信任 fork 的拉取请求授予访问权限。Fork 的拉取请求可能会执行攻击者控制的代码，不应获得生产凭据。
-- 使用短期令牌交换。GitHub OIDC 令牌用于临时身份验证，仅在需要时进行交换。
-- 审计仓库所有权变更。仓库的转让、重命名和权限变更可能会影响现有映射背后的安全假设。
-- 优先进行精确的声明匹配。基于如下声明进行匹配 `repository`, `ref`，以及 `environment` 而不是依赖整个组织的信任关系。
+- 为 CI/CD 和生产工作负载使用单独的 OpenAI 服务帐户。构建管道通常需要与已部署应用程序不同的权限。
+- 避免授予来自不受信任 fork 的拉取请求访问权限。Fork 拉取请求可能执行攻击者控制的代码，不应获得生产凭据。
+- 使用短期交换。GitHub OIDC 令牌用于临时身份验证，仅在需要时进行交换。
+- 审计存储库所有权变更。存储库的转移、重命名和权限变更可能会影响现有映射背后的安全假设。
+- 优先采用精确声明匹配。按如下声明进行匹配 `repository`, `ref`，以及 `environment` ，而不是依赖组织范围的信任关系。
