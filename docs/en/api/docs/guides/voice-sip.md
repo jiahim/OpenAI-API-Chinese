@@ -2,7 +2,7 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-Choose the API your application uses. Each API has its own authentication, session creation, and event contract.
+Choose your API to see its connection steps and session events.
 
 
 
@@ -25,18 +25,14 @@ Direct SIP keeps call audio on the provider-to-OpenAI media path. SIP signaling 
 
 Use a [sideband connection](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live) when your backend needs to receive session events or send commands. It attaches to the existing conversation while SIP carries the audio. Assign one handler to each action so that duplicate webhook deliveries or events observed on multiple connections don't execute tools twice.
 
-Keep SIP routing and provider configuration together with the integration that uses them. Realtime webhook events, call identifiers, and acceptance payloads belong to the Realtime API; use the GPT-Live contract for a Live session.
-
 ### Handle the call lifecycle
 
 Confirm that GPT-Live SIP support is enabled for your project and that your
-  provider's SIP trunk is routed to that project before using this flow. The
-  Realtime webhook and acceptance payloads in the other tab are a different API
-  contract.
+  provider's SIP trunk is routed to that project before using this flow.
 
 #### Receive the incoming call
 
-Configure your project's [webhook endpoint](https://developers.openai.com/api/docs/guides/webhooks) for `live.transport.incoming`. Verify the webhook signature and deduplicate deliveries before making a call decision. A delivery acknowledgment does not accept the call.
+Configure your project's [webhook endpoint](https://developers.openai.com/api/docs/guides/webhooks) for `live.transport.incoming`. Verify the webhook signature and deduplicate deliveries, then accept or reject the call.
 
 The webhook identifies a SIP call with `data.type: "sip"` and provides `data.session_id`. Use that session ID unchanged for every Live call action. Treat `data.sip_headers` as untrusted caller metadata, not authorization.
 
@@ -72,15 +68,13 @@ SIP carries the call audio. Use the sideband for transcripts, delegation, tools,
 
 #### Observe keypad events
 
-The sideband receives `transport.dtmf.received` when the caller presses a key and `transport.dtmf.send` after a hosted tool successfully sends a tone. The event's `event` field contains one of `0`–`9`, `*`, `#`, or `A`–`D`.
-
-These are observer notifications, not client commands. Do not send `transport.dtmf.send` to request a tone, or assume the browser data channel receives keypad events.
+The sideband receives `transport.dtmf.received` when the caller presses a key and `transport.dtmf.send` after a hosted tool successfully sends a tone. Both are notifications only. The `event` field contains one of `0`–`9`, `*`, `#`, or `A`–`D`.
 
 #### Transfer or end the call
 
 To [transfer the call](https://developers.openai.com/api/reference/resources/live/subresources/sessions/methods/refer), send `POST /v1/live/sessions/{session_id}/refer` with `{ "target_uri": "sip:agent@example.com" }` for your destination. To [hang up](https://developers.openai.com/api/reference/resources/live/subresources/sessions/methods/hangup), send `POST /v1/live/sessions/{session_id}/hangup` with no request body. Both return `200 OK` with an empty body on success.
 
-Keep your sideband open for final events and usage before releasing application resources. A successful hangup request or an unexpected disconnect is not a substitute for `session.closed`. See [Usage and graceful close](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close) for finalization and close reasons.
+Keep the sideband open until `session.closed` supplies final usage, then release application resources. If the connection drops first, record finalization as incomplete. See [Usage and graceful close](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close) for finalization and close reasons.
 
 This flow accepts inbound calls. Creating an outbound SIP call through `POST /v1/live/sessions` is not supported; use the relevant [partner integration](https://developers.openai.com/api/docs/guides/live-partner-integrations) for provider-owned outbound calling.
 
@@ -88,9 +82,9 @@ This flow accepts inbound calls. Creating an outbound SIP call through `POST /v1
 
 Use the [GPT-Live WebSocket connection](https://developers.openai.com/api/docs/guides/voice-websockets?api=live) when your application receives an audio stream from a phone provider or an agent framework. The application authenticates both connections, translates their event envelopes, and relays audio in both directions.
 
-GPT-Live supports raw G.711 μ-law and A-law audio at 8 kHz over WebSocket. When the provider stream uses the same codec, sample rate, and channel count, your application can forward the raw audio bytes without converting them to PCM. Preserve audio order and use the message format required by each connection. Matching audio formats don't make the two event protocols interchangeable.
+GPT-Live supports raw G.711 μ-law and A-law audio at 8 kHz over WebSocket. When the provider stream uses the same codec, sample rate, and channel count, your application can forward the raw audio bytes without converting them to PCM. Preserve audio order and wrap the audio bytes in the message format required by each connection.
 
-The bridge also owns any audio it queues for playback. Include provider buffering, interruptions, and ending the call in your application design. See [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations) for the Live session lifecycle and [Migrate to GPT-Live](https://developers.openai.com/api/docs/guides/live-migration) for changes to turn-taking and playback control.
+Have your bridge manage queued audio, interruptions, and call termination. Account for audio buffered by the provider when handling playback. See [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations) for the Live session lifecycle and [Migrate to GPT-Live](https://developers.openai.com/api/docs/guides/live-migration) for changes to turn-taking and playback control.
 
 Keep the provider's call or room identifier alongside the OpenAI session ID so you can trace a conversation across both systems.
 

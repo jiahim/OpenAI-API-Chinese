@@ -87,7 +87,7 @@ Use this path when each stage needs to be visible or replaceable. For example, y
 
 ## Evaluate your voice agent
 
-Test conversation quality and task outcomes separately. A natural-sounding response does not prove that a tool ran or that application state changed.
+Test both the conversation and the completed task. For a booking assistant, listen to the confirmation and check that the correct appointment was saved.
 
 1. Choose representative scenarios with expected outcomes, tool calls, and permissions.
 2. Save the audio, events, tool results, and application state needed to verify each outcome. Distinguish a failed evaluation run from a valid run in which the agent fails the task.
@@ -110,15 +110,13 @@ Complement automated scores with human listening to assess pronunciation, natura
 
 For a GPT-Live evaluation harness, see the [voice agent evaluation Cookbook](https://developers.openai.com/cookbook/examples/audio/voice_agent_evaluation).
 
-For a Realtime evaluation harness and worked examples, use the [Realtime evaluation guide in the OpenAI Cookbook](https://developers.openai.com/cookbook/examples/realtime_eval_guide). The Cookbook owns the runnable evaluation recipes; this page provides the shared testing checklist.
+For a Realtime evaluation harness and worked examples, use the [Realtime evaluation guide in the OpenAI Cookbook](https://developers.openai.com/cookbook/examples/realtime_eval_guide).
 
 ### Measure latency
 
-Define an observed start and end event for every latency metric. Time to first
-audible response, time to delegation, interruption yield, backend completion,
-and verified task completion measure different boundaries. Use one monotonic
-timeline and report the eligible population, median, and tail latency. Do not
-substitute a backend-only timer for end-to-end response time.
+Measure how long callers wait for a useful spoken answer. Track backend time
+separately to find delays, and compare the median and 95th percentile across
+similar calls.
 
 Keep the caller, recording, backend model, prompt, transport, audio cadence, and
 grader fixed when comparing frontend models.
@@ -129,15 +127,13 @@ audio arrival, and client playback. Client delegation gives your application
 direct visibility into its backend requests; Responses delegation exposes nested
 response events and the custom tools your application runs.
 
-Use the intervals to locate delays in connection setup, model work, tools,
-application buffering, and playback. Measure the first useful spoken answer
-separately from an acknowledgment such as “I'm checking.” An earlier
-acknowledgment does not show that the requested result arrived sooner.
+Use these timings to find delays in connection setup, model work, tools,
+buffering, or playback. Measure acknowledgments such as “I'm checking” separately
+from the answer the caller needs.
 
-Change one factor at a time and repeat the same scenarios. Compare median and
-tail time to useful spoken responses alongside task success, tool correctness,
-and interruptions. See [Reduce backend latency](https://developers.openai.com/api/docs/guides/live-delegation#reduce-backend-latency)
-for implementation guidance.
+Change one factor at a time and repeat the same scenarios. Check whether faster
+responses also affect task success, tool correctness, or interruptions. See
+[Reduce backend latency](https://developers.openai.com/api/docs/guides/live-delegation#reduce-backend-latency).
 
 ## Voice agents still use the same core agent building blocks
 

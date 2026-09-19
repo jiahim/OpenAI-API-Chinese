@@ -6,6 +6,8 @@ GPT-Live delegates reasoning and tool use to a backend while it manages the spok
 
 Read more about [steering the live model for delegation and tools](https://developers.openai.com/api/docs/guides/live-prompting#delegation) in the prompting guide.
 
+The event examples on this page use `connection`, a connected primary Live WebSocket or sideband from the [connection guides](https://developers.openai.com/api/docs/guides/voice-websockets?api=live). On a primary connection, wait for `session.started` before calling an event helper. An attached sideband already belongs to a running session.
+
 
 
 
@@ -14,7 +16,7 @@ Read more about [steering the live model for delegation and tools](https://devel
 
 With **[Responses delegation](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=responses#configure-responses-delegation)**, GPT-Live calls the Responses model you choose, supplies conversation context, and returns backend results to the live conversation. With **[client delegation](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=client#configure-client-delegation)**, your application prepares the context, runs an agent or workflow, and sends results back to GPT-Live.
 
-Start with Responses delegation when its managed workflow fits. Choose client delegation when you need more control over backend context, execution, or the results returned to GPT-Live.
+Start with Responses delegation if you want GPT-Live to manage requests. Choose client delegation when you need to run your own workflow or review results before sending them to GPT-Live.
 
 
 
@@ -32,7 +34,7 @@ Start with Responses delegation when its managed workflow fits. Choose client de
 
 For example, a travel assistant can send flight-status questions to an airline service and itinerary changes to a separate planning agent. The application chooses which backend to call and what verified result to return to GPT-Live.
 
-In both modes, your application manages task state and enforces permissions and required confirmations before running its custom tools. Reviewing backend results is a separate decision: it does not approve every word GPT-Live speaks or guarantee silence while validation runs. See [Control playback when needed](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#control-playback-when-needed).
+In both modes, your application tracks task progress and checks permissions and required user confirmations before running custom tools. GPT-Live can continue speaking while your application reviews a backend result. If your application must control when the user hears audio, add [playback controls](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#control-playback-when-needed).
 
 Client delegation also requires your application to [maintain conversation context](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=client#keep-the-conversation-context-in-your-application). The delegation event contains metadata, not task text; use transcript events and application state to prepare the backend request.
 
@@ -65,13 +67,17 @@ session: SessionConfigParam = {
 
 Start with [GPT-5.6 Terra](https://developers.openai.com/api/docs/models/gpt-5.6-terra), or try [GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna) for cost-sensitive workloads. Compare answer quality and latency on your tasks before choosing a backend model.
 
-Register supported tools in `delegation.responses.tools`. Use `delegation.responses.tool_choice` to control which tools the backend can use: `"auto"` lets it choose, `"required"` requires a tool call, and `"none"` prevents one. You can also select a named function. Set `delegation.responses.parallel_tool_calls` to `true` to allow independent lookups together, or `false` when calls must run sequentially. Your application still executes its custom functions and enforces dependencies and approvals. These settings do not force the live model to delegate.
+Register supported tools in `delegation.responses.tools`. Set `delegation.responses.tool_choice` to `"auto"` to let the backend choose a tool, `"required"` to require a tool call, or `"none"` to disable tool calls. You can also select a named function.
+
+Set `delegation.responses.parallel_tool_calls` to `true` to allow multiple tool calls in a response, or `false` for sequential calls. Your application executes custom functions and checks their dependencies and required approvals. These settings apply after GPT-Live delegates; use the [live prompt](https://developers.openai.com/api/docs/guides/live-prompting#delegation) to guide when it should delegate.
 
 The Responses configuration requires a backend `model` at creation. It supports `function` definitions and `web_search` entries in `tools`. It also exposes `max_output_tokens` (at least 16 when set), `service_tier`, and the `reasoning` and `text` settings supported by the selected backend model. See [Reduce backend latency](#reduce-backend-latency) for settings you can tune.
 
 If [Fast mode](https://developers.openai.com/api/docs/guides/fast-mode) is available for your model and project, consider it for latency-sensitive calls. For GPT-Live, select it with `delegation.responses.service_tier: "priority"`.
 
-As the conversation changes, send `session.update` with changes in `session.delegation.responses` to update the backend model, instructions, available tools, `tool_choice`, or other supported settings without starting a new Live session. Omitted settings retain their values. Setting `delegation` to `null` selects client mode and cannot reset a running Responses session; switching modes fails with `immutable_field_update`.
+Send `session.update` with changes in `session.delegation.responses` to update the backend model, instructions, tools, `tool_choice`, or other supported settings during the conversation. Omitted settings keep their current values.
+
+To switch between Responses and client delegation, create a new Live session. Updating `delegation` to `null` selects client mode, so sending it to a running Responses session fails with `immutable_field_update`.
 
 These settings use familiar Responses concepts, but Live supports a subset of the standalone Responses API. Live supplies conversation context and initiates delegated work. Configure the backend through the session; the Live `response.create` command uses that configuration and does not accept a standalone Responses request body.
 
@@ -100,15 +106,21 @@ For Responses-backed work, `session.delegation.created` has `target: "responses"
 }
 ```
 
-Dispatch on `envelope.event.type` and preserve the outer `delegation_id`. Do not handle every top-level `response.*` value as an unwrapped Responses event. Tolerate additional nested Responses lifecycle events.
+When the top-level event type is `response.event`, dispatch on `envelope.event.type`. Save the outer `delegation_id` to associate the backend event with its delegation. Your handler may also receive nested Responses lifecycle events beyond those shown here.
 
 Live speech and delegated work continue independently. A completed backend response does not itself mean the user heard the answer. Use the Live output transcript and audio for the spoken part of the interaction.
 
-### Complete a client-actionable function call
+
+
+
+
+### Run a custom function and return its result
 
 Read completed function calls from nested `response.output_item.done` events. The finished function item contains `call_id`, `name`, and `arguments`; an arguments-done event alone is not sufficient to identify the call.
 
-Track the response ID from nested `response.created` alongside the outer `delegation_id`, and collect that response's function calls from `response.output_item.done`. Forwarded lifecycle snapshots deliberately contain `response.output: []`, including at `response.completed`; their `tools` array is empty, `instructions` is `null`, and `input` is omitted. An empty terminal output list does **not** mean there are no pending function calls. Use the collected calls to determine which results must be submitted before continuing.
+Track the response ID from nested `response.created` alongside the outer `delegation_id`. Collect the response's function calls from `response.output_item.done`, and use that collection to determine which tool results to submit before continuing.
+
+The forwarded lifecycle events, including `response.completed`, contain `response.output: []` even when function calls need results. These events also have an empty `tools` array, `instructions: null`, and no `input` field. Read the individual output-item events for the function calls.
 
 After executing the authorized operation, append the result as a Responses item:
 
@@ -172,9 +184,9 @@ async def send_update(
 ```
 
 
-Submit every required result for the pending tool calls before continuing. Appending a function result does not automatically continue the response. `response.item.create` has no standalone success acknowledgment; keep processing errors and the subsequent nested response lifecycle.
+Send a `response.item.create` result for every pending function call, then send `response.create` to continue the backend response. `response.item.create` has no separate success acknowledgment; keep processing errors and nested Responses lifecycle events.
 
-`response.create` is a Live command for creating or continuing delegated Responses work, using the session's configured backend. Do not attach a Responses API creation body, backend model override, or `delegation_id` to this event. Both commands require Responses delegation.
+Both commands require Responses delegation. The Live `response.create` command uses the backend configuration stored in the session. Use the event payload shown above, and configure the backend model and other settings through the session.
 
   
 
@@ -195,9 +207,9 @@ session: SessionConfigParam = {"model": "gpt-live-1", "delegation": {"type": "cl
 ```
 
 
-This selects client delegation for the session. Configure the backend separately: your application chooses its model or service, instructions, tools, and how to route work. If you use the Responses API for that backend, set its model and tools in your own Responses requests. The Live session does not configure or run those backend tools.
+Your application configures and runs the backend: choose its model or service, instructions, tools, and routing. If the backend uses the Responses API, set its model and tools in your application's Responses requests.
 
-When GPT-Live requests help, your application builds the backend request from conversation and application context, runs the work, and decides which results to send back. Enforce permissions and required confirmations before executing your tools. Retain the full conversation history in your application so you can provide the relevant context for each backend request.
+When GPT-Live requests help, build the backend request from your saved conversation history and current task state. Check permissions and required confirmations, run the work, and choose which results to return.
 
 ## Keep the conversation context in your application
 
@@ -226,7 +238,7 @@ Keep long records and full tool output in the backend. If you create a replaceme
 }
 ```
 
-Read `event.delegation.id`. The delegation object contains metadata, not task text. Maintain the transcript and application context needed by your own delegated-work handler. Current IDs have an `item_` prefix, as illustrated here; treat the full ID as opaque and return it unchanged rather than constructing or parsing one.
+Save `event.delegation.id` and include it unchanged in updates about this task.
 
 Return a result using that ID:
 
@@ -257,9 +269,9 @@ async def send_update(
 ```
 
 
-Use `session.thinking.append` to add information to the model's internal reasoning without speaking it aloud when appended. Use `session.commentary.append` for a result the model should speak aloud; the model is trained to paraphrase the appended text. All appends contain a plain string and require `delegation_id`, including when its value is `null`. A non-null ID must name a known client delegation.
+Use `session.commentary.append` for results GPT-Live should say aloud; it is trained to paraphrase the text. Use `session.thinking.append` for facts or progress that it can use in later replies without saying them when they arrive. You can send multiple updates with the same client delegation ID.
 
-Repeated result appends can continue the same client delegation. An appended acknowledgment arrives after estimated context injection; it is not proof that the model has consumed or spoken the result, or that an external action succeeded.
+See [Send the right kind of update](#send-the-right-kind-of-update) for content limits, required fields, and acknowledgment timing.
 
   
 
@@ -282,15 +294,14 @@ unclear, ask for that detail instead of guessing.
 and confirmation requirements.]
 
 ## Return the result
-Return the relevant facts, whether the task is complete, and what comes next.
-Use confirmed values. Do not invent a successful action.
+Return the relevant facts, the task's current status, and the next step.
+Report an action as complete after the tool or service confirms success.
+If the outcome is unclear, state that and explain what needs to be checked.
 ```
 
 Keep large structured payloads, lengthy tool output, and Markdown intended for display in the backend. Give GPT-Live the relevant facts and let it choose how to say them. A concise tool result doesn't need an additional model call to rewrite it for speech.
 
 With client delegation, [return the result directly to GPT-Live](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=client#receive-a-client-delegation). With Responses delegation, follow the [function-result flow](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=responses#complete-a-client-actionable-function-call) to continue backend work.
-
-SDK event examples below use `connection`, a connected primary Live WebSocket or sideband from the [connection guides](https://developers.openai.com/api/docs/guides/voice-websockets?api=live). Call the helper after `session.started` on a primary connection; an attached sideband already belongs to a running session.
 
 ## Send the right kind of update
 
@@ -403,7 +414,7 @@ The instruction does not cancel backend work. [Block the affected action and han
 
 The corresponding acknowledgements are `session.thinking.appended`, `session.commentary.appended`, and `session.instructions.appended`. Match their `client_event_id` to your outgoing `event_id`. The acknowledgment waits for estimated context injection, not for speech or playback to finish. See [when context reaches the model](https://developers.openai.com/api/docs/guides/live-conversations#understand-when-context-reaches-the-model) for timing and error handling.
 
-Quiet context can still affect what the model says later. It is not a private place for secrets or hidden reasoning. Send useful facts and brief progress summaries.
+Send facts and brief progress summaries that GPT-Live can use in the conversation. Content sent with `session.thinking.append` can influence later spoken replies; keep secrets and private backend reasoning in your application.
 
 ## Keep updates accurate and useful
 
@@ -420,7 +431,7 @@ For spoken updates, send `session.commentary.append` with content that matches t
 | Failed                 | “That time is no longer available.”        |
 | Cancellation confirmed | “Your appointment has been canceled.”      |
 
-A spoken interruption does not automatically cancel backend work. If the user changes Friday to Thursday, update the active task and ignore late Friday results. Your application must decide whether to cancel work, change it, or let it finish. Check that cancellation succeeded before saying it did.
+When the user changes a request, update the active task in your application. For example, if they change Friday to Thursday, use Thursday for subsequent work and ignore results from the outdated Friday request. Manage any cancellation in the backend, and confirm it succeeded before telling the user that the work was canceled. Interrupting the spoken conversation leaves backend work running.
 
 Before retrying a failed tool call, check whether the original action already happened. For example, a lost response should not cause a second booking. If the outcome is unclear, say so and offer the next useful step.
 
@@ -437,7 +448,7 @@ In either delegation mode, use `session.thinking.append` with `delegation_id: nu
 
 ### Accept typed input
 
-If a caller types an exact value, such as an order number, pass it to the backend that handles the task. A voice-only application does not need this path. Keep the typed value as user data rather than a live-model instruction.
+Send typed values, such as order numbers, to the backend as user-provided data so it can use the exact text.
 
 
 
@@ -536,7 +547,7 @@ Reduce the time between a request for backend work and a useful result for the c
 
 ### Responses delegation
 
-Live manages persistent WebSocket connections to Responses, prepares the connection and known request configuration in advance, and reuses prior response state when available. You do not need to implement those steps for the hosted backend. Reuse depends on the active connection and compatible state; it does not guarantee a cache hit or a specific latency.
+Live manages persistent WebSocket connections to Responses and prepares known request configuration in advance. It can also reuse prior response state when the active connection and state support it. Measure response time and reported cache usage on your workload to see the effect.
 
 Tune the backend through `delegation.responses`:
 
@@ -559,7 +570,7 @@ Your application owns the path from delegation receipt to returning a result. Pr
 - **Prepare known configuration.** Initialize instructions, tools, and connections before the first request needs them. Responses WebSocket mode also supports warming up known request state before generation; follow its [setup guidance](https://developers.openai.com/api/docs/guides/websocket-mode#connect-and-create-responses).
 - **Stream useful results.** Return coherent, verified chunks with `session.commentary.append`. Use `session.thinking.append` for quiet progress. Preserve the client delegation ID and the 500-token limit per append. Keep private reasoning in the backend and confirm actions before announcing success.
 - **Keep reusable input stable.** Preserve instructions, tool definitions and ordering, and unchanged history prefixes. Append new information after reusable content when your backend supports caching and continuation.
-- **Avoid unnecessary buffering.** Forward a useful result as soon as it is ready. Buffer only enough to classify the output and form a coherent chunk. Prefer structured phase metadata; if you use text prefixes to distinguish progress from results, wait for the complete prefix before forwarding text.
+- **Forward complete, useful updates.** Send each result as soon as you have enough text to understand it on its own. Have your backend label updates as progress or results so your application can choose the appropriate append event. If it marks these categories with a text prefix, wait for the full prefix before forwarding the update.
 
 Measure the first useful spoken answer when comparing this path with Responses delegation.
 
@@ -583,15 +594,7 @@ For browser applications, use the WebRTC data channel for captions and local UI 
 
 Process accumulated text when meaningful new information arrives. A fragment may be incomplete, and later speech can change the request. Discard outdated results, coordinate with subsequent delegated work to avoid duplicate actions, and apply your usual permission and confirmation checks before consequential actions.
 
-To feed information back into the conversation:
-
-| Intent                                                        | Event                         |
-| ------------------------------------------------------------- | ----------------------------- |
-| Change the live model's behavior or redirect the conversation | `session.instructions.append` |
-| Provide quiet context for subsequent responses                | `session.thinking.append`     |
-| Provide information the model should say aloud                | `session.commentary.append`   |
-
-For updates outside a client delegation, use `delegation_id: null`. These appends steer the live model; your application controls UI changes, tool execution, and cancellation. See [Send the right kind of update](#send-the-right-kind-of-update) for append examples.
+Send findings or instructions back to GPT-Live using the [append event that matches the update](#send-the-right-kind-of-update). For work started outside a client delegation, use `delegation_id: null`. Your application applies UI changes and manages tool execution and cancellation.
 
 ### Shared optimizations
 
@@ -606,6 +609,8 @@ See [Latency optimization](https://developers.openai.com/api/docs/guides/latency
 
 ## Verify the complete interaction
 
-Test both the authoritative application state and the audio the client played. A backend response can finish while the spoken result is interrupted, and a context acknowledgment confirms acceptance rather than playback. Keep operation IDs and task revisions separate from delegation IDs so reconnects, retries, and late results do not repeat or reverse an action.
+Verify that the backend completed the intended action and that the client played the expected spoken result. For example, check both the booking record and the audio played after a successful reservation. The backend can finish while the spoken answer is interrupted, so test these outcomes separately.
+
+Track each application action with its own operation ID and each changed request with a task revision, alongside the GPT-Live delegation ID. Use those records to recognize completed work after reconnects or retries and to discard results for outdated requests.
 
 Use [Evaluating voice agents](https://developers.openai.com/cookbook/examples/audio/voice_agent_evaluation) for repeatable tests. For an existing Realtime tool loop or chained backend, follow [Migrate to GPT-Live](https://developers.openai.com/api/docs/guides/live-migration).

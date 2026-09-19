@@ -2,7 +2,7 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-Choose the API your application uses. Each API has its own authentication, session creation, and event contract.
+Choose your API to see its connection steps and session events.
 
 
 

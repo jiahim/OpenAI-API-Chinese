@@ -853,8 +853,10 @@ chunk objects if the request is streamed.
 
 - `prediction: optional ChatCompletionPredictionContent or null`
 
-  Static predicted output content, such as the content of a text file that is
-  being regenerated.
+  Configuration for a [Predicted Output](/api/docs/guides/predicted-outputs),
+  which can greatly improve response times when large parts of the model
+  response are known ahead of time. This is most common when you are
+  regenerating a file with only minor changes to most of the content.
 
   - `content: string or array of ChatCompletionContentPartText`
 

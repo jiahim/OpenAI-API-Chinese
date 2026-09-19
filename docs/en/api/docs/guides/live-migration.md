@@ -2,7 +2,7 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-GPT-Live handles the voice conversation while a backend handles task reasoning and tools. Keep your application logic, tool implementations, permissions, and durable state. The migration connects those responsibilities to the new voice interface.
+GPT-Live handles listening and speaking. A backend decides how to complete tasks and which tools to call. Keep your existing tool implementations, permission checks, and saved task records. During migration, connect that backend to GPT-Live and decide which instructions belong in each model.
 
 This guide uses an appointment assistant: check availability, ask the user to confirm a slot, then book it. Start with a connected session from [Getting started](https://developers.openai.com/api/docs/guides/live), and keep representative conversations from your existing application for comparison.
 
@@ -22,16 +22,16 @@ Use [Getting started](https://developers.openai.com/api/docs/guides/live) for se
 
 ## Choose your delegation mode
 
-Your existing architecture is a useful starting point:
+Choose who will run the backend:
 
-- **Responses delegation** fits a Realtime app where the model selects functions and your application executes them. A hosted Responses model takes over task reasoning and tool selection.
-- **Client delegation** fits an existing text agent or orchestrator. Your application supplies context, invokes that backend, and returns results to GPT-Live.
+- **Responses delegation:** Configure a hosted Responses model to reason about tasks and select tools. Your application executes custom functions and returns their results. This is a useful starting point when your Realtime model currently selects those functions.
+- **Client delegation:** Keep your existing agent or orchestrator. Your application supplies its conversation context, starts its work, and decides which results to send to GPT-Live.
 
-Either migration path can use either mode. For example, a Realtime app that already has a separate backend agent may keep it with client delegation. Also consider how much control you need over backend context, execution, and reviewing results before they reach GPT-Live. See [Choose a delegation mode](https://developers.openai.com/api/docs/guides/live-delegation#choose-a-delegation-mode) for the full comparison.
+Either mode can support either migration path. For example, a Realtime application with a separate backend agent can keep that agent through client delegation. See [Choose a delegation mode](https://developers.openai.com/api/docs/guides/live-delegation#choose-a-delegation-mode) for the full comparison.
 
 ## Choose your migration path
 
-Select the path that matches the application you have today.
+Start with [From Realtime API](https://developers.openai.com/api/docs/guides/live-migration?migration-path=realtime#from-realtime-api) if your current voice model selects tools. Start with [From a text agent or chained pipeline](https://developers.openai.com/api/docs/guides/live-migration?migration-path=text-agent#from-a-text-agent-or-chained-pipeline) if you are keeping an existing agent and adding GPT-Live as its voice interface.
 
 
 
@@ -54,21 +54,7 @@ For the appointment assistant:
 3. Your application runs the function, returns its result, and continues the backend response.
 4. GPT-Live uses the answer from the backend to discuss available slots with the user.
 
-GPT-Live can keep the conversation going while backend work runs. Finishing that work does not mean the assistant has finished speaking. See [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation#configure-responses-delegation) for configuration and the full event flow.
-
-### Preserve decisions that depend on audio
-
-Check whether existing tool decisions depend on acoustic evidence, such as a voicemail beep or a recorded greeting's cadence. GPT-Live hears the incoming audio, but its voice frontend delegates work instead of issuing ordinary structured function calls. In client mode, `session.delegation.created` carries metadata and timing, without raw audio, task text, or parsed tool arguments. A delegated backend does not automatically receive the waveform.
-
-For answering-machine detection, explicitly route incoming audio to an audio-capable detector. One application-managed architecture to evaluate runs a separate Realtime session alongside GPT-Live for part of the call:
-
-1. Send a copy of the incoming call audio to both sessions.
-2. Have the detector report its classification through a structured function call. Check each result against your schema, reject stale results, and keep an unknown state when evidence is insufficient. Allow later evidence to revise the decision.
-3. Send relevant trusted context to GPT-Live, and apply your application's policy to outgoing audio playback.
-
-Keep human or machine classification separate from recording readiness. Recognizing voicemail does not establish that the greeting and beep have finished or that recording can begin. A classifier result or context acknowledgment also does not establish permission to play audio. Use [Adapt your guardrails](#adapt-your-guardrails) and the [playback controls](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#control-playback-when-needed) to enforce that decision in the audio path your application controls.
-
-Test a short “hello” that develops into a voicemail greeting, call-screening prompts, and a person picking up during voicemail. If you stop the detector before the call ends, test later human pickup after it stops. Choose when to stop the detector based on these tests and its added cost. The first human classification alone does not establish that further detection is unnecessary.
+GPT-Live can continue speaking while the backend works. Track the backend task and audio playback separately: use tool results to update task status and your player’s state to update the speaking indicator. See [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation#configure-responses-delegation) for configuration and the full event flow.
 
 ### Adapt the connection and audio lifecycle
 
@@ -85,11 +71,11 @@ If your Realtime application uses a server connection to monitor the call or enf
 | Display user captions from input transcription events.                                                | Append `session.input_transcript.delta` text to the user's captions.                                            |
 | Display assistant captions from `response.output_audio_transcript.delta`.                             | Append `session.output_transcript.delta` text to the assistant's captions.                                      |
 
-**Generation and playback:** In Realtime, `response.output_audio.done` marks the end of audio generation, while `response.done` marks the end of the response stream. These events can also occur when a response is interrupted or unsuccessful; check `response.status` in `response.done`. Neither confirms that buffered audio has finished playing. For example, the server can finish generating while the client still has a second of audio to play. Drive a "speaking" indicator from playback state.
+**Generation and playback:** Drive the speaking indicator from your audio player. The server can finish generating while the player still has a second of audio queued. In Realtime, `response.output_audio.done` marks the end of generation and `response.done` ends the response stream; check `response.status` for interruption or failure. GPT-Live has no equivalent event for the end of each spoken response.
 
-**Captions:** Input transcription represents the user's speech; output transcription represents the assistant's generated speech. When input transcription is enabled, Realtime sends updates through `conversation.item.input_audio_transcription.delta` and a final transcript through `conversation.item.input_audio_transcription.completed`. A `delta` is a new text fragment. In GPT-Live, append each fragment to the corresponding speaker's captions independently because listening and speaking can overlap. A fragment is not a complete turn or confirmation of playback. See [Display captions](https://developers.openai.com/api/docs/guides/live-conversations#display-captions) for a display recipe.
+**Captions:** When input transcription is enabled, Realtime sends text fragments through `conversation.item.input_audio_transcription.delta` and a final transcript through `conversation.item.input_audio_transcription.completed`. In GPT-Live, append each fragment to the caller’s or assistant’s captions; both can change at once. Your application decides how to group text and tracks playback through the audio player. See [Display captions](https://developers.openai.com/api/docs/guides/live-conversations#display-captions).
 
-In GPT-Live, `response.create` starts or continues delegated Responses work. It does not grant permission for the voice model to speak. For startup, greetings, interruptions, and closing a session, follow [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations).
+Use `response.create` to start or continue delegated Responses work. GPT-Live manages when to speak as it listens to the conversation. For startup, greetings, interruptions, and closing a session, follow [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations).
 
 ### Split conversation and backend instructions
 
@@ -134,7 +120,7 @@ The function still returns a result for its original `call_id`. What changes is 
 | Return each function result.         | Send `conversation.item.create`.                                                 | Send `response.item.create`.                                                                                      |
 | Continue after all required results. | Send `response.create`.                                                          | Send `response.create` to continue backend work.                                                                  |
 
-For example, after `check_availability` returns one verified slot, your result changes as follows. These are messages on an already-connected session; `call_availability` stands for the actual call ID you received.
+For example, after `check_availability` returns a verified slot, send the following on your connected session. Replace `call_availability` with the call ID you received.
 
 **Before: Realtime result**
 
@@ -211,17 +197,35 @@ async def send_update(
 ```
 
 
-For the initial migration, setting `parallel_tool_calls` to `false` simplifies result handling. Collect calls from completed output-item events even if a terminal lifecycle snapshot has `output: []`. An arguments-done event alone does not supply the function name and `call_id`. Follow the complete [function-result procedure](https://developers.openai.com/api/docs/guides/live-delegation#complete-a-client-actionable-function-call) for collection, output submission, and errors.
+For the initial migration, set `parallel_tool_calls` to `false` to handle one tool call at a time. Collect each function call from the inner `response.output_item.done` event and keep its name, arguments, and `call_id`. Keep that record even if a later completion event contains `output: []`. Wait for the completed item before running the handler; the arguments-done event alone lacks the function name and `call_id`. Follow the complete [function-result procedure](https://developers.openai.com/api/docs/guides/live-delegation#complete-a-client-actionable-function-call) for collection, output submission, and errors.
 
 ### Preserve context and apply corrections
 
 Responses delegation supplies relevant voice conversation context to the backend. Keep the authoritative appointment state in your application: selected slot, confirmed slot, permissions, active operation, and outcome. Live conversation history can be compacted; it is not your booking record.
 
-If the user says “Actually, Friday instead” while a Thursday lookup is pending, update the task's revision and invalidate the earlier slot confirmation. Before executing a booking, check that its arguments still match the current task and confirmation. Return an accurate superseded or cancelled result for any pending function call your application declines, then complete the required output batch before continuing. If a booking already succeeded, reconcile that result and the requested change before taking another action.
+When the user says “Actually, Friday instead,” record Friday as the current request and clear any confirmation for Thursday. Give the task a new version number, such as revision 2, so your application can recognize results from the earlier request.
 
-Transcript fragments can arrive late or overlap with assistant speech. Append each `delta` exactly as received and use `start_ms` and `end_ms` to group the display. These timestamps are not definitive turn boundaries or word-level playback timestamps. Clarify important dates, names, and numbers when intent is uncertain. See [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations) for transcript and context handling.
+Before booking, check that the date, slot, and confirmation still match the current request. If you decline a pending function call because the user changed the request, return a result that explains it was skipped or cancelled, matching what actually happened. Submit a result for every required call before continuing the backend.
+
+If the Thursday booking already succeeded, check its current status and handle the requested change before attempting another booking.
+
+Keep each transcript fragment exactly as received, along with its speaker, `start_ms`, and `end_ms`. Use that information to update the appropriate caller or assistant caption or chat bubble, including when a fragment arrives late or both people speak at once. Choose message boundaries in your application and track audio playback in your player; the transcript timestamps do not identify exact word playback times. Clarify important dates, names, and numbers when intent is uncertain. See [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations) for transcript and context handling.
 
 **Images and screen context:** If your Realtime application accepts images, route them to a vision-capable backend and return relevant text to GPT-Live. Both client and Responses delegation support this pattern. See [Add images and visual context](https://developers.openai.com/api/docs/guides/live-delegation#add-images-and-visual-context).
+
+### Preserve decisions that depend on audio
+
+Some decisions require the sound itself, such as detecting a voicemail beep or recognizing a recorded greeting from its timing. GPT-Live hears the call, but delegation does not automatically send audio to your backend. In client mode, `session.delegation.created` contains an ID and timing information; your application supplies the request context and any audio the backend needs.
+
+For answering-machine detection, explicitly route incoming audio to an audio-capable detector. One application-managed architecture to evaluate runs a separate Realtime session alongside GPT-Live for part of the call:
+
+1. Send a copy of the incoming call audio to both sessions.
+2. Have the detector report its classification through a structured function call. Check each result against your schema, reject stale results, and keep an unknown state when evidence is insufficient. Allow later evidence to revise the decision.
+3. Send relevant trusted context to GPT-Live, and apply your application's policy to outgoing audio playback.
+
+Track two decisions: whether you are speaking to a person or a machine, and whether the destination is ready to record your message. A detector may recognize voicemail while the greeting is still playing. Wait for the evidence your application requires before allowing outgoing audio. A context acknowledgment records acceptance of the update; your application still makes the playback decision. Use [Adapt your guardrails](#adapt-your-guardrails) and the [playback controls](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#control-playback-when-needed) to enforce that decision in the audio path your application controls.
+
+Test a short “hello” that develops into a voicemail greeting, call-screening prompts, and a person picking up during voicemail. If you plan to stop the detector before the call ends, test what happens when a person picks up afterward. Use those results and the detector’s added cost to choose how long it should run. Include cases where an initial “human” classification changes as more audio arrives.
 
   
 
@@ -251,9 +255,27 @@ Configure `delegation` as `{"type":"client"}` during [session setup](https://dev
 }
 ```
 
-The notification contains metadata, not request text, tool arguments, or a complete transcript. Keep the actual `delegation.id` unchanged. Assemble the agent's input from recent role-labeled transcript fragments and verified application state, including the active task and latest correction. A delegation can arrive before a complete sentence appears in the transcript. If the available context does not establish the request, gather more context or ask for clarification before acting.
+Use this notification to start your application’s delegation handler. Preserve `delegation.id` so you can attach the result to the same request. Your handler prepares the agent’s input from caller and assistant transcripts plus the task records your application holds; the notification itself contains no request text or tool arguments.
 
-In a text application, you might pass the user's latest message directly to your agent. With GPT-Live, add an adapter that supplies that context and returns a concise, verified result:
+For example, the appointment agent might receive:
+
+> Caller: “Actually, Friday instead.”
+>
+> Current request: Find an appointment on Friday in the caller’s time zone.
+>
+> Previous result: Thursday at 2 PM was offered.
+>
+> Confirmation: No Friday slot has been confirmed.
+>
+> Task revision: 2.
+
+The notification may arrive before the full sentence is transcribed. Keep it until you have enough context, or ask the caller to clarify before taking action.
+
+In a text application, you might pass the user's latest message directly to your agent. With GPT-Live, add an adapter that supplies that context and returns a concise, verified result.
+
+Before calling the adapter, record the delegation ID so only one handler starts work for it. If the request is unclear, call the adapter again when the context is ready.
+
+Your backend remains responsible for authorization, confirmation, operation IDs, and retries. Check the task’s current revision before changing a booking. The adapter’s later revision check only prevents an outdated result from being announced; it cannot undo a booking already made.
 
 Connect a client delegation to your agent
 
@@ -329,9 +351,7 @@ async def handle_delegation(
 ```
 
 
-The adapter uses application callbacks to read context, run your agent, and check the current task revision; these aren't SDK methods. The context callback returns a ready snapshot containing recent conversation and the current task, or no snapshot when the request remains unclear. The agent callback invokes your existing agent and returns a verified summary of at most 500 tokens. In JavaScript, the application-provided `send` callback sends the JSON event on your Live connection. In Python, the adapter sends the update through the SDK `connection` directly.
-
-If context is not ready, retain the notification and invoke the adapter again after resolving the request. Before invoking this adapter, claim the delegation in your application so duplicate delivery cannot start the same operation twice. Keep authorization, confirmation, operation IDs, and retry decisions in your backend. The revision check prevents this adapter from announcing an outdated result; the backend must also check the current revision before a side effect such as booking.
+Implement the context and agent callbacks in your application. The context callback returns recent conversation and the current task, or no value while the request is still unclear. The agent callback runs your existing backend and returns a verified summary of at most 500 tokens. In JavaScript, the application-provided `send` callback sends the JSON event on your Live connection. In Python, the adapter sends the update through the SDK `connection` directly.
 
 For the appointment assistant, the context should establish the requested date and time zone, previously offered slots, any confirmed slot, and the latest correction. An availability result should say that a slot is available and that no booking has been made. Only return a booking confirmation after the booking succeeds. See [Client delegation](https://developers.openai.com/api/docs/guides/live-delegation#receive-a-client-delegation) for the full setup and result flow.
 
@@ -343,19 +363,23 @@ Keep structured tool output and workflow details in your backend. Return short f
 - Use `session.commentary.append` for a verified result the user should hear.
 - Use `session.instructions.append` for application-authored behavioral guidance.
 
-All three take plain-string `content` of at most 500 tokens and require `delegation_id`. Use the original client delegation ID for related work or `null` for general session context. Match append acknowledgments through `client_event_id`. Acceptance does not establish speech or playback. See [Send the right kind of update](https://developers.openai.com/api/docs/guides/live-delegation#send-the-right-kind-of-update).
+All three take plain-string `content` of at most 500 tokens and require `delegation_id`. Use the original client delegation ID for related work or `null` for general session context. Match each acknowledgment to the command you sent using `client_event_id`. This confirms that the update was accepted. Use assistant transcript events to observe generated speech and your player’s state to track playback. See [Send the right kind of update](https://developers.openai.com/api/docs/guides/live-delegation#send-the-right-kind-of-update).
 
-When the user says “Actually, Friday instead,” update the active task and its revision, invalidate any Thursday confirmation, and direct the existing agent to the corrected request. Decide whether to cancel, change, or let the pending lookup finish. Discard an outdated result before returning it to GPT-Live. An interruption in speech does not cancel a backend operation, and a cancellation request does not prove that an action was cancelled.
+When the user says “Actually, Friday instead,” save Friday as the current request, advance its version number, and clear any confirmation for Thursday. Send that correction to your existing agent. Decide whether to request cancellation of the Thursday lookup, change it, or let it finish and discard its result.
+
+Track the status of the lookup before reporting it as cancelled. Handle that backend decision even if the user’s interruption has already stopped the assistant’s speech.
 
 Backend work may outlive the voice session. Persist its status in your application. In a later voice interaction, start a new session with the relevant saved context; see [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations).
 
-### Adapt text and speech safeguards
-
-A text agent can finish and validate a reply before displaying it. A chained pipeline may validate the complete reply before sending it to text-to-speech. GPT-Live can speak while backend work is still running, so withholding a tool result or backend continuation does not hold all speech.
-
-Follow [Adapt your guardrails](#adapt-your-guardrails) to retain your checks and account for continuous speech.
+### Keep typed input connected to your agent
 
 Keep typed input connected to your existing backend. Treat a typed correction as an update to the same task, and send relevant verified context to the voice session. See [Accept typed input](https://developers.openai.com/api/docs/guides/live-delegation#accept-typed-input) and [Keep updates accurate and useful](https://developers.openai.com/api/docs/guides/live-delegation#keep-updates-accurate-and-useful).
+
+### Adapt text and speech safeguards
+
+A text agent or chained pipeline can validate a complete reply before displaying or speaking it. With GPT-Live, conversation and backend work run at the same time. If every spoken response must pass a check before the user hears it, put that check in the audio playback path your application controls. Holding a backend result alone will not pause all speech.
+
+Follow [Adapt your guardrails](#adapt-your-guardrails) to retain your checks and account for continuous speech.
 
 
 
@@ -363,7 +387,7 @@ Keep typed input connected to your existing backend. Treat a typed correction as
 
 Keep the input and output safeguards from your existing application when migrating from either architecture. GPT-Live can continue speaking while backend work and policy checks run, so apply checks to both the conversation and the actions your backend takes.
 
-Use a [sideband WebSocket](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#decide-whether-you-need-a-sideband) when your server needs independent access to a browser-owned session. Your server can receive transcripts and send corrective instructions while audio stays on WebRTC. If it already owns the primary WebSocket, use that event stream; Responses delegation does not require an additional sideband.
+If your server needs to monitor or control a browser’s WebRTC session, attach a [sideband WebSocket](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#decide-whether-you-need-a-sideband) to receive transcripts and send corrective instructions. Audio continues over WebRTC. If your server already streams audio through the primary WebSocket, use that connection’s event stream for these checks. Choosing Responses delegation does not by itself require a sideband.
 
 1. Monitor user and assistant transcript events and run your checks alongside the conversation.
 2. Block affected tools and external actions in application code. Cancel related application-owned work where supported, and prevent late results from continuing a blocked request.
@@ -371,7 +395,7 @@ Use a [sideband WebSocket](https://developers.openai.com/api/docs/guides/voice-s
 
 For example, if a caller asks the appointment assistant to change another person's booking without permission, block the booking operation before it runs. Then instruct the assistant to explain that it cannot make the change. Verify both the unchanged booking record and the spoken response; the refusal alone does not enforce authorization.
 
-A corrective instruction cannot retract audio already heard. If checks must finish before playback, add buffering and approval to the audio path your application controls and account for the added latency. Follow [Apply conversation guardrails](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#apply-conversation-guardrails) for the complete flow, a corrective instruction example, and playback controls. For required opening wording, see [Deliver a disclosure](https://developers.openai.com/api/docs/guides/live-conversations#deliver-a-disclosure).
+A corrective instruction cannot retract audio already heard. If your application needs to check assistant speech before playback, follow [Check speech before playback](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#check-speech-before-playback) for buffering, approval, interruption, and recovery handling. See [Apply conversation guardrails](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#apply-conversation-guardrails) for action controls and a corrective instruction example. For required opening wording, see [Deliver a disclosure](https://developers.openai.com/api/docs/guides/live-conversations#deliver-a-disclosure).
 
 ## Validate the migration
 
@@ -380,8 +404,8 @@ Compare the migrated assistant with representative conversations from your curre
 - **Actions and spoken confirmations:** Check availability, ask for confirmation, and book only the confirmed slot. Verify the backend outcome, spoken answer, and client playback separately.
 - **Corrections and duplicate prevention:** Change Thursday to Friday during a pending request. Discard outdated results and ensure retries cannot create a second booking.
 - **Permissions:** Try an unauthorized action and a booking without confirmation. Check that application policy blocks execution.
-- **Guardrail interventions:** Trigger a check during speech and during tool execution. Verify corrective speech, blocked actions, late-result handling, and playback recovery. Include slow checks and false positives.
+- **Guardrail interventions:** Trigger checks during speech and tool execution. Verify that the assistant receives the correction, affected actions stay blocked even if a tool result arrives late, and playback resumes as intended. Check whether a running operation actually stopped. Include slow checks and false positives.
 - **Interruptions:** Speak while the assistant is talking or working. Verify the conversation, audio playback, and backend task state independently.
-- **Failures and reconnects:** Exercise tool errors, lost results, and disconnects. Reconcile uncertain outcomes before retrying, and restore relevant saved context in a new session.
+- **Failures and reconnects:** Test tool errors, lost results, and disconnects. If a booking request loses its response, check whether the booking succeeded before retrying. Start the next voice session with the saved task context and verify that it continues from the established outcome.
 
 Use [Reduce backend latency](https://developers.openai.com/api/docs/guides/live-delegation#reduce-backend-latency) to tune the migrated backend. Compare useful spoken response time and task success with the [voice agent evaluation Cookbook](https://developers.openai.com/cookbook/examples/audio/voice_agent_evaluation), and use [Cost optimization](https://developers.openai.com/api/docs/guides/voice-latency-cost) to compare usage and cost.

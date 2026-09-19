@@ -123643,7 +123643,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
   - `annotation: object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }  or null`
 
-    An annotation that applies to a span of output text.
+    The annotation object being added. (See annotation schema for details.)
 
     - `FileCitation object { file_id, filename, index, type }`
 
@@ -146540,7 +146540,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
     - `annotation: object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }  or null`
 
-      An annotation that applies to a span of output text.
+      The annotation object being added. (See annotation schema for details.)
 
       - `FileCitation object { file_id, filename, index, type }`
 
