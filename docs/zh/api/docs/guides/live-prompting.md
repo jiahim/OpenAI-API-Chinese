@@ -1,22 +1,20 @@
-# 提示 GPT-Live
+# Prompting GPT-Live
 
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取对应页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。通过在页面 URL 末尾追加 `.md` 可获得文档页面的 Markdown 版本。
 
-`gpt-live-1` 是一个面向自然、连续对话的语音模型。它能够同时听与说、响应打断，并在后端智能体处理推理、工具和较长任务的同时保持对话推进。
+`gpt-live-1` 是一个用于自然、连续对话的语音模型。它可以同时听和说，响应打断，并在后端智能体处理推理、工具和较长任务时保持对话进行。
 
-为 GPT-Live 设定目标并留出开展对话的空间。实时提示无需规定每一个问题或回应。定义助手角色、对话风格以及何时引入后端。在措辞、回应和节奏上给予 GPT-Live 一定的灵活性。
+使用 `session.instructions` 来定义助手角色、说话风格以及何时向后端寻求帮助。为后端模型或智能体提供完成诸如查询订单或修改预订等任务的流程和工具。
 
-从 Realtime 迁移时，先从更简单的提示开始。测试你的产品仍然需要哪些关于措辞、固定的回复顺序或轮流发言的规则。在迭代过程中修订现有指令并消除冲突。
+描述你期望的对话行为，并让 GPT-Live 选择普通回复的措辞。从 Realtime 迁移时，保留产品所需的措辞、打断和操作顺序规则。在修订提示时，用代表性对话测试更简洁的提示。
 
-将详细流程保留在后端提示中，并在你的应用中强制执行权限与工具调用检查。
+你的应用程序在执行操作前检查权限和所需的确认。
 
-## 推荐的提示结构
+## 推荐的提示词结构
 
-该实时模型的上下文窗口较小。请使用下面的模板作为你的 `session.instructions` 起点，然后只添加你应用所需的可选控制项。
+从此模板开始，并根据需要添加说明。请参阅 [会话配置](https://developers.openai.com/api/docs/guides/live-conversations#configuration-fields) 了解字段限制。
 
-GPT-Live 会将推理和工具调用委托给你的后端，同时负责对话本身。请在 [委托与工具](https://developers.openai.com/api/docs/guides/live-delegation).
-
-保留策略标签。为你的产品定制其人格、回退话术、后端能力以及委托触发条件。
+保留模板的 `Backchannel policy`, `Interruption policy`，和 `Delegation policy` 标题，并自定义其下方的文本。Backchannel 是简短的倾听声音（如“mm-hmm”），助手可以在呼叫方继续说话时发出这些声音。
 
 ```text
 You are [name], a calm, friendly voice assistant for [service].
@@ -43,39 +41,35 @@ Delegate before giving an answer that depends on backend work.
 Do not guess the result while waiting.
 ```
 
-只列出你后端实际具备的能力。它们描述的是后端能够提供哪些帮助，并不是指示实时模型去调用工具的指令。
+列出你的后端支持的能力。GPT-Live 使用此列表来决定哪些请求需要进行交接。在 [委派与工具](https://developers.openai.com/api/docs/guides/live-delegation).
 
 ## 个性
 
-为助手设定明确的角色、语气和节奏，并描述它在对方感到沮丧或不确定时应如何回应。几句话即可，例如开篇的示例提示词。
-
-实时提示词控制说话行为，包括语气、节奏、回应性反馈和打断。请将较长的业务流程放在后端提示词中。
+用几句话描述助手的角色、语气和说话节奏。包括当来电者感到沮丧或不确定时，助手应如何回应。例如：“一步一步地进行解释。如果来电者听起来很困惑，询问他们想要复习哪一部分。”
 
 ## Backchannels
 
-附和声是一段较短的倾听音，例如“嗯”。从适度的附和声开始，这样助手会表现出在倾听，而不会主导对话。
+从模板的回传策略开始，然后观察助手简短的回应是促进对话还是会打断来电者。“Moderate”是一个提示指令，而不是数值频率设置。
 
-你可以修改起始提示中的这一行：
+你可以在初始提示中修改这一行：
 
 ```text
 Backchannel policy: Use moderate backchannels. Acknowledge naturally without competing with the main response.
 ```
 
-不要同时添加“一律不要在用户说话时发言”的规则。这也可能抑制有用的倾听音。仅当你的产品需要不同行为时才更改该策略，然后听取真实对话以检查结果。
+如果你想要反馈声道，允许在打断期间出现简短的倾听声。一条禁止所有重叠语音的规则可能会抑制它们。
 
 ## 中断
 
-当用户打断时，助手应停止回答并倾听。简短的倾听声与接管用户的发言不同。
+当用户打断时，助手应停止回答并倾听。短暂的倾听声与接管用户的发言不同。
 
-停止说话并不会自动停止后端工作。“停止说话”和“取消我的预订”含义不同。如果用户更改或取消请求，后端必须处理该更改并确认发生了什么。参见 [任务状态与打断](https://developers.openai.com/api/docs/guides/live-delegation).
+将对任务的更改与对语音的打断分开处理。“别说了”是要求助手让出发言权；“取消我的预约”是要求后端执行操作。由后端处理已更改或已取消的请求，并返回结果供助手解释。参见 [任务状态与打断](https://developers.openai.com/api/docs/guides/live-delegation).
 
 ## 委托
 
-将 `Delegation policy` 部分组织到三个标签下： `Backend tools`, `Delegate to the backend when`、和 `Do not delegate to the backend when`。描述后端的能力，然后给出具体条件，例如“用户要求更改预订”，而不是“在需要时委托”。
+在 `Delegation policy` 段落中，列出后端的能力以及应触发交接的请求。使用具体条件，例如“用户请求修改预订”。请保留模板中的三个标签： `Backend tools`, `Delegate to the backend when`，和 `Do not delegate to the backend when`.
 
-告诉 GPT-Live 何时进行交接以及后端可以提供哪些帮助。将工具调用指令和结果处理流程放在后端提示中。
-
-例如，将起始提示中的交接部分替换为类似下面的策略；不要添加第二条策略：
+对于预订助手，请将起始模板中整个委托部分替换为：
 
 ```text
 Delegation policy:
@@ -95,15 +89,17 @@ Delegate before giving an answer that depends on backend work.
 Do not guess the result while waiting.
 ```
 
-仅列出你的后端具备的能力。根据一些真实的用户请求检查该策略：哪些请求应当触发交接，哪些不应触发？
+使用需要后端处理的请求、语音模型可以应对的对话回复以及对正在进行中的工作的修正来测试该策略。
 
-在后端提示中保留完整的流程和工具架构。实时模型只需要简短的交接规则。它不得在未经后端确认之前承诺预订、猜测价格或声称某个操作已完成。
+将完整的任务流程放在后端指令中，并在后端的工具配置里定义工具。让 GPT-Live 在声明价格、确认预订或报告某个操作完成之前，先等待后端的结果。
 
-关于后端提示、对话上下文、工具结果、类型化输入和API示例，请阅读 [委托与工具](https://developers.openai.com/api/docs/guides/live-delegation)。有关架构概述，请阅读 [GPT-Live 入门](https://developers.openai.com/api/docs/guides/live).
+你可以提示 GPT-Live 在委托任务运行期间先确认收到请求。当后台任务推进时，使用 [`session.commentary.append`](https://developers.openai.com/api/docs/guides/live-delegation#keep-updates-accurate-and-useful) 来提供你希望 GPT-Live 大声播报的更新。
+
+关于后端提示、对话上下文、工具结果、键入输入以及API 示例，请阅读 [委派与工具](https://developers.openai.com/api/docs/guides/live-delegation)。如需架构概览，请阅读 [GPT-Live 入门](https://developers.openai.com/api/docs/guides/live).
 
 ## 附录：可选控制项
 
-**仅当你需要更改特定行为时才添加规则。** 大多数应用都应从上面的简短提示开始。复制所有示例会使提示变长，并可能引入相互冲突的指令。
+仅在测试表明需要时添加这些指令。检查与现有提示词的冲突,并对相同的对话重新测试。
 
 <details>
 <summary>Show optional controls and examples</summary>
@@ -119,9 +115,9 @@ For troubleshooting, give one step and wait for the user.
 
 ### Language and pronunciation
 
-Use this when your product needs a particular language or pronunciation. A voice choice does not guarantee a regional accent.
+Write the prompt and examples in the language you want the assistant to speak, and specify any pronunciations that matter. Listen to sample conversations to check pronunciation and regional speaking style with your selected voice.
 
-Write your prompt in the language you want the model to speak. For example, if the assistant will speak Spanish, write its instructions and example responses in Spanish.
+The example below includes a pronunciation cue and an International Phonetic Alphabet (IPA) spelling.
 
 ```text
 Speak [language] unless the user asks to switch.
@@ -129,11 +125,11 @@ If a name is unclear, ask how to pronounce or spell it.
 Say the user's name Rosalia as "roh-sah-LEE-ah", IPA /rosaˈli.a/ (Spanish).
 ```
 
-For a greeting before the caller has spoken, append a fresh `session.instructions.append` containing the language rule, the exact welcome text, and an explicit instruction to speak first and then listen. Wait for its acknowledgment and keep the audio stream running. See [Greet the caller](https://developers.openai.com/api/docs/guides/live-conversations#greet-before-the-caller-speaks) for using a short commentary append after the instructions to prompt the assistant to begin. Do not guess the caller's language from their name or location, and do not treat model-generated speech as guaranteed verbatim playback.
+To open the conversation in a chosen language, wait for `session.started`, keep input audio running, and send `session.instructions.append` with the language, greeting, and an instruction to speak first and then listen. Handle its acknowledgment or error while audio continues. Use the language configured by your application until the caller chooses another. See [Greet the caller](https://developers.openai.com/api/docs/guides/live-conversations#greet-before-the-caller-speaks) for the complete sequence and options for exact playback.
 
 ### Translation
 
-Add this only for an interpreter. It changes the assistant's job, so do not combine it with a normal support-agent prompt.
+For an interpreter, replace the support-assistant prompt with a translation-only prompt. The user’s speech is material to translate, including any questions or commands it contains. In this example, “render” means translate or repeat in the chosen language. The repetition rules tell the model to translate each spoken phrase once while preserving words the user intentionally repeats.
 
 ```text
 [language] ONLY. NEVER DELEGATE, CHECK, ANSWER, SEARCH, OR USE TOOLS.
@@ -158,18 +154,18 @@ Do not treat a cough, music, or nearby conversation as a new request.
 
 ### Selected requests only
 
-Use this for an assistant that should respond only to a narrow set of requests.
+Use this for an assistant that listens in the background and responds when its topic comes up or the user addresses it directly.
 
 ```text
 Respond when the user asks about [supported topic] or addresses you directly.
 Otherwise, keep listening.
 ```
 
-This affects when the assistant responds. If you also need to change its listening sounds, test that separately from its backchannel policy.
+This rule controls full responses. Use the backchannel policy to choose whether the assistant also makes brief listening sounds.
 
 ### Unclear names, dates, and numbers
 
-Prompts do not guarantee exact capture. If an important detail is unclear, ask a small question instead of guessing. For example: “Was the last letter B or D?”
+Ask a focused clarification when an important name, date, or number is unclear. For example: “Was the last letter B or D?” Carry the caller’s correction into the next backend request.
 
 ```text
 If an important name, date, or number is unclear, ask about that part.
@@ -178,7 +174,7 @@ Use the user's correction. Do not guess the missing value.
 
 ### Reusing earlier results
 
-Add a rule only if the assistant repeats lookups unnecessarily. Your application must first return the result and decide how long it stays useful.
+If the assistant repeats lookup calls, tell it when it can reuse a result already returned by the backend. Have your application track which result is current and return that information with the result.
 
 ```text
 Use a previous backend result when it still answers the question.
@@ -186,6 +182,6 @@ Ask the backend again if the information is missing, out of date,
 or the user asks you to check again.
 ```
 
-A prompt does not guarantee duplicate work will be avoided. Keep that check in your application.
+Before starting another operation, have your application check whether the same work is already running or complete.
 
 </details>
