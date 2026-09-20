@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-19T19:59:09.300Z",
+  "generatedAt": "2026-09-20T18:45:49.905Z",
   "pages": {
     "https://developers.openai.com/api/docs/actions/actions-library.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
@@ -285,11 +285,11 @@
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
       "sourcePath": "docs/en/api/docs/guides/agents-api/environments/openai-hosted.md",
-      "sourceSha256": "60fc182bef2a56bfb5b1a3ace2d22e483f4cd20da94d16516750ca38c8a954a8",
+      "sourceSha256": "c3674c3541c8705d82dd890b8445215b21d3bb20b8faeceee50a8d7a89cad85e",
       "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted.md",
       "targetPath": "docs/zh/api/docs/guides/agents-api/environments/openai-hosted.md",
-      "targetSha256": "491611b7f58256b6a173eebf538f03503f87775ab5f4bac3849a3564d1f3a3eb",
-      "translatedAt": "2026-09-11T03:14:41.062Z"
+      "targetSha256": "3a5006098f52efe0b7d7e33a11cb20f56b8ac7411442d96641445f39dd6ab3de",
+      "translatedAt": "2026-09-20T18:40:57.561Z"
     },
     "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/blaxel.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
@@ -385,11 +385,11 @@
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
       "sourcePath": "docs/en/api/docs/guides/agents-api/environments/security.md",
-      "sourceSha256": "1b3e14f59995ee7b11356a22c803502a172a24dbe0945b55bbd63197f587e40f",
+      "sourceSha256": "75e68b4ecc7e23fdb18daeb8228c1ae44c1f73dfcd4badc7ef617be9a65f45df",
       "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/security.md",
       "targetPath": "docs/zh/api/docs/guides/agents-api/environments/security.md",
-      "targetSha256": "c939af954a89f123ef04198018c0a4653bc8464684222a73db5d66d5c538ac9d",
-      "translatedAt": "2026-09-11T03:22:39.804Z"
+      "targetSha256": "96a496bb24ad76c7a53ab22c4730e3213cd8fbee1ce6ef4530288761e5c11485",
+      "translatedAt": "2026-09-20T18:41:21.060Z"
     },
     "https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
@@ -495,11 +495,11 @@
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
       "sourcePath": "docs/en/api/docs/guides/agents-api/tools/mcp.md",
-      "sourceSha256": "e32f77a8e5f96cd4c52a4b6b8ed28a425b4285b6c0b03c69aeb885ff52c706e0",
+      "sourceSha256": "ba318ffa296cd1626884cd7b3687d171c1fdd118aaf2b0862a686ed544408163",
       "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/tools/mcp.md",
       "targetPath": "docs/zh/api/docs/guides/agents-api/tools/mcp.md",
-      "targetSha256": "573a3f766c2312bd361182536957c1b9f0c3b59ce625c0b0ee60f714f7029678",
-      "translatedAt": "2026-09-11T03:33:28.013Z"
+      "targetSha256": "0ad0bdacd35ee36f1b7f9591ccb5b4b30550c4ce6ca792f882376ccbedb424df",
+      "translatedAt": "2026-09-20T18:42:05.015Z"
     },
     "https://developers.openai.com/api/docs/guides/agents-api/tools/plugins.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
@@ -515,11 +515,11 @@
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
       "sourcePath": "docs/en/api/docs/guides/agents-api/tools/vaults.md",
-      "sourceSha256": "b0196653a437f14f4b39831b15cfaacc0d926a4a62e74c2184e55a426e6f89a2",
+      "sourceSha256": "f8593705217f9ecdcb7042f48653fcae6c1b621ade9b9f60e026c3b4bca2d013",
       "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/tools/vaults.md",
       "targetPath": "docs/zh/api/docs/guides/agents-api/tools/vaults.md",
-      "targetSha256": "98824df621429ab468f27efed53a0efd3303f66a426c79093f209f3cd388b3b9",
-      "translatedAt": "2026-09-11T19:23:56.401Z"
+      "targetSha256": "ab973dd542cf1467337f506bfc99c9ba482a8978f9811add83318b8b032b16de",
+      "translatedAt": "2026-09-20T18:42:53.374Z"
     },
     "https://developers.openai.com/api/docs/guides/agents-api/tools/web-search.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
@@ -1155,11 +1155,11 @@
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
       "sourcePath": "docs/en/api/docs/guides/latest-model/gpt-5.6.md",
-      "sourceSha256": "21ba6bdb6c2b127319a5db20849fdbc06b701cb885418a8ccbcffa9c9fef317a",
+      "sourceSha256": "bcbc002991e3ff6491ba5c4d38d8f5c497fa785c0b11ea27d92c9d34676ab460",
       "sourceUrl": "https://developers.openai.com/api/docs/guides/latest-model/gpt-5.6.md",
       "targetPath": "docs/zh/api/docs/guides/latest-model/gpt-5.6.md",
-      "targetSha256": "f0c1292d7d59031fef34c484dc549620a4719804a0ff69afff72a19f92bfcc4e",
-      "translatedAt": "2026-09-05T19:16:31.267Z"
+      "targetSha256": "28765e35b1855c5c1caca663a28076d7216b84cbc4a2cb9fcfbbe61aec8992bf",
+      "translatedAt": "2026-09-20T18:44:19.234Z"
     },
     "https://developers.openai.com/api/docs/guides/latest-model/gpt-5.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
@@ -2255,11 +2255,11 @@
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
       "sourcePath": "docs/en/api/docs/pricing.md",
-      "sourceSha256": "63878741d55c9dc3c928cd88ac8f55399198daedfb49456f816d7d2cbab96768",
+      "sourceSha256": "714cbb324e68df34baa206f6d2052977a79de4ee54f655437d4faa09ca4a87d3",
       "sourceUrl": "https://developers.openai.com/api/docs/pricing.md",
       "targetPath": "docs/zh/api/docs/pricing.md",
-      "targetSha256": "af32e70d3e178c2a8969c5ca1d9cf53ad46fff5c8dea970b460469706c70f445",
-      "translatedAt": "2026-09-12T19:48:18.844Z"
+      "targetSha256": "6f5d2be2ffacd4af65cfc28b360146bf91d53189a15d6729cfceb17a6010d8d3",
+      "translatedAt": "2026-09-20T18:45:49.905Z"
     },
     "https://developers.openai.com/api/docs/quickstart.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
