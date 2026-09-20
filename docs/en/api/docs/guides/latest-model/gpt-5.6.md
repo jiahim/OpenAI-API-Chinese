@@ -40,9 +40,7 @@ If your application serves individual end users, send a stable, privacy-preservi
 
 We are continuously evolving these safeguards so that they are robust and effective in holding up to adversarial pressure, while preserving access to legitimate work such as code review, vulnerability research, patch development, debugging, security education, and defensive testing.
 
-
-
-
+<a id="migrate-to-gpt-56"></a>
 
 ## Migration quickstart
 

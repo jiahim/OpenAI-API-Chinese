@@ -41,7 +41,9 @@ Agent-generated code can read the environment key. Keep your application API key
 
 ## Broker third-party access
 
-Keep third-party credentials outside the environment. Where possible, route requests through a credential broker. The broker injects secrets into approved outbound requests without placing them in the agent's environment.
+Keep third-party credentials outside the environment. For API requests from an OpenAI-hosted sandbox, use [vault secrets as environment variables](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults#use-vault-secrets-for-api-requests-from-a-sandbox). Sandbox code uses a placeholder; a network proxy supplies the real secret for approved hosts.
+
+For self-hosted environments, configure a trusted proxy or server to supply secrets outside the environment. This is infrastructure you provide. For [function tools](https://developers.openai.com/api/docs/guides/agents-api/tools/functions), keep credentials in the application that handles the call and return only the result.
 
 <picture>
   <source
