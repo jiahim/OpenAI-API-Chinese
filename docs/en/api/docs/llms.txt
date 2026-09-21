@@ -232,6 +232,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Web search](https://developers.openai.com/api/docs/guides/tools-web-search.md): Allow models to search the web for the latest information before generating a response.
 - [Webhooks](https://developers.openai.com/api/docs/guides/webhooks.md): Use webhooks to receive real-time updates from the OpenAI API.
 - [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc.md): Connect browser voice applications with WebRTC.
+- [WebRTC with WARP](https://developers.openai.com/api/docs/guides/realtime-webrtc-warp.md): Learn how to enable WARP optimizations for native and browser-based Realtime API clients.
 - [WebSocket Mode](https://developers.openai.com/api/docs/guides/websocket-mode.md): Learn how to use Responses API WebSocket mode with response creation, continuation, and multiplexing.
 - [WebSockets](https://developers.openai.com/api/docs/guides/voice-websockets.md): Connect server-owned audio streams over WebSockets.
 - [Working with evals](https://developers.openai.com/api/docs/guides/evals.md): Learn how to test and improve AI model outputs through evaluations.

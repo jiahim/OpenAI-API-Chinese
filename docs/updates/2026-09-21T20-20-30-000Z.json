@@ -1,0 +1,33 @@
+{
+  "id": "2026-09-21T20-20-30-000Z",
+  "generatedAt": "2026-09-21T20:20:30Z",
+  "added": [
+    {
+      "path": "docs/en/api/docs/guides/realtime-webrtc-warp.md",
+      "route": "/api/docs/guides/realtime-webrtc-warp",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/realtime-webrtc-warp.md",
+      "title": "WebRTC with WARP"
+    }
+  ],
+  "modified": [
+    {
+      "path": "docs/en/api/docs/guides/prompt-caching.md",
+      "route": "/api/docs/guides/prompt-caching",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/prompt-caching.md",
+      "title": "Prompt caching"
+    },
+    {
+      "path": "docs/en/api/docs/guides/safety-checks/misalignment-monitoring.md",
+      "route": "/api/docs/guides/safety-checks/misalignment-monitoring",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring.md",
+      "title": "Misalignment monitoring"
+    },
+    {
+      "path": "docs/en/api/docs/guides/voice-webrtc.md",
+      "route": "/api/docs/guides/voice-webrtc",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/voice-webrtc.md",
+      "title": "WebRTC"
+    }
+  ],
+  "removed": []
+}

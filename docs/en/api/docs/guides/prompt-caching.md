@@ -399,6 +399,63 @@ On GPT-5.6 and later, two controls determine where cache breakpoints are placed:
 
 
 
+
+
+<a id="prewarm-the-cache"></a>
+
+
+
+### Prewarm the cache
+
+
+
+For GPT-5.6 and later, prepare known context ahead of time to reduce time to first token on a subsequent request. For example, an interactive application can prewarm shared instructions, tool definitions, or reference material during startup, before the user asks their first question.
+
+Set [`prompt_cache_options.prewarm`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20prompt_cache_options%20%3E%20%28schema%29%20%3E%20%28property%29%20prewarm) to `true` in a Responses API request to prepare the prompt cache without generating output. Once it completes, send your actual request with the same prompt prefix and `prewarm` omitted or set to `false`.
+
+Prewarm the cache
+
+```json
+{
+  "model": "gpt-5.6",
+  "input": [
+    {
+      "role": "developer",
+      "content": "Your app's shared instructions and reference material..."
+    }
+  ],
+  "prompt_cache_options": {
+    "prewarm": true
+  }
+}
+```
+
+
+Send a follow-up request
+
+```json
+{
+  "model": "gpt-5.6",
+  "input": [
+    {
+      "role": "developer",
+      "content": "Your app's shared instructions and reference material..."
+    },
+    {
+      "role": "user",
+      "content": "The user's question..."
+    }
+  ]
+}
+```
+
+
+Note: Tokens written to the cache during a prewarm request are billed at the standard cache-write rate.
+
+
+
+
+
 <a id="prompt-cache-key-best-practices"></a>
 
 <a id="tune-prompt-cache-keys"></a>
