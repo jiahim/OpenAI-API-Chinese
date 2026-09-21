@@ -186,6 +186,8 @@ See [Events and Items](https://developers.openai.com/api/docs/guides/agents-api/
 
 Send another `agent.session.input.message` to the same session. If the agent is working, the message steers the active turn. If the session is idle, it starts a new turn with the existing conversation.
 
+Saved-agent updates apply only to new sessions. To change the model, reasoning effort, or service tier for later turns in this session, [update its settings](https://developers.openai.com/api/docs/guides/agents-api/configuration#update-settings-for-an-existing-session).
+
 Use the conversation's session ID to send input. Subscribe to its [event stream](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/events/methods/stream) before sending the message so your application receives the turn's early events.
 
 Pass your API client, session ID, and message to a function in your application:

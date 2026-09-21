@@ -770,7 +770,6 @@ curl --request POST \
 
 
 
-
 ## Prompting best practices
 
 When troubleshooting cases where GPT-5.4 treats an intermediate update as the
@@ -1366,7 +1365,6 @@ GPT-5.4 performs especially well when the task requires multi-step evidence gath
 - Review [Model, API, and feature updates](#model-api-and-feature-updates) for model capabilities, parameters, and API compatibility details.
 - Read [Prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering) for broader prompting strategies that apply across model families.
 - Read [Compaction](https://developers.openai.com/api/docs/guides/compaction) if you are building long-running GPT-5.4 sessions in the Responses API.
-
 
 ## Further reading
 

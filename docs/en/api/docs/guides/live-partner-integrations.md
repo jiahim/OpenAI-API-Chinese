@@ -10,7 +10,7 @@ Use the guide for your existing voice framework or telephony provider. Each part
 | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | [LiveKit](https://docs.livekit.io/agents/models/realtime/plugins/gpt-live)                    | Build GPT-Live voice agents with LiveKit’s OpenAI plugin.                        |
 | [Twilio](https://www.twilio.com/en-us/blog/developers/twilio-openai-gpt-live-1-api-resources) | Connect incoming and outgoing phone calls to GPT-Live with Twilio Agent Connect. |
-| [Telnyx](https://telnyx.com/resources/outbound-ai-calls-python-openai-live)                   | Build outbound calling experiences with GPT-Live and the Telnyx Voice API.       |
+| [Telnyx](https://developers.telnyx.com/docs/voice/sip-trunking/gpt-live-configuration-guide)  | Build outbound calling experiences with GPT-Live and the Telnyx Voice API.       |
 | [Daily/Pipecat](https://docs.pipecat.ai/api-reference/server/services/s2s/openai-live)        | Add GPT-Live to your application with Pipecat’s OpenAI Live service.             |
 
 ## Integration checklist

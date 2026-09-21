@@ -2,7 +2,7 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-Choose the API your application uses. Each API has its own authentication, session creation, and event contract.
+Choose your API to see its connection steps and session events.
 
 
 
@@ -16,7 +16,7 @@ The sideband carries events and commands. Your application supplies the tool exe
 
 For browser applications, use the [WebRTC data channel](https://developers.openai.com/api/docs/guides/voice-webrtc?api=live) for captions and local UI updates. Use a sideband when transcript processing runs on your server, such as guardrail checks, sentiment analysis, or speculative tool calls. Your server can receive events and steer the same session directly while browser audio stays on WebRTC. See [React to transcript fragments](https://developers.openai.com/api/docs/guides/live-delegation#react-to-transcript-fragments) for examples.
 
-If your backend already owns the primary [WebSocket connection](https://developers.openai.com/api/docs/guides/voice-websockets?api=live), it already receives the session's events and can send commands.
+If your backend streams audio over the primary [WebSocket connection](https://developers.openai.com/api/docs/guides/voice-websockets?api=live), use that connection to receive events and send commands.
 
 [Responses delegation](https://developers.openai.com/api/docs/guides/live-delegation) also works without a sideband. The browser can forward function-call events from its data channel to an authenticated backend for execution. OpenAI-hosted tools run through the delegated backend without an application tool executor.
 
@@ -31,7 +31,7 @@ If your backend already owns the primary [WebSocket connection](https://develope
 
 3. Receive events and send commands on the attached socket. The session is already running; do not send `session.start` again.
 
-Treat the session ID as an opaque value. Preserve its prefix and use it only for the session to which your application has authorized access. Read the ID from the Live JSON response, rather than a Realtime `Location` header or `call_id` URL parameter.
+Use the session ID unchanged, including its prefix, and verify that your application has authorized access to that session.
 
 ### Observe events and send commands
 
@@ -46,7 +46,7 @@ Treat the session ID as an opaque value. Preserve its prefix and use it only for
 
 Commands follow the same validation and delegation rules as on the primary connection. For context appends, use `delegation_id: null` for general session context; a non-null ID must identify an existing client delegation. See [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation) for configuration, function execution, and the context append examples.
 
-For browser sessions, keep microphone input and speaker output on the negotiated WebRTC media track. Use the sideband for conversation events and control. A transcript event or command acknowledgment does not prove that audio has played or that the user has heard it.
+For browser sessions, keep microphone input and speaker output on the negotiated WebRTC media track. Use the sideband for conversation events and control, and track playback in your audio player.
 
 ### Receive reflected audio
 
@@ -59,15 +59,15 @@ A sideband also receives copies of subsequent input and output audio while the p
 
 Both payloads are base64-encoded raw mono PCM16LE at 24 kHz, regardless of the primary transport's audio format. Neither event has an `event_id`. Reflected input contains received audio before input muting; it does not confirm that the model consumed those samples. Reflected output ranges can have gaps for dropped frames and do not indicate when the caller heard the audio.
 
-These are server events, not permission to send audio through the sideband. Send microphone audio through the primary transport; do not send `session.input_audio.append` on the attached socket.
+Send microphone audio only through the primary connection. Use the sideband to receive reflected audio.
 
 ### Assign one owner for each action
 
 Choose whether the browser or backend handles each action. If both connections receive a function-call event, execute the function once. Apply the same ownership rule to context updates and requests to continue backend work.
 
-Store transcripts and tool state in your application. Attach early if the backend needs to observe the conversation from the start, and retain any history collected before attachment. Do not rely on attachment to reconstruct earlier transcripts or tool results.
+Attach early if the backend needs to observe the conversation from the start. Store transcripts and tool state in your application, including any history collected before attachment.
 
-A sideband does not itself make session events private from the browser. Keep sensitive tool credentials and authorization decisions in your backend, and return only the context needed for the conversation.
+The browser can still receive session events when a sideband is attached. Keep sensitive tool credentials and authorization decisions in your backend, and return only the context needed for the conversation.
 
 
 
@@ -75,17 +75,17 @@ A sideband does not itself make session events private from the browser. Keep se
 
 ## Apply conversation guardrails
 
-Use your server's connection to monitor the conversation, check requests against your application's policies, and intervene when a check triggers. A sideband gives your server access to session events and commands; your application runs the checks and enforces their results. The same workflow applies when your server already owns the primary WebSocket connection.
+Use your server's primary WebSocket or sideband to monitor the conversation and check requests against your application's policies. Your application runs the checks, blocks affected actions, and sends corrective instructions when a check triggers.
 
 ### Run checks alongside the conversation
 
 Guardrails are one use of [processing transcript fragments as they arrive](https://developers.openai.com/api/docs/guides/live-delegation#react-to-transcript-fragments). The same stream can start a speculative lookup or update the UI alongside these checks.
 
 1. **Monitor transcripts.** Accumulate `session.input_transcript.delta` fragments to check user requests for jailbreak attempts, sensitive information, or policy violations. Use `session.output_transcript.delta` to check assistant speech for unsupported claims or responses outside your application's scope. Keep each check associated with the transcript and application request it evaluated.
-2. **Run checks concurrently.** A fast, lightweight model can evaluate requests while the conversation continues. Return a small structured result, such as `{"triggered": true}`, that your application can act on. Keep actions that require approval blocked until their checks pass; a timeout or failed check is not approval.
-3. **Block affected actions.** When a check triggers, mark the request as blocked in application state. Check that state before executing a tool or committing a change, including work already queued. A spoken refusal does not prevent a tool from running.
+2. **Run checks concurrently.** A fast, lightweight model can evaluate requests while the conversation continues. Return a small structured result, such as `{"triggered": true}`, that your application can act on. Run actions that require approval only after their checks pass. Keep them blocked if a check fails or times out.
+3. **Block affected actions.** When a check triggers, mark the request as blocked in application state. Check that state before executing a tool or committing a change, including work already queued.
 4. **Stop related work.** Cancel application-owned jobs where your backend supports cancellation, and discard late results from blocked or superseded requests. With Responses delegation, stop executing affected custom functions and do not send `response.create` to continue blocked work. This does not cancel an already-running hosted response or stop frontend speech.
-5. **Record and redirect.** Log the decision with the affected request and delegation IDs, then send a corrective instruction. An event name such as `guardrail.triggered` belongs to your application's telemetry; it is not a GPT-Live API event.
+5. **Record and redirect.** Log the decision with the affected request and delegation IDs, then send a corrective instruction.
 
 See [Transcript deltas](https://developers.openai.com/api/docs/guides/live-conversations#transcript-deltas) for collecting fragments and [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation#keep-updates-accurate-and-useful) for keeping backend results aligned with the current task.
 
@@ -126,17 +126,29 @@ async def send_update(
 
 Keep the instruction application-authored. Do not copy untrusted user text into it as an instruction. Use `delegation_id: null` for this session-wide correction, and keep `content` within 500 tokens.
 
-Match `session.instructions.appended` to your command through `client_event_id`. The acknowledgment arrives after estimated context injection; it does not prove that the assistant stopped speaking or that queued audio stopped playing. Corrective instructions cannot retract audio the user has already heard.
+Match `session.instructions.appended` to your command through `client_event_id`. The acknowledgment arrives after estimated context injection. To stop audio reaching the caller, use the playback controls below.
 
 For disclosures that request specific spoken wording, also use instructions. See [Deliver a disclosure](https://developers.openai.com/api/docs/guides/live-conversations#deliver-a-disclosure) for an example and playback considerations.
 
 ### Control playback when needed
 
-Test corrective instructions and action blocking first. If your application also needs to block model audio, control output at the client or media relay: temporarily mute or drop the output, discard locally queued audio, send the corrective instruction, and resume playback according to your application's recovery policy. Clear stale audio before resuming. A sideband alone does not control the media path, and an instruction acknowledgment is not a signal to resume playback.
+If your application needs to block model audio, control playback at the client or media relay. Temporarily mute or drop the output, discard locally queued audio, and send the corrective instruction. Resume playback according to your application's recovery policy after clearing stale audio; an instruction acknowledgment is not a signal to resume. A sideband alone does not control playback, and corrective instructions cannot retract audio the caller has already heard.
 
 `session.input_audio.mute` controls the caller's microphone input. It does not mute model output or cancel delegated work.
 
-GPT-Live streams transcript fragments while speaking. If a check must finish before the user hears the audio, your application needs to buffer and approve audio before playback. This adds latency. Suppressed audio can also leave the model's conversation context ahead of what the user heard, so test how the conversation resumes.
+### Check speech before playback
+
+For most applications, [monitor user and assistant transcripts](#run-checks-alongside-the-conversation) while the conversation continues. When a guardrail triggers, your application can block affected actions or send corrective instructions.
+
+If your application needs to check assistant speech before playback, buffer the audio in your player or media bridge before sending it to the caller. Keep receiving audio and transcript events while the check runs, and read transcripts independently of playback.
+
+1. **Collect audio and its transcript.** Implement output voice activity detection (VAD) in your application, or use a noise gate provided by your media framework, to identify candidate speech segments. GPT-Live does not provide an output VAD or noise gate for this workflow. Wait for the transcript needed to check each segment.
+2. **Release approved audio.** When a segment passes the check, enqueue its original buffered audio for playback. If the check fails, the transcript is missing, or the check times out, discard the segment and use an application-defined safe fallback.
+3. **Handle interruptions.** Associate the audio, transcript, check result, and playback state with an application-generated ID. When an interruption cancels that speech, clear its buffered and queued audio and ignore any later approval for it.
+
+A pause can mark a candidate segment while the model is still composing an answer. If your policy requires checking a complete answer, define how your application establishes completion; voice activity detection alone cannot establish that the whole answer is finished.
+
+Buffering adds latency. Discarded speech remains in the model’s conversation context, so test how the conversation continues after withheld audio or a fallback.
 
 ### Test the intervention
 
@@ -144,7 +156,7 @@ Test allowed and blocked requests, false positives, slow or failed checks, a tri
 
 ## Finish cleanly
 
-Keep receiving events while the backend owns tool execution or final usage collection. Register the `session.closed` handler before sending `session.close`, and keep the WebRTC connection, data channel, and sideband open while pending work drains. Save the final session usage and any backend usage received in Responses events before cleanup. If the connection fails before the final event arrives, record finalization as incomplete. See [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close) for the close sequence.
+Keep receiving events while tools finish and the session reports final usage. Register the `session.closed` handler before sending `session.close`, and keep the WebRTC connection, data channel, and sideband open while pending work drains. Save the final session usage and any backend usage received in Responses events before cleanup. If the connection fails before the final event arrives, record finalization as incomplete. See [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close) for the close sequence.
 
   
 

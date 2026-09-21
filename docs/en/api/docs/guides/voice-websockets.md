@@ -2,7 +2,7 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-Choose the API your application uses. Each API has its own authentication, session creation, and event contract.
+Choose your API to see its connection steps and session events.
 
 
 
@@ -10,7 +10,7 @@ Choose the API your application uses. Each API has its own authentication, sessi
 
 Use a primary WebSocket when your server captures audio or relays an audio stream for a client. It carries audio and JSON events in both directions. Keep the project API key on that trusted server. For browser and mobile applications, start with [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=live).
 
-This guide covers the primary audio connection. A [sideband connection](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live) lets a server observe and control an existing Live session. A [Responses WebSocket](https://developers.openai.com/api/docs/guides/websocket-mode) connects your backend to the Responses API for reasoning and tools. Neither replaces the primary audio connection.
+This guide covers streaming audio to GPT-Live. To monitor or control an existing session, see [Server-side controls](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live). To connect a reasoning and tool backend to the Responses API, see [Responses WebSocket mode](https://developers.openai.com/api/docs/guides/websocket-mode).
 
 ### Authenticate and start the session
 
@@ -263,9 +263,9 @@ Send each event as a JSON text message. Audio travels as base64 inside those mes
 - **Receive backend events:** when using Responses delegation, process the nested `event` in each `response.event` envelope.
 - **Handle errors:** handle rejected commands and session errors from `error` events. Use `error.client_event_id`, when present, to identify the command.
 
-Output audio events have no timing fields, and GPT-Live does not emit an output-audio-done event. Track your playback queue to know which received audio has played. Transcript timestamps describe intervals on the session timeline; they do not mark audio playback completion. A backend response completing also does not mean the assistant has finished speaking.
+Track playback with your application’s audio queue. GPT-Live’s primary WebSocket sends output audio without timing fields or an output-audio-done event. Use transcript timestamps to organize captions and backend events to track delegated work.
 
-GPT-Live manages when to listen and speak as audio streams. It does not use Realtime's input-buffer commit and `response.create` voice-turn loop. In Live, `response.create` starts or continues delegated backend work. See [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation) for that workflow.
+GPT-Live manages when to listen and speak as audio streams continuously. Use `response.create` to start or continue delegated backend work. See [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation) for that workflow.
 
 ### Configure an ongoing session
 

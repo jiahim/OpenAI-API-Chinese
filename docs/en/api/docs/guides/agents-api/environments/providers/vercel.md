@@ -20,11 +20,11 @@ Use a Vercel project with Sandbox access. How the Vercel Sandbox SDK authenticat
 - **Running locally:** set `VERCEL_TOKEN`, `VERCEL_TEAM_ID`, and `VERCEL_PROJECT_ID` in your environment.
 - **Deployed on Vercel:** use Vercel OIDC.
 
-Set `OPENAI_API_KEY` for application requests and a separate restricted `OPENAI_EXECUTOR_API_KEY` for sandbox registration. Grant the application key `api.agents.read` and `api.agents.write` for session operations, plus `api.responses.write` for model inference. Add `api.vaults.read` and `api.vaults.write` if your application manages vaults. Create the executor's [environment key](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication) and use the same organization, project, and user or service account for both keys. Only the restricted executor key enters the sandbox.
+Use `OPENAI_API_KEY` for application requests. Set `OPENAI_EXECUTOR_API_KEY` to an [environment key](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication), and pass only that key into the sandbox as `CODEX_API_KEY`.
 
 ## 1. Set up the Vercel environment
 
-Create a [self-hosted session](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#create-or-reuse-a-session) and save its environment ID. Use the Vercel SDK or API to create an isolated sandbox with the configured working directory. Install the Codex CLI in the sandbox, then [start its executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#start-the-executor) with that environment ID and the restricted executor key.
+Create a [self-hosted session](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#create-or-reuse-a-session) and save its environment ID. Use the Vercel SDK or API to create an isolated sandbox with the configured working directory. Install the Codex CLI in the sandbox, then [start its executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#start-the-executor) with that environment ID and the environment key.
 
 For regular use, put Codex in a Vercel snapshot so the sandbox can connect sooner.
 

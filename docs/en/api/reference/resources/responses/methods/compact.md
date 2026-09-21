@@ -10,11 +10,11 @@ Learn when and how to compact long-running conversations in the [conversation st
 
 ### Body Parameters
 
-- `model: "gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 100 more or string or null`
+- `model: "gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 101 more or string or null`
 
   Model ID used to generate the response, like `gpt-6-astra`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/api/docs/models) to browse and compare available models.
 
-  - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 100 more`
+  - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 101 more`
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/api/docs/models) to browse and compare available models.
 
@@ -57,8 +57,6 @@ Learn when and how to compact long-running conversations in the [conversation st
     - `"gpt-5.1-2025-11-13"`
 
     - `"gpt-5.1-codex"`
-
-    - `"gpt-5.1-mini"`
 
     - `"gpt-5.1-chat-latest"`
 
@@ -119,6 +117,10 @@ Learn when and how to compact long-running conversations in the [conversation st
     - `"gpt-4o-2024-08-06"`
 
     - `"gpt-4o-2024-05-13"`
+
+    - `"gpt-audio-mini"`
+
+    - `"gpt-audio-mini-2025-12-15"`
 
     - `"gpt-4o-audio-preview"`
 
@@ -1753,6 +1755,10 @@ Learn when and how to compact long-running conversations in the [conversation st
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
+
             Currently supported `connector_id` values are:
 
             - Dropbox: `connector_dropbox`
@@ -2838,6 +2844,10 @@ Learn when and how to compact long-running conversations in the [conversation st
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
+
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
 
             Currently supported `connector_id` values are:
 
@@ -5506,6 +5516,10 @@ Learn when and how to compact long-running conversations in the [conversation st
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
+
             Currently supported `connector_id` values are:
 
             - Dropbox: `connector_dropbox`
@@ -6587,6 +6601,10 @@ Learn when and how to compact long-running conversations in the [conversation st
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
+
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
 
             Currently supported `connector_id` values are:
 

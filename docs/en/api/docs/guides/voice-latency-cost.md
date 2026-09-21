@@ -109,6 +109,8 @@ With client delegation, your backend worker can keep running while the voice
 session is open or closed. Save the task state and conversation context before
 [closing the voice session](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close).
 
+For the inactivity timeout, restart trigger, and context restoration workflow, see [Close idle sessions and resume](https://developers.openai.com/api/docs/guides/live-conversations#close-idle-sessions-and-resume).
+
 For an ambient agent, close the voice session while the backend handles a
 long-running task, such as coding in goal mode. Offer a button labeled
 **Resume conversation** to start a new voice session when the user returns, or use a backend

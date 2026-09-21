@@ -4,7 +4,7 @@
 
 You can attach tools to a Realtime session so the model can look up data, take actions, or call services during a live conversation. Tool configuration uses the same event surface whether your client is using a [WebRTC data channel](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime) or a [WebSocket](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime).
 
-Use function tools when your application should execute the tool and return the result. Use MCP tools or built-in connectors when the Realtime API should connect to a remote tool server for you.
+Use function tools when your application should execute the tool and return the result. Use MCP tools when the Realtime API should connect to a remote tool server for you.
 
 ## Choose a tool type
 
@@ -12,7 +12,7 @@ Use function tools when your application should execute the tool and return the 
 | ------------------------- | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
 | `function`                | Your application owns the business logic, approval checks, or private system access. | Your client or server receives a function call and returns `function_call_output`. |
 | `mcp` with `server_url`   | You want the model to call tools exposed by a remote MCP server.                     | The Realtime API calls the remote MCP server.                                      |
-| `mcp` with `connector_id` | You want to use a built-in connector such as Google Calendar.                        | The Realtime API calls the connector with the authorization you provide.           |
+| `mcp` with `connector_id` | You use a legacy built-in connector with an existing model.                          | The Realtime API calls the connector with the authorization you provide.           |
 
 Add tools in **one of two places**:
 
@@ -165,7 +165,7 @@ For a full event-by-event walkthrough of function calling, see [Managing convers
 
 ## Configure an MCP tool
 
-MCP tools are useful when the tool already exists behind a remote MCP server, or when you want to use an OpenAI-managed connector. Unlike function tools, MCP tools are executed by the Realtime API itself.
+MCP tools are useful when the tool already exists behind a remote MCP server, or when an existing model uses a legacy built-in connector. Unlike function tools, MCP tools are executed by the Realtime API itself.
 
 In Realtime, the MCP tool shape is:
 
@@ -243,6 +243,15 @@ connection.session.update(
 ```
 
 
+### Legacy connectors
+
+`connector_id` is deprecated for models released after September 1,
+  2026. Use `server_url` to connect to a remote MCP server, or 
+  `tunnel_id` to connect to a local MCP server through 
+  [Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels). Existing
+  models retain connector support. The example below uses
+  `gpt-realtime-1.5`, which predates the cutoff.
+
 Built-in connectors use the same MCP tool shape, but pass `connector_id`
 instead of `server_url`. For example, Google Calendar uses
 `connector_googlecalendar`. In Realtime, use these built-in connectors for read
@@ -257,7 +266,7 @@ const event = {
   type: "session.update",
   session: {
     type: "realtime",
-    model: "gpt-realtime-2.1",
+    model: "gpt-realtime-1.5",
     output_modalities: ["text"],
     tools: [
       {
@@ -284,7 +293,7 @@ event = {
     "type": "session.update",
     "session": {
         "type": "realtime",
-        "model": "gpt-realtime-2.1",
+        "model": "gpt-realtime-1.5",
         "output_modalities": ["text"],
         "tools": [
             {
@@ -307,7 +316,7 @@ access_token = ENV.fetch("OPENAI_MCP_ACCESS_TOKEN")
 
 connection.session.update(
   type: :realtime,
-  model: "gpt-realtime-2.1",
+  model: "gpt-realtime-1.5",
   output_modalities: [:text],
   tools: [
     {

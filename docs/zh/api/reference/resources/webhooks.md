@@ -1,11 +1,11 @@
-# Webhooks 事件
+# Webhook 事件
 
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。你可以在页面 URL 末尾追加 `.md` 来获取该页面的 Markdown 版本。
 
-当 OpenAI 在使用过程中发生某些事件时，会向你指定的 URL 发送 HTTP 请求，这类请求称为 webhook。
-事件发生在 API 使用过程中。
+Webhook 是由 OpenAI 在某些事件发生时向你指定的 URL 发出的 HTTP 请求。
+这些事件会在使用 API 的过程中发生。
 
-[了解有关 webhook 的更多信息](https://developers.openai.com/api/docs/guides/webhooks).
+[详细了解 webhook](https://developers.openai.com/api/docs/guides/webhooks).
 
 <a id="response.completed"></a>
 
@@ -27,7 +27,7 @@ Schema name: `WebhookResponseCompleted`
 
 - `data: object { id }`
 
-  事件数据载荷。
+  事件数据负载。
 
   - `id: string`
 
@@ -62,7 +62,7 @@ Schema name: `WebhookResponseCompleted`
 
 ## response.cancelled
 
-当后台响应被取消时发送。
+在后台响应被取消时发送。
 
 ### Schema
 
@@ -78,7 +78,7 @@ Schema name: `WebhookResponseCancelled`
 
 - `data: object { id }`
 
-  事件数据载荷。
+  事件数据负载。
 
   - `id: string`
 
@@ -113,7 +113,7 @@ Schema name: `WebhookResponseCancelled`
 
 ## response.failed
 
-当后台响应失败时触发。
+当后台响应失败时发送。
 
 ### Schema
 
@@ -129,7 +129,7 @@ Schema name: `WebhookResponseFailed`
 
 - `data: object { id }`
 
-  事件数据载荷。
+  事件数据负载。
 
   - `id: string`
 
@@ -164,7 +164,7 @@ Schema name: `WebhookResponseFailed`
 
 ## response.incomplete
 
-当后台响应被中断时发送。
+在后台响应被中断时发送。
 
 ### Schema
 
@@ -176,11 +176,11 @@ Schema name: `WebhookResponseIncomplete`
 
 - `created_at: number`
 
-  模型响应被中断时的 Unix 时间戳（单位为秒）。
+  模型响应被中断时的 Unix 时间戳（以秒为单位）。
 
 - `data: object { id }`
 
-  事件数据载荷。
+  事件数据负载。
 
   - `id: string`
 
@@ -215,7 +215,7 @@ Schema name: `WebhookResponseIncomplete`
 
 ## batch.completed
 
-当批处理 API 请求已完成时发送。
+在批量 API 请求完成时发送。
 
 ### Schema
 
@@ -227,15 +227,15 @@ Schema name: `WebhookBatchCompleted`
 
 - `created_at: number`
 
-  该 batch API 请求完成时的 Unix 时间戳（单位为秒）。
+  批量 API 请求完成时的 Unix 时间戳（以秒为单位）。
 
 - `data: object { id }`
 
-  事件数据载荷。
+  事件数据负载。
 
   - `id: string`
 
-    该 batch API 请求的唯一 ID。
+    批量 API 请求的唯一 ID。
 
 - `type: "batch.completed"`
 
@@ -266,7 +266,7 @@ Schema name: `WebhookBatchCompleted`
 
 ## batch.cancelled
 
-当批处理 API 请求被取消时发送。
+在批量API请求被取消时发送。
 
 ### Schema
 
@@ -278,15 +278,15 @@ Schema name: `WebhookBatchCancelled`
 
 - `created_at: number`
 
-  批次 API 请求被取消时的 Unix 时间戳（以秒为单位）。
+  取消API批量请求时的 Unix 时间戳（以秒为单位）。
 
 - `data: object { id }`
 
-  事件数据载荷。
+  事件数据负载。
 
   - `id: string`
 
-    该 batch API 请求的唯一 ID。
+    批量 API 请求的唯一 ID。
 
 - `type: "batch.cancelled"`
 
@@ -317,7 +317,7 @@ Schema name: `WebhookBatchCancelled`
 
 ## batch.expired
 
-当某个批处理 API 请求已过期时发送。
+在批量 API 请求已过期时发送。
 
 ### Schema
 
@@ -329,15 +329,15 @@ Schema name: `WebhookBatchExpired`
 
 - `created_at: number`
 
-  批处理 API 请求过期时的 Unix 时间戳（以秒为单位）。
+  该批次 API 请求过期时的 Unix 时间戳（以秒为单位）。
 
 - `data: object { id }`
 
-  事件数据载荷。
+  事件数据负载。
 
   - `id: string`
 
-    该 batch API 请求的唯一 ID。
+    批量 API 请求的唯一 ID。
 
 - `type: "batch.expired"`
 
@@ -368,7 +368,7 @@ Schema name: `WebhookBatchExpired`
 
 ## batch.failed
 
-当批处理 API 请求失败时发送。
+当某个批量 API 请求失败时发送。
 
 ### Schema
 
@@ -380,15 +380,15 @@ Schema name: `WebhookBatchFailed`
 
 - `created_at: number`
 
-  该批量 API 请求失败时的 Unix 时间戳（以秒为单位）。
+  批处理 API 请求失败时的 Unix 时间戳（以秒为单位）。
 
 - `data: object { id }`
 
-  事件数据载荷。
+  事件数据负载。
 
   - `id: string`
 
-    该 batch API 请求的唯一 ID。
+    批量 API 请求的唯一 ID。
 
 - `type: "batch.failed"`
 
@@ -435,11 +435,11 @@ Schema name: `WebhookFineTuningJobSucceeded`
 
 - `data: object { id }`
 
-  事件数据载荷。
+  事件数据负载。
 
   - `id: string`
 
-    该微调任务的唯一 ID。
+    微调任务的唯一 ID。
 
 - `type: "fine_tuning.job.succeeded"`
 
@@ -470,7 +470,7 @@ Schema name: `WebhookFineTuningJobSucceeded`
 
 ## fine_tuning.job.failed
 
-当微调作业失败时发送。
+当微调任务失败时发送。
 
 ### Schema
 
@@ -486,11 +486,11 @@ Schema name: `WebhookFineTuningJobFailed`
 
 - `data: object { id }`
 
-  事件数据载荷。
+  事件数据负载。
 
   - `id: string`
 
-    该微调任务的唯一 ID。
+    微调任务的唯一 ID。
 
 - `type: "fine_tuning.job.failed"`
 
@@ -533,15 +533,15 @@ Schema name: `WebhookFineTuningJobCancelled`
 
 - `created_at: number`
 
-  微调任务被取消时的 Unix 时间戳（以秒为单位）。
+  微调作业被取消时的 Unix 时间戳（以秒为单位）。
 
 - `data: object { id }`
 
-  事件数据载荷。
+  事件数据负载。
 
   - `id: string`
 
-    该微调任务的唯一 ID。
+    微调任务的唯一 ID。
 
 - `type: "fine_tuning.job.cancelled"`
 
@@ -572,7 +572,7 @@ Schema name: `WebhookFineTuningJobCancelled`
 
 ## eval.run.succeeded
 
-当评测运行成功时发送。
+在评估运行成功时发送。
 
 ### Schema
 
@@ -584,11 +584,11 @@ Schema name: `WebhookEvalRunSucceeded`
 
 - `created_at: number`
 
-  评估运行成功时的 Unix 时间戳（以秒为单位）。
+  评估运行成功时的 Unix 时间戳（秒）。
 
 - `data: object { id }`
 
-  事件数据载荷。
+  事件数据负载。
 
   - `id: string`
 
@@ -623,7 +623,7 @@ Schema name: `WebhookEvalRunSucceeded`
 
 ## eval.run.failed
 
-在评估运行失败时发送。
+当评测运行失败时发送。
 
 ### Schema
 
@@ -639,7 +639,7 @@ Schema name: `WebhookEvalRunFailed`
 
 - `data: object { id }`
 
-  事件数据载荷。
+  事件数据负载。
 
   - `id: string`
 
@@ -686,11 +686,11 @@ Schema name: `WebhookEvalRunCanceled`
 
 - `created_at: number`
 
-  评估运行被取消时的 Unix 时间戳（以秒为单位）。
+  评估运行被取消时的 Unix 时间戳（单位：秒）。
 
 - `data: object { id }`
 
-  事件数据载荷。
+  事件数据负载。
 
   - `id: string`
 
@@ -726,8 +726,8 @@ Schema name: `WebhookEvalRunCanceled`
 ## realtime.call.incoming
 
 当有传入的 API SIP 会话可供 Realtime 接受时发送。
-同一待处理会话还可以发出 `live.transport.incoming`；首次
-成功的 Realtime 或 Live 接受端点将选择运行时表面。
+同一挂起会话还可以发出 `live.transport.incoming`; 首个
+成功的 Realtime 或 Live accept 端点会选择运行时表面。
 
 ### Schema
 
@@ -741,22 +741,21 @@ Schema name: `WebhookRealtimeCallIncoming`
 
   模型响应完成时的 Unix 时间戳（以秒为单位）。
 
-- `data: object { call_id, sip_headers }`
+- `data: object { call_id, sip_headers, sip_media_security }`
 
-  事件数据载荷。
+  事件数据负载。
 
   - `call_id: string`
 
-    Transceiver `rtc_...` 待处理 SIP 会话的 ID。配对的
-    `live.transport.incoming` 事件由对应的 Realtime 事件派生出， `session_id` 将事件名的
-    `rtc_` 前缀替换为 `live_`。得到。请使用 Realtime 或 Live API 事件返回的 ID。
-    对应的 Realtime 或 Live 接口。
+    待处理 SIP 调用的 ID。通过 Realtime
+    API 接听或拒接该调用时，请原样传入此值。对于 Live
+    API，请改用 `session_id` from 字段 `live.transport.incoming` 。
 
   - `sip_headers: array of object { name, value }`
 
-    SIP INVITE 中的请求头，不含 SIP 授权相关请求头。
-    保留的字段名、值、重复条目及顺序均会原样保留。
-    请将这些值视为不可信的通话元数据。
+    来自 SIP INVITE 的请求头，不含 SIP 鉴权请求头。
+    保留的名称、值、重复条目及其顺序均会保留。
+    请将这些值视为不可信的调用元数据。
 
     - `name: string`
 
@@ -765,6 +764,26 @@ Schema name: `WebhookRealtimeCallIncoming`
     - `value: string`
 
       SIP 请求头的值。
+
+  - `sip_media_security: optional "rtp" or "srtp" or string`
+
+    在 SDP 协商过程中为该 SIP 链路选择的媒体保护方式。 `srtp`
+    表示 SRTP； `rtp` 表示未加密的 RTP。未知时省略。
+    这并不描述 SIP 信令安全性，也
+    不能确认媒体是否已经传输。客户端应将无法识别的值视为未知。
+
+    - `"rtp" or "srtp"`
+
+      在 SDP 协商过程中为该 SIP 链路选择的媒体保护方式。 `srtp`
+      表示 SRTP； `rtp` 表示未加密的 RTP。未知时省略。
+      这并不描述 SIP 信令安全性，也
+      不能确认媒体是否已经传输。客户端应将无法识别的值视为未知。
+
+      - `"rtp"`
+
+      - `"srtp"`
+
+    - `string`
 
 - `type: "realtime.call.incoming"`
 
@@ -786,7 +805,8 @@ Schema name: `WebhookRealtimeCallIncoming`
   "type": "realtime.call.incoming",
   "created_at": 1719168000,
   "data": {
-    "call_id": "rtc_479a275623b54bdb9b6fbae2f7cbd408",
+    "call_id": "rtc_u0_479a275623b54bdb9b6fbae2f7cbd408",
+    "sip_media_security": "srtp",
     "sip_headers": [
       {"name": "Max-Forwards", "value": "63"},
       {"name": "CSeq", "value": "851287 INVITE"},
@@ -800,11 +820,11 @@ Schema name: `WebhookRealtimeCallIncoming`
 
 ## live.call.incoming
 
-已弃用：使用 `live.transport.incoming`。为已有订阅保留
-在迁移期间保留；不允许为此事件创建新订阅。
-当有传入的 API SIP 会话可供 Live 接受时发送。
-同一待处理会话也会发出 `realtime.call.incoming`；首次
-成功的 Realtime 或 Live 接受端点将选择运行时表面。
+已弃用：请使用 `live.transport.incoming`。仅为现有订阅保留
+迁移期间；不允许将此事件用于新订阅。
+当有传入的 API SIP 会话可供 Live 接受时发送。该
+同一挂起会话也可以发出 `realtime.call.incoming`; 首个
+成功的 Realtime 或 Live accept 端点会选择运行时表面。
 
 ### Schema
 
@@ -818,21 +838,21 @@ Schema name: `WebhookLiveCallIncoming`
 
   事件创建时的 Unix 时间戳（以秒为单位）。
 
-- `data: object { session_id, sip_headers }`
+- `data: object { session_id, sip_headers, sip_media_security }`
 
-  事件数据载荷。
+  事件数据负载。
 
   - `session_id: string`
 
-    该 `live_...` 待处理 SIP 会话的 ID。原样传递该值
-    到 Live 通话控制和边带连接。对应的
-    `realtime.call.incoming` 事件使用单独的 `rtc_...` 通话 ID。
+    该 `live_...` 待处理 SIP 会话的 ID。将此值原样传递给
+    实时通话控制和边带连接。相应的
+    `realtime.call.incoming` 事件使用另一个 `rtc_...` 通话 ID。
 
   - `sip_headers: array of object { name, value }`
 
-    SIP INVITE 中的请求头，不含 SIP 授权相关请求头。
-    保留的字段名、值、重复条目及顺序均会原样保留。
-    请将这些值视为不可信的通话元数据。
+    来自 SIP INVITE 的请求头，不含 SIP 鉴权请求头。
+    保留的名称、值、重复条目及其顺序均会保留。
+    请将这些值视为不可信的调用元数据。
 
     - `name: string`
 
@@ -841,6 +861,26 @@ Schema name: `WebhookLiveCallIncoming`
     - `value: string`
 
       SIP 请求头的值。
+
+  - `sip_media_security: optional "rtp" or "srtp" or string`
+
+    在 SDP 协商过程中为该 SIP 链路选择的媒体保护方式。 `srtp`
+    表示 SRTP； `rtp` 表示未加密的 RTP。未知时省略。
+    这并不描述 SIP 信令安全性，也
+    不能确认媒体是否已经传输。客户端应将无法识别的值视为未知。
+
+    - `"rtp" or "srtp"`
+
+      在 SDP 协商过程中为该 SIP 链路选择的媒体保护方式。 `srtp`
+      表示 SRTP； `rtp` 表示未加密的 RTP。未知时省略。
+      这并不描述 SIP 信令安全性，也
+      不能确认媒体是否已经传输。客户端应将无法识别的值视为未知。
+
+      - `"rtp"`
+
+      - `"srtp"`
+
+    - `string`
 
 - `type: "live.call.incoming"`
 
@@ -863,6 +903,7 @@ Schema name: `WebhookLiveCallIncoming`
   "created_at": 1719168000,
   "data": {
     "session_id": "live_u0_479a275623b54bdb9b6fbae2f7cbd408",
+    "sip_media_security": "srtp",
     "sip_headers": [
       {"name": "From", "value": "<sip:alice@example.com>;tag=abc123"},
       {"name": "To", "value": "<sip:recipient@example.com>"},
@@ -876,9 +917,9 @@ Schema name: `WebhookLiveCallIncoming`
 
 ## live.transport.incoming
 
-当有传入的 API SIP 会话可供 Live 接受时发送。
-同一待处理会话也会发出 `realtime.call.incoming`；首次
-成功的 Realtime 或 Live 接受端点将选择运行时表面。
+当有传入的 API SIP 会话可供 Live 接受时发送。该
+同一挂起会话也可以发出 `realtime.call.incoming`; 首个
+成功的 Realtime 或 Live accept 端点会选择运行时表面。
 
 ### Schema
 
@@ -892,20 +933,20 @@ Schema name: `WebhookLiveTransportIncoming`
 
   事件创建时的 Unix 时间戳（以秒为单位）。
 
-- `data: object { session_id, sip_headers, type }`
+- `data: object { session_id, sip_headers, type, sip_media_security }`
 
-  事件数据载荷。
+  事件数据负载。
 
   - `session_id: string`
 
-    该 `live_...` 待处理 SIP 会话的 ID。通过 Live API 接听或拒绝通话时，请原样转发此值
+    该 `live_...` 待处理 SIP 会话的 ID。在通过 Live API 接听或拒接来电时，原样转发此值
     。
 
   - `sip_headers: array of object { name, value }`
 
-    SIP INVITE 中的请求头，不含 SIP 授权相关请求头。
-    保留的字段名、值、重复条目及顺序均会原样保留。
-    请将这些值视为不可信的通话元数据。
+    来自 SIP INVITE 的请求头，不含 SIP 鉴权请求头。
+    保留的名称、值、重复条目及其顺序均会保留。
+    请将这些值视为不可信的调用元数据。
 
     - `name: string`
 
@@ -920,6 +961,26 @@ Schema name: `WebhookLiveTransportIncoming`
     来电的传输类型。始终为 `sip`.
 
     - `"sip"`
+
+  - `sip_media_security: optional "rtp" or "srtp" or string`
+
+    在 SDP 协商过程中为该 SIP 链路选择的媒体保护方式。 `srtp`
+    表示 SRTP； `rtp` 表示未加密的 RTP。未知时省略。
+    这并不描述 SIP 信令安全性，也
+    不能确认媒体是否已经传输。客户端应将无法识别的值视为未知。
+
+    - `"rtp" or "srtp"`
+
+      在 SDP 协商过程中为该 SIP 链路选择的媒体保护方式。 `srtp`
+      表示 SRTP； `rtp` 表示未加密的 RTP。未知时省略。
+      这并不描述 SIP 信令安全性，也
+      不能确认媒体是否已经传输。客户端应将无法识别的值视为未知。
+
+      - `"rtp"`
+
+      - `"srtp"`
+
+    - `string`
 
 - `type: "live.transport.incoming"`
 
@@ -943,6 +1004,7 @@ Schema name: `WebhookLiveTransportIncoming`
   "data": {
     "type": "sip",
     "session_id": "live_u0_479a275623b54bdb9b6fbae2f7cbd408",
+    "sip_media_security": "srtp",
     "sip_headers": [
       {"name": "From", "value": "<sip:alice@example.com>;tag=abc123"},
       {"name": "To", "value": "<sip:recipient@example.com>"},
@@ -952,11 +1014,107 @@ Schema name: `WebhookLiveTransportIncoming`
 }
 ```
 
+<a id="safety.warning_issued"></a>
+
+## safety.warning_issued
+
+当你的组织中的安全标识符发出警告时发送。
+
+### Schema
+
+Schema name: `WebhookSafetyWarningIssued`
+
+- `id: string`
+
+  该 webhook 事件的唯一 ID。
+
+- `created_at: number`
+
+  事件创建时的 Unix 时间戳（以秒为单位）。
+
+- `data: object { id }`
+
+  - `id: string`
+
+    要传递给的安全用例 ID `GET /v1/safety/cases/{id}`.
+
+- `object: "event"`
+
+  始终为 `event`.
+
+  - `"event"`
+
+- `type: "safety.warning_issued"`
+
+  始终为 `safety.warning_issued`.
+
+  - `"safety.warning_issued"`
+
+### 示例
+
+```json
+{
+  "id": "evt_123",
+  "object": "event",
+  "created_at": 1787659200,
+  "type": "safety.warning_issued",
+  "data": {"id": "C-abc123"}
+}
+```
+
+<a id="safety.deactivation_issued"></a>
+
+## safety.deactivation_issued
+
+当你的组织中某个安全标识符被停用时发送。
+
+### Schema
+
+Schema name: `WebhookSafetyDeactivationIssued`
+
+- `id: string`
+
+  该 webhook 事件的唯一 ID。
+
+- `created_at: number`
+
+  事件创建时的 Unix 时间戳（以秒为单位）。
+
+- `data: object { id }`
+
+  - `id: string`
+
+    要传递给的安全用例 ID `GET /v1/safety/cases/{id}`.
+
+- `object: "event"`
+
+  始终为 `event`.
+
+  - `"event"`
+
+- `type: "safety.deactivation_issued"`
+
+  始终为 `safety.deactivation_issued`.
+
+  - `"safety.deactivation_issued"`
+
+### 示例
+
+```json
+{
+  "id": "evt_123",
+  "object": "event",
+  "created_at": 1787659200,
+  "type": "safety.deactivation_issued",
+  "data": {"id": "C-abc123"}
+}
+```
+
 <a id="safety.alert.created"></a>
 
 ## safety.alert.created
 
-当 API 项目存在已批准的安全警报时发送。
+在有已批准的安全警报可用于 API 项目时发送。
 
 ### Schema
 
@@ -964,17 +1122,17 @@ Schema name: `WebhookSafetyAlertCreated`
 
 - `id: string`
 
-  该 Webhook 事件的唯一 ID。
+  该 webhook 事件的唯一 ID。
 
 - `created_at: number`
 
-  事件创建时的 Unix 时间戳（秒）。
+  事件创建时的 Unix 时间戳（以秒为单位）。
 
 - `data: object { id }`
 
   - `id: string`
 
-    传递给以下接口的安全告警 ID： `GET /v1/safety/alerts/{id}`.
+    要传递的安全提醒 ID `GET /v1/safety/alerts/{id}`.
 
 - `object: "event"`
 
@@ -1004,7 +1162,7 @@ Schema name: `WebhookSafetyAlertCreated`
 
 ## safety.org_alert.created
 
-当企业工作区有已批准的安全警报可用时发送。
+当企业工作区有已批准的安全提醒时发送。
 
 ### Schema
 
@@ -1012,17 +1170,17 @@ Schema name: `WebhookSafetyOrgAlertCreated`
 
 - `id: string`
 
-  该 Webhook 事件的唯一 ID。
+  该 webhook 事件的唯一 ID。
 
 - `created_at: number`
 
-  事件创建时的 Unix 时间戳（秒）。
+  事件创建时的 Unix 时间戳（以秒为单位）。
 
 - `data: object { id }`
 
   - `id: string`
 
-    传递给以下接口的安全告警 ID： `GET /v1/safety/alerts/{id}`.
+    要传递的安全提醒 ID `GET /v1/safety/alerts/{id}`.
 
 - `object: "event"`
 

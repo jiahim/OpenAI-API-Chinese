@@ -6,10 +6,10 @@ Token counting lets you determine how many input tokens a request will use befor
 
 - **Optimize prompts** to fit within context limits
 - **Estimate costs** before making API calls
-- **Route requests** based on size (e.g., smaller prompts to faster models)
+- **Route requests** based on size (for example, smaller prompts to faster models)
 - **Avoid surprises** with images and files—no more character-based estimation
 
-The [input token count endpoint](https://developers.openai.com/api/reference/python/resources/responses/subresources/input_tokens/methods/count) accepts the same input format as the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create). Pass text, messages, images, files, tools, or conversations—the API returns the exact count the model will receive.
+The [input token count endpoint](https://developers.openai.com/api/reference/resources/responses/subresources/input_tokens/methods/count) accepts the same input format as the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create). Pass text, messages, images, files, tools, or conversations—the API returns the exact count the model will receive.
 
 The count includes formatting tokens used to represent request structure, such as message roles and boundaries. These tokens might not appear in the text or fields you tokenize locally.
 
@@ -19,7 +19,7 @@ Local tokenizers like [tiktoken](https://github.com/openai/tiktoken) work for pl
 
 - **Images and files** are not supported—estimates like `characters / 4` are inaccurate
 - **Tools and schemas** add tokens that are hard to count locally
-- **Model-specific behavior** can change tokenization (e.g., reasoning, caching)
+- **Model-specific behavior** can change tokenization (for example, reasoning, caching)
 
 The token counting API handles all of these. Use the same payload you would send to `responses.create` and get an accurate count. Then plug the result into your message validation or cost estimation flow.
 
@@ -781,7 +781,7 @@ YAML
 
 ## Count tokens with files
 
-[File inputs](https://developers.openai.com/api/docs/guides/file-inputs)—currently PDFs—are supported. Pass `file_id`, `file_url`, or `file_data` as you would for `responses.create`. The token count reflects the model’s full processed input.
+[File inputs](https://developers.openai.com/api/docs/guides/file-inputs) (currently PDFs) are supported. Pass `file_id`, `file_url`, or `file_data` as you would for `responses.create`. The token count reflects the model’s full processed input.
 
 ## Understand output token counts
 
@@ -793,7 +793,7 @@ The `max_output_tokens` and `max_completion_tokens` parameters limit all tokens 
 
 ## API reference
 
-For full parameters and response shape, see the [Count input tokens API reference](https://developers.openai.com/api/reference/python/resources/responses/subresources/input_tokens/methods/count). The endpoint is:
+For full parameters and response shape, see the [Count input tokens API reference](https://developers.openai.com/api/reference/resources/responses/subresources/input_tokens/methods/count). The endpoint is:
 
 ```
 POST /v1/responses/input_tokens

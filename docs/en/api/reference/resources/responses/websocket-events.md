@@ -1632,6 +1632,10 @@ Schema name: `ResponsesClientEventResponseCreate`
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
+
             Currently supported `connector_id` values are:
 
             - Dropbox: `connector_dropbox`
@@ -2717,6 +2721,10 @@ Schema name: `ResponsesClientEventResponseCreate`
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
 
             Currently supported `connector_id` values are:
 
@@ -4439,7 +4447,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
   - `string`
 
-  - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 81 more`
+  - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 82 more`
 
     - `"gpt-6-astra"`
 
@@ -4480,8 +4488,6 @@ Schema name: `ResponsesClientEventResponseCreate`
     - `"gpt-5.1-2025-11-13"`
 
     - `"gpt-5.1-codex"`
-
-    - `"gpt-5.1-mini"`
 
     - `"gpt-5.1-chat-latest"`
 
@@ -4542,6 +4548,10 @@ Schema name: `ResponsesClientEventResponseCreate`
     - `"gpt-4o-2024-08-06"`
 
     - `"gpt-4o-2024-05-13"`
+
+    - `"gpt-audio-mini"`
+
+    - `"gpt-audio-mini-2025-12-15"`
 
     - `"gpt-4o-audio-preview"`
 
@@ -4728,7 +4738,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
   Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](https://developers.openai.com/api/docs/guides/prompt-caching).
 
-- `prompt_cache_options: optional object { comparison_response_id, mode, ttl }`
+- `prompt_cache_options: optional object { comparison_response_id, mode, prewarm, ttl }`
 
   Options for prompt caching. Supported for `gpt-5.6` and later models. By default, OpenAI automatically chooses one implicit cache breakpoint. You can add explicit breakpoints to content blocks with `prompt_cache_breakpoint`. Each request can write up to four breakpoints. For cache matching, OpenAI considers up to the latest 80 breakpoints in the conversation, without a content-block lookback limit. Set `mode` to `explicit` to disable the implicit breakpoint. The `ttl` defaults to `30m`, which is currently the only supported value. See the [prompt caching guide](https://developers.openai.com/api/docs/guides/prompt-caching) for current details.
 
@@ -4743,6 +4753,10 @@ Schema name: `ResponsesClientEventResponseCreate`
     - `"implicit"`
 
     - `"explicit"`
+
+  - `prewarm: optional boolean`
+
+    Prepares the prompt cache without generating output. Defaults to `false`. When set to `true`, overrides the `generate` field to `false`.
 
   - `ttl: optional "30m"`
 
@@ -5469,6 +5483,10 @@ Schema name: `ResponsesClientEventResponseCreate`
       Identifier for service connectors, like those available in ChatGPT. One of
       `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
       about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+      This field is deprecated for models released after September 1, 2026.
+      Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+      connect through a Secure MCP Tunnel.
 
       Currently supported `connector_id` values are:
 
@@ -7156,6 +7174,8 @@ Schema name: `ResponseWsError`
 
 These events use the same payloads over WebSocket and
 [HTTP streaming](https://developers.openai.com/api/reference/resources/responses/streaming-events).
+Compaction progress follows the same cadence and output-item lifecycle
+described in HTTP streaming.
 
 <a id="response.created"></a>
 
@@ -8817,6 +8837,10 @@ Schema name: `ResponseCreatedEvent`
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
               about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
+              This field is deprecated for models released after September 1, 2026.
+              Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+              connect through a Secure MCP Tunnel.
+
               Currently supported `connector_id` values are:
 
               - Dropbox: `connector_dropbox`
@@ -9902,6 +9926,10 @@ Schema name: `ResponseCreatedEvent`
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
               about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+              This field is deprecated for models released after September 1, 2026.
+              Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+              connect through a Secure MCP Tunnel.
 
               Currently supported `connector_id` values are:
 
@@ -11608,7 +11636,7 @@ Schema name: `ResponseCreatedEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 81 more`
+    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 82 more`
 
       - `"gpt-6-astra"`
 
@@ -11649,8 +11677,6 @@ Schema name: `ResponseCreatedEvent`
       - `"gpt-5.1-2025-11-13"`
 
       - `"gpt-5.1-codex"`
-
-      - `"gpt-5.1-mini"`
 
       - `"gpt-5.1-chat-latest"`
 
@@ -11711,6 +11737,10 @@ Schema name: `ResponseCreatedEvent`
       - `"gpt-4o-2024-08-06"`
 
       - `"gpt-4o-2024-05-13"`
+
+      - `"gpt-audio-mini"`
+
+      - `"gpt-audio-mini-2025-12-15"`
 
       - `"gpt-4o-audio-preview"`
 
@@ -12725,6 +12755,10 @@ Schema name: `ResponseCreatedEvent`
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
+
             Currently supported `connector_id` values are:
 
             - Dropbox: `connector_dropbox`
@@ -13624,6 +13658,10 @@ Schema name: `ResponseCreatedEvent`
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
 
             Currently supported `connector_id` values are:
 
@@ -15593,6 +15631,10 @@ Schema name: `ResponseCreatedEvent`
         Identifier for service connectors, like those available in ChatGPT. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
         about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+        This field is deprecated for models released after September 1, 2026.
+        Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+        connect through a Secure MCP Tunnel.
 
         Currently supported `connector_id` values are:
 
@@ -18491,6 +18533,10 @@ Schema name: `ResponseInProgressEvent`
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
               about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
+              This field is deprecated for models released after September 1, 2026.
+              Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+              connect through a Secure MCP Tunnel.
+
               Currently supported `connector_id` values are:
 
               - Dropbox: `connector_dropbox`
@@ -19576,6 +19622,10 @@ Schema name: `ResponseInProgressEvent`
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
               about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+              This field is deprecated for models released after September 1, 2026.
+              Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+              connect through a Secure MCP Tunnel.
 
               Currently supported `connector_id` values are:
 
@@ -21282,7 +21332,7 @@ Schema name: `ResponseInProgressEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 81 more`
+    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 82 more`
 
       - `"gpt-6-astra"`
 
@@ -21323,8 +21373,6 @@ Schema name: `ResponseInProgressEvent`
       - `"gpt-5.1-2025-11-13"`
 
       - `"gpt-5.1-codex"`
-
-      - `"gpt-5.1-mini"`
 
       - `"gpt-5.1-chat-latest"`
 
@@ -21385,6 +21433,10 @@ Schema name: `ResponseInProgressEvent`
       - `"gpt-4o-2024-08-06"`
 
       - `"gpt-4o-2024-05-13"`
+
+      - `"gpt-audio-mini"`
+
+      - `"gpt-audio-mini-2025-12-15"`
 
       - `"gpt-4o-audio-preview"`
 
@@ -22399,6 +22451,10 @@ Schema name: `ResponseInProgressEvent`
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
+
             Currently supported `connector_id` values are:
 
             - Dropbox: `connector_dropbox`
@@ -23298,6 +23354,10 @@ Schema name: `ResponseInProgressEvent`
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
 
             Currently supported `connector_id` values are:
 
@@ -25267,6 +25327,10 @@ Schema name: `ResponseInProgressEvent`
         Identifier for service connectors, like those available in ChatGPT. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
         about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+        This field is deprecated for models released after September 1, 2026.
+        Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+        connect through a Secure MCP Tunnel.
 
         Currently supported `connector_id` values are:
 
@@ -28165,6 +28229,10 @@ Schema name: `ResponseCompletedEvent`
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
               about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
+              This field is deprecated for models released after September 1, 2026.
+              Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+              connect through a Secure MCP Tunnel.
+
               Currently supported `connector_id` values are:
 
               - Dropbox: `connector_dropbox`
@@ -29250,6 +29318,10 @@ Schema name: `ResponseCompletedEvent`
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
               about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+              This field is deprecated for models released after September 1, 2026.
+              Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+              connect through a Secure MCP Tunnel.
 
               Currently supported `connector_id` values are:
 
@@ -30956,7 +31028,7 @@ Schema name: `ResponseCompletedEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 81 more`
+    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 82 more`
 
       - `"gpt-6-astra"`
 
@@ -30997,8 +31069,6 @@ Schema name: `ResponseCompletedEvent`
       - `"gpt-5.1-2025-11-13"`
 
       - `"gpt-5.1-codex"`
-
-      - `"gpt-5.1-mini"`
 
       - `"gpt-5.1-chat-latest"`
 
@@ -31059,6 +31129,10 @@ Schema name: `ResponseCompletedEvent`
       - `"gpt-4o-2024-08-06"`
 
       - `"gpt-4o-2024-05-13"`
+
+      - `"gpt-audio-mini"`
+
+      - `"gpt-audio-mini-2025-12-15"`
 
       - `"gpt-4o-audio-preview"`
 
@@ -32073,6 +32147,10 @@ Schema name: `ResponseCompletedEvent`
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
+
             Currently supported `connector_id` values are:
 
             - Dropbox: `connector_dropbox`
@@ -32972,6 +33050,10 @@ Schema name: `ResponseCompletedEvent`
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
 
             Currently supported `connector_id` values are:
 
@@ -34941,6 +35023,10 @@ Schema name: `ResponseCompletedEvent`
         Identifier for service connectors, like those available in ChatGPT. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
         about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+        This field is deprecated for models released after September 1, 2026.
+        Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+        connect through a Secure MCP Tunnel.
 
         Currently supported `connector_id` values are:
 
@@ -37856,6 +37942,10 @@ Schema name: `ResponseFailedEvent`
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
               about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
+              This field is deprecated for models released after September 1, 2026.
+              Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+              connect through a Secure MCP Tunnel.
+
               Currently supported `connector_id` values are:
 
               - Dropbox: `connector_dropbox`
@@ -38941,6 +39031,10 @@ Schema name: `ResponseFailedEvent`
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
               about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+              This field is deprecated for models released after September 1, 2026.
+              Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+              connect through a Secure MCP Tunnel.
 
               Currently supported `connector_id` values are:
 
@@ -40647,7 +40741,7 @@ Schema name: `ResponseFailedEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 81 more`
+    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 82 more`
 
       - `"gpt-6-astra"`
 
@@ -40688,8 +40782,6 @@ Schema name: `ResponseFailedEvent`
       - `"gpt-5.1-2025-11-13"`
 
       - `"gpt-5.1-codex"`
-
-      - `"gpt-5.1-mini"`
 
       - `"gpt-5.1-chat-latest"`
 
@@ -40750,6 +40842,10 @@ Schema name: `ResponseFailedEvent`
       - `"gpt-4o-2024-08-06"`
 
       - `"gpt-4o-2024-05-13"`
+
+      - `"gpt-audio-mini"`
+
+      - `"gpt-audio-mini-2025-12-15"`
 
       - `"gpt-4o-audio-preview"`
 
@@ -41764,6 +41860,10 @@ Schema name: `ResponseFailedEvent`
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
+
             Currently supported `connector_id` values are:
 
             - Dropbox: `connector_dropbox`
@@ -42663,6 +42763,10 @@ Schema name: `ResponseFailedEvent`
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
 
             Currently supported `connector_id` values are:
 
@@ -44632,6 +44736,10 @@ Schema name: `ResponseFailedEvent`
         Identifier for service connectors, like those available in ChatGPT. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
         about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+        This field is deprecated for models released after September 1, 2026.
+        Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+        connect through a Secure MCP Tunnel.
 
         Currently supported `connector_id` values are:
 
@@ -47532,6 +47640,10 @@ Schema name: `ResponseIncompleteEvent`
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
               about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
+              This field is deprecated for models released after September 1, 2026.
+              Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+              connect through a Secure MCP Tunnel.
+
               Currently supported `connector_id` values are:
 
               - Dropbox: `connector_dropbox`
@@ -48617,6 +48729,10 @@ Schema name: `ResponseIncompleteEvent`
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
               about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+              This field is deprecated for models released after September 1, 2026.
+              Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+              connect through a Secure MCP Tunnel.
 
               Currently supported `connector_id` values are:
 
@@ -50323,7 +50439,7 @@ Schema name: `ResponseIncompleteEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 81 more`
+    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 82 more`
 
       - `"gpt-6-astra"`
 
@@ -50364,8 +50480,6 @@ Schema name: `ResponseIncompleteEvent`
       - `"gpt-5.1-2025-11-13"`
 
       - `"gpt-5.1-codex"`
-
-      - `"gpt-5.1-mini"`
 
       - `"gpt-5.1-chat-latest"`
 
@@ -50426,6 +50540,10 @@ Schema name: `ResponseIncompleteEvent`
       - `"gpt-4o-2024-08-06"`
 
       - `"gpt-4o-2024-05-13"`
+
+      - `"gpt-audio-mini"`
+
+      - `"gpt-audio-mini-2025-12-15"`
 
       - `"gpt-4o-audio-preview"`
 
@@ -51440,6 +51558,10 @@ Schema name: `ResponseIncompleteEvent`
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
+
             Currently supported `connector_id` values are:
 
             - Dropbox: `connector_dropbox`
@@ -52339,6 +52461,10 @@ Schema name: `ResponseIncompleteEvent`
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
 
             Currently supported `connector_id` values are:
 
@@ -54308,6 +54434,10 @@ Schema name: `ResponseIncompleteEvent`
         Identifier for service connectors, like those available in ChatGPT. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
         about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+        This field is deprecated for models released after September 1, 2026.
+        Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+        connect through a Secure MCP Tunnel.
 
         Currently supported `connector_id` values are:
 
@@ -57045,6 +57175,10 @@ Schema name: `ResponseOutputItemAddedEvent`
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
           about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
+          This field is deprecated for models released after September 1, 2026.
+          Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+          connect through a Secure MCP Tunnel.
+
           Currently supported `connector_id` values are:
 
           - Dropbox: `connector_dropbox`
@@ -58126,6 +58260,10 @@ Schema name: `ResponseOutputItemAddedEvent`
           Identifier for service connectors, like those available in ChatGPT. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
           about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+          This field is deprecated for models released after September 1, 2026.
+          Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+          connect through a Secure MCP Tunnel.
 
           Currently supported `connector_id` values are:
 
@@ -61195,6 +61333,10 @@ Schema name: `ResponseOutputItemDoneEvent`
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
           about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
+          This field is deprecated for models released after September 1, 2026.
+          Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+          connect through a Secure MCP Tunnel.
+
           Currently supported `connector_id` values are:
 
           - Dropbox: `connector_dropbox`
@@ -62276,6 +62418,10 @@ Schema name: `ResponseOutputItemDoneEvent`
           Identifier for service connectors, like those available in ChatGPT. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
           about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+          This field is deprecated for models released after September 1, 2026.
+          Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+          connect through a Secure MCP Tunnel.
 
           Currently supported `connector_id` values are:
 
@@ -66109,7 +66255,7 @@ Schema name: `ResponseOutputTextAnnotationAddedEvent`
 
 - `annotation: object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }  or null`
 
-  An annotation that applies to a span of output text.
+  The annotation object being added. (See annotation schema for details.)
 
   - `FileCitation object { file_id, filename, index, type }`
 
@@ -67918,6 +68064,10 @@ Schema name: `ResponseQueuedEvent`
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
               about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
+              This field is deprecated for models released after September 1, 2026.
+              Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+              connect through a Secure MCP Tunnel.
+
               Currently supported `connector_id` values are:
 
               - Dropbox: `connector_dropbox`
@@ -69003,6 +69153,10 @@ Schema name: `ResponseQueuedEvent`
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
               about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+              This field is deprecated for models released after September 1, 2026.
+              Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+              connect through a Secure MCP Tunnel.
 
               Currently supported `connector_id` values are:
 
@@ -70709,7 +70863,7 @@ Schema name: `ResponseQueuedEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 81 more`
+    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 82 more`
 
       - `"gpt-6-astra"`
 
@@ -70750,8 +70904,6 @@ Schema name: `ResponseQueuedEvent`
       - `"gpt-5.1-2025-11-13"`
 
       - `"gpt-5.1-codex"`
-
-      - `"gpt-5.1-mini"`
 
       - `"gpt-5.1-chat-latest"`
 
@@ -70812,6 +70964,10 @@ Schema name: `ResponseQueuedEvent`
       - `"gpt-4o-2024-08-06"`
 
       - `"gpt-4o-2024-05-13"`
+
+      - `"gpt-audio-mini"`
+
+      - `"gpt-audio-mini-2025-12-15"`
 
       - `"gpt-4o-audio-preview"`
 
@@ -71826,6 +71982,10 @@ Schema name: `ResponseQueuedEvent`
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
+
             Currently supported `connector_id` values are:
 
             - Dropbox: `connector_dropbox`
@@ -72725,6 +72885,10 @@ Schema name: `ResponseQueuedEvent`
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
 
             Currently supported `connector_id` values are:
 
@@ -74695,6 +74859,10 @@ Schema name: `ResponseQueuedEvent`
         `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
         about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
+        This field is deprecated for models released after September 1, 2026.
+        Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+        connect through a Secure MCP Tunnel.
+
         Currently supported `connector_id` values are:
 
         - Dropbox: `connector_dropbox`
@@ -76154,6 +76322,51 @@ Schema name: `ResponseAudioTranscriptDoneEvent`
   "type": "response.audio.transcript.done",
   "response_id": "resp_123",
   "sequence_number": 1
+}
+```
+
+<a id="response.compaction.compacting"></a>
+
+### response.compaction.compacting
+
+Emitted when new summary content is sampled for a compaction trigger. Contains no summary content.
+
+#### Schema
+
+Schema name: `ResponseCompactionCompactingStreamingEvent`
+
+- `item_id: string`
+
+  The ID of the compaction output item.
+
+- `output_index: number`
+
+  The index of the compaction output item.
+
+- `sequence_number: number`
+
+  The sequence number of the event that was emitted.
+
+- `type: "response.compaction.compacting"`
+
+  The type of the event, always `response.compaction.compacting`.
+
+  - `"response.compaction.compacting"`
+
+- `stream_id: optional string`
+
+  The WebSocket lane that emitted this event. This field is present
+  when the originating `response.create` event supplied a
+  `stream_id`.
+
+#### Example
+
+```json
+{
+  "type": "response.compaction.compacting",
+  "sequence_number": 0,
+  "output_index": 0,
+  "item_id": "item_id"
 }
 ```
 

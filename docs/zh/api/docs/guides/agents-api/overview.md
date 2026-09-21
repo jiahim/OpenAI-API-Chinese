@@ -1,51 +1,51 @@
 # 智能体 API
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取 Markdown 版本的文档页面。
 
-智能体 API 通过 OpenAI 托管的 API，让你的应用能够访问 Codex 运行框架。
+智能体 API 让你的应用通过 OpenAI 托管的 API 访问 Codex harness。
 
-OpenAI 负责管理会话、编排、上下文压缩与恢复，而你的应用提供工具并选择执行环境。
+OpenAI 负责管理会话、编排、上下文压缩与恢复，而你的应用负责提供工具并选择其执行环境。
 
-智能体 可以在沙箱中运行，在其中执行代码、编辑文件、连接 MCP 服务器，并产出制品。
+智能体 可以在沙箱中运行，执行代码、编辑文件、连接 MCP 服务器并生成产物。
 
 ## 定价
 
-模型使用按所选模型的 [API 价格计费](https://developers.openai.com/api/docs/pricing)。OpenAI 工具按其 [标准价格](https://developers.openai.com/api/docs/pricing#built-in-tools)，计费，OpenAI 托管的沙盒使用标准 [容器价格](https://developers.openai.com/api/docs/pricing#built-in-tools).
+模型使用费用按所选模型的 [API 费率计费](https://developers.openai.com/api/docs/pricing)。OpenAI 工具使用其 [标准费率](https://developers.openai.com/api/docs/pricing#built-in-tools)，而 OpenAI 托管的沙盒使用标准 [容器费率](https://developers.openai.com/api/docs/pricing#built-in-tools).
 
-## 试用示例
+## 尝试示例
 
 试用以下完整示例：
 
-- [创建并运行一个目录树脚本](https://developers.openai.com/api/docs/guides/agents-api/quickstart#1-run-a-task) 在 OpenAI 托管的沙箱中。
-- [使用子智能体对比发布说明](https://developers.openai.com/api/docs/guides/agents-api/multi-agent#example-compare-release-notes) 并将它们的发现合并为一个答案。
+- [创建并运行目录树脚本](https://developers.openai.com/api/docs/guides/agents-api/quickstart#1-run-a-task) 在 OpenAI 托管的沙箱中。
+- [使用子智能体比较发布说明](https://developers.openai.com/api/docs/guides/agents-api/multi-agent#example-compare-release-notes) 并将它们的发现合并为一个答案。
 
-探索完整的应用程序：
+探索完整应用：
 
-- [事件响应智能体](https://developers.openai.com/showcase/agents-api-sev-bot)：调查告警并请求批准恢复操作。
-- [Slack 机器人](https://developers.openai.com/showcase/agents-api-slack-bot)：使用已连接的工作场所工具调查请求。
-- [数据分析师](https://developers.openai.com/showcase/agents-api-data-analyst)：使用只读 SQL 回答数据仓库问题。
-- [GitHub issue 调查器](https://developers.openai.com/showcase/agents-api-github-issues)：复现报告的缺陷并在 GitHub 上分享发现。
-- [文档审阅器](https://developers.openai.com/showcase/agents-api-document-review)：使用策略技能和专门的智能体审阅文档。
+- [事件响应智能体](https://developers.openai.com/cookbook/examples/agents_api/apps/sev_bot/readme)：调查告警，并请求批准恢复操作。
+- [Slack 机器人](https://developers.openai.com/cookbook/examples/agents_api/apps/slack_bot/readme)：使用已连接的工作场所工具调查请求。
+- [数据分析师](https://developers.openai.com/cookbook/examples/agents_api/apps/data_analyst/readme)：使用只读 SQL 回答数据仓库相关问题。
+- 使用 [GitHub issue 调查器](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/apps/github_issues) 来复现上报的 Bug，并在 GitHub 上分享调查结果。
+- 使用 [文档审阅器](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/apps/document_review) ，结合策略技能和专家智能体来审阅文档。
 
 ## 核心概念
 
-智能体 API 由四个核心概念构成：
+智能体 API 围绕四个核心概念构建：
 
-- **智能体:** 可供智能体使用的模型、指令、工具和 MCP 服务器。
-- **环境：** 一个可选的沙箱或计算机，智能体 可在其中访问文件、加载技能并运行命令。
-- **会话：** 一个 智能体 的持久化实例，用于处理任务并响应输入。
-- **事件和条目：** 在一次会话中发送给 智能体 的输入以及所产生的输出。
+- **智能体：** 可供 智能体 使用的模型、指令、工具和 MCP 服务器。
+- **环境：** 供 智能体 访问文件、加载技能以及运行命令的可选沙箱或计算机。
+- **会话：** 一个持久的 智能体 实例，用于处理任务并响应输入。
+- **事件与条目：** 发送给 智能体 的输入以及会话期间生成的输出。
 
-### 从开始到结束的会话
+### 一个从头到尾的会话
 
-从快速入门中的OpenAI 托管沙箱开始 [快速入门](https://developers.openai.com/api/docs/guides/agents-api/quickstart):
+从 OpenAI 托管的沙箱开始，在 [快速入门](https://developers.openai.com/api/docs/guides/agents-api/quickstart):
 
-1. **创建一个会话。** 配置该智能体；OpenAI 会为其配置环境。
-2. **为它分配一个任务。** 环境就绪后，用户输入将开启一轮工作。
-3. **跟踪进度。** 流式获取输出或使用 Webhook，以了解智能体 何时完成或需要输入。
-4. **继续或引导。** 向同一会话发送新任务，或在当前轮次中引导该智能体。
+1. **创建一个会话。** 配置智能体；OpenAI 会自动准备其运行环境。
+2. **为其分配一个任务。** 环境就绪后，用户输入即开启一轮工作。
+3. **跟踪进度。** 流式获取输出，或通过 webhook 获知智能体何时完成或需要输入。
+4. **继续或引导。** 向同一会话发送新任务，或在当前轮次中引导智能体。
 
-使用 OpenAI 托管的会话时，你的应用发送输入并接收事件，而 OpenAI 运行 智能体 并配置和管理其沙盒。参见 [环境选项](https://developers.openai.com/api/docs/guides/agents-api/configuration#environment-settings) 了解设置和限制。
+在 OpenAI 托管的会话中，你的应用负责发送输入并接收事件，而 OpenAI 负责运行 智能体 并提供和管理其沙箱。详见 [环境选项](https://developers.openai.com/api/docs/guides/agents-api/configuration#environment-settings) 了解设置方式和相关限制。
 
 <picture>
   <source
@@ -62,21 +62,21 @@ OpenAI 负责管理会话、编排、上下文压缩与恢复，而你的应用�
   />
 </picture>
 
-## 托管执行环境提供的功能
+## 托管运行框架提供的功能
 
-托管的 Codex 执行环境支持：
+托管的 Codex 运行框架支持：
 
 - 在沙箱中运行命令和代码。
 - 应用相关的技能和指令。
-- 通过工具或 MCP 连接外部数据。
-- 在 智能体 执行过程中对其进行引导。
+- 通过工具或 MCP 连接到外部数据。
+- 在 智能体 工作时对其进行引导。
 - 总结之前的工作以管理其上下文窗口。
 - 将工作拆分为子任务并委派给子智能体。
-- 从中断处恢复会话。
+- 从上次中断的地方恢复会话。
 
-请查看 [快速入门前置条件](https://developers.openai.com/api/docs/guides/agents-api/quickstart#prerequisites) 以了解 API 密钥权限和 SDK 配置。在创建会话时配置以下能力：
+查看 [快速入门的前置条件](https://developers.openai.com/api/docs/guides/agents-api/quickstart#prerequisites) 了解 API 密钥权限和 SDK 配置。在创建会话时配置以下能力：
 
-配置托管工具链能力
+配置托管执行环境能力
 
 ```javascript
 import OpenAI from "openai";
@@ -345,11 +345,11 @@ curl -sS -X POST "https://api.openai.com/v1/agents/sessions" \
 
 有关运行时对比，请参阅 [智能体概述](https://developers.openai.com/api/docs/guides/agents#compare-agent-runtimes).
 
-智能体 API 会保留会话状态，这样你可以在多轮交互中
-  延续工作而无需重建对话上下文。你可以删除不再需要的会话和已发布
-  的制品。
-  智能体 API 目前仅支持美国境内的数据驻留，且
-  不支持零数据保留（ZDR）。选择自托管沙箱并
-  不会使 智能体 API 符合 ZDR 条件。详见 [数据控制
-  （OpenAI 平台）](https://developers.openai.com/api/docs/guides/your-data#storage-requirements-and-retention-controls-per-endpoint)
-  了解数据驻留和保留相关的详细信息。
+智能体 API 会保留会话状态，使你可以在多个轮次之间继续工作，而无需
+  重建对话上下文。当不再需要时，你可以删除会话和已发布的
+  制品。
+  智能体 API 目前仅支持美国的数据驻留，且
+  不支持零数据保留 (ZDR)。选择自托管沙箱并不会
+  使 智能体 API 符合 ZDR 条件。请参阅 [数据控制
+  在 OpenAI 平台中](https://developers.openai.com/api/docs/guides/your-data#storage-requirements-and-retention-controls-per-endpoint)
+  了解数据驻留和保留的详细信息。

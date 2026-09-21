@@ -160,7 +160,7 @@ For OpenAI-hosted stdio MCPs, omit the network policy or set it to `enabled`. Th
 For a server that allows anonymous access, omit authentication fields and `vault_ids`. Otherwise, choose the credential source for your connection:
 
 - **HTTP credentials for one session:** Set `transport.authorization` or `transport.headers` when creating the session. The Agents API encrypts these values and omits them from the returned session resource.
-- **Reusable HTTP credentials:** Store credentials in a [vault](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults) and attach it through `vault_ids`. Vaults apply only to connections from OpenAI. Credentials match the server URL; use `credential_id` to select one when several match.
+- **Reusable HTTP credentials:** Store MCP credentials in a [vault](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults) and attach it through `vault_ids`. Vault-backed MCP authentication applies only to connections from OpenAI. Credentials match the server URL; use `credential_id` to select one when several match.
 - **Stdio credentials:** Supply values in the environment and list their names in `transport.env_vars`. These values can be read by code running in the environment. Self-hosted sessions do not accept inline values in `transport.env`.
 
 For example, an HTTP transport can include a bearer token and another header:

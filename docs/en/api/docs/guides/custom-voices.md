@@ -49,6 +49,7 @@ Refer to the Text-to-Speech Supplemental Agreement for additional terms of use.
 
 The consent audio recording must only include one of the following phrases. Any divergence from the script will lead to a failure.
 
+
 | Language | Phrase                                                                                                                                                |
 | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `de`     | Ich bin der Eigentümer dieser Stimme und bin damit einverstanden, dass OpenAI diese Stimme zur Erstellung eines synthetischen Stimmmodells verwendet. |
@@ -174,8 +175,7 @@ The consent recording and reference sample must come from the same person. The
 sample needs at least five seconds of actual speech and at least 15 transcribed
 text tokens; silence does not count. Use a 10–30-second
 recording with several complete sentences. Each upload is limited to 10 MiB.
-The service extracts the reference transcript; do not upload transcript tokens,
-configure a decoder, or add custom request headers.
+The service extracts the reference transcript from your recording.
 
 Browser recorders may label audio `audio/webm;codecs=opus`, which the upload
 endpoint rejects. When constructing an upload, use the supported base MIME type
@@ -184,8 +184,8 @@ creation requests above, then save the returned voice ID.
 
 ### Select the voice at session creation
 
-Pass a custom voice as the object `{ "id": "voice_123" }`, not the string
-`"voice_123"`. Named voices such as `"marin"` use strings.
+Pass a custom voice as an object, such as `{ "id": "voice_123" }`. Named voices
+such as `"marin"` use strings.
 
 `gpt-live-1` supports custom voices with English accents. To use an accent, also
 specify it in `session.instructions`, such as "Speak British English" or "Speak
@@ -202,22 +202,18 @@ Include the following configuration in the initial session:
 }
 ```
 
-For [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=live), the trusted session broker
-places this configuration in the JSON `session` field alongside `transport`.
-The Live endpoint requires JSON, not multipart or raw SDP. Read the created
-session ID from `session.id` and the SDP answer from `transport.sdp`. Authenticate
-hosted broker requests with application credentials; never expose the OpenAI
-API key to the browser.
+For [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=live), have your application server
+place this configuration in the JSON `session` field alongside `transport`.
+Authenticate requests to your server with application credentials, and keep the
+OpenAI API key on the server.
 
 For [WebSockets](https://developers.openai.com/api/docs/guides/voice-websockets?api=live), put the configuration
-in the first `session.start` event. Connect without query parameters and wait
-for `session.started` before streaming audio. Send audio with
-`session.input_audio.append`. After sending `session.close`, keep receiving until
-`session.closed` supplies final usage.
+in the first `session.start` event. Follow the connection guide for streaming
+audio and closing the session.
 
 ### Handle access and lifecycle failures
 
-- The output voice cannot be changed after the Live session starts. Start a new session to use a different voice.
+- Choose the voice at session creation. Start a new session to use a different voice.
 - A deleted or revoked voice, a consent from another project, or missing custom-voice access can appear as a `404`.
 - Malformed audio, a mismatched speaker, or a non-project-scoped key is rejected.
 

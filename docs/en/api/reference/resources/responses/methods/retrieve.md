@@ -1706,6 +1706,10 @@ Retrieves a model response with the given ID.
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
               about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
+              This field is deprecated for models released after September 1, 2026.
+              Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+              connect through a Secure MCP Tunnel.
+
               Currently supported `connector_id` values are:
 
               - Dropbox: `connector_dropbox`
@@ -2791,6 +2795,10 @@ Retrieves a model response with the given ID.
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
               about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
+
+              This field is deprecated for models released after September 1, 2026.
+              Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+              connect through a Secure MCP Tunnel.
 
               Currently supported `connector_id` values are:
 
@@ -4497,7 +4505,7 @@ Retrieves a model response with the given ID.
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 81 more`
+    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 82 more`
 
       - `"gpt-6-astra"`
 
@@ -4538,8 +4546,6 @@ Retrieves a model response with the given ID.
       - `"gpt-5.1-2025-11-13"`
 
       - `"gpt-5.1-codex"`
-
-      - `"gpt-5.1-mini"`
 
       - `"gpt-5.1-chat-latest"`
 
@@ -4600,6 +4606,10 @@ Retrieves a model response with the given ID.
       - `"gpt-4o-2024-08-06"`
 
       - `"gpt-4o-2024-05-13"`
+
+      - `"gpt-audio-mini"`
+
+      - `"gpt-audio-mini-2025-12-15"`
 
       - `"gpt-4o-audio-preview"`
 
@@ -5614,6 +5624,10 @@ Retrieves a model response with the given ID.
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
+
             Currently supported `connector_id` values are:
 
             - Dropbox: `connector_dropbox`
@@ -6513,6 +6527,10 @@ Retrieves a model response with the given ID.
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
             about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
+
+            This field is deprecated for models released after September 1, 2026.
+            Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+            connect through a Secure MCP Tunnel.
 
             Currently supported `connector_id` values are:
 
@@ -8482,6 +8500,10 @@ Retrieves a model response with the given ID.
         Identifier for service connectors, like those available in ChatGPT. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
         about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
+
+        This field is deprecated for models released after September 1, 2026.
+        Use `server_url` to connect to a remote MCP server, or `tunnel_id` to
+        connect through a Secure MCP Tunnel.
 
         Currently supported `connector_id` values are:
 

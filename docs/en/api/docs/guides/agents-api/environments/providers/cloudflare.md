@@ -16,7 +16,7 @@ Your application uses the Agents API; the reference Worker manages sandbox provi
 
 ## Before you begin
 
-You need a Cloudflare account with Containers access, an OpenAI application API key, and a separate restricted executor key. Follow [executor authentication](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication) to configure the keys. Keep the application key outside the Container.
+You need a Cloudflare account with Containers access. Use `OPENAI_API_KEY` for application requests. Set `OPENAI_EXECUTOR_API_KEY` to an [environment key](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication), and pass only that key into the Container as `CODEX_API_KEY`.
 
 [Create an agent](https://developers.openai.com/api/docs/guides/agents-api/configuration#reuse-an-agent-across-sessions) and save its ID as `OPENAI_AGENT_ID`. Use the same agent ID in your application and the reference Worker.
 
@@ -40,13 +40,13 @@ Deploy to Cloudflare
 
 Enter these values when prompted:
 
-| Variable                  | Value                                                   |
-| ------------------------- | ------------------------------------------------------- |
-| `OPENAI_API_KEY`          | Key used by the Worker to retrieve session state        |
-| `OPENAI_EXECUTOR_API_KEY` | Restricted key passed to `codex exec-server`            |
-| `OPENAI_AGENT_ID`         | Agent ID served by this Worker                          |
-| `OPENAI_WEBHOOK_SECRET`   | `pending-webhook-registration` for the first deployment |
-| `EXECUTOR_CLIENT_SECRET`  | Secret generated for cleanup                            |
+| Variable                  | Value                                                     |
+| ------------------------- | --------------------------------------------------------- |
+| `OPENAI_API_KEY`          | Key used by the Worker to retrieve session state          |
+| `OPENAI_EXECUTOR_API_KEY` | Environment key passed to the executor as `CODEX_API_KEY` |
+| `OPENAI_AGENT_ID`         | Agent ID served by this Worker                            |
+| `OPENAI_WEBHOOK_SECRET`   | `pending-webhook-registration` for the first deployment   |
+| `EXECUTOR_CLIENT_SECRET`  | Secret generated for cleanup                              |
 
 Save the deployed Worker URL as `WORKER_URL`.
 

@@ -1,27 +1,27 @@
 # Realtime with tools
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
 
-你可以向 Realtime 会话附加工具，以便模型在实时对话中查找数据、执行操作或调用服务。无论你的客户端使用的是 [WebRTC 数据通道](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime) 还是 [WebSocket](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime).
+你可以在 Realtime 会话中挂载工具，以便模型在实时对话过程中查询数据、执行操作或调用服务。无论你的客户端使用的是 [WebRTC 数据通道](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime) 还是 [WebSocket](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime).
 
-当你的应用需要自行执行工具并返回结果时，使用函数工具。当希望 Realtime API 为你连接到远程工具服务器时，使用 MCP 工具或内置连接器。
+当你的应用需要自行执行工具并返回结果时，请使用函数工具。当希望 Realtime API 为你连接远程工具服务器时，请使用 MCP 工具。
 
 ## 选择工具类型
 
-| 工具类型                 | 适用场景                                                                             | 由谁执行                                                                    |
+| 工具类型                 | 使用场景                                                                             | 执行方                                                                    |
 | ------------------------- | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
-| `function`                | 你的应用拥有业务逻辑、审批检查或对私有系统的访问权限。 | 你的客户端或服务端收到函数调用后返回 `function_call_output`. |
-| `mcp` 并附带 `server_url`   | 你希望模型调用远程 MCP 服务器所暴露的工具。                     | Realtime API 调用远程 MCP 服务器。                                      |
-| `mcp` 并附带 `connector_id` | 你希望使用内置连接器，例如 Google Calendar。                        | Realtime API 使用你提供的授权信息调用该连接器。           |
+| `function`                | 你的应用拥有业务逻辑、审批检查或私有系统访问权限。 | 你的客户端或服务端接收函数调用并返回 `function_call_output`. |
+| `mcp` 使用 `server_url`   | 你希望模型调用远程 MCP 服务器暴露的工具。                     | Realtime API 调用远程 MCP 服务器。                                      |
+| `mcp` 使用 `connector_id` | 你在现有模型上使用旧版内置连接器。                          | Realtime API 使用你提供的授权信息调用连接器。           |
 
-在以下两个位置之一添加工具 **在以下两个位置之一添加工具**:
+在以下两处之一添加工具 **其中一处**:
 
-- 在 **会话级别** 使用 `session.tools` 于 [`session.update`](https://developers.openai.com/api/reference/resources/realtime),如果你希望该工具在整个会话期间可用。
-- 在 **响应级别** 使用 `response.tools` 于 [`response.create`](https://developers.openai.com/api/reference/resources/realtime),如果你只需要该工具用于单个回合。
+- 在 **会话级别** 使用 `session.tools` 在 [`session.update`](https://developers.openai.com/api/reference/resources/realtime)，如果你希望该工具在整个会话中可用。
+- 在 **响应级别** 使用 `response.tools` 在 [`response.create`](https://developers.openai.com/api/reference/resources/realtime)，如果你仅在某一轮中使用该工具。
 
 ## 配置函数工具
 
-当工具应当在你的应用中执行时，函数工具是合适的默认选择。模型输出函数调用参数，由你的代码执行该操作，再由你的代码将结果通过一个 `function_call_output` item 发送回去。
+当工具应在你的应用中运行时，函数工具是合适的默认选择。模型发出函数调用参数，你的代码执行该操作，然后你的代码使用一个 `function_call_output` 项将结果发回。
 
 使用 session.update 配置函数工具
 
@@ -111,7 +111,7 @@ connection.session.update(
 ```
 
 
-当模型调用该函数时，监听函数调用 item，运行你的应用逻辑，然后将输出发送回去：
+当模型调用该函数时，监听函数调用项，运行你的应用逻辑，然后将输出发回：
 
 发送函数调用输出
 
@@ -161,11 +161,11 @@ connection.response.create(tool_choice: :none)
 ```
 
 
-如需按事件逐步了解函数调用的完整流程，请参阅 [管理对话](https://developers.openai.com/api/docs/guides/realtime-conversations#function-calling).
+有关函数调用的完整事件分步讲解，请参阅 [管理对话](https://developers.openai.com/api/docs/guides/realtime-conversations#function-calling).
 
 ## 配置 MCP 工具
 
-当工具已经存在于远程 MCP 服务器之后，或当你希望使用由 OpenAI 托管的连接器时，MCP 工具非常有用。与函数工具不同，MCP 工具由 Realtime API 本身执行。
+当工具已经存在于远程 MCP 服务器之后，或现有模型使用了遗留的内置连接器时，MCP 工具非常有用。与 function 工具不同，MCP 工具由 Realtime API 本身执行。
 
 在 Realtime 中，MCP 工具的格式为：
 
@@ -173,11 +173,11 @@ connection.response.create(tool_choice: :none)
 - `server_label`
 - One of `server_url` 或 `connector_id`
 - Optional `authorization` 和 `headers`
-- 可选 `allowed_tools`
-- 可选 `require_approval`
-- 可选 `server_description`
+- Optional `allowed_tools`
+- Optional `require_approval`
+- Optional `server_description`
 
-此示例在整个会话期间使 docs MCP server 可用：
+此示例会在整个会话期间提供一个可用的 docs MCP 服务器：
 
 使用 session.update 配置 MCP 工具
 
@@ -243,21 +243,30 @@ connection.session.update(
 ```
 
 
-内置连接器使用相同的 MCP 工具形态，但传入的是 `connector_id`
-而不是 `server_url`。例如，Google Calendar 使用的是
-`connector_googlecalendar`。在 Realtime 中，使用这些内置连接器执行读取操作，
-例如搜索或读取事件或邮件。在
-中传入用户的 OAuth `authorization`，访问令牌，并尽可能使用
-`allowed_tools` 收窄工具范围：
+### 旧版连接器
 
-配置 Google Calendar 连接器
+`connector_id` 已针对 2026 年 9 月 1 日之后发布的模型弃用，
+  2026。使用 `server_url` 连接到远程 MCP 服务器，或使用 
+  `tunnel_id` 通过以下方式连接到本地 MCP 服务器 
+  [Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels)。现有的
+  模型仍保留连接器支持。下面的示例使用了
+  `gpt-realtime-1.5`，它早于该截止日期。
+
+内置连接器使用相同的 MCP 工具形态，但传递的是 `connector_id`
+而不是 `server_url`。例如，Google 日历使用的是
+`connector_googlecalendar`。在 Realtime 中，使用这些内置连接器执行读取
+操作，例如搜索或读取事件或电子邮件。将用户的 OAuth
+访问令牌传入 `authorization`，并在可能时使用以下方式收窄工具面
+`allowed_tools` ：
+
+配置 Google 日历连接器
 
 ```javascript
 const event = {
   type: "session.update",
   session: {
     type: "realtime",
-    model: "gpt-realtime-2.1",
+    model: "gpt-realtime-1.5",
     output_modalities: ["text"],
     tools: [
       {
@@ -284,7 +293,7 @@ event = {
     "type": "session.update",
     "session": {
         "type": "realtime",
-        "model": "gpt-realtime-2.1",
+        "model": "gpt-realtime-1.5",
         "output_modalities": ["text"],
         "tools": [
             {
@@ -307,7 +316,7 @@ access_token = ENV.fetch("OPENAI_MCP_ACCESS_TOKEN")
 
 connection.session.update(
   type: :realtime,
-  model: "gpt-realtime-2.1",
+  model: "gpt-realtime-1.5",
   output_modalities: [:text],
   tools: [
     {
@@ -325,28 +334,28 @@ connection.session.update(
 
 远程 MCP 服务器 
   **不会自动接收完整的对话上下文，**,
-  但 **它们可以看到工具调用中模型发送的任何数据。**.
-  **使用** 保持工具范围收窄， `allowed_tools`,
-  并对任何你不会自动执行的操作要求审批。
+  但是 **它们可以看到模型在工具调用中发送的任何数据**.
+  **保持工具接口的精简** 并 `allowed_tools`,
+  对任何你不会自动执行的操作要求审批。
 
 ## Realtime MCP flow
 
-与 Realtime `function` 工具不同，远程 MCP 工具由 **Realtime API 本身执行**. **你的客户端不会运行远程工具** 并返回 `function_call_output`。相反，你的客户端会配置访问权限、监听 MCP 生命周期事件，并在服务器请求审批时选择性地发送审批响应。
+与 Realtime 不同， `function` tools 不同，远程 MCP 工具 **由 Realtime API 本身执行**. **你的客户端不需要运行远程工具** 并返回一个 `function_call_output`。你的客户端只需要配置访问、监听 MCP 生命周期事件，并在服务器请求时选择性地发送审批响应。
 
-典型的流程如下：
+典型流程如下：
 
-1. 你发送 `session.update` 或 `response.create` 带有 `tools` 条目，其中 `type` 为 `mcp`.
+1. 你发送 `session.update` 或 `response.create` 带有 `tools` 条目，其 `type` 为 `mcp`.
 1. 服务器开始导入工具并发出 `mcp_list_tools.in_progress`.
-1. 在列示仍在进行时，模型无法调用尚未加载的工具。如果你想在开始依赖这些工具的轮次之前等待，请监听 [`mcp_list_tools.completed`](https://developers.openai.com/api/reference/resources/realtime)。 [`conversation.item.done`](https://developers.openai.com/api/reference/resources/realtime) 事件，其中 `item.type` 为 `mcp_list_tools` 会显示实际导入的工具名称。如果导入失败，你会收到 [`mcp_list_tools.failed`](https://developers.openai.com/api/reference/resources/realtime).
-1. 用户说出或发送文本，然后创建一个响应，由你的客户端或会话配置自动完成。
-1. 如果模型选择了 MCP 工具，你会看到 `response.mcp_call_arguments.delta` 和 `response.mcp_call_arguments.done`.
-1. **如果需要审批**，服务器会添加一个对话项，其中 `item.type` 为 `mcp_approval_request`。你的客户端必须使用 `mcp_approval_response` 项进行回答。
-1. 工具运行后，你会看到 `response.mcp_call.in_progress`。成功时，稍后你会收到 [`response.output_item.done`](https://developers.openai.com/api/reference/resources/realtime) 事件，其中 `item.type` 为 `mcp_call`；失败时，你会收到 [`response.mcp_call.failed`](https://developers.openai.com/api/reference/resources/realtime).
-1. `response.done` 的响应可能在其 MCP 调用完成之前到达。响应完成且其所有 MCP 调用都已结束后，再发送一个 [`response.create`](https://developers.openai.com/api/reference/resources/realtime) 事件，让模型使用结果并继续对话。如果模型进行额外的 MCP 调用，请重复此步骤。Realtime API 不会自动创建这些后续响应。
+1. 在列出仍在进行时，模型无法调用尚未加载的工具。如果你想在开始一个依赖这些工具的轮次之前等待，请监听 [`mcp_list_tools.completed`](https://developers.openai.com/api/reference/resources/realtime)。 [`conversation.item.done`](https://developers.openai.com/api/reference/resources/realtime) 事件，其 `item.type` 为 `mcp_list_tools` 显示了实际导入了哪些工具名称。如果导入失败，你将收到 [`mcp_list_tools.failed`](https://developers.openai.com/api/reference/resources/realtime).
+1. 用户发言或发送文本，并创建一条响应，可以由你的客户端创建，也可以由会话配置自动创建。
+1. 如果模型选择了 MCP 工具，你将看到 `response.mcp_call_arguments.delta` 和 `response.mcp_call_arguments.done`.
+1. **如果需要审批**，服务器会添加一个会话项，其 `item.type` 为 `mcp_approval_request`。你的客户端必须使用一个 `mcp_approval_response` 项来回复它。
+1. 工具运行后，你将看到 `response.mcp_call.in_progress`。成功时，你稍后会收到一个 [`response.output_item.done`](https://developers.openai.com/api/reference/resources/realtime) 事件，其 `item.type` 为 `mcp_call`；失败时，你将收到 [`response.mcp_call.failed`](https://developers.openai.com/api/reference/resources/realtime).
+1. `response.done` 的响应可能在其 MCP 调用完成之前到达。在响应完成并且其所有 MCP 调用都已结束后，发送另一个 [`response.create`](https://developers.openai.com/api/reference/resources/realtime) 事件，让模型使用这些结果并继续对话。如果模型进行额外的 MCP 调用，请重复此步骤。Realtime API 不会自动创建这些后续响应。
 
-此事件处理器记录主要的 MCP 生命周期事件，但不会管理后续响应：
+此事件处理程序会记录主要的 MCP 生命周期事件，但不会管理后续响应：
 
-在 Realtime 会话中监听 MCP 事件
+在 Realtime 会话期间监听 MCP 事件
 
 ```javascript
 function parseRealtimeEvent(rawMessage) {
@@ -563,20 +572,20 @@ end
 ```
 
 
-## 常见错误
+## 常见故障
 
-- [`mcp_list_tools.failed`](https://developers.openai.com/api/reference/resources/realtime): Realtime API 无法从远程服务器或连接器导入工具。请检查 `server_url` 或 `connector_id`、身份验证、服务器连接性以及你指定的任何 `allowed_tools` 名称。
-- [`response.mcp_call.failed`](https://developers.openai.com/api/reference/resources/realtime): 模型选择了一个工具，但该工具调用未完成。请检查事件载荷及后续的 `mcp_call` 项中是否存在 MCP 协议、执行或传输错误。
-- `mcp_approval_request` 且没有匹配的 `mcp_approval_response`: 在你的客户端明确批准或拒绝之前，工具调用无法继续。
-- 当一次轮次开始时， `mcp_list_tools.in_progress` 仍处于活跃状态：只有已经加载完成的工具才有资格参与该轮次。
-- 某次响应使用了 `tool_choice: "required"` 但当前没有可用工具：模型没有可调用的对象。请等待 `mcp_list_tools.completed`，确认至少导入了一个工具，或使用其他 `tool_choice` 来完成不需要工具的轮次。
-- MCP 工具定义在导入开始前验证失败：常见原因包括同一 `server_label` 数组中存在重复的 `tools` ，同时设置了 `server_url` 和 `connector_id`，在初始会话创建请求中两者均省略，使用了无效的 `connector_id`，或同时发送了 `authorization` 和 `headers.Authorization`。对于连接器，请不要发送 `headers.Authorization` 。
+- [`mcp_list_tools.failed`](https://developers.openai.com/api/reference/resources/realtime): Realtime API 无法从远程服务器或连接器导入工具。请检查 `server_url` 或 `connector_id`，身份验证、服务器连接情况以及任何 `allowed_tools` 你指定的名称。
+- [`response.mcp_call.failed`](https://developers.openai.com/api/reference/resources/realtime): 模型选择了某个工具，但工具调用未能完成。请检查事件负载以及后续的 `mcp_call` item，以排查 MCP 协议、执行或传输相关的错误。
+- `mcp_approval_request` 没有匹配的 `mcp_approval_response`: 在你的客户端明确批准或拒绝之前，工具调用无法继续。
+- 在 `mcp_list_tools.in_progress` 仍处于活动状态时开启了一个回合：该回合中只有已经完成加载的工具才符合使用条件。
+- 响应使用了 `tool_choice: "required"` 但当前没有可用工具：模型没有符合条件的内容可调用。请等待 `mcp_list_tools.completed`，确认至少导入了一个工具，或使用不同的 `tool_choice` 用于不需要工具的轮次。
+- MCP 工具定义在导入开始前校验失败：常见原因是在同一 `server_label` 数组中出现重复， `tools` 同时设置了 `server_url` 和 `connector_id`，在初始会话创建请求中两者都省略，或使用无效的 `connector_id`，或同时发送了 `authorization` 和 `headers.Authorization`。对于连接器，请不要发送 `headers.Authorization` 。
 
 ## 批准或拒绝 MCP 工具调用
 
-如果某个工具需要审批，Realtime API 会在对话中插入一个 `mcp_approval_request` 事件。 **若要继续，**，请发送一个新的 [`conversation.item.create`](https://developers.openai.com/api/reference/resources/realtime) 事件，其 `item.type` 是 `mcp_approval_response`.
+如果某个工具需要审批，Realtime API 会在会话中插入一个 `mcp_approval_request` 条目。 **若要继续**，请发送一个新的 [`conversation.item.create`](https://developers.openai.com/api/reference/resources/realtime) 事件，其 `item.type` 为 `mcp_approval_response`.
 
-批准一个 MCP 请求
+审批 MCP 请求
 
 ```javascript
 function approveMcpRequest(approvalRequestId) {
@@ -623,13 +632,13 @@ connection.conversation.items.create(
 ```
 
 
-如果你拒绝该请求，请将 `approve` 设置为 `false` ，并可选择包含一个 `reason`.
+如果拒绝请求，请将 `approve` 设置为 `false` ，并可选择性地附带一个 `reason`.
 
-## 仅对单次响应使用 MCP
+## 仅在单次响应中使用 MCP
 
-如果 MCP 应该 **仅在单次回合中可用**，请将同一个 MCP 工具对象附加到 `response.tools` 而不是 `session.tools`:
+如果 MCP 应 **仅在单个回合内可用**，请将同一个 MCP 工具对象附加到 `response.tools` 而不是 `session.tools`:
 
-在单个 response 上添加 MCP 工具
+在单个响应中添加 MCP 工具
 
 ```javascript
 const event = {
@@ -723,16 +732,16 @@ connection.response.create(
 ```
 
 
-当仅有一个 response 需要外部上下文，或不同回合需要使用不同的 MCP 服务器时，这非常有用。
+当你只需要一个响应使用外部上下文，或希望不同回合使用不同的 MCP 服务器时，这非常有用。
 
-## 复用先前定义的服务器标签
+## 复用先前定义的服务端标签
 
-`server_label` 是当前 Realtime 会话中工具定义的稳定句柄。在你使用
-一次定义服务端或连接器后
-`server_label` 加上 `server_url` 或 `connector_id`, 后续的 `session.update` 或
-`response.create` 事件只能引用同一个 `server_label`,并且 Realtime
-Realtime API 将复用先前的定义,而不需要你重新发送完整的工具对象。
-the full tool object again.
+`server_label` 是在当前 Realtime 会话中工具定义的稳定句柄。一旦你使用以下方式定义了一次服务端或连接器
+plus
+`server_label` plus `server_url` 或 `connector_id`，之后的 `session.update` 或
+`response.create` 事件只能引用同一个 `server_label`，此时 Realtime API 会复用先前的定义，而无需你再次发送
+Realtime 接口 会复用先前的定义，而无需你再次发送
+完整的工具对象。
 
 复用先前定义的连接器
 
@@ -821,5 +830,5 @@ connection.response.create(
 ```
 
 
-这种复用是会话级别的。如果你开启一个新的 Realtime 会话,请重新发送
-完整的 MCP 定义,以便服务端导入它的工具列表。
+这种复用作用范围限定在当前会话内。如果你启动一个新的 Realtime 会话，需要再次发送
+完整的 MCP 定义，以便服务端导入其工具列表。

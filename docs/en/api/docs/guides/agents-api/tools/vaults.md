@@ -2,9 +2,18 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-A vault stores credentials for MCP connections from OpenAI. Attach it to a session so the agent can use authenticated tools without receiving the secret values.
+A vault stores credentials outside your agent's instructions and configuration. Attach it to a session with `vault_ids` so the session can use those credentials.
 
-Vaults support bearer tokens and existing OAuth grants. For connections from your environment, use the other [MCP authentication options](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp#add-authentication).
+Choose the credential type based on where the request runs:
+
+| Request                                   | Credential type                | How the session uses the credential                                                                                                      |
+| ----------------------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| MCP connection from OpenAI                | `static_bearer` or `mcp_oauth` | OpenAI authenticates to the configured MCP server.                                                                                       |
+| API request from an OpenAI-hosted sandbox | `environment_variable`         | Code uses an environment variable containing a placeholder. A network proxy replaces the placeholder with the secret for approved hosts. |
+
+For example, a sandbox can use a vault secret to call the GitHub REST API. Follow [Use vault secrets for API requests from a sandbox](#use-vault-secrets-for-api-requests-from-a-sandbox).
+
+Retrieving a vault or credential does not return its secret values. For other MCP connections, see [MCP authentication options](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp#add-authentication).
 
 ## Permissions
 
@@ -16,7 +25,11 @@ For a restricted application key, grant:
 
 
 
-## Create and use a vault
+
+
+
+
+## Create and use a vault for MCP secrets
 
 Use your API client, the MCP server URL (`mcp_url`), and an access token for that server (`access_token`). The examples use GitHub tools.
 
@@ -336,7 +349,69 @@ session = client.beta.agents.sessions.create(
 ```
 
 
-The Agents API selects a credential that matches the server URL. If several attached credentials match, set the MCP tool's `credential_id` to select one. Retrieving a vault or credential does not return its secret values.
+The Agents API selects a credential that matches the server URL. If several attached credentials match, set the MCP tool's `credential_id` to select one.
+
+
+
+
+## Use vault secrets for API requests from a sandbox
+
+Use an `environment_variable` credential to supply a secret for API requests from an OpenAI-hosted sandbox. The sandbox receives a placeholder in the named environment variable. The real secret stays outside the sandbox.
+
+This workflow requires an `openai_hosted` environment. It does not supply credentials to self-hosted environments or application-run [function tools](https://developers.openai.com/api/docs/guides/agents-api/tools/functions).
+
+### Store the API token
+
+Create a vault as shown above. Then send a credential creation request to `POST /v1/vaults/{vault_id}/credentials` with these fields:
+
+| Field                           | Value for a GitHub API token                                            |
+| ------------------------------- | ----------------------------------------------------------------------- |
+| `name`                          | `GitHub API token`                                                      |
+| `auth.type`                     | `environment_variable`                                                  |
+| `auth.secret_name`              | `GITHUB_TOKEN`                                                          |
+| `auth.secret_value`             | The token, read from a secret environment variable in your application. |
+| `auth.networking.type`          | `limited`                                                               |
+| `auth.networking.allowed_hosts` | `["api.github.com"]`                                                    |
+
+`secret_name` is the environment variable that sandbox code reads. `secret_value` is the real credential. Keep it out of prompts, source files, and logs.
+
+Use exact host names in `allowed_hosts`, without a scheme, path, port, or wildcard. The proxy supplies secrets only to HTTPS destinations on port 443 or 8443.
+
+### Attach the vault to a hosted session
+
+Include the following fields alongside `agent` when [creating a session](https://developers.openai.com/api/docs/guides/agents-api/sessions#create-a-session). Replace `vault_123` with the vault ID returned by the API:
+
+```json
+{
+  "vault_ids": ["vault_123"],
+  "environment": {
+    "type": "openai_hosted",
+    "network": {
+      "access": "restricted",
+      "allowed_domains": ["api.github.com"]
+    }
+  }
+}
+```
+
+The two host lists control different things. `allowed_domains` lets the sandbox connect to a host. The credential's `allowed_hosts` lets the proxy supply the secret to that host.
+
+With restricted network access, include every credential host in `allowed_domains`. Do not set `network.access` to `disabled` for a session with environment credentials.
+
+Each attached environment credential must have a unique `secret_name`. Do not also define that name in `environment.env`.
+
+### Call the API from the sandbox
+
+[Send the agent a message](https://developers.openai.com/api/docs/guides/agents-api/sessions#send-input) asking it to run this command in the sandbox:
+
+```bash
+curl https://api.github.com/user \
+  -H "Authorization: Bearer $GITHUB_TOKEN"
+```
+
+The command reads the placeholder from `GITHUB_TOKEN`. The proxy replaces it with the real token before sending the request to `api.github.com`. A successful request returns the authenticated GitHub user's account details as JSON. Printing the variable inside the sandbox shows the placeholder, not the token.
+
+Pass the placeholder unchanged in the HTTPS request header. It cannot supply the real secret for local computation, such as signing a request. For those tasks, keep the credential in your application and expose the operation through a [function tool](https://developers.openai.com/api/docs/guides/agents-api/tools/functions).
 
 
 
@@ -526,7 +601,7 @@ If an expired token cannot be refreshed, supply a valid replacement. Token expir
 
 ## Rotate or remove credentials
 
-[Update a credential](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/vaults/subresources/credentials/methods/update) to replace its token without changing its ID, authentication type, or server URL. For OAuth, use the saved `vault_id` and `credential_id` with the replacement token and expiry:
+[Update a credential](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/vaults/subresources/credentials/methods/update) to replace its secret without changing its ID or authentication type. For MCP credentials, the server URL also stays the same. For OAuth, use the saved `vault_id` and `credential_id` with the replacement token and expiry:
 
 Rotate an OAuth token
 
@@ -643,6 +718,10 @@ credential = client.beta.agents.vaults.credentials.update(
 
 
 Include `expires_at` when the replacement token expires. Supplying a new access token without an expiry clears the stored expiry; an explicit `null` also clears it.
+
+For an environment credential, send `auth.type: "environment_variable"` and the replacement `auth.secret_value` to `POST /v1/vaults/{vault_id}/credentials/{credential_id}`. Create a new session to use the replacement. Updating the vault does not change the credential already configured in an existing sandbox.
+
+To change `secret_name` or `networking`, create a new credential.
 
 [Delete a credential](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/vaults/subresources/credentials/methods/delete) when you no longer need it. [Delete a vault](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/vaults/methods/delete) to remove the vault and all its credentials.
 

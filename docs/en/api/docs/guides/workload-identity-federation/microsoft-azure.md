@@ -7,8 +7,6 @@ Use Microsoft Azure as a Workload Identity Provider in either of these scenarios
 - **Azure managed identity:** Exchange a Microsoft Entra ID access token issued for a managed identity for a short-lived OpenAI access token.
 - **AKS:** Exchange a projected Azure Kubernetes Service (AKS) service account token for a short-lived OpenAI access token.
 
-For Codex, use this page to get and inspect the Microsoft Entra token. Then [configure Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) to write that token to a file and point Codex to it. The service-account mapping and SDK examples on this page apply to the OpenAI API.
-
 
 
 ## Azure managed identity
@@ -373,8 +371,6 @@ Microsoft documents [variable access-token
 lifetimes](https://learn.microsoft.com/en-us/entra/identity-platform/access-tokens#token-lifetime)
 and does not support [configuring managed-identity token
 lifetimes](https://learn.microsoft.com/en-us/entra/identity-platform/configurable-token-lifetimes).
-See the [Admin API provider
-example](https://developers.openai.com/api/docs/guides/workload-identity-federation/admin-api#create-an-oidc-provider).
 
 Managed identity tokens can also contain claims such as `azp`, `oid`, `sub`, or `xms_mirid`. Use the decoded token as the source of truth, and choose claims that identify the exact managed identity and resource boundary you trust.
 

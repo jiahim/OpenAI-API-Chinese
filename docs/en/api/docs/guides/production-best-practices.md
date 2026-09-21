@@ -52,6 +52,8 @@ We strongly recommend setting an expiration date when you create a project API k
 
 Administrators can enforce a maximum API key lifetime at the organization or project level in [Platform settings](https://platform.openai.com/settings/organization/general). New keys must expire within the configured limit, preventing them from remaining valid indefinitely. Project limits cannot exceed the organization limit.
 
+The **API Key Governance** section in Platform settings lets organization and project administrators restrict the types of API keys that can be created. Administrators can allow only service-account keys, allow only user-owned project keys, or disable all new API key creation. Organization-level restrictions always take precedence: project settings can add restrictions but cannot loosen organization-level restrictions. These controls apply only to new key creation; existing API keys are unaffected.
+
 API key usage can be monitored on the [Usage page](https://platform.openai.com/usage) once tracking is enabled. If you are using an API key generated prior to Dec 20, 2023 tracking will not be enabled by default. You can enable tracking going forward on the [API key management dashboard](https://platform.openai.com/api-keys). All API keys generated past Dec 20, 2023 have tracking enabled. Any previous untracked usage will be displayed as `Untracked` in the dashboard.
 
 ### Staging projects

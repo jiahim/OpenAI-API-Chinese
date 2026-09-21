@@ -10,13 +10,13 @@ This guide uses **application-managed** provisioning: your application starts th
 
 Use the Runloop SDK or API to manage a Devbox, and HTTP requests to manage Agents API sessions.
 
-Set `RUNLOOP_API_KEY`, `OPENAI_API_KEY`, and a separate restricted `OPENAI_EXECUTOR_API_KEY`. The OpenAI keys must have the same owner, organization, and project. Only the executor key enters the Devbox. See [executor authentication](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication).
+Set `RUNLOOP_API_KEY` and use `OPENAI_API_KEY` for application requests. Set `OPENAI_EXECUTOR_API_KEY` to an [environment key](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication), and pass only that key into the Devbox as `CODEX_API_KEY`.
 
 ## Application-managed
 
 1. [Create a self-hosted session](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#create-or-reuse-a-session) and save its environment ID.
 2. Create a Runloop Devbox with the session's working directory and install the Codex CLI inside it.
-3. [Start the executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#start-the-executor) in the background with the environment ID and restricted executor key.
+3. [Start the executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#start-the-executor) in the background with the environment ID and environment key.
 4. [Send input and inspect the result](https://developers.openai.com/api/docs/guides/agents-api/sessions). For a file task, create `brief.txt` in the workspace and ask the agent to write a migration plan to `plan.md`.
 5. Check that the turn completed, retrieve any files you need, then shut down the Devbox and [delete the session](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage#delete-a-session).
 

@@ -17,13 +17,15 @@ See [Sandbox lifecycle](https://developers.openai.com/api/docs/guides/agents-api
 
 You need an OpenAI project API key, a Blaxel API key and workspace, and the Codex CLI package.
 
-Set `OPENAI_API_KEY`, a separate restricted `OPENAI_EXECUTOR_API_KEY`, `BL_API_KEY`, and `BL_WORKSPACE` in your environment. Grant the application key `api.agents.read` and `api.agents.write` for session operations, plus `api.responses.write` for model inference. Add `api.vaults.read` and `api.vaults.write` if your application manages vaults. Create the executor's [environment key](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication) and use the same organization, project, and user or service account for both keys. Only the restricted executor key enters the sandbox. Choose the sandbox region in your provisioning code. Use `us-was-1` if you need the Agent Drive persistence option below.
+Set `BL_API_KEY` and `BL_WORKSPACE`, and use `OPENAI_API_KEY` for application requests. Set `OPENAI_EXECUTOR_API_KEY` to an [environment key](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication), and pass only that key into the sandbox as `CODEX_API_KEY`.
+
+Choose the sandbox region in your provisioning code. Use `us-was-1` if you need the Agent Drive persistence option below.
 
 ## 1. Set up the Blaxel environment
 
-Create a [self-hosted session](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#create-or-reuse-a-session) and save its environment ID. Use the Blaxel SDK or API to create an isolated sandbox with the configured working directory. Install the Codex CLI in the sandbox, then [start its executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#start-the-executor) with that environment ID and the restricted executor key.
+Create a [self-hosted session](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#create-or-reuse-a-session) and save its environment ID. Use the Blaxel SDK or API to create an isolated sandbox with the configured working directory. Install the Codex CLI in the sandbox, then [start its executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#start-the-executor) with that environment ID and the environment key.
 
-The Blaxel Node image uses Alpine Linux, so install `ripgrep` with `apk`. Pass the restricted executor key as `CODEX_API_KEY` only to the executor process. Set `keep_alive=True` to prevent the sandbox from scaling to zero while the executor runs. Bounded setup, executor, and sandbox timeouts prevent abandoned resources from running indefinitely.
+The Blaxel Node image uses Alpine Linux, so install `ripgrep` with `apk`. Pass the environment key as `CODEX_API_KEY` only to the executor process. Set `keep_alive=True` to prevent the sandbox from scaling to zero while the executor runs. Bounded setup, executor, and sandbox timeouts prevent abandoned resources from running indefinitely.
 
 For regular use, build a Blaxel image with Codex and `ripgrep` already installed so the sandbox can connect sooner.
 

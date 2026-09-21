@@ -11,11 +11,6 @@ identities. To accept a set of subjects in one rule, use a trailing-prefix
 subject or a CEL condition. You can also create more than one rule for the same
 principal.
 
-For the setup procedure, see [Use workload identity with
-Codex](https://developers.openai.com/codex/enterprise/workload-identity). To manage rules with code, see the
-[workload identity Admin
-API](https://developers.openai.com/api/docs/guides/workload-identity-federation/admin-api).
-
 ## Rule model
 
 | Part                  | Purpose                                                         |

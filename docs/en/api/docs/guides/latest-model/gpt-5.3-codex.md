@@ -51,7 +51,6 @@ Key steps to migrate your harness to codex-cli:
 - `reasoning.effort` supports `low`, `medium`, `high`, and `xhigh`.
 - Supported tools include function calling, web search, hosted shell, and skills.
 
-
 ## Prompting best practices
 
 ### Recommended Starter Prompt
@@ -807,4 +806,3 @@ When metaprompting inside a specific context, it is important to generate respon
 
 - For overthinking / slow starts: ask it to propose instruction changes that reduce time-to-first-tool-call or first concrete plan.
 - For overly loggy preambles: ask it to rewrite your user updates instructions to satisfy your particular preference constraints.
-

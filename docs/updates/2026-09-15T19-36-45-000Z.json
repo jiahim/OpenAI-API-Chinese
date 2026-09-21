@@ -1,0 +1,92 @@
+{
+  "id": "2026-09-15T19-36-45-000Z",
+  "generatedAt": "2026-09-15T19:36:45Z",
+  "added": [],
+  "modified": [
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/blaxel.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/blaxel",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/blaxel.md",
+      "title": "Blaxel"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/cloudflare.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/cloudflare",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/cloudflare.md",
+      "title": "Cloudflare"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/daytona.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/daytona",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/daytona.md",
+      "title": "Daytona"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/digitalocean.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/digitalocean",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/digitalocean.md",
+      "title": "DigitalOcean"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/e2b.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/e2b",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/e2b.md",
+      "title": "E2B"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/modal.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/modal",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/modal.md",
+      "title": "Modal"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/oci.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/oci",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/oci.md",
+      "title": "Oracle Cloud Infrastructure (OCI)"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/runloop.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/runloop",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/runloop.md",
+      "title": "Runloop"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/providers/vercel.md",
+      "route": "/api/docs/guides/agents-api/environments/providers/vercel",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/providers/vercel.md",
+      "title": "Vercel"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/environments/self-hosted.md",
+      "route": "/api/docs/guides/agents-api/environments/self-hosted",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted.md",
+      "title": "Self-hosted sandboxes"
+    },
+    {
+      "path": "docs/en/api/docs/guides/agents-api/quickstart.md",
+      "route": "/api/docs/guides/agents-api/quickstart",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/agents-api/quickstart.md",
+      "title": "Agents API quickstart"
+    },
+    {
+      "path": "docs/en/api/docs/guides/moderation.md",
+      "route": "/api/docs/guides/moderation",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/moderation.md",
+      "title": "Moderation"
+    },
+    {
+      "path": "docs/en/api/docs/libraries.md",
+      "route": "/api/docs/libraries",
+      "sourceUrl": "https://developers.openai.com/api/docs/libraries.md",
+      "title": "SDKs and CLI"
+    },
+    {
+      "path": "docs/en/api/docs/quickstart.md",
+      "route": "/api/docs/quickstart",
+      "sourceUrl": "https://developers.openai.com/api/docs/quickstart.md",
+      "title": "Developer quickstart"
+    }
+  ],
+  "removed": []
+}

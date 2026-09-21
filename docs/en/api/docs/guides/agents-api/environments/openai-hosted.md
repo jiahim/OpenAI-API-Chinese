@@ -15,7 +15,7 @@ needs. The working directory is `/workspace`.
 - `packages`: Install Python, system, or global `npm` packages with `python`, `system`, or `npm` lists. Pin versions when needed, such as `pandas==2.2.3`.
 - `setup_commands`: Run ordered shell commands before the agent starts, such as `[{ "command": "mkdir -p reports" }]`. Each command has its own optional `cwd`, defaulting to `/workspace`.
 - `files`: [Supply input files](https://developers.openai.com/api/docs/guides/agents-api/environments/files#upload-files) by Files API ID or inline base64 content.
-- `env`: Set string-valued environment variables. Runtime-reserved names, including `PATH`, `CODEX_*`, and `OPENAI_API_KEY`, are rejected.
+- `env`: Set string-valued environment variables. Agent-generated code can read these values. IMPORTANT: For secrets, use [vault credentials](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults#use-vault-secrets-for-api-requests-from-a-sandbox) to keep the real values outside the sandbox. Runtime-reserved names, including `PATH`, `CODEX_*`, and `OPENAI_API_KEY`, are rejected.
 - `skills`, `plugins`, `capability_directories`: Add [skills](https://developers.openai.com/api/docs/guides/tools-skills#agents-api) and [plugins](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins).
 - `environment_template_id`: [Reuse saved configuration](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins#reuse-a-hosted-plugin-setup) across sessions. Omitted settings inherit the template; network overrides cannot broaden its policy.
 
