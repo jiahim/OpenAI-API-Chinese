@@ -1,32 +1,32 @@
-# 视频
+# Videos
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 末尾追加 `.md` 。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
 
 ## Create a video
 
 **post** `/videos`
 
-根据提示词和可选的参考素材创建一个新的视频生成任务。
+通过提示词和可选的参考素材创建一个新的视频生成任务。
 
 ### Body Parameters
 
 - `prompt: string`
 
-  用于描述要生成视频的文本提示词。
+  描述要生成的视频的文本提示。
 
 - `input_reference: optional ImageInputReferenceParam`
 
-  用于引导生成的可选参考对象。需提供以下其中之一 `image_url` 或 `file_id`.
+  用于引导生成的可选参考对象。提供以下选项中的恰好一项： `image_url` 或 `file_id`.
 
   - `file_id: optional string`
 
   - `image_url: optional string`
 
-    完全限定的 URL 或 base64 编码的 data URL。
+    一个完整的 URL 或 base64 编码的数据 URL。
 
 - `model: optional VideoModel`
 
-  要使用的视频生成模型（允许的值：sora-2、sora-2-pro）。默认为 `sora-2`.
+  要使用的视频生成模型（允许值：sora-2、sora-2-pro）。默认为 `sora-2`.
 
   - `string`
 
@@ -44,7 +44,7 @@
 
 - `seconds: optional VideoSeconds`
 
-  片段时长（单位：秒；允许的值：4、8、12）。默认为 4 秒。
+  片段时长（秒）（允许值：4、8、12）。默认为 4 秒。
 
   - `"4"`
 
@@ -54,7 +54,7 @@
 
 - `size: optional VideoSize`
 
-  输出分辨率，格式为 宽 x 高（允许的值：720x1280、1280x720、1024x1792、1792x1024）。默认为 720x1280。
+  输出分辨率，格式为宽 x 高（允许值：720x1280、1280x720、1024x1792、1792x1024）。默认为 720x1280。
 
   - `"720x1280"`
 
@@ -64,11 +64,11 @@
 
   - `"1792x1024"`
 
-### Returns
+### 返回值
 
 - `Video object { id, completed_at, created_at, 10 more }`
 
-  描述生成的视频任务的结构化信息。
+  描述已生成视频任务的结构化信息。
 
   - `id: string`
 
@@ -76,7 +76,7 @@
 
   - `completed_at: number or null`
 
-    任务完成时的 Unix 时间戳（秒），如果已完成。
+    任务完成时的 Unix 时间戳（秒），若已完成。
 
   - `created_at: number`
 
@@ -94,21 +94,25 @@
 
       返回错误的人类可读描述。
 
+    - `headers: optional map[string]`
+
+      随原始错误一同返回的 Retry-After 和 Retry-After-Ms 响应头（如有）。
+
     - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
       - `detailed_explanation: optional string`
 
-        针对此阻止操作的对外公开说明。
+        此拦截的公开说明。
 
       - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-        一个可选的分类；客户端必须接受额外的值。
+        一个可选的分类；客户端必须接受其他取值。
 
         - `string`
 
         - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-          一个可选的分类；客户端必须接受额外的值。
+          一个可选的分类；客户端必须接受其他取值。
 
           - `"potentially_unintended_data_transfer"`
 
@@ -120,15 +124,15 @@
 
       - `steer: optional object { message }`
 
-        可选的对外公开延续指令。
+        可选的公开延续指令。
 
         - `message: string`
 
-          对外公开的延续指令。
+          公开的延续指令。
 
   - `expires_at: number or null`
 
-    可下载资源过期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源过期时的 Unix 时间戳（秒），若已设置。
 
   - `model: VideoModel`
 
@@ -164,15 +168,15 @@
 
   - `remixed_from_video_id: string or null`
 
-    如果该视频为二次创作，则为源视频的标识符。
+    若该视频为再混视频，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成片段的时长（以秒为单位）。对于扩展片段，这是拼接后的总时长。
+    所生成片段的时长（秒）。对于扩展视频，这是拼接后的总时长。
 
   - `size: VideoSize`
 
-    生成视频的分辨率。
+    所生成视频的分辨率。
 
     - `"720x1280"`
 
@@ -184,7 +188,7 @@
 
   - `status: "queued" or "in_progress" or "completed" or "failed"`
 
-    视频任务当前的生命周期状态。
+    视频任务的当前生命周期状态。
 
     - `"queued"`
 
@@ -215,6 +219,9 @@ curl https://api.openai.com/v1/videos \
   "error": {
     "code": "code",
     "message": "message",
+    "headers": {
+      "foo": "string"
+    },
     "misalignment": {
       "detailed_explanation": "detailed_explanation",
       "error_type": "potentially_unintended_data_transfer",
@@ -264,17 +271,17 @@ curl https://api.openai.com/v1/videos \
 
 **post** `/videos/characters`
 
-根据上传的视频创建一个角色。
+根据上传的视频创建角色。
 
-### Returns
+### 返回值
 
 - `id: string or null`
 
-  角色创建的 cameo 标识符。
+  角色客串的标识符。
 
 - `created_at: number`
 
-  创建该角色的 Unix 时间戳（单位为秒）。
+  角色创建时的 Unix 时间戳（以秒为单位）。
 
 - `name: string or null`
 
@@ -304,13 +311,13 @@ curl https://api.openai.com/v1/videos/characters \
 
 **delete** `/videos/{video_id}`
 
-永久删除已完成或失败的视频及其存储资源。
+永久删除已完成的或失败的视频及其存储的资源。
 
 ### 路径参数
 
 - `video_id: string`
 
-### Returns
+### 返回值
 
 - `id: string`
 
@@ -318,7 +325,7 @@ curl https://api.openai.com/v1/videos/characters \
 
 - `deleted: boolean`
 
-  表示视频资源已被删除。
+  表示该视频资源已被删除。
 
 - `object: "video.deleted"`
 
@@ -360,7 +367,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
 - `variant: optional "video" or "thumbnail" or "spritesheet"`
 
-  要返回的下载资源。默认为 MP4 视频。
+  要返回的可下载资源。默认为 MP4 视频。
 
   - `"video"`
 
@@ -379,27 +386,27 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID/content \
 
 **post** `/videos/edits`
 
-通过编辑源视频或已有的已生成视频，创建一个新的视频生成任务。
+通过编辑源视频或已生成的视频，创建一个新的视频生成任务。
 
 ### Body Parameters
 
 - `prompt: string`
 
-  用于描述如何编辑源视频的文本提示。
+  描述如何编辑源视频的文本提示。
 
 - `video: object { id }`
 
-  引用要编辑的已完成视频。
+  指向待编辑的已完成视频的引用。
 
   - `id: string`
 
     已完成视频的标识符。
 
-### Returns
+### 返回值
 
 - `Video object { id, completed_at, created_at, 10 more }`
 
-  描述生成的视频任务的结构化信息。
+  描述已生成视频任务的结构化信息。
 
   - `id: string`
 
@@ -407,7 +414,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID/content \
 
   - `completed_at: number or null`
 
-    任务完成时的 Unix 时间戳（秒），如果已完成。
+    任务完成时的 Unix 时间戳（秒），若已完成。
 
   - `created_at: number`
 
@@ -425,21 +432,25 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID/content \
 
       返回错误的人类可读描述。
 
+    - `headers: optional map[string]`
+
+      随原始错误一同返回的 Retry-After 和 Retry-After-Ms 响应头（如有）。
+
     - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
       - `detailed_explanation: optional string`
 
-        针对此阻止操作的对外公开说明。
+        此拦截的公开说明。
 
       - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-        一个可选的分类；客户端必须接受额外的值。
+        一个可选的分类；客户端必须接受其他取值。
 
         - `string`
 
         - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-          一个可选的分类；客户端必须接受额外的值。
+          一个可选的分类；客户端必须接受其他取值。
 
           - `"potentially_unintended_data_transfer"`
 
@@ -451,15 +462,15 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID/content \
 
       - `steer: optional object { message }`
 
-        可选的对外公开延续指令。
+        可选的公开延续指令。
 
         - `message: string`
 
-          对外公开的延续指令。
+          公开的延续指令。
 
   - `expires_at: number or null`
 
-    可下载资源过期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源过期时的 Unix 时间戳（秒），若已设置。
 
   - `model: VideoModel`
 
@@ -495,15 +506,15 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID/content \
 
   - `remixed_from_video_id: string or null`
 
-    如果该视频为二次创作，则为源视频的标识符。
+    若该视频为再混视频，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成片段的时长（以秒为单位）。对于扩展片段，这是拼接后的总时长。
+    所生成片段的时长（秒）。对于扩展视频，这是拼接后的总时长。
 
   - `size: VideoSize`
 
-    生成视频的分辨率。
+    所生成视频的分辨率。
 
     - `"720x1280"`
 
@@ -515,7 +526,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID/content \
 
   - `status: "queued" or "in_progress" or "completed" or "failed"`
 
-    视频任务当前的生命周期状态。
+    视频任务的当前生命周期状态。
 
     - `"queued"`
 
@@ -549,6 +560,9 @@ curl https://api.openai.com/v1/videos/edits \
   "error": {
     "code": "code",
     "message": "message",
+    "headers": {
+      "foo": "string"
+    },
     "misalignment": {
       "detailed_explanation": "detailed_explanation",
       "error_type": "potentially_unintended_data_transfer",
@@ -569,17 +583,17 @@ curl https://api.openai.com/v1/videos/edits \
 }
 ```
 
-## 创建视频扩展
+## Create a video extension
 
 **post** `/videos/extensions`
 
-创建一个已完成视频的扩展。
+基于已完成的视频创建扩展。
 
 ### Body Parameters
 
 - `prompt: string`
 
-  用于指导扩展生成的更新后文本提示词。
+  用于引导扩展生成的更新后文本提示。
 
 - `seconds: VideoSeconds`
 
@@ -593,17 +607,17 @@ curl https://api.openai.com/v1/videos/edits \
 
 - `video: object { id }`
 
-  对已完成的视频的引用，用于扩展。
+  对要扩展的已完成视频的引用。
 
   - `id: string`
 
     已完成视频的标识符。
 
-### Returns
+### 返回值
 
 - `Video object { id, completed_at, created_at, 10 more }`
 
-  描述生成的视频任务的结构化信息。
+  描述已生成视频任务的结构化信息。
 
   - `id: string`
 
@@ -611,7 +625,7 @@ curl https://api.openai.com/v1/videos/edits \
 
   - `completed_at: number or null`
 
-    任务完成时的 Unix 时间戳（秒），如果已完成。
+    任务完成时的 Unix 时间戳（秒），若已完成。
 
   - `created_at: number`
 
@@ -629,21 +643,25 @@ curl https://api.openai.com/v1/videos/edits \
 
       返回错误的人类可读描述。
 
+    - `headers: optional map[string]`
+
+      随原始错误一同返回的 Retry-After 和 Retry-After-Ms 响应头（如有）。
+
     - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
       - `detailed_explanation: optional string`
 
-        针对此阻止操作的对外公开说明。
+        此拦截的公开说明。
 
       - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-        一个可选的分类；客户端必须接受额外的值。
+        一个可选的分类；客户端必须接受其他取值。
 
         - `string`
 
         - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-          一个可选的分类；客户端必须接受额外的值。
+          一个可选的分类；客户端必须接受其他取值。
 
           - `"potentially_unintended_data_transfer"`
 
@@ -655,15 +673,15 @@ curl https://api.openai.com/v1/videos/edits \
 
       - `steer: optional object { message }`
 
-        可选的对外公开延续指令。
+        可选的公开延续指令。
 
         - `message: string`
 
-          对外公开的延续指令。
+          公开的延续指令。
 
   - `expires_at: number or null`
 
-    可下载资源过期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源过期时的 Unix 时间戳（秒），若已设置。
 
   - `model: VideoModel`
 
@@ -699,15 +717,15 @@ curl https://api.openai.com/v1/videos/edits \
 
   - `remixed_from_video_id: string or null`
 
-    如果该视频为二次创作，则为源视频的标识符。
+    若该视频为再混视频，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成片段的时长（以秒为单位）。对于扩展片段，这是拼接后的总时长。
+    所生成片段的时长（秒）。对于扩展视频，这是拼接后的总时长。
 
   - `size: VideoSize`
 
-    生成视频的分辨率。
+    所生成视频的分辨率。
 
     - `"720x1280"`
 
@@ -719,7 +737,7 @@ curl https://api.openai.com/v1/videos/edits \
 
   - `status: "queued" or "in_progress" or "completed" or "failed"`
 
-    视频任务当前的生命周期状态。
+    视频任务的当前生命周期状态。
 
     - `"queued"`
 
@@ -754,6 +772,9 @@ curl https://api.openai.com/v1/videos/extensions \
   "error": {
     "code": "code",
     "message": "message",
+    "headers": {
+      "foo": "string"
+    },
     "misalignment": {
       "detailed_explanation": "detailed_explanation",
       "error_type": "potentially_unintended_data_transfer",
@@ -774,25 +795,25 @@ curl https://api.openai.com/v1/videos/extensions \
 }
 ```
 
-## 获取一个字符
+## 检索一个字符
 
 **get** `/videos/characters/{character_id}`
 
-获取一个字符。
+获取一个角色。
 
 ### 路径参数
 
 - `character_id: string`
 
-### Returns
+### 返回值
 
 - `id: string or null`
 
-  角色创建的 cameo 标识符。
+  角色客串的标识符。
 
 - `created_at: number`
 
-  创建该角色的 Unix 时间戳（单位为秒）。
+  角色创建时的 Unix 时间戳（以秒为单位）。
 
 - `name: string or null`
 
@@ -833,13 +854,13 @@ curl https://api.openai.com/v1/videos/characters/$CHARACTER_ID \
 
 - `order: optional "asc" or "desc"`
 
-  按时间戳对结果进行排序。使用 `asc` 表示升序，或 `desc` 表示降序。
+  按时间戳排序结果的顺序。使用 `asc` 表示升序，或 `desc` 表示降序。
 
   - `"asc"`
 
   - `"desc"`
 
-### Returns
+### 返回值
 
 - `data: array of Video`
 
@@ -851,7 +872,7 @@ curl https://api.openai.com/v1/videos/characters/$CHARACTER_ID \
 
   - `completed_at: number or null`
 
-    任务完成时的 Unix 时间戳（秒），如果已完成。
+    任务完成时的 Unix 时间戳（秒），若已完成。
 
   - `created_at: number`
 
@@ -869,21 +890,25 @@ curl https://api.openai.com/v1/videos/characters/$CHARACTER_ID \
 
       返回错误的人类可读描述。
 
+    - `headers: optional map[string]`
+
+      随原始错误一同返回的 Retry-After 和 Retry-After-Ms 响应头（如有）。
+
     - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
       - `detailed_explanation: optional string`
 
-        针对此阻止操作的对外公开说明。
+        此拦截的公开说明。
 
       - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-        一个可选的分类；客户端必须接受额外的值。
+        一个可选的分类；客户端必须接受其他取值。
 
         - `string`
 
         - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-          一个可选的分类；客户端必须接受额外的值。
+          一个可选的分类；客户端必须接受其他取值。
 
           - `"potentially_unintended_data_transfer"`
 
@@ -895,15 +920,15 @@ curl https://api.openai.com/v1/videos/characters/$CHARACTER_ID \
 
       - `steer: optional object { message }`
 
-        可选的对外公开延续指令。
+        可选的公开延续指令。
 
         - `message: string`
 
-          对外公开的延续指令。
+          公开的延续指令。
 
   - `expires_at: number or null`
 
-    可下载资源过期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源过期时的 Unix 时间戳（秒），若已设置。
 
   - `model: VideoModel`
 
@@ -939,15 +964,15 @@ curl https://api.openai.com/v1/videos/characters/$CHARACTER_ID \
 
   - `remixed_from_video_id: string or null`
 
-    如果该视频为二次创作，则为源视频的标识符。
+    若该视频为再混视频，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成片段的时长（以秒为单位）。对于扩展片段，这是拼接后的总时长。
+    所生成片段的时长（秒）。对于扩展视频，这是拼接后的总时长。
 
   - `size: VideoSize`
 
-    生成视频的分辨率。
+    所生成视频的分辨率。
 
     - `"720x1280"`
 
@@ -959,7 +984,7 @@ curl https://api.openai.com/v1/videos/characters/$CHARACTER_ID \
 
   - `status: "queued" or "in_progress" or "completed" or "failed"`
 
-    视频任务当前的生命周期状态。
+    视频任务的当前生命周期状态。
 
     - `"queued"`
 
@@ -975,7 +1000,7 @@ curl https://api.openai.com/v1/videos/characters/$CHARACTER_ID \
 
 - `has_more: boolean`
 
-  是否还有更多可用项。
+  是否还有更多可用项目。
 
 - `last_id: string or null`
 
@@ -1006,6 +1031,9 @@ curl https://api.openai.com/v1/videos \
       "error": {
         "code": "code",
         "message": "message",
+        "headers": {
+          "foo": "string"
+        },
         "misalignment": {
           "detailed_explanation": "detailed_explanation",
           "error_type": "potentially_unintended_data_transfer",
@@ -1055,11 +1083,11 @@ curl https://api.openai.com/v1/videos \
 }
 ```
 
-## Create a video remix
+## 创建视频混剪
 
 **post** `/videos/{video_id}/remix`
 
-使用新的提示创建一个已完成视频的混剪版本。
+使用更新后的提示词对已完成的视频进行二次创作。
 
 ### 路径参数
 
@@ -1069,13 +1097,13 @@ curl https://api.openai.com/v1/videos \
 
 - `prompt: string`
 
-  用于引导混音版本生成的更新后文本提示词。
+  已更新的文本提示，用于指导重新生成的混音。
 
-### Returns
+### 返回值
 
 - `Video object { id, completed_at, created_at, 10 more }`
 
-  描述生成的视频任务的结构化信息。
+  描述已生成视频任务的结构化信息。
 
   - `id: string`
 
@@ -1083,7 +1111,7 @@ curl https://api.openai.com/v1/videos \
 
   - `completed_at: number or null`
 
-    任务完成时的 Unix 时间戳（秒），如果已完成。
+    任务完成时的 Unix 时间戳（秒），若已完成。
 
   - `created_at: number`
 
@@ -1101,21 +1129,25 @@ curl https://api.openai.com/v1/videos \
 
       返回错误的人类可读描述。
 
+    - `headers: optional map[string]`
+
+      随原始错误一同返回的 Retry-After 和 Retry-After-Ms 响应头（如有）。
+
     - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
       - `detailed_explanation: optional string`
 
-        针对此阻止操作的对外公开说明。
+        此拦截的公开说明。
 
       - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-        一个可选的分类；客户端必须接受额外的值。
+        一个可选的分类；客户端必须接受其他取值。
 
         - `string`
 
         - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-          一个可选的分类；客户端必须接受额外的值。
+          一个可选的分类；客户端必须接受其他取值。
 
           - `"potentially_unintended_data_transfer"`
 
@@ -1127,15 +1159,15 @@ curl https://api.openai.com/v1/videos \
 
       - `steer: optional object { message }`
 
-        可选的对外公开延续指令。
+        可选的公开延续指令。
 
         - `message: string`
 
-          对外公开的延续指令。
+          公开的延续指令。
 
   - `expires_at: number or null`
 
-    可下载资源过期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源过期时的 Unix 时间戳（秒），若已设置。
 
   - `model: VideoModel`
 
@@ -1171,15 +1203,15 @@ curl https://api.openai.com/v1/videos \
 
   - `remixed_from_video_id: string or null`
 
-    如果该视频为二次创作，则为源视频的标识符。
+    若该视频为再混视频，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成片段的时长（以秒为单位）。对于扩展片段，这是拼接后的总时长。
+    所生成片段的时长（秒）。对于扩展视频，这是拼接后的总时长。
 
   - `size: VideoSize`
 
-    生成视频的分辨率。
+    所生成视频的分辨率。
 
     - `"720x1280"`
 
@@ -1191,7 +1223,7 @@ curl https://api.openai.com/v1/videos \
 
   - `status: "queued" or "in_progress" or "completed" or "failed"`
 
-    视频任务当前的生命周期状态。
+    视频任务的当前生命周期状态。
 
     - `"queued"`
 
@@ -1222,6 +1254,9 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID/remix \
   "error": {
     "code": "code",
     "message": "message",
+    "headers": {
+      "foo": "string"
+    },
     "misalignment": {
       "detailed_explanation": "detailed_explanation",
       "error_type": "potentially_unintended_data_transfer",
@@ -1279,11 +1314,11 @@ curl -X POST https://api.openai.com/v1/videos/video_123/remix \
 
 - `video_id: string`
 
-### Returns
+### 返回值
 
 - `Video object { id, completed_at, created_at, 10 more }`
 
-  描述生成的视频任务的结构化信息。
+  描述已生成视频任务的结构化信息。
 
   - `id: string`
 
@@ -1291,7 +1326,7 @@ curl -X POST https://api.openai.com/v1/videos/video_123/remix \
 
   - `completed_at: number or null`
 
-    任务完成时的 Unix 时间戳（秒），如果已完成。
+    任务完成时的 Unix 时间戳（秒），若已完成。
 
   - `created_at: number`
 
@@ -1309,21 +1344,25 @@ curl -X POST https://api.openai.com/v1/videos/video_123/remix \
 
       返回错误的人类可读描述。
 
+    - `headers: optional map[string]`
+
+      随原始错误一同返回的 Retry-After 和 Retry-After-Ms 响应头（如有）。
+
     - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
       - `detailed_explanation: optional string`
 
-        针对此阻止操作的对外公开说明。
+        此拦截的公开说明。
 
       - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-        一个可选的分类；客户端必须接受额外的值。
+        一个可选的分类；客户端必须接受其他取值。
 
         - `string`
 
         - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-          一个可选的分类；客户端必须接受额外的值。
+          一个可选的分类；客户端必须接受其他取值。
 
           - `"potentially_unintended_data_transfer"`
 
@@ -1335,15 +1374,15 @@ curl -X POST https://api.openai.com/v1/videos/video_123/remix \
 
       - `steer: optional object { message }`
 
-        可选的对外公开延续指令。
+        可选的公开延续指令。
 
         - `message: string`
 
-          对外公开的延续指令。
+          公开的延续指令。
 
   - `expires_at: number or null`
 
-    可下载资源过期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源过期时的 Unix 时间戳（秒），若已设置。
 
   - `model: VideoModel`
 
@@ -1379,15 +1418,15 @@ curl -X POST https://api.openai.com/v1/videos/video_123/remix \
 
   - `remixed_from_video_id: string or null`
 
-    如果该视频为二次创作，则为源视频的标识符。
+    若该视频为再混视频，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成片段的时长（以秒为单位）。对于扩展片段，这是拼接后的总时长。
+    所生成片段的时长（秒）。对于扩展视频，这是拼接后的总时长。
 
   - `size: VideoSize`
 
-    生成视频的分辨率。
+    所生成视频的分辨率。
 
     - `"720x1280"`
 
@@ -1399,7 +1438,7 @@ curl -X POST https://api.openai.com/v1/videos/video_123/remix \
 
   - `status: "queued" or "in_progress" or "completed" or "failed"`
 
-    视频任务当前的生命周期状态。
+    视频任务的当前生命周期状态。
 
     - `"queued"`
 
@@ -1426,6 +1465,9 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
   "error": {
     "code": "code",
     "message": "message",
+    "headers": {
+      "foo": "string"
+    },
     "misalignment": {
       "detailed_explanation": "detailed_explanation",
       "error_type": "potentially_unintended_data_transfer",
@@ -1456,13 +1498,13 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
   - `image_url: optional string`
 
-    完全限定的 URL 或 base64 编码的 data URL。
+    一个完整的 URL 或 base64 编码的数据 URL。
 
 ### 视频
 
 - `Video object { id, completed_at, created_at, 10 more }`
 
-  描述生成的视频任务的结构化信息。
+  描述已生成视频任务的结构化信息。
 
   - `id: string`
 
@@ -1470,7 +1512,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
   - `completed_at: number or null`
 
-    任务完成时的 Unix 时间戳（秒），如果已完成。
+    任务完成时的 Unix 时间戳（秒），若已完成。
 
   - `created_at: number`
 
@@ -1488,21 +1530,25 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
       返回错误的人类可读描述。
 
+    - `headers: optional map[string]`
+
+      随原始错误一同返回的 Retry-After 和 Retry-After-Ms 响应头（如有）。
+
     - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
       - `detailed_explanation: optional string`
 
-        针对此阻止操作的对外公开说明。
+        此拦截的公开说明。
 
       - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-        一个可选的分类；客户端必须接受额外的值。
+        一个可选的分类；客户端必须接受其他取值。
 
         - `string`
 
         - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-          一个可选的分类；客户端必须接受额外的值。
+          一个可选的分类；客户端必须接受其他取值。
 
           - `"potentially_unintended_data_transfer"`
 
@@ -1514,15 +1560,15 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
       - `steer: optional object { message }`
 
-        可选的对外公开延续指令。
+        可选的公开延续指令。
 
         - `message: string`
 
-          对外公开的延续指令。
+          公开的延续指令。
 
   - `expires_at: number or null`
 
-    可下载资源过期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源过期时的 Unix 时间戳（秒），若已设置。
 
   - `model: VideoModel`
 
@@ -1558,15 +1604,15 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
   - `remixed_from_video_id: string or null`
 
-    如果该视频为二次创作，则为源视频的标识符。
+    若该视频为再混视频，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成片段的时长（以秒为单位）。对于扩展片段，这是拼接后的总时长。
+    所生成片段的时长（秒）。对于扩展视频，这是拼接后的总时长。
 
   - `size: VideoSize`
 
-    生成视频的分辨率。
+    所生成视频的分辨率。
 
     - `"720x1280"`
 
@@ -1578,7 +1624,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
   - `status: "queued" or "in_progress" or "completed" or "failed"`
 
-    视频任务当前的生命周期状态。
+    视频任务的当前生命周期状态。
 
     - `"queued"`
 
@@ -1594,11 +1640,11 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
   - `id: string or null`
 
-    角色创建的 cameo 标识符。
+    角色客串的标识符。
 
   - `created_at: number`
 
-    创建该角色的 Unix 时间戳（单位为秒）。
+    角色创建时的 Unix 时间戳（以秒为单位）。
 
   - `name: string or null`
 
@@ -1606,7 +1652,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
 ### 视频创建错误
 
-- `VideoCreateError object { code, message, misalignment }`
+- `VideoCreateError object { code, message, headers, misalignment }`
 
   生成响应时发生的错误。
 
@@ -1618,21 +1664,25 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
     返回错误的人类可读描述。
 
+  - `headers: optional map[string]`
+
+    随原始错误一同返回的 Retry-After 和 Retry-After-Ms 响应头（如有）。
+
   - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
     - `detailed_explanation: optional string`
 
-      针对此阻止操作的对外公开说明。
+      此拦截的公开说明。
 
     - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-      一个可选的分类；客户端必须接受额外的值。
+      一个可选的分类；客户端必须接受其他取值。
 
       - `string`
 
       - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-        一个可选的分类；客户端必须接受额外的值。
+        一个可选的分类；客户端必须接受其他取值。
 
         - `"potentially_unintended_data_transfer"`
 
@@ -1644,11 +1694,11 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
     - `steer: optional object { message }`
 
-      可选的对外公开延续指令。
+      可选的公开延续指令。
 
       - `message: string`
 
-        对外公开的延续指令。
+        公开的延续指令。
 
 ### 视频删除响应
 
@@ -1662,7 +1712,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
   - `deleted: boolean`
 
-    表示视频资源已被删除。
+    表示该视频资源已被删除。
 
   - `object: "video.deleted"`
 
@@ -1670,17 +1720,17 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
     - `"video.deleted"`
 
-### 视频获取角色响应
+### 视频 获取角色响应
 
 - `VideoGetCharacterResponse object { id, created_at, name }`
 
   - `id: string or null`
 
-    角色创建的 cameo 标识符。
+    角色客串的标识符。
 
   - `created_at: number`
 
-    创建该角色的 Unix 时间戳（单位为秒）。
+    角色创建时的 Unix 时间戳（以秒为单位）。
 
   - `name: string or null`
 

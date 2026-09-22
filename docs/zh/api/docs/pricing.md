@@ -1,6 +1,6 @@
 # 定价
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。通过在页面 URL 末尾追加 `.md` 即可获取对应文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt). 可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
 <a id="astra"></a>
 <a id="latest-models"></a>
@@ -17,13 +17,13 @@
 我们的最新模型
 
     
-每 100 万 tokens 的价格。
+每 100 万 token 的价格。
 
   
 
   
 
-Standard
+标准版
 
 
       
@@ -32,6 +32,8 @@ Standard
 | 模型 | 短上下文输入 | 短上下文缓存输入 | 短上下文缓存写入 | 短上下文输出 | 长上下文输入 | 长上下文缓存输入 | 长上下文缓存写入 | 长上下文输出 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | gpt-6-astra | $10.00 | $1.00 | $12.50 | $50.00 | $20.00 | $2.00 | $25.00 | $75.00 |
+| gpt-6-sol | $2.00 | $0.20 | $2.50 | $10.00 | $4.00 | $0.40 | $5.00 | $15.00 |
+| gpt-6-luna | $0.10 | $0.01 | $0.125 | $0.50 | $0.20 | $0.02 | $0.25 | $0.75 |
 | gpt-5.6-sol | $4.00 | $0.40 | $5.00 | $20.00 | $8.00 | $0.80 | $10.00 | $30.00 |
 | gpt-5.6-terra | $2.00 | $0.20 | $2.50 | $12.00 | $4.00 | $0.40 | $5.00 | $18.00 |
 | gpt-5.6-luna | $0.20 | $0.02 | $0.25 | $1.20 | $0.40 | $0.04 | $0.50 | $1.80 |
@@ -69,22 +71,24 @@ Standard
 | davinci-002 | $2.00 | - | - | $2.00 | - | - | - | - |
 | babbage-002 | $0.40 | - | - | $0.40 | - | - | - | - |
 
-区域处理（数据驻留）端点对在 2026 年 3 月 5 日或之后发布的、符合数据驻留条件的模型收取 10% 的附加费。详情请参阅我们的 [数据指南](https://developers.openai.com/api/docs/guides/your-data) ，了解支持的区域和处理细节。 [Amazon Bedrock 中的OpenAI 模型](https://developers.openai.com/api/docs/guides/amazon-bedrock) 通过 AWS 计费。商业区域的 Bedrock 定价与 OpenAI 针对同等服务的直接定价一致。Priority processing 于 2026 年 7 月 30 日更名为 Fast mode。你可以使用其中任意一种 `service_tier: "priority"` 或 `service_tier: "fast"` 在你的 API 请求中。 [详细了解快速模式](https://developers.openai.com/api/docs/guides/fast-mode). GPT-5.6 Sol 的促销定价至少持续到 2026-11-21。
+区域处理（数据驻留）端点对 2026 年 3 月 5 日及之后发布的、符合数据驻留条件的模型收取 10% 的附加费。对于 GPT-6 Sol 和 Luna，欧盟数据驻留仅在 Standard 处理模式下可用。参见我们的 [数据指南](https://developers.openai.com/api/docs/guides/your-data) ，了解支持的区域和处理详情。 [Amazon Bedrock 中的 OpenAI 模型](https://developers.openai.com/api/docs/guides/amazon-bedrock) 通过 AWS 计费。商业区域的 Bedrock 定价与 OpenAI 针对同等服务的直接定价一致。Priority 处理已于 2026 年 7 月 30 日更名为 Fast 模式。你可以在 API 请求中使用 `service_tier: "priority"` 或 `service_tier: "fast"` 。 [详细了解 Fast 模式](https://developers.openai.com/api/docs/guides/fast-mode)。GPT-5.6 Sol 的促销定价至少持续到 2026 年 11 月 21 日。
 
     
 
     
 
       
-批处理
+Batch
 
 
       
-### 批量定价数据
+### 批处理定价数据
 
 | 模型 | 短上下文输入 | 短上下文缓存输入 | 短上下文缓存写入 | 短上下文输出 | 长上下文输入 | 长上下文缓存输入 | 长上下文缓存写入 | 长上下文输出 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | gpt-6-astra | $5.00 | $0.50 | $6.25 | $25.00 | $10.00 | $1.00 | $12.50 | $37.50 |
+| gpt-6-sol | $1.00 | $0.10 | $1.25 | $5.00 | $2.00 | $0.20 | $2.50 | $7.50 |
+| gpt-6-luna | $0.05 | $0.005 | $0.0625 | $0.25 | $0.10 | $0.01 | $0.125 | $0.375 |
 | gpt-5.6-sol | $2.00 | $0.20 | $2.50 | $10.00 | $4.00 | $0.40 | $5.00 | $15.00 |
 | gpt-5.6-terra | $1.00 | $0.10 | $1.25 | $6.00 | $2.00 | $0.20 | $2.50 | $9.00 |
 | gpt-5.6-luna | $0.10 | $0.01 | $0.125 | $0.60 | $0.20 | $0.02 | $0.25 | $0.90 |
@@ -120,7 +124,7 @@ Standard
 | davinci-002 | $1.00 | - | - | $1.00 | - | - | - | - |
 | babbage-002 | $0.20 | - | - | $0.20 | - | - | - | - |
 
-区域处理（数据驻留）端点对在 2026 年 3 月 5 日或之后发布的、符合数据驻留条件的模型收取 10% 的附加费。详情请参阅我们的 [数据指南](https://developers.openai.com/api/docs/guides/your-data) ，了解支持的区域和处理细节。
+对于 GPT-6 Sol 和 Luna，EU 数据驻留仅在使用 Standard 处理时可用。区域处理（数据驻留）端点对 2026 年 3 月 5 日及之后发布的、符合数据驻留条件的模型收取 10% 的附加费用。请参阅我们的 [数据指南](https://developers.openai.com/api/docs/guides/your-data) ，了解支持的区域和处理详情。
 
     
 
@@ -136,6 +140,8 @@ Flex
 | 模型 | 短上下文输入 | 短上下文缓存输入 | 短上下文缓存写入 | 短上下文输出 | 长上下文输入 | 长上下文缓存输入 | 长上下文缓存写入 | 长上下文输出 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | gpt-6-astra | $5.00 | $0.50 | $6.25 | $25.00 | $10.00 | $1.00 | $12.50 | $37.50 |
+| gpt-6-sol | $1.00 | $0.10 | $1.25 | $5.00 | $2.00 | $0.20 | $2.50 | $7.50 |
+| gpt-6-luna | $0.05 | $0.005 | $0.0625 | $0.25 | $0.10 | $0.01 | $0.125 | $0.375 |
 | gpt-5.6-sol | $2.00 | $0.20 | $2.50 | $10.00 | $4.00 | $0.40 | $5.00 | $15.00 |
 | gpt-5.6-terra | $1.00 | $0.10 | $1.25 | $6.00 | $2.00 | $0.20 | $2.50 | $9.00 |
 | gpt-5.6-luna | $0.10 | $0.01 | $0.125 | $0.60 | $0.20 | $0.02 | $0.25 | $0.90 |
@@ -153,14 +159,14 @@ Flex
 | o3 | $1.00 | $0.25 | - | $4.00 | - | - | - | - |
 | o4-mini | $0.55 | $0.138 | - | $2.20 | - | - | - | - |
 
-区域处理（数据驻留）端点对在 2026 年 3 月 5 日或之后发布的、符合数据驻留条件的模型收取 10% 的附加费。详情请参阅我们的 [数据指南](https://developers.openai.com/api/docs/guides/your-data) ，了解支持的区域和处理细节。
+对于 GPT-6 Sol 和 Luna，EU 数据驻留仅在使用 Standard 处理时可用。区域处理（数据驻留）端点对 2026 年 3 月 5 日及之后发布的、符合数据驻留条件的模型收取 10% 的附加费用。请参阅我们的 [数据指南](https://developers.openai.com/api/docs/guides/your-data) ，了解支持的区域和处理详情。
 
     
 
     
 
       
-快速模式
+Fast mode
 
 
       
@@ -169,6 +175,8 @@ Flex
 | 模型 | 短上下文输入 | 短上下文缓存输入 | 短上下文缓存写入 | 短上下文输出 | 长上下文输入 | 长上下文缓存输入 | 长上下文缓存写入 | 长上下文输出 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | gpt-6-astra | $20.00 | $2.00 | $25.00 | $100.00 | $40.00 | $4.00 | $50.00 | $150.00 |
+| gpt-6-sol | $4.00 | $0.40 | $5.00 | $20.00 | $8.00 | $0.80 | $10.00 | $30.00 |
+| gpt-6-luna | $0.20 | $0.02 | $0.25 | $1.00 | $0.40 | $0.04 | $0.50 | $1.50 |
 | gpt-5.6-sol | $8.00 | $0.80 | $10.00 | $40.00 | $16.00 | $1.60 | $20.00 | $60.00 |
 | gpt-5.6-terra | $4.00 | $0.40 | $5.00 | $24.00 | $8.00 | $0.80 | $10.00 | $36.00 |
 | gpt-5.6-luna | $0.40 | $0.04 | $0.50 | $2.40 | $0.80 | $0.08 | $1.00 | $3.60 |
@@ -188,7 +196,7 @@ Flex
 | o3 | $3.50 | $0.875 | - | $14.00 | - | - | - | - |
 | o4-mini | $2.00 | $0.50 | - | $8.00 | - | - | - | - |
 
-Fast 模式不适用于 GPT-6 Astra 与欧盟数据驻留。请对这些请求使用 Standard 处理。参见 [Fast 模式兼容性](https://developers.openai.com/api/docs/guides/fast-mode)。区域处理（数据驻留）端点对 2026 年 3 月 5 日及之后发布且符合数据驻留条件的模型收取 10% 的附加费。详见我们的 [数据指南](https://developers.openai.com/api/docs/guides/your-data) ，了解支持的区域和处理细节。
+对于 GPT-6 Astra、Sol 和 Luna，欧盟数据驻留仅在使用 Standard 处理时可用。请参阅 [Fast 模式兼容性](https://developers.openai.com/api/docs/guides/fast-mode)。对于 2026 年 3 月 5 日（含）之后发布且符合数据驻留资格的模型，区域处理（数据驻留）端点将收取 10% 的附加费。请参阅我们的 [数据指南](https://developers.openai.com/api/docs/guides/your-data) ，了解支持的区域和处理详情。
 
 
 
@@ -201,10 +209,10 @@ Cyber 模型
 
 
   
-我们最新的 Daybreak 模型。
+我们的最新 Daybreak 模型。
 
   
-每 100 万 tokens 的价格。
+每 100 万 token 的价格。
 
 
 
@@ -219,11 +227,11 @@ Cyber 模型
 
 
 
-  `gpt-daybreak-blue-latest` 和 `gpt-daybreak-red-latest` 
-  是指当前指向 `gpt-5.6-sol` 和 
+  `gpt-daybreak-blue-latest` 并且 `gpt-daybreak-red-latest` 
+  是指当前指向 `gpt-5.6-sol` 并且 
   `gpt-5.6-cyber`，的别名。随着新模型通过
   Daybreak 项目发布，这些别名将更新为指向最新的
-  模型，定价也会相应调整为与各底层模型匹配。
+  模型，价格也会相应调整为与各底层模型匹配。
 
 
 
@@ -251,8 +259,8 @@ GPT-Live 会话
 
 
 [GPT-Live 1](https://developers.openai.com/api/docs/models/gpt-live-1) 语音会话按秒计费，
-不向上取整到整分钟。后端模型和工具的使用另行计费，
-。
+不会向上取整到整分钟。后端模型和工具的使用会单独计费。
+单独计费。
 
 ### 定价表数据
 
@@ -316,14 +324,14 @@ GPT-Live 会话
 
 
     
-每 100 万 tokens 的价格。
+每 100 万 token 的价格。
 
   
 
 
   
 
-Standard
+标准版
 
 
       For image generation cost estimates, use the calculator in the image generation guide.
@@ -352,7 +360,7 @@ Standard
     
 
       
-批处理
+Batch
 
 
       For image generation cost estimates, use the calculator in the image generation guide.
@@ -385,14 +393,14 @@ Standard
 
 
     
-按秒计费。
+每秒价格。
 
   
 
 
   
 
-Standard
+标准版
 
 
       
@@ -410,7 +418,7 @@ Standard
     
 
       
-批处理
+Batch
 
 
       
@@ -430,7 +438,7 @@ Standard
 
   
 
-转写模型
+转录模型
 
 
 
@@ -441,16 +449,16 @@ Standard
 
 ### 分组定价表数据
 
-| 模型 | 用例 | 输入 | 输出 | 预估成本 |
+| 模型 | Use case | 输入 | 输出 | Estimated cost |
 | --- | --- | --- | --- | --- |
-| gpt-realtime-translate | 实时翻译 | - | - | $0.034 / 分钟 |
-| gpt-live-transcribe | 实时转录 | - | - | $0.017 / 分钟 |
-| gpt-realtime-whisper | 实时转录 | - | - | $0.017 / 分钟 |
-| gpt-transcribe | 转录 | - | - | $0.0045 / 分钟 |
-| gpt-4o-transcribe | 转录 | $2.50 | $10.00 | $0.006 / 分钟 |
-| gpt-4o-mini-transcribe | 转录 | $1.25 | $5.00 | $0.003 / 分钟 |
-| gpt-4o-transcribe-diarize | 转录 + 说话人分离 | $2.50 | $10.00 | $0.006 / 分钟 |
-| Whisper | 转录 | - | - | $0.006 / 分钟 |
+| gpt-realtime-translate | Live translation | - | - | $0.034 / minute |
+| gpt-live-transcribe | Live transcription | - | - | $0.017 / minute |
+| gpt-realtime-whisper | Live transcription | - | - | $0.017 / minute |
+| gpt-transcribe | Transcription | - | - | $0.0045 / minute |
+| gpt-4o-transcribe | Transcription | $2.50 | $10.00 | $0.006 / minute |
+| gpt-4o-mini-transcribe | Transcription | $1.25 | $5.00 | $0.003 / minute |
+| gpt-4o-transcribe-diarize | Transcription + diarization | $2.50 | $10.00 | $0.006 / minute |
+| Whisper | Transcription | - | - | $0.006 / minute |
 
 
 
@@ -464,26 +472,26 @@ Standard
 
 ### 分组定价表数据
 
-| 工具 | 详情 | 价格 |
+| Tool | Details | 定价 |
 | --- | --- | --- |
-| 网页搜索 | 网页搜索（所有模型） | $10.00 / 1k 次调用 + 搜索内容 token 按模型费率计费。 |
-| 网页搜索 | 图像网页搜索（所有模型） | $10.00 / 1k 次调用 + 搜索内容 token 按模型费率计费。 |
-| 网页搜索 | 网页搜索预览（推理模型，包括 `gpt-5`, `o-series`) | $10.00 / 1k 次调用 + 搜索内容 token 按模型费率计费。 |
-| 网页搜索 | 网页搜索预览（非推理模型） | $25.00 / 1k 次调用 + 搜索内容 token 免费。 |
-| 容器 | 托管 Shell 和代码解释器 | 1 GB $0.03，4 GB $0.12，16 GB $0.48，64 GB $1.92，按每容器每 20 分钟会话计费。 |
-| 文件搜索 | 存储 | $0.10 / GB 每天（1 GB 免费） |
+| 网页搜索 | 网页搜索（所有模型） | $10.00 / 1k 次调用 + Search content token 按模型费率计费。 |
+| 网页搜索 | 图像网页搜索（所有模型） | $10.00 / 1k 次调用 + Search content token 按模型费率计费。 |
+| 网页搜索 | 网页搜索预览（推理模型，包括 `gpt-5`, `o-series`) | $10.00 / 1k 次调用 + Search content token 按模型费率计费。 |
+| 网页搜索 | 网页搜索预览（非推理模型） | $25.00 / 1k 次调用 + Search content token 免费。 |
+| 容器 | 托管 Shell 和 Code Interpreter | 1 GB $0.03、4 GB $0.12、16 GB $0.48、64 GB $1.92，按每个容器每 20 分钟会话计费。 |
+| 文件搜索 | 存储 | $0.10 / GB 每小时（1 GB 免费） |
 | 文件搜索 | 工具调用 | $2.50 / 1k 次调用 |
-| 智能体 套件 | ChatKit 文件和图像上传存储 | 每个账户每月 1 GB 免费后，按 $0.10 / GB-day 计费 |
+| 智能体 Kit | ChatKit 文件和图像上传存储 | $0.10 / GB-day 每月每个账户超出 1 GB 免费额度后计费 |
 
 $10.00 / 1k 次调用 + 搜索内容 token 按模型费率计费。
 
-网页搜索预览（推理模型，含 `gpt-5`, `o-series`)
+网页搜索预览版（推理模型，包括 `gpt-5`, `o-series`)
 
 $25.00 / 1k 次调用 + 搜索内容 token 免费。
 
-托管 Shell 和代码解释器
+托管 Shell 和 Code Interpreter
 
-内置工具使用的 token 按所选模型的每 token 费率计费。GB 指二进制千兆字节（即 gibibyte），其中 1 GB 为 2^30 字节。网页搜索内容 token 是指从搜索索引中检索并随你的 prompt 一同提供给模型以生成答案的 token。对于使用非预览版 网页搜索 工具的 gpt-4o-mini 和 gpt-4.1-mini，搜索内容 token 按每次调用固定 8,000 个输入 token 计费。文件搜索工具调用计费仅适用于 Responses API。容器定价包含托管 Shell 和代码解释器。符合条件的容器会话将按分钟计费，每个会话最低收费 5 分钟。Responses API、Chat Completions API、Realtime API、Batch API 和 Assistants API 不单独计费。Token 按所选模型的输入和输出费率计费。
+内置工具所使用的 token 按所选模型的按 token 费率计费。GB 指二进制千兆字节（即 gibibyte），其中 1 GB 等于 2^30 字节。网页搜索内容 token 是从搜索索引中检索并与你的提示一起提供给模型以生成答案的 token。对于 gpt-4o-mini 和 gpt-4.1-mini 使用非预览版 网页搜索 工具的情况，每次调用的搜索内容 token 按固定 8,000 个输入 token 计费。文件搜索工具的调用定价仅适用于 Responses API。容器定价包含托管 Shell 和 Code Interpreter。符合条件的容器会话将按分钟计费，每次会话最少计费 5 分钟。Responses API、Chat Completions API、Realtime API、Batch API 和 Assistants API 不单独计费。Token 按所选模型的输入和输出费率计费。
 
 
   
@@ -494,14 +502,14 @@ $25.00 / 1k 次调用 + 搜索内容 token 免费。
 
 
     
-每 100 万 tokens 的价格。
+每 100 万 token 的价格。
 
   
 
 
   
 
-Standard
+标准版
 
 
       
@@ -511,21 +519,21 @@ Standard
 | --- | --- | --- | --- | --- |
 | ChatGPT | chat-latest | $5.00 | $0.50 | $30.00 |
 | Codex | gpt-5.3-codex | $1.75 | $0.175 | $14.00 |
-| 生命科学 | gpt-rosalind-research | $5.00 | $0.50 | $25.00 |
-| 搜索 | gpt-5-search-api | $1.25 | $0.125 | $10.00 |
+| Life Sciences | gpt-rosalind-research | $5.00 | $0.50 | $25.00 |
+| Search | gpt-5-search-api | $1.25 | $0.125 | $10.00 |
 | Embedding | text-embedding-3-small | $0.02 | - | - |
 | Embedding | text-embedding-3-large | $0.13 | - | - |
 | Embedding | text-embedding-ada-002 | $0.10 | - | - |
-| 内容审核 | omni-moderation-latest | 免费 | - | - |
+| Moderation | omni-moderation-latest | Free | - | - |
 
-Billing for `gpt-rosalind-research` begins on October 5, 2026. Cache-write pricing does not apply to this model. Access is limited to approved internal research through the [trusted-access program](https://help.openai.com/en/articles/20001193-gpt-rosalind-for-life-sciences-research). All eligible organizations will continue to get access to the latest GPT-Rosalind models as they’re released. Regional processing (data residency) endpoints are charged a 10% uplift for models released on or after March 5, 2026, that are eligible for data residency. See our [数据指南](https://developers.openai.com/api/docs/guides/your-data) ，了解支持的区域和处理细节。
+计费自 `gpt-rosalind-research` 2026 年 10 月 5 日起生效。该模型不适用缓存写入定价。仅限通过 [trusted-access 计划](https://help.openai.com/en/articles/20001193-gpt-rosalind-for-life-sciences-research)。获得批准的内部研究使用。所有符合条件的组织都将在最新 GPT-Rosalind 模型发布后持续获得访问权限。针对 2026 年 3 月 5 日（含）之后发布且符合数据驻留条件的模型，区域处理（数据驻留）端点将收取 10% 的附加费。详见我们的 [数据指南](https://developers.openai.com/api/docs/guides/your-data) ，了解支持的区域和处理详情。
 
     
 
     
 
       
-快速模式
+Fast mode
 
 
       
@@ -535,7 +543,7 @@ Billing for `gpt-rosalind-research` begins on October 5, 2026. Cache-write prici
 | --- | --- | --- | --- | --- |
 | Codex | gpt-5.3-codex | $3.50 | $0.35 | $28.00 |
 
-区域处理（数据驻留）端点对在 2026 年 3 月 5 日或之后发布的、符合数据驻留条件的模型收取 10% 的附加费。详情请参阅我们的 [数据指南](https://developers.openai.com/api/docs/guides/your-data) ，了解支持的区域和处理细节。
+针对 2026 年 3 月 5 日（含）之后发布且符合数据驻留条件的模型，区域处理（数据驻留）端点将收取 10% 的附加费。详见我们的 [数据指南](https://developers.openai.com/api/docs/guides/your-data) ，了解支持的区域和处理详情。
 
 
 
@@ -546,11 +554,11 @@ Billing for `gpt-rosalind-research` begins on October 5, 2026. Cache-write prici
 
     
 
-Finetuning
+微调
 
 
     
-每 100 万 tokens 的价格。
+每 100 万 token 的价格。
 
   
 
@@ -569,50 +577,50 @@ Finetuning
 
   
 
-Standard
+标准版
 
 
       
 ### 定价表数据
 
-| 模型 | 训练 | 输入 | 缓存输入 | 输出 |
+| 模型 | Training | 输入 | 缓存输入 | 输出 |
 | --- | --- | --- | --- | --- |
 | o4-mini-2025-04-16 | $100.00 / 小时 | $4.00 | $1.00 | $16.00 |
-| o4-mini-2025-04-16（数据共享） | $100.00 / 小时 | $2.00 | $0.50 | $8.00 |
+| o4-mini-2025-04-16 (data sharing) | $100.00 / 小时 | $2.00 | $0.50 | $8.00 |
 | gpt-4.1-2025-04-14 | $25.00 | $3.00 | $0.75 | $12.00 |
 | gpt-4.1-mini-2025-04-14 | $5.00 | $0.80 | $0.20 | $3.20 |
 | gpt-4.1-nano-2025-04-14 | $1.50 | $0.20 | $0.05 | $0.80 |
 | gpt-4o-2024-08-06 | $25.00 | $3.75 | $1.875 | $15.00 |
 | gpt-4o-mini-2024-07-18 | $3.00 | $0.30 | $0.15 | $1.20 |
-| gpt-3.5-turbo（旧版） | $8.00 | $3.00 | - | $6.00 |
-| davinci-002（旧版） | $6.00 | $12.00 | - | $12.00 |
-| babbage-002（旧版） | $0.40 | $1.60 | - | $1.60 |
+| gpt-3.5-turbo (legacy) | $8.00 | $3.00 | - | $6.00 |
+| davinci-002 (legacy) | $6.00 | $12.00 | - | $12.00 |
+| babbage-002 (legacy) | $0.40 | $1.60 | - | $1.60 |
 
     
 
     
 
       
-批处理
+Batch
 
 
       
 ### 定价表数据
 
-| 模型 | 训练 | 输入 | 缓存输入 | 输出 |
+| 模型 | Training | 输入 | 缓存输入 | 输出 |
 | --- | --- | --- | --- | --- |
 | o4-mini-2025-04-16 | $100.00 / 小时 | $2.00 | $0.50 | $8.00 |
-| o4-mini-2025-04-16（数据共享） | $100.00 / 小时 | $1.00 | $0.25 | $4.00 |
+| o4-mini-2025-04-16 (data sharing) | $100.00 / 小时 | $1.00 | $0.25 | $4.00 |
 | gpt-4.1-2025-04-14 | $25.00 | $1.50 | $0.50 | $6.00 |
 | gpt-4.1-mini-2025-04-14 | $5.00 | $0.40 | $0.10 | $1.60 |
 | gpt-4.1-nano-2025-04-14 | $1.50 | $0.10 | $0.025 | $0.40 |
 | gpt-4o-2024-08-06 | $25.00 | $2.225 | $0.90 | $12.50 |
 | gpt-4o-mini-2024-07-18 | $3.00 | $0.15 | $0.075 | $0.60 |
-| gpt-3.5-turbo（旧版） | $8.00 | $1.50 | - | $3.00 |
-| davinci-002（旧版） | $6.00 | $6.00 | - | $6.00 |
-| babbage-002（旧版） | $0.40 | $0.80 | - | $0.90 |
+| gpt-3.5-turbo (legacy) | $8.00 | $1.50 | - | $3.00 |
+| davinci-002 (legacy) | $6.00 | $6.00 | - | $6.00 |
+| babbage-002 (legacy) | $0.40 | $0.80 | - | $0.90 |
 
 
 
 
-用于强化微调中模型评分的 Tokens 按该模型的逐 Token 费率计费。如果在创建微调任务时启用了数据共享，可以获得推理折扣。了解更多信息。
+用于强化微调中模型评分的 token 按该模型的每 token 费率计费。如果你在创建微调任务时启用数据共享，可获得推理折扣。了解详情。

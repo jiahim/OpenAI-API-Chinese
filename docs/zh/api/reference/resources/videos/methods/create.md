@@ -1,12 +1,12 @@
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾附加 `.md` 来获取。
 
-## 创建视频
+## Create a video
 
 **post** `/videos`
 
-根据提示词和可选的参考素材创建一个新的视频生成任务。
+根据提示和可选的参考素材创建新的视频生成任务。
 
-### Body 参数
+### 请求体参数
 
 - `prompt: string`
 
@@ -14,17 +14,17 @@
 
 - `input_reference: optional ImageInputReferenceParam`
 
-  用于引导生成的可选参考对象。请提供以下其中之一： `image_url` 或 `file_id`.
+  用于引导生成的可选参考对象。只能提供以下之一： `image_url` 或 `file_id`.
 
   - `file_id: optional string`
 
   - `image_url: optional string`
 
-    完整的 URL 或 base64 编码的数据 URL。
+    完全限定的 URL 或 Base64 编码的 data URL。
 
 - `model: optional VideoModel`
 
-  要使用的视频生成模型（允许的取值：sora-2、sora-2-pro）。默认为 `sora-2`.
+  要使用的视频生成模型（允许值：sora-2、sora-2-pro）。默认为 `sora-2`.
 
   - `string`
 
@@ -42,7 +42,7 @@
 
 - `seconds: optional VideoSeconds`
 
-  片段时长（秒）（允许的取值：4、8、12）。默认为 4 秒。
+  片段时长（秒）（允许值：4、8、12）。默认为 4 秒。
 
   - `"4"`
 
@@ -52,7 +52,7 @@
 
 - `size: optional VideoSize`
 
-  输出分辨率，格式为宽 x 高（允许的取值：720x1280、1280x720、1024x1792、1792x1024）。默认为 720x1280。
+  输出分辨率，格式为 width x height（允许值：720x1280、1280x720、1024x1792、1792x1024）。默认为 720x1280。
 
   - `"720x1280"`
 
@@ -62,11 +62,11 @@
 
   - `"1792x1024"`
 
-### 返回值
+### Returns
 
 - `Video object { id, completed_at, created_at, 10 more }`
 
-  描述已生成视频任务的结构化信息。
+  描述生成的视频任务的结构化信息。
 
   - `id: string`
 
@@ -74,7 +74,7 @@
 
   - `completed_at: number or null`
 
-    任务完成时的 Unix 时间戳（秒），如果已完成。
+    任务完成时的 Unix 时间戳（秒），若已完成。
 
   - `created_at: number`
 
@@ -82,7 +82,7 @@
 
   - `error: VideoCreateError or null`
 
-    用于解释生成失败原因的错误载荷（如适用）。
+    用于解释生成失败原因的 error 负载（若适用）。
 
     - `code: string`
 
@@ -90,23 +90,27 @@
 
     - `message: string`
 
-      返回错误的人类可读描述。
+      返回的错误的人类可读描述。
+
+    - `headers: optional map[string]`
+
+      随原始错误一并返回的 Retry-After 与 Retry-After-Ms 响应头（若有）。
 
     - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
       - `detailed_explanation: optional string`
 
-        此屏蔽的公开说明。
+        本次屏蔽的公开说明。
 
       - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-        一个可选的分类；客户端必须接受额外的值。
+        可选的分类；客户端必须接受额外的取值。
 
         - `string`
 
         - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-          一个可选的分类；客户端必须接受额外的值。
+          可选的分类；客户端必须接受额外的取值。
 
           - `"potentially_unintended_data_transfer"`
 
@@ -118,15 +122,15 @@
 
       - `steer: optional object { message }`
 
-        一个可选的公开延续指令。
+        可选的公开延续说明。
 
         - `message: string`
 
-          公开的延续指令。
+          公开的延续说明。
 
   - `expires_at: number or null`
 
-    可下载资源过期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源过期时的 Unix 时间戳（秒），若已设置。
 
   - `model: VideoModel`
 
@@ -158,15 +162,15 @@
 
   - `prompt: string or null`
 
-    用于生成视频的提示词。
+    用于生成该视频的提示词。
 
   - `remixed_from_video_id: string or null`
 
-    如果该视频是二次创作，则为源视频的标识符。
+    若该视频为 remix，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成片段的时长（秒）。对于扩展，这是拼接后的总时长。
+    所生成片段的时长（秒）。对于扩展视频，此处为拼接后的总时长。
 
   - `size: VideoSize`
 
@@ -213,6 +217,9 @@ curl https://api.openai.com/v1/videos \
   "error": {
     "code": "code",
     "message": "message",
+    "headers": {
+      "foo": "string"
+    },
     "misalignment": {
       "detailed_explanation": "detailed_explanation",
       "error_type": "potentially_unintended_data_transfer",
