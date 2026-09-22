@@ -92,6 +92,10 @@ Create a new video generation job from a prompt and optional reference assets.
 
       A human-readable description of the error that was returned.
 
+    - `headers: optional map[string]`
+
+      The Retry-After and Retry-After-Ms headers returned with the original error, if any.
+
     - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
       - `detailed_explanation: optional string`
@@ -213,6 +217,9 @@ curl https://api.openai.com/v1/videos \
   "error": {
     "code": "code",
     "message": "message",
+    "headers": {
+      "foo": "string"
+    },
     "misalignment": {
       "detailed_explanation": "detailed_explanation",
       "error_type": "potentially_unintended_data_transfer",

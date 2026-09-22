@@ -213,9 +213,9 @@ Some models support only a subset of these values, so check the relevant [model 
 
 ## Reasoning mode
 
-GPT-5.6 models support `standard` and `pro` reasoning modes in the Responses API. `standard` is the default. Set `reasoning.mode` to `pro` for difficult tasks that need more model work and can tolerate higher latency and token usage.
+GPT-5.6 and GPT-6 models support `standard` and `pro` reasoning modes in the Responses API. `standard` is the default. Set `reasoning.mode` to `pro` for difficult tasks that need more model work and can tolerate higher latency and token usage.
 
-Reasoning mode and reasoning effort are independent. Mode selects standard or pro execution, while `reasoning.effort` controls how much reasoning the model applies within that mode. If you omit `reasoning.effort`, GPT-5.6 defaults to `medium` in both modes.
+Reasoning mode and reasoning effort are independent. Mode selects standard or pro execution, while `reasoning.effort` controls how much reasoning the model applies within that mode. If you omit `reasoning.effort`, GPT-5.6 defaults to `medium` in both modes. GPT-6 Sol and Luna also default to `medium` reasoning effort.
 
 Using pro reasoning mode
 
@@ -950,8 +950,8 @@ Check out [this guide](https://developers.openai.com/api/docs/guides/conversatio
 
 Use `configuration_update` to increase reasoning effort for difficult work or reduce it for routine follow-ups. Add the update between responses while leaving the request-level `reasoning.effort` unchanged. This preserves the original prompt prefix for [prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
 
-Configuration updates are supported only by GPT-6 Astra (`gpt-6-astra`) in
-  standard, single-agent mode. They change only reasoning effort.
+Configuration updates are supported by the GPT-6 model family in standard,
+  single-agent mode. They change only reasoning effort.
 
 Add the following item before the next user message in the `input` array of an HTTP Responses request or a WebSocket `response.create` request:
 

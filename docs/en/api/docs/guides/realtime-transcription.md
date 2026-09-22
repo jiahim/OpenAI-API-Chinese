@@ -32,7 +32,7 @@ Create a session with `type: "transcription"` and select `gpt-live-transcribe`. 
 ```
 
 
-This example uses 24 kHz PCM audio and disables automatic turn detection so that you can explicitly commit each turn. For the full session configuration, see the [Realtime sessions reference](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets).
+This example uses 24 kHz PCM audio. In `gpt-live-transcribe` transcription sessions, omit `audio.input.turn_detection` or set it to `null`. The model doesn't support `server_vad` or `semantic_vad`. For the full session configuration, see the [Realtime sessions reference](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets).
 
 ## Stream audio
 
@@ -48,7 +48,7 @@ ws.send(
 ```
 
 
-With automatic turn detection turned off, commit the buffer when you want to finish an audio turn:
+Send `input_audio_buffer.commit` at the end of each audio turn to receive the final transcript:
 
 ```javascript
 ws.send(
@@ -59,7 +59,7 @@ ws.send(
 ```
 
 
-To let the server detect and commit turn boundaries, configure [voice activity detection](https://developers.openai.com/api/docs/guides/realtime-vad) instead.
+Use client-side VAD to detect the end of speech, then send `input_audio_buffer.commit`.
 
 ## Handle transcript events
 

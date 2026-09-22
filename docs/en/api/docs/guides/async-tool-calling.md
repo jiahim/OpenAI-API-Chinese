@@ -517,7 +517,7 @@ Use these definitions in the request's `tools` array:
   {
     "type": "function",
     "name": "wait_for_tasks",
-    "description": "Wait for selected tasks whose results you need. Pass a nonempty list of distinct task_handles from your earlier lookup_price calls. Results arrive on their original calls; this tool returns status only. Do not wait again for results that have already arrived.",
+    "description": "Wait for selected tasks whose results you need. Pass a nonempty list of distinct task_handles from your earlier async tool calls. Results arrive on their original calls; this tool returns status only. Do not wait again for results that have already arrived.",
     "strict": true,
     "parameters": {
       "type": "object",
@@ -599,6 +599,67 @@ For example, send these output items in the next request's `input` array. The pr
 ```
 
 Set `previous_response_id` to the latest response ID, and include the tools and instructions in the continuation request. Your application can also deliver results as they become available, without a wait call. Only use the wait tool when the model's next step depends on results that haven't arrived.
+
+## Add a tool to ask the user for input
+
+An async tool can ask the user a question while the model continues independent work. For example, the model can ask who a report is for, gather facts while the user answers, and use the answer to tailor the report.
+
+Define a function with `async: true` to request missing information or a preference. Your application displays the question, collects the reply, and returns it as the tool result. Its schema and behavior belong to your application. `request_user_input_async` isn't a built-in Responses tool.
+
+Add this definition to the request's `tools` array alongside `wait_for_tasks`:
+
+```json
+{
+  "type": "function",
+  "name": "request_user_input_async",
+  "async": true,
+  "description": "Ask the user for missing information or a preference. Choose a fresh task_handle unique within this conversation, including completed tasks. Continue independent work while the answer is pending. Use wait_for_tasks when your next step depends on the answer.",
+  "strict": true,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "question": { "type": "string" },
+      "task_handle": { "type": "string" }
+    },
+    "required": ["question", "task_handle"],
+    "additionalProperties": false
+  }
+}
+```
+
+### Display the question
+
+When the complete call item arrives, register the question's `task_handle` and original `call_id`, then display the question to the user. The following illustrative output item asks about the report's audience:
+
+```json
+{
+  "type": "function_call",
+  "name": "request_user_input_async",
+  "async": true,
+  "call_id": "call_audience",
+  "arguments": "{\"question\":\"Who is the report for: executives or engineers?\",\"task_handle\":\"report_audience_1\"}"
+}
+```
+
+Keep the question pending in the same registry used by the wait tool. While the user answers, continue consuming the model's response. Don't complete the tool call with an acknowledgment that you displayed the question; its result is the user's answer.
+
+### Return the user's answer
+
+When the user replies, send the answer on the question's original `call_id`. For example, include this output item in the next request's `input` array:
+
+```json
+[
+  {
+    "type": "function_call_output",
+    "call_id": "call_audience",
+    "output": "{\"task_handle\":\"report_audience_1\",\"answer\":\"Executives\"}"
+  }
+]
+```
+
+Set `previous_response_id` to the latest response ID, and include the tools and instructions in the continuation request. If the model called `wait_for_tasks` for `report_audience_1`, return the answer before the wait status, as in the [wait tool example](#deliver-results-before-wait-status).
+
+Async execution doesn't keep a response open until the user replies. Instruct the model to continue independent work and wait before taking a step that requires the answer. If your application supports dismissing or timing out a question, return an explicit no-answer result so the model can decide how to proceed.
 
 ## Compatibility
 

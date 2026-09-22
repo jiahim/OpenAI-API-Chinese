@@ -17,7 +17,7 @@ Writing, reviewing, editing, and answering questions about code is one of the pr
 
 [**Codex**](https://developers.openai.com/codex) is OpenAI's coding agent for software development. It helps you write, review and debug code. Interact with Codex in a variety of interfaces: in your IDE, through the CLI, on web and mobile sites, or in your CI/CD pipelines with the SDK. Codex is the best way to get agentic software engineering on your projects.
 
-Codex works best with the latest general-purpose models, such as [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.6-sol). We offer a range of models specifically designed to work with coding agents like Codex, such as [`gpt-5.3-codex`](https://developers.openai.com/api/docs/models/gpt-5.3-codex), but we recommend using the latest general-purpose model for most code generation tasks.
+Codex works best with the latest general-purpose models, such as [`gpt-6-sol`](https://developers.openai.com/api/docs/models/gpt-6-sol). We offer a range of models specifically designed to work with coding agents like Codex, such as [`gpt-5.3-codex`](https://developers.openai.com/api/docs/models/gpt-5.3-codex), but we recommend using the latest general-purpose model for most code generation tasks.
 
 See the [ChatGPT docs](https://developers.openai.com/codex) for setup guides, reference material, pricing, and more information.
 

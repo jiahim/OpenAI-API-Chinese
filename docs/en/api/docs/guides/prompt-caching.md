@@ -284,7 +284,7 @@ In multi-turn applications, reusing the growing conversation history can save mo
 
 - **Keep the prefix stable.** Put stable developer instructions and shared reference material first. If developer instructions or shared material contain timestamps, user-specific content, or other dynamic content, place those at the end rather than the beginning, or move them into later conversation messages.
 - **Preserve conversation history.** Append new messages rather than rewriting earlier turns. Summarization, [compaction](#compaction-can-reduce-cache-reuse), or context truncation can change the prefix and reset cache reuse.
-- **Change reasoning effort without rewriting the prefix.** On GPT-6 Astra, append a `configuration_update` input item to change reasoning effort between responses while keeping request-level `reasoning.effort` unchanged. This preserves the original prefix for cache reuse. See [Change reasoning mid-conversation](https://developers.openai.com/api/docs/guides/reasoning#change-reasoning-mid-conversation) for examples and compatibility limits.
+- **Change reasoning effort without rewriting the prefix.** On GPT-6 models, append a `configuration_update` input item to change reasoning effort between responses while keeping request-level `reasoning.effort` unchanged. This preserves the original prefix for cache reuse. See [Change reasoning mid-conversation](https://developers.openai.com/api/docs/guides/reasoning#change-reasoning-mid-conversation) for examples and compatibility limits.
 
 Keep changing content after the breakpoint
 

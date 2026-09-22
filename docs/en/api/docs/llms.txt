@@ -137,7 +137,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Misalignment monitoring](https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring.md): Understand misalignment monitoring coverage, handle blocked requests, and receive project safety alerts in your application.
 - [Modal](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/modal.md): Run an Agents API session in a Modal Sandbox.
 - [Model optimization](https://developers.openai.com/api/docs/guides/model-optimization.md): Ensure quality model outputs with evals and fine-tuning in the OpenAI platform.
-- [Model selection](https://developers.openai.com/api/docs/guides/model-selection.md): Learn how to choose the right model by balancing accuracy, latency, and cost for optimal performance.
+- [Model selection](https://developers.openai.com/api/docs/guides/model-selection.md): Find the right model for your use case
 - [Model, tool, and data controls with Terraform](https://developers.openai.com/api/docs/guides/terraform/project-controls.md): Manage OpenAI project model permissions, hosted-tool permissions, and data-retention controls with Terraform.
 - [Models and providers](https://developers.openai.com/api/docs/guides/agents/models.md): Learn how to choose models, set defaults, and think about providers and transport in the OpenAI Agents SDK.
 - [Moderation](https://developers.openai.com/api/docs/guides/moderation.md): Learn how to identify harmful content in text and images with OpenAI moderation models.
@@ -211,6 +211,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Upgrading to GPT-5.4](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p4.md): Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.4.
 - [Upgrading to GPT-5.5](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p5.md): Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.5.
 - [Upgrading to GPT-5.6 Sol](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p6-sol.md): Machine-readable guidance for migrating OpenAI API integrations to GPT-5.6 Sol and the GPT-5.6 family.
+- [Use Daybreak in the Responses API](https://developers.openai.com/api/docs/guides/daybreak.md): Choose compatible models and Daybreak access programs, understand default behavior, and handle errors in the Responses API.
 - [Using GPT-4.1](https://developers.openai.com/api/docs/guides/latest-model/gpt-4.1.md): Learn how to use, migrate to, and prompt GPT-4.1 in the OpenAI API.
 - [Using GPT-5](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.md): Learn how to use, migrate to, and prompt GPT-5 in the OpenAI API.
 - [Using GPT-5.1](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.1.md): Learn how to use, migrate to, and prompt GPT-5.1 in the OpenAI API.
@@ -219,7 +220,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Using GPT-5.4](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.4.md): Learn how to use, migrate to, and prompt GPT-5.4 in the OpenAI API.
 - [Using GPT-5.5](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.5.md): Learn how to use and migrate to GPT-5.5 in the OpenAI API.
 - [Using GPT-5.6](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.6.md): Learn how to use and migrate to GPT-5.6, the latest model family in the OpenAI API.
-- [Using GPT-6 Astra](https://developers.openai.com/api/docs/guides/latest-model/gpt-6-astra.md): Learn how to use GPT-6 Astra for reasoning, coding, professional work, and tool-using workflows, and how to migrate from GPT-5.6.
+- [Using GPT-6](https://developers.openai.com/api/docs/guides/latest-model/gpt-6-astra.md): Learn how to use GPT-6 Astra, Sol, and Luna for reasoning, coding, professional work, and tool-using workflows, and how to migrate from GPT-5.6.
 - [Using tools](https://developers.openai.com/api/docs/guides/tools.md): Use powerful tools like remote MCP servers, or built-in tools like web search and file search to extend the model's capabilities.
 - [Vaults](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults.md): Store secrets for MCPs or requests originating from the sandbox.
 - [Vector embeddings](https://developers.openai.com/api/docs/guides/embeddings.md): Learn how to turn text into numbers, unlocking use cases like search, clustering, and more with OpenAI API embeddings.
@@ -237,6 +238,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [WebSockets](https://developers.openai.com/api/docs/guides/voice-websockets.md): Connect server-owned audio streams over WebSockets.
 - [Working with evals](https://developers.openai.com/api/docs/guides/evals.md): Learn how to test and improve AI model outputs through evaluations.
 - [Workload identity federation](https://developers.openai.com/api/docs/guides/workload-identity-federation.md): Authenticate trusted workloads to the OpenAI API and Codex with short-lived identity-provider tokens.
+- [ZDR with Private Safety Processing (PSP)](https://developers.openai.com/api/docs/guides/private-safety-processing.md): ZDR with Private Safety Processing (PSP)
 
 ## Libraries
 - [SDKs and CLI](https://developers.openai.com/api/docs/libraries.md): Discover official OpenAI SDKs, the OpenAI CLI, and the Agents SDK.
