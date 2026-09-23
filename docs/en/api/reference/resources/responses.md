@@ -16,11 +16,23 @@ the `background` parameter set to `true` can be cancelled.
 
 ### Returns
 
-- `Response object { id, created_at, error, 33 more }`
+- `Response object { id, access_programs, created_at, 34 more }`
 
   - `id: string`
 
     Unique identifier for this Response.
+
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
 
   - `created_at: number`
 
@@ -1583,7 +1595,9 @@ the `background` parameter set to `true` can be cancelled.
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -2403,7 +2417,7 @@ the `background` parameter set to `true` can be cancelled.
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -2673,7 +2687,9 @@ the `background` parameter set to `true` can be cancelled.
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -3311,7 +3327,7 @@ the `background` parameter set to `true` can be cancelled.
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -5509,7 +5525,9 @@ the `background` parameter set to `true` can be cancelled.
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -6147,7 +6165,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -6413,7 +6431,9 @@ the `background` parameter set to `true` can be cancelled.
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -7051,7 +7071,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -8386,7 +8406,9 @@ the `background` parameter set to `true` can be cancelled.
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -9024,7 +9046,7 @@ the `background` parameter set to `true` can be cancelled.
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -9663,6 +9685,9 @@ curl https://api.openai.com/v1/responses/$RESPONSE_ID/cancel \
 ```json
 {
   "id": "id",
+  "access_programs": {
+    "cyber": "standard"
+  },
   "created_at": 0,
   "error": {
     "code": "server_error",
@@ -11588,7 +11613,9 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -12408,7 +12435,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -12678,7 +12705,9 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -13316,7 +13345,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -15349,7 +15378,9 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -16169,7 +16200,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -16435,7 +16466,9 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -17073,7 +17106,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -18885,6 +18918,20 @@ as input for the model's response.
 
 ### Body Parameters
 
+- `access_programs: optional object { cyber }`
+
+  Domain-specific access programs to use for this request.
+
+  - `cyber: optional "standard" or "daybreak_blue" or "daybreak_red"`
+
+    The Cyber access program to use for this request. Supported values are `standard`, `daybreak_blue`, and `daybreak_red`. If omitted, the API resolves the program from the model's Cyber tier and your organization and project access, subject to model-specific eligibility restrictions. By default, models without a Cyber tier use Standard. Blue-tier models use Daybreak Blue when authorized; otherwise they fall back to Standard unless the model requires Daybreak access. Red-tier models use Daybreak Red and require authorization. Requests that require unavailable Daybreak access return 403. An implicit Standard fallback is represented by null in the response's access_programs field, rather than an explicit Standard selection.
+
+    - `"standard"`
+
+    - `"daybreak_blue"`
+
+    - `"daybreak_red"`
+
 - `background: optional boolean or null`
 
   Whether to run the model response in the background.
@@ -20403,7 +20450,9 @@ as input for the model's response.
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -21223,7 +21272,7 @@ as input for the model's response.
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -21493,7 +21542,9 @@ as input for the model's response.
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -22131,7 +22182,7 @@ as input for the model's response.
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -24253,7 +24304,9 @@ as input for the model's response.
 
     - `user_location: optional object { city, country, region, 2 more }  or null`
 
-      The approximate location of the user.
+      The approximate location of the user. If omitted or null, defaults to the
+      United States. To avoid this fallback, pass `{"type": "approximate"}` without
+      location fields. To localize results, provide the relevant location fields.
 
       - `city: optional string or null`
 
@@ -24891,7 +24944,7 @@ as input for the model's response.
 
     - `user_location: optional object { type, city, country, 2 more }  or null`
 
-      The user's location.
+      The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
       - `type: "approximate"`
 
@@ -24971,11 +25024,23 @@ as input for the model's response.
 
 ### Returns
 
-- `Response object { id, created_at, error, 33 more }`
+- `Response object { id, access_programs, created_at, 34 more }`
 
   - `id: string`
 
     Unique identifier for this Response.
+
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
 
   - `created_at: number`
 
@@ -26538,7 +26603,9 @@ as input for the model's response.
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -27358,7 +27425,7 @@ as input for the model's response.
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -27628,7 +27695,9 @@ as input for the model's response.
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -28266,7 +28335,7 @@ as input for the model's response.
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -30464,7 +30533,9 @@ as input for the model's response.
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -31102,7 +31173,7 @@ as input for the model's response.
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -31368,7 +31439,9 @@ as input for the model's response.
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -32006,7 +32079,7 @@ as input for the model's response.
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -33341,7 +33414,9 @@ as input for the model's response.
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -33979,7 +34054,7 @@ as input for the model's response.
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -34631,6 +34706,9 @@ curl https://api.openai.com/v1/responses \
 ```json
 {
   "id": "id",
+  "access_programs": {
+    "cyber": "standard"
+  },
   "created_at": 0,
   "error": {
     "code": "server_error",
@@ -35667,11 +35745,23 @@ Retrieves a model response with the given ID.
 
 ### Returns
 
-- `Response object { id, created_at, error, 33 more }`
+- `Response object { id, access_programs, created_at, 34 more }`
 
   - `id: string`
 
     Unique identifier for this Response.
+
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
 
   - `created_at: number`
 
@@ -37234,7 +37324,9 @@ Retrieves a model response with the given ID.
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -38054,7 +38146,7 @@ Retrieves a model response with the given ID.
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -38324,7 +38416,9 @@ Retrieves a model response with the given ID.
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -38962,7 +39056,7 @@ Retrieves a model response with the given ID.
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -41160,7 +41254,9 @@ Retrieves a model response with the given ID.
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -41798,7 +41894,7 @@ Retrieves a model response with the given ID.
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -42064,7 +42160,9 @@ Retrieves a model response with the given ID.
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -42702,7 +42800,7 @@ Retrieves a model response with the given ID.
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -44037,7 +44135,9 @@ Retrieves a model response with the given ID.
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -44675,7 +44775,7 @@ Retrieves a model response with the given ID.
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -45313,6 +45413,9 @@ curl https://api.openai.com/v1/responses/$RESPONSE_ID \
 ```json
 {
   "id": "id",
+  "access_programs": {
+    "cyber": "standard"
+  },
   "created_at": 0,
   "error": {
     "code": "server_error",
@@ -46413,7 +46516,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -47233,7 +47338,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -47499,7 +47604,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -48137,7 +48244,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -50709,11 +50816,23 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
 ### Response
 
-- `Response object { id, created_at, error, 33 more }`
+- `Response object { id, access_programs, created_at, 34 more }`
 
   - `id: string`
 
     Unique identifier for this Response.
+
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
 
   - `created_at: number`
 
@@ -52276,7 +52395,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -53096,7 +53217,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -53366,7 +53487,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -54004,7 +54127,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -56202,7 +56325,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -56840,7 +56965,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -57106,7 +57231,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -57744,7 +57871,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -59079,7 +59206,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -59717,7 +59846,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -60580,6 +60709,18 @@ curl https://api.openai.com/v1/responses/resp_123 \
     - `id: string`
 
       Unique identifier for this Response.
+
+    - `access_programs: object { cyber }  or null`
+
+      - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+        The effective Cyber access program used for this response.
+
+        - `"standard"`
+
+        - `"daybreak_blue"`
+
+        - `"daybreak_red"`
 
     - `created_at: number`
 
@@ -62142,7 +62283,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                The approximate location of the user.
+                The approximate location of the user. If omitted or null, defaults to the
+                United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                location fields. To localize results, provide the relevant location fields.
 
                 - `city: optional string or null`
 
@@ -62962,7 +63105,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                The user's location.
+                The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                 - `type: "approximate"`
 
@@ -63232,7 +63375,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                The approximate location of the user.
+                The approximate location of the user. If omitted or null, defaults to the
+                United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                location fields. To localize results, provide the relevant location fields.
 
                 - `city: optional string or null`
 
@@ -63870,7 +64015,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                The user's location.
+                The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                 - `type: "approximate"`
 
@@ -66068,7 +66213,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -66706,7 +66853,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -66972,7 +67119,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -67610,7 +67759,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -68945,7 +69094,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -69583,7 +69734,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -70932,6 +71083,18 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
       Unique identifier for this Response.
 
+    - `access_programs: object { cyber }  or null`
+
+      - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+        The effective Cyber access program used for this response.
+
+        - `"standard"`
+
+        - `"daybreak_blue"`
+
+        - `"daybreak_red"`
+
     - `created_at: number`
 
       Unix timestamp (in seconds) of when this Response was created.
@@ -72493,7 +72656,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                The approximate location of the user.
+                The approximate location of the user. If omitted or null, defaults to the
+                United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                location fields. To localize results, provide the relevant location fields.
 
                 - `city: optional string or null`
 
@@ -73313,7 +73478,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                The user's location.
+                The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                 - `type: "approximate"`
 
@@ -73583,7 +73748,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                The approximate location of the user.
+                The approximate location of the user. If omitted or null, defaults to the
+                United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                location fields. To localize results, provide the relevant location fields.
 
                 - `city: optional string or null`
 
@@ -74221,7 +74388,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                The user's location.
+                The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                 - `type: "approximate"`
 
@@ -76419,7 +76586,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -77057,7 +77226,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -77323,7 +77492,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -77961,7 +78132,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -79296,7 +79467,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -79934,7 +80107,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -80756,6 +80929,18 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
       Unique identifier for this Response.
 
+    - `access_programs: object { cyber }  or null`
+
+      - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+        The effective Cyber access program used for this response.
+
+        - `"standard"`
+
+        - `"daybreak_blue"`
+
+        - `"daybreak_red"`
+
     - `created_at: number`
 
       Unix timestamp (in seconds) of when this Response was created.
@@ -82317,7 +82502,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                The approximate location of the user.
+                The approximate location of the user. If omitted or null, defaults to the
+                United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                location fields. To localize results, provide the relevant location fields.
 
                 - `city: optional string or null`
 
@@ -83137,7 +83324,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                The user's location.
+                The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                 - `type: "approximate"`
 
@@ -83407,7 +83594,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                The approximate location of the user.
+                The approximate location of the user. If omitted or null, defaults to the
+                United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                location fields. To localize results, provide the relevant location fields.
 
                 - `city: optional string or null`
 
@@ -84045,7 +84234,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                The user's location.
+                The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                 - `type: "approximate"`
 
@@ -86243,7 +86432,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -86881,7 +87072,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -87147,7 +87338,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -87785,7 +87978,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -89120,7 +89313,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -89758,7 +89953,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -90807,6 +91002,18 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
       Unique identifier for this Response.
 
+    - `access_programs: object { cyber }  or null`
+
+      - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+        The effective Cyber access program used for this response.
+
+        - `"standard"`
+
+        - `"daybreak_blue"`
+
+        - `"daybreak_red"`
+
     - `created_at: number`
 
       Unix timestamp (in seconds) of when this Response was created.
@@ -92368,7 +92575,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                The approximate location of the user.
+                The approximate location of the user. If omitted or null, defaults to the
+                United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                location fields. To localize results, provide the relevant location fields.
 
                 - `city: optional string or null`
 
@@ -93188,7 +93397,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                The user's location.
+                The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                 - `type: "approximate"`
 
@@ -93458,7 +93667,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                The approximate location of the user.
+                The approximate location of the user. If omitted or null, defaults to the
+                United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                location fields. To localize results, provide the relevant location fields.
 
                 - `city: optional string or null`
 
@@ -94096,7 +94307,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                The user's location.
+                The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                 - `type: "approximate"`
 
@@ -96294,7 +96505,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -96932,7 +97145,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -97198,7 +97411,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -97836,7 +98051,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -99171,7 +99386,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -99809,7 +100026,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -100494,6 +100711,18 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
       Unique identifier for this Response.
 
+    - `access_programs: object { cyber }  or null`
+
+      - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+        The effective Cyber access program used for this response.
+
+        - `"standard"`
+
+        - `"daybreak_blue"`
+
+        - `"daybreak_red"`
+
     - `created_at: number`
 
       Unix timestamp (in seconds) of when this Response was created.
@@ -102055,7 +102284,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                The approximate location of the user.
+                The approximate location of the user. If omitted or null, defaults to the
+                United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                location fields. To localize results, provide the relevant location fields.
 
                 - `city: optional string or null`
 
@@ -102875,7 +103106,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                The user's location.
+                The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                 - `type: "approximate"`
 
@@ -103145,7 +103376,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                The approximate location of the user.
+                The approximate location of the user. If omitted or null, defaults to the
+                United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                location fields. To localize results, provide the relevant location fields.
 
                 - `city: optional string or null`
 
@@ -103783,7 +104016,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                The user's location.
+                The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                 - `type: "approximate"`
 
@@ -105981,7 +106214,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -106619,7 +106854,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -106885,7 +107120,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -107523,7 +107760,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -108858,7 +109095,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -109496,7 +109735,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -112415,7 +112654,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -113235,7 +113476,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -113501,7 +113742,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -114139,7 +114382,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -116535,7 +116778,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -117355,7 +117600,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -117621,7 +117866,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -118259,7 +118506,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -120666,7 +120913,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -121486,7 +121735,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -121752,7 +122001,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -122390,7 +122641,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -124002,6 +124253,18 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
       Unique identifier for this Response.
 
+    - `access_programs: object { cyber }  or null`
+
+      - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+        The effective Cyber access program used for this response.
+
+        - `"standard"`
+
+        - `"daybreak_blue"`
+
+        - `"daybreak_red"`
+
     - `created_at: number`
 
       Unix timestamp (in seconds) of when this Response was created.
@@ -125563,7 +125826,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                The approximate location of the user.
+                The approximate location of the user. If omitted or null, defaults to the
+                United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                location fields. To localize results, provide the relevant location fields.
 
                 - `city: optional string or null`
 
@@ -126383,7 +126648,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                The user's location.
+                The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                 - `type: "approximate"`
 
@@ -126653,7 +126918,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                The approximate location of the user.
+                The approximate location of the user. If omitted or null, defaults to the
+                United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                location fields. To localize results, provide the relevant location fields.
 
                 - `city: optional string or null`
 
@@ -127291,7 +127558,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                The user's location.
+                The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                 - `type: "approximate"`
 
@@ -129489,7 +129756,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -130127,7 +130396,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -130393,7 +130662,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -131031,7 +131302,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -132366,7 +132637,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -133004,7 +133277,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -135601,6 +135874,18 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         Unique identifier for this Response.
 
+      - `access_programs: object { cyber }  or null`
+
+        - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+          The effective Cyber access program used for this response.
+
+          - `"standard"`
+
+          - `"daybreak_blue"`
+
+          - `"daybreak_red"`
+
       - `created_at: number`
 
         Unix timestamp (in seconds) of when this Response was created.
@@ -137162,7 +137447,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                  The approximate location of the user.
+                  The approximate location of the user. If omitted or null, defaults to the
+                  United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                  location fields. To localize results, provide the relevant location fields.
 
                   - `city: optional string or null`
 
@@ -137982,7 +138269,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                  The user's location.
+                  The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                   - `type: "approximate"`
 
@@ -138252,7 +138539,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                  The approximate location of the user.
+                  The approximate location of the user. If omitted or null, defaults to the
+                  United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                  location fields. To localize results, provide the relevant location fields.
 
                   - `city: optional string or null`
 
@@ -138890,7 +139179,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                  The user's location.
+                  The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                   - `type: "approximate"`
 
@@ -141088,7 +141377,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                The approximate location of the user.
+                The approximate location of the user. If omitted or null, defaults to the
+                United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                location fields. To localize results, provide the relevant location fields.
 
                 - `city: optional string or null`
 
@@ -141726,7 +142017,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                The user's location.
+                The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                 - `type: "approximate"`
 
@@ -141992,7 +142283,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                The approximate location of the user.
+                The approximate location of the user. If omitted or null, defaults to the
+                United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                location fields. To localize results, provide the relevant location fields.
 
                 - `city: optional string or null`
 
@@ -142630,7 +142923,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                The user's location.
+                The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                 - `type: "approximate"`
 
@@ -143965,7 +144258,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -144603,7 +144898,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -147160,11 +147455,11 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
 ### Responses Client Event
 
-- `ResponsesClientEvent = object { type, background, context_management, 30 more }  or ResponseSteerEvent`
+- `ResponsesClientEvent = object { type, access_programs, background, 31 more }  or ResponseSteerEvent`
 
   Client events accepted by the Responses WebSocket server.
 
-  - `ResponseCreate object { type, background, context_management, 30 more }`
+  - `ResponseCreate object { type, access_programs, background, 31 more }`
 
     Client event for creating a response over a persistent WebSocket connection.
     This payload uses the same top-level fields as `POST /v1/responses`, plus
@@ -147181,6 +147476,20 @@ curl https://api.openai.com/v1/responses/resp_123 \
       The type of the client event. Always `response.create`.
 
       - `"response.create"`
+
+    - `access_programs: optional object { cyber }`
+
+      Domain-specific access programs to use for this request.
+
+      - `cyber: optional "standard" or "daybreak_blue" or "daybreak_red"`
+
+        The Cyber access program to use for this request. Supported values are `standard`, `daybreak_blue`, and `daybreak_red`. If omitted, the API resolves the program from the model's Cyber tier and your organization and project access, subject to model-specific eligibility restrictions. By default, models without a Cyber tier use Standard. Blue-tier models use Daybreak Blue when authorized; otherwise they fall back to Standard unless the model requires Daybreak access. Red-tier models use Daybreak Red and require authorization. Requests that require unavailable Daybreak access return 403. An implicit Standard fallback is represented by null in the response's access_programs field, rather than an explicit Standard selection.
+
+        - `"standard"`
+
+        - `"daybreak_blue"`
+
+        - `"daybreak_red"`
 
     - `background: optional boolean or null`
 
@@ -148700,7 +149009,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                The approximate location of the user.
+                The approximate location of the user. If omitted or null, defaults to the
+                United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                location fields. To localize results, provide the relevant location fields.
 
                 - `city: optional string or null`
 
@@ -149520,7 +149831,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                The user's location.
+                The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                 - `type: "approximate"`
 
@@ -149790,7 +150101,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { city, country, region, 2 more }  or null`
 
-                The approximate location of the user.
+                The approximate location of the user. If omitted or null, defaults to the
+                United States. To avoid this fallback, pass `{"type": "approximate"}` without
+                location fields. To localize results, provide the relevant location fields.
 
                 - `city: optional string or null`
 
@@ -150428,7 +150741,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `user_location: optional object { type, city, country, 2 more }  or null`
 
-                The user's location.
+                The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
                 - `type: "approximate"`
 
@@ -152560,7 +152873,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -153198,7 +153513,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -156287,7 +156602,9 @@ Returns a list of input items for a given response.
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -157107,7 +157424,7 @@ Returns a list of input items for a given response.
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -157373,7 +157690,9 @@ Returns a list of input items for a given response.
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -158011,7 +158330,7 @@ Returns a list of input items for a given response.
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -160593,7 +160912,9 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -161413,7 +161734,7 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -161679,7 +162000,9 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -162317,7 +162640,7 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -164961,7 +165284,9 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -165781,7 +166106,7 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -166051,7 +166376,9 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -166689,7 +167016,7 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -168380,7 +168707,9 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
     - `user_location: optional object { city, country, region, 2 more }  or null`
 
-      The approximate location of the user.
+      The approximate location of the user. If omitted or null, defaults to the
+      United States. To avoid this fallback, pass `{"type": "approximate"}` without
+      location fields. To localize results, provide the relevant location fields.
 
       - `city: optional string or null`
 
@@ -169018,7 +169347,7 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
     - `user_location: optional object { type, city, country, 2 more }  or null`
 
-      The user's location.
+      The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
       - `type: "approximate"`
 

@@ -69,6 +69,28 @@ When designing your application or service for production that uses our API, it'
 - **Caching**: By storing frequently accessed data, you can improve response times without needing to make repeated calls to our API. Your application will need to be designed to use cached data whenever possible and invalidate the cache when new information is added. For example, you could store data in a database, filesystem, or in-memory cache, depending on what makes the most sense for your application.
 - **Load balancing**: Finally, consider load-balancing techniques to ensure requests are distributed evenly across your available servers. This could involve using a load balancer in front of your servers or using DNS round-robin. Balancing the load will help improve performance and reduce bottlenecks.
 
+### Compress request bodies
+
+To reduce upload size, compress JSON request bodies with `zstd` when you call `POST /v1/responses`. Set `Content-Encoding: zstd` and keep `Content-Type: application/json`.
+
+```bash
+zstd -3 -c request.json > request.json.zst
+
+curl https://api.openai.com/v1/responses \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Content-Encoding: zstd" \
+  --data-binary @request.json.zst
+```
+
+The API decompresses the body before processing the request. Compression reduces bytes sent over the network. It does not change token usage or model context limits.
+
+Both the compressed and decompressed bodies must be at most 128 MiB. The decompressed body must also be at most 100 times the compressed size. Requests that exceed these limits return HTTP `413`. The API returns HTTP `400` for invalid or incomplete `zstd` data. Other request limits still apply.
+
+### Compress WebSocket messages
+
+[Responses API WebSocket mode](https://developers.openai.com/api/docs/guides/websocket-mode) supports `permessage-deflate` on `wss://api.openai.com/v1/responses`. This WebSocket extension uses DEFLATE to reduce message size. Enable it in your WebSocket client's compression settings before connecting.
+
 ### Managing rate limits
 
 When using our API, it's important to understand and plan for [rate limits](https://developers.openai.com/api/docs/guides/rate-limits).

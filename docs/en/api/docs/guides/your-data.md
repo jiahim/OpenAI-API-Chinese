@@ -313,7 +313,6 @@ The complete, unfiltered regional support table follows. Model snapshots for eac
 
 #### /v1/responses
 
-- Cannot set background=True in EU region.
 - [Extended prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching#prompt-cache-retention) in regions that do not support Regional processing may require that OpenAI process and temporarily store Customer Content outside of the Region to deliver the services.
 
 #### /v1/live/sessions
