@@ -678,7 +678,7 @@ openai batches list \
 
 ## Model availability
 
-The Batch API is widely available across most of our models, but not all. Please refer to the [model reference docs](https://developers.openai.com/api/docs/models) to ensure the model you're using supports the Batch API.
+The Batch API is widely available across most of our models, but not all. Please refer to the [model reference docs](https://developers.openai.com/api/docs/models) to ensure the model you're using supports the Batch API. For GPT-6 Sol and Luna, EU data residency is available only with Standard processing. See [data residency eligibility](https://developers.openai.com/api/docs/guides/your-data#which-models-and-features-are-eligible-for-data-residency).
 
 ## Rate limits
 

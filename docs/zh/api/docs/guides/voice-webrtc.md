@@ -1,6 +1,6 @@
 # WebRTC
 
-> 完整的文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取该页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 来获取。
 
 选择你的 API 以查看其连接步骤和会话事件。
 
@@ -8,37 +8,37 @@
 
 ## 将浏览器连接到 GPT-Live
 
-在浏览器语音应用中使用 WebRTC。麦克风输入与生成的语音通过协商好的媒体轨道传输。数据通道承载用于转录、会话更新和委托工作的 JSON 事件。
+在浏览器语音应用中使用 WebRTC。麦克风输入与生成的语音通过协商好的媒体轨道传输。数据通道承载 JSON 事件，用于传输转录、会话更新与委派任务。
 
-你的浏览器创建一条会话描述协议（SDP）offer。你的应用服务器使用 `POST /v1/live/sessions`，与对方交换以获取 answer，并使用你的项目 API key。请将 key 和会话配置保存在你的受信服务器上。
+你的浏览器创建一个会话描述协议（SDP）offer。你的应用服务器使用项目 API 密钥与 `POST /v1/live/sessions`，将其交换为 answer。请将密钥和会话配置保留在你的受信服务器上。
 
-### 准备工作
+### 开始之前
 
 你需要：
 
-- 一个对 GPT-Live 有访问权限的 API key。
-- 一个用于所选 SDK 示例的服务器运行时。Node.js 示例需要 Node.js 22.6 或更高版本。
-- 一个具有麦克风权限的浏览器，运行在 HTTPS 或 localhost 上。
+- 一个对你所使用的 GPT-Live 有访问权限的 API 密钥。
+- 用于运行你所选 SDK 示例的服务端运行时。Node.js 示例需要 Node.js 22.6 或更高版本。
+- 一个已授予麦克风权限、运行在 HTTPS 或 localhost 上的浏览器。
 
-该示例使用 Responses 委托，配合 `gpt-5.6-terra` 和托管的网页搜索。关于后端说明和应用工具，请参阅 [委托与工具](https://developers.openai.com/api/docs/guides/live-delegation)。关于语音和后端使用方式，请参阅 [成本优化](https://developers.openai.com/api/docs/guides/voice-latency-cost?api=live).
+该示例使用 Responses 委托，并结合 `gpt-5.6-terra` 以及托管网页搜索。关于后端指令和应用程序工具，请参阅 [委托与工具](https://developers.openai.com/api/docs/guides/live-delegation)。关于语音和后端使用，请参阅 [成本优化](https://developers.openai.com/api/docs/guides/voice-latency-cost?api=live).
 
-### 了解连接顺序
+### 理解连接序列
 
-1. 通过用户操作请求麦克风访问权限，并将其音轨添加到对等连接中。
-2. 创建数据通道并在创建 SDP offer 之前注册事件监听器。
-3. 设置本地描述，等待 ICE 候选收集完成，然后将 offer 发送到你的服务器。
-4. 让你的服务器向 `session` 和 `transport: { type: "webrtc", sdp: ... }` 发送包含 offer 和 ICE 候选的 JSON。OpenAI 代理。
-5. 将返回的 SDP answer 应用为远程描述。等待 `session.started` 在数据通道上触发后再发送应用指令。
+1. 在用户操作时请求麦克风权限，并将其音轨添加到对等连接中。
+2. 先创建数据通道并注册事件监听器，再创建 SDP offer。
+3. 设置本地描述，等待 ICE 候选收集完成，然后将 offer 发送给服务器。
+4. 让你的服务器通过 POST 发送包含以下字段的 JSON： `session` 和 `transport: { type: "webrtc", sdp: ... }` 到 OpenAI。
+5. 将返回的 SDP answer 应用为远端描述。等待数据通道上的 `session.started` 事件触发后再发送应用指令。
 
-HTTP 请求会启动会话。 **不要在 `session.start` 数据通道上发送。** 该 `oai-events` 字符串就是数据通道的标签。
+HTTP 请求启动会话。 **不要发送 `session.start` 在数据通道上。** 该 `oai-events` 示例中的 string 是数据通道标签。
 
-使用 `POST /v1/live/sessions` 创建 WebRTC 会话时会在初始化阶段计费 15 秒的语音时长。该金额会在会话开始运行后抵扣语音时长费用，不会额外增加到运行中的会话 15 秒。详见 [WebRTC 初始化计费](https://developers.openai.com/api/docs/guides/voice-latency-cost?api=live#webrtc-initialization-charges) 了解成本核算方式。
+使用 `POST /v1/live/sessions` 在初始化阶段计费 15 秒语音时长。该时长会在会话正式开始运行后抵扣时长费用；它不会在运行中的会话上额外增加 15 秒。详见 [WebRTC 初始化费用](https://developers.openai.com/api/docs/guides/voice-latency-cost?api=live#webrtc-initialization-charges) 了解费用核算方式。
 
 ### 创建应用服务器
 
-将服务器示例保存在一个新目录中，并在环境中设置 `OPENAI_API_KEY` 。对于 Node.js，请使用 `server.mjs` 并安装 `openai` 和 `express` ，并使用 `npm install openai express`。对于 Python，请安装 `openai`。此示例绑定到 `127.0.0.1`，接受来自 `http://localhost:3000`，的会话请求，并提供 `index.html` （从你运行该命令的目录提供）。
+将服务器示例保存到新目录中，并在环境中设置 `OPENAI_API_KEY` 。对于 Node.js，使用 `server.mjs` 并安装 `openai` 以及 `express` 与 `npm install openai express`。对于 Python，安装 `openai`。此示例绑定到 `127.0.0.1`，接受来自 `http://localhost:3000`，的会话请求，并提供 `index.html` ，从你运行它的目录中提供。
 
-请在下方选择一种服务器语言；每个变体都提供 `index.html` 以及相同的 `/api/session` 端点（端口 3000）。请使用支持 Live 的 SDK 版本。同时只能运行一个变体。
+请在下方选择服务器语言；每个变体都提供 `index.html` 以及相同的 `/api/session` 端点，端口为 3000。请使用支持 Live 的 SDK 版本。同一时间只能运行一个变体。
 
 ```javascript
 import express from "express";
@@ -193,7 +193,7 @@ if __name__ == "__main__":
 ```
 
 
-在将服务器开放给其他用户之前，请使用你应用的 `/api/session` 身份验证、授权、请求限制和 HTTPS 来保护该端点。本地示例中的来源检查不会对用户进行身份验证。
+在将服务器开放给其他用户之前，请使用你应用的认证、授权、请求限制和 HTTPS 来保护 `/api/session` 。此本地示例中的来源检查不会对用户进行身份验证。
 
 ### 创建浏览器客户端
 
@@ -215,7 +215,7 @@ Create `index.html` 在运行服务器的目录中：
 </html>
 ```
 
-将以下代码粘贴到 module 脚本内。它会添加开始和结束控件，连接麦克风和输出音频，并处理会话事件。 `/api/session` 是你应用服务器上的一条路由。
+将以下代码粘贴到 module script 中。它会添加开始和结束控件，连接麦克风和输出音频，并处理会话事件。 `/api/session` 是你应用服务器上的一个路由。
 
 ```javascript
 const start = document.createElement("button");
@@ -352,11 +352,11 @@ stop.addEventListener("click", () => {
 ```
 
 
-运行你选择的服务器（`node server.mjs` 或 `python server.py`），打开 `http://localhost:3000`，然后选择 **Start conversation**。在状态变为 **Connected**，后，提出一个需要最新信息的问题，以测试托管搜索。如果浏览器阻止自动播放，请使用音频控件。
+运行你选择的服务器（`node server.mjs` 或 `python server.py`），打开 `http://localhost:3000`，然后选择 **Start conversation**。当状态变为 **Connected**，后，提出一个需要实时信息的问题来测试托管搜索。如果浏览器阻止自动播放，请使用音频控件。
 
-### 读取会话响应
+### 阅读会话响应
 
-成功请求会返回 HTTP 201，其 JSON 中包含会话 ID 和 SDP 应答：
+成功请求会返回 HTTP 201，并在响应 JSON 中包含会话 ID 和 SDP answer：
 
 ```json
 {
@@ -365,47 +365,47 @@ stop.addEventListener("click", () => {
 }
 ```
 
-读取 `result.session.id` 并传递 `result.transport.sdp` 给 `setRemoteDescription`. 请将会话 ID 视为不透明字符串，并原样保留它，包括其前缀。
+阅读 `result.session.id` 并将 `result.transport.sdp` 传递给 `setRemoteDescription`。请将会话 ID 视为不透明值，原样保留，包括其前缀。
 
 ### 处理媒体和事件
 
-通过媒体轨道发送麦克风音频并接收生成的语音。WebRTC 通过 SDP 协商音频格式，因此请省略 `audio.format` 会话配置中的相关字段。请勿发送 `session.input_audio.append` 或期待 `session.output_audio.delta` 数据通道上发送。
+通过媒体轨道发送麦克风音频并接收生成的语音。WebRTC 通过 SDP 协商音频格式，因此请省略 `audio.format` 从会话配置中发送。 `session.input_audio.append` 或期望 `session.output_audio.delta` 在数据通道上。
 
-使用数据通道传输转录增量、会话命令以及嵌套的 `response.event` 消息。参见 [管理会话](https://developers.openai.com/api/docs/guides/live-conversations) 了解转录处理与生命周期事件，另见 [服务端控制](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live) 了解当你的服务端需要自己的事件连接时的做法。
+使用数据通道传输转录增量、会话命令以及嵌套的 `response.event` 消息。参见 [管理会话](https://developers.openai.com/api/docs/guides/live-conversations) 了解转录处理和生命周期事件，以及 [服务端控制](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live) 如果你的服务端需要自己的事件连接。
 
-若要结束对话，请发送 `session.close` 并持续接收直到收到 `session.closed` 之后，再关闭对等连接和麦克风轨道。示例在发送命令之前注册 final 事件监听器。如果连接先失败或超时，则无法确认最终的用量。参见 [用量与优雅关闭](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close) 了解最终用量的处理方式。
-
-  
+若要结束对话，请发送 `session.close` 并持续接收直到 `session.closed` 再关闭对等连接和麦克风轨道。该示例在发送命令之前注册了 final 事件监听器。如果连接先失败或超时，则无法确认最终的用量。参见 [用量与优雅关闭](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close) 了解最终用量的处理方式。
 
   
 
+  
 
-[WebRTC](https://webrtc.org/) 是一组强大的标准接口，用于构建实时应用。OpenAI Realtime API 支持通过 WebRTC 对等连接到 realtime 模型。
 
-对于基于浏览器的语音到语音应用，我们建议从 [Voice 智能体](https://developers.openai.com/api/docs/guides/voice-agents)，入手，它涵盖了 Agents SDK 中用于管理 Realtime 会话的高级辅助方法和 API。WebRTC 接口强大且灵活，但比 Agents SDK 更为底层。
+[WebRTC](https://webrtc.org/) 是一组强大的标准接口，用于构建实时应用。OpenAI Realtime API 支持通过 WebRTC 对等连接接入实时模型。
 
-从客户端（例如 Web 浏览器或
-  移动设备），我们推荐使用 WebRTC 而不是 WebSocket，以获得更
+对于基于浏览器的语音转语音应用，建议从 [语音智能体智能体](https://developers.openai.com/api/docs/guides/voice-agents)，入手，其中介绍了 Agents SDK 用于管理 Realtime 会话的高级辅助方法和 API。WebRTC 接口强大且灵活，但比 Agents SDK 更底层。
+
+当从客户端（如网页浏览器或
+  移动设备），我们推荐使用 WebRTC 而不是 WebSockets，以获得更
   稳定的性能。
 
-如需了解更多关于在 WebRTC 之上构建用户界面的指导， [请参考 MDN 上的相关文档](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API).
+有关在 WebRTC 之上构建用户界面的更多指导， [请参阅 MDN 上的文档](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API).
 
 ## 概述
 
-Realtime API 支持两种从浏览器连接到 Realtime API 的机制，一种是使用临时 API 密钥（[通过 OpenAI REST API 生成](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets)），另一种是通过新的统一接口。通常，使用统一接口更简单，但会让你的应用服务器处于会话初始化的关键路径上。
+Realtime API 支持两种从浏览器连接的机制：统一接口和临时 API 密钥（[通过 OpenAI REST API 生成](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets)）。使用统一接口可以简化设置并加快连接速度。此方式会将你的应用服务器置于会话初始化的关键路径上。
 
-### 使用统一接口连接
+### 使用统一接口进行连接
 
 使用统一接口初始化 WebRTC 连接的过程如下（假设为 Web 浏览器客户端）：
 
-1. 浏览器使用其 WebRTC 对等连接的 SDP 数据向开发者控制的服务器发起请求。
-2. 服务器将该 SDP 与其会话配置组合为 multipart 表单，并发送给 OpenAI Realtime API，使用其 [标准 API 密钥](https://platform.openai.com/settings/organization/api-keys).
+1. 浏览器使用其 WebRTC 对等连接中的 SDP 数据向开发者控制的服务器发起请求。
+2. 服务器将该 SDP 与其会话配置组合成 multipart 表单，并发送给 OpenAI Realtime API，使用其 [标准的 API 密钥](https://platform.openai.com/settings/organization/api-keys).
 
 #### 通过统一接口创建会话
 
-要通过统一接口创建实时 API 会话，你需要构建一个小型服务端应用（或与现有应用集成）以发起对 `/v1/realtime/calls`。的请求。你将使用 [标准的 API 密钥](https://platform.openai.com/settings/organization/api-keys) 在你的后端服务器上对该请求进行身份验证。
+要通过统一接口创建一个实时 API 会话，你需要构建一个小型 服务端 应用（或与现有应用集成）来向 `/v1/realtime/calls`。发起请求。你将使用一个 [标准 API 密钥](https://platform.openai.com/settings/organization/api-keys) 在你的后端服务器上对该请求进行身份验证。
 
-下面是一个简单的 Node.js [express](https://expressjs.com/) 服务器示例，用于创建一个实时 API 会话：
+下面是一个简单的 Node.js [express](https://expressjs.com/) 服务器的示例，该服务器用于创建一个实时 API 会话：
 
 ```javascript
 import express from "express";
@@ -449,15 +449,15 @@ app.listen(3000);
 ```
 
 
-如果你的应用为每个最终用户分配了 [安全标识符](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers)
-，请将其作为本次 `OpenAI-Safety-Identifier` 请求中的
-服务端请求的标头传入。请使用稳定且保护隐私的值，例如经过哈希处理的
-内部用户 ID。该标头应由你受信任的后端设置，而不是由
+如果你的应用为 [安全标识符](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers)
+每个最终用户分配一个，请将其作为本次请求中的 `OpenAI-Safety-Identifier` 头包含进来。请使用稳定且保护隐私的值，例如经过哈希处理的
+服务端 请求中的内部用户 ID。该请求头应由你的可信后端设置，而非由
+浏览器设置。该请求头应由你的可信后端设置，而不是由浏览器设置。
 浏览器设置。
 
-#### 连接到服务器
+#### 连接到服务端
 
-在浏览器中，你可以使用标准的 WebRTC API 通过你的应用服务器连接到 Realtime API。客户端会将其 SDP 数据直接 POST 到你的服务器。
+在浏览器中，你可以使用标准的 WebRTC API，通过你的应用服务器连接到 Realtime API。客户端会将其 SDP 数据直接 POST 到你的服务器。
 
 ```javascript
 // Create a peer connection
@@ -502,16 +502,16 @@ await pc.setRemoteDescription(answer);
 使用临时 API 密钥初始化 WebRTC 连接的过程如下（假设客户端为网页浏览器）：
 
 1. 浏览器向开发者控制的服务器发起请求，以生成一个临时 API 密钥。
-1. 开发者的服务器使用你的 [标准 API 密钥](https://platform.openai.com/settings/organization/api-keys) 向你的密钥兑换端点发起请求，从 [OpenAI REST API](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets)，请求一个临时密钥，并将新密钥返回给浏览器。
-1. 浏览器使用临时密钥直接通过 OpenAI Realtime API 对会话进行身份验证 [WebRTC 对等连接](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection).
+1. 开发者的服务器使用 [标准的 API 密钥](https://platform.openai.com/settings/organization/api-keys) 向 [OpenAI REST API](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets)，请求一个临时密钥，并将该新密钥返回给浏览器。
+1. 浏览器使用临时密钥直接与 OpenAI Realtime API 鉴权会话，身份为 [WebRTC 对等连接](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection).
 
-![通过 WebRTC 连接到实时 接口](https://openaidevs.retool.com/api/file/55b47800-9aaf-48b9-90d5-793ab227ddd3)
+![通过 WebRTC 连接实时接口](https://openaidevs.retool.com/api/file/55b47800-9aaf-48b9-90d5-793ab227ddd3)
 
-#### Creating an ephemeral token
+#### 创建临时令牌
 
-要创建在客户端使用的临时令牌，你需要构建一个小型服务端应用（或与现有应用集成）来发起一个 [OpenAI REST API](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets) 临时密钥的请求。你将使用一个 [标准的 API 密钥](https://platform.openai.com/settings/organization/api-keys) 在你的后端服务器上对该请求进行身份验证。
+若要创建在客户端使用的临时令牌，你需要构建一个小型服务端应用（或与现有应用集成），以便发出一次 [OpenAI REST API](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets) 临时密钥请求。你需要使用 [标准 API 密钥](https://platform.openai.com/settings/organization/api-keys) 在你的后端服务器上对该请求进行身份验证。
 
-下面是一个简单的 Node.js [express](https://expressjs.com/) 使用 REST API 颁发临时 API 密钥的服务器：
+下面是一个简单的 Node.js [express](https://expressjs.com/) 一台使用 REST API 颁发临时 API 密钥的服务器：
 
 ```javascript
 import express from "express";
@@ -559,16 +559,16 @@ app.listen(3000);
 ```
 
 
-你可以在任何能够发送和接收 HTTP 请求的平台上创建类似这样的服务端端点。只需确保 **仅在服务端使用标准的 OpenAI API 密钥，而不是在浏览器中。**
+你可以在任何可以发送和接收 HTTP 请求的平台上创建这样的服务端端点。只需确保 **只在服务端使用标准的 OpenAI API 密钥，而不要在浏览器中使用。**
 
-使用临时令牌时，在创建客户端密钥的 `OpenAI-Safety-Identifier` 服务端
-请求中设置。Realtime API 会将该标识符绑定到
-生成的临时令牌，因此浏览器在使用该令牌后续连接时无需发送安全
+使用临时令牌时，设置 `OpenAI-Safety-Identifier` on the 服务端
+创建客户端密钥的请求。Realtime API 将该标识符绑定到
+生成的临时令牌，因此浏览器稍后使用该令牌连接时无需发送安全
 标识符。
 
-#### 连接到服务器
+#### 连接到服务端
 
-在浏览器中，你可以使用标准的 WebRTC API 通过临时令牌连接到 Realtime API。客户端首先从你的服务端端点获取一个令牌，然后将其 SDP 数据（连同临时令牌）通过 POST 发送到 Realtime API。
+在浏览器中，你可以使用标准 WebRTC API 通过临时令牌连接到 Realtime API。客户端首先从你的服务端端点获取一个令牌，然后将其 SDP 数据（连同临时令牌）POST 到 Realtime API。
 
 ```javascript
 // Get a session token for OpenAI Realtime API
@@ -614,13 +614,19 @@ await pc.setRemoteDescription(answer);
 ```
 
 
+## 使用 WARP 降低连接延迟
+
+WebRTC 简化往返协议（WARP）可以缩短启动 Realtime API 语音会话所需的时间。你可以单独启用其各项优化，也可以将它们组合使用以获得完整的 WARP 握手流程。
+
+请参阅 [通过 WARP 使用 WebRTC](https://developers.openai.com/api/docs/guides/realtime-webrtc-warp) ，了解原生客户端的配置、浏览器支持、Origin Trial 接入说明以及统一的连接流程。
+
 ## 发送和接收事件
 
-Realtime API 会话通过组合使用 [客户端发送事件](https://developers.openai.com/api/reference/resources/realtime/client-events#session.update) （由作为开发者的你发出）和 [服务端发送事件](https://developers.openai.com/api/reference/resources/realtime/server-events#error) 进行管理，由 Realtime API 生成以指示会话生命周期事件。
+Realtime API 会话通过以下组合进行管理： [客户端发送事件](https://developers.openai.com/api/reference/resources/realtime/client-events#session.update) （由你作为开发者发出），以及 [服务端发送事件](https://developers.openai.com/api/reference/resources/realtime/server-events#error) 由 Realtime API 创建，用于表示会话生命周期事件。
 
-通过 WebRTC 连接到 Realtime 模型时，你无需像使用 [WebSockets](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime)。那样以同等粒度处理来自模型的音频事件。如果按上述方式配置，WebRTC 对等连接对象将为你完成所有这些工作。
+当通过 WebRTC 连接到 Realtime 模型时，你无需像使用 [WebSockets](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime)。那样以同等细粒度处理来自模型的音频事件。如果按上述方式配置，WebRTC 对等连接对象会为你完成所有这些工作。
 
-若要发送和接收其他客户端和服务端事件，你可以使用 WebRTC 对等连接的 [数据通道](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Using_data_channels).
+要发送和接收其他客户端与服务端事件，你可以使用 WebRTC 对等连接的 [数据通道](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Using_data_channels).
 
 ```javascript
 // This is the data channel set up in the browser code above...
@@ -650,9 +656,9 @@ dc.send(JSON.stringify(event));
 ```
 
 
-要详细了解如何管理 Realtime 对话，请参阅 [Realtime 对话指南](https://developers.openai.com/api/docs/guides/realtime-conversations).
+要详细了解如何管理 Realtime 会话，请参阅 [Realtime 会话指南](https://developers.openai.com/api/docs/guides/realtime-conversations).
 
-[Realtime 控制台
+[Realtime Console
 
 
 

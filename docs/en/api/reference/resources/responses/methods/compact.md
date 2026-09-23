@@ -10,15 +10,19 @@ Learn when and how to compact long-running conversations in the [conversation st
 
 ### Body Parameters
 
-- `model: "gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 101 more or string or null`
+- `model: "gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 105 more or string or null`
 
   Model ID used to generate the response, like `gpt-6-astra`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/api/docs/models) to browse and compare available models.
 
-  - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 101 more`
+  - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 105 more`
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/api/docs/models) to browse and compare available models.
 
     - `"gpt-6-astra"`
+
+    - `"gpt-6-sol"`
+
+    - `"gpt-6-luna"`
 
     - `"gpt-5.6-sol"`
 
@@ -57,6 +61,8 @@ Learn when and how to compact long-running conversations in the [conversation st
     - `"gpt-5.1-2025-11-13"`
 
     - `"gpt-5.1-codex"`
+
+    - `"gpt-5.1-mini"`
 
     - `"gpt-5.1-chat-latest"`
 
@@ -225,6 +231,8 @@ Learn when and how to compact long-running conversations in the [conversation st
     - `"gpt-daybreak-red-latest"`
 
     - `"gpt-5.6-cyber"`
+
+    - `"gpt-rosalind-research"`
 
   - `string`
 

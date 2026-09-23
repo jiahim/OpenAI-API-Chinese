@@ -4461,9 +4461,13 @@ the `background` parameter set to `true` can be cancelled.
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 82 more`
+    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6-sol"`
+
+      - `"gpt-6-luna"`
 
       - `"gpt-5.6-sol"`
 
@@ -4502,6 +4506,8 @@ the `background` parameter set to `true` can be cancelled.
       - `"gpt-5.1-2025-11-13"`
 
       - `"gpt-5.1-codex"`
+
+      - `"gpt-5.1-mini"`
 
       - `"gpt-5.1-chat-latest"`
 
@@ -4633,7 +4639,7 @@ the `background` parameter set to `true` can be cancelled.
 
       - `"gpt-3.5-turbo-16k-0613"`
 
-    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 16 more`
+    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 17 more`
 
       - `"o1-pro"`
 
@@ -4672,6 +4678,8 @@ the `background` parameter set to `true` can be cancelled.
       - `"gpt-daybreak-red-latest"`
 
       - `"gpt-5.6-cyber"`
+
+      - `"gpt-rosalind-research"`
 
   - `object: "response"`
 

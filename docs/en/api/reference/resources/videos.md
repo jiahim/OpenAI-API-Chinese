@@ -94,6 +94,10 @@ Create a new video generation job from a prompt and optional reference assets.
 
       A human-readable description of the error that was returned.
 
+    - `headers: optional map[string]`
+
+      The Retry-After and Retry-After-Ms headers returned with the original error, if any.
+
     - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
       - `detailed_explanation: optional string`
@@ -215,6 +219,9 @@ curl https://api.openai.com/v1/videos \
   "error": {
     "code": "code",
     "message": "message",
+    "headers": {
+      "foo": "string"
+    },
     "misalignment": {
       "detailed_explanation": "detailed_explanation",
       "error_type": "potentially_unintended_data_transfer",
@@ -425,6 +432,10 @@ Create a new video generation job by editing a source video or existing generate
 
       A human-readable description of the error that was returned.
 
+    - `headers: optional map[string]`
+
+      The Retry-After and Retry-After-Ms headers returned with the original error, if any.
+
     - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
       - `detailed_explanation: optional string`
@@ -549,6 +560,9 @@ curl https://api.openai.com/v1/videos/edits \
   "error": {
     "code": "code",
     "message": "message",
+    "headers": {
+      "foo": "string"
+    },
     "misalignment": {
       "detailed_explanation": "detailed_explanation",
       "error_type": "potentially_unintended_data_transfer",
@@ -628,6 +642,10 @@ Create an extension of a completed video.
     - `message: string`
 
       A human-readable description of the error that was returned.
+
+    - `headers: optional map[string]`
+
+      The Retry-After and Retry-After-Ms headers returned with the original error, if any.
 
     - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
@@ -754,6 +772,9 @@ curl https://api.openai.com/v1/videos/extensions \
   "error": {
     "code": "code",
     "message": "message",
+    "headers": {
+      "foo": "string"
+    },
     "misalignment": {
       "detailed_explanation": "detailed_explanation",
       "error_type": "potentially_unintended_data_transfer",
@@ -868,6 +889,10 @@ List recently generated videos for the current project.
     - `message: string`
 
       A human-readable description of the error that was returned.
+
+    - `headers: optional map[string]`
+
+      The Retry-After and Retry-After-Ms headers returned with the original error, if any.
 
     - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
@@ -1006,6 +1031,9 @@ curl https://api.openai.com/v1/videos \
       "error": {
         "code": "code",
         "message": "message",
+        "headers": {
+          "foo": "string"
+        },
         "misalignment": {
           "detailed_explanation": "detailed_explanation",
           "error_type": "potentially_unintended_data_transfer",
@@ -1100,6 +1128,10 @@ Create a remix of a completed video using a refreshed prompt.
     - `message: string`
 
       A human-readable description of the error that was returned.
+
+    - `headers: optional map[string]`
+
+      The Retry-After and Retry-After-Ms headers returned with the original error, if any.
 
     - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
@@ -1222,6 +1254,9 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID/remix \
   "error": {
     "code": "code",
     "message": "message",
+    "headers": {
+      "foo": "string"
+    },
     "misalignment": {
       "detailed_explanation": "detailed_explanation",
       "error_type": "potentially_unintended_data_transfer",
@@ -1308,6 +1343,10 @@ Fetch the latest metadata for a generated video.
     - `message: string`
 
       A human-readable description of the error that was returned.
+
+    - `headers: optional map[string]`
+
+      The Retry-After and Retry-After-Ms headers returned with the original error, if any.
 
     - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
@@ -1426,6 +1465,9 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
   "error": {
     "code": "code",
     "message": "message",
+    "headers": {
+      "foo": "string"
+    },
     "misalignment": {
       "detailed_explanation": "detailed_explanation",
       "error_type": "potentially_unintended_data_transfer",
@@ -1487,6 +1529,10 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
     - `message: string`
 
       A human-readable description of the error that was returned.
+
+    - `headers: optional map[string]`
+
+      The Retry-After and Retry-After-Ms headers returned with the original error, if any.
 
     - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
@@ -1606,7 +1652,7 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
 
 ### Video Create Error
 
-- `VideoCreateError object { code, message, misalignment }`
+- `VideoCreateError object { code, message, headers, misalignment }`
 
   An error that occurred while generating the response.
 
@@ -1617,6 +1663,10 @@ curl https://api.openai.com/v1/videos/$VIDEO_ID \
   - `message: string`
 
     A human-readable description of the error that was returned.
+
+  - `headers: optional map[string]`
+
+    The Retry-After and Retry-After-Ms headers returned with the original error, if any.
 
   - `misalignment: optional object { detailed_explanation, error_type, steer }`
 

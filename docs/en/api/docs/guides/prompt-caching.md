@@ -284,7 +284,7 @@ In multi-turn applications, reusing the growing conversation history can save mo
 
 - **Keep the prefix stable.** Put stable developer instructions and shared reference material first. If developer instructions or shared material contain timestamps, user-specific content, or other dynamic content, place those at the end rather than the beginning, or move them into later conversation messages.
 - **Preserve conversation history.** Append new messages rather than rewriting earlier turns. Summarization, [compaction](#compaction-can-reduce-cache-reuse), or context truncation can change the prefix and reset cache reuse.
-- **Change reasoning effort without rewriting the prefix.** On GPT-6 Astra, append a `configuration_update` input item to change reasoning effort between responses while keeping request-level `reasoning.effort` unchanged. This preserves the original prefix for cache reuse. See [Change reasoning mid-conversation](https://developers.openai.com/api/docs/guides/reasoning#change-reasoning-mid-conversation) for examples and compatibility limits.
+- **Change reasoning effort without rewriting the prefix.** On GPT-6 models, append a `configuration_update` input item to change reasoning effort between responses while keeping request-level `reasoning.effort` unchanged. This preserves the original prefix for cache reuse. See [Change reasoning mid-conversation](https://developers.openai.com/api/docs/guides/reasoning#change-reasoning-mid-conversation) for examples and compatibility limits.
 
 Keep changing content after the breakpoint
 
@@ -394,6 +394,63 @@ On GPT-5.6 and later, two controls determine where cache breakpoints are placed:
 > Illustration: In explicit-only mode, tools and schemas precede a stable developer-message prefix and breakpoint 1. One branch adds a variable developer suffix and more conversation turns before breakpoint 2, then splits into new user inputs. Another branch has an unselected variable suffix. Content after each branch's last selected breakpoint is charged at the uncached input rate without a cache-write charge.
 
 
+
+
+
+
+
+
+
+<a id="prewarm-the-cache"></a>
+
+
+
+### Prewarm the cache
+
+
+
+For GPT-5.6 and later, prepare known context ahead of time to reduce time to first token on a subsequent request. For example, an interactive application can prewarm shared instructions, tool definitions, or reference material during startup, before the user asks their first question.
+
+Set [`prompt_cache_options.prewarm`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20prompt_cache_options%20%3E%20%28schema%29%20%3E%20%28property%29%20prewarm) to `true` in a Responses API request to prepare the prompt cache without generating output. Once it completes, send your actual request with the same prompt prefix and `prewarm` omitted or set to `false`.
+
+Prewarm the cache
+
+```json
+{
+  "model": "gpt-5.6",
+  "input": [
+    {
+      "role": "developer",
+      "content": "Your app's shared instructions and reference material..."
+    }
+  ],
+  "prompt_cache_options": {
+    "prewarm": true
+  }
+}
+```
+
+
+Send a follow-up request
+
+```json
+{
+  "model": "gpt-5.6",
+  "input": [
+    {
+      "role": "developer",
+      "content": "Your app's shared instructions and reference material..."
+    },
+    {
+      "role": "user",
+      "content": "The user's question..."
+    }
+  ]
+}
+```
+
+
+Note: Tokens written to the cache during a prewarm request are billed at the standard cache-write rate.
 
 
 

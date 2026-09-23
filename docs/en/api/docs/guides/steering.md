@@ -4,9 +4,9 @@
 
 Mid-turn steering lets users add requirements or change direction without waiting for a response to finish.
 
-Mid-turn steering is available with GPT-6 Astra (`gpt-6-astra`) over a
-  WebSocket connection to the Responses API. GPT-5.6 and earlier models do not
-  support steering.
+Mid-turn steering is available with the GPT-6 model family over a WebSocket
+  connection to the Responses API. GPT-5.6 and earlier models do not support
+  steering.
 
 Steering does not rewrite output already sent to your application, undo earlier actions, or cancel tools that have already started.
 

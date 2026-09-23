@@ -15,11 +15,12 @@ and project, model, and product surface. Daybreak Red requires separate
 approval and provisioning; applying, verifying an identity, or receiving
 Daybreak Blue access doesn't grant specialist-model access.
 
-For approved API projects, `gpt-daybreak-blue-latest` resolves to `gpt-5.6-sol`,
-and `gpt-daybreak-red-latest` resolves to `gpt-5.6-cyber`. Use the Daybreak
-alias or, if your project has the required approval, the corresponding
-underlying model ID. Access and model behavior depend on the approved
-organization and project; the model ID alone doesn't grant access.
+For approved API projects, use a Daybreak alias or a compatible underlying
+model ID. Alias resolution can change and depends on your approved access.
+See [Use Daybreak in the Responses API](https://developers.openai.com/api/docs/guides/daybreak) to choose a
+model and `access_programs.cyber` value, understand defaults, and handle errors.
+Access and model behavior depend on the approved organization and project;
+the model ID alone doesn't grant access.
 
 Trusted Access doesn't automatically grant Zero Data Retention. Confirm any
 separately approved retention controls for the exact API organization and

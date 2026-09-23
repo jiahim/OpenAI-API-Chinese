@@ -1,0 +1,249 @@
+{
+  "id": "2026-09-22T19-39-19-000Z",
+  "generatedAt": "2026-09-22T19:39:19Z",
+  "added": [
+    {
+      "path": "docs/en/api/docs/guides/daybreak.md",
+      "route": "/api/docs/guides/daybreak",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/daybreak.md",
+      "title": "Use Daybreak in the Responses API"
+    },
+    {
+      "path": "docs/en/api/docs/guides/private-safety-processing.md",
+      "route": "/api/docs/guides/private-safety-processing",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/private-safety-processing.md",
+      "title": "ZDR with Private Safety Processing (PSP)"
+    },
+    {
+      "path": "docs/en/api/docs/guides/realtime-webrtc-warp.md",
+      "route": "/api/docs/guides/realtime-webrtc-warp",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/realtime-webrtc-warp.md",
+      "title": "WebRTC with WARP"
+    }
+  ],
+  "modified": [
+    {
+      "path": "docs/en/api/docs/changelog.md",
+      "route": "/api/docs/changelog",
+      "sourceUrl": "https://developers.openai.com/api/docs/changelog.md",
+      "title": "API changelog"
+    },
+    {
+      "path": "docs/en/api/docs/guides/async-tool-calling.md",
+      "route": "/api/docs/guides/async-tool-calling",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/async-tool-calling.md",
+      "title": "Async tool calling"
+    },
+    {
+      "path": "docs/en/api/docs/guides/batch.md",
+      "route": "/api/docs/guides/batch",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/batch.md",
+      "title": "Batch API"
+    },
+    {
+      "path": "docs/en/api/docs/guides/code-generation.md",
+      "route": "/api/docs/guides/code-generation",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/code-generation.md",
+      "title": "Code generation"
+    },
+    {
+      "path": "docs/en/api/docs/guides/fast-mode.md",
+      "route": "/api/docs/guides/fast-mode",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/fast-mode.md",
+      "title": "Fast mode"
+    },
+    {
+      "path": "docs/en/api/docs/guides/latest-model/gpt-6-astra.md",
+      "route": "/api/docs/guides/latest-model/gpt-6-astra",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/latest-model/gpt-6-astra.md",
+      "title": "Using GPT-6"
+    },
+    {
+      "path": "docs/en/api/docs/guides/model-selection.md",
+      "route": "/api/docs/guides/model-selection",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/model-selection.md",
+      "title": "Model selection"
+    },
+    {
+      "path": "docs/en/api/docs/guides/prompt-caching.md",
+      "route": "/api/docs/guides/prompt-caching",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/prompt-caching.md",
+      "title": "Prompt caching"
+    },
+    {
+      "path": "docs/en/api/docs/guides/realtime-transcription.md",
+      "route": "/api/docs/guides/realtime-transcription",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/realtime-transcription.md",
+      "title": "Realtime transcription"
+    },
+    {
+      "path": "docs/en/api/docs/guides/realtime-vad.md",
+      "route": "/api/docs/guides/realtime-vad",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/realtime-vad.md",
+      "title": "Voice activity detection (VAD)"
+    },
+    {
+      "path": "docs/en/api/docs/guides/reasoning.md",
+      "route": "/api/docs/guides/reasoning",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/reasoning.md",
+      "title": "Reasoning models"
+    },
+    {
+      "path": "docs/en/api/docs/guides/safety-checks/cybersecurity.md",
+      "route": "/api/docs/guides/safety-checks/cybersecurity",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/safety-checks/cybersecurity.md",
+      "title": "Cybersecurity checks"
+    },
+    {
+      "path": "docs/en/api/docs/guides/safety-checks/misalignment-monitoring.md",
+      "route": "/api/docs/guides/safety-checks/misalignment-monitoring",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring.md",
+      "title": "Misalignment monitoring"
+    },
+    {
+      "path": "docs/en/api/docs/guides/steering.md",
+      "route": "/api/docs/guides/steering",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/steering.md",
+      "title": "Mid-turn steering"
+    },
+    {
+      "path": "docs/en/api/docs/guides/voice-webrtc.md",
+      "route": "/api/docs/guides/voice-webrtc",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/voice-webrtc.md",
+      "title": "WebRTC"
+    },
+    {
+      "path": "docs/en/api/docs/guides/your-data.md",
+      "route": "/api/docs/guides/your-data",
+      "sourceUrl": "https://developers.openai.com/api/docs/guides/your-data.md",
+      "title": "Data controls in the OpenAI platform"
+    },
+    {
+      "path": "docs/en/api/docs/libraries.md",
+      "route": "/api/docs/libraries",
+      "sourceUrl": "https://developers.openai.com/api/docs/libraries.md",
+      "title": "SDKs and CLI"
+    },
+    {
+      "path": "docs/en/api/docs/models.md",
+      "route": "/api/docs/models",
+      "sourceUrl": "https://developers.openai.com/api/docs/models.md",
+      "title": "Models"
+    },
+    {
+      "path": "docs/en/api/docs/models/all.md",
+      "route": "/api/docs/models/all",
+      "sourceUrl": "https://developers.openai.com/api/docs/models/all.md",
+      "title": "All models"
+    },
+    {
+      "path": "docs/en/api/docs/models/compare.md",
+      "route": "/api/docs/models/compare",
+      "sourceUrl": "https://developers.openai.com/api/docs/models/compare.md",
+      "title": "Compare models"
+    },
+    {
+      "path": "docs/en/api/docs/pricing.md",
+      "route": "/api/docs/pricing",
+      "sourceUrl": "https://developers.openai.com/api/docs/pricing.md",
+      "title": "Pricing"
+    },
+    {
+      "path": "docs/en/api/docs/quickstart.md",
+      "route": "/api/docs/quickstart",
+      "sourceUrl": "https://developers.openai.com/api/docs/quickstart.md",
+      "title": "Developer quickstart"
+    },
+    {
+      "path": "docs/en/api/reference/resources/beta/subresources/agents/streaming-events.md",
+      "route": "/api/reference/resources/beta/subresources/agents/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/agents/streaming-events.md",
+      "title": "Agents streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/beta/subresources/responses/streaming-events.md",
+      "route": "/api/reference/resources/beta/subresources/responses/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/responses/streaming-events.md",
+      "title": "Beta Responses streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/beta/subresources/responses/websocket-events.md",
+      "route": "/api/reference/resources/beta/subresources/responses/websocket-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/responses/websocket-events.md",
+      "title": "Beta Responses WebSocket events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/chat.md",
+      "route": "/api/reference/resources/chat",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/chat.md",
+      "title": "Chat"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses.md",
+      "route": "/api/reference/resources/responses",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses.md",
+      "title": "Responses"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/cancel.md",
+      "route": "/api/reference/resources/responses/methods/cancel",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/cancel.md",
+      "title": "Responses — Cancel"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/compact.md",
+      "route": "/api/reference/resources/responses/methods/compact",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/compact.md",
+      "title": "Responses — Compact"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/create.md",
+      "route": "/api/reference/resources/responses/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/create.md",
+      "title": "Responses — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/methods/retrieve.md",
+      "route": "/api/reference/resources/responses/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/methods/retrieve.md",
+      "title": "Responses — Retrieve"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/streaming-events.md",
+      "route": "/api/reference/resources/responses/streaming-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/streaming-events.md",
+      "title": "Responses streaming events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/responses/websocket-events.md",
+      "route": "/api/reference/resources/responses/websocket-events",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/responses/websocket-events.md",
+      "title": "Responses WebSocket events"
+    },
+    {
+      "path": "docs/en/api/reference/resources/videos.md",
+      "route": "/api/reference/resources/videos",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/videos.md",
+      "title": "Videos"
+    },
+    {
+      "path": "docs/en/api/reference/resources/videos/methods/create.md",
+      "route": "/api/reference/resources/videos/methods/create",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/videos/methods/create.md",
+      "title": "Videos — Create"
+    },
+    {
+      "path": "docs/en/api/reference/resources/videos/methods/list.md",
+      "route": "/api/reference/resources/videos/methods/list",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/videos/methods/list.md",
+      "title": "Videos — List"
+    },
+    {
+      "path": "docs/en/api/reference/resources/videos/methods/retrieve.md",
+      "route": "/api/reference/resources/videos/methods/retrieve",
+      "sourceUrl": "https://developers.openai.com/api/reference/resources/videos/methods/retrieve.md",
+      "title": "Videos — Retrieve"
+    }
+  ],
+  "removed": []
+}

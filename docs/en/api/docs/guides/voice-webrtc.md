@@ -392,7 +392,7 @@ For more guidance on building user interfaces on top of WebRTC, [refer to the do
 
 ## Overview
 
-The Realtime API supports two mechanisms for connecting to the Realtime API from the browser, either using ephemeral API keys ([generated via the OpenAI REST API](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets)), or via the new unified interface. Generally, using the unified interface is simpler, but puts your application server in the critical path for session initialization.
+The Realtime API supports two mechanisms for connecting from the browser: the unified interface and ephemeral API keys ([generated via the OpenAI REST API](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets)). Use the unified interface for simpler setup and faster connections. This approach puts your application server in the critical path for session initialization.
 
 ### Connecting using the unified interface
 
@@ -613,6 +613,12 @@ const answer = {
 await pc.setRemoteDescription(answer);
 ```
 
+
+## Reduce connection latency with WARP
+
+WebRTC Abridged Roundtrip Protocol (WARP) reduces the time it takes to start a Realtime API voice session. You can enable its optimizations individually or combine them for the full WARP handshake.
+
+See [WebRTC with WARP](https://developers.openai.com/api/docs/guides/realtime-webrtc-warp) for native client setup, browser support, origin-trial instructions, and the unified connection flow.
 
 ## Sending and receiving events
 

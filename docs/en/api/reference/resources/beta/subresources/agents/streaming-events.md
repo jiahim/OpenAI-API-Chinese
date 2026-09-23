@@ -143,7 +143,12 @@ Schema name: `SessionEventAgentSessionEnvironmentReset`
 
 ```json
 {
-  "type": "agent.session.environment.reset"
+  "type": "agent.session.environment.reset",
+  "event_id": "event_id",
+  "session_id": "session_id",
+  "turn_id": "turn_id",
+  "environment_id": "environment_id",
+  "reset_count": 0
 }
 ```
 

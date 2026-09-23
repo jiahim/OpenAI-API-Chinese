@@ -1,4 +1,4 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 后追加 `.md` 即可获取该页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取文档页面的 Markdown 版本。
 
 ## 列出视频
 
@@ -24,11 +24,11 @@
 
   - `"desc"`
 
-### 返回值
+### 返回
 
 - `data: array of Video`
 
-  条目列表
+  一个项的列表
 
   - `id: string`
 
@@ -44,7 +44,7 @@
 
   - `error: VideoCreateError or null`
 
-    用于说明生成失败原因的错误负载（如果适用）。
+    解释生成失败原因的错误负载（如果适用）。
 
     - `code: string`
 
@@ -52,23 +52,27 @@
 
     - `message: string`
 
-      返回错误的人类可读描述。
+      返回的错误的人类可读描述。
+
+    - `headers: optional map[string]`
+
+      随原始错误一同返回的 Retry-After 和 Retry-After-Ms 响应头（如果有）。
 
     - `misalignment: optional object { detailed_explanation, error_type, steer }`
 
       - `detailed_explanation: optional string`
 
-        该屏蔽的公开说明。
+        本次封禁的公开说明。
 
       - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-        可选的分类；客户端必须接受额外的值。
+        可选的分类；客户端必须能够接受额外的取值。
 
         - `string`
 
         - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-          可选的分类；客户端必须接受额外的值。
+          可选的分类；客户端必须能够接受额外的取值。
 
           - `"potentially_unintended_data_transfer"`
 
@@ -88,11 +92,11 @@
 
   - `expires_at: number or null`
 
-    可下载资源到期时的 Unix 时间戳（秒），如果已设置。
+    可下载资源过期时的 Unix 时间戳（秒），如果已设置。
 
   - `model: VideoModel`
 
-    生成该任务的视频生成模型。
+    生成该任务所用的视频生成模型。
 
     - `string`
 
@@ -120,15 +124,15 @@
 
   - `prompt: string or null`
 
-    用于生成视频的提示词。
+    用于生成该视频的提示词。
 
   - `remixed_from_video_id: string or null`
 
-    如果该视频是二次创作（remix），则为源视频的标识符。
+    如果该视频是混剪作品，则为源视频的标识符。
 
   - `seconds: string`
 
-    生成片段的时长（秒）。对于扩展，这是拼接后的总时长。
+    生成片段的时长（秒）。对于扩展视频，这是拼接后的总时长。
 
   - `size: VideoSize`
 
@@ -160,7 +164,7 @@
 
 - `has_more: boolean`
 
-  是否还有更多项可用。
+  是否还有更多可用的项。
 
 - `last_id: string or null`
 
@@ -179,7 +183,7 @@ curl https://api.openai.com/v1/videos \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -191,6 +195,9 @@ curl https://api.openai.com/v1/videos \
       "error": {
         "code": "code",
         "message": "message",
+        "headers": {
+          "foo": "string"
+        },
         "misalignment": {
           "detailed_explanation": "detailed_explanation",
           "error_type": "potentially_unintended_data_transfer",
@@ -224,7 +231,7 @@ curl https://api.openai.com/v1/videos \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {

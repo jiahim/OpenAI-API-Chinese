@@ -1,14 +1,14 @@
-# Realtime 转写
+# Realtime transcription
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾附加 `.md` 即可获取文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-当你的应用需要从麦克风、通话或其他实时音频流中获取文本，并且不需要语音助手回复时，可使用实时转写。推荐模型会在语音到达时返回转写片段，并在每次提交音频轮次时返回最终转写文本。
+当你的应用需要从麦克风、通话或其他实时音频流中获取文本，且不需要语音助手回应时，请使用实时转写。推荐模型会在语音到达时返回转写片段，并在你的应用提交每个音频回合时返回最终转写文本。
 
-从 [`gpt-live-transcribe`](https://developers.openai.com/api/docs/models/gpt-live-transcribe)。使用 [文件转写](https://developers.openai.com/api/docs/guides/speech-to-text) （如果你的音频已经录制完成），或参阅 [转写概述](https://developers.openai.com/api/docs/guides/transcription) 以比较各个工作流。
+从 [`gpt-live-transcribe`](https://developers.openai.com/api/docs/models/gpt-live-transcribe)。开始。使用 [文件转写](https://developers.openai.com/api/docs/guides/speech-to-text) （如果你的音频已经录制好），或者参考 [转写概述](https://developers.openai.com/api/docs/guides/transcription) 以比较各工作流。
 
-## 创建一个转写会话
+## 创建转录会话
 
-创建一个会话，选择 `type: "transcription"` 并选择 `gpt-live-transcribe`。通过 [WebSocket](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime) 用于 服务端 音频管线，或 [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime) 用于浏览器音频。
+使用以下方式创建会话 `type: "transcription"` 并选择 `gpt-live-transcribe`。通过 [WebSocket](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime) 连接，适用于服务端音频管线，或 [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime) 适用于浏览器音频。
 
 ```json
 {
@@ -32,11 +32,11 @@
 ```
 
 
-此示例使用 24 kHz PCM 音频，并关闭自动轮次检测，以便你可以显式提交每一轮。完整的会话配置请参见 [Realtime 会话参考](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets).
+本示例使用 24 kHz PCM 音频。在 `gpt-live-transcribe` 转录会话中，省略 `audio.input.turn_detection` 或将其设置为 `null`。该模型不支持 `server_vad` 或 `semantic_vad`。有关完整的会话配置，请参阅 [Realtime 会话参考](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets).
 
-## 流式音频
+## Stream audio
 
-发送音频分块，可使用 `input_audio_buffer.append`:
+使用以下方式发送音频数据块 `input_audio_buffer.append`:
 
 ```javascript
 ws.send(
@@ -48,7 +48,7 @@ ws.send(
 ```
 
 
-如果关闭了自动轮次检测，请在想要结束一个音频轮次时提交缓冲区：
+发送 `input_audio_buffer.commit` 在每个音频回合结束时，以接收最终转录文本：
 
 ```javascript
 ws.send(
@@ -59,11 +59,11 @@ ws.send(
 ```
 
 
-若要让服务端检测并提交轮次边界，请改用 [语音活动检测](https://developers.openai.com/api/docs/guides/realtime-vad) 。
+使用客户端 VAD 检测语音结束，然后发送 `input_audio_buffer.commit`.
 
 ## 处理转录事件
 
-监听增量转写内容和完成事件：
+监听增量转写 delta 事件和完成事件：
 
 ```javascript
 ws.on("message", (data) => {
@@ -80,7 +80,7 @@ ws.on("message", (data) => {
 ```
 
 
-增量事件包含新近可用的转写文本：
+delta 事件包含新到达的转写文本：
 
 ```json
 {
@@ -91,7 +91,7 @@ ws.on("message", (data) => {
 }
 ```
 
-完成事件包含已提交项目的最终转写：
+完成事件包含已提交条目的最终转写文本：
 
 ```json
 {
@@ -102,11 +102,11 @@ ws.on("message", (data) => {
 }
 ```
 
-不同语音轮次之间完成事件的顺序不作保证。请使用 `item_id` 将转写事件与已提交的输入项目进行匹配。
+不同语音轮次之间的完成事件顺序无法保证。可以使用 `item_id` 将转写事件匹配到已提交的输入条目。
 
 ## 添加转录上下文
 
-当音频包含专业词汇或包含多种预期语言时添加上下文。在现有会话期间发送另一个 `session.update` 事件以更改转录配置。
+当音频中包含专业词汇或出现超过一种预期语言时，请添加上下文。发送另一个 `session.update` 事件，以在现有会话中更改转录配置。
 
 ```json
 {
@@ -134,27 +134,27 @@ ws.on("message", (data) => {
 ```
 
 
-- 使用 `prompt` 来描述录音或其场景。
-- 使用 `keywords` 用于可能出现在音频中的产品名称、缩写以及其他字面术语。
+- 使用 `prompt` 来描述录音或其设置。
+- 使用 `keywords` 用于产品名称、缩写以及其他可能出现在音频中的字面术语。
 - 使用 `languages` 用于预期的输入语言。
 
 支持的语言代码格式包括：
 
 - ISO 639-1 代码，例如 `en`, `es`，以及 `fr`.
-- 精选的 ISO 639-3 代码，例如 `eng`, `spa`, `yue`，以及 `cmn`.
-- 区域 `zh` 区域设置代码，例如 `zh-cn`, `zh-tw`，以及 `zh-hk`.
+- 选定的 ISO 639-3 代码，例如 `eng`, `spa`, `yue`，以及 `cmn`.
+- 区域 `zh` 语言环境代码，例如 `zh-cn`, `zh-tw`，以及 `zh-hk`.
 
-Realtime API 会拒绝不支持或格式错误的语言代码。
+Realtime API 会拒绝不受支持或格式错误的语言代码。
 
-关键词只是提示，并非必需的输出。每个关键词占一行，且不要包含 `<`, `>`、回车符或换行符。如果关键词包含这些字符中的任何一个，Realtime API 会拒绝该会话更新，或者 `prompt` 超过了模型的长度限制。
+关键词是提示，并非必需的输出。每个关键词单独成一行，且不要包含 `<`, `>`、回车符或换行符。如果某个关键词包含这些字符，Realtime API 会拒绝该会话更新，或者 `prompt` 超出模型的长度限制。
 
-`gpt-live-transcribe` 使用 `languages` 而不是单数的 `language` 字段。请勿同时发送两者。
+`gpt-live-transcribe` 使用 `languages` 字段而非单数形式的 `language` 字段。不要同时发送两者。
 
 ## 转写已提交的轮次
 
-仅当 `gpt-transcribe` 在 Realtime 会话中使用，并且你明确需要转录在已提交的音频轮次之后才开始，或需要输出检测到的语言时，才使用此功能。这种专用 工作流需要 WebSocket 连接。
+使用 `gpt-transcribe` 仅在需要转录在已提交的音频回合之后才开始，或需要输出检测到的语言时，才在实时会话中使用工作流。这种专门的用法需要 WebSocket 连接。
 
-当 `gpt-transcribe` 在 Realtime API 会话中执行输入转录，或在专用转录会话中运行时，会自动使用先前已转录的轮次作为上下文。
+当 `gpt-transcribe` 在 Realtime API 会话中执行输入转录，或在专用的转录会话中运行时，它会自动将较早转录的回合用作上下文。
 
 ```json
 {
@@ -178,7 +178,7 @@ Realtime API 会拒绝不支持或格式错误的语言代码。
 ```
 
 
-追加音频并发送 `input_audio_buffer.commit`. 模型随后可以在最终完成事件之前发出转录片段增量。其完成事件还包含检测到的语言：
+追加音频并发送 `input_audio_buffer.commit`。然后模型可以在最终完成事件之前发出转录增量。它的完成事件还包含检测到的语言：
 
 ```json
 {
@@ -190,42 +190,42 @@ Realtime API 会拒绝不支持或格式错误的语言代码。
 }
 ```
 
-当 `gpt-transcribe` 无法做出可靠的语言预测， `languages` 将是一个空数组。 `gpt-live-transcribe` 不会返回检测到的语言预测。
+当 `gpt-transcribe` 无法做出可靠的语言预测时， `languages` 为空数组。 `gpt-live-transcribe` 不返回检测到的语言预测。
 
-## 调整延迟与准确率
+## 调节延迟与准确率
 
-流式转录在延迟和转录质量之间进行权衡。较低的延迟设置可以更快产出部分文本。较高的延迟设置让模型在输出文本前获得更多音频上下文，从而可能改善词错误率。
+流式转录以延迟换取转录质量。较低的延迟设置会产生更早的局部文本。较高的延迟设置会让模型在输出文本前获得更多音频上下文，从而可以降低词错误率。
 
-首先设置 `audio.input.transcription.delay` 并针对你的实际音频进行测试。可参考以下起点值：
+首先设置 `audio.input.transcription.delay` 并针对你的真实音频进行测试。有用的起始点包括：
 
-- `minimal` 用于对延迟最敏感的交互；
-- `low` 用于低延迟的实时字幕；
-- `medium` 用于在延迟和准确率之间取得平衡；
+- `minimal` 用于对延迟最敏感的交互场景；
+- `low` 用于低延迟实时字幕；
+- `medium` 用于在延迟与准确率之间取得平衡；
 - `high` 当准确率比即时显示更重要时；
-- `xhigh` 当你的工作流能够容忍更多延迟以换取更多上下文时。
+- `xhigh` 当你的工作流可以容忍较大延迟以换取更多上下文时。
 
-实际的毫秒级延迟会因模型配置而异，因此应使用具有代表性的音频进行基准测试，而不是假设每个等级具有固定的时序。
+毫秒级的具体延迟会因模型配置而异，因此请使用具有代表性的音频进行基准测试，而不是假设每个级别都有固定的时序。
 
-不要仅根据合成音频来选择设置。应使用具有代表性的麦克风、电话音频、口音、背景噪声、语码转换、领域词汇以及长会话进行测试。
+不要仅凭合成音频就选择某个设置。请使用具有代表性的麦克风、电话音频、口音、背景噪声、语码切换、领域词汇以及长会话进行测试。
 
 ## 处理置信度、时间戳和说话人标签
 
-`gpt-live-transcribe` 不返回词级时间戳、说话人标签或转录置信度分数。如果你的应用需要时间戳或说话人标签，请使用兼容的 [文件转写](https://developers.openai.com/api/docs/guides/speech-to-text) 模型或在应用层添加回退方案。
+`gpt-live-transcribe` 不会返回词级时间戳、说话人标签或转录置信度分数。如果你的应用需要时间戳或说话人标签，请使用兼容的 [文件转写](https://developers.openai.com/api/docs/guides/speech-to-text) 模型或在应用层添加回退方案。
 
-## 生产环境清单
+## 上线检查清单
 
-- 在调优之前，先选定目标延迟和准确率阈值。
-- 使用真实生产环境中的音频进行测试，而不仅仅是干净的样本。
-- 测试每个目标语言。
-- 在评估集中加入数字、日期、货币、电子邮件地址、产品名和领域术语。
-- 将空、截断和延迟的转录与词错误率分开跟踪。
-- 决定当后续增量更正早期文本时，你的 UI 应如何修订部分文本。
-- 使用 `item_id` 用于排序和对齐最终转录。
-- 为不支持的时间戳、说话人标签或置信度字段保留一条回退路径。
+- 在调参之前，先确定目标延迟和准确率阈值。
+- 使用真实的生产音频进行测试，而不仅仅是干净的样本。
+- 测试每种目标语言。
+- 在评估集中加入数字、日期、货币、电子邮件地址、产品名称和领域术语。
+- 将空转写、截断转写和延迟转写与词错误率分开追踪。
+- 决定当后续增量修正早期文本时，你的 UI 应如何更新部分文本。
+- 使用 `item_id` 用于排序和对齐最终转写文本。
+- 为不支持的时间戳、说话人标签或置信度字段保留一条备用路径。
 
 ## 相关指南
 
-[实时与音频概述
+[实时与音频概览
 
 
 

@@ -54,10 +54,10 @@ The webhook contains an alert ID, rather than the alert details:
 }
 ```
 
-After verifying and acknowledging the webhook, retrieve the alert in your background processing. Replace the illustrative `salert_123` value with `data.id` from the webhook. The event's `id` identifies the webhook event rather than the alert. Use an API key authorized for the same project with the `api.safety.alerts.read` permission:
+After verifying and acknowledging the webhook, retrieve the alert in your background processing. Replace the illustrative `alert_0123456789abcdef0123456789abcdef` value with `data.id` from the webhook. The event's `id` identifies the webhook event rather than the alert. Use an API key authorized for the same project with the `api.safety.alerts.read` permission:
 
 ```bash
-curl "https://api.openai.com/v1/safety/alerts/salert_123" \
+curl "https://api.openai.com/v1/safety/alerts/alert_0123456789abcdef0123456789abcdef" \
   -H "Authorization: Bearer ${OPENAI_API_KEY}"
 ```
 
@@ -68,7 +68,7 @@ Retrieve a project safety alert
 import OpenAI from "openai";
 
 const client = new OpenAI();
-const alertId = "salert_123";
+const alertId = "alert_0123456789abcdef0123456789abcdef";
 
 const alert = await client.safety.alerts.retrieve(alertId);
 console.log(alert.error_type, alert.reason, alert.response_id);
@@ -80,7 +80,7 @@ console.log(alert.error_type, alert.reason, alert.response_id);
 from openai import OpenAI
 
 client = OpenAI()
-alert = client.safety.alerts.retrieve("salert_123")
+alert = client.safety.alerts.retrieve("alert_0123456789abcdef0123456789abcdef")
 print(alert.error_type, alert.reason)
 ```
 
@@ -97,7 +97,7 @@ import (
 
 func main() {
 	client := openai.NewClient()
-	alert, err := client.Safety.Alerts.Get(context.Background(), "salert_123")
+	alert, err := client.Safety.Alerts.Get(context.Background(), "alert_0123456789abcdef0123456789abcdef")
 	if err != nil {
 		panic(err)
 	}
@@ -111,7 +111,7 @@ func main() {
 // Replace the illustrative IDs and URLs below with your own resource values.
 import com.openai.models.safety.alerts.SafetyAlert;
 
-SafetyAlert alert = client.safety().alerts().retrieve("salert_123");
+SafetyAlert alert = client.safety().alerts().retrieve("alert_0123456789abcdef0123456789abcdef");
 System.out.println(alert.errorType());
 alert.reason().ifPresent(System.out::println);
 System.out.println(alert.requestPaused());
@@ -122,7 +122,7 @@ System.out.println(alert.requestPaused());
 require "openai"
 
 client = OpenAI::Client.new
-alert = client.safety.alerts.retrieve("salert_123")
+alert = client.safety.alerts.retrieve("alert_0123456789abcdef0123456789abcdef")
 puts(alert.error_type)
 puts(alert.reason)
 puts(alert.request_paused)
