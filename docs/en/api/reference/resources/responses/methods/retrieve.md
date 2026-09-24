@@ -9925,6 +9925,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 {
   "id": "resp_67cb71b351908190a308f3859487620d06981a8637e6bc44",
   "object": "response",
+  "access_programs": null,
   "created_at": 1741386163,
   "status": "completed",
   "completed_at": 1741386164,

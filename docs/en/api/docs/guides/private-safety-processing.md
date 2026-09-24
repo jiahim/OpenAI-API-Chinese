@@ -1,10 +1,10 @@
-# ZDR with Private Safety Processing (PSP)
+# ZDR with Private Safety Processing
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
 li+li]:mt-2! [&_ul>li>p]:my-0! [&_#built-with-three-principles+ol>li+li]:mt-2! [&_#check-storage-status]:mt-0!">
 
-ZDR with PSP enables offline, automated safety review without OpenAI retaining customer prompts or responses. This guide provides an overview of how ZDR with PSP works and your operating responsibilities. For the full architecture and security model, see the [Private Safety Processing technical white paper](https://openaiassets.blob.core.windows.net/$web/pdf/c7284810-2252-462f-803e-075b0c95bccb/psp-whitepaper.pdf).
+Zero Data Retention with Private Safety Processing (ZDR with PSP) enables offline, automated safety review without OpenAI retaining customer prompts or responses. This guide provides an overview of how ZDR with PSP works and your operating responsibilities. For the full architecture and security model, see the [Private Safety Processing technical white paper](https://openaiassets.blob.core.windows.net/$web/pdf/c7284810-2252-462f-803e-075b0c95bccb/psp-whitepaper.pdf).
 
 ## Built with Three Principles
 
@@ -99,9 +99,11 @@ We recommend enabling EKM for this additional control. See the [EKM technical FA
 
 Connect your own AWS S3 bucket or Azure Blob container to an OpenAI project. Follow the setup steps for your cloud, then register and validate the connection.
 
+ZDR with PSP is enabled per project. Once enabled, the PSP policy applies to all API traffic in that project, including requests to models that do not otherwise require PSP. To use ZDR without PSP for eligible models, send those requests through a separate project configured for ZDR without PSP.
+
 ### Before you start
 
-- Ask your OpenAI contact to approve your organization.
+- Organizations already approved for Zero Data Retention can set up ZDR with PSP directly in the API console. If your organization isn't approved for ZDR, see the [eligibility and approval requirements](https://developers.openai.com/api/docs/guides/your-data#data-retention-controls-for-abuse-monitoring).
 - Choose a storage region that matches your project's data residency. You need permission to create storage and delegate access in your cloud account.
 - Have an organization administrator register and validate storage in the API console. For the Management API, use an OpenAI organization Admin API key. Project administrators can view guidance and status; a project inference key won't work for the Management API calls.
 
@@ -471,9 +473,11 @@ If storage or validation issues persist after troubleshooting, [contact OpenAI S
 
 ### Change or stop your setup
 
-Contact support before replacing storage, revoking access, or offboarding. Complete setup and validation for each new project and residency location.
+To disconnect storage, open **Project Settings > Data retention**. Under **External storage**, select the trash icon beside the connection, then confirm with **Disconnect storage**.
 
-Deleting a storage registration doesn't delete cloud objects or complete offboarding.
+If the project uses ZDR with PSP, disconnecting its last storage connection automatically resets its retention policy to your organization's default. If other connections remain, the policy stays unchanged. Models that require ZDR with PSP may become unavailable when the policy changes.
+
+Disconnecting storage doesn't delete your cloud storage or its contents. Continue to meet the retention requirements for existing records. Complete setup and validation for each new project and residency location.
 
 
 

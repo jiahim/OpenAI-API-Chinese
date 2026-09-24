@@ -487,8 +487,8 @@ Fine-tuning jobs take some time to complete, and RFT jobs tend to take longer th
 
 For reinforcement fine-tuning jobs, the primary metrics are the per-step **reward** metrics. These metrics indicate how well your model is performing on the training data. They're calculated by the graders you defined in your job configuration. These are two separate top-level reward metrics:
 
-- `train_reward_mean`: The average reward across the samples taken from all datapoints in the current step. Because the specific datapoints in a batch change with each step, `train_reward_mean` values across different steps are not directly comparable and the specific values can fluctuate drastically from step to step.
-- `valid_reward_mean`: The average reward across the samples taken from all datapoints in the validation set, which is a more stable metric.
+- `train_reward_mean`: The average reward across the samples taken from all data points in the current step. Because the specific data points in a batch change with each step, `train_reward_mean` values across different steps are not directly comparable and the specific values can fluctuate drastically from step to step.
+- `valid_reward_mean`: The average reward across the samples taken from all data points in the validation set, which is a more stable metric.
 
 ![Reward Metric Graph](https://cdn.openai.com/API/images/guides/RFT_Reward_Chart.png)
 
@@ -878,7 +878,7 @@ As validation steps are performed, the input prompts, model samples, grader outp
 
 You can find the eval associated with your fine-tuning job by viewing your job on the fine-tuning dashboard, or by finding the `eval_id` field on the [fine-tuning job object](https://developers.openai.com/api/reference/resources/fine_tuning).
 
-The evals product is useful for inspecting the outputs of the model on specific datapoints, to get an understanding for how the model is behaving in different scenarios. It can help you figure out which slice of your dataset the model is performing poorly on which can help you identify areas for improvement in your training data.
+The evals product is useful for inspecting the outputs of the model on specific data points, to get an understanding for how the model is behaving in different scenarios. It can help you figure out which slice of your dataset the model is performing poorly on which can help you identify areas for improvement in your training data.
 
 The evals product can also help you find areas of improvement for your graders by finding areas where the grader is either overly lenient or overly harsh on the model outputs.
 
@@ -892,7 +892,7 @@ If you wish to continue the training process for a paused job, you can do so by 
 
 If you are training your model to [perform tool calls](https://developers.openai.com/api/docs/guides/function-calling), you will need to:
 
-1. Provide the set of tools available for your model to call on each datapoint in the RFT training dataset. More info here in the [dataset API reference](https://developers.openai.com/api/reference/resources/fine_tuning).
+1. Provide the set of tools available for your model to call on each data point in the RFT training dataset. More info here in the [dataset API reference](https://developers.openai.com/api/reference/resources/fine_tuning).
 2. Configure your grader to assign rewards based on the contents of the tool calls made by the model. Information on grading tools calls can be found [here in the grading docs](https://developers.openai.com/api/docs/guides/graders/#sample-namespace)
 
 ### Billing details
@@ -903,7 +903,7 @@ Details on exactly how we bill for reinforcement fine-tuning jobs can be found i
 
 ### Training errors
 
-Reinforcement fine-tuning is a complex process with many moving parts, and there are many places where things can go wrong. We publish various error metrics to help you understand what is going wrong in your job, and how to fix it. In general, we try to avoid failing a job entirely unless a very serious error occurs. When errors do occur, they often happen during the grading step. Errors during grading often happen either to the model outputting a sample that the grader doesn't know how to handle, the grader failing to execute properly due to some sort of system error, or due to a bug in the grading logic itself.
+Reinforcement fine-tuning is a complex process with many moving parts, and there are many places where things can go wrong. We publish various error metrics to help you understand what is going wrong in your job, and how to fix it. In general, we try to avoid failing a job entirely unless a particularly serious error occurs. When errors do occur, they often happen during the grading step. Errors during grading often happen either to the model outputting a sample that the grader doesn't know how to handle, the grader failing to execute properly due to some sort of system error, or due to a bug in the grading logic itself.
 
 The error metrics are available under the `event.data.errors` object, and are aggregated into counts and rates rolled up per-grader. We also display rates and counts of errors on the fine-tuning dashboard.
 
@@ -918,7 +918,7 @@ The error metrics are available under the `event.data.errors` object, and are ag
 The grader errors are broken down into the following categories, and they exist in both `train_` (for training data) and `valid_` (for validation data) versions:
 
 - `sample_parse_error_mean`: The average number of samples that failed to parse correctly. This often happens when the model fails to output valid JSON or adhere to a provided response format correctly. A small percentage of these errors, especially early in the training process, is normal. If you see a large number of these errors, it is likely that the response format of the model is not configured correctly or that your graders are misconfigured and looking for incorrect fields.
-- `invalid_variable_error_mean`: These errors occur when you attempt to reference a variable via a template that cannot be found either in the current datapoint or in the current model sample. This can happen if the model fails to provide output in the correct response format, or if your grader is misconfigured.
+- `invalid_variable_error_mean`: These errors occur when you attempt to reference a variable via a template that cannot be found either in the current data point or in the current model sample. This can happen if the model fails to provide output in the correct response format, or if your grader is misconfigured.
 - `other_error_mean`: This is a catch-all for any other errors that occur during grading. These errors are often caused by bugs in the grading logic itself, or by system errors that occur during grading.
 
 #### Python grading errors

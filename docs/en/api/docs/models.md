@@ -112,8 +112,6 @@ See [how OpenAI uses your data](/api/docs/guides/your-data.md) and review [depre
 - [o4-mini](/api/docs/models/o4-mini.md): Fast, cost-efficient reasoning model, succeeded by GPT-5 Mini
 - [o4-mini-deep-research](/api/docs/models/o4-mini-deep-research.md): Faster, more affordable deep research model
 - [omni-moderation](/api/docs/models/omni-moderation-latest.md): Identify potentially harmful content in text and images
-- [Sora 2](/api/docs/models/sora-2.md): Flagship video generation with synced audio
-- [Sora 2 Pro](/api/docs/models/sora-2-pro.md): Most advanced synced-audio video generation
 - [text-embedding-3-large](/api/docs/models/text-embedding-3-large.md): Most capable embedding model
 - [text-embedding-3-small](/api/docs/models/text-embedding-3-small.md): Small embedding model
 - [text-embedding-ada-002](/api/docs/models/text-embedding-ada-002.md): Older embedding model

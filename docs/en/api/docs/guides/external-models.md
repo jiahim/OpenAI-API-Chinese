@@ -63,10 +63,10 @@ Name your endpoint, provide an endpoint URL, and specify your API key. We requir
 
 Once you have configured an external model, you can use it for evals on the by selecting it from the model picker in your [dataset](https://platform.openai.com/evaluation) or your [evaluation](https://platform.openai.com/evaluation?tab=evals). Note that tool calls are currently not supported.
 
-| Model type  |           Datasets            |             Evals             |
-| ----------- | :---------------------------: | :---------------------------: |
+| Model type  |          Datasets           |            Evals            |
+| ----------- | :-------------------------: | :-------------------------: |
 | Third-party | | |
-| Custom      |                               | |
+| Custom      |                             | |
 
 ## Next steps
 

@@ -36,7 +36,7 @@ We recommend using your dataset as a dynamic space, expanding your set of evalua
 
 ### Uploading a CSV
 
-We have a simple CSV containing company names and actual values for their revenue from past quarters.
+We have a CSV containing company names and actual values for their revenue from past quarters.
 
 <video
   src="https://openaiassets.blob.core.windows.net/$web/platform-docs/evals/csv-upload.mp4"
@@ -91,7 +91,7 @@ With your data and prompt set up, you’re ready to generate outputs. The model'
 
    You’ll see a new special **output** column in the dataset begin to populate with results. This column contains the results from running your prompt on each row in your dataset.
 
-1. Once your generated outputs are ready, annotate them. Open the annotation view by clicking the **output**, **rating**, or **output_feedback** column.
+1. Once your generated outputs are ready, annotate them. Open the annotation view by clicking the **output**, **rating**, or **`output_feedback`** column.
 
    Annotate as little or as much as you want. Datasets are designed to work with any degree and type of annotation, but the higher quality of information you can provide, the better your results will be.
 
@@ -104,14 +104,14 @@ Annotations are a key part of evaluating and improving model output. A good anno
 - Enables diagnosing prompt shortcomings, particularly in subtle or infrequent cases
 - Helps ensure that graders are aligned with your intent
 
-You can choose to annotate as little or as much as you want. Datasets are designed to work with any degree and type of annotation, but the higher quality of information you can provide, the better your results will be. Additionally, if you’re not an expert on the contents of your dataset, we recommend that a subject matter expert performs the annotation — this is the most valuable way for their expertise to be incorporated into your optimization process. Explore [our cookbook](https://developers.openai.com/cookbook/examples/evaluation/building_resilient_prompts_using_an_evaluation_flywheel) to learn more about what we have found to be most effective in using evals to improve our prompt resilience.
+You can choose to annotate as little or as much as you want. Datasets are designed to work with any degree and type of annotation, but the higher quality of information you can provide, the better your results will be. Additionally, if you’re not an expert on the contents of your dataset, we recommend that a subject matter expert performs the annotation—this is the most valuable way for their expertise to be incorporated into your optimization process. Explore [our cookbook](https://developers.openai.com/cookbook/examples/evaluation/building_resilient_prompts_using_an_evaluation_flywheel) to learn more about what we have found to be most effective in using evals to improve our prompt resilience.
 
 ### Annotation starting points
 
 Here are a few types of annotations you can use to get started:
 
 - A Good/Bad rating, indicating your judgment of the output
-- A text critique in the **output_feedback** section
+- A text critique in the **`output_feedback`** section
 - Custom annotation categories that you added in the **Columns** dropdown in the top right
 
 ### Incorporate expert annotations

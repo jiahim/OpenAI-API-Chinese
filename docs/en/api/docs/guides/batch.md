@@ -11,7 +11,6 @@ While some uses of the OpenAI Platform require you to send synchronous requests,
 1. Running evaluations
 2. Classifying large datasets
 3. Embedding content repositories
-4. Queuing large offline video-render jobs
 
 The Batch API offers a straightforward set of endpoints that allow you to collect a set of requests into a single file, kick off a batch processing job to execute these requests, query for the status of that batch while the underlying requests execute, and eventually retrieve the collected results when the batch is complete.
 
@@ -34,18 +33,8 @@ Batches start with a `.jsonl` file where each line contains the details of an in
 - `/v1/moderations` ([Moderation guide](https://developers.openai.com/api/docs/guides/moderation))
 - `/v1/images/generations` ([Images API](https://developers.openai.com/api/reference/resources/images))
 - `/v1/images/edits` ([Images API](https://developers.openai.com/api/reference/resources/images))
-- `/v1/videos` ([Video generation guide](https://developers.openai.com/api/docs/guides/video-generation))
 
 For a given input file, the parameters in each line's `body` field are the same as the parameters for the underlying endpoint. Each request must include a unique `custom_id` value, which you can use to reference results after completion. Here's an example of an input file with 2 requests. Note that each input file can only include requests to a single model.
-
-For video generation in Batch:
-
-- Batch currently supports `POST /v1/videos` only.
-- Batch requests for videos must use JSON, not multipart.
-- Upload assets ahead of time and pass supported asset references in the request body rather than using multipart uploads.
-- Use `input_reference` for image-guided generations in Batch. In JSON requests, pass `input_reference` as an object with either `file_id` or `image_url`.
-- Multipart `input_reference` uploads, including video reference inputs, aren't supported in Batch.
-- Batch-generated videos are available for download for up to `24` hours after the batch completes.
 
 When targeting `/v1/moderations`, include an `input` field in every request body. Batch accepts plain-text inputs and content arrays with text or image inputs using `omni-moderation-latest`. The Batch worker rejects requests that set `stream=true`, matching the synchronous moderation endpoint.
 
@@ -506,8 +495,6 @@ openai files content \
 
 
 The output `.jsonl` file will have one response line for every successful request line in the input file. Any failed requests in the batch will have their error information written to an error file that can be found via the batch's `error_file_id`.
-
-For `/v1/videos`, a completed batch result contains video objects that have already reached a terminal state such as `completed`, `failed`, or `expired`. You can use the returned video IDs to download final assets immediately after the batch finishes.
 
 Note that the output line order **may not match** the input line order.
   Instead of relying on order to process your results, use the custom_id field

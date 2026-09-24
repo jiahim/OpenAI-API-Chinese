@@ -10,7 +10,7 @@ DigitalOcean's Managed Agents Runtime Services (M.A.R.S.) starts a Firecracker m
 
 Choose **[webhook-managed](#webhook-managed)** provisioning to start or resume sandboxes from OpenAI events, or **[application-managed](#application-managed)** provisioning to control them from your application. For an interactive quickstart, use the optional [DigitalOcean CLI flow](#try-it-with-the-digitalocean-cli). See [Sandbox lifecycle](https://developers.openai.com/api/docs/guides/agents-api/environments/lifecycle) for connection and recovery behavior.
 
-M.A.R.S. is in invite-only private preview. Request access through [DigitalOcean's private-preview announcement](https://www.digitalocean.com/blog/managed-agents-runtime-services-private-preview).
+DigitalOcean Managed Agents is in public preview. See [DigitalOcean's documentation](https://docs.digitalocean.com/products/managed-agents/) for access and setup.
 
 ## Before you begin
 
@@ -18,7 +18,7 @@ You need a sandbox-enabled DigitalOcean account with access to `codex-agentapi` 
 
 Use `OPENAI_API_KEY` for your application or CLI. Set `OPENAI_EXECUTOR_API_KEY` to an [environment key](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication). Pass only the environment key into the sandbox as `CODEX_API_KEY`.
 
-For webhook controllers or Python applications, set `DIGITALOCEAN_TOKEN` and install the [PyDo beta SDK](https://github.com/digitalocean/pydo/releases) with async support (`pydo[aio]`). Use the [OpenAI SDK](https://developers.openai.com/api/docs/libraries#install-an-official-sdk) for Agents API requests. CLI installation is needed only for the CLI flow.
+For webhook controllers or Python applications, set `DIGITALOCEAN_TOKEN` and install the [PyDo SDK](https://github.com/digitalocean/pydo/releases) version 0.41.0 or later with async support (`pydo[aio]`). Use the [OpenAI SDK](https://developers.openai.com/api/docs/libraries#install-an-official-sdk) for Agents API requests. CLI installation is needed only for the CLI flow.
 
 ## Webhook-managed
 
@@ -33,13 +33,13 @@ The image connects the executor to the session's environment. Your application s
 
 The CLI creates both resources and lets you interact with the agent from your terminal. It provisions the sandbox directly, without a webhook controller.
 
-Install the [`doctl` beta release](https://github.com/digitalocean/doctl/releases) that includes `harness-runtime`, then authenticate:
+Install [`doctl`](https://github.com/digitalocean/doctl/releases) version 1.170.0 or later, which includes `harness-runtime`, then authenticate:
 
 ```bash
 doctl auth init
 ```
 
-Save this manifest as `agents.yaml`:
+Save this manifest as `environment.yaml`:
 
 ```yaml
 name: openai-codex-session
@@ -65,7 +65,7 @@ The `config` block is the OpenAI create-session request. The CLI authenticates t
 Create the session and sandbox:
 
 ```bash
-doctl harness-runtime create --spec agents.yaml
+doctl harness-runtime create --spec environment.yaml
 ```
 
 The command waits up to 300 seconds for readiness by default. Save the OpenAI session ID and DigitalOcean session ID from the session details, then attach:
@@ -222,6 +222,6 @@ Remove the OpenAI webhook registration before deleting a webhook controller.
 
 ## References
 
-- Read [DigitalOcean sandbox setup](https://github.com/digitalocean/pydo/tree/v0.40.0-beta.8/examples/agents/doc_python_sdk)
+- Read [DigitalOcean sandbox setup](https://github.com/digitalocean/pydo/tree/main/examples/agents/doc_python_sdk)
 - Read [DigitalOcean Python SDK](https://github.com/digitalocean/pydo)
-- Read [DigitalOcean CLI beta release](https://github.com/digitalocean/doctl/releases)
+- Read [DigitalOcean CLI releases](https://github.com/digitalocean/doctl/releases)

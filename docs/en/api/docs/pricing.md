@@ -387,57 +387,6 @@ Batch
 
   
 
-    
-
-Video generation models
-
-
-    
-Prices per second.
-
-  
-
-
-  
-
-Standard
-
-
-      
-### Grouped Pricing Table data
-
-| Model | Size | Portrait | Landscape | Price per second |
-| --- | --- | --- | --- | --- |
-| sora-2 | 720p | 720x1280 | 1280x720 | $0.10 |
-| sora-2-pro | 720p | 720x1280 | 1280x720 | $0.30 |
-| sora-2-pro | 1024p | 1024x1792 | 1792x1024 | $0.50 |
-| sora-2-pro | 1080p | 1080x1920 | 1920x1080 | $0.70 |
-
-    
-
-    
-
-      
-Batch
-
-
-      
-### Grouped Pricing Table data
-
-| Model | Size | Portrait | Landscape | Price per second |
-| --- | --- | --- | --- | --- |
-| sora-2 | 720p | 720x1280 | 1280x720 | $0.05 |
-| sora-2-pro | 720p | 720x1280 | 1280x720 | $0.15 |
-| sora-2-pro | 1024p | 1024x1792 | 1792x1024 | $0.25 |
-| sora-2-pro | 1080p | 1080x1920 | 1920x1080 | $0.35 |
-
-
-
-
-
-
-  
-
 Transcription models
 
 

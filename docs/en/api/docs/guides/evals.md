@@ -433,7 +433,7 @@ Now that we have defined how we want our app to behave in an eval, let's constru
 
 ### Uploading test data
 
-There are several ways to provide test data for eval runs, but it may be convenient to upload a [JSONL](https://jsonlines.org/) file that contains data in the schema we specified when we created our eval. A sample JSONL file that conforms to the schema we set up is below:
+You can provide test data for eval runs in several ways, but it may be convenient to upload a [JSONL](https://jsonlines.org/) file that contains data in the schema we specified when we created our eval. A sample JSONL file that conforms to the schema we set up is below:
 
 ```json
 { "item": { "ticket_text": "My monitor won't turn on!", "correct_label": "Hardware" } }
@@ -849,7 +849,7 @@ You'll need the UUID of both your eval and eval run to fetch its status. When yo
 
 The API response contains granular information about test criteria results, API usage for generating model responses, and a `report_url` property that takes you to a page in the dashboard where you can explore the results visually.
 
-In our simple test, the model reliably generated the content we wanted for a small test case sample. In reality, you will often have to run your eval with more criteria, different prompts, and different data sets. But the process above gives you all the tools you need to build robust evals for your LLM apps!
+In our test, the model reliably generated the content we wanted for a small test case sample. In reality, you will often have to run your eval with more criteria, different prompts, and different data sets. But the process above gives you all the tools you need to build robust evals for your LLM apps!
 
 ## Next steps
 

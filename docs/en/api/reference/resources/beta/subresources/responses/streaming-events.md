@@ -11471,6 +11471,7 @@ Schema name: `BetaResponseCreatedEvent`
   "response": {
     "id": "resp_67ccfcdd16748190a91872c75d38539e09e4d4aac714747c",
     "object": "response",
+    "access_programs": null,
     "created_at": 1741487325,
     "status": "in_progress",
     "completed_at": null,
@@ -22959,6 +22960,7 @@ Schema name: `BetaResponseInProgressEvent`
   "response": {
     "id": "resp_67ccfcdd16748190a91872c75d38539e09e4d4aac714747c",
     "object": "response",
+    "access_programs": null,
     "created_at": 1741487325,
     "status": "in_progress",
     "completed_at": null,
@@ -34447,6 +34449,7 @@ Schema name: `BetaResponseCompletedEvent`
   "response": {
     "id": "resp_123",
     "object": "response",
+    "access_programs": null,
     "created_at": 1740855869,
     "status": "completed",
     "completed_at": 1740855870,
@@ -45952,6 +45955,7 @@ Schema name: `BetaResponseFailedEvent`
   "response": {
     "id": "resp_123",
     "object": "response",
+    "access_programs": null,
     "created_at": 1740855869,
     "status": "failed",
     "completed_at": null,
@@ -57442,6 +57446,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "response": {
     "id": "resp_123",
     "object": "response",
+    "access_programs": null,
     "created_at": 1740855869,
     "status": "incomplete",
     "completed_at": null,
