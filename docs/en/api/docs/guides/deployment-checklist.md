@@ -2,24 +2,29 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-| Contents                                                                        | Expected impact                     |
-| ------------------------------------------------------------------------------- | ----------------------------------- |
-| [Use the Responses API](#use-the-responses-api)                                 | Quality, cost, latency, reliability |
-| [Choose a GPT-5.6 model](#choose-a-gpt-56-model)                                | Quality, cost, latency              |
-| [Set up `reasoning.effort`](#set-up-reasoningeffort)                            | Quality, cost, latency              |
-| [Set up `text.verbosity`](#set-up-textverbosity)                                | Quality, cost, latency              |
-| [Set up the assistant `phase` parameter](#set-up-the-assistant-phase-parameter) | Quality, cost                       |
-| [Use `tool_search`](#use-toolsearch)                                            | Cost, latency                       |
-| [Use Programmatic Tool Calling](#use-programmatic-tool-calling)                 | Quality, cost, latency              |
-| [Use Multi-agent for parallel work](#use-multi-agent-for-parallel-work)         | Quality, cost, latency              |
-| [Leverage built-in tools](#leverage-built-in-tools)                             | Quality                             |
-| [Leverage compaction](#leverage-compaction)                                     | Cost                                |
-| [Optimize prompt caching](#optimize-prompt-caching)                             | Latency, cost                       |
-| [Use `reasoning.encrypted_content`](#use-reasoningencryptedcontent)             | Quality, latency                    |
-| [Set image detail intentionally](#set-image-detail-intentionally)               | Quality, cost, latency              |
-| [Send a safety identifier](#send-a-safety-identifier)                           | Safety, reliability                 |
-| [Use `background=True`](#use-backgroundtrue)                                    | Resuming work                       |
-| [Use WebSocket mode](#use-websocket-mode)                                       | Latency                             |
+| Contents                                                                                                | Expected impact                     |
+| ------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| [Use the Responses API](#use-the-responses-api)                                                         | Quality, cost, latency, reliability |
+| [Choose a model for the workload](#choose-a-model-for-the-workload)                                     | Quality, cost, latency              |
+| [Set up `reasoning.effort`](#set-up-reasoningeffort)                                                    | Quality, cost, latency              |
+| [Change reasoning effort mid-conversation](#change-reasoning-effort-mid-conversation)                   | Quality, cost, latency              |
+| [Set up `text.verbosity`](#set-up-textverbosity)                                                        | Quality, cost, latency              |
+| [Set up the assistant `phase` parameter](#set-up-the-assistant-phase-parameter)                         | Quality, cost                       |
+| [Use `tool_search`](#use-toolsearch)                                                                    | Cost, latency                       |
+| [Use Programmatic Tool Calling](#use-programmatic-tool-calling)                                         | Quality, cost, latency              |
+| [Use Multi-agent for parallel work](#use-multi-agent-for-parallel-work)                                 | Quality, cost, latency              |
+| [Use async tool calling](#use-async-tool-calling)                                                       | Latency                             |
+| [Leverage built-in tools](#leverage-built-in-tools)                                                     | Quality                             |
+| [Leverage compaction](#leverage-compaction)                                                             | Cost                                |
+| [Optimize prompt caching](#optimize-prompt-caching)                                                     | Latency, cost                       |
+| [Use `reasoning.encrypted_content`](#use-reasoningencryptedcontent)                                     | Quality, latency                    |
+| [Set image detail intentionally](#set-image-detail-intentionally)                                       | Quality, cost, latency              |
+| [Send a safety identifier](#send-a-safety-identifier)                                                   | Safety, reliability                 |
+| [Handle misalignment monitoring](#handle-misalignment-monitoring)                                       | Safety, reliability                 |
+| [Handle rapid traffic increases and model overload](#handle-rapid-traffic-increases-and-model-overload) | Reliability                         |
+| [Use `background=True`](#use-backgroundtrue)                                                            | Task continuity                     |
+| [Use WebSocket mode](#use-websocket-mode)                                                               | Latency                             |
+| [Use mid-turn steering](#use-mid-turn-steering)                                                         | Quality                             |
 
 ## Use the Responses API
 
@@ -28,36 +33,45 @@
 API and the best place to access the newest model behavior, built-in tools,
 stateful workflows, and agent features.
 
-## Choose a GPT-5.6 model
+## Choose a model for the workload
 
-Choose a [GPT-5.6 model](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.6) for the workload instead
-of routing every request to the most capable tier. Use `gpt-5.6` or
-`gpt-5.6-sol` for flagship capability, `gpt-5.6-terra` for strong performance
-at a lower price, and `gpt-5.6-luna` for efficient, high-volume workloads.
+Evaluate the [GPT-6 model family](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra)
+for your workload. Use [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) for the
+highest capability, [`gpt-6-sol`](https://developers.openai.com/api/docs/models/gpt-6-sol) for demanding
+reasoning and coding, and [`gpt-6-luna`](https://developers.openai.com/api/docs/models/gpt-6-luna) for
+efficient, repeatable work. Choose the model that performs well on representative
+tasks rather than routing every request to the most capable model.
 
-When migrating, preserve the current model's workload role and effective
-reasoning effort for the first comparison. Run representative evals before
-changing prompts or adding new capabilities. Compare task success, latency,
-input, output, reasoning, and cache-write tokens, and cost per successful task.
+When migrating to GPT-6, preserve your current model's workload role and
+effective reasoning effort where supported. Use the Responses API for reasoning
+with tools. GPT-6 Astra requires Responses for tool calling; GPT-6 Sol and Luna
+support function calling in Chat Completions only with `reasoning_effort: "none"`.
+When reasoning effort is not `none`, remove `temperature`, `top_p`, and
+`top_logprobs`; also remove `logprobs` from Chat Completions requests and
+`message.output_text.logprobs` from the Responses `include` array. With EU data
+residency, use Standard processing for all three models. See the
+[model migration guidance](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra#migration-quickstart)
+for other compatibility checks. Run representative evals before changing prompts or adding new
+capabilities. Compare task success, latency, input, output, reasoning, and
+cache-write tokens, and cost per successful task.
 
 ## Set up `reasoning.effort`
 
 Use `reasoning.effort` to decide how much thinking the model should do before it
 answers.
 
-For GPT-5.6 models, the supported values are `none`, `low`, `medium`, `high`,
-`xhigh`, and `max`. The default is `medium`. Lower effort is faster and uses
-fewer reasoning tokens. Higher effort gives the model more time for planning,
+GPT-6 Astra, Sol, and Luna support `low`, `medium`, `high`, `xhigh`, and
+`max`. Sol and Luna also support `none`; Astra does not. Lower effort is faster and uses fewer
+reasoning tokens. Higher effort gives the model more time for planning,
 debugging, synthesis, and multi-step tradeoffs.
 
 Use `low` when the job is mostly extraction, routing, classification, or a
 routine rewrite. Use `medium` or `high` when the model needs to diagnose a
 problem, compare options, write a plan, or reason through code. Use `xhigh` or
 `max` only when representative evals show that the quality gain justifies the
-extra latency and cost. When migrating from GPT-5.5 or GPT-5.4, start with the
-current effort and compare the same setting with one level lower. GPT-5.6 can
-often maintain or improve quality with fewer reasoning tokens, so the lower
-setting may also reduce latency and cost.
+extra latency and cost. When migrating from `minimal`, or from `none` to GPT-6
+Astra, start with `low` and compare results. Otherwise, preserve your current effective
+effort and test changes against your quality, latency, and cost targets.
 
 For the hardest quality-first workloads, also compare
 [`reasoning.mode: "pro"`](https://developers.openai.com/api/docs/guides/reasoning#reasoning-mode) with
@@ -203,6 +217,18 @@ puts(response.output_text)
 ```
 
 
+## Change reasoning effort mid-conversation
+
+For GPT-6 models in standard, single-agent mode, add a
+[`configuration_update`](https://developers.openai.com/api/docs/guides/reasoning#change-reasoning-mid-conversation)
+input item before the next user message to change effort between responses.
+Leave the request-level `reasoning.effort` unchanged so the original prompt
+prefix remains eligible for caching. The update applies to the next response
+and continues until another update overrides it. Configuration updates cannot
+be combined with automatic compaction or truncation, and `/responses/compact`
+rejects histories containing them. To compact the history, include a
+`compaction_trigger` item and add a fresh update afterward.
+
 ## Set up `text.verbosity`
 
 `text.verbosity` is the main lever for balancing brevity against completeness.
@@ -214,11 +240,14 @@ generates less and returns output faster.
 For coding, `medium` and `high` tend to produce longer, more organized output
 with clearer structure. `low` keeps the answer tighter and more minimal.
 
-GPT-5.6 tends to be more concise by default than GPT-5.5. When migrating, check
-whether broad instructions like "Be concise" still help. In some cases, they may
-make responses too brief. Keep them only when they still help, and prefer using
-`text.verbosity` to control the default level of detail; then use the prompt to
-specify required content, structure, and a more specific length, if applicable.
+When migrating, check whether broad instructions like "Be concise" still help.
+Prefer `text.verbosity` to control the default level of detail, then use the
+prompt to specify required content, structure, and length.
+
+Prompts also affect quality, token usage, cost, and latency. Review the
+[latest-model prompting best practices](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices)
+alongside your verbosity setting, including its testing and verification
+guidance for coding agents.
 
 Set lower verbosity for compact output
 
@@ -381,6 +410,8 @@ back on follow-up requests for `gpt-5.3-codex` and later models,
 progress updates from the final result. This helps reduce early stopping, making
 the agent more likely to continue until it reaches the final answer.
 
+<a id="use-toolsearch" className="scroll-mt-[110px]"></a>
+
 ## Use `tool_search`
 
 Instead of loading the full tool catalog into every request, use
@@ -403,7 +434,7 @@ Tool search has two modes:
 **Start with hosted tool search** unless your app really needs to control
 discovery itself.
 
-Group your tools by user intent. Use namespaces or MCP servers when you can. It
+Group your tools by user intent. Use a namespace or an MCP server when you can. It
 is easier for the model to choose between a few clear groups than a long flat
 list of functions. We recommend keeping each namespace under about 10 functions
 for optimal token efficiency and model performance.
@@ -722,8 +753,8 @@ puts(response.output)
 ## Use Programmatic Tool Calling
 
 [Programmatic Tool Calling](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling)
-lets GPT-5.6 write JavaScript that calls eligible tools and reduces their
-intermediate results inside a hosted runtime. Use it for bounded stages where
+lets supported models write JavaScript that calls eligible tools and reduces
+their intermediate results inside a hosted runtime. Use it for bounded stages where
 code can filter, join, rank, remove duplicates, combine, or check large tool
 results before returning a smaller structured result to the model.
 
@@ -747,9 +778,9 @@ using direct tool calls.
 
 ## Use Multi-agent for parallel work
 
-[Multi-agent](https://developers.openai.com/api/docs/guides/responses-multi-agent) is a GPT-5.6 feature that
-lets a root agent delegate independent workstreams to subagents and synthesize
-their results. Use it when you can split research, analysis, or implementation
+[Multi-agent](https://developers.openai.com/api/docs/guides/responses-multi-agent) lets supported models,
+including GPT-6 models, delegate independent workstreams to subagents and
+synthesize their results. Use it when you can split research, analysis, or implementation
 into concrete, bounded tasks that use separate context and run in parallel.
 
 Set `multi_agent.enabled` to `true` in the request. For HTTP, use the beta
@@ -768,6 +799,17 @@ Before enabling Multi-agent, account for its current limitations:
 `/responses/compact`, `reasoning.summary`, and `max_tool_calls` are not
 supported. The server automatically compacts the root context and every
 subagent context.
+
+## Use async tool calling
+
+On GPT-6 models, set `async: true` on a function or custom tool when the model
+can keep working while your application runs it. Start slow tool calls early and
+let the model handle independent work. Your application still executes and
+tracks the call, then returns the result in a later Responses request with the
+original `call_id`. Async execution does not apply to built-in tools or
+programmatic tool calls. In Multi-agent mode, do not combine async tools with
+parallel tool calls. See [async tool calling](https://developers.openai.com/api/docs/guides/async-tool-calling)
+for the full flow.
 
 ## Leverage built-in tools
 
@@ -1057,6 +1099,11 @@ after a stable prefix, add an explicit `prompt_cache_breakpoint` at the reusable
 the breakpoints you provide and no implicit breakpoint. Earlier models continue
 to use automatic prompt caching only.
 
+When migrating from GPT-5.5 or earlier, replace `prompt_cache_retention` with
+`prompt_cache_options.ttl: "30m"`. See the [prompt caching model
+differences](https://developers.openai.com/api/docs/guides/prompt-caching#summary-of-model-differences)
+before changing cache settings.
+
 On GPT-5.6 models and later model families, cache writes cost 1.25× the
 uncached input token rate. Log `cached_tokens` and `cache_write_tokens`, then
 compare write volume with later cache reads to measure net cost and tune
@@ -1216,9 +1263,11 @@ puts(response.output_text)
 ```
 
 
+<a id="use-reasoningencryptedcontent" className="scroll-mt-[110px]"></a>
+
 ## Use `reasoning.encrypted_content`
 
-GPT-5.6 can [preserve reasoning across
+Supported models, including GPT-6 models, can [preserve reasoning across
 calls](https://developers.openai.com/api/docs/guides/reasoning#preserve-reasoning-across-calls). Use
 `reasoning.context: "all_turns"` when the task's goals, assumptions, and
 priorities remain stable. Use `current_turn` when earlier reasoning is no longer
@@ -1480,20 +1529,17 @@ puts(second.output_text)
 
 ## Set image detail intentionally
 
-On GPT-5.6 models, omitted image `detail` and `detail: "auto"` use the same
-sizing behavior as `original`. The service preserves the input dimensions,
-except that images larger than 65,535 pixels on either side are scaled down to
-fit that limit. The API rejects images that still exceed the
-[30,000-patch limit](https://developers.openai.com/api/docs/guides/images-vision#image-input-requirements),
-rather than resizing them to fit it. Large images can use more input tokens and
-add latency as a result.
+Image `detail` defaults to `auto`, and its sizing behavior depends on the model.
+Large images can use more input tokens and add latency. Check the [sizing table
+for listed models](https://developers.openai.com/api/docs/guides/images-vision#model-sizing-behavior), and
+measure image token use and limits with your selected model before deployment.
 
 Choose [`detail`](https://developers.openai.com/api/docs/guides/images-vision#choose-an-image-detail-level)
 for the task. Resize the image, use `low` when fine visual detail is not
-important, or use `high` for standard high-fidelity image understanding. Keep
-`original` for large, dense, coordinate-sensitive, OCR, localization, or
-visual-inspection tasks where the extra detail improves quality. Measure
-worst-case image tokens and latency before deployment.
+important, or use `high` for standard high-fidelity image understanding. Use
+`original` where supported for large, dense, coordinate-sensitive, OCR,
+localization, or visual-inspection tasks where the extra detail improves quality.
+Measure worst-case image tokens and latency before deployment.
 
 ## Send a safety identifier
 
@@ -1506,6 +1552,29 @@ disrupts access for your broader organization.
 
 Hash the user's username or email address instead of sending identifying
 information. For logged-out experiences, use a stable session ID.
+
+## Handle misalignment monitoring
+
+For GPT-6 Astra agent workflows, plan for [misalignment
+monitoring](https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring). If a request
+returns `403` with `misalignment_policy_violation`, stop dispatching actions for
+that conversation and do not automatically retry the blocked workflow. Handle
+errors during streaming too, and review any actions that may already have run.
+Subscribe to `safety.alert.created` if your team needs project alerts; the
+webhook does not replace request error handling. Check the guide for which
+Responses requests can be stopped automatically.
+
+## Handle rapid traffic increases and model overload
+
+Check the HTTP status and `error.code` before choosing a recovery action. A
+`429` with `slow_down` means the request rate increased too quickly: follow
+`Retry-After` when present, reduce traffic, then ramp gradually. A `503` with
+`server_is_overloaded` means the requested model is temporarily overloaded:
+follow `Retry-After` when present, then retry. If the header is missing, increase
+retry delays exponentially with jitter and bound your retries. Billing, spend, and
+quota errors require action before retrying; do not treat every `429` as a
+temporary rate limit. See [rate limits](https://developers.openai.com/api/docs/guides/rate-limits#handle-rapid-traffic-increases-and-model-overload)
+and [error codes](https://developers.openai.com/api/docs/guides/error-codes).
 
 ## Use `background=True`
 
@@ -1697,8 +1766,8 @@ the status; the result will appear here when it's ready."
 [WebSocket mode](https://developers.openai.com/api/docs/guides/websocket-mode) is built for long-running,
 tool-call-heavy workflows where you keep a persistent connection open and
 continue by sending only new input items plus `previous_response_id`. For
-runs with 20 or more tool calls, this approach is roughly 40% faster
-end-to-end.
+workflows with 20 or more tool calls, we have seen up to roughly 40% faster
+end-to-end execution.
 
 **How this works**: The first message will look like a normal Responses request:
 model, instructions, tools, and user input. The server streams events back. If
@@ -1708,15 +1777,16 @@ the prior `previous_response_id` and the new item. That is where the latency win
 comes from. In plain HTTP, every follow-up is a fresh request. In WebSocket mode,
 the connection stays open and the most recent response state stays warm in
 memory on that connection. When the next turn continues from that response, the
-backend has to do less setup work.
+service has to do less setup work.
 
 If your workflow is one request, one answer, then **keep HTTP**. If your
 workflow behaves like a long-running agent, try WebSocket mode.
 
-A single WebSocket connection handles one in-flight response at a time, so
-parallel work needs multiple connections. Connections currently top out at 60
-minutes. Continuation uses the same `previous_response_id` semantics as HTTP
-mode, with a connection-local cache for the most recent response.
+Use different `stream_id` values for parallel conversations on one connection;
+route interleaved events by `stream_id`. A connection supports up to 16 active
+responses, while requests on the same stream run in order. Connections last up
+to 60 minutes. Continuation uses the same `previous_response_id` semantics as
+HTTP mode, with a connection-local cache for the latest response in each stream.
 
 Note: WebSocket mode works with ZDR because your data is not stored to disk,
 only stored in memory.
@@ -1865,6 +1935,16 @@ Sync do |task|
 end
 ```
 
+
+## Use mid-turn steering
+
+If users may add requirements while a GPT-6 model is working, use a WebSocket
+connection to the Responses API. Send `response.steer` with the active response
+ID in `previous_response_id` and the new user input. Keep reading events for
+the continuation; `response.steer.accepted` means the update is queued.
+Steering does not change output already sent to your application or undo tools
+that have started. See [mid-turn steering](https://developers.openai.com/api/docs/guides/steering) for the
+event flow and tool-result handling.
 
 ## Final takeaway
 

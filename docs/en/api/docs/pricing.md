@@ -2,6 +2,8 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
+FedRAMP endpoints are charged a 10% uplift over the corresponding standard model
+rates.
 <a id="astra"></a>
 <a id="latest-models"></a>
 

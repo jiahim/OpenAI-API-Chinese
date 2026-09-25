@@ -11,8 +11,7 @@ only receives prompt context. Large document sets, generated artifacts,
 commands, previews, and resumable work all need an environment the agent can
 inspect and change.
 
-Sandbox agents are available in the TypeScript and Python Agents SDKs. They
-  are in beta, so API details, defaults, and supported capabilities may change.
+Sandbox agents are available in the TypeScript and Python Agents SDKs.
 
 This guide covers sandboxes in the Agents SDK, where your application runs the harness. For an OpenAI-managed harness, use [Agents API: Connect a sandbox](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted).
 

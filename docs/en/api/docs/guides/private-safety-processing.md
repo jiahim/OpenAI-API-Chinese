@@ -97,7 +97,7 @@ We recommend enabling EKM for this additional control. See the [EKM technical FA
 
 
 
-Connect your own AWS S3 bucket or Azure Blob container to an OpenAI project. Follow the setup steps for your cloud, then register and validate the connection.
+Connect your own AWS S3 bucket, Azure Blob container, or Google Cloud Storage bucket to an OpenAI project. Follow the setup steps for your cloud, then register and validate the connection.
 
 ZDR with PSP is enabled per project. Once enabled, the PSP policy applies to all API traffic in that project, including requests to models that do not otherwise require PSP. To use ZDR without PSP for eligible models, send those requests through a separate project configured for ZDR without PSP.
 
@@ -110,7 +110,7 @@ ZDR with PSP is enabled per project. Once enabled, the PSP policy applies to all
 ### Open storage setup in the API console
 
 1. Open **Organization settings > Data controls > Data retention**, then select **Connect storage**.
-2. In **Connect external storage**, choose **AWS** or **Azure** and select your project. You can also open **Connect storage** from **Project Settings > Data retention**.
+2. In **Connect external storage**, choose **AWS**, **Azure**, or **GCP** and select your project. You can also open **Connect storage** from **Project Settings > Data retention**.
 3. Complete the cloud setup below. Then enter your storage details in the modal and select **Connect and validate**.
 
 ### Cloud-specific Setups
@@ -125,7 +125,7 @@ ZDR with PSP is enabled per project. Once enabled, the PSP policy applies to all
 
 
 
-Complete these steps if you're using AWS. For Azure, skip to **Azure Blob Storage**.
+Complete these steps if you're using AWS. For other clouds, skip to **Azure Blob Storage** or **Google Cloud Storage**.
 
 #### 1. Create the bucket
 
@@ -288,6 +288,108 @@ OpenAI manages the application credentials. Don't create or share a storage key,
 
 
 
+
+
+<a id="google-cloud-storage"></a>
+
+
+
+#### Google Cloud Storage
+
+
+
+#### 1. Create the bucket
+
+Create a bucket in **Cloud Storage > Buckets** in a location compatible with your OpenAI project's data residency, with:
+
+- **Public access prevention**: On.
+- **Access control**: Uniform.
+
+You can optionally disable the default **Soft delete policy (For data recovery)**; the next step configures lifecycle deletion.
+
+For Global projects, repeat this GCP setup for each region you intend to use.
+
+![Google Cloud bucket access settings showing Public access prevention On, Access control Uniform, and IP filtering Not configured.](https://developers.openai.com/images/platform/guides/private-safety-processing/setup-gcp-bucket-access-controls.webp)
+
+#### 2. Set the lifecycle rule
+
+In your bucket's **Lifecycle** tab, add a **Delete object** rule with these conditions:
+
+- **Object name matches prefix**: `openai/`.
+- **Age**: 30 days.
+
+![Google Cloud lifecycle rule showing Delete object, the openai/ object prefix, and Age 30.](https://developers.openai.com/images/platform/guides/private-safety-processing/setup-gcp-lifecycle-rule.webp)
+
+#### 3. Find your Google Cloud project number
+
+In **IAM & Admin > Settings**, copy the numeric **Project number** for the project containing your workload identity pool as `<CUSTOMER_GCP_PROJECT_NUMBER>`.
+
+#### 4. Create the workload identity pool and provider
+
+In **IAM & Admin > Workload Identity Federation**, create a workload identity pool and add an **OpenID Connect (OIDC)** provider with:
+
+- **Issuer (URL)**: `https://accounts.google.com`.
+- **Allowed audiences**: `<CUSTOMER_PROJECT_ID>` (your OpenAI project ID).
+
+![Google Cloud OIDC provider setup showing the Google issuer URL and an OpenAI project ID as the allowed audience.](https://developers.openai.com/images/platform/guides/private-safety-processing/setup-gcp-oidc-provider.webp)
+
+Configure these attribute mappings:
+
+| Google attribute           | OIDC value      |
+| -------------------------- | --------------- |
+| `google.subject`           | `assertion.sub` |
+| `attribute.openai_project` | `assertion.aud` |
+
+Set the attribute condition below. **Keep OpenAI's production identity subject `112981926705442324573` unchanged.**
+
+```text
+assertion.sub == '112981926705442324573' && assertion.aud == '<CUSTOMER_PROJECT_ID>'
+```
+
+![Google Cloud provider attributes mapping google.subject to assertion.sub and attribute.openai_project to assertion.aud, with the condition restricting the OpenAI production subject and project audience.](https://developers.openai.com/images/platform/guides/private-safety-processing/setup-gcp-provider-attributes.webp)
+
+Record the pool and provider IDs as `<CUSTOMER_GCP_POOL_ID>` and `<CUSTOMER_GCP_PROVIDER_ID>`.
+
+**Multiple OpenAI projects**
+
+For projects belonging to the same customer, you can reuse the pool and provider. Add each project ID to **Allowed audiences** and update the attribute condition:
+
+```text
+assertion.sub == '112981926705442324573' &&
+(assertion.aud == '<CUSTOMER_PROJECT_ID_1>' || assertion.aud == '<CUSTOMER_PROJECT_ID_2>')
+```
+
+Complete the bucket grant and storage registration for each project separately.
+
+#### 5. Create the custom storage role
+
+In **IAM & Admin > Roles**, create a custom role in the bucket's Google Cloud project with these permissions:
+
+```text
+storage.buckets.get
+storage.objects.create
+storage.objects.get
+storage.objects.delete
+```
+
+#### 6. Grant OpenAI access to the bucket
+
+In your bucket's **Permissions > Grant access**, add this principal:
+
+```text
+principalSet://iam.googleapis.com/projects/<CUSTOMER_GCP_PROJECT_NUMBER>/locations/global/workloadIdentityPools/<CUSTOMER_GCP_POOL_ID>/attribute.openai_project/<CUSTOMER_PROJECT_ID>
+```
+
+Select the custom role you created in step 5.
+
+![Google Cloud bucket access form with the OpenAI project principal set and the custom storage role selected.](https://developers.openai.com/images/platform/guides/private-safety-processing/setup-gcp-bucket-access.webp)
+
+Continue to **Register your storage**.
+
+
+
+
+
 ### Register your storage
 
 After completing the cloud setup above, use either the API console or the Management API to register and validate your storage. You only need to use one method.
@@ -304,7 +406,7 @@ Open **Organization settings > Data controls > Data retention** and select **Con
 
 ##### 2. Enter your storage details
 
-Choose **AWS** or **Azure**, then select the project. If you opened the modal from project settings, that project is already selected. If **Registered storage** appears, choose **Connect new storage** to add a destination.
+Choose **AWS**, **Azure**, or **GCP**, then select the project. If you opened the modal from project settings, that project is already selected. If **Registered storage** appears, choose **Connect new storage** to add a destination.
 
 For **AWS**, enter the **Bucket ARN** and **IAM role ARN** from your cloud setup.
 
@@ -313,6 +415,15 @@ For **AWS**, enter the **Bucket ARN** and **IAM role ARN** from your cloud setup
 For **Azure**, enter **Tenant ID**, **Subscription ID**, **Resource group**, **Storage account name**, and **Container name**. Scroll down in the modal to complete all fields.
 
 ![Connect external storage dialog for Azure showing the project and Azure storage configuration fields.](https://developers.openai.com/images/platform/guides/private-safety-processing/setup-08-platform-azure-connect.webp)
+
+For **GCP**, select the OpenAI project whose ID you used in the audience, attribute condition, and bucket grant. Enter these four fields:
+
+| Field                                | Value from your Google Cloud setup                                                           |
+| ------------------------------------ | -------------------------------------------------------------------------------------------- |
+| **Bucket name**                      | `<CUSTOMER_GCP_BUCKET_NAME>`                                                                 |
+| **Workload identity project number** | `<CUSTOMER_GCP_PROJECT_NUMBER>`: the numeric Google Cloud project number containing the pool |
+| **Workload identity pool ID**        | `<CUSTOMER_GCP_POOL_ID>`                                                                     |
+| **Workload identity provider ID**    | `<CUSTOMER_GCP_PROVIDER_ID>`                                                                 |
 
 ##### 3. Connect and validate
 
@@ -379,6 +490,25 @@ curl --fail-with-body -sS -X POST "$OPENAI_STORAGE_URL" \
       "resource_group": "CUSTOMER_RESOURCE_GROUP",
       "account_name": "CUSTOMER_STORAGE_ACCOUNT",
       "container": "CUSTOMER_CONTAINER_NAME"
+    }
+  }'
+```
+
+**Google Cloud Storage**
+
+```bash
+curl --fail-with-body -sS -X POST "$OPENAI_STORAGE_URL" \
+  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+  -H "OpenAI-Organization: $OPENAI_ORG_ID" \
+  -H 'Content-Type: application/json' \
+  --data-binary '{
+    "project_id": "<CUSTOMER_PROJECT_ID>",
+    "provider": {
+      "type": "gcp",
+      "bucket": "<CUSTOMER_GCP_BUCKET_NAME>",
+      "workload_identity_project_number": "<CUSTOMER_GCP_PROJECT_NUMBER>",
+      "workload_identity_pool_id": "<CUSTOMER_GCP_POOL_ID>",
+      "workload_identity_provider_id": "<CUSTOMER_GCP_PROVIDER_ID>"
     }
   }'
 ```

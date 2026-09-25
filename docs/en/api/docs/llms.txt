@@ -46,6 +46,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Agents API quickstart](https://developers.openai.com/api/docs/guides/agents-api/quickstart.md): Create an agent that writes and runs a script in an OpenAI-hosted sandbox.
 - [Agents SDK](https://developers.openai.com/api/docs/guides/agents/sdk.md): Learn how the OpenAI Agents SDK fits together and which docs to read next.
 - [API deployment checklist](https://developers.openai.com/api/docs/guides/deployment-checklist.md): Review commonly underused Responses API design choices that improve deployment quality, speed, cost, and reliability.
+- [API organization blocking](https://developers.openai.com/api/docs/guides/organization-blocking.md): Configure an allowlist of API organizations through your proxy or Secure Access Service Edge (SASE) service.
 - [Apply Patch](https://developers.openai.com/api/docs/guides/tools-apply-patch.md): Allow models to propose structured diffs that your integration applies.
 - [Architecture](https://developers.openai.com/api/docs/guides/agents-api/architecture.md): Understand the harness, environment, and application server, from agents without an environment to agents that use your own compute.
 - [Async tool calling](https://developers.openai.com/api/docs/guides/async-tool-calling.md): Start asynchronous tool calls, deliver results later, and let the model wait for specific results when needed.

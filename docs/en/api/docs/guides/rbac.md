@@ -15,7 +15,7 @@ Role-based access control (RBAC) lets you decide who can do what across your org
 - **Project**: A workspace for keys, files, and resources. Project roles grant access within only that project.
 - **Groups**: Collections of users you can assign roles to. Groups can be synced from your identity provider (via SCIM) to keep membership up to date automatically.
 - **Roles**: Bundles of permissions (like Models Request or Files Write). Roles can be created for the organization under **Organization settings**, or created for a specific project under that project's settings. Once created, organization or project roles can be assigned to users or groups. Users can have multiple roles, and their access is the union of those roles.
-- **Permissions**: The specific actions a role allows (e.g., make request to models, read files, write files, manage keys).
+- **Permissions**: The specific actions a role allows (for example, make requests to models, read files, write files, manage keys).
 
 ### Permissions
 
@@ -52,7 +52,6 @@ The table below shows the available permissions, which preset roles include them
 | Project Administration | Manage project users, service accounts, API keys, and rate limits via management API | `Read`, `Write`         |                        | `Read`, `Write`           |                            |                            |                      |
 | Batch                  | Create and manage batch jobs                                                         | `Read`, `Write`         | `Read`, `Write`        | `Read`, `Write`           | `Read`, `Write`            | `Read`                     |                      |
 | Service Accounts       | View and manage project service accounts                                             | `Read`, `Write`         |                        | `Read`, `Write`           |                            |                            |                      |
-| Videos                 | Create and retrieve videos                                                           | `Read`, `Write`         | `Read`, `Write`        | `Read`, `Write`           | `Read`, `Write`            |                            |                      |
 | Voices                 | Create and retrieve voices                                                           | `Read`, `Write`         | `Read`, `Write`        | `Read`, `Write`           | `Read`, `Write`            | `Read`                     |                      |
 | Agent Builder          | Create and manage agents and workflows in Agent Builder                              | `Read`, `Write`         | `Read`                 | `Read`, `Write`           | `Read`, `Write`            | `Read`                     | ✓                    |
 
@@ -63,17 +62,17 @@ The table below shows the available permissions, which preset roles include them
 
 Batch permissions include access required to prepare batch input files, execute requests, and retrieve results. This effective access is separate from the endpoints that can be submitted inside a batch, which are listed in the [Batch API guide](https://developers.openai.com/api/docs/guides/batch#1-prepare-your-batch-file).
 
-| Batch permission          | Additional access granted                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Read (`api.batch.read`)   | Files Read (`api.files.read`) for `/v1/files`                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| Write (`api.batch.write`) | Batch Read<br />List models (`api.model.read` and `model.read`) for `/v1/models`<br />Files Read and Write (`api.files.read` and `api.files.write`) for `/v1/files`<br />Model capabilities Request (`api.model.request` and `model.request`) for `/v1/audio`, `/v1/chat/completions`, `/v1/embeddings`, `/v1/images`, `/v1/moderations`, `/v1/realtime`, and `/v1/responses`<br />Videos Read and Write (`api.videos.read` and `api.videos.write`) for `/v1/videos` |
+| Batch permission          | Additional access granted                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Read (`api.batch.read`)   | Files Read (`api.files.read`) for `/v1/files`                                                                                                                                                                                                                                                                                                                                 |
+| Write (`api.batch.write`) | Batch Read<br />List models (`api.model.read` and `model.read`) for `/v1/models`<br />Files Read and Write (`api.files.read` and `api.files.write`) for `/v1/files`<br />Model capabilities Request (`api.model.request` and `model.request`) for `/v1/audio`, `/v1/chat/completions`, `/v1/embeddings`, `/v1/images`, `/v1/moderations`, `/v1/realtime`, and `/v1/responses` |
 
 ## Setting up RBAC
 
 Allow up to **30 minutes** for role changes and group sync to propagate.
 
 1. **Create groups**
-   Add groups for teams (e.g., “Data Science”, “Support”). If you use an IdP, enable SCIM sync so group membership stays current.
+   Add groups for teams (for example, **Data Science** and **Support**). If you use an IdP, enable SCIM sync so group membership stays current.
 
 2. **Create custom roles**
    Start from least privilege. For example:
@@ -90,7 +89,7 @@ Allow up to **30 minutes** for role changes and group sync to propagate.
    Use a non-owner account to confirm expected access (API and Dashboard). Adjust roles if users can see more than they need.
 
 Use the principle of least privilege. Start with the minimum permissions
-  required for a task, then add more only as needed.
+  required for a task, then add permissions only as needed.
 
 ## Access configuration examples
 
@@ -101,7 +100,7 @@ Use the principle of least privilege. Start with the minimum permissions
 
 ### Larger org
 
-- Sync groups from your IdP (e.g., “Research”, “Support”, “Finance”).
+- Sync groups from your IdP (for example, **Research**, **Support**, and **Finance**).
 - Create custom roles per function and assign at the org level; or only grant project-specific roles when a project needs tighter controls.
 
 ### Contractors & vendors
