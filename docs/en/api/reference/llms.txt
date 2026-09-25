@@ -223,11 +223,6 @@ Each entry has a Markdown twin at `/api/reference/<slug>.md`.
 - [Vector Stores Files — List](https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/list.md): OpenAI API endpoint method reference.
 - [Vector Stores Files — Retrieve](https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/retrieve.md): OpenAI API endpoint method reference.
 - [Vector Stores Files — Update](https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/update.md): OpenAI API endpoint method reference.
-- [Videos](https://developers.openai.com/api/reference/resources/videos.md): OpenAI API endpoint reference.
-- [Videos — Create](https://developers.openai.com/api/reference/resources/videos/methods/create.md): OpenAI API endpoint method reference.
-- [Videos — Delete](https://developers.openai.com/api/reference/resources/videos/methods/delete.md): OpenAI API endpoint method reference.
-- [Videos — List](https://developers.openai.com/api/reference/resources/videos/methods/list.md): OpenAI API endpoint method reference.
-- [Videos — Retrieve](https://developers.openai.com/api/reference/resources/videos/methods/retrieve.md): OpenAI API endpoint method reference.
 - [Webhooks events](https://developers.openai.com/api/reference/resources/webhooks.md): OpenAI API streaming event reference.
 
 ## Responses

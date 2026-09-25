@@ -22,7 +22,7 @@ Below are a few ways to consider improving the quality of your training data set
 - Scrutinize existing examples for issues.
   - If your model has grammar, logic, or style issues, check if your data has any of the same issues. For instance, if the model now says "I will schedule this meeting for you" (when it shouldn't), see if existing examples teach the model to say it can do new things that it can't do
 - Consider the balance and diversity of data.
-  - If 60% of the assistant responses in the data says "I cannot answer this", but at inference time only 5% of responses should say that, you will likely get an overabundance of refusals.
+  - If 60% of the assistant responses in the data says "I cannot answer this," but at inference time only 5% of responses should say that, you will likely get an overabundance of refusals.
 - Make sure your training examples contain all of the information needed for the response.
   - If we want the model to compliment a user based on their personal traits and a training example includes assistant compliments for traits not found in the preceding conversation, the model may learn to hallucinate information.
 - Look at the agreement and consistency in the training examples.
@@ -31,7 +31,7 @@ Below are a few ways to consider improving the quality of your training data set
 
 ### Iterating on data quantity
 
-Once you're satisfied with the quality and distribution of the examples, you can consider scaling up the number of training examples. This tends to help the model learn the task better, especially around possible "edge cases". We expect a similar amount of improvement every time you double the number of training examples. You can loosely estimate the expected quality gain from increasing the training data size by:
+Once you're satisfied with the quality and distribution of the examples, you can consider scaling up the number of training examples. This tends to help the model learn the task better, especially around possible "edge cases." We expect a similar amount of improvement every time you double the number of training examples. You can loosely estimate the expected quality gain from increasing the training data size by:
 
 - Fine-tuning on your current dataset
 - Fine-tuning on half of your current dataset

@@ -35,6 +35,18 @@ Schema name: `BetaResponseCreatedEvent`
 
     Unique identifier for this Response.
 
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
+
   - `created_at: number`
 
     Unix timestamp (in seconds) of when this Response was created.
@@ -1947,7 +1959,9 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -2799,7 +2813,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -3193,7 +3207,9 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -3895,7 +3911,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -6708,7 +6724,9 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -7410,7 +7428,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -7800,7 +7818,9 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -8502,7 +8522,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -10081,7 +10101,9 @@ Schema name: `BetaResponseCreatedEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -10783,7 +10805,7 @@ Schema name: `BetaResponseCreatedEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -11449,6 +11471,7 @@ Schema name: `BetaResponseCreatedEvent`
   "response": {
     "id": "resp_67ccfcdd16748190a91872c75d38539e09e4d4aac714747c",
     "object": "response",
+    "access_programs": null,
     "created_at": 1741487325,
     "status": "in_progress",
     "completed_at": null,
@@ -11500,6 +11523,18 @@ Schema name: `BetaResponseInProgressEvent`
   - `id: string`
 
     Unique identifier for this Response.
+
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
 
   - `created_at: number`
 
@@ -13413,7 +13448,9 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -14265,7 +14302,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -14659,7 +14696,9 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -15361,7 +15400,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -18174,7 +18213,9 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -18876,7 +18917,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -19266,7 +19307,9 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -19968,7 +20011,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -21547,7 +21590,9 @@ Schema name: `BetaResponseInProgressEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -22249,7 +22294,7 @@ Schema name: `BetaResponseInProgressEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -22915,6 +22960,7 @@ Schema name: `BetaResponseInProgressEvent`
   "response": {
     "id": "resp_67ccfcdd16748190a91872c75d38539e09e4d4aac714747c",
     "object": "response",
+    "access_programs": null,
     "created_at": 1741487325,
     "status": "in_progress",
     "completed_at": null,
@@ -22966,6 +23012,18 @@ Schema name: `BetaResponseCompletedEvent`
   - `id: string`
 
     Unique identifier for this Response.
+
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
 
   - `created_at: number`
 
@@ -24879,7 +24937,9 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -25731,7 +25791,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -26125,7 +26185,9 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -26827,7 +26889,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -29640,7 +29702,9 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -30342,7 +30406,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -30732,7 +30796,9 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -31434,7 +31500,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -33013,7 +33079,9 @@ Schema name: `BetaResponseCompletedEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -33715,7 +33783,7 @@ Schema name: `BetaResponseCompletedEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -34381,6 +34449,7 @@ Schema name: `BetaResponseCompletedEvent`
   "response": {
     "id": "resp_123",
     "object": "response",
+    "access_programs": null,
     "created_at": 1740855869,
     "status": "completed",
     "completed_at": 1740855870,
@@ -34449,6 +34518,18 @@ Schema name: `BetaResponseFailedEvent`
   - `id: string`
 
     Unique identifier for this Response.
+
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
 
   - `created_at: number`
 
@@ -36362,7 +36443,9 @@ Schema name: `BetaResponseFailedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -37214,7 +37297,7 @@ Schema name: `BetaResponseFailedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -37608,7 +37691,9 @@ Schema name: `BetaResponseFailedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -38310,7 +38395,7 @@ Schema name: `BetaResponseFailedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -41123,7 +41208,9 @@ Schema name: `BetaResponseFailedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -41825,7 +41912,7 @@ Schema name: `BetaResponseFailedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -42215,7 +42302,9 @@ Schema name: `BetaResponseFailedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -42917,7 +43006,7 @@ Schema name: `BetaResponseFailedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -44496,7 +44585,9 @@ Schema name: `BetaResponseFailedEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -45198,7 +45289,7 @@ Schema name: `BetaResponseFailedEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -45864,6 +45955,7 @@ Schema name: `BetaResponseFailedEvent`
   "response": {
     "id": "resp_123",
     "object": "response",
+    "access_programs": null,
     "created_at": 1740855869,
     "status": "failed",
     "completed_at": null,
@@ -45917,6 +46009,18 @@ Schema name: `BetaResponseIncompleteEvent`
   - `id: string`
 
     Unique identifier for this Response.
+
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
 
   - `created_at: number`
 
@@ -47830,7 +47934,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -48682,7 +48788,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -49076,7 +49182,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -49778,7 +49886,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -52591,7 +52699,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -53293,7 +53403,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -53683,7 +53793,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -54385,7 +54497,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -55964,7 +56076,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -56666,7 +56780,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -57332,6 +57446,7 @@ Schema name: `BetaResponseIncompleteEvent`
   "response": {
     "id": "resp_123",
     "object": "response",
+    "access_programs": null,
     "created_at": 1740855869,
     "status": "incomplete",
     "completed_at": null,
@@ -59159,7 +59274,9 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -60011,7 +60128,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -60401,7 +60518,9 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -61103,7 +61222,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -64042,7 +64161,9 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -64894,7 +65015,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -65284,7 +65405,9 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -65986,7 +66109,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -69638,6 +69761,18 @@ Schema name: `BetaResponseQueuedEvent`
 
     Unique identifier for this Response.
 
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
+
   - `created_at: number`
 
     Unix timestamp (in seconds) of when this Response was created.
@@ -71550,7 +71685,9 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -72402,7 +72539,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -72796,7 +72933,9 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -73498,7 +73637,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -76311,7 +76450,9 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -77013,7 +77154,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -77403,7 +77544,9 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -78105,7 +78248,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -79684,7 +79827,9 @@ Schema name: `BetaResponseQueuedEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -80386,7 +80531,7 @@ Schema name: `BetaResponseQueuedEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 

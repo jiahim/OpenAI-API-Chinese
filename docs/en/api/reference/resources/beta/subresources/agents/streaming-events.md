@@ -298,7 +298,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
           Automatically selects the most detailed summary supported by the model.
 
-    - `service_tier: "auto" or "default" or "flex" or 2 more`
+    - `service_tier: "auto" or "default" or "flex" or 3 more`
 
       The effective service-tier policy for model requests. Defaults to `auto`.
 
@@ -311,6 +311,8 @@ Schema name: `SessionEventAgentSessionCreated`
       - `"priority"`
 
       - `"fast"`
+
+      - `"ultrafast"`
 
     - `text: AgentText`
 
@@ -998,7 +1000,7 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 14 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
 
       A stable, machine-readable failure category.
 
@@ -1029,6 +1031,10 @@ Schema name: `SessionEventAgentSessionTurnCreated`
       - `"cyber_policy"`
 
         The request was rejected by a safety policy.
+
+      - `"misalignment_policy_violation"`
+
+        The request was blocked by the safety systems.
 
       - `"connection_failed"`
 
@@ -1241,7 +1247,7 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 14 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
 
       A stable, machine-readable failure category.
 
@@ -1272,6 +1278,10 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
       - `"cyber_policy"`
 
         The request was rejected by a safety policy.
+
+      - `"misalignment_policy_violation"`
+
+        The request was blocked by the safety systems.
 
       - `"connection_failed"`
 
@@ -1484,7 +1494,7 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 14 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
 
       A stable, machine-readable failure category.
 
@@ -1515,6 +1525,10 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
       - `"cyber_policy"`
 
         The request was rejected by a safety policy.
+
+      - `"misalignment_policy_violation"`
+
+        The request was blocked by the safety systems.
 
       - `"connection_failed"`
 
@@ -1742,7 +1756,7 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 14 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
 
       A stable, machine-readable failure category.
 
@@ -1773,6 +1787,10 @@ Schema name: `SessionEventAgentSessionTurnFailed`
       - `"cyber_policy"`
 
         The request was rejected by a safety policy.
+
+      - `"misalignment_policy_violation"`
+
+        The request was blocked by the safety systems.
 
       - `"connection_failed"`
 
@@ -2000,7 +2018,7 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 14 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
 
       A stable, machine-readable failure category.
 
@@ -2031,6 +2049,10 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
       - `"cyber_policy"`
 
         The request was rejected by a safety policy.
+
+      - `"misalignment_policy_violation"`
+
+        The request was blocked by the safety systems.
 
       - `"connection_failed"`
 
@@ -3070,7 +3092,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
           Automatically selects the most detailed summary supported by the model.
 
-    - `service_tier: "auto" or "default" or "flex" or 2 more`
+    - `service_tier: "auto" or "default" or "flex" or 3 more`
 
       The effective service-tier policy for model requests. Defaults to `auto`.
 
@@ -3083,6 +3105,8 @@ Schema name: `SessionEventAgentSessionIdle`
       - `"priority"`
 
       - `"fast"`
+
+      - `"ultrafast"`
 
     - `text: AgentText`
 
@@ -3820,7 +3844,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           Automatically selects the most detailed summary supported by the model.
 
-    - `service_tier: "auto" or "default" or "flex" or 2 more`
+    - `service_tier: "auto" or "default" or "flex" or 3 more`
 
       The effective service-tier policy for model requests. Defaults to `auto`.
 
@@ -3833,6 +3857,8 @@ Schema name: `SessionEventAgentSessionInProgress`
       - `"priority"`
 
       - `"fast"`
+
+      - `"ultrafast"`
 
     - `text: AgentText`
 
@@ -4570,7 +4596,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           Automatically selects the most detailed summary supported by the model.
 
-    - `service_tier: "auto" or "default" or "flex" or 2 more`
+    - `service_tier: "auto" or "default" or "flex" or 3 more`
 
       The effective service-tier policy for model requests. Defaults to `auto`.
 
@@ -4583,6 +4609,8 @@ Schema name: `SessionEventAgentSessionRequiresAction`
       - `"priority"`
 
       - `"fast"`
+
+      - `"ultrafast"`
 
     - `text: AgentText`
 
@@ -5320,7 +5348,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
           Automatically selects the most detailed summary supported by the model.
 
-    - `service_tier: "auto" or "default" or "flex" or 2 more`
+    - `service_tier: "auto" or "default" or "flex" or 3 more`
 
       The effective service-tier policy for model requests. Defaults to `auto`.
 
@@ -5333,6 +5361,8 @@ Schema name: `SessionEventAgentSessionFailed`
       - `"priority"`
 
       - `"fast"`
+
+      - `"ultrafast"`
 
     - `text: AgentText`
 
