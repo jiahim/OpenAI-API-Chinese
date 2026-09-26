@@ -1,6 +1,6 @@
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
+> 如需完整文档索引,请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
-## 取消向量存储文件批处理
+## 取消向量存储文件批次
 
 **post** `/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel`
 
@@ -20,17 +20,17 @@
 
   - `id: string`
 
-    可在 API 端点中引用的标识符。
+    该标识符，可以在 API 端点中引用。
 
   - `created_at: number`
 
-    向量存储文件批次的创建时间（Unix 时间戳，以秒为单位）。
+    向量存储文件批次创建时的 Unix 时间戳（以秒为单位）。
 
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
     - `cancelled: number`
 
-      已被取消的文件数量。
+      已取消的文件数量。
 
     - `completed: number`
 
@@ -38,11 +38,11 @@
 
     - `failed: number`
 
-      处理失败的的文件数量。
+      处理失败的文件的数量。
 
     - `in_progress: number`
 
-      当前正在处理中的文件数量。
+      当前正在处理的文件数量。
 
     - `total: number`
 
@@ -68,7 +68,7 @@
 
   - `vector_store_id: string`
 
-    所附加到的 [向量存储](/api/reference/resources/vector_stores) 的 [文件](/api/reference/resources/files) 的 ID。
+    的 ID [vector store](/api/reference/resources/vector_stores) 该 [File](/api/reference/resources/files) 所附加到的。
 
 ### 示例
 
@@ -122,7 +122,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
     "completed": 3,
     "failed": 0,
     "cancelled": 0,
-    "total": 15,
+    "total": 15
   }
 }
 ```

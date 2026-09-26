@@ -1,22 +1,22 @@
-# Vector Stores
+# 向量存储
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt).可在页面 URL 后追加 `.md` 以获取文档页面的 Markdown 版本。
 
-## Create vector store
+## 创建向量存储
 
 **post** `/vector_stores`
 
-创建一个向量存储。
+创建向量存储。
 
-### Body 参数
+### 正文参数
 
 - `chunking_strategy: optional AutoFileChunkingStrategyParam or StaticFileChunkingStrategyObjectParam`
 
-  用于对文件进行分块的分块策略。如果未设置，将使用 `auto` 策略。仅在 `file_ids` 非空时适用。
+  用于对文件进行分块的分块策略。如果未设置，则使用 `auto` 策略。仅当 `file_ids` 非空时适用。
 
   - `AutoFileChunkingStrategyParam object { type }`
 
-    默认策略。该策略当前使用 `max_chunk_size_tokens` 大小为 `800` ，块重叠为 `chunk_overlap_tokens` 大小为 `400`.
+    默认策略。此策略当前使用 `max_chunk_size_tokens` 为 `800` 和 `chunk_overlap_tokens` 为 `400`.
 
     - `type: "auto"`
 
@@ -32,13 +32,13 @@
 
       - `chunk_overlap_tokens: number`
 
-        块之间重叠的 token 数。默认值为 `400`.
+        块之间重叠的 token 数量。默认值为 `400`.
 
-        请注意，重叠部分不得超过 `max_chunk_size_tokens`.
+        请注意，重叠不能超过 `max_chunk_size_tokens`.
 
       - `max_chunk_size_tokens: number`
 
-        每个块中最大的 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+        每个块中的最大 token 数量。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
     - `type: "static"`
 
@@ -56,23 +56,23 @@
 
   - `anchor: "last_active_at"`
 
-    应用过期策略的锚定时间戳。支持的锚点： `last_active_at`.
+    过期策略生效的锚点时间戳。支持以下锚点： `last_active_at`.
 
     - `"last_active_at"`
 
   - `days: number`
 
-    向量存储在锚定时间之后过期的天数。
+    在锚点时间之后向量存储将过期的天数。
 
 - `file_ids: optional array of string`
 
-  一个由 [File](/api/reference/resources/files) ID 组成的列表，向量存储应使用这些 ID。适用于 `file_search` 可用于访问文件。
+  一个 [文件](/api/reference/resources/files) ID 的列表，供向量存储使用。可用于 `file_search` 可用于访问文件。
 
 - `metadata: optional Metadata or null`
 
-  可附加到对象的 16 个键值对集合。可用于
-  以结构化格式存储对象的附加信息，以及通过
-  API 或仪表板查询对象。
+  可附加到对象的 16 组键值对。这可以
+  用于以结构化格式存储有关对象的附加信息，
+  并通过 API 或控制台查询对象。
 
   键为字符串，最大长度为 64 个字符。值为字符串，
   最大长度为 512 个字符。
@@ -81,15 +81,15 @@
 
   向量存储的名称。
 
-### 返回值
+### Returns
 
 - `VectorStore object { id, created_at, file_counts, 8 more }`
 
-  向量存储是被处理过的文件的集合，可供以下工具使用 `file_search` 使用。
+  向量存储是已处理文件的集合，可供以下工具使用 `file_search` 工具使用。
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
@@ -103,15 +103,15 @@
 
     - `completed: number`
 
-      已成功处理的文件的数量。
+      已成功处理的文件数量。
 
     - `failed: number`
 
-      处理失败的文件的数量。
+      处理失败的文件数量。
 
     - `in_progress: number`
 
-      当前正在处理的文件的数量。
+      当前正在处理的文件数量。
 
     - `total: number`
 
@@ -123,9 +123,9 @@
 
   - `metadata: Metadata or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储对象的附加信息，以及通过
-    API 或仪表板查询对象。
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
+    并通过 API 或控制台查询对象。
 
     键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
@@ -142,7 +142,7 @@
 
   - `status: "expired" or "in_progress" or "completed"`
 
-    向量存储的状态，可以是 `expired`, `in_progress`，或 `completed`。状态为 `completed` 表示向量存储已准备好可供使用。
+    向量存储的状态，可为 `expired`, `in_progress`，或 `completed`。状态为 `completed` 表示该向量存储可供使用。
 
     - `"expired"`
 
@@ -152,7 +152,7 @@
 
   - `usage_bytes: number`
 
-    向量存储中所有文件所占用的字节总数。
+    向量存储中所有文件占用的总字节数。
 
   - `expires_after: optional object { anchor, days }`
 
@@ -160,17 +160,17 @@
 
     - `anchor: "last_active_at"`
 
-      应用过期策略的锚定时间戳。支持的锚点： `last_active_at`.
+      过期策略生效的锚点时间戳。支持以下锚点： `last_active_at`.
 
       - `"last_active_at"`
 
     - `days: number`
 
-      向量存储在锚定时间之后过期的天数。
+      在锚点时间之后向量存储将过期的天数。
 
   - `expires_at: optional number or null`
 
-    向量存储过期时的 Unix 时间戳（以秒为单位）。
+    向量存储到期时的 Unix 时间戳（以秒为单位）。
 
 ### 示例
 
@@ -253,7 +253,7 @@ curl https://api.openai.com/v1/vector_stores \
 
 - `vector_store_id: string`
 
-### 返回值
+### Returns
 
 - `VectorStoreDeleted object { id, deleted, object }`
 
@@ -298,9 +298,9 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
 ```json
 {
-  id: "vs_abc123",
-  object: "vector_store.deleted",
-  deleted: true
+  "id": "vs_abc123",
+  "object": "vector_store.deleted",
+  "deleted": true
 }
 ```
 
@@ -314,15 +314,15 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
 - `after: optional string`
 
-  用于分页游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起一个列表请求并收到 100 个对象，以 obj_foo 结尾，则后续调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页的游标。 `after` 是一个用于定义列表中位置的对象 ID。例如，如果你发起一个列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的后续调用可以包含 after=obj_foo，以便获取列表的下一页。
 
 - `before: optional string`
 
-  用于分页游标。 `before` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起一个列表请求并收到 100 个对象，以 obj_foo 开头，则后续调用可以包含 before=obj_foo 以获取列表的上一页。
+  用于分页的游标。 `before` 是一个用于定义列表中位置的对象 ID。例如，如果你发起一个列表请求并收到 100 个对象，以 obj_foo 开头，那么你的后续调用可以包含 before=obj_foo，以便获取列表的上一页。
 
 - `limit: optional number`
 
-  要返回的对象数量上限。限制范围为 1 到 100，默认值为 20。
+  返回对象的数量上限。范围在 1 到 100 之间，默认值为 20。
 
 - `order: optional "asc" or "desc"`
 
@@ -332,13 +332,13 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `"desc"`
 
-### 返回值
+### Returns
 
 - `data: array of VectorStore`
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
@@ -352,15 +352,15 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
     - `completed: number`
 
-      已成功处理的文件的数量。
+      已成功处理的文件数量。
 
     - `failed: number`
 
-      处理失败的文件的数量。
+      处理失败的文件数量。
 
     - `in_progress: number`
 
-      当前正在处理的文件的数量。
+      当前正在处理的文件数量。
 
     - `total: number`
 
@@ -372,9 +372,9 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `metadata: Metadata or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储对象的附加信息，以及通过
-    API 或仪表板查询对象。
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
+    并通过 API 或控制台查询对象。
 
     键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
@@ -391,7 +391,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `status: "expired" or "in_progress" or "completed"`
 
-    向量存储的状态，可以是 `expired`, `in_progress`，或 `completed`。状态为 `completed` 表示向量存储已准备好可供使用。
+    向量存储的状态，可为 `expired`, `in_progress`，或 `completed`。状态为 `completed` 表示该向量存储可供使用。
 
     - `"expired"`
 
@@ -401,7 +401,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `usage_bytes: number`
 
-    向量存储中所有文件所占用的字节总数。
+    向量存储中所有文件占用的总字节数。
 
   - `expires_after: optional object { anchor, days }`
 
@@ -409,17 +409,17 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
     - `anchor: "last_active_at"`
 
-      应用过期策略的锚定时间戳。支持的锚点： `last_active_at`.
+      过期策略生效的锚点时间戳。支持以下锚点： `last_active_at`.
 
       - `"last_active_at"`
 
     - `days: number`
 
-      向量存储在锚定时间之后过期的天数。
+      在锚点时间之后向量存储将过期的天数。
 
   - `expires_at: optional number or null`
 
-    向量存储过期时的 Unix 时间戳（以秒为单位）。
+    向量存储到期时的 Unix 时间戳（以秒为单位）。
 
 - `first_id: string`
 
@@ -530,21 +530,21 @@ curl https://api.openai.com/v1/vector_stores \
 
 **get** `/vector_stores/{vector_store_id}`
 
-检索向量存储。
+检索一个向量存储。
 
 ### 路径参数
 
 - `vector_store_id: string`
 
-### 返回值
+### Returns
 
 - `VectorStore object { id, created_at, file_counts, 8 more }`
 
-  向量存储是被处理过的文件的集合，可供以下工具使用 `file_search` 使用。
+  向量存储是已处理文件的集合，可供以下工具使用 `file_search` 工具使用。
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
@@ -558,15 +558,15 @@ curl https://api.openai.com/v1/vector_stores \
 
     - `completed: number`
 
-      已成功处理的文件的数量。
+      已成功处理的文件数量。
 
     - `failed: number`
 
-      处理失败的文件的数量。
+      处理失败的文件数量。
 
     - `in_progress: number`
 
-      当前正在处理的文件的数量。
+      当前正在处理的文件数量。
 
     - `total: number`
 
@@ -578,9 +578,9 @@ curl https://api.openai.com/v1/vector_stores \
 
   - `metadata: Metadata or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储对象的附加信息，以及通过
-    API 或仪表板查询对象。
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
+    并通过 API 或控制台查询对象。
 
     键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
@@ -597,7 +597,7 @@ curl https://api.openai.com/v1/vector_stores \
 
   - `status: "expired" or "in_progress" or "completed"`
 
-    向量存储的状态，可以是 `expired`, `in_progress`，或 `completed`。状态为 `completed` 表示向量存储已准备好可供使用。
+    向量存储的状态，可为 `expired`, `in_progress`，或 `completed`。状态为 `completed` 表示该向量存储可供使用。
 
     - `"expired"`
 
@@ -607,7 +607,7 @@ curl https://api.openai.com/v1/vector_stores \
 
   - `usage_bytes: number`
 
-    向量存储中所有文件所占用的字节总数。
+    向量存储中所有文件占用的总字节数。
 
   - `expires_after: optional object { anchor, days }`
 
@@ -615,17 +615,17 @@ curl https://api.openai.com/v1/vector_stores \
 
     - `anchor: "last_active_at"`
 
-      应用过期策略的锚定时间戳。支持的锚点： `last_active_at`.
+      过期策略生效的锚点时间戳。支持以下锚点： `last_active_at`.
 
       - `"last_active_at"`
 
     - `days: number`
 
-      向量存储在锚定时间之后过期的天数。
+      在锚点时间之后向量存储将过期的天数。
 
   - `expires_at: optional number or null`
 
-    向量存储过期时的 Unix 时间戳（以秒为单位）。
+    向量存储到期时的 Unix 时间戳（以秒为单位）。
 
 ### 示例
 
@@ -687,17 +687,17 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
 **post** `/vector_stores/{vector_store_id}/search`
 
-基于查询和文件属性筛选器，在向量存储中搜索相关分块。
+基于查询和文件属性过滤器在向量存储中搜索相关分块。
 
 ### 路径参数
 
 - `vector_store_id: string`
 
-### Body 参数
+### 正文参数
 
 - `query: string or array of string`
 
-  用于搜索的查询字符串
+  搜索的查询字符串
 
   - `string`
 
@@ -705,15 +705,15 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
 - `filters: optional ComparisonFilter or CompoundFilter`
 
-  基于文件属性应用的过滤器。
+  基于文件属性应用的筛选条件。
 
   - `ComparisonFilter object { key, type, value }`
 
-    用于使用定义的比较运算将指定属性键与给定值进行比较的过滤器。
+    用于使用定义的比较运算将指定的属性键与给定值进行比较的筛选条件。
 
     - `key: string`
 
-      要与值进行比较的键。
+      用于与值进行比较的键。
 
     - `type: "eq" or "ne" or "gt" or 5 more`
 
@@ -725,8 +725,8 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
       - `gte`：大于或等于
       - `lt`：小于
       - `lte`：小于或等于
-      - `in`：包含于
-      - `nin`：不包含于
+      - `in`：属于
+      - `nin`：不属于
 
       - `"eq"`
 
@@ -746,7 +746,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
     - `value: string or number or boolean or array of string or number`
 
-      要与属性键进行比较的值；支持字符串、数字或布尔类型。
+      用于与属性键进行比较的值；支持字符串、数字或布尔类型。
 
       - `string`
 
@@ -762,15 +762,15 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `CompoundFilter object { filters, type }`
 
-    使用以下方式组合多个过滤器 `and` 或 `or`.
+    使用以下方式组合多个筛选条件 `and` 或 `or`.
 
     - `filters: array of ComparisonFilter or unknown`
 
-      要组合的过滤器数组。项可以是 `ComparisonFilter` 或 `CompoundFilter`.
+      要组合的筛选条件数组。条目可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
       - `ComparisonFilter object { key, type, value }`
 
-        用于使用定义的比较运算将指定属性键与给定值进行比较的过滤器。
+        用于使用定义的比较运算将指定的属性键与给定值进行比较的筛选条件。
 
       - `unknown`
 
@@ -784,7 +784,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
 - `max_num_results: optional number`
 
-  要返回的最大结果数。此数值应介于 1 到 50 之间（含 1 和 50）。
+  返回的最大结果数。该数值应在 1 到 50 之间（含）。
 
 - `ranking_options: optional object { ranker, score_threshold }`
 
@@ -792,7 +792,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `ranker: optional "none" or "auto" or "default-2024-11-15"`
 
-    启用重排序；设置为 `none` 可禁用，这有助于降低延迟。
+    启用重排序；设为 `none` 以禁用，这有助于降低延迟。
 
     - `"none"`
 
@@ -804,21 +804,21 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
 - `rewrite_query: optional boolean`
 
-  是否改写用于向量搜索的自然语言查询。
+  是否重写用于向量搜索的自然语言查询。
 
-### 返回值
+### Returns
 
 - `data: array of object { attributes, content, file_id, 2 more }`
 
-  搜索结果项列表。
+  搜索结果项的列表。
 
   - `attributes: map[string or number or boolean] or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储对象的附加信息，以及通过
-    format，并通过 API 或控制台查询对象。键为字符串
-    ，最大长度为 64 个字符。值为最大长度为
-    512 个字符的字符串、布尔值或数字。
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
+    格式，并通过 API 或控制面板查询对象。键为字符串，
+    最大长度为 64 个字符。值为字符串，最大
+    长度为 512 个字符、布尔值或数字。
 
     - `string`
 
@@ -828,7 +828,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `content: array of object { text, type }`
 
-    文件的内容片段。
+    文件中的内容分块。
 
     - `text: string`
 
@@ -850,11 +850,11 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `score: number`
 
-    结果的相似度评分。
+    结果的相似度分数。
 
 - `has_more: boolean`
 
-  指示是否还有更多结果可获取。
+  指示是否还有更多结果可供获取。
 
 - `next_page: string or null`
 
@@ -924,7 +924,7 @@ https://api.openai.com/v1/vector_stores/vs_abc123/search \
 ```json
 {
   "object": "vector_store.search_results.page",
-  "search_query": "What is the return policy?",
+  "search_query": ["What is the return policy?"],
   "data": [
     {
       "file_id": "file_123",
@@ -972,7 +972,7 @@ https://api.openai.com/v1/vector_stores/vs_abc123/search \
 
 - `vector_store_id: string`
 
-### Body 参数
+### 正文参数
 
 - `expires_after: optional object { anchor, days }  or null`
 
@@ -980,19 +980,19 @@ https://api.openai.com/v1/vector_stores/vs_abc123/search \
 
   - `anchor: "last_active_at"`
 
-    应用过期策略的锚定时间戳。支持的锚点： `last_active_at`.
+    过期策略生效的锚点时间戳。支持以下锚点： `last_active_at`.
 
     - `"last_active_at"`
 
   - `days: number`
 
-    向量存储在锚定时间之后过期的天数。
+    在锚点时间之后向量存储将过期的天数。
 
 - `metadata: optional Metadata or null`
 
-  可附加到对象的 16 个键值对集合。可用于
-  以结构化格式存储对象的附加信息，以及通过
-  API 或仪表板查询对象。
+  可附加到对象的 16 组键值对。这可以
+  用于以结构化格式存储有关对象的附加信息，
+  并通过 API 或控制台查询对象。
 
   键为字符串，最大长度为 64 个字符。值为字符串，
   最大长度为 512 个字符。
@@ -1001,15 +1001,15 @@ https://api.openai.com/v1/vector_stores/vs_abc123/search \
 
   向量存储的名称。
 
-### 返回值
+### Returns
 
 - `VectorStore object { id, created_at, file_counts, 8 more }`
 
-  向量存储是被处理过的文件的集合，可供以下工具使用 `file_search` 使用。
+  向量存储是已处理文件的集合，可供以下工具使用 `file_search` 工具使用。
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
@@ -1023,15 +1023,15 @@ https://api.openai.com/v1/vector_stores/vs_abc123/search \
 
     - `completed: number`
 
-      已成功处理的文件的数量。
+      已成功处理的文件数量。
 
     - `failed: number`
 
-      处理失败的文件的数量。
+      处理失败的文件数量。
 
     - `in_progress: number`
 
-      当前正在处理的文件的数量。
+      当前正在处理的文件数量。
 
     - `total: number`
 
@@ -1043,9 +1043,9 @@ https://api.openai.com/v1/vector_stores/vs_abc123/search \
 
   - `metadata: Metadata or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储对象的附加信息，以及通过
-    API 或仪表板查询对象。
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
+    并通过 API 或控制台查询对象。
 
     键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
@@ -1062,7 +1062,7 @@ https://api.openai.com/v1/vector_stores/vs_abc123/search \
 
   - `status: "expired" or "in_progress" or "completed"`
 
-    向量存储的状态，可以是 `expired`, `in_progress`，或 `completed`。状态为 `completed` 表示向量存储已准备好可供使用。
+    向量存储的状态，可为 `expired`, `in_progress`，或 `completed`。状态为 `completed` 表示该向量存储可供使用。
 
     - `"expired"`
 
@@ -1072,7 +1072,7 @@ https://api.openai.com/v1/vector_stores/vs_abc123/search \
 
   - `usage_bytes: number`
 
-    向量存储中所有文件所占用的字节总数。
+    向量存储中所有文件占用的总字节数。
 
   - `expires_after: optional object { anchor, days }`
 
@@ -1080,17 +1080,17 @@ https://api.openai.com/v1/vector_stores/vs_abc123/search \
 
     - `anchor: "last_active_at"`
 
-      应用过期策略的锚定时间戳。支持的锚点： `last_active_at`.
+      过期策略生效的锚点时间戳。支持以下锚点： `last_active_at`.
 
       - `"last_active_at"`
 
     - `days: number`
 
-      向量存储在锚定时间之后过期的天数。
+      在锚点时间之后向量存储将过期的天数。
 
   - `expires_at: optional number or null`
 
-    向量存储过期时的 Unix 时间戳（以秒为单位）。
+    向量存储到期时的 Unix 时间戳（以秒为单位）。
 
 ### 示例
 
@@ -1163,13 +1163,13 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 }
 ```
 
-## Domain Types
+## 域名类型
 
-### Auto File Chunking Strategy Param
+### Auto 文件分块策略参数
 
 - `AutoFileChunkingStrategyParam object { type }`
 
-  默认策略。该策略当前使用 `max_chunk_size_tokens` 大小为 `800` ，块重叠为 `chunk_overlap_tokens` 大小为 `400`.
+  默认策略。此策略当前使用 `max_chunk_size_tokens` 为 `800` 和 `chunk_overlap_tokens` 为 `400`.
 
   - `type: "auto"`
 
@@ -1177,15 +1177,15 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
     - `"auto"`
 
-### File Chunking Strategy Param
+### 文件分块策略参数
 
 - `FileChunkingStrategyParam = AutoFileChunkingStrategyParam or StaticFileChunkingStrategyObjectParam`
 
-  用于对文件进行分块的分块策略。如果未设置，将使用 `auto` strategy。
+  用于对文件进行分块的分块策略。如果未设置，则使用 `auto` 策略。
 
   - `AutoFileChunkingStrategyParam object { type }`
 
-    默认策略。该策略当前使用 `max_chunk_size_tokens` 大小为 `800` ，块重叠为 `chunk_overlap_tokens` 大小为 `400`.
+    默认策略。此策略当前使用 `max_chunk_size_tokens` 为 `800` 和 `chunk_overlap_tokens` 为 `400`.
 
     - `type: "auto"`
 
@@ -1201,13 +1201,13 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
       - `chunk_overlap_tokens: number`
 
-        块之间重叠的 token 数。默认值为 `400`.
+        块之间重叠的 token 数量。默认值为 `400`.
 
-        请注意，重叠部分不得超过 `max_chunk_size_tokens`.
+        请注意，重叠不能超过 `max_chunk_size_tokens`.
 
       - `max_chunk_size_tokens: number`
 
-        每个块中最大的 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+        每个块中的最大 token 数量。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
     - `type: "static"`
 
@@ -1219,7 +1219,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
 - `OtherFileChunkingStrategyObject object { type }`
 
-  当分块策略未知时返回此值。通常是因为文件在 `chunking_strategy` 概念被引入 API 之前就已建立索引。
+  当分块策略未知时返回此错误。通常是因为文件在引入该概念的 接口 版本之前已被索引。 `chunking_strategy` concept was introduced in the API.
 
   - `type: "other"`
 
@@ -1233,13 +1233,13 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `chunk_overlap_tokens: number`
 
-    块之间重叠的 token 数。默认值为 `400`.
+    块之间重叠的 token 数量。默认值为 `400`.
 
-    请注意，重叠部分不得超过 `max_chunk_size_tokens`.
+    请注意，重叠不能超过 `max_chunk_size_tokens`.
 
   - `max_chunk_size_tokens: number`
 
-    每个块中最大的 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+    每个块中的最大 token 数量。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
 ### 静态文件分块策略对象
 
@@ -1249,13 +1249,13 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
     - `chunk_overlap_tokens: number`
 
-      块之间重叠的 token 数。默认值为 `400`.
+      块之间重叠的 token 数量。默认值为 `400`.
 
-      请注意，重叠部分不得超过 `max_chunk_size_tokens`.
+      请注意，重叠不能超过 `max_chunk_size_tokens`.
 
     - `max_chunk_size_tokens: number`
 
-      每个块中最大的 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+      每个块中的最大 token 数量。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
   - `type: "static"`
 
@@ -1273,13 +1273,13 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
     - `chunk_overlap_tokens: number`
 
-      块之间重叠的 token 数。默认值为 `400`.
+      块之间重叠的 token 数量。默认值为 `400`.
 
-      请注意，重叠部分不得超过 `max_chunk_size_tokens`.
+      请注意，重叠不能超过 `max_chunk_size_tokens`.
 
     - `max_chunk_size_tokens: number`
 
-      每个块中最大的 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+      每个块中的最大 token 数量。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
   - `type: "static"`
 
@@ -1291,11 +1291,11 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
 - `VectorStore object { id, created_at, file_counts, 8 more }`
 
-  向量存储是被处理过的文件的集合，可供以下工具使用 `file_search` 使用。
+  向量存储是已处理文件的集合，可供以下工具使用 `file_search` 工具使用。
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
@@ -1309,15 +1309,15 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
     - `completed: number`
 
-      已成功处理的文件的数量。
+      已成功处理的文件数量。
 
     - `failed: number`
 
-      处理失败的文件的数量。
+      处理失败的文件数量。
 
     - `in_progress: number`
 
-      当前正在处理的文件的数量。
+      当前正在处理的文件数量。
 
     - `total: number`
 
@@ -1329,9 +1329,9 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `metadata: Metadata or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储对象的附加信息，以及通过
-    API 或仪表板查询对象。
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
+    并通过 API 或控制台查询对象。
 
     键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
@@ -1348,7 +1348,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `status: "expired" or "in_progress" or "completed"`
 
-    向量存储的状态，可以是 `expired`, `in_progress`，或 `completed`。状态为 `completed` 表示向量存储已准备好可供使用。
+    向量存储的状态，可为 `expired`, `in_progress`，或 `completed`。状态为 `completed` 表示该向量存储可供使用。
 
     - `"expired"`
 
@@ -1358,7 +1358,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `usage_bytes: number`
 
-    向量存储中所有文件所占用的字节总数。
+    向量存储中所有文件占用的总字节数。
 
   - `expires_after: optional object { anchor, days }`
 
@@ -1366,17 +1366,17 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
     - `anchor: "last_active_at"`
 
-      应用过期策略的锚定时间戳。支持的锚点： `last_active_at`.
+      过期策略生效的锚点时间戳。支持以下锚点： `last_active_at`.
 
       - `"last_active_at"`
 
     - `days: number`
 
-      向量存储在锚定时间之后过期的天数。
+      在锚点时间之后向量存储将过期的天数。
 
   - `expires_at: optional number or null`
 
-    向量存储过期时的 Unix 时间戳（以秒为单位）。
+    向量存储到期时的 Unix 时间戳（以秒为单位）。
 
 ### 向量存储已删除
 
@@ -1396,11 +1396,11 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `attributes: map[string or number or boolean] or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储对象的附加信息，以及通过
-    format，并通过 API 或控制台查询对象。键为字符串
-    ，最大长度为 64 个字符。值为最大长度为
-    512 个字符的字符串、布尔值或数字。
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
+    格式，并通过 API 或控制面板查询对象。键为字符串，
+    最大长度为 64 个字符。值为字符串，最大
+    长度为 512 个字符、布尔值或数字。
 
     - `string`
 
@@ -1410,7 +1410,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `content: array of object { text, type }`
 
-    文件的内容片段。
+    文件中的内容分块。
 
     - `text: string`
 
@@ -1432,7 +1432,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `score: number`
 
-    结果的相似度评分。
+    结果的相似度分数。
 
 # 文件批次
 
@@ -1440,7 +1440,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
 **post** `/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel`
 
-取消一个向量存储文件批次。该操作会尽快尝试取消该批次中文件的处理。
+取消一个向量存储文件批次。此操作会尽快取消该批次中文件的处理。
 
 ### 路径参数
 
@@ -1448,7 +1448,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
 - `batch_id: string`
 
-### 返回值
+### Returns
 
 - `VectorStoreFileBatch object { id, created_at, file_counts, 3 more }`
 
@@ -1456,11 +1456,11 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
-    向量存储文件批次的创建时间（Unix 时间戳，以秒为单位）。
+    向量存储文件批次创建时的 Unix 时间戳(以秒为单位)。
 
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
@@ -1470,15 +1470,15 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
     - `completed: number`
 
-      已处理完成的文件数量。
+      已被处理的文件数量。
 
     - `failed: number`
 
-      处理失败的文件的数量。
+      处理失败的文件数量。
 
     - `in_progress: number`
 
-      当前正在处理的文件的数量。
+      当前正在处理的文件数量。
 
     - `total: number`
 
@@ -1492,7 +1492,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
-    向量存储文件批次的状态，可以是 `in_progress`, `completed`, `cancelled` 或 `failed`.
+    向量存储文件批次的状态,可为 `in_progress`, `completed`, `cancelled` 或 `failed`.
 
     - `"in_progress"`
 
@@ -1504,7 +1504,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `vector_store_id: string`
 
-    所附加到的 [向量存储](/api/reference/resources/vector_stores) 的 ID，该 [File](/api/reference/resources/files) 已附加到该向量存储。
+    所关联的 [向量存储](/api/reference/resources/vector_stores) 的 ID,以及该文件批次 [文件](/api/reference/resources/files) 所附加到的对象。
 
 ### 示例
 
@@ -1558,7 +1558,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
     "completed": 3,
     "failed": 0,
     "cancelled": 0,
-    "total": 15,
+    "total": 15
   }
 }
 ```
@@ -1567,21 +1567,21 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
 
 **post** `/vector_stores/{vector_store_id}/file_batches`
 
-创建向量存储文件批次。
+创建一个向量存储文件批次。
 
 ### 路径参数
 
 - `vector_store_id: string`
 
-### Body 参数
+### 正文参数
 
 - `attributes: optional map[string or number or boolean] or null`
 
-  可附加到对象的 16 个键值对集合。可用于
-  以结构化格式存储对象的附加信息，以及通过
-  format，并通过 API 或控制台查询对象。键为字符串
-  ，最大长度为 64 个字符。值为最大长度为
-  512 个字符的字符串、布尔值或数字。
+  可附加到对象的 16 组键值对。这可以
+  用于以结构化格式存储有关对象的附加信息，
+  格式，并通过 API 或控制面板查询对象。键为字符串，
+  最大长度为 64 个字符。值为字符串，最大
+  长度为 512 个字符、布尔值或数字。
 
   - `string`
 
@@ -1591,11 +1591,11 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
 
 - `chunking_strategy: optional FileChunkingStrategyParam`
 
-  用于对文件进行分块的分块策略。如果未设置，将使用 `auto` strategy。
+  用于对文件进行分块的分块策略。如果未设置，则使用 `auto` 策略。
 
   - `AutoFileChunkingStrategyParam object { type }`
 
-    默认策略。该策略当前使用 `max_chunk_size_tokens` 大小为 `800` ，块重叠为 `chunk_overlap_tokens` 大小为 `400`.
+    默认策略。此策略当前使用 `max_chunk_size_tokens` 为 `800` 和 `chunk_overlap_tokens` 为 `400`.
 
     - `type: "auto"`
 
@@ -1611,13 +1611,13 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
 
       - `chunk_overlap_tokens: number`
 
-        块之间重叠的 token 数。默认值为 `400`.
+        块之间重叠的 token 数量。默认值为 `400`.
 
-        请注意，重叠部分不得超过 `max_chunk_size_tokens`.
+        请注意，重叠不能超过 `max_chunk_size_tokens`.
 
       - `max_chunk_size_tokens: number`
 
-        每个块中最大的 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+        每个块中的最大 token 数量。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
     - `type: "static"`
 
@@ -1627,23 +1627,23 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
 
 - `file_ids: optional array of string`
 
-  一个由 [File](/api/reference/resources/files) ID 组成的列表，向量存储应使用这些 ID。适用于 `file_search` 用于访问文件。如果 `attributes` 或 `chunking_strategy` ，它们将应用于批中的所有文件。最大批量大小为 2000 个文件。该接口推荐用于多文件接入，有助于减少每个向量存储的写入请求压力。与 `files`.
+  一个 [文件](/api/reference/resources/files) ID 的列表，供向量存储使用。可用于 `file_search` 可以访问文件。如果 `attributes` 或 `chunking_strategy` ，它们将应用于批次中的所有文件。最大批次大小为 2000 个文件。该接口推荐用于多文件导入，有助于降低每个向量存储写入请求的压力。与 `files`.
 
 - `files: optional array of object { file_id, attributes, chunking_strategy }`
 
-  对象列表，每个对象包含一个 `file_id` 以及可选的 `attributes` 或 `chunking_strategy`。当你需要为特定文件覆盖元数据时使用。全局 `attributes` 或 `chunking_strategy` 将被忽略，必须为每个文件指定。最大批量大小为 2000 个文件。该接口推荐用于多文件接入，有助于减少每个向量存储的写入请求压力。与 `file_ids`.
+  一个对象列表，每个对象包含一个 `file_id` 以及可选的 `attributes` 或 `chunking_strategy`。当你需要为特定文件覆盖元数据时使用。全局的 `attributes` 或 `chunking_strategy` 将被忽略，并且必须为每个文件指定。最大批次大小为 2000 个文件。该接口推荐用于多文件导入，有助于降低每个向量存储写入请求的压力。与 `file_ids`.
 
   - `file_id: string`
 
-    一个 [File](/api/reference/resources/files) ，即向量存储应使用的 ID。适用于像 `file_search` 这样可以访问文件的工具。对于多文件接入，我们推荐使用 [`file_batches`](/api/reference/resources/vector_stores/subresources/file_batches/methods/create) 以尽量减少每个向量存储的写入请求。
+    一个 [文件](/api/reference/resources/files) ID，向量存储应使用该 ID。适用于像 `file_search` 这样可以访问文件的工具。对于多文件导入，我们推荐 [`file_batches`](/api/reference/resources/vector_stores/subresources/file_batches/methods/create) 以最小化每个向量存储的写入请求。
 
   - `attributes: optional map[string or number or boolean] or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储对象的附加信息，以及通过
-    format，并通过 API 或控制台查询对象。键为字符串
-    ，最大长度为 64 个字符。值为最大长度为
-    512 个字符的字符串、布尔值或数字。
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
+    格式，并通过 API 或控制面板查询对象。键为字符串，
+    最大长度为 64 个字符。值为字符串，最大
+    长度为 512 个字符、布尔值或数字。
 
     - `string`
 
@@ -1653,9 +1653,9 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
 
   - `chunking_strategy: optional FileChunkingStrategyParam`
 
-    用于对文件进行分块的分块策略。如果未设置，将使用 `auto` strategy。
+    用于对文件进行分块的分块策略。如果未设置，则使用 `auto` 策略。
 
-### 返回值
+### Returns
 
 - `VectorStoreFileBatch object { id, created_at, file_counts, 3 more }`
 
@@ -1663,11 +1663,11 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
-    向量存储文件批次的创建时间（Unix 时间戳，以秒为单位）。
+    向量存储文件批次创建时的 Unix 时间戳(以秒为单位)。
 
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
@@ -1677,15 +1677,15 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
 
     - `completed: number`
 
-      已处理完成的文件数量。
+      已被处理的文件数量。
 
     - `failed: number`
 
-      处理失败的文件的数量。
+      处理失败的文件数量。
 
     - `in_progress: number`
 
-      当前正在处理的文件的数量。
+      当前正在处理的文件数量。
 
     - `total: number`
 
@@ -1699,7 +1699,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
-    向量存储文件批次的状态，可以是 `in_progress`, `completed`, `cancelled` 或 `failed`.
+    向量存储文件批次的状态,可为 `in_progress`, `completed`, `cancelled` 或 `failed`.
 
     - `"in_progress"`
 
@@ -1711,7 +1711,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
 
   - `vector_store_id: string`
 
-    所附加到的 [向量存储](/api/reference/resources/vector_stores) 的 ID，该 [File](/api/reference/resources/files) 已附加到该向量存储。
+    所关联的 [向量存储](/api/reference/resources/vector_stores) 的 ID,以及该文件批次 [文件](/api/reference/resources/files) 所附加到的对象。
 
 ### 示例
 
@@ -1781,7 +1781,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches \
     "completed": 1,
     "failed": 0,
     "cancelled": 0,
-    "total": 0,
+    "total": 0
   }
 }
 ```
@@ -1802,15 +1802,15 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches \
 
 - `after: optional string`
 
-  用于分页游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起一个列表请求并收到 100 个对象，以 obj_foo 结尾，则后续调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页的游标。 `after` 是一个用于定义列表中位置的对象 ID。例如，如果你发起一个列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的后续调用可以包含 after=obj_foo，以便获取列表的下一页。
 
 - `before: optional string`
 
-  用于分页游标。 `before` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起一个列表请求并收到 100 个对象，以 obj_foo 开头，则后续调用可以包含 before=obj_foo 以获取列表的上一页。
+  用于分页的游标。 `before` 是一个用于定义列表中位置的对象 ID。例如，如果你发起一个列表请求并收到 100 个对象，以 obj_foo 开头，那么你的后续调用可以包含 before=obj_foo，以便获取列表的上一页。
 
 - `filter: optional "in_progress" or "completed" or "failed" or "cancelled"`
 
-  按文件状态筛选。可选值为 `in_progress`, `completed`, `failed`, `cancelled`.
+  按文件状态过滤。可选值为 `in_progress`, `completed`, `failed`, `cancelled`.
 
   - `"in_progress"`
 
@@ -1822,7 +1822,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches \
 
 - `limit: optional number`
 
-  要返回的对象数量上限。限制范围为 1 到 100，默认值为 20。
+  返回对象的数量上限。范围在 1 到 100 之间，默认值为 20。
 
 - `order: optional "asc" or "desc"`
 
@@ -1832,25 +1832,25 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches \
 
   - `"desc"`
 
-### 返回值
+### Returns
 
 - `data: array of VectorStoreFile`
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
-    向量存储文件的创建时间（Unix 时间戳，单位为秒）。
+    该向量存储文件创建时的 Unix 时间戳（单位：秒）。
 
   - `last_error: object { code, message }  or null`
 
-    与此向量存储文件关联的最后一个错误。如果无错误则为 `null` 。
+    与该向量存储文件关联的最后一个错误。若无错误，将为 `null` 。
 
     - `code: "server_error" or "unsupported_file" or "invalid_file"`
 
-      可选值为 `server_error`, `unsupported_file`，或 `invalid_file`.
+      以下之一： `server_error`, `unsupported_file`，或 `invalid_file`.
 
       - `"server_error"`
 
@@ -1870,7 +1870,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches \
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
-    向量存储文件的状态，可为以下之一 `in_progress`, `completed`, `cancelled`，或 `failed`。该状态 `completed` 表示该向量存储文件已可使用。
+    向量存储文件的状态，可能为 `in_progress`, `completed`, `cancelled`，或 `failed`。该状态 `completed` 表示该向量存储文件已可供使用。
 
     - `"in_progress"`
 
@@ -1882,19 +1882,19 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches \
 
   - `usage_bytes: number`
 
-    向量存储的总使用量（字节）。请注意，该值可能与原始文件大小不同。
+    向量存储的总使用量（单位：字节）。请注意，该值可能与原始文件大小不同。
 
   - `vector_store_id: string`
 
-    所附加到的 [向量存储](/api/reference/resources/vector_stores) 的 ID，该 [File](/api/reference/resources/files) 已附加到该向量存储。
+    所关联的 [向量存储](/api/reference/resources/vector_stores) 的 ID,以及该文件批次 [文件](/api/reference/resources/files) 所附加到的对象。
 
   - `attributes: optional map[string or number or boolean] or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储对象的附加信息，以及通过
-    format，并通过 API 或控制台查询对象。键为字符串
-    ，最大长度为 64 个字符。值为最大长度为
-    512 个字符的字符串、布尔值或数字。
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
+    格式，并通过 API 或控制面板查询对象。键为字符串，
+    最大长度为 64 个字符。值为字符串，最大
+    长度为 512 个字符、布尔值或数字。
 
     - `string`
 
@@ -1912,13 +1912,13 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches \
 
         - `chunk_overlap_tokens: number`
 
-          块之间重叠的 token 数。默认值为 `400`.
+          块之间重叠的 token 数量。默认值为 `400`.
 
-          请注意，重叠部分不得超过 `max_chunk_size_tokens`.
+          请注意，重叠不能超过 `max_chunk_size_tokens`.
 
         - `max_chunk_size_tokens: number`
 
-          每个块中最大的 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+          每个块中的最大 token 数量。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
       - `type: "static"`
 
@@ -1928,7 +1928,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches \
 
     - `OtherFileChunkingStrategyObject object { type }`
 
-      当分块策略未知时返回此值。通常是因为文件在 `chunking_strategy` 概念被引入 API 之前就已建立索引。
+      当分块策略未知时返回此错误。通常是因为文件在引入该概念的 接口 版本之前已被索引。 `chunking_strategy` concept was introduced in the API.
 
       - `type: "other"`
 
@@ -2033,7 +2033,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
 
 - `batch_id: string`
 
-### 返回值
+### Returns
 
 - `VectorStoreFileBatch object { id, created_at, file_counts, 3 more }`
 
@@ -2041,11 +2041,11 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
-    向量存储文件批次的创建时间（Unix 时间戳，以秒为单位）。
+    向量存储文件批次创建时的 Unix 时间戳(以秒为单位)。
 
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
@@ -2055,15 +2055,15 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
 
     - `completed: number`
 
-      已处理完成的文件数量。
+      已被处理的文件数量。
 
     - `failed: number`
 
-      处理失败的文件的数量。
+      处理失败的文件数量。
 
     - `in_progress: number`
 
-      当前正在处理的文件的数量。
+      当前正在处理的文件数量。
 
     - `total: number`
 
@@ -2077,7 +2077,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
-    向量存储文件批次的状态，可以是 `in_progress`, `completed`, `cancelled` 或 `failed`.
+    向量存储文件批次的状态,可为 `in_progress`, `completed`, `cancelled` 或 `failed`.
 
     - `"in_progress"`
 
@@ -2089,7 +2089,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
 
   - `vector_store_id: string`
 
-    所附加到的 [向量存储](/api/reference/resources/vector_stores) 的 ID，该 [File](/api/reference/resources/files) 已附加到该向量存储。
+    所关联的 [向量存储](/api/reference/resources/vector_stores) 的 ID,以及该文件批次 [文件](/api/reference/resources/files) 所附加到的对象。
 
 ### 示例
 
@@ -2141,14 +2141,14 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches/vsfb_abc123 
     "completed": 1,
     "failed": 0,
     "cancelled": 0,
-    "total": 0,
+    "total": 0
   }
 }
 ```
 
-## Domain Types
+## 域名类型
 
-### Vector Store File Batch
+### 向量存储文件批次
 
 - `VectorStoreFileBatch object { id, created_at, file_counts, 3 more }`
 
@@ -2156,11 +2156,11 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches/vsfb_abc123 
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
-    向量存储文件批次的创建时间（Unix 时间戳，以秒为单位）。
+    向量存储文件批次创建时的 Unix 时间戳(以秒为单位)。
 
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
@@ -2170,15 +2170,15 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches/vsfb_abc123 
 
     - `completed: number`
 
-      已处理完成的文件数量。
+      已被处理的文件数量。
 
     - `failed: number`
 
-      处理失败的文件的数量。
+      处理失败的文件数量。
 
     - `in_progress: number`
 
-      当前正在处理的文件的数量。
+      当前正在处理的文件数量。
 
     - `total: number`
 
@@ -2192,7 +2192,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches/vsfb_abc123 
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
-    向量存储文件批次的状态，可以是 `in_progress`, `completed`, `cancelled` 或 `failed`.
+    向量存储文件批次的状态,可为 `in_progress`, `completed`, `cancelled` 或 `failed`.
 
     - `"in_progress"`
 
@@ -2204,15 +2204,15 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches/vsfb_abc123 
 
   - `vector_store_id: string`
 
-    所附加到的 [向量存储](/api/reference/resources/vector_stores) 的 ID，该 [File](/api/reference/resources/files) 已附加到该向量存储。
+    所关联的 [向量存储](/api/reference/resources/vector_stores) 的 ID,以及该文件批次 [文件](/api/reference/resources/files) 所附加到的对象。
 
-# Files
+# 文件
 
-## Retrieve vector store file content
+## 检索向量存储文件内容
 
 **get** `/vector_stores/{vector_store_id}/files/{file_id}/content`
 
-检索向量存储文件的已解析内容。
+检索向量存储文件的解析后内容。
 
 ### 路径参数
 
@@ -2220,7 +2220,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches/vsfb_abc123 
 
 - `file_id: string`
 
-### 返回值
+### Returns
 
 - `data: array of object { text, type }`
 
@@ -2232,11 +2232,11 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches/vsfb_abc123 
 
   - `type: optional string`
 
-    内容类型（目前仅限 `"text"`)
+    内容类型（目前仅支持 `"text"`)
 
 - `has_more: boolean`
 
-  指示是否还有更多内容页面需要获取。
+  指示是否还有更多内容页需要获取。
 
 - `next_page: string or null`
 
@@ -2298,25 +2298,25 @@ https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123/content \
 
 **post** `/vector_stores/{vector_store_id}/files`
 
-通过将一个 [File](/api/reference/resources/files) 附加到 [vector store](/api/reference/resources/vector_stores).
+通过将 [File](/api/reference/resources/files) 附加到 [vector store](/api/reference/resources/vector_stores).
 
 ### 路径参数
 
 - `vector_store_id: string`
 
-### Body 参数
+### 正文参数
 
 - `file_id: string`
 
-  一个 [File](/api/reference/resources/files) ，即向量存储应使用的 ID。适用于像 `file_search` 这样可以访问文件的工具。对于多文件接入，我们推荐使用 [`file_batches`](/api/reference/resources/vector_stores/subresources/file_batches/methods/create) 以尽量减少每个向量存储的写入请求。
+  一个 [文件](/api/reference/resources/files) ID，向量存储应使用该 ID。适用于像 `file_search` 这样可以访问文件的工具。对于多文件导入，我们推荐 [`file_batches`](/api/reference/resources/vector_stores/subresources/file_batches/methods/create) 以最小化每个向量存储的写入请求。
 
 - `attributes: optional map[string or number or boolean] or null`
 
-  可附加到对象的 16 个键值对集合。可用于
-  以结构化格式存储对象的附加信息，以及通过
-  format，并通过 API 或控制台查询对象。键为字符串
-  ，最大长度为 64 个字符。值为最大长度为
-  512 个字符的字符串、布尔值或数字。
+  可附加到对象的 16 组键值对。这可以
+  用于以结构化格式存储有关对象的附加信息，
+  格式，并通过 API 或控制面板查询对象。键为字符串，
+  最大长度为 64 个字符。值为字符串，最大
+  长度为 512 个字符、布尔值或数字。
 
   - `string`
 
@@ -2326,11 +2326,11 @@ https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123/content \
 
 - `chunking_strategy: optional FileChunkingStrategyParam`
 
-  用于对文件进行分块的分块策略。如果未设置，将使用 `auto` strategy。
+  用于对文件进行分块的分块策略。如果未设置，则使用 `auto` 策略。
 
   - `AutoFileChunkingStrategyParam object { type }`
 
-    默认策略。该策略当前使用 `max_chunk_size_tokens` 大小为 `800` ，块重叠为 `chunk_overlap_tokens` 大小为 `400`.
+    默认策略。此策略当前使用 `max_chunk_size_tokens` 为 `800` 和 `chunk_overlap_tokens` 为 `400`.
 
     - `type: "auto"`
 
@@ -2346,13 +2346,13 @@ https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123/content \
 
       - `chunk_overlap_tokens: number`
 
-        块之间重叠的 token 数。默认值为 `400`.
+        块之间重叠的 token 数量。默认值为 `400`.
 
-        请注意，重叠部分不得超过 `max_chunk_size_tokens`.
+        请注意，重叠不能超过 `max_chunk_size_tokens`.
 
       - `max_chunk_size_tokens: number`
 
-        每个块中最大的 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+        每个块中的最大 token 数量。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
     - `type: "static"`
 
@@ -2360,7 +2360,7 @@ https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123/content \
 
       - `"static"`
 
-### 返回值
+### Returns
 
 - `VectorStoreFile object { id, created_at, last_error, 6 more }`
 
@@ -2368,19 +2368,19 @@ https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123/content \
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
-    向量存储文件的创建时间（Unix 时间戳，单位为秒）。
+    该向量存储文件创建时的 Unix 时间戳（单位：秒）。
 
   - `last_error: object { code, message }  or null`
 
-    与此向量存储文件关联的最后一个错误。如果无错误则为 `null` 。
+    与该向量存储文件关联的最后一个错误。若无错误，将为 `null` 。
 
     - `code: "server_error" or "unsupported_file" or "invalid_file"`
 
-      可选值为 `server_error`, `unsupported_file`，或 `invalid_file`.
+      以下之一： `server_error`, `unsupported_file`，或 `invalid_file`.
 
       - `"server_error"`
 
@@ -2400,7 +2400,7 @@ https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123/content \
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
-    向量存储文件的状态，可为以下之一 `in_progress`, `completed`, `cancelled`，或 `failed`。该状态 `completed` 表示该向量存储文件已可使用。
+    向量存储文件的状态，可能为 `in_progress`, `completed`, `cancelled`，或 `failed`。该状态 `completed` 表示该向量存储文件已可供使用。
 
     - `"in_progress"`
 
@@ -2412,19 +2412,19 @@ https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123/content \
 
   - `usage_bytes: number`
 
-    向量存储的总使用量（字节）。请注意，该值可能与原始文件大小不同。
+    向量存储的总使用量（单位：字节）。请注意，该值可能与原始文件大小不同。
 
   - `vector_store_id: string`
 
-    所附加到的 [向量存储](/api/reference/resources/vector_stores) 的 ID，该 [File](/api/reference/resources/files) 已附加到该向量存储。
+    所关联的 [向量存储](/api/reference/resources/vector_stores) 的 ID,以及该文件批次 [文件](/api/reference/resources/files) 所附加到的对象。
 
   - `attributes: optional map[string or number or boolean] or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储对象的附加信息，以及通过
-    format，并通过 API 或控制台查询对象。键为字符串
-    ，最大长度为 64 个字符。值为最大长度为
-    512 个字符的字符串、布尔值或数字。
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
+    格式，并通过 API 或控制面板查询对象。键为字符串，
+    最大长度为 64 个字符。值为字符串，最大
+    长度为 512 个字符、布尔值或数字。
 
     - `string`
 
@@ -2442,13 +2442,13 @@ https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123/content \
 
         - `chunk_overlap_tokens: number`
 
-          块之间重叠的 token 数。默认值为 `400`.
+          块之间重叠的 token 数量。默认值为 `400`.
 
-          请注意，重叠部分不得超过 `max_chunk_size_tokens`.
+          请注意，重叠不能超过 `max_chunk_size_tokens`.
 
         - `max_chunk_size_tokens: number`
 
-          每个块中最大的 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+          每个块中的最大 token 数量。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
       - `type: "static"`
 
@@ -2458,7 +2458,7 @@ https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123/content \
 
     - `OtherFileChunkingStrategyObject object { type }`
 
-      当分块策略未知时返回此值。通常是因为文件在 `chunking_strategy` 概念被引入 API 之前就已建立索引。
+      当分块策略未知时返回此错误。通常是因为文件在引入该概念的 接口 版本之前已被索引。 `chunking_strategy` concept was introduced in the API.
 
       - `type: "other"`
 
@@ -2535,7 +2535,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files \
 
 **delete** `/vector_stores/{vector_store_id}/files/{file_id}`
 
-删除向量存储文件。这会从向量存储中移除该文件，但文件本身不会被删除。若要删除文件，请使用 [delete file](/api/reference/resources/files/methods/delete) 端点。
+删除一个向量存储文件。这将从向量存储中移除该文件，但文件本身不会被删除。如需删除文件，请使用 [delete file](/api/reference/resources/files/methods/delete) 接口。
 
 ### 路径参数
 
@@ -2543,7 +2543,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files \
 
 - `file_id: string`
 
-### 返回值
+### Returns
 
 - `VectorStoreFileDeleted object { id, deleted, object }`
 
@@ -2588,9 +2588,9 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
 ```json
 {
-  id: "file-abc123",
-  object: "vector_store.file.deleted",
-  deleted: true
+  "id": "file-abc123",
+  "object": "vector_store.file.deleted",
+  "deleted": true
 }
 ```
 
@@ -2608,15 +2608,15 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
 - `after: optional string`
 
-  用于分页游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起一个列表请求并收到 100 个对象，以 obj_foo 结尾，则后续调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页的游标。 `after` 是一个用于定义列表中位置的对象 ID。例如，如果你发起一个列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的后续调用可以包含 after=obj_foo，以便获取列表的下一页。
 
 - `before: optional string`
 
-  用于分页游标。 `before` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起一个列表请求并收到 100 个对象，以 obj_foo 开头，则后续调用可以包含 before=obj_foo 以获取列表的上一页。
+  用于分页的游标。 `before` 是一个用于定义列表中位置的对象 ID。例如，如果你发起一个列表请求并收到 100 个对象，以 obj_foo 开头，那么你的后续调用可以包含 before=obj_foo，以便获取列表的上一页。
 
 - `filter: optional "in_progress" or "completed" or "failed" or "cancelled"`
 
-  按文件状态筛选。可选值为 `in_progress`, `completed`, `failed`, `cancelled`.
+  按文件状态过滤。可选值为 `in_progress`, `completed`, `failed`, `cancelled`.
 
   - `"in_progress"`
 
@@ -2628,7 +2628,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
 - `limit: optional number`
 
-  要返回的对象数量上限。限制范围为 1 到 100，默认值为 20。
+  返回对象的数量上限。范围在 1 到 100 之间，默认值为 20。
 
 - `order: optional "asc" or "desc"`
 
@@ -2638,25 +2638,25 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
   - `"desc"`
 
-### 返回值
+### Returns
 
 - `data: array of VectorStoreFile`
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
-    向量存储文件的创建时间（Unix 时间戳，单位为秒）。
+    该向量存储文件创建时的 Unix 时间戳（单位：秒）。
 
   - `last_error: object { code, message }  or null`
 
-    与此向量存储文件关联的最后一个错误。如果无错误则为 `null` 。
+    与该向量存储文件关联的最后一个错误。若无错误，将为 `null` 。
 
     - `code: "server_error" or "unsupported_file" or "invalid_file"`
 
-      可选值为 `server_error`, `unsupported_file`，或 `invalid_file`.
+      以下之一： `server_error`, `unsupported_file`，或 `invalid_file`.
 
       - `"server_error"`
 
@@ -2676,7 +2676,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
-    向量存储文件的状态，可为以下之一 `in_progress`, `completed`, `cancelled`，或 `failed`。该状态 `completed` 表示该向量存储文件已可使用。
+    向量存储文件的状态，可能为 `in_progress`, `completed`, `cancelled`，或 `failed`。该状态 `completed` 表示该向量存储文件已可供使用。
 
     - `"in_progress"`
 
@@ -2688,19 +2688,19 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
   - `usage_bytes: number`
 
-    向量存储的总使用量（字节）。请注意，该值可能与原始文件大小不同。
+    向量存储的总使用量（单位：字节）。请注意，该值可能与原始文件大小不同。
 
   - `vector_store_id: string`
 
-    所附加到的 [向量存储](/api/reference/resources/vector_stores) 的 ID，该 [File](/api/reference/resources/files) 已附加到该向量存储。
+    所关联的 [向量存储](/api/reference/resources/vector_stores) 的 ID,以及该文件批次 [文件](/api/reference/resources/files) 所附加到的对象。
 
   - `attributes: optional map[string or number or boolean] or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储对象的附加信息，以及通过
-    format，并通过 API 或控制台查询对象。键为字符串
-    ，最大长度为 64 个字符。值为最大长度为
-    512 个字符的字符串、布尔值或数字。
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
+    格式，并通过 API 或控制面板查询对象。键为字符串，
+    最大长度为 64 个字符。值为字符串，最大
+    长度为 512 个字符、布尔值或数字。
 
     - `string`
 
@@ -2718,13 +2718,13 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
         - `chunk_overlap_tokens: number`
 
-          块之间重叠的 token 数。默认值为 `400`.
+          块之间重叠的 token 数量。默认值为 `400`.
 
-          请注意，重叠部分不得超过 `max_chunk_size_tokens`.
+          请注意，重叠不能超过 `max_chunk_size_tokens`.
 
         - `max_chunk_size_tokens: number`
 
-          每个块中最大的 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+          每个块中的最大 token 数量。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
       - `type: "static"`
 
@@ -2734,7 +2734,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
     - `OtherFileChunkingStrategyObject object { type }`
 
-      当分块策略未知时返回此值。通常是因为文件在 `chunking_strategy` 概念被引入 API 之前就已建立索引。
+      当分块策略未知时返回此错误。通常是因为文件在引入该概念的 接口 版本之前已被索引。 `chunking_strategy` concept was introduced in the API.
 
       - `type: "other"`
 
@@ -2839,7 +2839,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files \
 
 - `file_id: string`
 
-### 返回值
+### Returns
 
 - `VectorStoreFile object { id, created_at, last_error, 6 more }`
 
@@ -2847,19 +2847,19 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files \
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
-    向量存储文件的创建时间（Unix 时间戳，单位为秒）。
+    该向量存储文件创建时的 Unix 时间戳（单位：秒）。
 
   - `last_error: object { code, message }  or null`
 
-    与此向量存储文件关联的最后一个错误。如果无错误则为 `null` 。
+    与该向量存储文件关联的最后一个错误。若无错误，将为 `null` 。
 
     - `code: "server_error" or "unsupported_file" or "invalid_file"`
 
-      可选值为 `server_error`, `unsupported_file`，或 `invalid_file`.
+      以下之一： `server_error`, `unsupported_file`，或 `invalid_file`.
 
       - `"server_error"`
 
@@ -2879,7 +2879,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files \
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
-    向量存储文件的状态，可为以下之一 `in_progress`, `completed`, `cancelled`，或 `failed`。该状态 `completed` 表示该向量存储文件已可使用。
+    向量存储文件的状态，可能为 `in_progress`, `completed`, `cancelled`，或 `failed`。该状态 `completed` 表示该向量存储文件已可供使用。
 
     - `"in_progress"`
 
@@ -2891,19 +2891,19 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files \
 
   - `usage_bytes: number`
 
-    向量存储的总使用量（字节）。请注意，该值可能与原始文件大小不同。
+    向量存储的总使用量（单位：字节）。请注意，该值可能与原始文件大小不同。
 
   - `vector_store_id: string`
 
-    所附加到的 [向量存储](/api/reference/resources/vector_stores) 的 ID，该 [File](/api/reference/resources/files) 已附加到该向量存储。
+    所关联的 [向量存储](/api/reference/resources/vector_stores) 的 ID,以及该文件批次 [文件](/api/reference/resources/files) 所附加到的对象。
 
   - `attributes: optional map[string or number or boolean] or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储对象的附加信息，以及通过
-    format，并通过 API 或控制台查询对象。键为字符串
-    ，最大长度为 64 个字符。值为最大长度为
-    512 个字符的字符串、布尔值或数字。
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
+    格式，并通过 API 或控制面板查询对象。键为字符串，
+    最大长度为 64 个字符。值为字符串，最大
+    长度为 512 个字符、布尔值或数字。
 
     - `string`
 
@@ -2921,13 +2921,13 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files \
 
         - `chunk_overlap_tokens: number`
 
-          块之间重叠的 token 数。默认值为 `400`.
+          块之间重叠的 token 数量。默认值为 `400`.
 
-          请注意，重叠部分不得超过 `max_chunk_size_tokens`.
+          请注意，重叠不能超过 `max_chunk_size_tokens`.
 
         - `max_chunk_size_tokens: number`
 
-          每个块中最大的 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+          每个块中的最大 token 数量。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
       - `type: "static"`
 
@@ -2937,7 +2937,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files \
 
     - `OtherFileChunkingStrategyObject object { type }`
 
-      当分块策略未知时返回此值。通常是因为文件在 `chunking_strategy` 概念被引入 API 之前就已建立索引。
+      当分块策略未知时返回此错误。通常是因为文件在引入该概念的 接口 版本之前已被索引。 `chunking_strategy` concept was introduced in the API.
 
       - `type: "other"`
 
@@ -3006,7 +3006,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
 **post** `/vector_stores/{vector_store_id}/files/{file_id}`
 
-更新向量存储文件中文件的属性。
+更新向量存储文件上的属性。
 
 ### 路径参数
 
@@ -3014,15 +3014,15 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
 - `file_id: string`
 
-### Body 参数
+### 正文参数
 
 - `attributes: map[string or number or boolean] or null`
 
-  可附加到对象的 16 个键值对集合。可用于
-  以结构化格式存储对象的附加信息，以及通过
-  format，并通过 API 或控制台查询对象。键为字符串
-  ，最大长度为 64 个字符。值为最大长度为
-  512 个字符的字符串、布尔值或数字。
+  可附加到对象的 16 组键值对。这可以
+  用于以结构化格式存储有关对象的附加信息，
+  格式，并通过 API 或控制面板查询对象。键为字符串，
+  最大长度为 64 个字符。值为字符串，最大
+  长度为 512 个字符、布尔值或数字。
 
   - `string`
 
@@ -3030,7 +3030,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
   - `boolean`
 
-### 返回值
+### Returns
 
 - `VectorStoreFile object { id, created_at, last_error, 6 more }`
 
@@ -3038,19 +3038,19 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
-    向量存储文件的创建时间（Unix 时间戳，单位为秒）。
+    该向量存储文件创建时的 Unix 时间戳（单位：秒）。
 
   - `last_error: object { code, message }  or null`
 
-    与此向量存储文件关联的最后一个错误。如果无错误则为 `null` 。
+    与该向量存储文件关联的最后一个错误。若无错误，将为 `null` 。
 
     - `code: "server_error" or "unsupported_file" or "invalid_file"`
 
-      可选值为 `server_error`, `unsupported_file`，或 `invalid_file`.
+      以下之一： `server_error`, `unsupported_file`，或 `invalid_file`.
 
       - `"server_error"`
 
@@ -3070,7 +3070,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
-    向量存储文件的状态，可为以下之一 `in_progress`, `completed`, `cancelled`，或 `failed`。该状态 `completed` 表示该向量存储文件已可使用。
+    向量存储文件的状态，可能为 `in_progress`, `completed`, `cancelled`，或 `failed`。该状态 `completed` 表示该向量存储文件已可供使用。
 
     - `"in_progress"`
 
@@ -3082,19 +3082,19 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
   - `usage_bytes: number`
 
-    向量存储的总使用量（字节）。请注意，该值可能与原始文件大小不同。
+    向量存储的总使用量（单位：字节）。请注意，该值可能与原始文件大小不同。
 
   - `vector_store_id: string`
 
-    所附加到的 [向量存储](/api/reference/resources/vector_stores) 的 ID，该 [File](/api/reference/resources/files) 已附加到该向量存储。
+    所关联的 [向量存储](/api/reference/resources/vector_stores) 的 ID,以及该文件批次 [文件](/api/reference/resources/files) 所附加到的对象。
 
   - `attributes: optional map[string or number or boolean] or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储对象的附加信息，以及通过
-    format，并通过 API 或控制台查询对象。键为字符串
-    ，最大长度为 64 个字符。值为最大长度为
-    512 个字符的字符串、布尔值或数字。
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
+    格式，并通过 API 或控制面板查询对象。键为字符串，
+    最大长度为 64 个字符。值为字符串，最大
+    长度为 512 个字符、布尔值或数字。
 
     - `string`
 
@@ -3112,13 +3112,13 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
         - `chunk_overlap_tokens: number`
 
-          块之间重叠的 token 数。默认值为 `400`.
+          块之间重叠的 token 数量。默认值为 `400`.
 
-          请注意，重叠部分不得超过 `max_chunk_size_tokens`.
+          请注意，重叠不能超过 `max_chunk_size_tokens`.
 
         - `max_chunk_size_tokens: number`
 
-          每个块中最大的 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+          每个块中的最大 token 数量。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
       - `type: "static"`
 
@@ -3128,7 +3128,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
     - `OtherFileChunkingStrategyObject object { type }`
 
-      当分块策略未知时返回此值。通常是因为文件在 `chunking_strategy` 概念被引入 API 之前就已建立索引。
+      当分块策略未知时返回此错误。通常是因为文件在引入该概念的 接口 版本之前已被索引。 `chunking_strategy` concept was introduced in the API.
 
       - `type: "other"`
 
@@ -3202,7 +3202,7 @@ curl https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id} \
 }
 ```
 
-## Domain Types
+## 域名类型
 
 ### 文件内容响应
 
@@ -3214,7 +3214,7 @@ curl https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id} \
 
   - `type: optional string`
 
-    内容类型（目前仅限 `"text"`)
+    内容类型（目前仅支持 `"text"`)
 
 ### 向量存储文件
 
@@ -3224,19 +3224,19 @@ curl https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id} \
 
   - `id: string`
 
-    标识符，可在 API 端点中引用。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
-    向量存储文件的创建时间（Unix 时间戳，单位为秒）。
+    该向量存储文件创建时的 Unix 时间戳（单位：秒）。
 
   - `last_error: object { code, message }  or null`
 
-    与此向量存储文件关联的最后一个错误。如果无错误则为 `null` 。
+    与该向量存储文件关联的最后一个错误。若无错误，将为 `null` 。
 
     - `code: "server_error" or "unsupported_file" or "invalid_file"`
 
-      可选值为 `server_error`, `unsupported_file`，或 `invalid_file`.
+      以下之一： `server_error`, `unsupported_file`，或 `invalid_file`.
 
       - `"server_error"`
 
@@ -3256,7 +3256,7 @@ curl https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id} \
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
-    向量存储文件的状态，可为以下之一 `in_progress`, `completed`, `cancelled`，或 `failed`。该状态 `completed` 表示该向量存储文件已可使用。
+    向量存储文件的状态，可能为 `in_progress`, `completed`, `cancelled`，或 `failed`。该状态 `completed` 表示该向量存储文件已可供使用。
 
     - `"in_progress"`
 
@@ -3268,19 +3268,19 @@ curl https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id} \
 
   - `usage_bytes: number`
 
-    向量存储的总使用量（字节）。请注意，该值可能与原始文件大小不同。
+    向量存储的总使用量（单位：字节）。请注意，该值可能与原始文件大小不同。
 
   - `vector_store_id: string`
 
-    所附加到的 [向量存储](/api/reference/resources/vector_stores) 的 ID，该 [File](/api/reference/resources/files) 已附加到该向量存储。
+    所关联的 [向量存储](/api/reference/resources/vector_stores) 的 ID,以及该文件批次 [文件](/api/reference/resources/files) 所附加到的对象。
 
   - `attributes: optional map[string or number or boolean] or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储对象的附加信息，以及通过
-    format，并通过 API 或控制台查询对象。键为字符串
-    ，最大长度为 64 个字符。值为最大长度为
-    512 个字符的字符串、布尔值或数字。
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化格式存储有关对象的附加信息，
+    格式，并通过 API 或控制面板查询对象。键为字符串，
+    最大长度为 64 个字符。值为字符串，最大
+    长度为 512 个字符、布尔值或数字。
 
     - `string`
 
@@ -3298,13 +3298,13 @@ curl https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id} \
 
         - `chunk_overlap_tokens: number`
 
-          块之间重叠的 token 数。默认值为 `400`.
+          块之间重叠的 token 数量。默认值为 `400`.
 
-          请注意，重叠部分不得超过 `max_chunk_size_tokens`.
+          请注意，重叠不能超过 `max_chunk_size_tokens`.
 
         - `max_chunk_size_tokens: number`
 
-          每个块中最大的 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+          每个块中的最大 token 数量。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
       - `type: "static"`
 
@@ -3314,7 +3314,7 @@ curl https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id} \
 
     - `OtherFileChunkingStrategyObject object { type }`
 
-      当分块策略未知时返回此值。通常是因为文件在 `chunking_strategy` 概念被引入 API 之前就已建立索引。
+      当分块策略未知时返回此错误。通常是因为文件在引入该概念的 接口 版本之前已被索引。 `chunking_strategy` concept was introduced in the API.
 
       - `type: "other"`
 

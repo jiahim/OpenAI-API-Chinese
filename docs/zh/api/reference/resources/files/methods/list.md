@@ -1,4 +1,4 @@
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 获取文档页面的 Markdown 版本。
 
 ## 列出文件
 
@@ -10,11 +10,11 @@
 
 - `after: optional string`
 
-  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的下一次调用可以包含 after=obj_foo，以便获取列表的下一页。
+  用于分页的游标。 `after` 是一个对象 ID，用于标识你在列表中所处的位置。例如，如果你发起列表请求并接收到 100 个对象，以 obj_foo 结尾，则后续调用可以包含 after=obj_foo 以获取列表的下一页。
 
 - `limit: optional number`
 
-  返回对象的数量上限。Limit 的取值范围为 1 到 10,000，默认值为 10,000。
+  返回对象的数量上限。Limit 的取值范围为 1 到 10,000，默认为 10,000。
 
 - `order: optional "asc" or "desc"`
 
@@ -38,7 +38,7 @@
 
   - `bytes: number`
 
-    文件大小，以字节为单位。
+    文件的大小，以字节为单位。
 
   - `created_at: number`
 
@@ -46,7 +46,7 @@
 
   - `filename: string`
 
-    文件名称。
+    文件的名称。
 
   - `object: "file"`
 
@@ -151,7 +151,7 @@ curl https://api.openai.com/v1/files \
       "created_at": 1613677385,
       "expires_at": 1677614202,
       "filename": "salesOverview.pdf",
-      "purpose": "assistants",
+      "purpose": "assistants"
     },
     {
       "id": "file-abc456",
@@ -160,7 +160,7 @@ curl https://api.openai.com/v1/files \
       "created_at": 1613779121,
       "expires_at": 1677614202,
       "filename": "puppy.jsonl",
-      "purpose": "fine-tune",
+      "purpose": "fine-tune"
     }
   ],
   "first_id": "file-abc123",

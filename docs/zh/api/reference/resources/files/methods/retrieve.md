@@ -1,4 +1,4 @@
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 检索文件
 
@@ -10,11 +10,11 @@
 
 - `file_id: string`
 
-### 返回
+### 返回值
 
 - `FileObject object { id, bytes, created_at, 6 more }`
 
-  该 `File` 对象表示已上传到 OpenAI 的文档。
+  该 `File` object 表示已上传到 OpenAI 的文档。
 
   - `id: string`
 
@@ -22,7 +22,7 @@
 
   - `bytes: number`
 
-    文件大小（以字节为单位）。
+    文件的大小（以字节为单位）。
 
   - `created_at: number`
 
@@ -40,7 +40,7 @@
 
   - `purpose: "assistants" or "assistants_output" or "batch" or 5 more`
 
-    文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
+    文件的预期用途。支持的取值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
 
     - `"assistants"`
 
@@ -60,7 +60,7 @@
 
   - `status: "uploaded" or "processed" or "error"`
 
-    已弃用。文件的当前状态，可以是 `uploaded`, `processed`，或者 `error`.
+    已弃用。文件的当前状态，可以是 `uploaded`, `processed`，或 `error`.
 
     - `"uploaded"`
 
@@ -74,7 +74,7 @@
 
   - `status_details: optional string`
 
-    已弃用。有关微调训练文件验证失败的原因的详细信息，请参阅 `error` 字段，位于 `fine_tuning.job`.
+    已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段，位于 `fine_tuning.job`.
 
 ### 示例
 
@@ -116,6 +116,6 @@ curl https://api.openai.com/v1/files/file-abc123 \
   "created_at": 1677610602,
   "expires_at": 1677614202,
   "filename": "mydata.jsonl",
-  "purpose": "fine-tune",
+  "purpose": "fine-tune"
 }
 ```

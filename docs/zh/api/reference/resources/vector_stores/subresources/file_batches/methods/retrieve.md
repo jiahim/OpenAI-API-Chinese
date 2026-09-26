@@ -1,6 +1,6 @@
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。你也可以通过在页面 URL 末尾添加 `.md` 来获取相应文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-## 检索向量存储文件批次
+## Retrieve vector store file batch
 
 **get** `/vector_stores/{vector_store_id}/file_batches/{batch_id}`
 
@@ -16,21 +16,21 @@
 
 - `VectorStoreFileBatch object { id, created_at, file_counts, 3 more }`
 
-  附加到向量存储的一批文件。
+  附加到 vector store 的一批文件。
 
   - `id: string`
 
-    该标识符，可在 API 端点中引用。
+    可在 API 端点中引用的标识符。
 
   - `created_at: number`
 
-    向量存储文件批次的创建时间（Unix 时间戳，以秒为单位）。
+    vector store 文件批次创建时的 Unix 时间戳（以秒为单位）。
 
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
     - `cancelled: number`
 
-      已被取消的文件数量。
+      已取消的文件数量。
 
     - `completed: number`
 
@@ -42,7 +42,7 @@
 
     - `in_progress: number`
 
-      正在处理中的文件数量。
+      正在处理的文件数量。
 
     - `total: number`
 
@@ -56,7 +56,7 @@
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
-    向量存储文件批次的状态，可为 `in_progress`, `completed`, `cancelled` 或 `failed`.
+    vector store 文件批次的状态，可为 `in_progress`, `completed`, `cancelled` 或 `failed`.
 
     - `"in_progress"`
 
@@ -68,7 +68,7 @@
 
   - `vector_store_id: string`
 
-    所附加到的 [vector store](/api/reference/resources/vector_stores) 的 ID,该 [File](/api/reference/resources/files) 。
+    的 ID。 [vector store](/api/reference/resources/vector_stores) ，该 [File](/api/reference/resources/files) 附加到的。
 
 ### 示例
 
@@ -120,7 +120,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches/vsfb_abc123 
     "completed": 1,
     "failed": 0,
     "cancelled": 0,
-    "total": 0,
+    "total": 0
   }
 }
 ```

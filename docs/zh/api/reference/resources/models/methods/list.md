@@ -1,4 +1,4 @@
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 后追加 `.md` 即可获取相应文档页面的 Markdown 版本。
 
 ## 列出模型
 
@@ -6,13 +6,13 @@
 
 列出当前可用的模型，并提供每个模型的基本信息，例如所有者和可用性。
 
-### 返回值
+### Returns
 
 - `data: array of Model`
 
   - `id: string`
 
-    模型标识符，可以在 API 端点中引用。
+    模型标识符，可在 API 端点中引用。
 
   - `created: number`
 
@@ -30,7 +30,7 @@
 
   - `shutdown_date: optional string or null`
 
-    模型将停用的日期，如果未公布则为 null。
+    模型将下线的日期，如果尚未公布则为 null。
 
 - `object: "list"`
 
@@ -93,7 +93,7 @@ curl https://api.openai.com/v1/models \
       "created": 1686935002,
       "owned_by": "openai",
       "shutdown_date": "2026-10-23"
-    },
+    }
   ]
 }
 ```
