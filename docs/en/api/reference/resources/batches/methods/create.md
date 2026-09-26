@@ -354,7 +354,7 @@ curl https://api.openai.com/v1/batches \
   },
   "metadata": {
     "customer_id": "user_123456789",
-    "batch_description": "Nightly eval job",
+    "batch_description": "Nightly eval job"
   }
 }
 ```

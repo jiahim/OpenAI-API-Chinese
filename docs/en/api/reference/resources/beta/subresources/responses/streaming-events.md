@@ -67475,7 +67475,8 @@ Schema name: `BetaResponseContentPartAddedEvent`
   "part": {
     "type": "output_text",
     "text": "",
-    "annotations": []
+    "annotations": [],
+    "logprobs": []
   },
   "sequence_number": 1
 }
@@ -67695,7 +67696,8 @@ Schema name: `BetaResponseContentPartDoneEvent`
   "part": {
     "type": "output_text",
     "text": "In a shimmering forest under a sky full of stars, a lonely unicorn named Lila discovered a hidden pond that glowed with moonlight. Every night, she would leave sparkling, magical flowers by the water's edge, hoping to share her beauty with others. One enchanting evening, she woke to find a group of friendly animals gathered around, eager to be friends and share in her magic.",
-    "annotations": []
+    "annotations": [],
+    "logprobs": []
   }
 }
 ```
@@ -67777,7 +67779,8 @@ Schema name: `BetaResponseTextDeltaEvent`
   "output_index": 0,
   "content_index": 0,
   "delta": "In",
-  "sequence_number": 1
+  "sequence_number": 1,
+  "logprobs": []
 }
 ```
 
@@ -67858,7 +67861,8 @@ Schema name: `BetaResponseTextDoneEvent`
   "output_index": 0,
   "content_index": 0,
   "text": "In a shimmering forest under a sky full of stars, a lonely unicorn named Lila discovered a hidden pond that glowed with moonlight. Every night, she would leave sparkling, magical flowers by the water's edge, hoping to share her beauty with others. One enchanting evening, she woke to find a group of friendly animals gathered around, eager to be friends and share in her magic.",
-  "sequence_number": 1
+  "sequence_number": 1,
+  "logprobs": []
 }
 ```
 
@@ -68023,7 +68027,7 @@ Schema name: `BetaResponseFunctionCallArgumentsDeltaEvent`
   "type": "response.function_call_arguments.delta",
   "item_id": "item-abc",
   "output_index": 0,
-  "delta": "{ \"arg\":"
+  "delta": "{ \"arg\":",
   "sequence_number": 1
 }
 ```
@@ -81249,6 +81253,7 @@ Schema name: `BetaResponseCustomToolCallInputDeltaEvent`
 ```json
 {
   "type": "response.custom_tool_call_input.delta",
+  "sequence_number": 1,
   "output_index": 0,
   "item_id": "ctc_1234567890abcdef",
   "delta": "partial input text"
@@ -81300,6 +81305,7 @@ Schema name: `BetaResponseCustomToolCallInputDoneEvent`
 ```json
 {
   "type": "response.custom_tool_call_input.done",
+  "sequence_number": 1,
   "output_index": 0,
   "item_id": "ctc_1234567890abcdef",
   "input": "final complete input text"

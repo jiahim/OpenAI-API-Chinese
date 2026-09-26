@@ -8,6 +8,14 @@ Upcoming deprecations are listed on the [deprecations page](/api/docs/deprecatio
 
 ## September, 2026
 
+### Sep 25
+
+Fix · Model: gpt-6-sol · Model: gpt-6-luna
+
+Fixed a bug in image encoding that degraded image understanding in [GPT-6 Sol](https://developers.openai.com/api/docs/models/gpt-6-sol) and [GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna). This update improves results on visual tasks in the API and Codex, including computer use.
+
+If your use cases involve image inputs, we recommend rerunning your evaluations and retrying workflows affected by the issue.
+
 ### Sep 22
 
 Feature · Model: gpt-6-sol · Model: gpt-6-luna · API: v1/responses · API: v1/chat/completions

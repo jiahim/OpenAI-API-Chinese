@@ -4,7 +4,7 @@
 
 This guide follows Oracle's beta Python example and uses **application-managed provisioning**: your application creates and deletes both the Agents API session and the OCI sandbox.
 
-See the [application-managed example](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/application_managed/oci) in the OpenAI Cookbook.
+See the [application-managed example](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/oci/application_managed) in the OpenAI Cookbook.
 
 See [Sandbox lifecycle](https://developers.openai.com/api/docs/guides/agents-api/environments/lifecycle) for the provisioning modes and connection behavior.
 

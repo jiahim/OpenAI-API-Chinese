@@ -241,7 +241,7 @@ https://api.openai.com/v1/vector_stores/vs_abc123/search \
 ```json
 {
   "object": "vector_store.search_results.page",
-  "search_query": "What is the return policy?",
+  "search_query": ["What is the return policy?"],
   "data": [
     {
       "file_id": "file_123",

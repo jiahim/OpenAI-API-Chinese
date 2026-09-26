@@ -382,9 +382,9 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
 ```json
 {
-  id: "file-abc123",
-  object: "vector_store.file.deleted",
-  deleted: true
+  "id": "file-abc123",
+  "object": "vector_store.file.deleted",
+  "deleted": true
 }
 ```
 

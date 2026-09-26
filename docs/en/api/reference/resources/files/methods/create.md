@@ -143,6 +143,6 @@ curl https://api.openai.com/v1/files \
   "created_at": 1677610602,
   "expires_at": 1677614202,
   "filename": "mydata.jsonl",
-  "purpose": "fine-tune",
+  "purpose": "fine-tune"
 }
 ```

@@ -387,7 +387,7 @@ curl https://api.openai.com/v1/uploads/upload_abc123/complete
     "created_at": 1719186911,
     "expires_at": 1719127296,
     "filename": "training_examples.jsonl",
-    "purpose": "fine-tune",
+    "purpose": "fine-tune"
   }
 }
 ```

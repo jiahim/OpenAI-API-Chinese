@@ -330,6 +330,13 @@ Prices per 1M tokens.
 
   
 
+  
+
+    Cached input rates for GPT Image 2 and GPT Image 2.5 only apply to images
+      generated with the Responses API - [learn
+      more](https://developers.openai.com/api/docs/guides/image-generation#cached-input-pricing).
+  
+
 
   
 

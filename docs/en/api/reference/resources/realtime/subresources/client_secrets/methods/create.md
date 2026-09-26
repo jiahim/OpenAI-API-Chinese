@@ -2113,7 +2113,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
         "transcription": null,
         "noise_reduction": null,
         "turn_detection": {
-          "type": "server_vad",
+          "type": "server_vad"
         }
       },
       "output": {
