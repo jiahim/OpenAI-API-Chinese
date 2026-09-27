@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-26T20:51:48.471Z",
+  "generatedAt": "2026-09-27T19:47:31.536Z",
   "pages": {
     "https://developers.openai.com/api/docs/actions/actions-library.md": {
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
@@ -2535,11 +2535,11 @@
       "policySha256": "5d41c8a7a73acf25529f1beffa364a03666ea413b7e792e6db794b8f801777b5",
       "reviewStatus": "machine",
       "sourcePath": "docs/en/api/reference/resources/beta/subresources/agents/streaming-events.md",
-      "sourceSha256": "8476d9629b8b34060bc648bc6fa705cba400d9bd0142d903dba8babddc3ca5b3",
+      "sourceSha256": "bed12d8bbaf855f007c41a4909804df482d7e904d74e6360aa7fe42111131e4b",
       "sourceUrl": "https://developers.openai.com/api/reference/resources/beta/subresources/agents/streaming-events.md",
       "targetPath": "docs/zh/api/reference/resources/beta/subresources/agents/streaming-events.md",
-      "targetSha256": "cdfe54b5d47954f2d0d1bd4a83bae3d07319f2cd21305bf4136d70ec72c13c39",
-      "translatedAt": "2026-09-25T20:19:33.413Z"
+      "targetSha256": "a4aad1b08925274301f6f6198aee86cb9aa8d22f8ea0f5354a78bd6e6c5ea41f",
+      "translatedAt": "2026-09-27T19:47:31.536Z"
     },
     "https://developers.openai.com/api/reference/resources/beta/subresources/assistants.md": {
       "policySha256": "6e9b1538f41ab5d3db960df19d735ece2c894fe9182904cf1d818170eaeeb7c2",

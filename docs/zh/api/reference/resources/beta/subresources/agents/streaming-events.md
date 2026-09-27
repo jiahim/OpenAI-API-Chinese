@@ -1,16 +1,16 @@
 # 智能体 流式事件
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，请在页面 URL 末尾追加 `.md` 。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取对应文档页面的 Markdown 版本。
 
 <a id="agent.session.environment.ready"></a>
 
 ## 智能体.session.environment.ready
 
-当托管会话环境已准备好连接时发出。
+当托管会话环境已准备好连接时触发。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionEnvironmentReady`
+Schema name: `SessionEventAgentSessionEnvironmentReady`
 
 - `environment: AgentSessionEnvironmentState`
 
@@ -107,11 +107,11 @@
 
 ## 智能体.session.environment.reset
 
-在托管沙箱被替换后发出。对话历史会保留；之前沙箱中文件和进程的更改不会保留。
+在托管沙箱被替换后发出。对话历史会保留；之前沙箱中的文件和进程变更不会保留。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionEnvironmentReset`
+Schema name: `SessionEventAgentSessionEnvironmentReset`
 
 - `environment_id: string`
 
@@ -131,7 +131,7 @@
 
 - `turn_id: string or null`
 
-  关联的轮次（如果适用）。
+  关联的回合（若适用）。
 
 - `type: "agent.session.environment.reset"`
 
@@ -160,7 +160,7 @@
 
 ### Schema
 
-架构名称： `SessionEventAgentOutputCommandExecutionOutputDelta`
+Schema name: `SessionEventAgentOutputCommandExecutionOutputDelta`
 
 - `delta: string`
 
@@ -214,7 +214,7 @@
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionCreated`
+Schema name: `SessionEventAgentSessionCreated`
 
 - `event_id: string`
 
@@ -242,7 +242,7 @@
 
     - `model: string`
 
-      智能体使用的模型。
+      智能体所使用的模型。
 
     - `multi_agent: MultiAgentConfig`
 
@@ -254,11 +254,11 @@
 
       - `max_concurrent_subagents: number or null`
 
-        可并发运行的子智能体的最大数量，未启用时为 null。启用时默认为 6。
+        允许同时运行的子智能体的最大数量，若禁用则为 null。启用时默认为 6。
 
     - `name: string or null`
 
-      会话创建时该可复用智能体的名称，如果未保存名称则为 null。之后对智能体名称的更改不会影响此值。
+      会话创建时所对应的可复用智能体名称，若未保存名称则为 null。智能体名称的后续更改不会影响此值。
 
     - `reasoning: AgentReasoning`
 
@@ -266,7 +266,7 @@
 
       - `effort: "none" or "minimal" or "low" or 4 more or null`
 
-        所请求的推理努力程度，或 `null` 当模型自行选择其默认值时。
+        所请求的推理强度，或 `null` 当模型自行选择默认值时。
 
         - `"none"`
 
@@ -284,19 +284,19 @@
 
       - `summary: "concise" or "detailed" or "auto" or null`
 
-        所请求的推理摘要格式，或 `null` 当摘要功能被禁用时。
+        所请求的推理摘要格式，或 `null` 当摘要被禁用时。
 
         - `"concise"`
 
-          在受支持时返回简洁的推理摘要。
+          在支持时返回简洁的推理摘要。
 
         - `"detailed"`
 
-          在受支持时返回详细的推理摘要。
+          在支持时返回详细的推理摘要。
 
         - `"auto"`
 
-          自动选择模型所支持的最详细的摘要。
+          自动选择模型所支持的最为详细的摘要。
 
     - `service_tier: "auto" or "default" or "flex" or 3 more`
 
@@ -324,7 +324,7 @@
 
         - `Text object { type }`
 
-          生成普通文本，不施加结构化输出约束。
+          生成普通文本，且不施加结构化输出约束。
 
           - `type: "text"`
 
@@ -334,7 +334,7 @@
 
         - `JSONSchema object { schema, type }`
 
-          将生成文本约束为符合 JSON Schema。
+          将生成文本约束为 JSON Schema。
 
           - `schema: map[unknown]`
 
@@ -348,7 +348,7 @@
 
       - `verbosity: "low" or "medium" or "high"`
 
-        由智能体生成的文本量。默认为 `medium`.
+        由 智能体 生成的文本量。默认为 `medium`.
 
         - `"low"`
 
@@ -358,15 +358,15 @@
 
     - `tools: array of AgentTool`
 
-      智能体可用的工具。
+      可供 智能体 使用的工具。
 
       - `Function object { defer_loading, description, name, 2 more }`
 
-        由应用定义的函数。
+        由应用程序定义的函数。
 
         - `defer_loading: boolean`
 
-          该函数是否延迟加载并通过工具搜索发现。
+          该函数是否为延迟定义，并通过工具搜索发现。
 
         - `description: string`
 
@@ -378,7 +378,7 @@
 
         - `parameters: map[unknown]`
 
-          描述函数参数的 JSON Schema 对象。
+          描述该函数参数的 JSON Schema 对象。
 
         - `type: "function"`
 
@@ -406,7 +406,7 @@
 
         - `allowed_tools: array of string or null`
 
-          智能体可以调用的 MCP 工具。
+          该 智能体 可调用的 MCP 工具。
 
         - `connection_origin: "service" or "environment"`
 
@@ -418,15 +418,15 @@
 
         - `credential_id: string or null`
 
-          为该 MCP 服务器选择的已挂载保险库凭据（如有）。当恰好有一个已挂载凭据匹配该服务器 URL 时可选。
+          为此 MCP 服务器选择的已挂载保险库凭据（如果有）。当恰好有一个已挂载凭据与服务器 URL 匹配时为可选。
 
         - `request_metadata: map[unknown]`
 
-          随对该 MCP 服务器的请求一起包含的元数据。
+          随对该 MCP 服务器的请求一起发送的元数据。
 
         - `required: boolean`
 
-          该 MCP 服务器是否必须在第一轮之前完成初始化。
+          此 MCP 服务器是否必须在首轮对话之前完成初始化。
 
         - `server_label: string`
 
@@ -434,7 +434,7 @@
 
         - `transport: McpTransport`
 
-          用于连接 MCP 服务器的传输方式。
+          用于连接到 MCP 服务器的传输方式。
 
           - `HTTP object { server_url, type }`
 
@@ -468,7 +468,7 @@
 
             - `env_vars: array of string`
 
-              从执行环境中继承的环境变量名称。
+              从执行环境继承的环境变量名称。
 
             - `type: "stdio"`
 
@@ -488,11 +488,11 @@
 
         - `allowed_domains: array of string or null`
 
-          允许的搜索域，或者 `null` 在搜索不受限制时使用。
+          允许的搜索域名，或 `null` 当搜索不受限制时。
 
         - `context_size: "low" or "medium" or "high"`
 
-          可供模型使用的搜索上下文量。默认为 `medium`.
+          提供给模型的可用的搜索上下文数量。默认为 `medium`.
 
           - `"low"`
 
@@ -502,7 +502,7 @@
 
         - `location: object { city, country, region, timezone }  or null`
 
-          用于本地化搜索结果的近似位置（如果提供）。
+          用于对搜索结果进行本地化的大致位置（如果提供）。
 
           - `city: string or null`
 
@@ -522,7 +522,7 @@
 
         - `mode: "disabled" or "cached" or "live"`
 
-          用于网页搜索结果的来源。
+          用于 网页搜索 结果的来源。
 
           - `"disabled"`
 
@@ -542,7 +542,7 @@
 
   - `environment: Environment`
 
-    该会话的执行环境。
+    会话的执行环境。
 
     - `None object { type }`
 
@@ -564,7 +564,7 @@
 
       - `capability_directories: array of string`
 
-        包含暴露给 智能体 的能力的目录。
+        包含暴露给智能体的能力的目录。
 
       - `files: array of HostedEnvironmentFile`
 
@@ -576,11 +576,11 @@
 
           - `id: string`
 
-            执行环境中文件的会话范围 ID。
+            文件在执行环境中的会话范围内 ID。
 
           - `file_id: string`
 
-            上传文件的 ID。
+            已上传文件的 ID。
 
           - `path: string`
 
@@ -588,7 +588,7 @@
 
           - `size_bytes: number`
 
-            解码后的文件大小（以字节为单位）。
+            以字节为单位的解码后文件大小。
 
           - `type: "file_id"`
 
@@ -598,11 +598,11 @@
 
         - `Inline object { id, path, size_bytes, type }`
 
-          创建会话时以内联方式提供的文件。
+          会话创建时以内联方式提供的文件。
 
           - `id: string`
 
-            执行环境中文件的会话范围 ID。
+            文件在执行环境中的会话范围内 ID。
 
           - `path: string`
 
@@ -610,7 +610,7 @@
 
           - `size_bytes: number`
 
-            解码后的文件大小（以字节为单位）。
+            以字节为单位的解码后文件大小。
 
           - `type: "inline"`
 
@@ -636,11 +636,11 @@
 
           - `"restricted"`
 
-            仅允许访问已配置的域。
+            仅允许访问已配置的域名。
 
         - `allowed_domains: array of string`
 
-          在网络访问受限的情况下，环境可以访问的域。
+          在网络访问受限的情况下环境可以访问的域名。
 
       - `packages: object { npm, python, system }`
 
@@ -648,19 +648,19 @@
 
         - `npm: array of string`
 
-          在环境中全局安装的 npm 软件包。
+          在环境中全局安装的 npm 包。
 
         - `python: array of string`
 
-          环境中安装的 Python 软件包。
+          环境中安装的 Python 包。
 
         - `system: array of string`
 
-          环境中安装的系统软件包。
+          环境中安装的系统包。
 
       - `plugins: array of HostedPlugin`
 
-        环境中安装的插件，不包括其归档内容。
+        环境中安装的插件，不含其归档内容。
 
         - `description: string`
 
@@ -678,7 +678,7 @@
 
       - `skills: array of HostedSkill`
 
-        环境中安装的技能，不包括其归档内容。
+        环境中安装的技能，不含其归档内容。
 
         - `HostedSkillReference object { description, name, skill_id, 2 more }`
 
@@ -704,7 +704,7 @@
 
           - `version: string`
 
-            为本会话安装的具体技能版本。
+            本次会话安装的具体技能版本。
 
         - `Inline object { description, name, type }`
 
@@ -732,7 +732,7 @@
 
     - `SelfHosted object { id, capability_directories, remote_url, 2 more }`
 
-      由应用程序托管的环境。
+      由应用托管的环境。
 
       - `id: string`
 
@@ -740,11 +740,11 @@
 
       - `capability_directories: array of string`
 
-        包含暴露给 智能体 的能力的目录。
+        包含暴露给智能体的能力的目录。
 
       - `remote_url: string`
 
-        在连接此环境时，将此 URL 原样传递给 `codex exec-server --remote` 。
+        连接此环境时，将此 URL 原样传递给 `codex exec-server --remote` 。
 
       - `type: "self_hosted"`
 
@@ -758,11 +758,11 @@
 
   - `error: string or null`
 
-    导致会话失败（如有）的错误。
+    导致会话失败（若有）的错误。
 
   - `last_active_at: number`
 
-    会话最近一次活跃时的 Unix 时间戳（以秒为单位）。
+    会话最近活跃时的 Unix 时间戳（秒）。
 
   - `metadata: map[string]`
 
@@ -770,13 +770,13 @@
 
   - `object: "agent.session"`
 
-    对象类型。始终为 `agent.session`.
+    对象类型，始终为 `agent.session`.
 
     - `"agent.session"`
 
   - `required_actions: array of object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
 
-    在会话继续之前必须完成的操作。
+    会话继续前必须完成的操作。
 
     - `FunctionCall object { arguments, call_id, name, 2 more }`
 
@@ -810,7 +810,7 @@
 
       - `environment_id: string`
 
-        要重新连接的环境的 ID。
+        要重新连接的环境 ID。
 
       - `type: "environment_connection"`
 
@@ -824,7 +824,7 @@
 
     - `"idle"`
 
-      会话当前没有进行中的轮次，可以接受输入。托管环境可能仍在准备中。
+      会话当前没有正在进行的轮次，可以接收输入。托管环境可能仍在配置中。
 
     - `"in_progress"`
 
@@ -840,7 +840,7 @@
 
   - `usage: TokenUsage or null`
 
-    会话的最佳估算 token 用量，若未知则为 null。已记录的使用量可能会变化。
+    会话的最佳估算 token 用量，若未知则为 null。已记录的用量可能会发生变化。
 
     - `input_tokens: number`
 
@@ -848,11 +848,11 @@
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 用量的细分。
+      智能体输入 token 用量的明细。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中读取的输入 token 数。
 
     - `output_tokens: number`
 
@@ -860,7 +860,7 @@
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体输出 token 用量的细分。
+      智能体输出 token 用量的明细。
 
       - `reasoning_tokens: number`
 
@@ -872,7 +872,7 @@
 
   - `vault_ids: array of string`
 
-    提供给会话的 vault 的 ID。
+    会话可用的存储库 ID。
 
 - `type: "agent.session.created"`
 
@@ -962,11 +962,11 @@
 
 ## 智能体.session.turn.created
 
-当一个轮次被创建时发出。
+在创建一个轮次时发出。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionTurnCreated`
+Schema name: `SessionEventAgentSessionTurnCreated`
 
 - `event_id: string`
 
@@ -978,29 +978,29 @@
 
 - `turn: Turn`
 
-  创建该回合时的时间点。
+  该轮次在其创建时所对应的内容。
 
   - `id: string`
 
-    回合的 ID。
+    该轮次的 ID。
 
   - `agent_id: string`
 
-    运行该回合的智能体的 ID。
+    运行该轮次的智能体的 ID。
 
   - `completed_at: number or null`
 
-    回合达到终止状态时的 Unix 时间戳（以秒为单位）。
+    该轮次达到终止状态时的 Unix 时间戳（以秒为单位）。
 
   - `created_at: number`
 
-    用于按创建时间排序回合的 Unix 时间戳（以秒为单位）。子智能体回合使用其开始时间；若前述时间戳不可用，则回退到完成时间或子智能体开启时间。
+    用于按创建时间排序该轮次的 Unix 时间戳（以秒为单位）。子智能体轮次使用其开始时间，如果前述时间戳不可用，则回退到完成时间或子智能体的开启时间。
 
   - `error: SessionTurnError or null`
 
-    面向客户的错误信息。仅在回合失败时为非空。
+    面向客户的错误。仅在轮次失败时为非空。
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 16 more`
 
       稳定且机器可读的失败类别。
 
@@ -1010,19 +1010,23 @@
 
       - `"session_budget_exceeded"`
 
-        会话已达到其使用额度上限。
+        该会话已达到其使用额度上限。
 
       - `"usage_limit_exceeded"`
 
-        组织已达到使用量、套餐或计费限制。
+        该组织已达到使用、套餐或账单限额。
 
       - `"credit_balance_exhausted"`
 
-        组织已无剩余的API 额度。
+        该组织已无剩余的API额度。
 
       - `"rate_limit_exceeded"`
 
         请求超出了可用的速率限制。
+
+      - `"flex_unavailable"`
+
+        Flex 处理暂时不可用。
 
       - `"server_overloaded"`
 
@@ -1034,7 +1038,7 @@
 
       - `"misalignment_policy_violation"`
 
-        请求被安全系统拦截。
+        请求被安全系统阻止。
 
       - `"connection_failed"`
 
@@ -1042,11 +1046,11 @@
 
       - `"server_error"`
 
-        模型服务遇到意外错误。
+        模型服务遇到了意外错误。
 
       - `"authentication_error"`
 
-        API 凭据无效或缺少所需的访问权限。
+        API凭证无效或缺少所需的访问权限。
 
       - `"invalid_request"`
 
@@ -1054,7 +1058,7 @@
 
       - `"resource_not_found"`
 
-        请求的模型或资源不可用。
+        所请求的模型或资源不可用。
 
       - `"sandbox_error"`
 
@@ -1062,11 +1066,11 @@
 
       - `"executor_version_incompatible"`
 
-        执行器必须先升级，然后才能运行本轮对话。
+        执行器必须先升级才能运行此轮。
 
       - `"active_turn_not_steerable"`
 
-        在请求运行期间，会话无法接受其他输入。
+        在请求运行期间，会话无法接受额外的输入。
 
       - `"request_timeout"`
 
@@ -1078,57 +1082,57 @@
 
     - `message: string`
 
-      对客户友好的失败说明。
+      面向用户安全的失败说明。
 
   - `object: "agent.session.turn"`
 
-    对象类型。始终为 `agent.session.turn`.
+    对象类型，始终为 `agent.session.turn`.
 
     - `"agent.session.turn"`
 
   - `session_id: string`
 
-    拥有该轮对话的会话 ID。
+    拥有此轮的会话的 ID。
 
   - `started_at: number or null`
 
-    该轮对话开始时的 Unix 时间戳（以秒为单位）。
+    轮次开始时的 Unix 时间戳（以秒为单位）。
 
   - `status: "queued" or "in_progress" or "waiting" or 3 more`
 
-    该轮对话的当前状态。
+    轮次的当前状态。
 
     - `"queued"`
 
-      该轮对话正在等待开始。
+      轮次正在等待开始。
 
     - `"in_progress"`
 
-      该轮对话正在进行中。
+      轮次正在进行中。
 
     - `"waiting"`
 
-      该轮对话正在等待外部输入。
+      轮次正在等待外部输入。
 
     - `"completed"`
 
-      该轮对话已成功完成。
+      轮次已成功完成。
 
     - `"failed"`
 
-      该轮对话失败。
+      轮次失败。
 
     - `"cancelled"`
 
-      该轮对话已取消。
+      轮次已取消。
 
   - `subagent_id: string or null`
 
-    运行该轮对话的子智能体的 ID（如果适用）。
+    运行此轮的子智能体的 ID（如果适用）。
 
   - `usage: TokenUsage or null`
 
-    该轮对话的尽力而为的 token 用量，若未知则为 null。已记录的用量可能会发生变化。
+    轮次的尽力而为的令牌用量，若未知则为 null。记录的用量可能会发生变化。
 
     - `input_tokens: number`
 
@@ -1136,11 +1140,11 @@
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 用量的细分。
+      智能体输入 token 用量的明细。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中读取的输入 token 数。
 
     - `output_tokens: number`
 
@@ -1148,7 +1152,7 @@
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体输出 token 用量的细分。
+      智能体输出 token 用量的明细。
 
       - `reasoning_tokens: number`
 
@@ -1160,7 +1164,7 @@
 
 - `turn_id: string`
 
-  与事件关联的轮对话 ID。
+  与该事件关联的轮次的 ID。
 
 - `type: "agent.session.turn.created"`
 
@@ -1209,11 +1213,11 @@
 
 ## 智能体.session.turn.in_progress
 
-当一轮开始运行时发出。
+在一个回合开始运行时发出。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionTurnInProgress`
+Schema name: `SessionEventAgentSessionTurnInProgress`
 
 - `event_id: string`
 
@@ -1225,29 +1229,29 @@
 
 - `turn: Turn`
 
-  该轮开始运行的时间。
+  该轮次开始运行的时间。
 
   - `id: string`
 
-    回合的 ID。
+    该轮次的 ID。
 
   - `agent_id: string`
 
-    运行该回合的智能体的 ID。
+    运行该轮次的智能体的 ID。
 
   - `completed_at: number or null`
 
-    回合达到终止状态时的 Unix 时间戳（以秒为单位）。
+    该轮次达到终止状态时的 Unix 时间戳（以秒为单位）。
 
   - `created_at: number`
 
-    用于按创建时间排序回合的 Unix 时间戳（以秒为单位）。子智能体回合使用其开始时间；若前述时间戳不可用，则回退到完成时间或子智能体开启时间。
+    用于按创建时间排序该轮次的 Unix 时间戳（以秒为单位）。子智能体轮次使用其开始时间，如果前述时间戳不可用，则回退到完成时间或子智能体的开启时间。
 
   - `error: SessionTurnError or null`
 
-    面向客户的错误信息。仅在回合失败时为非空。
+    面向客户的错误。仅在轮次失败时为非空。
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 16 more`
 
       稳定且机器可读的失败类别。
 
@@ -1257,19 +1261,23 @@
 
       - `"session_budget_exceeded"`
 
-        会话已达到其使用额度上限。
+        该会话已达到其使用额度上限。
 
       - `"usage_limit_exceeded"`
 
-        组织已达到使用量、套餐或计费限制。
+        该组织已达到使用、套餐或账单限额。
 
       - `"credit_balance_exhausted"`
 
-        组织已无剩余的API 额度。
+        该组织已无剩余的API额度。
 
       - `"rate_limit_exceeded"`
 
         请求超出了可用的速率限制。
+
+      - `"flex_unavailable"`
+
+        Flex 处理暂时不可用。
 
       - `"server_overloaded"`
 
@@ -1281,7 +1289,7 @@
 
       - `"misalignment_policy_violation"`
 
-        请求被安全系统拦截。
+        请求被安全系统阻止。
 
       - `"connection_failed"`
 
@@ -1289,11 +1297,11 @@
 
       - `"server_error"`
 
-        模型服务遇到意外错误。
+        模型服务遇到了意外错误。
 
       - `"authentication_error"`
 
-        API 凭据无效或缺少所需的访问权限。
+        API凭证无效或缺少所需的访问权限。
 
       - `"invalid_request"`
 
@@ -1301,7 +1309,7 @@
 
       - `"resource_not_found"`
 
-        请求的模型或资源不可用。
+        所请求的模型或资源不可用。
 
       - `"sandbox_error"`
 
@@ -1309,11 +1317,11 @@
 
       - `"executor_version_incompatible"`
 
-        执行器必须先升级，然后才能运行本轮对话。
+        执行器必须先升级才能运行此轮。
 
       - `"active_turn_not_steerable"`
 
-        在请求运行期间，会话无法接受其他输入。
+        在请求运行期间，会话无法接受额外的输入。
 
       - `"request_timeout"`
 
@@ -1325,57 +1333,57 @@
 
     - `message: string`
 
-      对客户友好的失败说明。
+      面向用户安全的失败说明。
 
   - `object: "agent.session.turn"`
 
-    对象类型。始终为 `agent.session.turn`.
+    对象类型，始终为 `agent.session.turn`.
 
     - `"agent.session.turn"`
 
   - `session_id: string`
 
-    拥有该轮对话的会话 ID。
+    拥有此轮的会话的 ID。
 
   - `started_at: number or null`
 
-    该轮对话开始时的 Unix 时间戳（以秒为单位）。
+    轮次开始时的 Unix 时间戳（以秒为单位）。
 
   - `status: "queued" or "in_progress" or "waiting" or 3 more`
 
-    该轮对话的当前状态。
+    轮次的当前状态。
 
     - `"queued"`
 
-      该轮对话正在等待开始。
+      轮次正在等待开始。
 
     - `"in_progress"`
 
-      该轮对话正在进行中。
+      轮次正在进行中。
 
     - `"waiting"`
 
-      该轮对话正在等待外部输入。
+      轮次正在等待外部输入。
 
     - `"completed"`
 
-      该轮对话已成功完成。
+      轮次已成功完成。
 
     - `"failed"`
 
-      该轮对话失败。
+      轮次失败。
 
     - `"cancelled"`
 
-      该轮对话已取消。
+      轮次已取消。
 
   - `subagent_id: string or null`
 
-    运行该轮对话的子智能体的 ID（如果适用）。
+    运行此轮的子智能体的 ID（如果适用）。
 
   - `usage: TokenUsage or null`
 
-    该轮对话的尽力而为的 token 用量，若未知则为 null。已记录的用量可能会发生变化。
+    轮次的尽力而为的令牌用量，若未知则为 null。记录的用量可能会发生变化。
 
     - `input_tokens: number`
 
@@ -1383,11 +1391,11 @@
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 用量的细分。
+      智能体输入 token 用量的明细。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中读取的输入 token 数。
 
     - `output_tokens: number`
 
@@ -1395,7 +1403,7 @@
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体输出 token 用量的细分。
+      智能体输出 token 用量的明细。
 
       - `reasoning_tokens: number`
 
@@ -1407,7 +1415,7 @@
 
 - `turn_id: string`
 
-  与事件关联的轮对话 ID。
+  与该事件关联的轮次的 ID。
 
 - `type: "agent.session.turn.in_progress"`
 
@@ -1460,7 +1468,7 @@
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionTurnCompleted`
+Schema name: `SessionEventAgentSessionTurnCompleted`
 
 - `event_id: string`
 
@@ -1472,29 +1480,29 @@
 
 - `turn: Turn`
 
-  已完成的轮次。
+  已完成的对话轮次。
 
   - `id: string`
 
-    回合的 ID。
+    该轮次的 ID。
 
   - `agent_id: string`
 
-    运行该回合的智能体的 ID。
+    运行该轮次的智能体的 ID。
 
   - `completed_at: number or null`
 
-    回合达到终止状态时的 Unix 时间戳（以秒为单位）。
+    该轮次达到终止状态时的 Unix 时间戳（以秒为单位）。
 
   - `created_at: number`
 
-    用于按创建时间排序回合的 Unix 时间戳（以秒为单位）。子智能体回合使用其开始时间；若前述时间戳不可用，则回退到完成时间或子智能体开启时间。
+    用于按创建时间排序该轮次的 Unix 时间戳（以秒为单位）。子智能体轮次使用其开始时间，如果前述时间戳不可用，则回退到完成时间或子智能体的开启时间。
 
   - `error: SessionTurnError or null`
 
-    面向客户的错误信息。仅在回合失败时为非空。
+    面向客户的错误。仅在轮次失败时为非空。
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 16 more`
 
       稳定且机器可读的失败类别。
 
@@ -1504,19 +1512,23 @@
 
       - `"session_budget_exceeded"`
 
-        会话已达到其使用额度上限。
+        该会话已达到其使用额度上限。
 
       - `"usage_limit_exceeded"`
 
-        组织已达到使用量、套餐或计费限制。
+        该组织已达到使用、套餐或账单限额。
 
       - `"credit_balance_exhausted"`
 
-        组织已无剩余的API 额度。
+        该组织已无剩余的API额度。
 
       - `"rate_limit_exceeded"`
 
         请求超出了可用的速率限制。
+
+      - `"flex_unavailable"`
+
+        Flex 处理暂时不可用。
 
       - `"server_overloaded"`
 
@@ -1528,7 +1540,7 @@
 
       - `"misalignment_policy_violation"`
 
-        请求被安全系统拦截。
+        请求被安全系统阻止。
 
       - `"connection_failed"`
 
@@ -1536,11 +1548,11 @@
 
       - `"server_error"`
 
-        模型服务遇到意外错误。
+        模型服务遇到了意外错误。
 
       - `"authentication_error"`
 
-        API 凭据无效或缺少所需的访问权限。
+        API凭证无效或缺少所需的访问权限。
 
       - `"invalid_request"`
 
@@ -1548,7 +1560,7 @@
 
       - `"resource_not_found"`
 
-        请求的模型或资源不可用。
+        所请求的模型或资源不可用。
 
       - `"sandbox_error"`
 
@@ -1556,11 +1568,11 @@
 
       - `"executor_version_incompatible"`
 
-        执行器必须先升级，然后才能运行本轮对话。
+        执行器必须先升级才能运行此轮。
 
       - `"active_turn_not_steerable"`
 
-        在请求运行期间，会话无法接受其他输入。
+        在请求运行期间，会话无法接受额外的输入。
 
       - `"request_timeout"`
 
@@ -1572,57 +1584,57 @@
 
     - `message: string`
 
-      对客户友好的失败说明。
+      面向用户安全的失败说明。
 
   - `object: "agent.session.turn"`
 
-    对象类型。始终为 `agent.session.turn`.
+    对象类型，始终为 `agent.session.turn`.
 
     - `"agent.session.turn"`
 
   - `session_id: string`
 
-    拥有该轮对话的会话 ID。
+    拥有此轮的会话的 ID。
 
   - `started_at: number or null`
 
-    该轮对话开始时的 Unix 时间戳（以秒为单位）。
+    轮次开始时的 Unix 时间戳（以秒为单位）。
 
   - `status: "queued" or "in_progress" or "waiting" or 3 more`
 
-    该轮对话的当前状态。
+    轮次的当前状态。
 
     - `"queued"`
 
-      该轮对话正在等待开始。
+      轮次正在等待开始。
 
     - `"in_progress"`
 
-      该轮对话正在进行中。
+      轮次正在进行中。
 
     - `"waiting"`
 
-      该轮对话正在等待外部输入。
+      轮次正在等待外部输入。
 
     - `"completed"`
 
-      该轮对话已成功完成。
+      轮次已成功完成。
 
     - `"failed"`
 
-      该轮对话失败。
+      轮次失败。
 
     - `"cancelled"`
 
-      该轮对话已取消。
+      轮次已取消。
 
   - `subagent_id: string or null`
 
-    运行该轮对话的子智能体的 ID（如果适用）。
+    运行此轮的子智能体的 ID（如果适用）。
 
   - `usage: TokenUsage or null`
 
-    该轮对话的尽力而为的 token 用量，若未知则为 null。已记录的用量可能会发生变化。
+    轮次的尽力而为的令牌用量，若未知则为 null。记录的用量可能会发生变化。
 
     - `input_tokens: number`
 
@@ -1630,11 +1642,11 @@
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 用量的细分。
+      智能体输入 token 用量的明细。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中读取的输入 token 数。
 
     - `output_tokens: number`
 
@@ -1642,7 +1654,7 @@
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体输出 token 用量的细分。
+      智能体输出 token 用量的明细。
 
       - `reasoning_tokens: number`
 
@@ -1654,7 +1666,7 @@
 
 - `turn_id: string`
 
-  与事件关联的轮对话 ID。
+  与该事件关联的轮次的 ID。
 
 - `type: "agent.session.turn.completed"`
 
@@ -1664,7 +1676,7 @@
 
 - `usage: TokenUsage or null`
 
-  在该轮次中由根智能体产生的 token 使用情况（如有）。
+  该轮次中根智能体的 Token 使用情况（如可用）。
 
 ### 示例
 
@@ -1718,11 +1730,11 @@
 
 ## 智能体.session.turn.failed
 
-在某个轮次失败时发出。
+当一轮对话失败时发出。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionTurnFailed`
+Schema name: `SessionEventAgentSessionTurnFailed`
 
 - `event_id: string`
 
@@ -1738,25 +1750,25 @@
 
   - `id: string`
 
-    回合的 ID。
+    该轮次的 ID。
 
   - `agent_id: string`
 
-    运行该回合的智能体的 ID。
+    运行该轮次的智能体的 ID。
 
   - `completed_at: number or null`
 
-    回合达到终止状态时的 Unix 时间戳（以秒为单位）。
+    该轮次达到终止状态时的 Unix 时间戳（以秒为单位）。
 
   - `created_at: number`
 
-    用于按创建时间排序回合的 Unix 时间戳（以秒为单位）。子智能体回合使用其开始时间；若前述时间戳不可用，则回退到完成时间或子智能体开启时间。
+    用于按创建时间排序该轮次的 Unix 时间戳（以秒为单位）。子智能体轮次使用其开始时间，如果前述时间戳不可用，则回退到完成时间或子智能体的开启时间。
 
   - `error: SessionTurnError or null`
 
-    面向客户的错误信息。仅在回合失败时为非空。
+    面向客户的错误。仅在轮次失败时为非空。
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 16 more`
 
       稳定且机器可读的失败类别。
 
@@ -1766,19 +1778,23 @@
 
       - `"session_budget_exceeded"`
 
-        会话已达到其使用额度上限。
+        该会话已达到其使用额度上限。
 
       - `"usage_limit_exceeded"`
 
-        组织已达到使用量、套餐或计费限制。
+        该组织已达到使用、套餐或账单限额。
 
       - `"credit_balance_exhausted"`
 
-        组织已无剩余的API 额度。
+        该组织已无剩余的API额度。
 
       - `"rate_limit_exceeded"`
 
         请求超出了可用的速率限制。
+
+      - `"flex_unavailable"`
+
+        Flex 处理暂时不可用。
 
       - `"server_overloaded"`
 
@@ -1790,7 +1806,7 @@
 
       - `"misalignment_policy_violation"`
 
-        请求被安全系统拦截。
+        请求被安全系统阻止。
 
       - `"connection_failed"`
 
@@ -1798,11 +1814,11 @@
 
       - `"server_error"`
 
-        模型服务遇到意外错误。
+        模型服务遇到了意外错误。
 
       - `"authentication_error"`
 
-        API 凭据无效或缺少所需的访问权限。
+        API凭证无效或缺少所需的访问权限。
 
       - `"invalid_request"`
 
@@ -1810,7 +1826,7 @@
 
       - `"resource_not_found"`
 
-        请求的模型或资源不可用。
+        所请求的模型或资源不可用。
 
       - `"sandbox_error"`
 
@@ -1818,11 +1834,11 @@
 
       - `"executor_version_incompatible"`
 
-        执行器必须先升级，然后才能运行本轮对话。
+        执行器必须先升级才能运行此轮。
 
       - `"active_turn_not_steerable"`
 
-        在请求运行期间，会话无法接受其他输入。
+        在请求运行期间，会话无法接受额外的输入。
 
       - `"request_timeout"`
 
@@ -1834,57 +1850,57 @@
 
     - `message: string`
 
-      对客户友好的失败说明。
+      面向用户安全的失败说明。
 
   - `object: "agent.session.turn"`
 
-    对象类型。始终为 `agent.session.turn`.
+    对象类型，始终为 `agent.session.turn`.
 
     - `"agent.session.turn"`
 
   - `session_id: string`
 
-    拥有该轮对话的会话 ID。
+    拥有此轮的会话的 ID。
 
   - `started_at: number or null`
 
-    该轮对话开始时的 Unix 时间戳（以秒为单位）。
+    轮次开始时的 Unix 时间戳（以秒为单位）。
 
   - `status: "queued" or "in_progress" or "waiting" or 3 more`
 
-    该轮对话的当前状态。
+    轮次的当前状态。
 
     - `"queued"`
 
-      该轮对话正在等待开始。
+      轮次正在等待开始。
 
     - `"in_progress"`
 
-      该轮对话正在进行中。
+      轮次正在进行中。
 
     - `"waiting"`
 
-      该轮对话正在等待外部输入。
+      轮次正在等待外部输入。
 
     - `"completed"`
 
-      该轮对话已成功完成。
+      轮次已成功完成。
 
     - `"failed"`
 
-      该轮对话失败。
+      轮次失败。
 
     - `"cancelled"`
 
-      该轮对话已取消。
+      轮次已取消。
 
   - `subagent_id: string or null`
 
-    运行该轮对话的子智能体的 ID（如果适用）。
+    运行此轮的子智能体的 ID（如果适用）。
 
   - `usage: TokenUsage or null`
 
-    该轮对话的尽力而为的 token 用量，若未知则为 null。已记录的用量可能会发生变化。
+    轮次的尽力而为的令牌用量，若未知则为 null。记录的用量可能会发生变化。
 
     - `input_tokens: number`
 
@@ -1892,11 +1908,11 @@
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 用量的细分。
+      智能体输入 token 用量的明细。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中读取的输入 token 数。
 
     - `output_tokens: number`
 
@@ -1904,7 +1920,7 @@
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体输出 token 用量的细分。
+      智能体输出 token 用量的明细。
 
       - `reasoning_tokens: number`
 
@@ -1916,7 +1932,7 @@
 
 - `turn_id: string`
 
-  与事件关联的轮对话 ID。
+  与该事件关联的轮次的 ID。
 
 - `type: "agent.session.turn.failed"`
 
@@ -1926,7 +1942,7 @@
 
 - `usage: TokenUsage or null`
 
-  在该轮次中由根智能体产生的 token 使用情况（如有）。
+  该轮次中根智能体的 Token 使用情况（如可用）。
 
 ### 示例
 
@@ -1980,11 +1996,11 @@
 
 ## 智能体.session.turn.cancelled
 
-当某个回合被取消时触发。
+当一轮被取消时发出。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionTurnCancelled`
+Schema name: `SessionEventAgentSessionTurnCancelled`
 
 - `event_id: string`
 
@@ -2000,25 +2016,25 @@
 
   - `id: string`
 
-    回合的 ID。
+    该轮次的 ID。
 
   - `agent_id: string`
 
-    运行该回合的智能体的 ID。
+    运行该轮次的智能体的 ID。
 
   - `completed_at: number or null`
 
-    回合达到终止状态时的 Unix 时间戳（以秒为单位）。
+    该轮次达到终止状态时的 Unix 时间戳（以秒为单位）。
 
   - `created_at: number`
 
-    用于按创建时间排序回合的 Unix 时间戳（以秒为单位）。子智能体回合使用其开始时间；若前述时间戳不可用，则回退到完成时间或子智能体开启时间。
+    用于按创建时间排序该轮次的 Unix 时间戳（以秒为单位）。子智能体轮次使用其开始时间，如果前述时间戳不可用，则回退到完成时间或子智能体的开启时间。
 
   - `error: SessionTurnError or null`
 
-    面向客户的错误信息。仅在回合失败时为非空。
+    面向客户的错误。仅在轮次失败时为非空。
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 16 more`
 
       稳定且机器可读的失败类别。
 
@@ -2028,19 +2044,23 @@
 
       - `"session_budget_exceeded"`
 
-        会话已达到其使用额度上限。
+        该会话已达到其使用额度上限。
 
       - `"usage_limit_exceeded"`
 
-        组织已达到使用量、套餐或计费限制。
+        该组织已达到使用、套餐或账单限额。
 
       - `"credit_balance_exhausted"`
 
-        组织已无剩余的API 额度。
+        该组织已无剩余的API额度。
 
       - `"rate_limit_exceeded"`
 
         请求超出了可用的速率限制。
+
+      - `"flex_unavailable"`
+
+        Flex 处理暂时不可用。
 
       - `"server_overloaded"`
 
@@ -2052,7 +2072,7 @@
 
       - `"misalignment_policy_violation"`
 
-        请求被安全系统拦截。
+        请求被安全系统阻止。
 
       - `"connection_failed"`
 
@@ -2060,11 +2080,11 @@
 
       - `"server_error"`
 
-        模型服务遇到意外错误。
+        模型服务遇到了意外错误。
 
       - `"authentication_error"`
 
-        API 凭据无效或缺少所需的访问权限。
+        API凭证无效或缺少所需的访问权限。
 
       - `"invalid_request"`
 
@@ -2072,7 +2092,7 @@
 
       - `"resource_not_found"`
 
-        请求的模型或资源不可用。
+        所请求的模型或资源不可用。
 
       - `"sandbox_error"`
 
@@ -2080,11 +2100,11 @@
 
       - `"executor_version_incompatible"`
 
-        执行器必须先升级，然后才能运行本轮对话。
+        执行器必须先升级才能运行此轮。
 
       - `"active_turn_not_steerable"`
 
-        在请求运行期间，会话无法接受其他输入。
+        在请求运行期间，会话无法接受额外的输入。
 
       - `"request_timeout"`
 
@@ -2096,57 +2116,57 @@
 
     - `message: string`
 
-      对客户友好的失败说明。
+      面向用户安全的失败说明。
 
   - `object: "agent.session.turn"`
 
-    对象类型。始终为 `agent.session.turn`.
+    对象类型，始终为 `agent.session.turn`.
 
     - `"agent.session.turn"`
 
   - `session_id: string`
 
-    拥有该轮对话的会话 ID。
+    拥有此轮的会话的 ID。
 
   - `started_at: number or null`
 
-    该轮对话开始时的 Unix 时间戳（以秒为单位）。
+    轮次开始时的 Unix 时间戳（以秒为单位）。
 
   - `status: "queued" or "in_progress" or "waiting" or 3 more`
 
-    该轮对话的当前状态。
+    轮次的当前状态。
 
     - `"queued"`
 
-      该轮对话正在等待开始。
+      轮次正在等待开始。
 
     - `"in_progress"`
 
-      该轮对话正在进行中。
+      轮次正在进行中。
 
     - `"waiting"`
 
-      该轮对话正在等待外部输入。
+      轮次正在等待外部输入。
 
     - `"completed"`
 
-      该轮对话已成功完成。
+      轮次已成功完成。
 
     - `"failed"`
 
-      该轮对话失败。
+      轮次失败。
 
     - `"cancelled"`
 
-      该轮对话已取消。
+      轮次已取消。
 
   - `subagent_id: string or null`
 
-    运行该轮对话的子智能体的 ID（如果适用）。
+    运行此轮的子智能体的 ID（如果适用）。
 
   - `usage: TokenUsage or null`
 
-    该轮对话的尽力而为的 token 用量，若未知则为 null。已记录的用量可能会发生变化。
+    轮次的尽力而为的令牌用量，若未知则为 null。记录的用量可能会发生变化。
 
     - `input_tokens: number`
 
@@ -2154,11 +2174,11 @@
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 用量的细分。
+      智能体输入 token 用量的明细。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中读取的输入 token 数。
 
     - `output_tokens: number`
 
@@ -2166,7 +2186,7 @@
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体输出 token 用量的细分。
+      智能体输出 token 用量的明细。
 
       - `reasoning_tokens: number`
 
@@ -2178,7 +2198,7 @@
 
 - `turn_id: string`
 
-  与事件关联的轮对话 ID。
+  与该事件关联的轮次的 ID。
 
 - `type: "agent.session.turn.cancelled"`
 
@@ -2188,7 +2208,7 @@
 
 - `usage: TokenUsage or null`
 
-  在该轮次中由根智能体产生的 token 使用情况（如有）。
+  该轮次中根智能体的 Token 使用情况（如可用）。
 
 ### 示例
 
@@ -2242,11 +2262,11 @@
 
 ## 智能体.session.turn.item.added
 
-当某个 item 被添加到 turn 时触发。
+当某个条目被添加到轮次时触发。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionTurnItemAdded`
+Schema name: `SessionEventAgentSessionTurnItemAdded`
 
 - `event_id: string`
 
@@ -2262,19 +2282,19 @@
 
     - `id: string or null`
 
-      此 item 的 ID；对于未记录 ID 的旧版用户消息，此字段为 null。
+      此 item 的 ID；对于未记录 ID 的旧版用户消息，该字段为 null。
 
     - `content: array of AgentSessionMessageContent`
 
-      消息的内容。用户消息包含输入文本或图片；助手消息包含输出文本。
+      消息的内容。用户消息包含输入文本或图像；助手消息包含输出文本。
 
       - `InputText object { text, type }`
 
-        由用户提供的文本。
+        用户提供的文本。
 
         - `text: string`
 
-          由用户提供的文本。
+          用户提供的文本。
 
         - `type: "input_text"`
 
@@ -2284,11 +2304,11 @@
 
       - `InputImage object { image_url, type }`
 
-        由用户提供的图片。
+        用户提供的图像。
 
         - `image_url: string`
 
-          由用户提供的图片的 URL，可以是 base64 编码的 data URL。
+          用户提供的图像的 URL，可能为 base64 编码的 data URL。
 
         - `type: "input_image"`
 
@@ -2298,11 +2318,11 @@
 
       - `OutputText object { text, type }`
 
-        由助手生成的文本。
+        助手生成的文本。
 
         - `text: string`
 
-          由助手生成的文本。
+          助手生成的文本。
 
         - `type: "output_text"`
 
@@ -2316,11 +2336,11 @@
 
       - `"commentary"`
 
-        智能体 工作时生成的解说内容。
+        智能体工作过程中生成的解说。
 
       - `"final_answer"`
 
-        智能体 的最终回答。
+        智能体的最终回答。
 
     - `role: "user" or "assistant"`
 
@@ -2336,19 +2356,19 @@
 
       - `"in_progress"`
 
-        该项正在进行中。
+        该 item 仍在进行中。
 
       - `"completed"`
 
-        该项已完成。
+        该 item 已完成。
 
       - `"incomplete"`
 
-        该项在完成前已停止。
+        该 item 在完成前已停止。
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "message"`
 
@@ -2384,7 +2404,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "reasoning"`
 
@@ -2394,7 +2414,7 @@
 
   - `AgentFunctionCallItem object { id, arguments, call_id, 4 more }`
 
-    由智能体生成的函数调用。
+    由智能体发起的函数调用。
 
     - `id: string`
 
@@ -2434,7 +2454,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "function_call"`
 
@@ -2452,15 +2472,15 @@
 
     - `call_id: string`
 
-      生成此输出的函数调用的 ID。
+      产生此输出的函数调用的 ID。
 
     - `error: string or null`
 
-      调用失败时的错误消息。
+      调用失败时的错误信息。
 
     - `output: AgentFunctionCallOutput or null`
 
-      函数结果（如果调用成功）。
+      函数调用的返回值（若调用成功）。
 
       - `string`
 
@@ -2468,7 +2488,7 @@
 
         - `InputText object { text, type }`
 
-          在会话项中记录的文本输入。
+          在会话条目中记录的文本输入。
 
           - `text: string`
 
@@ -2482,11 +2502,11 @@
 
         - `InputImage object { image_url, type }`
 
-          在会话项中记录的图像输入。
+          在会话条目中记录的图像输入。
 
           - `image_url: string`
 
-            提供给智能体的图像 URL，可以是 base64 编码的数据 URL。
+            提供给智能体的图像 URL，可以是 base64 编码的 data URL。
 
           - `type: "input_image"`
 
@@ -2500,7 +2520,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "function_call_output"`
 
@@ -2522,7 +2542,7 @@
 
       - `OutputText object { text, type }`
 
-        由智能体生成的文本内容部分。
+        由智能体生成的文本内容片段。
 
         - `text: string`
 
@@ -2540,7 +2560,7 @@
 
         - `encrypted_content: string`
 
-          加密内容载荷。
+          加密的内容载荷。
 
         - `type: "encrypted_content"`
 
@@ -2558,7 +2578,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "agent_message"`
 
@@ -2568,11 +2588,11 @@
 
   - `AgentMcpCallItem object { id, arguments, error, 6 more }`
 
-    对 MCP 服务器上工具的调用。
+    对 MCP 服务器上某个工具的调用。
 
     - `id: string`
 
-      MCP 调用项的 ID。
+      MCP 调用条目的 ID。
 
     - `arguments: unknown`
 
@@ -2580,7 +2600,7 @@
 
     - `error: unknown`
 
-      MCP 工具返回的错误（如果有）。
+      MCP 工具返回的错误（若有）。
 
     - `name: string`
 
@@ -2588,7 +2608,7 @@
 
     - `output: unknown`
 
-      MCP 工具返回的输出（如果有）。
+      MCP 工具返回的输出（若有）。
 
     - `server_label: string`
 
@@ -2600,7 +2620,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "mcp_call"`
 
@@ -2610,7 +2630,7 @@
 
   - `AgentWebSearchCallItem object { id, action, status, 2 more }`
 
-    由智能体产生的网页搜索调用。
+    由智能体生成的网页搜索调用。
 
     - `id: string`
 
@@ -2626,11 +2646,11 @@
 
         - `queries: array of string or null`
 
-          搜索查询，当使用了多个查询时。
+          当使用多个查询时的搜索查询列表。
 
         - `query: string or null`
 
-          搜索查询，当使用了单个查询时。
+          当使用单个查询时的搜索查询。
 
         - `type: "search"`
 
@@ -2650,7 +2670,7 @@
 
         - `url: string or null`
 
-          被打开页面的 URL。
+          已打开页面的 URL。
 
       - `FindInPage object { pattern, type, url }`
 
@@ -2658,7 +2678,7 @@
 
         - `pattern: string or null`
 
-          所搜索的文本模式。
+          搜索的文本模式。
 
         - `type: "find_in_page"`
 
@@ -2686,7 +2706,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "web_search_call"`
 
@@ -2696,7 +2716,7 @@
 
   - `AgentCommandExecutionItem object { id, command, cwd, 6 more }`
 
-    由智能体产生的命令执行。
+    由智能体生成的命令执行。
 
     - `id: string`
 
@@ -2708,7 +2728,7 @@
 
     - `cwd: string or null`
 
-      用于执行命令的工作目录。
+      执行命令时所使用的工作目录。
 
     - `duration_ms: number or null`
 
@@ -2716,11 +2736,11 @@
 
     - `exit_code: number or null`
 
-      如果命令已完成，则为进程退出码。
+      进程退出码（若命令已完成）。
 
     - `output: string or null`
 
-      命令输出（如果有）。
+      命令输出（若有）。
 
     - `status: AgentFunctionCallStatus`
 
@@ -2728,7 +2748,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "command_execution"`
 
@@ -2750,11 +2770,11 @@
 
     - `content: array of AgentContent`
 
-      分配给被派生智能体的任务。
+      交给被派生智能体的任务。
 
       - `OutputText object { text, type }`
 
-        由智能体生成的文本内容部分。
+        由智能体生成的文本内容片段。
 
       - `EncryptedContent object { encrypted_content, type }`
 
@@ -2762,11 +2782,11 @@
 
     - `model: string or null`
 
-      被派生智能体所请求的模型。
+      为被派生智能体请求的模型。
 
     - `reasoning_effort: string or null`
 
-      被派生智能体所请求的推理力度。
+      为被派生智能体请求的推理力度。
 
     - `status: AgentFunctionCallStatus`
 
@@ -2774,7 +2794,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "create_subagent_call"`
 
@@ -2786,7 +2806,7 @@
 
   - `AgentSendSubagentInputCallItem object { id, content, recipient_agent_id, 4 more }`
 
-    用于向另一个智能体发送输入的请求。
+    用于向其他智能体发送输入的请求。
 
     - `id: string`
 
@@ -2794,11 +2814,11 @@
 
     - `content: array of AgentContent`
 
-      发送给接收智能体的输入。
+      发送给接收方智能体的输入。
 
       - `OutputText object { text, type }`
 
-        由智能体生成的文本内容部分。
+        由智能体生成的文本内容片段。
 
       - `EncryptedContent object { encrypted_content, type }`
 
@@ -2818,7 +2838,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "send_subagent_input_call"`
 
@@ -2842,7 +2862,7 @@
 
     - `sender_agent_id: string`
 
-      请求恢复的智能体的 ID。
+      请求恢复操作的智能体的 ID。
 
     - `status: AgentFunctionCallStatus`
 
@@ -2850,7 +2870,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "resume_subagent_call"`
 
@@ -2882,7 +2902,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "wait_for_subagents_call"`
 
@@ -2894,7 +2914,7 @@
 
   - `AgentInterruptSubagentCallItem object { id, recipient_agent_id, sender_agent_id, 3 more }`
 
-    用于中断子智能体当前轮次的请求。子智能体仍保持可用状态。
+    用于中断子智能体当前轮次的请求。子智能体仍然可用。
 
     - `id: string`
 
@@ -2902,11 +2922,11 @@
 
     - `recipient_agent_id: string`
 
-      要中断的 智能体 的 ID。
+      要中断的智能体的 ID。
 
     - `sender_agent_id: string`
 
-      发起中断请求的 智能体 的 ID。
+      发起中断请求的智能体的 ID。
 
     - `status: AgentFunctionCallStatus`
 
@@ -2914,7 +2934,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "interrupt_subagent_call"`
 
@@ -2934,11 +2954,11 @@
 
     - `recipient_agent_id: string`
 
-      要关闭的 智能体 的 ID。
+      要关闭的智能体的 ID。
 
     - `sender_agent_id: string`
 
-      发起关闭请求的 智能体 的 ID。
+      发起关闭请求的智能体的 ID。
 
     - `status: AgentFunctionCallStatus`
 
@@ -2946,7 +2966,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "close_subagent_call"`
 
@@ -2958,7 +2978,7 @@
 
 - `output_index: number or null`
 
-  当该条目为 智能体 输出时,该条目在轮次输出中的索引。
+  当条目为智能体输出时,条目在轮次输出中的索引。
 
 - `session_id: string`
 
@@ -3004,11 +3024,11 @@
 
 ## 智能体.session.idle
 
-当会话变为空闲状态时发出。
+当会话变为空闲时发出。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionIdle`
+Schema name: `SessionEventAgentSessionIdle`
 
 - `event_id: string`
 
@@ -3036,7 +3056,7 @@
 
     - `model: string`
 
-      智能体使用的模型。
+      智能体所使用的模型。
 
     - `multi_agent: MultiAgentConfig`
 
@@ -3048,11 +3068,11 @@
 
       - `max_concurrent_subagents: number or null`
 
-        可并发运行的子智能体的最大数量，未启用时为 null。启用时默认为 6。
+        允许同时运行的子智能体的最大数量，若禁用则为 null。启用时默认为 6。
 
     - `name: string or null`
 
-      会话创建时该可复用智能体的名称，如果未保存名称则为 null。之后对智能体名称的更改不会影响此值。
+      会话创建时所对应的可复用智能体名称，若未保存名称则为 null。智能体名称的后续更改不会影响此值。
 
     - `reasoning: AgentReasoning`
 
@@ -3060,7 +3080,7 @@
 
       - `effort: "none" or "minimal" or "low" or 4 more or null`
 
-        所请求的推理努力程度，或 `null` 当模型自行选择其默认值时。
+        所请求的推理强度，或 `null` 当模型自行选择默认值时。
 
         - `"none"`
 
@@ -3078,19 +3098,19 @@
 
       - `summary: "concise" or "detailed" or "auto" or null`
 
-        所请求的推理摘要格式，或 `null` 当摘要功能被禁用时。
+        所请求的推理摘要格式，或 `null` 当摘要被禁用时。
 
         - `"concise"`
 
-          在受支持时返回简洁的推理摘要。
+          在支持时返回简洁的推理摘要。
 
         - `"detailed"`
 
-          在受支持时返回详细的推理摘要。
+          在支持时返回详细的推理摘要。
 
         - `"auto"`
 
-          自动选择模型所支持的最详细的摘要。
+          自动选择模型所支持的最为详细的摘要。
 
     - `service_tier: "auto" or "default" or "flex" or 3 more`
 
@@ -3118,7 +3138,7 @@
 
         - `Text object { type }`
 
-          生成普通文本，不施加结构化输出约束。
+          生成普通文本，且不施加结构化输出约束。
 
           - `type: "text"`
 
@@ -3128,7 +3148,7 @@
 
         - `JSONSchema object { schema, type }`
 
-          将生成文本约束为符合 JSON Schema。
+          将生成文本约束为 JSON Schema。
 
           - `schema: map[unknown]`
 
@@ -3142,7 +3162,7 @@
 
       - `verbosity: "low" or "medium" or "high"`
 
-        由智能体生成的文本量。默认为 `medium`.
+        由 智能体 生成的文本量。默认为 `medium`.
 
         - `"low"`
 
@@ -3152,15 +3172,15 @@
 
     - `tools: array of AgentTool`
 
-      智能体可用的工具。
+      可供 智能体 使用的工具。
 
       - `Function object { defer_loading, description, name, 2 more }`
 
-        由应用定义的函数。
+        由应用程序定义的函数。
 
         - `defer_loading: boolean`
 
-          该函数是否延迟加载并通过工具搜索发现。
+          该函数是否为延迟定义，并通过工具搜索发现。
 
         - `description: string`
 
@@ -3172,7 +3192,7 @@
 
         - `parameters: map[unknown]`
 
-          描述函数参数的 JSON Schema 对象。
+          描述该函数参数的 JSON Schema 对象。
 
         - `type: "function"`
 
@@ -3200,7 +3220,7 @@
 
         - `allowed_tools: array of string or null`
 
-          智能体可以调用的 MCP 工具。
+          该 智能体 可调用的 MCP 工具。
 
         - `connection_origin: "service" or "environment"`
 
@@ -3212,15 +3232,15 @@
 
         - `credential_id: string or null`
 
-          为该 MCP 服务器选择的已挂载保险库凭据（如有）。当恰好有一个已挂载凭据匹配该服务器 URL 时可选。
+          为此 MCP 服务器选择的已挂载保险库凭据（如果有）。当恰好有一个已挂载凭据与服务器 URL 匹配时为可选。
 
         - `request_metadata: map[unknown]`
 
-          随对该 MCP 服务器的请求一起包含的元数据。
+          随对该 MCP 服务器的请求一起发送的元数据。
 
         - `required: boolean`
 
-          该 MCP 服务器是否必须在第一轮之前完成初始化。
+          此 MCP 服务器是否必须在首轮对话之前完成初始化。
 
         - `server_label: string`
 
@@ -3228,7 +3248,7 @@
 
         - `transport: McpTransport`
 
-          用于连接 MCP 服务器的传输方式。
+          用于连接到 MCP 服务器的传输方式。
 
           - `HTTP object { server_url, type }`
 
@@ -3262,7 +3282,7 @@
 
             - `env_vars: array of string`
 
-              从执行环境中继承的环境变量名称。
+              从执行环境继承的环境变量名称。
 
             - `type: "stdio"`
 
@@ -3282,11 +3302,11 @@
 
         - `allowed_domains: array of string or null`
 
-          允许的搜索域，或者 `null` 在搜索不受限制时使用。
+          允许的搜索域名，或 `null` 当搜索不受限制时。
 
         - `context_size: "low" or "medium" or "high"`
 
-          可供模型使用的搜索上下文量。默认为 `medium`.
+          提供给模型的可用的搜索上下文数量。默认为 `medium`.
 
           - `"low"`
 
@@ -3296,7 +3316,7 @@
 
         - `location: object { city, country, region, timezone }  or null`
 
-          用于本地化搜索结果的近似位置（如果提供）。
+          用于对搜索结果进行本地化的大致位置（如果提供）。
 
           - `city: string or null`
 
@@ -3316,7 +3336,7 @@
 
         - `mode: "disabled" or "cached" or "live"`
 
-          用于网页搜索结果的来源。
+          用于 网页搜索 结果的来源。
 
           - `"disabled"`
 
@@ -3336,7 +3356,7 @@
 
   - `environment: Environment`
 
-    该会话的执行环境。
+    会话的执行环境。
 
     - `None object { type }`
 
@@ -3358,7 +3378,7 @@
 
       - `capability_directories: array of string`
 
-        包含暴露给 智能体 的能力的目录。
+        包含暴露给智能体的能力的目录。
 
       - `files: array of HostedEnvironmentFile`
 
@@ -3370,11 +3390,11 @@
 
           - `id: string`
 
-            执行环境中文件的会话范围 ID。
+            文件在执行环境中的会话范围内 ID。
 
           - `file_id: string`
 
-            上传文件的 ID。
+            已上传文件的 ID。
 
           - `path: string`
 
@@ -3382,7 +3402,7 @@
 
           - `size_bytes: number`
 
-            解码后的文件大小（以字节为单位）。
+            以字节为单位的解码后文件大小。
 
           - `type: "file_id"`
 
@@ -3392,11 +3412,11 @@
 
         - `Inline object { id, path, size_bytes, type }`
 
-          创建会话时以内联方式提供的文件。
+          会话创建时以内联方式提供的文件。
 
           - `id: string`
 
-            执行环境中文件的会话范围 ID。
+            文件在执行环境中的会话范围内 ID。
 
           - `path: string`
 
@@ -3404,7 +3424,7 @@
 
           - `size_bytes: number`
 
-            解码后的文件大小（以字节为单位）。
+            以字节为单位的解码后文件大小。
 
           - `type: "inline"`
 
@@ -3430,11 +3450,11 @@
 
           - `"restricted"`
 
-            仅允许访问已配置的域。
+            仅允许访问已配置的域名。
 
         - `allowed_domains: array of string`
 
-          在网络访问受限的情况下，环境可以访问的域。
+          在网络访问受限的情况下环境可以访问的域名。
 
       - `packages: object { npm, python, system }`
 
@@ -3442,19 +3462,19 @@
 
         - `npm: array of string`
 
-          在环境中全局安装的 npm 软件包。
+          在环境中全局安装的 npm 包。
 
         - `python: array of string`
 
-          环境中安装的 Python 软件包。
+          环境中安装的 Python 包。
 
         - `system: array of string`
 
-          环境中安装的系统软件包。
+          环境中安装的系统包。
 
       - `plugins: array of HostedPlugin`
 
-        环境中安装的插件，不包括其归档内容。
+        环境中安装的插件，不含其归档内容。
 
         - `description: string`
 
@@ -3472,7 +3492,7 @@
 
       - `skills: array of HostedSkill`
 
-        环境中安装的技能，不包括其归档内容。
+        环境中安装的技能，不含其归档内容。
 
         - `HostedSkillReference object { description, name, skill_id, 2 more }`
 
@@ -3498,7 +3518,7 @@
 
           - `version: string`
 
-            为本会话安装的具体技能版本。
+            本次会话安装的具体技能版本。
 
         - `Inline object { description, name, type }`
 
@@ -3526,7 +3546,7 @@
 
     - `SelfHosted object { id, capability_directories, remote_url, 2 more }`
 
-      由应用程序托管的环境。
+      由应用托管的环境。
 
       - `id: string`
 
@@ -3534,11 +3554,11 @@
 
       - `capability_directories: array of string`
 
-        包含暴露给 智能体 的能力的目录。
+        包含暴露给智能体的能力的目录。
 
       - `remote_url: string`
 
-        在连接此环境时，将此 URL 原样传递给 `codex exec-server --remote` 。
+        连接此环境时，将此 URL 原样传递给 `codex exec-server --remote` 。
 
       - `type: "self_hosted"`
 
@@ -3552,11 +3572,11 @@
 
   - `error: string or null`
 
-    导致会话失败（如有）的错误。
+    导致会话失败（若有）的错误。
 
   - `last_active_at: number`
 
-    会话最近一次活跃时的 Unix 时间戳（以秒为单位）。
+    会话最近活跃时的 Unix 时间戳（秒）。
 
   - `metadata: map[string]`
 
@@ -3564,13 +3584,13 @@
 
   - `object: "agent.session"`
 
-    对象类型。始终为 `agent.session`.
+    对象类型，始终为 `agent.session`.
 
     - `"agent.session"`
 
   - `required_actions: array of object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
 
-    在会话继续之前必须完成的操作。
+    会话继续前必须完成的操作。
 
     - `FunctionCall object { arguments, call_id, name, 2 more }`
 
@@ -3604,7 +3624,7 @@
 
       - `environment_id: string`
 
-        要重新连接的环境的 ID。
+        要重新连接的环境 ID。
 
       - `type: "environment_connection"`
 
@@ -3618,7 +3638,7 @@
 
     - `"idle"`
 
-      会话当前没有进行中的轮次，可以接受输入。托管环境可能仍在准备中。
+      会话当前没有正在进行的轮次，可以接收输入。托管环境可能仍在配置中。
 
     - `"in_progress"`
 
@@ -3634,7 +3654,7 @@
 
   - `usage: TokenUsage or null`
 
-    会话的最佳估算 token 用量，若未知则为 null。已记录的使用量可能会变化。
+    会话的最佳估算 token 用量，若未知则为 null。已记录的用量可能会发生变化。
 
     - `input_tokens: number`
 
@@ -3642,11 +3662,11 @@
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 用量的细分。
+      智能体输入 token 用量的明细。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中读取的输入 token 数。
 
     - `output_tokens: number`
 
@@ -3654,7 +3674,7 @@
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体输出 token 用量的细分。
+      智能体输出 token 用量的明细。
 
       - `reasoning_tokens: number`
 
@@ -3666,7 +3686,7 @@
 
   - `vault_ids: array of string`
 
-    提供给会话的 vault 的 ID。
+    会话可用的存储库 ID。
 
 - `type: "agent.session.idle"`
 
@@ -3756,11 +3776,11 @@
 
 ## 智能体.session.in_progress
 
-当会话开始处理一轮时发出。
+在会话开始处理一个轮次时发出。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionInProgress`
+Schema name: `SessionEventAgentSessionInProgress`
 
 - `event_id: string`
 
@@ -3768,7 +3788,7 @@
 
 - `session: AgentSession`
 
-  开始处理的会话。
+  已开始处理的会话。
 
   - `id: string`
 
@@ -3788,7 +3808,7 @@
 
     - `model: string`
 
-      智能体使用的模型。
+      智能体所使用的模型。
 
     - `multi_agent: MultiAgentConfig`
 
@@ -3800,11 +3820,11 @@
 
       - `max_concurrent_subagents: number or null`
 
-        可并发运行的子智能体的最大数量，未启用时为 null。启用时默认为 6。
+        允许同时运行的子智能体的最大数量，若禁用则为 null。启用时默认为 6。
 
     - `name: string or null`
 
-      会话创建时该可复用智能体的名称，如果未保存名称则为 null。之后对智能体名称的更改不会影响此值。
+      会话创建时所对应的可复用智能体名称，若未保存名称则为 null。智能体名称的后续更改不会影响此值。
 
     - `reasoning: AgentReasoning`
 
@@ -3812,7 +3832,7 @@
 
       - `effort: "none" or "minimal" or "low" or 4 more or null`
 
-        所请求的推理努力程度，或 `null` 当模型自行选择其默认值时。
+        所请求的推理强度，或 `null` 当模型自行选择默认值时。
 
         - `"none"`
 
@@ -3830,19 +3850,19 @@
 
       - `summary: "concise" or "detailed" or "auto" or null`
 
-        所请求的推理摘要格式，或 `null` 当摘要功能被禁用时。
+        所请求的推理摘要格式，或 `null` 当摘要被禁用时。
 
         - `"concise"`
 
-          在受支持时返回简洁的推理摘要。
+          在支持时返回简洁的推理摘要。
 
         - `"detailed"`
 
-          在受支持时返回详细的推理摘要。
+          在支持时返回详细的推理摘要。
 
         - `"auto"`
 
-          自动选择模型所支持的最详细的摘要。
+          自动选择模型所支持的最为详细的摘要。
 
     - `service_tier: "auto" or "default" or "flex" or 3 more`
 
@@ -3870,7 +3890,7 @@
 
         - `Text object { type }`
 
-          生成普通文本，不施加结构化输出约束。
+          生成普通文本，且不施加结构化输出约束。
 
           - `type: "text"`
 
@@ -3880,7 +3900,7 @@
 
         - `JSONSchema object { schema, type }`
 
-          将生成文本约束为符合 JSON Schema。
+          将生成文本约束为 JSON Schema。
 
           - `schema: map[unknown]`
 
@@ -3894,7 +3914,7 @@
 
       - `verbosity: "low" or "medium" or "high"`
 
-        由智能体生成的文本量。默认为 `medium`.
+        由 智能体 生成的文本量。默认为 `medium`.
 
         - `"low"`
 
@@ -3904,15 +3924,15 @@
 
     - `tools: array of AgentTool`
 
-      智能体可用的工具。
+      可供 智能体 使用的工具。
 
       - `Function object { defer_loading, description, name, 2 more }`
 
-        由应用定义的函数。
+        由应用程序定义的函数。
 
         - `defer_loading: boolean`
 
-          该函数是否延迟加载并通过工具搜索发现。
+          该函数是否为延迟定义，并通过工具搜索发现。
 
         - `description: string`
 
@@ -3924,7 +3944,7 @@
 
         - `parameters: map[unknown]`
 
-          描述函数参数的 JSON Schema 对象。
+          描述该函数参数的 JSON Schema 对象。
 
         - `type: "function"`
 
@@ -3952,7 +3972,7 @@
 
         - `allowed_tools: array of string or null`
 
-          智能体可以调用的 MCP 工具。
+          该 智能体 可调用的 MCP 工具。
 
         - `connection_origin: "service" or "environment"`
 
@@ -3964,15 +3984,15 @@
 
         - `credential_id: string or null`
 
-          为该 MCP 服务器选择的已挂载保险库凭据（如有）。当恰好有一个已挂载凭据匹配该服务器 URL 时可选。
+          为此 MCP 服务器选择的已挂载保险库凭据（如果有）。当恰好有一个已挂载凭据与服务器 URL 匹配时为可选。
 
         - `request_metadata: map[unknown]`
 
-          随对该 MCP 服务器的请求一起包含的元数据。
+          随对该 MCP 服务器的请求一起发送的元数据。
 
         - `required: boolean`
 
-          该 MCP 服务器是否必须在第一轮之前完成初始化。
+          此 MCP 服务器是否必须在首轮对话之前完成初始化。
 
         - `server_label: string`
 
@@ -3980,7 +4000,7 @@
 
         - `transport: McpTransport`
 
-          用于连接 MCP 服务器的传输方式。
+          用于连接到 MCP 服务器的传输方式。
 
           - `HTTP object { server_url, type }`
 
@@ -4014,7 +4034,7 @@
 
             - `env_vars: array of string`
 
-              从执行环境中继承的环境变量名称。
+              从执行环境继承的环境变量名称。
 
             - `type: "stdio"`
 
@@ -4034,11 +4054,11 @@
 
         - `allowed_domains: array of string or null`
 
-          允许的搜索域，或者 `null` 在搜索不受限制时使用。
+          允许的搜索域名，或 `null` 当搜索不受限制时。
 
         - `context_size: "low" or "medium" or "high"`
 
-          可供模型使用的搜索上下文量。默认为 `medium`.
+          提供给模型的可用的搜索上下文数量。默认为 `medium`.
 
           - `"low"`
 
@@ -4048,7 +4068,7 @@
 
         - `location: object { city, country, region, timezone }  or null`
 
-          用于本地化搜索结果的近似位置（如果提供）。
+          用于对搜索结果进行本地化的大致位置（如果提供）。
 
           - `city: string or null`
 
@@ -4068,7 +4088,7 @@
 
         - `mode: "disabled" or "cached" or "live"`
 
-          用于网页搜索结果的来源。
+          用于 网页搜索 结果的来源。
 
           - `"disabled"`
 
@@ -4088,7 +4108,7 @@
 
   - `environment: Environment`
 
-    该会话的执行环境。
+    会话的执行环境。
 
     - `None object { type }`
 
@@ -4110,7 +4130,7 @@
 
       - `capability_directories: array of string`
 
-        包含暴露给 智能体 的能力的目录。
+        包含暴露给智能体的能力的目录。
 
       - `files: array of HostedEnvironmentFile`
 
@@ -4122,11 +4142,11 @@
 
           - `id: string`
 
-            执行环境中文件的会话范围 ID。
+            文件在执行环境中的会话范围内 ID。
 
           - `file_id: string`
 
-            上传文件的 ID。
+            已上传文件的 ID。
 
           - `path: string`
 
@@ -4134,7 +4154,7 @@
 
           - `size_bytes: number`
 
-            解码后的文件大小（以字节为单位）。
+            以字节为单位的解码后文件大小。
 
           - `type: "file_id"`
 
@@ -4144,11 +4164,11 @@
 
         - `Inline object { id, path, size_bytes, type }`
 
-          创建会话时以内联方式提供的文件。
+          会话创建时以内联方式提供的文件。
 
           - `id: string`
 
-            执行环境中文件的会话范围 ID。
+            文件在执行环境中的会话范围内 ID。
 
           - `path: string`
 
@@ -4156,7 +4176,7 @@
 
           - `size_bytes: number`
 
-            解码后的文件大小（以字节为单位）。
+            以字节为单位的解码后文件大小。
 
           - `type: "inline"`
 
@@ -4182,11 +4202,11 @@
 
           - `"restricted"`
 
-            仅允许访问已配置的域。
+            仅允许访问已配置的域名。
 
         - `allowed_domains: array of string`
 
-          在网络访问受限的情况下，环境可以访问的域。
+          在网络访问受限的情况下环境可以访问的域名。
 
       - `packages: object { npm, python, system }`
 
@@ -4194,19 +4214,19 @@
 
         - `npm: array of string`
 
-          在环境中全局安装的 npm 软件包。
+          在环境中全局安装的 npm 包。
 
         - `python: array of string`
 
-          环境中安装的 Python 软件包。
+          环境中安装的 Python 包。
 
         - `system: array of string`
 
-          环境中安装的系统软件包。
+          环境中安装的系统包。
 
       - `plugins: array of HostedPlugin`
 
-        环境中安装的插件，不包括其归档内容。
+        环境中安装的插件，不含其归档内容。
 
         - `description: string`
 
@@ -4224,7 +4244,7 @@
 
       - `skills: array of HostedSkill`
 
-        环境中安装的技能，不包括其归档内容。
+        环境中安装的技能，不含其归档内容。
 
         - `HostedSkillReference object { description, name, skill_id, 2 more }`
 
@@ -4250,7 +4270,7 @@
 
           - `version: string`
 
-            为本会话安装的具体技能版本。
+            本次会话安装的具体技能版本。
 
         - `Inline object { description, name, type }`
 
@@ -4278,7 +4298,7 @@
 
     - `SelfHosted object { id, capability_directories, remote_url, 2 more }`
 
-      由应用程序托管的环境。
+      由应用托管的环境。
 
       - `id: string`
 
@@ -4286,11 +4306,11 @@
 
       - `capability_directories: array of string`
 
-        包含暴露给 智能体 的能力的目录。
+        包含暴露给智能体的能力的目录。
 
       - `remote_url: string`
 
-        在连接此环境时，将此 URL 原样传递给 `codex exec-server --remote` 。
+        连接此环境时，将此 URL 原样传递给 `codex exec-server --remote` 。
 
       - `type: "self_hosted"`
 
@@ -4304,11 +4324,11 @@
 
   - `error: string or null`
 
-    导致会话失败（如有）的错误。
+    导致会话失败（若有）的错误。
 
   - `last_active_at: number`
 
-    会话最近一次活跃时的 Unix 时间戳（以秒为单位）。
+    会话最近活跃时的 Unix 时间戳（秒）。
 
   - `metadata: map[string]`
 
@@ -4316,13 +4336,13 @@
 
   - `object: "agent.session"`
 
-    对象类型。始终为 `agent.session`.
+    对象类型，始终为 `agent.session`.
 
     - `"agent.session"`
 
   - `required_actions: array of object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
 
-    在会话继续之前必须完成的操作。
+    会话继续前必须完成的操作。
 
     - `FunctionCall object { arguments, call_id, name, 2 more }`
 
@@ -4356,7 +4376,7 @@
 
       - `environment_id: string`
 
-        要重新连接的环境的 ID。
+        要重新连接的环境 ID。
 
       - `type: "environment_connection"`
 
@@ -4370,7 +4390,7 @@
 
     - `"idle"`
 
-      会话当前没有进行中的轮次，可以接受输入。托管环境可能仍在准备中。
+      会话当前没有正在进行的轮次，可以接收输入。托管环境可能仍在配置中。
 
     - `"in_progress"`
 
@@ -4386,7 +4406,7 @@
 
   - `usage: TokenUsage or null`
 
-    会话的最佳估算 token 用量，若未知则为 null。已记录的使用量可能会变化。
+    会话的最佳估算 token 用量，若未知则为 null。已记录的用量可能会发生变化。
 
     - `input_tokens: number`
 
@@ -4394,11 +4414,11 @@
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 用量的细分。
+      智能体输入 token 用量的明细。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中读取的输入 token 数。
 
     - `output_tokens: number`
 
@@ -4406,7 +4426,7 @@
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体输出 token 用量的细分。
+      智能体输出 token 用量的明细。
 
       - `reasoning_tokens: number`
 
@@ -4418,7 +4438,7 @@
 
   - `vault_ids: array of string`
 
-    提供给会话的 vault 的 ID。
+    会话可用的存储库 ID。
 
 - `type: "agent.session.in_progress"`
 
@@ -4508,11 +4528,11 @@
 
 ## 智能体.session.requires_action
 
-当一个会话正在等待一个或多个必需的操作时发出。
+当会话正在等待一个或多个必需操作时触发。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionRequiresAction`
+Schema name: `SessionEventAgentSessionRequiresAction`
 
 - `event_id: string`
 
@@ -4520,7 +4540,7 @@
 
 - `session: AgentSession`
 
-  会话及其当前需要执行的操作。
+  该会话及其当前所需执行的操作。
 
   - `id: string`
 
@@ -4540,7 +4560,7 @@
 
     - `model: string`
 
-      智能体使用的模型。
+      智能体所使用的模型。
 
     - `multi_agent: MultiAgentConfig`
 
@@ -4552,11 +4572,11 @@
 
       - `max_concurrent_subagents: number or null`
 
-        可并发运行的子智能体的最大数量，未启用时为 null。启用时默认为 6。
+        允许同时运行的子智能体的最大数量，若禁用则为 null。启用时默认为 6。
 
     - `name: string or null`
 
-      会话创建时该可复用智能体的名称，如果未保存名称则为 null。之后对智能体名称的更改不会影响此值。
+      会话创建时所对应的可复用智能体名称，若未保存名称则为 null。智能体名称的后续更改不会影响此值。
 
     - `reasoning: AgentReasoning`
 
@@ -4564,7 +4584,7 @@
 
       - `effort: "none" or "minimal" or "low" or 4 more or null`
 
-        所请求的推理努力程度，或 `null` 当模型自行选择其默认值时。
+        所请求的推理强度，或 `null` 当模型自行选择默认值时。
 
         - `"none"`
 
@@ -4582,19 +4602,19 @@
 
       - `summary: "concise" or "detailed" or "auto" or null`
 
-        所请求的推理摘要格式，或 `null` 当摘要功能被禁用时。
+        所请求的推理摘要格式，或 `null` 当摘要被禁用时。
 
         - `"concise"`
 
-          在受支持时返回简洁的推理摘要。
+          在支持时返回简洁的推理摘要。
 
         - `"detailed"`
 
-          在受支持时返回详细的推理摘要。
+          在支持时返回详细的推理摘要。
 
         - `"auto"`
 
-          自动选择模型所支持的最详细的摘要。
+          自动选择模型所支持的最为详细的摘要。
 
     - `service_tier: "auto" or "default" or "flex" or 3 more`
 
@@ -4622,7 +4642,7 @@
 
         - `Text object { type }`
 
-          生成普通文本，不施加结构化输出约束。
+          生成普通文本，且不施加结构化输出约束。
 
           - `type: "text"`
 
@@ -4632,7 +4652,7 @@
 
         - `JSONSchema object { schema, type }`
 
-          将生成文本约束为符合 JSON Schema。
+          将生成文本约束为 JSON Schema。
 
           - `schema: map[unknown]`
 
@@ -4646,7 +4666,7 @@
 
       - `verbosity: "low" or "medium" or "high"`
 
-        由智能体生成的文本量。默认为 `medium`.
+        由 智能体 生成的文本量。默认为 `medium`.
 
         - `"low"`
 
@@ -4656,15 +4676,15 @@
 
     - `tools: array of AgentTool`
 
-      智能体可用的工具。
+      可供 智能体 使用的工具。
 
       - `Function object { defer_loading, description, name, 2 more }`
 
-        由应用定义的函数。
+        由应用程序定义的函数。
 
         - `defer_loading: boolean`
 
-          该函数是否延迟加载并通过工具搜索发现。
+          该函数是否为延迟定义，并通过工具搜索发现。
 
         - `description: string`
 
@@ -4676,7 +4696,7 @@
 
         - `parameters: map[unknown]`
 
-          描述函数参数的 JSON Schema 对象。
+          描述该函数参数的 JSON Schema 对象。
 
         - `type: "function"`
 
@@ -4704,7 +4724,7 @@
 
         - `allowed_tools: array of string or null`
 
-          智能体可以调用的 MCP 工具。
+          该 智能体 可调用的 MCP 工具。
 
         - `connection_origin: "service" or "environment"`
 
@@ -4716,15 +4736,15 @@
 
         - `credential_id: string or null`
 
-          为该 MCP 服务器选择的已挂载保险库凭据（如有）。当恰好有一个已挂载凭据匹配该服务器 URL 时可选。
+          为此 MCP 服务器选择的已挂载保险库凭据（如果有）。当恰好有一个已挂载凭据与服务器 URL 匹配时为可选。
 
         - `request_metadata: map[unknown]`
 
-          随对该 MCP 服务器的请求一起包含的元数据。
+          随对该 MCP 服务器的请求一起发送的元数据。
 
         - `required: boolean`
 
-          该 MCP 服务器是否必须在第一轮之前完成初始化。
+          此 MCP 服务器是否必须在首轮对话之前完成初始化。
 
         - `server_label: string`
 
@@ -4732,7 +4752,7 @@
 
         - `transport: McpTransport`
 
-          用于连接 MCP 服务器的传输方式。
+          用于连接到 MCP 服务器的传输方式。
 
           - `HTTP object { server_url, type }`
 
@@ -4766,7 +4786,7 @@
 
             - `env_vars: array of string`
 
-              从执行环境中继承的环境变量名称。
+              从执行环境继承的环境变量名称。
 
             - `type: "stdio"`
 
@@ -4786,11 +4806,11 @@
 
         - `allowed_domains: array of string or null`
 
-          允许的搜索域，或者 `null` 在搜索不受限制时使用。
+          允许的搜索域名，或 `null` 当搜索不受限制时。
 
         - `context_size: "low" or "medium" or "high"`
 
-          可供模型使用的搜索上下文量。默认为 `medium`.
+          提供给模型的可用的搜索上下文数量。默认为 `medium`.
 
           - `"low"`
 
@@ -4800,7 +4820,7 @@
 
         - `location: object { city, country, region, timezone }  or null`
 
-          用于本地化搜索结果的近似位置（如果提供）。
+          用于对搜索结果进行本地化的大致位置（如果提供）。
 
           - `city: string or null`
 
@@ -4820,7 +4840,7 @@
 
         - `mode: "disabled" or "cached" or "live"`
 
-          用于网页搜索结果的来源。
+          用于 网页搜索 结果的来源。
 
           - `"disabled"`
 
@@ -4840,7 +4860,7 @@
 
   - `environment: Environment`
 
-    该会话的执行环境。
+    会话的执行环境。
 
     - `None object { type }`
 
@@ -4862,7 +4882,7 @@
 
       - `capability_directories: array of string`
 
-        包含暴露给 智能体 的能力的目录。
+        包含暴露给智能体的能力的目录。
 
       - `files: array of HostedEnvironmentFile`
 
@@ -4874,11 +4894,11 @@
 
           - `id: string`
 
-            执行环境中文件的会话范围 ID。
+            文件在执行环境中的会话范围内 ID。
 
           - `file_id: string`
 
-            上传文件的 ID。
+            已上传文件的 ID。
 
           - `path: string`
 
@@ -4886,7 +4906,7 @@
 
           - `size_bytes: number`
 
-            解码后的文件大小（以字节为单位）。
+            以字节为单位的解码后文件大小。
 
           - `type: "file_id"`
 
@@ -4896,11 +4916,11 @@
 
         - `Inline object { id, path, size_bytes, type }`
 
-          创建会话时以内联方式提供的文件。
+          会话创建时以内联方式提供的文件。
 
           - `id: string`
 
-            执行环境中文件的会话范围 ID。
+            文件在执行环境中的会话范围内 ID。
 
           - `path: string`
 
@@ -4908,7 +4928,7 @@
 
           - `size_bytes: number`
 
-            解码后的文件大小（以字节为单位）。
+            以字节为单位的解码后文件大小。
 
           - `type: "inline"`
 
@@ -4934,11 +4954,11 @@
 
           - `"restricted"`
 
-            仅允许访问已配置的域。
+            仅允许访问已配置的域名。
 
         - `allowed_domains: array of string`
 
-          在网络访问受限的情况下，环境可以访问的域。
+          在网络访问受限的情况下环境可以访问的域名。
 
       - `packages: object { npm, python, system }`
 
@@ -4946,19 +4966,19 @@
 
         - `npm: array of string`
 
-          在环境中全局安装的 npm 软件包。
+          在环境中全局安装的 npm 包。
 
         - `python: array of string`
 
-          环境中安装的 Python 软件包。
+          环境中安装的 Python 包。
 
         - `system: array of string`
 
-          环境中安装的系统软件包。
+          环境中安装的系统包。
 
       - `plugins: array of HostedPlugin`
 
-        环境中安装的插件，不包括其归档内容。
+        环境中安装的插件，不含其归档内容。
 
         - `description: string`
 
@@ -4976,7 +4996,7 @@
 
       - `skills: array of HostedSkill`
 
-        环境中安装的技能，不包括其归档内容。
+        环境中安装的技能，不含其归档内容。
 
         - `HostedSkillReference object { description, name, skill_id, 2 more }`
 
@@ -5002,7 +5022,7 @@
 
           - `version: string`
 
-            为本会话安装的具体技能版本。
+            本次会话安装的具体技能版本。
 
         - `Inline object { description, name, type }`
 
@@ -5030,7 +5050,7 @@
 
     - `SelfHosted object { id, capability_directories, remote_url, 2 more }`
 
-      由应用程序托管的环境。
+      由应用托管的环境。
 
       - `id: string`
 
@@ -5038,11 +5058,11 @@
 
       - `capability_directories: array of string`
 
-        包含暴露给 智能体 的能力的目录。
+        包含暴露给智能体的能力的目录。
 
       - `remote_url: string`
 
-        在连接此环境时，将此 URL 原样传递给 `codex exec-server --remote` 。
+        连接此环境时，将此 URL 原样传递给 `codex exec-server --remote` 。
 
       - `type: "self_hosted"`
 
@@ -5056,11 +5076,11 @@
 
   - `error: string or null`
 
-    导致会话失败（如有）的错误。
+    导致会话失败（若有）的错误。
 
   - `last_active_at: number`
 
-    会话最近一次活跃时的 Unix 时间戳（以秒为单位）。
+    会话最近活跃时的 Unix 时间戳（秒）。
 
   - `metadata: map[string]`
 
@@ -5068,13 +5088,13 @@
 
   - `object: "agent.session"`
 
-    对象类型。始终为 `agent.session`.
+    对象类型，始终为 `agent.session`.
 
     - `"agent.session"`
 
   - `required_actions: array of object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
 
-    在会话继续之前必须完成的操作。
+    会话继续前必须完成的操作。
 
     - `FunctionCall object { arguments, call_id, name, 2 more }`
 
@@ -5108,7 +5128,7 @@
 
       - `environment_id: string`
 
-        要重新连接的环境的 ID。
+        要重新连接的环境 ID。
 
       - `type: "environment_connection"`
 
@@ -5122,7 +5142,7 @@
 
     - `"idle"`
 
-      会话当前没有进行中的轮次，可以接受输入。托管环境可能仍在准备中。
+      会话当前没有正在进行的轮次，可以接收输入。托管环境可能仍在配置中。
 
     - `"in_progress"`
 
@@ -5138,7 +5158,7 @@
 
   - `usage: TokenUsage or null`
 
-    会话的最佳估算 token 用量，若未知则为 null。已记录的使用量可能会变化。
+    会话的最佳估算 token 用量，若未知则为 null。已记录的用量可能会发生变化。
 
     - `input_tokens: number`
 
@@ -5146,11 +5166,11 @@
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 用量的细分。
+      智能体输入 token 用量的明细。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中读取的输入 token 数。
 
     - `output_tokens: number`
 
@@ -5158,7 +5178,7 @@
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体输出 token 用量的细分。
+      智能体输出 token 用量的明细。
 
       - `reasoning_tokens: number`
 
@@ -5170,7 +5190,7 @@
 
   - `vault_ids: array of string`
 
-    提供给会话的 vault 的 ID。
+    会话可用的存储库 ID。
 
 - `type: "agent.session.requires_action"`
 
@@ -5264,7 +5284,7 @@
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionFailed`
+Schema name: `SessionEventAgentSessionFailed`
 
 - `event_id: string`
 
@@ -5292,7 +5312,7 @@
 
     - `model: string`
 
-      智能体使用的模型。
+      智能体所使用的模型。
 
     - `multi_agent: MultiAgentConfig`
 
@@ -5304,11 +5324,11 @@
 
       - `max_concurrent_subagents: number or null`
 
-        可并发运行的子智能体的最大数量，未启用时为 null。启用时默认为 6。
+        允许同时运行的子智能体的最大数量，若禁用则为 null。启用时默认为 6。
 
     - `name: string or null`
 
-      会话创建时该可复用智能体的名称，如果未保存名称则为 null。之后对智能体名称的更改不会影响此值。
+      会话创建时所对应的可复用智能体名称，若未保存名称则为 null。智能体名称的后续更改不会影响此值。
 
     - `reasoning: AgentReasoning`
 
@@ -5316,7 +5336,7 @@
 
       - `effort: "none" or "minimal" or "low" or 4 more or null`
 
-        所请求的推理努力程度，或 `null` 当模型自行选择其默认值时。
+        所请求的推理强度，或 `null` 当模型自行选择默认值时。
 
         - `"none"`
 
@@ -5334,19 +5354,19 @@
 
       - `summary: "concise" or "detailed" or "auto" or null`
 
-        所请求的推理摘要格式，或 `null` 当摘要功能被禁用时。
+        所请求的推理摘要格式，或 `null` 当摘要被禁用时。
 
         - `"concise"`
 
-          在受支持时返回简洁的推理摘要。
+          在支持时返回简洁的推理摘要。
 
         - `"detailed"`
 
-          在受支持时返回详细的推理摘要。
+          在支持时返回详细的推理摘要。
 
         - `"auto"`
 
-          自动选择模型所支持的最详细的摘要。
+          自动选择模型所支持的最为详细的摘要。
 
     - `service_tier: "auto" or "default" or "flex" or 3 more`
 
@@ -5374,7 +5394,7 @@
 
         - `Text object { type }`
 
-          生成普通文本，不施加结构化输出约束。
+          生成普通文本，且不施加结构化输出约束。
 
           - `type: "text"`
 
@@ -5384,7 +5404,7 @@
 
         - `JSONSchema object { schema, type }`
 
-          将生成文本约束为符合 JSON Schema。
+          将生成文本约束为 JSON Schema。
 
           - `schema: map[unknown]`
 
@@ -5398,7 +5418,7 @@
 
       - `verbosity: "low" or "medium" or "high"`
 
-        由智能体生成的文本量。默认为 `medium`.
+        由 智能体 生成的文本量。默认为 `medium`.
 
         - `"low"`
 
@@ -5408,15 +5428,15 @@
 
     - `tools: array of AgentTool`
 
-      智能体可用的工具。
+      可供 智能体 使用的工具。
 
       - `Function object { defer_loading, description, name, 2 more }`
 
-        由应用定义的函数。
+        由应用程序定义的函数。
 
         - `defer_loading: boolean`
 
-          该函数是否延迟加载并通过工具搜索发现。
+          该函数是否为延迟定义，并通过工具搜索发现。
 
         - `description: string`
 
@@ -5428,7 +5448,7 @@
 
         - `parameters: map[unknown]`
 
-          描述函数参数的 JSON Schema 对象。
+          描述该函数参数的 JSON Schema 对象。
 
         - `type: "function"`
 
@@ -5456,7 +5476,7 @@
 
         - `allowed_tools: array of string or null`
 
-          智能体可以调用的 MCP 工具。
+          该 智能体 可调用的 MCP 工具。
 
         - `connection_origin: "service" or "environment"`
 
@@ -5468,15 +5488,15 @@
 
         - `credential_id: string or null`
 
-          为该 MCP 服务器选择的已挂载保险库凭据（如有）。当恰好有一个已挂载凭据匹配该服务器 URL 时可选。
+          为此 MCP 服务器选择的已挂载保险库凭据（如果有）。当恰好有一个已挂载凭据与服务器 URL 匹配时为可选。
 
         - `request_metadata: map[unknown]`
 
-          随对该 MCP 服务器的请求一起包含的元数据。
+          随对该 MCP 服务器的请求一起发送的元数据。
 
         - `required: boolean`
 
-          该 MCP 服务器是否必须在第一轮之前完成初始化。
+          此 MCP 服务器是否必须在首轮对话之前完成初始化。
 
         - `server_label: string`
 
@@ -5484,7 +5504,7 @@
 
         - `transport: McpTransport`
 
-          用于连接 MCP 服务器的传输方式。
+          用于连接到 MCP 服务器的传输方式。
 
           - `HTTP object { server_url, type }`
 
@@ -5518,7 +5538,7 @@
 
             - `env_vars: array of string`
 
-              从执行环境中继承的环境变量名称。
+              从执行环境继承的环境变量名称。
 
             - `type: "stdio"`
 
@@ -5538,11 +5558,11 @@
 
         - `allowed_domains: array of string or null`
 
-          允许的搜索域，或者 `null` 在搜索不受限制时使用。
+          允许的搜索域名，或 `null` 当搜索不受限制时。
 
         - `context_size: "low" or "medium" or "high"`
 
-          可供模型使用的搜索上下文量。默认为 `medium`.
+          提供给模型的可用的搜索上下文数量。默认为 `medium`.
 
           - `"low"`
 
@@ -5552,7 +5572,7 @@
 
         - `location: object { city, country, region, timezone }  or null`
 
-          用于本地化搜索结果的近似位置（如果提供）。
+          用于对搜索结果进行本地化的大致位置（如果提供）。
 
           - `city: string or null`
 
@@ -5572,7 +5592,7 @@
 
         - `mode: "disabled" or "cached" or "live"`
 
-          用于网页搜索结果的来源。
+          用于 网页搜索 结果的来源。
 
           - `"disabled"`
 
@@ -5592,7 +5612,7 @@
 
   - `environment: Environment`
 
-    该会话的执行环境。
+    会话的执行环境。
 
     - `None object { type }`
 
@@ -5614,7 +5634,7 @@
 
       - `capability_directories: array of string`
 
-        包含暴露给 智能体 的能力的目录。
+        包含暴露给智能体的能力的目录。
 
       - `files: array of HostedEnvironmentFile`
 
@@ -5626,11 +5646,11 @@
 
           - `id: string`
 
-            执行环境中文件的会话范围 ID。
+            文件在执行环境中的会话范围内 ID。
 
           - `file_id: string`
 
-            上传文件的 ID。
+            已上传文件的 ID。
 
           - `path: string`
 
@@ -5638,7 +5658,7 @@
 
           - `size_bytes: number`
 
-            解码后的文件大小（以字节为单位）。
+            以字节为单位的解码后文件大小。
 
           - `type: "file_id"`
 
@@ -5648,11 +5668,11 @@
 
         - `Inline object { id, path, size_bytes, type }`
 
-          创建会话时以内联方式提供的文件。
+          会话创建时以内联方式提供的文件。
 
           - `id: string`
 
-            执行环境中文件的会话范围 ID。
+            文件在执行环境中的会话范围内 ID。
 
           - `path: string`
 
@@ -5660,7 +5680,7 @@
 
           - `size_bytes: number`
 
-            解码后的文件大小（以字节为单位）。
+            以字节为单位的解码后文件大小。
 
           - `type: "inline"`
 
@@ -5686,11 +5706,11 @@
 
           - `"restricted"`
 
-            仅允许访问已配置的域。
+            仅允许访问已配置的域名。
 
         - `allowed_domains: array of string`
 
-          在网络访问受限的情况下，环境可以访问的域。
+          在网络访问受限的情况下环境可以访问的域名。
 
       - `packages: object { npm, python, system }`
 
@@ -5698,19 +5718,19 @@
 
         - `npm: array of string`
 
-          在环境中全局安装的 npm 软件包。
+          在环境中全局安装的 npm 包。
 
         - `python: array of string`
 
-          环境中安装的 Python 软件包。
+          环境中安装的 Python 包。
 
         - `system: array of string`
 
-          环境中安装的系统软件包。
+          环境中安装的系统包。
 
       - `plugins: array of HostedPlugin`
 
-        环境中安装的插件，不包括其归档内容。
+        环境中安装的插件，不含其归档内容。
 
         - `description: string`
 
@@ -5728,7 +5748,7 @@
 
       - `skills: array of HostedSkill`
 
-        环境中安装的技能，不包括其归档内容。
+        环境中安装的技能，不含其归档内容。
 
         - `HostedSkillReference object { description, name, skill_id, 2 more }`
 
@@ -5754,7 +5774,7 @@
 
           - `version: string`
 
-            为本会话安装的具体技能版本。
+            本次会话安装的具体技能版本。
 
         - `Inline object { description, name, type }`
 
@@ -5782,7 +5802,7 @@
 
     - `SelfHosted object { id, capability_directories, remote_url, 2 more }`
 
-      由应用程序托管的环境。
+      由应用托管的环境。
 
       - `id: string`
 
@@ -5790,11 +5810,11 @@
 
       - `capability_directories: array of string`
 
-        包含暴露给 智能体 的能力的目录。
+        包含暴露给智能体的能力的目录。
 
       - `remote_url: string`
 
-        在连接此环境时，将此 URL 原样传递给 `codex exec-server --remote` 。
+        连接此环境时，将此 URL 原样传递给 `codex exec-server --remote` 。
 
       - `type: "self_hosted"`
 
@@ -5808,11 +5828,11 @@
 
   - `error: string or null`
 
-    导致会话失败（如有）的错误。
+    导致会话失败（若有）的错误。
 
   - `last_active_at: number`
 
-    会话最近一次活跃时的 Unix 时间戳（以秒为单位）。
+    会话最近活跃时的 Unix 时间戳（秒）。
 
   - `metadata: map[string]`
 
@@ -5820,13 +5840,13 @@
 
   - `object: "agent.session"`
 
-    对象类型。始终为 `agent.session`.
+    对象类型，始终为 `agent.session`.
 
     - `"agent.session"`
 
   - `required_actions: array of object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
 
-    在会话继续之前必须完成的操作。
+    会话继续前必须完成的操作。
 
     - `FunctionCall object { arguments, call_id, name, 2 more }`
 
@@ -5860,7 +5880,7 @@
 
       - `environment_id: string`
 
-        要重新连接的环境的 ID。
+        要重新连接的环境 ID。
 
       - `type: "environment_connection"`
 
@@ -5874,7 +5894,7 @@
 
     - `"idle"`
 
-      会话当前没有进行中的轮次，可以接受输入。托管环境可能仍在准备中。
+      会话当前没有正在进行的轮次，可以接收输入。托管环境可能仍在配置中。
 
     - `"in_progress"`
 
@@ -5890,7 +5910,7 @@
 
   - `usage: TokenUsage or null`
 
-    会话的最佳估算 token 用量，若未知则为 null。已记录的使用量可能会变化。
+    会话的最佳估算 token 用量，若未知则为 null。已记录的用量可能会发生变化。
 
     - `input_tokens: number`
 
@@ -5898,11 +5918,11 @@
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 用量的细分。
+      智能体输入 token 用量的明细。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中读取的输入 token 数。
 
     - `output_tokens: number`
 
@@ -5910,7 +5930,7 @@
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体输出 token 用量的细分。
+      智能体输出 token 用量的明细。
 
       - `reasoning_tokens: number`
 
@@ -5922,7 +5942,7 @@
 
   - `vault_ids: array of string`
 
-    提供给会话的 vault 的 ID。
+    会话可用的存储库 ID。
 
 - `type: "agent.session.failed"`
 
@@ -6012,11 +6032,11 @@
 
 ## 智能体.session.environment.pending
 
-在正在准备会话环境时发出。
+在正在准备会话环境时触发。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionEnvironmentPending`
+Schema name: `SessionEventAgentSessionEnvironmentPending`
 
 - `environment: AgentSessionEnvironmentState`
 
@@ -6113,11 +6133,11 @@
 
 ## 智能体.session.environment.connected
 
-当会话环境连接时发出。
+在会话环境连接时触发。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionEnvironmentConnected`
+Schema name: `SessionEventAgentSessionEnvironmentConnected`
 
 - `environment: AgentSessionEnvironmentState`
 
@@ -6214,11 +6234,11 @@
 
 ## 智能体.session.environment.disconnected
 
-在会话环境断开连接时发出。
+当会话环境断开连接时触发。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionEnvironmentDisconnected`
+Schema name: `SessionEventAgentSessionEnvironmentDisconnected`
 
 - `environment: AgentSessionEnvironmentState`
 
@@ -6315,11 +6335,11 @@
 
 ## 智能体.session.environment.failed
 
-当会话环境失败时触发。
+当会话环境失败时发出。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionEnvironmentFailed`
+Schema name: `SessionEventAgentSessionEnvironmentFailed`
 
 - `environment: AgentSessionEnvironmentState`
 
@@ -6416,11 +6436,11 @@
 
 ## 智能体.session.subagent.created
 
-当子智能体被创建时触发。
+在创建子智能体时发出。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionSubagentCreated`
+Schema name: `SessionEventAgentSessionSubagentCreated`
 
 - `event_id: string`
 
@@ -6436,15 +6456,15 @@
 
   - `closed_at: number or null`
 
-    子智能体关闭时的 Unix 时间戳（以秒为单位）。在处于活动状态时（包括恢复后）为 null。
+    子智能体关闭时的 Unix 时间戳（以秒为单位）。处于活动状态（包括恢复后）时为 null。
 
   - `instructions: array of AgentContent or null`
 
-    初始任务内容，若不可用则为 null。当仅有预览时，文本中可能包含用于表示图像或音频的占位符。
+    初始任务内容，若不可用则为 null。当只有预览可用时，文本中可能包含图片或音频的占位符。
 
     - `OutputText object { text, type }`
 
-      由智能体生成的文本内容部分。
+      由智能体生成的文本内容片段。
 
       - `text: string`
 
@@ -6462,7 +6482,7 @@
 
       - `encrypted_content: string`
 
-        加密内容载荷。
+        加密的内容载荷。
 
       - `type: "encrypted_content"`
 
@@ -6476,13 +6496,13 @@
 
   - `object: "agent.session.subagent"`
 
-    对象类型。始终为 `agent.session.subagent`.
+    对象类型，始终为 `agent.session.subagent`.
 
     - `"agent.session.subagent"`
 
   - `opened_at: number`
 
-    子智能体首次打开时的 Unix 时间戳（以秒为单位）。恢复操作不会更改该值。
+    子智能体首次打开时的 Unix 时间戳（以秒为单位）。恢复操作不会改变该值。
 
   - `parent_agent_id: string`
 
@@ -6498,7 +6518,7 @@
 
     - `"active"`
 
-      子智能体保持可用状态，包括在轮次之间处于空闲时。
+      子智能体保持可用状态，包括在两轮之间空闲时。
 
     - `"closed"`
 
@@ -6543,7 +6563,7 @@
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionSubagentActive`
+Schema name: `SessionEventAgentSessionSubagentActive`
 
 - `event_id: string`
 
@@ -6551,7 +6571,7 @@
 
 - `subagent: Subagent`
 
-  已恢复的子智能体。
+  恢复执行的子智能体。
 
   - `id: string`
 
@@ -6559,15 +6579,15 @@
 
   - `closed_at: number or null`
 
-    子智能体关闭时的 Unix 时间戳（以秒为单位）。在处于活动状态时（包括恢复后）为 null。
+    子智能体关闭时的 Unix 时间戳（以秒为单位）。处于活动状态（包括恢复后）时为 null。
 
   - `instructions: array of AgentContent or null`
 
-    初始任务内容，若不可用则为 null。当仅有预览时，文本中可能包含用于表示图像或音频的占位符。
+    初始任务内容，若不可用则为 null。当只有预览可用时，文本中可能包含图片或音频的占位符。
 
     - `OutputText object { text, type }`
 
-      由智能体生成的文本内容部分。
+      由智能体生成的文本内容片段。
 
       - `text: string`
 
@@ -6585,7 +6605,7 @@
 
       - `encrypted_content: string`
 
-        加密内容载荷。
+        加密的内容载荷。
 
       - `type: "encrypted_content"`
 
@@ -6599,13 +6619,13 @@
 
   - `object: "agent.session.subagent"`
 
-    对象类型。始终为 `agent.session.subagent`.
+    对象类型，始终为 `agent.session.subagent`.
 
     - `"agent.session.subagent"`
 
   - `opened_at: number`
 
-    子智能体首次打开时的 Unix 时间戳（以秒为单位）。恢复操作不会更改该值。
+    子智能体首次打开时的 Unix 时间戳（以秒为单位）。恢复操作不会改变该值。
 
   - `parent_agent_id: string`
 
@@ -6621,7 +6641,7 @@
 
     - `"active"`
 
-      子智能体保持可用状态，包括在轮次之间处于空闲时。
+      子智能体保持可用状态，包括在两轮之间空闲时。
 
     - `"closed"`
 
@@ -6662,11 +6682,11 @@
 
 ## 智能体.session.subagent.closed
 
-在子智能体关闭时发出。
+当子智能体关闭时发出。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionSubagentClosed`
+Schema name: `SessionEventAgentSessionSubagentClosed`
 
 - `event_id: string`
 
@@ -6682,15 +6702,15 @@
 
   - `closed_at: number or null`
 
-    子智能体关闭时的 Unix 时间戳（以秒为单位）。在处于活动状态时（包括恢复后）为 null。
+    子智能体关闭时的 Unix 时间戳（以秒为单位）。处于活动状态（包括恢复后）时为 null。
 
   - `instructions: array of AgentContent or null`
 
-    初始任务内容，若不可用则为 null。当仅有预览时，文本中可能包含用于表示图像或音频的占位符。
+    初始任务内容，若不可用则为 null。当只有预览可用时，文本中可能包含图片或音频的占位符。
 
     - `OutputText object { text, type }`
 
-      由智能体生成的文本内容部分。
+      由智能体生成的文本内容片段。
 
       - `text: string`
 
@@ -6708,7 +6728,7 @@
 
       - `encrypted_content: string`
 
-        加密内容载荷。
+        加密的内容载荷。
 
       - `type: "encrypted_content"`
 
@@ -6722,13 +6742,13 @@
 
   - `object: "agent.session.subagent"`
 
-    对象类型。始终为 `agent.session.subagent`.
+    对象类型，始终为 `agent.session.subagent`.
 
     - `"agent.session.subagent"`
 
   - `opened_at: number`
 
-    子智能体首次打开时的 Unix 时间戳（以秒为单位）。恢复操作不会更改该值。
+    子智能体首次打开时的 Unix 时间戳（以秒为单位）。恢复操作不会改变该值。
 
   - `parent_agent_id: string`
 
@@ -6744,7 +6764,7 @@
 
     - `"active"`
 
-      子智能体保持可用状态，包括在轮次之间处于空闲时。
+      子智能体保持可用状态，包括在两轮之间空闲时。
 
     - `"closed"`
 
@@ -6785,11 +6805,11 @@
 
 ## 智能体.session.turn.item.done
 
-当某个输出项完成时发出。
+当输出项完成时发出。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionTurnItemDone`
+Schema name: `SessionEventAgentSessionTurnItemDone`
 
 - `event_id: string`
 
@@ -6827,15 +6847,15 @@
 
       - `"commentary"`
 
-        智能体 工作时生成的解说内容。
+        智能体工作过程中生成的解说。
 
       - `"final_answer"`
 
-        智能体 的最终回答。
+        智能体的最终回答。
 
     - `role: "assistant"`
 
-      消息作者的角色。始终 `assistant`.
+      消息作者的角色。始终为 `assistant`.
 
       - `"assistant"`
 
@@ -6845,19 +6865,19 @@
 
       - `"in_progress"`
 
-        该项正在进行中。
+        该 item 仍在进行中。
 
       - `"completed"`
 
-        该项已完成。
+        该 item 已完成。
 
       - `"incomplete"`
 
-        该项在完成前已停止。
+        该 item 在完成前已停止。
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "message"`
 
@@ -6893,7 +6913,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "reasoning"`
 
@@ -6903,7 +6923,7 @@
 
   - `AgentFunctionCallItem object { id, arguments, call_id, 4 more }`
 
-    由智能体生成的函数调用。
+    由智能体发起的函数调用。
 
     - `id: string`
 
@@ -6943,7 +6963,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "function_call"`
 
@@ -6953,11 +6973,11 @@
 
   - `AgentMcpCallItem object { id, arguments, error, 6 more }`
 
-    对 MCP 服务器上工具的调用。
+    对 MCP 服务器上某个工具的调用。
 
     - `id: string`
 
-      MCP 调用项的 ID。
+      MCP 调用条目的 ID。
 
     - `arguments: unknown`
 
@@ -6965,7 +6985,7 @@
 
     - `error: unknown`
 
-      MCP 工具返回的错误（如果有）。
+      MCP 工具返回的错误（若有）。
 
     - `name: string`
 
@@ -6973,7 +6993,7 @@
 
     - `output: unknown`
 
-      MCP 工具返回的输出（如果有）。
+      MCP 工具返回的输出（若有）。
 
     - `server_label: string`
 
@@ -6985,7 +7005,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "mcp_call"`
 
@@ -6995,7 +7015,7 @@
 
   - `AgentWebSearchCallItem object { id, action, status, 2 more }`
 
-    由智能体产生的网页搜索调用。
+    由智能体生成的网页搜索调用。
 
     - `id: string`
 
@@ -7011,11 +7031,11 @@
 
         - `queries: array of string or null`
 
-          搜索查询，当使用了多个查询时。
+          当使用多个查询时的搜索查询列表。
 
         - `query: string or null`
 
-          搜索查询，当使用了单个查询时。
+          当使用单个查询时的搜索查询。
 
         - `type: "search"`
 
@@ -7035,7 +7055,7 @@
 
         - `url: string or null`
 
-          被打开页面的 URL。
+          已打开页面的 URL。
 
       - `FindInPage object { pattern, type, url }`
 
@@ -7043,7 +7063,7 @@
 
         - `pattern: string or null`
 
-          所搜索的文本模式。
+          搜索的文本模式。
 
         - `type: "find_in_page"`
 
@@ -7071,7 +7091,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "web_search_call"`
 
@@ -7081,7 +7101,7 @@
 
   - `AgentCommandExecutionItem object { id, command, cwd, 6 more }`
 
-    由智能体产生的命令执行。
+    由智能体生成的命令执行。
 
     - `id: string`
 
@@ -7093,7 +7113,7 @@
 
     - `cwd: string or null`
 
-      用于执行命令的工作目录。
+      执行命令时所使用的工作目录。
 
     - `duration_ms: number or null`
 
@@ -7101,11 +7121,11 @@
 
     - `exit_code: number or null`
 
-      如果命令已完成，则为进程退出码。
+      进程退出码（若命令已完成）。
 
     - `output: string or null`
 
-      命令输出（如果有）。
+      命令输出（若有）。
 
     - `status: AgentFunctionCallStatus`
 
@@ -7113,7 +7133,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "command_execution"`
 
@@ -7135,11 +7155,11 @@
 
     - `content: array of AgentContent`
 
-      分配给被派生智能体的任务。
+      交给被派生智能体的任务。
 
       - `OutputText object { text, type }`
 
-        由智能体生成的文本内容部分。
+        由智能体生成的文本内容片段。
 
         - `text: string`
 
@@ -7155,7 +7175,7 @@
 
         - `encrypted_content: string`
 
-          加密内容载荷。
+          加密的内容载荷。
 
         - `type: "encrypted_content"`
 
@@ -7165,11 +7185,11 @@
 
     - `model: string or null`
 
-      被派生智能体所请求的模型。
+      为被派生智能体请求的模型。
 
     - `reasoning_effort: string or null`
 
-      被派生智能体所请求的推理力度。
+      为被派生智能体请求的推理力度。
 
     - `status: AgentFunctionCallStatus`
 
@@ -7177,7 +7197,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "create_subagent_call"`
 
@@ -7189,7 +7209,7 @@
 
   - `AgentSendSubagentInputCallItem object { id, content, recipient_agent_id, 4 more }`
 
-    用于向另一个智能体发送输入的请求。
+    用于向其他智能体发送输入的请求。
 
     - `id: string`
 
@@ -7197,11 +7217,11 @@
 
     - `content: array of AgentContent`
 
-      发送给接收智能体的输入。
+      发送给接收方智能体的输入。
 
       - `OutputText object { text, type }`
 
-        由智能体生成的文本内容部分。
+        由智能体生成的文本内容片段。
 
       - `EncryptedContent object { encrypted_content, type }`
 
@@ -7221,7 +7241,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "send_subagent_input_call"`
 
@@ -7245,7 +7265,7 @@
 
     - `sender_agent_id: string`
 
-      请求恢复的智能体的 ID。
+      请求恢复操作的智能体的 ID。
 
     - `status: AgentFunctionCallStatus`
 
@@ -7253,7 +7273,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "resume_subagent_call"`
 
@@ -7285,7 +7305,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "wait_for_subagents_call"`
 
@@ -7297,7 +7317,7 @@
 
   - `AgentInterruptSubagentCallItem object { id, recipient_agent_id, sender_agent_id, 3 more }`
 
-    用于中断子智能体当前轮次的请求。子智能体仍保持可用状态。
+    用于中断子智能体当前轮次的请求。子智能体仍然可用。
 
     - `id: string`
 
@@ -7305,11 +7325,11 @@
 
     - `recipient_agent_id: string`
 
-      要中断的 智能体 的 ID。
+      要中断的智能体的 ID。
 
     - `sender_agent_id: string`
 
-      发起中断请求的 智能体 的 ID。
+      发起中断请求的智能体的 ID。
 
     - `status: AgentFunctionCallStatus`
 
@@ -7317,7 +7337,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "interrupt_subagent_call"`
 
@@ -7337,11 +7357,11 @@
 
     - `recipient_agent_id: string`
 
-      要关闭的 智能体 的 ID。
+      要关闭的智能体的 ID。
 
     - `sender_agent_id: string`
 
-      发起关闭请求的 智能体 的 ID。
+      发起关闭请求的智能体的 ID。
 
     - `status: AgentFunctionCallStatus`
 
@@ -7349,7 +7369,7 @@
 
     - `turn_id: string`
 
-      包含此项的轮次的 ID。
+      包含此 item 的轮次的 ID。
 
     - `type: "close_subagent_call"`
 
@@ -7361,7 +7381,7 @@
 
 - `output_index: number`
 
-  输出项在轮次输出中的索引。
+  回合输出中输出项的索引。
 
 - `session_id: string`
 
@@ -7407,11 +7427,11 @@
 
 ## 智能体.session.turn.content_part.added
 
-当新增输出文本内容片段时发出。
+在新增输出文本内容分块时发出。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionTurnContentPartAdded`
+Schema name: `SessionEventAgentSessionTurnContentPartAdded`
 
 - `content_index: number`
 
@@ -7479,11 +7499,11 @@
 
 ## 智能体.session.turn.content_part.done
 
-当输出内容部分完成时发出。
+当一个输出内容片段完成时触发。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionTurnContentPartDone`
+Schema name: `SessionEventAgentSessionTurnContentPartDone`
 
 - `content_index: number`
 
@@ -7503,7 +7523,7 @@
 
 - `part: OutputText`
 
-  已完成的内容片段。
+  已完成的内容部分。
 
   - `text: string`
 
@@ -7551,11 +7571,11 @@
 
 ## 智能体.session.turn.output_text.delta
 
-在文本被追加到输出文本内容片段时触发。
+当文本被追加到输出文本内容部分时发出。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionTurnOutputTextDelta`
+Schema name: `SessionEventAgentSessionTurnOutputTextDelta`
 
 - `content_index: number`
 
@@ -7610,11 +7630,11 @@
 
 ## 智能体.session.turn.output_text.done
 
-当某个输出文本内容分块完成时触发。
+当输出文本内容部分完成时发出。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionTurnOutputTextDone`
+Schema name: `SessionEventAgentSessionTurnOutputTextDone`
 
 - `content_index: number`
 
@@ -7669,11 +7689,11 @@
 
 ## 智能体.session.turn.reasoning_summary_part.added
 
-当推理摘要内容部分被添加时触发。
+在添加推理摘要内容部分时发出。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionTurnReasoningSummaryPartAdded`
+Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartAdded`
 
 - `event_id: string`
 
@@ -7689,7 +7709,7 @@
 
 - `part: SummaryText`
 
-  摘要的初始部分。
+  初始摘要部分。
 
   - `text: string`
 
@@ -7741,11 +7761,11 @@
 
 ## 智能体.session.turn.reasoning_summary_part.done
 
-当某个推理摘要部分完成时发出。
+在推理摘要部分完成时发出。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionTurnReasoningSummaryPartDone`
+Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartDone`
 
 - `event_id: string`
 
@@ -7761,7 +7781,7 @@
 
 - `part: SummaryText`
 
-  已完成摘要部分。
+  已完成的摘要部分。
 
   - `text: string`
 
@@ -7779,7 +7799,7 @@
 
 - `status: "incomplete" or null`
 
-  呈现为 `incomplete` 当摘要生成被中断时。
+  呈现方式 `incomplete` 当摘要生成被中断时的提示信息。
 
   - `"incomplete"`
 
@@ -7820,11 +7840,11 @@
 
 ## 智能体.session.turn.reasoning_summary_text.delta
 
-在向推理摘要追加文本时发出。
+当文本被追加到推理摘要时发出。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionTurnReasoningSummaryTextDelta`
+Schema name: `SessionEventAgentSessionTurnReasoningSummaryTextDelta`
 
 - `delta: string`
 
@@ -7879,11 +7899,11 @@
 
 ## 智能体.session.turn.reasoning_summary_text.done
 
-当某个推理摘要内容部分完成时发出。
+当推理摘要内容部分完成时触发。
 
 ### Schema
 
-架构名称： `SessionEventAgentSessionTurnReasoningSummaryTextDone`
+Schema name: `SessionEventAgentSessionTurnReasoningSummaryTextDone`
 
 - `event_id: string`
 
@@ -7938,11 +7958,11 @@
 
 ## error
 
-当轮次或会话失败时触发。
+当轮次或会话失败时发出。
 
 ### Schema
 
-架构名称： `SessionEventError`
+Schema name: `SessionEventError`
 
 - `error: SessionError`
 
@@ -7954,7 +7974,7 @@
 
   - `message: string`
 
-    对客户安全的错误说明。
+    面向客户的安全错误说明。
 
   - `param: string or null`
 
