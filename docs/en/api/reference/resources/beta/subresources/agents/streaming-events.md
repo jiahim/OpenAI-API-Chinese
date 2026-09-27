@@ -1000,7 +1000,7 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 16 more`
 
       A stable, machine-readable failure category.
 
@@ -1023,6 +1023,10 @@ Schema name: `SessionEventAgentSessionTurnCreated`
       - `"rate_limit_exceeded"`
 
         The request exceeds the available rate limit.
+
+      - `"flex_unavailable"`
+
+        Flex processing is temporarily unavailable.
 
       - `"server_overloaded"`
 
@@ -1247,7 +1251,7 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 16 more`
 
       A stable, machine-readable failure category.
 
@@ -1270,6 +1274,10 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
       - `"rate_limit_exceeded"`
 
         The request exceeds the available rate limit.
+
+      - `"flex_unavailable"`
+
+        Flex processing is temporarily unavailable.
 
       - `"server_overloaded"`
 
@@ -1494,7 +1502,7 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 16 more`
 
       A stable, machine-readable failure category.
 
@@ -1517,6 +1525,10 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
       - `"rate_limit_exceeded"`
 
         The request exceeds the available rate limit.
+
+      - `"flex_unavailable"`
+
+        Flex processing is temporarily unavailable.
 
       - `"server_overloaded"`
 
@@ -1756,7 +1768,7 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 16 more`
 
       A stable, machine-readable failure category.
 
@@ -1779,6 +1791,10 @@ Schema name: `SessionEventAgentSessionTurnFailed`
       - `"rate_limit_exceeded"`
 
         The request exceeds the available rate limit.
+
+      - `"flex_unavailable"`
+
+        Flex processing is temporarily unavailable.
 
       - `"server_overloaded"`
 
@@ -2018,7 +2034,7 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 16 more`
 
       A stable, machine-readable failure category.
 
@@ -2041,6 +2057,10 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
       - `"rate_limit_exceeded"`
 
         The request exceeds the available rate limit.
+
+      - `"flex_unavailable"`
+
+        Flex processing is temporarily unavailable.
 
       - `"server_overloaded"`
 
