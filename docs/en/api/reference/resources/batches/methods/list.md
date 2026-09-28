@@ -64,23 +64,23 @@ List your organization's batches.
 
     - `"cancelled"`
 
-  - `cancelled_at: optional number`
+  - `cancelled_at: optional number or null`
 
     The Unix timestamp (in seconds) for when the batch was cancelled.
 
-  - `cancelling_at: optional number`
+  - `cancelling_at: optional number or null`
 
     The Unix timestamp (in seconds) for when the batch started cancelling.
 
-  - `completed_at: optional number`
+  - `completed_at: optional number or null`
 
     The Unix timestamp (in seconds) for when the batch was completed.
 
-  - `error_file_id: optional string`
+  - `error_file_id: optional string or null`
 
     The ID of the file containing the outputs of requests with errors.
 
-  - `errors: optional object { data, object }`
+  - `errors: optional object { data, object }  or null`
 
     - `data: optional array of BatchError`
 
@@ -104,23 +104,23 @@ List your organization's batches.
 
       The object type, which is always `list`.
 
-  - `expired_at: optional number`
+  - `expired_at: optional number or null`
 
     The Unix timestamp (in seconds) for when the batch expired.
 
-  - `expires_at: optional number`
+  - `expires_at: optional number or null`
 
     The Unix timestamp (in seconds) for when the batch will expire.
 
-  - `failed_at: optional number`
+  - `failed_at: optional number or null`
 
     The Unix timestamp (in seconds) for when the batch failed.
 
-  - `finalizing_at: optional number`
+  - `finalizing_at: optional number or null`
 
     The Unix timestamp (in seconds) for when the batch started finalizing.
 
-  - `in_progress_at: optional number`
+  - `in_progress_at: optional number or null`
 
     The Unix timestamp (in seconds) for when the batch started processing.
 
@@ -140,7 +140,7 @@ List your organization's batches.
     characteristics, and price points. Refer to the [model
     guide](/api/docs/models) to browse and compare available models.
 
-  - `output_file_id: optional string`
+  - `output_file_id: optional string or null`
 
     The ID of the file containing the outputs of successfully executed requests.
 
@@ -315,13 +315,12 @@ curl https://api.openai.com/v1/batches?limit=2 \
       },
       "metadata": {
         "customer_id": "user_123456789",
-        "batch_description": "Nightly job",
+        "batch_description": "Nightly job"
       }
-    },
-    { ... },
+    }
   ],
   "first_id": "batch_abc123",
-  "last_id": "batch_abc456",
-  "has_more": true
+  "last_id": "batch_abc123",
+  "has_more": false
 }
 ```

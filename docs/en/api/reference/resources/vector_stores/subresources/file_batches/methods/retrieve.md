@@ -48,11 +48,11 @@ Retrieves a vector store file batch.
 
       The total number of files.
 
-  - `object: "vector_store.files_batch"`
+  - `object: "vector_store.file_batch"`
 
     The object type, which is always `vector_store.file_batch`.
 
-    - `"vector_store.files_batch"`
+    - `"vector_store.file_batch"`
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
@@ -91,7 +91,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/file_batches/$BATC
     "in_progress": 0,
     "total": 0
   },
-  "object": "vector_store.files_batch",
+  "object": "vector_store.file_batch",
   "status": "in_progress",
   "vector_store_id": "vector_store_id"
 }

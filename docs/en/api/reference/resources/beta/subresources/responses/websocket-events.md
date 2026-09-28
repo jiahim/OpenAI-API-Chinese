@@ -372,7 +372,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
               - `index: number`
 
-                The index of the file in the list of files.
+                The index in the output text at which to insert the file citation.
 
               - `type: "file_citation"`
 
@@ -972,7 +972,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
         - `"incomplete"`
 
-    - `WebSearchCall object { id, action, status, 2 more }`
+    - `WebSearchCall object { id, status, type, 2 more }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -981,7 +981,27 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -1049,26 +1069,6 @@ Schema name: `BetaResponsesClientEventResponseCreate`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
       - `agent: optional object { agent_name }  or null`
 
@@ -1674,7 +1674,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional object { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -1731,76 +1731,9 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -2922,7 +2855,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional object { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -2979,76 +2912,9 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -6080,7 +5946,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
       The IDs of the vector stores to search.
 
-    - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+    - `filters: optional object { key, type, value }  or unknown or null`
 
       A filter to apply.
 
@@ -6137,76 +6003,9 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
             - `number`
 
-      - `CompoundFilter object { filters, type }`
+      - `BetaCompoundFilter = unknown`
 
         Combine multiple filters using `and` or `or`.
-
-        - `filters: array of object { key, type, value }  or unknown`
-
-          Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-          - `ComparisonFilter object { key, type, value }`
-
-            A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-            - `key: string`
-
-              The key to compare against the value.
-
-            - `type: "eq" or "ne" or "gt" or 5 more`
-
-              Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-              - `eq`: equals
-              - `ne`: not equal
-              - `gt`: greater than
-              - `gte`: greater than or equal
-              - `lt`: less than
-              - `lte`: less than or equal
-              - `in`: in
-              - `nin`: not in
-
-              - `"eq"`
-
-              - `"ne"`
-
-              - `"gt"`
-
-              - `"gte"`
-
-              - `"lt"`
-
-              - `"lte"`
-
-              - `"in"`
-
-              - `"nin"`
-
-            - `value: string or number or boolean or array of string or number`
-
-              The value to compare against the attribute key; supports string, number, or boolean types.
-
-              - `string`
-
-              - `number`
-
-              - `boolean`
-
-              - `array of string or number`
-
-                - `string`
-
-                - `number`
-
-          - `unknown`
-
-        - `type: "and" or "or"`
-
-          Type of operation: `and` or `or`.
-
-          - `"and"`
-
-          - `"or"`
 
     - `max_num_results: optional number`
 
@@ -7098,7 +6897,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
   - `"disabled"`
 
-- `user: optional string`
+- `user: optional string or null`
 
   This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
   A stable identifier for your end-users.
@@ -7702,7 +7501,7 @@ Schema name: `BetaResponseInjectEvent`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
@@ -8302,7 +8101,7 @@ Schema name: `BetaResponseInjectEvent`
 
       - `"incomplete"`
 
-  - `WebSearchCall object { id, action, status, 2 more }`
+  - `WebSearchCall object { id, status, type, 2 more }`
 
     The results of a web search tool call. See the
     [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -8311,7 +8110,27 @@ Schema name: `BetaResponseInjectEvent`
 
       The unique ID of the web search tool call.
 
-    - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+    - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+      The status of the web search tool call.
+
+      - `"in_progress"`
+
+      - `"searching"`
+
+      - `"completed"`
+
+      - `"failed"`
+
+      - `"incomplete"`
+
+    - `type: "web_search_call"`
+
+      The type of the web search tool call. Always `web_search_call`.
+
+      - `"web_search_call"`
+
+    - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
       An object describing the specific action taken in this web search call.
       Includes details on how the model used the web (search, open_page, find_in_page).
@@ -8379,26 +8198,6 @@ Schema name: `BetaResponseInjectEvent`
         - `url: string`
 
           The URL of the page searched for the pattern.
-
-    - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-      The status of the web search tool call.
-
-      - `"in_progress"`
-
-      - `"searching"`
-
-      - `"completed"`
-
-      - `"failed"`
-
-      - `"incomplete"`
-
-    - `type: "web_search_call"`
-
-      The type of the web search tool call. Always `web_search_call`.
-
-      - `"web_search_call"`
 
     - `agent: optional object { agent_name }  or null`
 
@@ -9004,7 +8803,7 @@ Schema name: `BetaResponseInjectEvent`
 
           The IDs of the vector stores to search.
 
-        - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+        - `filters: optional object { key, type, value }  or unknown or null`
 
           A filter to apply.
 
@@ -9061,76 +8860,9 @@ Schema name: `BetaResponseInjectEvent`
 
                 - `number`
 
-          - `CompoundFilter object { filters, type }`
+          - `BetaCompoundFilter = unknown`
 
             Combine multiple filters using `and` or `or`.
-
-            - `filters: array of object { key, type, value }  or unknown`
-
-              Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-              - `ComparisonFilter object { key, type, value }`
-
-                A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                - `key: string`
-
-                  The key to compare against the value.
-
-                - `type: "eq" or "ne" or "gt" or 5 more`
-
-                  Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                  - `eq`: equals
-                  - `ne`: not equal
-                  - `gt`: greater than
-                  - `gte`: greater than or equal
-                  - `lt`: less than
-                  - `lte`: less than or equal
-                  - `in`: in
-                  - `nin`: not in
-
-                  - `"eq"`
-
-                  - `"ne"`
-
-                  - `"gt"`
-
-                  - `"gte"`
-
-                  - `"lt"`
-
-                  - `"lte"`
-
-                  - `"in"`
-
-                  - `"nin"`
-
-                - `value: string or number or boolean or array of string or number`
-
-                  The value to compare against the attribute key; supports string, number, or boolean types.
-
-                  - `string`
-
-                  - `number`
-
-                  - `boolean`
-
-                  - `array of string or number`
-
-                    - `string`
-
-                    - `number`
-
-              - `unknown`
-
-            - `type: "and" or "or"`
-
-              Type of operation: `and` or `or`.
-
-              - `"and"`
-
-              - `"or"`
 
         - `max_num_results: optional number`
 
@@ -10252,7 +9984,7 @@ Schema name: `BetaResponseInjectEvent`
 
           The IDs of the vector stores to search.
 
-        - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+        - `filters: optional object { key, type, value }  or unknown or null`
 
           A filter to apply.
 
@@ -10309,76 +10041,9 @@ Schema name: `BetaResponseInjectEvent`
 
                 - `number`
 
-          - `CompoundFilter object { filters, type }`
+          - `BetaCompoundFilter = unknown`
 
             Combine multiple filters using `and` or `or`.
-
-            - `filters: array of object { key, type, value }  or unknown`
-
-              Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-              - `ComparisonFilter object { key, type, value }`
-
-                A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                - `key: string`
-
-                  The key to compare against the value.
-
-                - `type: "eq" or "ne" or "gt" or 5 more`
-
-                  Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                  - `eq`: equals
-                  - `ne`: not equal
-                  - `gt`: greater than
-                  - `gte`: greater than or equal
-                  - `lt`: less than
-                  - `lte`: less than or equal
-                  - `in`: in
-                  - `nin`: not in
-
-                  - `"eq"`
-
-                  - `"ne"`
-
-                  - `"gt"`
-
-                  - `"gte"`
-
-                  - `"lt"`
-
-                  - `"lte"`
-
-                  - `"in"`
-
-                  - `"nin"`
-
-                - `value: string or number or boolean or array of string or number`
-
-                  The value to compare against the attribute key; supports string, number, or boolean types.
-
-                  - `string`
-
-                  - `number`
-
-                  - `boolean`
-
-                  - `array of string or number`
-
-                    - `string`
-
-                    - `number`
-
-              - `unknown`
-
-            - `type: "and" or "or"`
-
-              Type of operation: `and` or `or`.
-
-              - `"and"`
-
-              - `"or"`
 
         - `max_num_results: optional number`
 
@@ -13595,7 +13260,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
@@ -14195,7 +13860,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
       - `"incomplete"`
 
-  - `WebSearchCall object { id, action, status, 2 more }`
+  - `WebSearchCall object { id, status, type, 2 more }`
 
     The results of a web search tool call. See the
     [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -14204,7 +13869,27 @@ Schema name: `BetaResponseInjectFailedEvent`
 
       The unique ID of the web search tool call.
 
-    - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+    - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+      The status of the web search tool call.
+
+      - `"in_progress"`
+
+      - `"searching"`
+
+      - `"completed"`
+
+      - `"failed"`
+
+      - `"incomplete"`
+
+    - `type: "web_search_call"`
+
+      The type of the web search tool call. Always `web_search_call`.
+
+      - `"web_search_call"`
+
+    - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
       An object describing the specific action taken in this web search call.
       Includes details on how the model used the web (search, open_page, find_in_page).
@@ -14272,26 +13957,6 @@ Schema name: `BetaResponseInjectFailedEvent`
         - `url: string`
 
           The URL of the page searched for the pattern.
-
-    - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-      The status of the web search tool call.
-
-      - `"in_progress"`
-
-      - `"searching"`
-
-      - `"completed"`
-
-      - `"failed"`
-
-      - `"incomplete"`
-
-    - `type: "web_search_call"`
-
-      The type of the web search tool call. Always `web_search_call`.
-
-      - `"web_search_call"`
 
     - `agent: optional object { agent_name }  or null`
 
@@ -14897,7 +14562,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
           The IDs of the vector stores to search.
 
-        - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+        - `filters: optional object { key, type, value }  or unknown or null`
 
           A filter to apply.
 
@@ -14954,76 +14619,9 @@ Schema name: `BetaResponseInjectFailedEvent`
 
                 - `number`
 
-          - `CompoundFilter object { filters, type }`
+          - `BetaCompoundFilter = unknown`
 
             Combine multiple filters using `and` or `or`.
-
-            - `filters: array of object { key, type, value }  or unknown`
-
-              Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-              - `ComparisonFilter object { key, type, value }`
-
-                A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                - `key: string`
-
-                  The key to compare against the value.
-
-                - `type: "eq" or "ne" or "gt" or 5 more`
-
-                  Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                  - `eq`: equals
-                  - `ne`: not equal
-                  - `gt`: greater than
-                  - `gte`: greater than or equal
-                  - `lt`: less than
-                  - `lte`: less than or equal
-                  - `in`: in
-                  - `nin`: not in
-
-                  - `"eq"`
-
-                  - `"ne"`
-
-                  - `"gt"`
-
-                  - `"gte"`
-
-                  - `"lt"`
-
-                  - `"lte"`
-
-                  - `"in"`
-
-                  - `"nin"`
-
-                - `value: string or number or boolean or array of string or number`
-
-                  The value to compare against the attribute key; supports string, number, or boolean types.
-
-                  - `string`
-
-                  - `number`
-
-                  - `boolean`
-
-                  - `array of string or number`
-
-                    - `string`
-
-                    - `number`
-
-              - `unknown`
-
-            - `type: "and" or "or"`
-
-              Type of operation: `and` or `or`.
-
-              - `"and"`
-
-              - `"or"`
 
         - `max_num_results: optional number`
 
@@ -16145,7 +15743,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
           The IDs of the vector stores to search.
 
-        - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+        - `filters: optional object { key, type, value }  or unknown or null`
 
           A filter to apply.
 
@@ -16202,76 +15800,9 @@ Schema name: `BetaResponseInjectFailedEvent`
 
                 - `number`
 
-          - `CompoundFilter object { filters, type }`
+          - `BetaCompoundFilter = unknown`
 
             Combine multiple filters using `and` or `or`.
-
-            - `filters: array of object { key, type, value }  or unknown`
-
-              Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-              - `ComparisonFilter object { key, type, value }`
-
-                A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                - `key: string`
-
-                  The key to compare against the value.
-
-                - `type: "eq" or "ne" or "gt" or 5 more`
-
-                  Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                  - `eq`: equals
-                  - `ne`: not equal
-                  - `gt`: greater than
-                  - `gte`: greater than or equal
-                  - `lt`: less than
-                  - `lte`: less than or equal
-                  - `in`: in
-                  - `nin`: not in
-
-                  - `"eq"`
-
-                  - `"ne"`
-
-                  - `"gt"`
-
-                  - `"gte"`
-
-                  - `"lt"`
-
-                  - `"lte"`
-
-                  - `"in"`
-
-                  - `"nin"`
-
-                - `value: string or number or boolean or array of string or number`
-
-                  The value to compare against the attribute key; supports string, number, or boolean types.
-
-                  - `string`
-
-                  - `number`
-
-                  - `boolean`
-
-                  - `array of string or number`
-
-                    - `string`
-
-                    - `number`
-
-              - `unknown`
-
-            - `type: "and" or "or"`
-
-              Type of operation: `and` or `or`.
-
-              - `"and"`
-
-              - `"or"`
 
         - `max_num_results: optional number`
 
@@ -18848,7 +18379,7 @@ Schema name: `BetaResponseCreatedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -19448,7 +18979,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, 2 more }`
+      - `WebSearchCall object { id, status, type, 2 more }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -19457,7 +18988,27 @@ Schema name: `BetaResponseCreatedEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -19525,26 +19076,6 @@ Schema name: `BetaResponseCreatedEvent`
             - `url: string`
 
               The URL of the page searched for the pattern.
-
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
 
         - `agent: optional object { agent_name }  or null`
 
@@ -20150,7 +19681,7 @@ Schema name: `BetaResponseCreatedEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional object { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -20207,76 +19738,9 @@ Schema name: `BetaResponseCreatedEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -21398,7 +20862,7 @@ Schema name: `BetaResponseCreatedEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional object { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -21455,76 +20919,9 @@ Schema name: `BetaResponseCreatedEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -24400,7 +23797,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           The canonical name of the agent that produced this item.
 
-    - `WebSearchCall object { id, action, status, 2 more }`
+    - `WebSearchCall object { id, status, type, 2 more }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -24409,7 +23806,27 @@ Schema name: `BetaResponseCreatedEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -24477,26 +23894,6 @@ Schema name: `BetaResponseCreatedEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
       - `agent: optional object { agent_name }  or null`
 
@@ -24915,7 +24312,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional object { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -24972,76 +24369,9 @@ Schema name: `BetaResponseCreatedEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -26009,7 +25339,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional object { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -26066,76 +25396,9 @@ Schema name: `BetaResponseCreatedEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -28292,7 +27555,7 @@ Schema name: `BetaResponseCreatedEvent`
 
         The IDs of the vector stores to search.
 
-      - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+      - `filters: optional object { key, type, value }  or unknown or null`
 
         A filter to apply.
 
@@ -28349,76 +27612,9 @@ Schema name: `BetaResponseCreatedEvent`
 
               - `number`
 
-        - `CompoundFilter object { filters, type }`
+        - `BetaCompoundFilter = unknown`
 
           Combine multiple filters using `and` or `or`.
-
-          - `filters: array of object { key, type, value }  or unknown`
-
-            Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-            - `ComparisonFilter object { key, type, value }`
-
-              A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-              - `key: string`
-
-                The key to compare against the value.
-
-              - `type: "eq" or "ne" or "gt" or 5 more`
-
-                Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                - `eq`: equals
-                - `ne`: not equal
-                - `gt`: greater than
-                - `gte`: greater than or equal
-                - `lt`: less than
-                - `lte`: less than or equal
-                - `in`: in
-                - `nin`: not in
-
-                - `"eq"`
-
-                - `"ne"`
-
-                - `"gt"`
-
-                - `"gte"`
-
-                - `"lt"`
-
-                - `"lte"`
-
-                - `"in"`
-
-                - `"nin"`
-
-              - `value: string or number or boolean or array of string or number`
-
-                The value to compare against the attribute key; supports string, number, or boolean types.
-
-                - `string`
-
-                - `number`
-
-                - `boolean`
-
-                - `array of string or number`
-
-                  - `string`
-
-                  - `number`
-
-            - `unknown`
-
-          - `type: "and" or "or"`
-
-            Type of operation: `and` or `or`.
-
-            - `"and"`
-
-            - `"or"`
 
       - `max_num_results: optional number`
 
@@ -29834,7 +29030,7 @@ Schema name: `BetaResponseCreatedEvent`
 
     - `"disabled"`
 
-  - `usage: optional BetaResponseUsage`
+  - `usage: optional BetaResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -29872,7 +29068,7 @@ Schema name: `BetaResponseCreatedEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -30343,7 +29539,7 @@ Schema name: `BetaResponseInProgressEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -30943,7 +30139,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, 2 more }`
+      - `WebSearchCall object { id, status, type, 2 more }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -30952,7 +30148,27 @@ Schema name: `BetaResponseInProgressEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -31020,26 +30236,6 @@ Schema name: `BetaResponseInProgressEvent`
             - `url: string`
 
               The URL of the page searched for the pattern.
-
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
 
         - `agent: optional object { agent_name }  or null`
 
@@ -31645,7 +30841,7 @@ Schema name: `BetaResponseInProgressEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional object { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -31702,76 +30898,9 @@ Schema name: `BetaResponseInProgressEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -32893,7 +32022,7 @@ Schema name: `BetaResponseInProgressEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional object { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -32950,76 +32079,9 @@ Schema name: `BetaResponseInProgressEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -35895,7 +34957,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           The canonical name of the agent that produced this item.
 
-    - `WebSearchCall object { id, action, status, 2 more }`
+    - `WebSearchCall object { id, status, type, 2 more }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -35904,7 +34966,27 @@ Schema name: `BetaResponseInProgressEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -35972,26 +35054,6 @@ Schema name: `BetaResponseInProgressEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
       - `agent: optional object { agent_name }  or null`
 
@@ -36410,7 +35472,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional object { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -36467,76 +35529,9 @@ Schema name: `BetaResponseInProgressEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -37504,7 +36499,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional object { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -37561,76 +36556,9 @@ Schema name: `BetaResponseInProgressEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -39787,7 +38715,7 @@ Schema name: `BetaResponseInProgressEvent`
 
         The IDs of the vector stores to search.
 
-      - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+      - `filters: optional object { key, type, value }  or unknown or null`
 
         A filter to apply.
 
@@ -39844,76 +38772,9 @@ Schema name: `BetaResponseInProgressEvent`
 
               - `number`
 
-        - `CompoundFilter object { filters, type }`
+        - `BetaCompoundFilter = unknown`
 
           Combine multiple filters using `and` or `or`.
-
-          - `filters: array of object { key, type, value }  or unknown`
-
-            Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-            - `ComparisonFilter object { key, type, value }`
-
-              A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-              - `key: string`
-
-                The key to compare against the value.
-
-              - `type: "eq" or "ne" or "gt" or 5 more`
-
-                Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                - `eq`: equals
-                - `ne`: not equal
-                - `gt`: greater than
-                - `gte`: greater than or equal
-                - `lt`: less than
-                - `lte`: less than or equal
-                - `in`: in
-                - `nin`: not in
-
-                - `"eq"`
-
-                - `"ne"`
-
-                - `"gt"`
-
-                - `"gte"`
-
-                - `"lt"`
-
-                - `"lte"`
-
-                - `"in"`
-
-                - `"nin"`
-
-              - `value: string or number or boolean or array of string or number`
-
-                The value to compare against the attribute key; supports string, number, or boolean types.
-
-                - `string`
-
-                - `number`
-
-                - `boolean`
-
-                - `array of string or number`
-
-                  - `string`
-
-                  - `number`
-
-            - `unknown`
-
-          - `type: "and" or "or"`
-
-            Type of operation: `and` or `or`.
-
-            - `"and"`
-
-            - `"or"`
 
       - `max_num_results: optional number`
 
@@ -41329,7 +40190,7 @@ Schema name: `BetaResponseInProgressEvent`
 
     - `"disabled"`
 
-  - `usage: optional BetaResponseUsage`
+  - `usage: optional BetaResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -41367,7 +40228,7 @@ Schema name: `BetaResponseInProgressEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -41838,7 +40699,7 @@ Schema name: `BetaResponseCompletedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -42438,7 +41299,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, 2 more }`
+      - `WebSearchCall object { id, status, type, 2 more }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -42447,7 +41308,27 @@ Schema name: `BetaResponseCompletedEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -42515,26 +41396,6 @@ Schema name: `BetaResponseCompletedEvent`
             - `url: string`
 
               The URL of the page searched for the pattern.
-
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
 
         - `agent: optional object { agent_name }  or null`
 
@@ -43140,7 +42001,7 @@ Schema name: `BetaResponseCompletedEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional object { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -43197,76 +42058,9 @@ Schema name: `BetaResponseCompletedEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -44388,7 +43182,7 @@ Schema name: `BetaResponseCompletedEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional object { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -44445,76 +43239,9 @@ Schema name: `BetaResponseCompletedEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -47390,7 +46117,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           The canonical name of the agent that produced this item.
 
-    - `WebSearchCall object { id, action, status, 2 more }`
+    - `WebSearchCall object { id, status, type, 2 more }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -47399,7 +46126,27 @@ Schema name: `BetaResponseCompletedEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -47467,26 +46214,6 @@ Schema name: `BetaResponseCompletedEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
       - `agent: optional object { agent_name }  or null`
 
@@ -47905,7 +46632,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional object { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -47962,76 +46689,9 @@ Schema name: `BetaResponseCompletedEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -48999,7 +47659,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional object { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -49056,76 +47716,9 @@ Schema name: `BetaResponseCompletedEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -51282,7 +49875,7 @@ Schema name: `BetaResponseCompletedEvent`
 
         The IDs of the vector stores to search.
 
-      - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+      - `filters: optional object { key, type, value }  or unknown or null`
 
         A filter to apply.
 
@@ -51339,76 +49932,9 @@ Schema name: `BetaResponseCompletedEvent`
 
               - `number`
 
-        - `CompoundFilter object { filters, type }`
+        - `BetaCompoundFilter = unknown`
 
           Combine multiple filters using `and` or `or`.
-
-          - `filters: array of object { key, type, value }  or unknown`
-
-            Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-            - `ComparisonFilter object { key, type, value }`
-
-              A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-              - `key: string`
-
-                The key to compare against the value.
-
-              - `type: "eq" or "ne" or "gt" or 5 more`
-
-                Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                - `eq`: equals
-                - `ne`: not equal
-                - `gt`: greater than
-                - `gte`: greater than or equal
-                - `lt`: less than
-                - `lte`: less than or equal
-                - `in`: in
-                - `nin`: not in
-
-                - `"eq"`
-
-                - `"ne"`
-
-                - `"gt"`
-
-                - `"gte"`
-
-                - `"lt"`
-
-                - `"lte"`
-
-                - `"in"`
-
-                - `"nin"`
-
-              - `value: string or number or boolean or array of string or number`
-
-                The value to compare against the attribute key; supports string, number, or boolean types.
-
-                - `string`
-
-                - `number`
-
-                - `boolean`
-
-                - `array of string or number`
-
-                  - `string`
-
-                  - `number`
-
-            - `unknown`
-
-          - `type: "and" or "or"`
-
-            Type of operation: `and` or `or`.
-
-            - `"and"`
-
-            - `"or"`
 
       - `max_num_results: optional number`
 
@@ -52824,7 +51350,7 @@ Schema name: `BetaResponseCompletedEvent`
 
     - `"disabled"`
 
-  - `usage: optional BetaResponseUsage`
+  - `usage: optional BetaResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -52862,7 +51388,7 @@ Schema name: `BetaResponseCompletedEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -52919,9 +51445,11 @@ Schema name: `BetaResponseCompletedEvent`
           {
             "type": "output_text",
             "text": "In a shimmering forest under a sky full of stars, a lonely unicorn named Lila discovered a hidden pond that glowed with moonlight. Every night, she would leave sparkling, magical flowers by the water's edge, hoping to share her beauty with others. One enchanting evening, she woke to find a group of friendly animals gathered around, eager to be friends and share in her magic.",
-            "annotations": []
+            "annotations": [],
+            "logprobs": []
           }
-        ]
+        ],
+        "status": "completed"
       }
     ],
     "previous_response_id": null,
@@ -52943,10 +51471,15 @@ Schema name: `BetaResponseCompletedEvent`
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 0
+      "total_tokens": 0,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      }
     },
     "user": null,
-    "metadata": {}
+    "metadata": {},
+    "parallel_tool_calls": true
   },
   "sequence_number": 1
 }
@@ -53350,7 +51883,7 @@ Schema name: `BetaResponseFailedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -53950,7 +52483,7 @@ Schema name: `BetaResponseFailedEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, 2 more }`
+      - `WebSearchCall object { id, status, type, 2 more }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -53959,7 +52492,27 @@ Schema name: `BetaResponseFailedEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -54027,26 +52580,6 @@ Schema name: `BetaResponseFailedEvent`
             - `url: string`
 
               The URL of the page searched for the pattern.
-
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
 
         - `agent: optional object { agent_name }  or null`
 
@@ -54652,7 +53185,7 @@ Schema name: `BetaResponseFailedEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional object { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -54709,76 +53242,9 @@ Schema name: `BetaResponseFailedEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -55900,7 +54366,7 @@ Schema name: `BetaResponseFailedEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional object { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -55957,76 +54423,9 @@ Schema name: `BetaResponseFailedEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -58902,7 +57301,7 @@ Schema name: `BetaResponseFailedEvent`
 
           The canonical name of the agent that produced this item.
 
-    - `WebSearchCall object { id, action, status, 2 more }`
+    - `WebSearchCall object { id, status, type, 2 more }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -58911,7 +57310,27 @@ Schema name: `BetaResponseFailedEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -58979,26 +57398,6 @@ Schema name: `BetaResponseFailedEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
       - `agent: optional object { agent_name }  or null`
 
@@ -59417,7 +57816,7 @@ Schema name: `BetaResponseFailedEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional object { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -59474,76 +57873,9 @@ Schema name: `BetaResponseFailedEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -60511,7 +58843,7 @@ Schema name: `BetaResponseFailedEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional object { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -60568,76 +58900,9 @@ Schema name: `BetaResponseFailedEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -62794,7 +61059,7 @@ Schema name: `BetaResponseFailedEvent`
 
         The IDs of the vector stores to search.
 
-      - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+      - `filters: optional object { key, type, value }  or unknown or null`
 
         A filter to apply.
 
@@ -62851,76 +61116,9 @@ Schema name: `BetaResponseFailedEvent`
 
               - `number`
 
-        - `CompoundFilter object { filters, type }`
+        - `BetaCompoundFilter = unknown`
 
           Combine multiple filters using `and` or `or`.
-
-          - `filters: array of object { key, type, value }  or unknown`
-
-            Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-            - `ComparisonFilter object { key, type, value }`
-
-              A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-              - `key: string`
-
-                The key to compare against the value.
-
-              - `type: "eq" or "ne" or "gt" or 5 more`
-
-                Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                - `eq`: equals
-                - `ne`: not equal
-                - `gt`: greater than
-                - `gte`: greater than or equal
-                - `lt`: less than
-                - `lte`: less than or equal
-                - `in`: in
-                - `nin`: not in
-
-                - `"eq"`
-
-                - `"ne"`
-
-                - `"gt"`
-
-                - `"gte"`
-
-                - `"lt"`
-
-                - `"lte"`
-
-                - `"in"`
-
-                - `"nin"`
-
-              - `value: string or number or boolean or array of string or number`
-
-                The value to compare against the attribute key; supports string, number, or boolean types.
-
-                - `string`
-
-                - `number`
-
-                - `boolean`
-
-                - `array of string or number`
-
-                  - `string`
-
-                  - `number`
-
-            - `unknown`
-
-          - `type: "and" or "or"`
-
-            Type of operation: `and` or `or`.
-
-            - `"and"`
-
-            - `"or"`
 
       - `max_num_results: optional number`
 
@@ -64336,7 +62534,7 @@ Schema name: `BetaResponseFailedEvent`
 
     - `"disabled"`
 
-  - `usage: optional BetaResponseUsage`
+  - `usage: optional BetaResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -64374,7 +62572,7 @@ Schema name: `BetaResponseFailedEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -64440,8 +62638,10 @@ Schema name: `BetaResponseFailedEvent`
     "truncation": "disabled",
     "usage": null,
     "user": null,
-    "metadata": {}
-  }
+    "metadata": {},
+    "parallel_tool_calls": true
+  },
+  "sequence_number": 1
 }
 ```
 
@@ -64847,7 +63047,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -65447,7 +63647,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, 2 more }`
+      - `WebSearchCall object { id, status, type, 2 more }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -65456,7 +63656,27 @@ Schema name: `BetaResponseIncompleteEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -65524,26 +63744,6 @@ Schema name: `BetaResponseIncompleteEvent`
             - `url: string`
 
               The URL of the page searched for the pattern.
-
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
 
         - `agent: optional object { agent_name }  or null`
 
@@ -66149,7 +64349,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional object { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -66206,76 +64406,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -67397,7 +65530,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional object { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -67454,76 +65587,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -70399,7 +68465,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           The canonical name of the agent that produced this item.
 
-    - `WebSearchCall object { id, action, status, 2 more }`
+    - `WebSearchCall object { id, status, type, 2 more }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -70408,7 +68474,27 @@ Schema name: `BetaResponseIncompleteEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -70476,26 +68562,6 @@ Schema name: `BetaResponseIncompleteEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
       - `agent: optional object { agent_name }  or null`
 
@@ -70914,7 +68980,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional object { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -70971,76 +69037,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -72008,7 +70007,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional object { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -72065,76 +70064,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -74291,7 +72223,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
         The IDs of the vector stores to search.
 
-      - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+      - `filters: optional object { key, type, value }  or unknown or null`
 
         A filter to apply.
 
@@ -74348,76 +72280,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
               - `number`
 
-        - `CompoundFilter object { filters, type }`
+        - `BetaCompoundFilter = unknown`
 
           Combine multiple filters using `and` or `or`.
-
-          - `filters: array of object { key, type, value }  or unknown`
-
-            Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-            - `ComparisonFilter object { key, type, value }`
-
-              A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-              - `key: string`
-
-                The key to compare against the value.
-
-              - `type: "eq" or "ne" or "gt" or 5 more`
-
-                Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                - `eq`: equals
-                - `ne`: not equal
-                - `gt`: greater than
-                - `gte`: greater than or equal
-                - `lt`: less than
-                - `lte`: less than or equal
-                - `in`: in
-                - `nin`: not in
-
-                - `"eq"`
-
-                - `"ne"`
-
-                - `"gt"`
-
-                - `"gte"`
-
-                - `"lt"`
-
-                - `"lte"`
-
-                - `"in"`
-
-                - `"nin"`
-
-              - `value: string or number or boolean or array of string or number`
-
-                The value to compare against the attribute key; supports string, number, or boolean types.
-
-                - `string`
-
-                - `number`
-
-                - `boolean`
-
-                - `array of string or number`
-
-                  - `string`
-
-                  - `number`
-
-            - `unknown`
-
-          - `type: "and" or "or"`
-
-            Type of operation: `and` or `or`.
-
-            - `"and"`
-
-            - `"or"`
 
       - `max_num_results: optional number`
 
@@ -75833,7 +73698,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
     - `"disabled"`
 
-  - `usage: optional BetaResponseUsage`
+  - `usage: optional BetaResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -75871,7 +73736,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -75915,7 +73780,7 @@ Schema name: `BetaResponseIncompleteEvent`
     "completed_at": null,
     "error": null,
     "incomplete_details": {
-      "reason": "max_tokens"
+      "reason": "max_output_tokens"
     },
     "instructions": null,
     "max_output_tokens": null,
@@ -75936,7 +73801,8 @@ Schema name: `BetaResponseIncompleteEvent`
     "truncation": "disabled",
     "usage": null,
     "user": null,
-    "metadata": {}
+    "metadata": {},
+    "parallel_tool_calls": true
   },
   "sequence_number": 1
 }
@@ -75993,7 +73859,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
@@ -76738,7 +74604,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         The canonical name of the agent that produced this item.
 
-  - `WebSearchCall object { id, action, status, 2 more }`
+  - `WebSearchCall object { id, status, type, 2 more }`
 
     The results of a web search tool call. See the
     [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -76747,7 +74613,27 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
       The unique ID of the web search tool call.
 
-    - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+    - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+      The status of the web search tool call.
+
+      - `"in_progress"`
+
+      - `"searching"`
+
+      - `"completed"`
+
+      - `"failed"`
+
+      - `"incomplete"`
+
+    - `type: "web_search_call"`
+
+      The type of the web search tool call. Always `web_search_call`.
+
+      - `"web_search_call"`
+
+    - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
       An object describing the specific action taken in this web search call.
       Includes details on how the model used the web (search, open_page, find_in_page).
@@ -76815,26 +74701,6 @@ Schema name: `BetaResponseOutputItemAddedEvent`
         - `url: string`
 
           The URL of the page searched for the pattern.
-
-    - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-      The status of the web search tool call.
-
-      - `"in_progress"`
-
-      - `"searching"`
-
-      - `"completed"`
-
-      - `"failed"`
-
-      - `"incomplete"`
-
-    - `type: "web_search_call"`
-
-      The type of the web search tool call. Always `web_search_call`.
-
-      - `"web_search_call"`
 
     - `agent: optional object { agent_name }  or null`
 
@@ -77495,7 +75361,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
           The IDs of the vector stores to search.
 
-        - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+        - `filters: optional object { key, type, value }  or unknown or null`
 
           A filter to apply.
 
@@ -77552,76 +75418,9 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
                 - `number`
 
-          - `CompoundFilter object { filters, type }`
+          - `BetaCompoundFilter = unknown`
 
             Combine multiple filters using `and` or `or`.
-
-            - `filters: array of object { key, type, value }  or unknown`
-
-              Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-              - `ComparisonFilter object { key, type, value }`
-
-                A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                - `key: string`
-
-                  The key to compare against the value.
-
-                - `type: "eq" or "ne" or "gt" or 5 more`
-
-                  Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                  - `eq`: equals
-                  - `ne`: not equal
-                  - `gt`: greater than
-                  - `gte`: greater than or equal
-                  - `lt`: less than
-                  - `lte`: less than or equal
-                  - `in`: in
-                  - `nin`: not in
-
-                  - `"eq"`
-
-                  - `"ne"`
-
-                  - `"gt"`
-
-                  - `"gte"`
-
-                  - `"lt"`
-
-                  - `"lte"`
-
-                  - `"in"`
-
-                  - `"nin"`
-
-                - `value: string or number or boolean or array of string or number`
-
-                  The value to compare against the attribute key; supports string, number, or boolean types.
-
-                  - `string`
-
-                  - `number`
-
-                  - `boolean`
-
-                  - `array of string or number`
-
-                    - `string`
-
-                    - `number`
-
-              - `unknown`
-
-            - `type: "and" or "or"`
-
-              Type of operation: `and` or `or`.
-
-              - `"and"`
-
-              - `"or"`
 
         - `max_num_results: optional number`
 
@@ -78739,7 +76538,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
           The IDs of the vector stores to search.
 
-        - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+        - `filters: optional object { key, type, value }  or unknown or null`
 
           A filter to apply.
 
@@ -78796,76 +76595,9 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
                 - `number`
 
-          - `CompoundFilter object { filters, type }`
+          - `BetaCompoundFilter = unknown`
 
             Combine multiple filters using `and` or `or`.
-
-            - `filters: array of object { key, type, value }  or unknown`
-
-              Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-              - `ComparisonFilter object { key, type, value }`
-
-                A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                - `key: string`
-
-                  The key to compare against the value.
-
-                - `type: "eq" or "ne" or "gt" or 5 more`
-
-                  Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                  - `eq`: equals
-                  - `ne`: not equal
-                  - `gt`: greater than
-                  - `gte`: greater than or equal
-                  - `lt`: less than
-                  - `lte`: less than or equal
-                  - `in`: in
-                  - `nin`: not in
-
-                  - `"eq"`
-
-                  - `"ne"`
-
-                  - `"gt"`
-
-                  - `"gte"`
-
-                  - `"lt"`
-
-                  - `"lte"`
-
-                  - `"in"`
-
-                  - `"nin"`
-
-                - `value: string or number or boolean or array of string or number`
-
-                  The value to compare against the attribute key; supports string, number, or boolean types.
-
-                  - `string`
-
-                  - `number`
-
-                  - `boolean`
-
-                  - `array of string or number`
-
-                    - `string`
-
-                    - `number`
-
-              - `unknown`
-
-            - `type: "and" or "or"`
-
-              Type of operation: `and` or `or`.
-
-              - `"and"`
-
-              - `"or"`
 
         - `max_num_results: optional number`
 
@@ -80886,7 +78618,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
@@ -81631,7 +79363,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         The canonical name of the agent that produced this item.
 
-  - `WebSearchCall object { id, action, status, 2 more }`
+  - `WebSearchCall object { id, status, type, 2 more }`
 
     The results of a web search tool call. See the
     [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -81640,7 +79372,27 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
       The unique ID of the web search tool call.
 
-    - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+    - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+      The status of the web search tool call.
+
+      - `"in_progress"`
+
+      - `"searching"`
+
+      - `"completed"`
+
+      - `"failed"`
+
+      - `"incomplete"`
+
+    - `type: "web_search_call"`
+
+      The type of the web search tool call. Always `web_search_call`.
+
+      - `"web_search_call"`
+
+    - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
       An object describing the specific action taken in this web search call.
       Includes details on how the model used the web (search, open_page, find_in_page).
@@ -81708,26 +79460,6 @@ Schema name: `BetaResponseOutputItemDoneEvent`
         - `url: string`
 
           The URL of the page searched for the pattern.
-
-    - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-      The status of the web search tool call.
-
-      - `"in_progress"`
-
-      - `"searching"`
-
-      - `"completed"`
-
-      - `"failed"`
-
-      - `"incomplete"`
-
-    - `type: "web_search_call"`
-
-      The type of the web search tool call. Always `web_search_call`.
-
-      - `"web_search_call"`
 
     - `agent: optional object { agent_name }  or null`
 
@@ -82388,7 +80120,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
           The IDs of the vector stores to search.
 
-        - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+        - `filters: optional object { key, type, value }  or unknown or null`
 
           A filter to apply.
 
@@ -82445,76 +80177,9 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
                 - `number`
 
-          - `CompoundFilter object { filters, type }`
+          - `BetaCompoundFilter = unknown`
 
             Combine multiple filters using `and` or `or`.
-
-            - `filters: array of object { key, type, value }  or unknown`
-
-              Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-              - `ComparisonFilter object { key, type, value }`
-
-                A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                - `key: string`
-
-                  The key to compare against the value.
-
-                - `type: "eq" or "ne" or "gt" or 5 more`
-
-                  Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                  - `eq`: equals
-                  - `ne`: not equal
-                  - `gt`: greater than
-                  - `gte`: greater than or equal
-                  - `lt`: less than
-                  - `lte`: less than or equal
-                  - `in`: in
-                  - `nin`: not in
-
-                  - `"eq"`
-
-                  - `"ne"`
-
-                  - `"gt"`
-
-                  - `"gte"`
-
-                  - `"lt"`
-
-                  - `"lte"`
-
-                  - `"in"`
-
-                  - `"nin"`
-
-                - `value: string or number or boolean or array of string or number`
-
-                  The value to compare against the attribute key; supports string, number, or boolean types.
-
-                  - `string`
-
-                  - `number`
-
-                  - `boolean`
-
-                  - `array of string or number`
-
-                    - `string`
-
-                    - `number`
-
-              - `unknown`
-
-            - `type: "and" or "or"`
-
-              Type of operation: `and` or `or`.
-
-              - `"and"`
-
-              - `"or"`
 
         - `max_num_results: optional number`
 
@@ -83632,7 +81297,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
           The IDs of the vector stores to search.
 
-        - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+        - `filters: optional object { key, type, value }  or unknown or null`
 
           A filter to apply.
 
@@ -83689,76 +81354,9 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
                 - `number`
 
-          - `CompoundFilter object { filters, type }`
+          - `BetaCompoundFilter = unknown`
 
             Combine multiple filters using `and` or `or`.
-
-            - `filters: array of object { key, type, value }  or unknown`
-
-              Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-              - `ComparisonFilter object { key, type, value }`
-
-                A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                - `key: string`
-
-                  The key to compare against the value.
-
-                - `type: "eq" or "ne" or "gt" or 5 more`
-
-                  Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                  - `eq`: equals
-                  - `ne`: not equal
-                  - `gt`: greater than
-                  - `gte`: greater than or equal
-                  - `lt`: less than
-                  - `lte`: less than or equal
-                  - `in`: in
-                  - `nin`: not in
-
-                  - `"eq"`
-
-                  - `"ne"`
-
-                  - `"gt"`
-
-                  - `"gte"`
-
-                  - `"lt"`
-
-                  - `"lte"`
-
-                  - `"in"`
-
-                  - `"nin"`
-
-                - `value: string or number or boolean or array of string or number`
-
-                  The value to compare against the attribute key; supports string, number, or boolean types.
-
-                  - `string`
-
-                  - `number`
-
-                  - `boolean`
-
-                  - `array of string or number`
-
-                    - `string`
-
-                    - `number`
-
-              - `unknown`
-
-            - `type: "and" or "or"`
-
-              Type of operation: `and` or `or`.
-
-              - `"and"`
-
-              - `"or"`
 
         - `max_num_results: optional number`
 
@@ -85729,7 +83327,8 @@ Schema name: `BetaResponseOutputItemDoneEvent`
       {
         "type": "output_text",
         "text": "In a shimmering forest under a sky full of stars, a lonely unicorn named Lila discovered a hidden pond that glowed with moonlight. Every night, she would leave sparkling, magical flowers by the water's edge, hoping to share her beauty with others. One enchanting evening, she woke to find a group of friendly animals gathered around, eager to be friends and share in her magic.",
-        "annotations": []
+        "annotations": [],
+        "logprobs": []
       }
     ]
   },
@@ -85785,7 +83384,7 @@ Schema name: `BetaResponseContentPartAddedEvent`
 
         - `index: number`
 
-          The index of the file in the list of files.
+          The index in the output text at which to insert the file citation.
 
         - `type: "file_citation"`
 
@@ -86011,7 +83610,7 @@ Schema name: `BetaResponseContentPartDoneEvent`
 
         - `index: number`
 
-          The index of the file in the list of files.
+          The index in the output text at which to insert the file citation.
 
         - `type: "file_citation"`
 
@@ -88309,7 +85908,7 @@ Schema name: `BetaResponseOutputTextAnnotationAddedEvent`
 
     - `index: number`
 
-      The index of the file in the list of files.
+      The index in the output text at which to insert the file citation.
 
     - `type: "file_citation"`
 
@@ -88848,7 +86447,7 @@ Schema name: `BetaResponseQueuedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -89448,7 +87047,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, 2 more }`
+      - `WebSearchCall object { id, status, type, 2 more }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -89457,7 +87056,27 @@ Schema name: `BetaResponseQueuedEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -89525,26 +87144,6 @@ Schema name: `BetaResponseQueuedEvent`
             - `url: string`
 
               The URL of the page searched for the pattern.
-
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
 
         - `agent: optional object { agent_name }  or null`
 
@@ -90150,7 +87749,7 @@ Schema name: `BetaResponseQueuedEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional object { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -90207,76 +87806,9 @@ Schema name: `BetaResponseQueuedEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -91398,7 +88930,7 @@ Schema name: `BetaResponseQueuedEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional object { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -91455,76 +88987,9 @@ Schema name: `BetaResponseQueuedEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -94400,7 +91865,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           The canonical name of the agent that produced this item.
 
-    - `WebSearchCall object { id, action, status, 2 more }`
+    - `WebSearchCall object { id, status, type, 2 more }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -94409,7 +91874,27 @@ Schema name: `BetaResponseQueuedEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -94477,26 +91962,6 @@ Schema name: `BetaResponseQueuedEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
       - `agent: optional object { agent_name }  or null`
 
@@ -94915,7 +92380,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional object { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -94972,76 +92437,9 @@ Schema name: `BetaResponseQueuedEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -96009,7 +93407,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional object { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -96066,76 +93464,9 @@ Schema name: `BetaResponseQueuedEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -98292,7 +95623,7 @@ Schema name: `BetaResponseQueuedEvent`
 
         The IDs of the vector stores to search.
 
-      - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+      - `filters: optional object { key, type, value }  or unknown or null`
 
         A filter to apply.
 
@@ -98349,76 +95680,9 @@ Schema name: `BetaResponseQueuedEvent`
 
               - `number`
 
-        - `CompoundFilter object { filters, type }`
+        - `BetaCompoundFilter = unknown`
 
           Combine multiple filters using `and` or `or`.
-
-          - `filters: array of object { key, type, value }  or unknown`
-
-            Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-            - `ComparisonFilter object { key, type, value }`
-
-              A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-              - `key: string`
-
-                The key to compare against the value.
-
-              - `type: "eq" or "ne" or "gt" or 5 more`
-
-                Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                - `eq`: equals
-                - `ne`: not equal
-                - `gt`: greater than
-                - `gte`: greater than or equal
-                - `lt`: less than
-                - `lte`: less than or equal
-                - `in`: in
-                - `nin`: not in
-
-                - `"eq"`
-
-                - `"ne"`
-
-                - `"gt"`
-
-                - `"gte"`
-
-                - `"lt"`
-
-                - `"lte"`
-
-                - `"in"`
-
-                - `"nin"`
-
-              - `value: string or number or boolean or array of string or number`
-
-                The value to compare against the attribute key; supports string, number, or boolean types.
-
-                - `string`
-
-                - `number`
-
-                - `boolean`
-
-                - `array of string or number`
-
-                  - `string`
-
-                  - `number`
-
-            - `unknown`
-
-          - `type: "and" or "or"`
-
-            Type of operation: `and` or `or`.
-
-            - `"and"`
-
-            - `"or"`
 
       - `max_num_results: optional number`
 
@@ -99834,7 +97098,7 @@ Schema name: `BetaResponseQueuedEvent`
 
     - `"disabled"`
 
-  - `usage: optional BetaResponseUsage`
+  - `usage: optional BetaResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -99872,7 +97136,7 @@ Schema name: `BetaResponseQueuedEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -99908,10 +97172,22 @@ Schema name: `BetaResponseQueuedEvent`
 {
   "type": "response.queued",
   "response": {
-    "id": "res_123",
+    "id": "resp_123",
+    "object": "response",
+    "access_programs": null,
+    "created_at": 1609459200,
     "status": "queued",
-    "created_at": "2021-01-01T00:00:00Z",
-    "updated_at": "2021-01-01T00:00:00Z"
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "model": "gpt-6-astra",
+    "output": [],
+    "parallel_tool_calls": true,
+    "temperature": 1,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1,
+    "metadata": {}
   },
   "sequence_number": 1
 }

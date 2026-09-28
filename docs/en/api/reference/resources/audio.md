@@ -210,7 +210,8 @@ curl https://api.openai.com/v1/audio/speech \
 Transcribes audio into the input language.
 
 Returns a transcription object in `json`, `diarized_json`, or `verbose_json`
-format, or a stream of transcript events.
+format, plain text in `text`, `srt`, or `vtt` format, or a stream of
+transcript events. Supported formats depend on the model.
 
 ### Returns
 
@@ -702,8 +703,8 @@ curl https://api.openai.com/v1/audio/transcriptions \
 {
   "task": "transcribe",
   "language": "english",
-  "duration": 8.470000267028809,
-  "text": "The beach was a popular spot on a hot summer day. People were swimming in the ocean, building sandcastles, and playing beach volleyball.",
+  "duration": 3.32,
+  "text": "The beach was a popular spot on a hot summer day.",
   "segments": [
     {
       "id": 0,
@@ -718,12 +719,11 @@ curl https://api.openai.com/v1/audio/transcriptions \
       "avg_logprob": -0.2860786020755768,
       "compression_ratio": 1.2363636493682861,
       "no_speech_prob": 0.00985979475080967
-    },
-    ...
+    }
   ],
   "usage": {
     "type": "duration",
-    "seconds": 9
+    "seconds": 4
   }
 }
 ```
@@ -825,24 +825,18 @@ curl https://api.openai.com/v1/audio/transcriptions \
 {
   "task": "transcribe",
   "language": "english",
-  "duration": 8.470000267028809,
-  "text": "The beach was a popular spot on a hot summer day. People were swimming in the ocean, building sandcastles, and playing beach volleyball.",
+  "duration": 0.5,
+  "text": "Hello.",
   "words": [
     {
-      "word": "The",
+      "word": "Hello",
       "start": 0.0,
-      "end": 0.23999999463558197
-    },
-    ...
-    {
-      "word": "volleyball",
-      "start": 7.400000095367432,
-      "end": 7.900000095367432
+      "end": 0.5
     }
   ],
   "usage": {
     "type": "duration",
-    "seconds": 9
+    "seconds": 1
   }
 }
 ```

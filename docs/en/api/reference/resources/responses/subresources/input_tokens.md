@@ -274,7 +274,7 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
               - `index: number`
 
-                The index of the file in the list of files.
+                The index in the output text at which to insert the file citation.
 
               - `type: "file_citation"`
 
@@ -842,7 +842,7 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
         - `"incomplete"`
 
-    - `WebSearchCall object { id, action, status, type }`
+    - `WebSearchCall object { id, status, type, action }`
 
       The results of a web search tool call. See the
       [web search guide](/api/docs/guides/tools-web-search) for more information.
@@ -851,7 +851,27 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -919,26 +939,6 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
     - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -1343,7 +1343,7 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
               Combine multiple filters using `and` or `or`.
 
-              - `filters: array of ComparisonFilter or unknown`
+              - `filters: array of ComparisonFilter or CompoundFilter`
 
                 Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -1351,7 +1351,9 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
                   A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-                - `unknown`
+                - `CompoundFilter object { filters, type }`
+
+                  Combine multiple filters using `and` or `or`.
 
               - `type: "and" or "or"`
 

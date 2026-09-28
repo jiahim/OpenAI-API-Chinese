@@ -128,9 +128,9 @@ curl https://api.openai.com/v1/files \
 curl https://api.openai.com/v1/files \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -F purpose="fine-tune" \
-  -F file="@mydata.jsonl"
-  -F expires_after[anchor]="created_at"
-  -F expires_after[seconds]=2592000
+  -F file="@mydata.jsonl" \
+  -F 'expires_after[anchor]=created_at' \
+  -F 'expires_after[seconds]=2592000'
 ```
 
 #### Response
@@ -141,8 +141,9 @@ curl https://api.openai.com/v1/files \
   "object": "file",
   "bytes": 120000,
   "created_at": 1677610602,
-  "expires_at": 1677614202,
+  "expires_at": 1680202602,
   "filename": "mydata.jsonl",
-  "purpose": "fine-tune"
+  "purpose": "fine-tune",
+  "status": "processed"
 }
 ```

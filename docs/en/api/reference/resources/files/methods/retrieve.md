@@ -114,8 +114,9 @@ curl https://api.openai.com/v1/files/file-abc123 \
   "object": "file",
   "bytes": 120000,
   "created_at": 1677610602,
-  "expires_at": 1677614202,
+  "expires_at": 1680202602,
   "filename": "mydata.jsonl",
-  "purpose": "fine-tune"
+  "purpose": "fine-tune",
+  "status": "processed"
 }
 ```

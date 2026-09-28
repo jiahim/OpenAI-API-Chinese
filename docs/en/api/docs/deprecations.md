@@ -124,11 +124,11 @@ See [Migrate from Agent Builder](https://developers.openai.com/api/docs/guides/a
 
 On June 2, 2026, we notified developers using older GPT Image models of their deprecation and removal from the API on December 1, 2026.
 
-| Shutdown date | Model / system         | Recommended replacement |
-| ------------- | ---------------------- | ----------------------- |
-| Dec 1, 2026   | `gpt-image-1-mini`     | `gpt-image-2`           |
-| Dec 1, 2026   | `gpt-image-1.5`        | `gpt-image-2`           |
-| Dec 1, 2026   | `chatgpt-image-latest` | `gpt-image-2`           |
+| Shutdown date | Model / system         | Recommended replacement                           |
+| ------------- | ---------------------- | ------------------------------------------------- |
+| Dec 1, 2026   | `gpt-image-1-mini`     | `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` |
+| Dec 1, 2026   | `gpt-image-1.5`        | `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` |
+| Dec 1, 2026   | `chatgpt-image-latest` | `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` |
 
 ### Update to OpenAI’s self-serve fine-tuning
 
@@ -146,20 +146,20 @@ Inference on fine-tuned models will continue to be available until the base mode
 
 To improve reliability and make it easier for developers to choose the right models, we are deprecating a set of older OpenAI models. Access to these models will be shut down on the dates below.
 
-| Shutdown date    | Model snapshot                                                         | Substitute model                      |
-| ---------------- | ---------------------------------------------------------------------- | ------------------------------------- |
-| October 23, 2026 | `gpt-3.5-turbo-0125` \| `gpt-3.5-turbo`, `gpt-3.5-turbo-completions`   | `gpt-5.6-terra`                       |
-| October 23, 2026 | `gpt-4-0613` \| `gpt-4`, `gpt-4-0613-completions`, `gpt-4-completions` | `gpt-5.6-sol`                         |
-| October 23, 2026 | `gpt-4-1106-preview`                                                   | `gpt-5.6-sol`                         |
-| October 23, 2026 | `gpt-4-turbo` \| `gpt-4-turbo-2024-04-09`, `gpt-4-turbo-completions`   | `gpt-5.6-sol`                         |
-| October 23, 2026 | `gpt-4.1-nano` \| `gpt-4.1-nano-2025-04-14`                            | `gpt-5.6-luna`                        |
-| October 23, 2026 | `gpt-4o-2024-05-13`                                                    | `gpt-5.6-sol`                         |
-| October 23, 2026 | `gpt-image-1`                                                          | `gpt-image-2`                         |
-| October 23, 2026 | `o1-2024-12-17` \| `o1`                                                | `gpt-5.6-sol`                         |
-| October 23, 2026 | `o1-pro-2025-03-19` \| `o1-pro`                                        | `gpt-5.6-sol` (`reasoning.mode: pro`) |
-| October 23, 2026 | `o3-mini-2025-01-31` \| `o3-mini`                                      | `gpt-5.6-sol`                         |
-| October 23, 2026 | `ft-o4-mini-2025-04-16`                                                | `gpt-5.6-terra`                       |
-| October 23, 2026 | `o4-mini-2025-04-16` \| `o4-mini`                                      | `gpt-5.6-terra`                       |
+| Shutdown date    | Model snapshot                                                         | Substitute model                                  |
+| ---------------- | ---------------------------------------------------------------------- | ------------------------------------------------- |
+| October 23, 2026 | `gpt-3.5-turbo-0125` \| `gpt-3.5-turbo`, `gpt-3.5-turbo-completions`   | `gpt-5.6-terra`                                   |
+| October 23, 2026 | `gpt-4-0613` \| `gpt-4`, `gpt-4-0613-completions`, `gpt-4-completions` | `gpt-5.6-sol`                                     |
+| October 23, 2026 | `gpt-4-1106-preview`                                                   | `gpt-5.6-sol`                                     |
+| October 23, 2026 | `gpt-4-turbo` \| `gpt-4-turbo-2024-04-09`, `gpt-4-turbo-completions`   | `gpt-5.6-sol`                                     |
+| October 23, 2026 | `gpt-4.1-nano` \| `gpt-4.1-nano-2025-04-14`                            | `gpt-5.6-luna`                                    |
+| October 23, 2026 | `gpt-4o-2024-05-13`                                                    | `gpt-5.6-sol`                                     |
+| October 23, 2026 | `gpt-image-1`                                                          | `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` |
+| October 23, 2026 | `o1-2024-12-17` \| `o1`                                                | `gpt-5.6-sol`                                     |
+| October 23, 2026 | `o1-pro-2025-03-19` \| `o1-pro`                                        | `gpt-5.6-sol` (`reasoning.mode: pro`)             |
+| October 23, 2026 | `o3-mini-2025-01-31` \| `o3-mini`                                      | `gpt-5.6-sol`                                     |
+| October 23, 2026 | `ft-o4-mini-2025-04-16`                                                | `gpt-5.6-terra`                                   |
+| October 23, 2026 | `o4-mini-2025-04-16` \| `o4-mini`                                      | `gpt-5.6-terra`                                   |
 
 We are also removing fine-tuned versions as below:
 

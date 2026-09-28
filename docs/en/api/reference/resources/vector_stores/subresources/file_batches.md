@@ -50,11 +50,11 @@ Cancel a vector store file batch. This attempts to cancel the processing of file
 
       The total number of files.
 
-  - `object: "vector_store.files_batch"`
+  - `object: "vector_store.file_batch"`
 
     The object type, which is always `vector_store.file_batch`.
 
-    - `"vector_store.files_batch"`
+    - `"vector_store.file_batch"`
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
@@ -94,7 +94,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/file_batches/$BATC
     "in_progress": 0,
     "total": 0
   },
-  "object": "vector_store.files_batch",
+  "object": "vector_store.file_batch",
   "status": "in_progress",
   "vector_store_id": "vector_store_id"
 }
@@ -257,11 +257,11 @@ Create a vector store file batch.
 
       The total number of files.
 
-  - `object: "vector_store.files_batch"`
+  - `object: "vector_store.file_batch"`
 
     The object type, which is always `vector_store.file_batch`.
 
-    - `"vector_store.files_batch"`
+    - `"vector_store.file_batch"`
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
@@ -302,7 +302,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/file_batches \
     "in_progress": 0,
     "total": 0
   },
-  "object": "vector_store.files_batch",
+  "object": "vector_store.file_batch",
   "status": "in_progress",
   "vector_store_id": "vector_store_id"
 }
@@ -572,13 +572,19 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
       "id": "file-abc123",
       "object": "vector_store.file",
       "created_at": 1699061776,
-      "vector_store_id": "vs_abc123"
+      "vector_store_id": "vs_abc123",
+      "usage_bytes": 1234,
+      "status": "completed",
+      "last_error": null
     },
     {
       "id": "file-abc456",
       "object": "vector_store.file",
       "created_at": 1699061776,
-      "vector_store_id": "vs_abc123"
+      "vector_store_id": "vs_abc123",
+      "usage_bytes": 1234,
+      "status": "completed",
+      "last_error": null
     }
   ],
   "first_id": "file-abc123",
@@ -635,11 +641,11 @@ Retrieves a vector store file batch.
 
       The total number of files.
 
-  - `object: "vector_store.files_batch"`
+  - `object: "vector_store.file_batch"`
 
     The object type, which is always `vector_store.file_batch`.
 
-    - `"vector_store.files_batch"`
+    - `"vector_store.file_batch"`
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
@@ -678,7 +684,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/file_batches/$BATC
     "in_progress": 0,
     "total": 0
   },
-  "object": "vector_store.files_batch",
+  "object": "vector_store.file_batch",
   "status": "in_progress",
   "vector_store_id": "vector_store_id"
 }
@@ -750,11 +756,11 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches/vsfb_abc123 
 
       The total number of files.
 
-  - `object: "vector_store.files_batch"`
+  - `object: "vector_store.file_batch"`
 
     The object type, which is always `vector_store.file_batch`.
 
-    - `"vector_store.files_batch"`
+    - `"vector_store.file_batch"`
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 

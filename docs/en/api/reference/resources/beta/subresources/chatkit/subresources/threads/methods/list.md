@@ -167,15 +167,27 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
     {
       "id": "cthr_abc123",
       "object": "chatkit.thread",
-      "title": "Customer escalation"
+      "title": "Customer escalation",
+      "created_at": 1712345600,
+      "status": {
+        "type": "active"
+      },
+      "user": "user_123"
     },
     {
       "id": "cthr_def456",
       "object": "chatkit.thread",
-      "title": "Demo feedback"
+      "title": "Demo feedback",
+      "created_at": 1712345600,
+      "status": {
+        "type": "active"
+      },
+      "user": "user_456"
     }
   ],
   "has_more": false,
-  "object": "list"
+  "object": "list",
+  "first_id": "cthr_abc123",
+  "last_id": "cthr_def456"
 }
 ```

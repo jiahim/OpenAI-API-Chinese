@@ -407,7 +407,7 @@ Schema name: `ResponseCreatedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -975,7 +975,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, type }`
+      - `WebSearchCall object { id, status, type, action }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -984,7 +984,27 @@ Schema name: `ResponseCreatedEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -1052,26 +1072,6 @@ Schema name: `ResponseCreatedEvent`
             - `url: string`
 
               The URL of the page searched for the pattern.
-
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -1476,7 +1476,7 @@ Schema name: `ResponseCreatedEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-                - `filters: array of ComparisonFilter or unknown`
+                - `filters: array of ComparisonFilter or CompoundFilter`
 
                   Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -1484,7 +1484,9 @@ Schema name: `ResponseCreatedEvent`
 
                     A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-                  - `unknown`
+                  - `CompoundFilter object { filters, type }`
+
+                    Combine multiple filters using `and` or `or`.
 
                 - `type: "and" or "or"`
 
@@ -4955,7 +4957,7 @@ Schema name: `ResponseCreatedEvent`
 
         The namespace of the tool that produced the output.
 
-    - `WebSearchCall object { id, action, status, type }`
+    - `WebSearchCall object { id, status, type, action }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -4964,7 +4966,27 @@ Schema name: `ResponseCreatedEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -5032,26 +5054,6 @@ Schema name: `ResponseCreatedEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -9641,7 +9643,7 @@ Schema name: `ResponseCreatedEvent`
 
     - `"disabled"`
 
-  - `usage: optional ResponseUsage`
+  - `usage: optional ResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -9679,7 +9681,7 @@ Schema name: `ResponseCreatedEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -10128,7 +10130,7 @@ Schema name: `ResponseInProgressEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -10696,7 +10698,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, type }`
+      - `WebSearchCall object { id, status, type, action }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -10705,7 +10707,27 @@ Schema name: `ResponseInProgressEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -10773,26 +10795,6 @@ Schema name: `ResponseInProgressEvent`
             - `url: string`
 
               The URL of the page searched for the pattern.
-
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -11197,7 +11199,7 @@ Schema name: `ResponseInProgressEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-                - `filters: array of ComparisonFilter or unknown`
+                - `filters: array of ComparisonFilter or CompoundFilter`
 
                   Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -11205,7 +11207,9 @@ Schema name: `ResponseInProgressEvent`
 
                     A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-                  - `unknown`
+                  - `CompoundFilter object { filters, type }`
+
+                    Combine multiple filters using `and` or `or`.
 
                 - `type: "and" or "or"`
 
@@ -14676,7 +14680,7 @@ Schema name: `ResponseInProgressEvent`
 
         The namespace of the tool that produced the output.
 
-    - `WebSearchCall object { id, action, status, type }`
+    - `WebSearchCall object { id, status, type, action }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -14685,7 +14689,27 @@ Schema name: `ResponseInProgressEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -14753,26 +14777,6 @@ Schema name: `ResponseInProgressEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -19362,7 +19366,7 @@ Schema name: `ResponseInProgressEvent`
 
     - `"disabled"`
 
-  - `usage: optional ResponseUsage`
+  - `usage: optional ResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -19400,7 +19404,7 @@ Schema name: `ResponseInProgressEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -19849,7 +19853,7 @@ Schema name: `ResponseCompletedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -20417,7 +20421,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, type }`
+      - `WebSearchCall object { id, status, type, action }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -20426,7 +20430,27 @@ Schema name: `ResponseCompletedEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -20494,26 +20518,6 @@ Schema name: `ResponseCompletedEvent`
             - `url: string`
 
               The URL of the page searched for the pattern.
-
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -20918,7 +20922,7 @@ Schema name: `ResponseCompletedEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-                - `filters: array of ComparisonFilter or unknown`
+                - `filters: array of ComparisonFilter or CompoundFilter`
 
                   Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -20926,7 +20930,9 @@ Schema name: `ResponseCompletedEvent`
 
                     A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-                  - `unknown`
+                  - `CompoundFilter object { filters, type }`
+
+                    Combine multiple filters using `and` or `or`.
 
                 - `type: "and" or "or"`
 
@@ -24397,7 +24403,7 @@ Schema name: `ResponseCompletedEvent`
 
         The namespace of the tool that produced the output.
 
-    - `WebSearchCall object { id, action, status, type }`
+    - `WebSearchCall object { id, status, type, action }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -24406,7 +24412,27 @@ Schema name: `ResponseCompletedEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -24474,26 +24500,6 @@ Schema name: `ResponseCompletedEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -29083,7 +29089,7 @@ Schema name: `ResponseCompletedEvent`
 
     - `"disabled"`
 
-  - `usage: optional ResponseUsage`
+  - `usage: optional ResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -29121,7 +29127,7 @@ Schema name: `ResponseCompletedEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -29164,9 +29170,11 @@ Schema name: `ResponseCompletedEvent`
           {
             "type": "output_text",
             "text": "In a shimmering forest under a sky full of stars, a lonely unicorn named Lila discovered a hidden pond that glowed with moonlight. Every night, she would leave sparkling, magical flowers by the water's edge, hoping to share her beauty with others. One enchanting evening, she woke to find a group of friendly animals gathered around, eager to be friends and share in her magic.",
-            "annotations": []
+            "annotations": [],
+            "logprobs": []
           }
-        ]
+        ],
+        "status": "completed"
       }
     ],
     "previous_response_id": null,
@@ -29188,10 +29196,15 @@ Schema name: `ResponseCompletedEvent`
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 0
+      "total_tokens": 0,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      }
     },
     "user": null,
-    "metadata": {}
+    "metadata": {},
+    "parallel_tool_calls": true
   },
   "sequence_number": 1
 }
@@ -29587,7 +29600,7 @@ Schema name: `ResponseFailedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -30155,7 +30168,7 @@ Schema name: `ResponseFailedEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, type }`
+      - `WebSearchCall object { id, status, type, action }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -30164,7 +30177,27 @@ Schema name: `ResponseFailedEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -30232,26 +30265,6 @@ Schema name: `ResponseFailedEvent`
             - `url: string`
 
               The URL of the page searched for the pattern.
-
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -30656,7 +30669,7 @@ Schema name: `ResponseFailedEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-                - `filters: array of ComparisonFilter or unknown`
+                - `filters: array of ComparisonFilter or CompoundFilter`
 
                   Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -30664,7 +30677,9 @@ Schema name: `ResponseFailedEvent`
 
                     A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-                  - `unknown`
+                  - `CompoundFilter object { filters, type }`
+
+                    Combine multiple filters using `and` or `or`.
 
                 - `type: "and" or "or"`
 
@@ -34135,7 +34150,7 @@ Schema name: `ResponseFailedEvent`
 
         The namespace of the tool that produced the output.
 
-    - `WebSearchCall object { id, action, status, type }`
+    - `WebSearchCall object { id, status, type, action }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -34144,7 +34159,27 @@ Schema name: `ResponseFailedEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -34212,26 +34247,6 @@ Schema name: `ResponseFailedEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -38821,7 +38836,7 @@ Schema name: `ResponseFailedEvent`
 
     - `"disabled"`
 
-  - `usage: optional ResponseUsage`
+  - `usage: optional ResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -38859,7 +38874,7 @@ Schema name: `ResponseFailedEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -38911,8 +38926,10 @@ Schema name: `ResponseFailedEvent`
     "truncation": "disabled",
     "usage": null,
     "user": null,
-    "metadata": {}
-  }
+    "metadata": {},
+    "parallel_tool_calls": true
+  },
+  "sequence_number": 1
 }
 ```
 
@@ -39310,7 +39327,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -39878,7 +39895,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, type }`
+      - `WebSearchCall object { id, status, type, action }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -39887,7 +39904,27 @@ Schema name: `ResponseIncompleteEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -39955,26 +39992,6 @@ Schema name: `ResponseIncompleteEvent`
             - `url: string`
 
               The URL of the page searched for the pattern.
-
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -40379,7 +40396,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-                - `filters: array of ComparisonFilter or unknown`
+                - `filters: array of ComparisonFilter or CompoundFilter`
 
                   Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -40387,7 +40404,9 @@ Schema name: `ResponseIncompleteEvent`
 
                     A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-                  - `unknown`
+                  - `CompoundFilter object { filters, type }`
+
+                    Combine multiple filters using `and` or `or`.
 
                 - `type: "and" or "or"`
 
@@ -43858,7 +43877,7 @@ Schema name: `ResponseIncompleteEvent`
 
         The namespace of the tool that produced the output.
 
-    - `WebSearchCall object { id, action, status, type }`
+    - `WebSearchCall object { id, status, type, action }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -43867,7 +43886,27 @@ Schema name: `ResponseIncompleteEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -43935,26 +43974,6 @@ Schema name: `ResponseIncompleteEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -48544,7 +48563,7 @@ Schema name: `ResponseIncompleteEvent`
 
     - `"disabled"`
 
-  - `usage: optional ResponseUsage`
+  - `usage: optional ResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -48582,7 +48601,7 @@ Schema name: `ResponseIncompleteEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -48612,7 +48631,7 @@ Schema name: `ResponseIncompleteEvent`
     "completed_at": null,
     "error": null,
     "incomplete_details": {
-      "reason": "max_tokens"
+      "reason": "max_output_tokens"
     },
     "instructions": null,
     "max_output_tokens": null,
@@ -48633,7 +48652,8 @@ Schema name: `ResponseIncompleteEvent`
     "truncation": "disabled",
     "usage": null,
     "user": null,
-    "metadata": {}
+    "metadata": {},
+    "parallel_tool_calls": true
   },
   "sequence_number": 1
 }
@@ -48690,7 +48710,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
@@ -49165,7 +49185,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       The namespace of the tool that produced the output.
 
-  - `WebSearchCall object { id, action, status, type }`
+  - `WebSearchCall object { id, status, type, action }`
 
     The results of a web search tool call. See the
     [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -49174,7 +49194,27 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       The unique ID of the web search tool call.
 
-    - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+    - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+      The status of the web search tool call.
+
+      - `"in_progress"`
+
+      - `"searching"`
+
+      - `"completed"`
+
+      - `"failed"`
+
+      - `"incomplete"`
+
+    - `type: "web_search_call"`
+
+      The type of the web search tool call. Always `web_search_call`.
+
+      - `"web_search_call"`
+
+    - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
       An object describing the specific action taken in this web search call.
       Includes details on how the model used the web (search, open_page, find_in_page).
@@ -49242,26 +49282,6 @@ Schema name: `ResponseOutputItemAddedEvent`
         - `url: string`
 
           The URL of the page searched for the pattern.
-
-    - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-      The status of the web search tool call.
-
-      - `"in_progress"`
-
-      - `"searching"`
-
-      - `"completed"`
-
-      - `"failed"`
-
-      - `"incomplete"`
-
-    - `type: "web_search_call"`
-
-      The type of the web search tool call. Always `web_search_call`.
-
-      - `"web_search_call"`
 
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -49927,7 +49947,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             Combine multiple filters using `and` or `or`.
 
-            - `filters: array of ComparisonFilter or unknown`
+            - `filters: array of ComparisonFilter or CompoundFilter`
 
               Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -49935,7 +49955,9 @@ Schema name: `ResponseOutputItemAddedEvent`
 
                 A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-              - `unknown`
+              - `CompoundFilter object { filters, type }`
+
+                Combine multiple filters using `and` or `or`.
 
             - `type: "and" or "or"`
 
@@ -52846,7 +52868,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
@@ -53321,7 +53343,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       The namespace of the tool that produced the output.
 
-  - `WebSearchCall object { id, action, status, type }`
+  - `WebSearchCall object { id, status, type, action }`
 
     The results of a web search tool call. See the
     [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -53330,7 +53352,27 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       The unique ID of the web search tool call.
 
-    - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+    - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+      The status of the web search tool call.
+
+      - `"in_progress"`
+
+      - `"searching"`
+
+      - `"completed"`
+
+      - `"failed"`
+
+      - `"incomplete"`
+
+    - `type: "web_search_call"`
+
+      The type of the web search tool call. Always `web_search_call`.
+
+      - `"web_search_call"`
+
+    - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
       An object describing the specific action taken in this web search call.
       Includes details on how the model used the web (search, open_page, find_in_page).
@@ -53398,26 +53440,6 @@ Schema name: `ResponseOutputItemDoneEvent`
         - `url: string`
 
           The URL of the page searched for the pattern.
-
-    - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-      The status of the web search tool call.
-
-      - `"in_progress"`
-
-      - `"searching"`
-
-      - `"completed"`
-
-      - `"failed"`
-
-      - `"incomplete"`
-
-    - `type: "web_search_call"`
-
-      The type of the web search tool call. Always `web_search_call`.
-
-      - `"web_search_call"`
 
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -54083,7 +54105,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             Combine multiple filters using `and` or `or`.
 
-            - `filters: array of ComparisonFilter or unknown`
+            - `filters: array of ComparisonFilter or CompoundFilter`
 
               Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -54091,7 +54113,9 @@ Schema name: `ResponseOutputItemDoneEvent`
 
                 A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-              - `unknown`
+              - `CompoundFilter object { filters, type }`
+
+                Combine multiple filters using `and` or `or`.
 
             - `type: "and" or "or"`
 
@@ -56952,7 +56976,8 @@ Schema name: `ResponseOutputItemDoneEvent`
       {
         "type": "output_text",
         "text": "In a shimmering forest under a sky full of stars, a lonely unicorn named Lila discovered a hidden pond that glowed with moonlight. Every night, she would leave sparkling, magical flowers by the water's edge, hoping to share her beauty with others. One enchanting evening, she woke to find a group of friendly animals gathered around, eager to be friends and share in her magic.",
-        "annotations": []
+        "annotations": [],
+        "logprobs": []
       }
     ]
   },
@@ -57008,7 +57033,7 @@ Schema name: `ResponseContentPartAddedEvent`
 
         - `index: number`
 
-          The index of the file in the list of files.
+          The index in the output text at which to insert the file citation.
 
         - `type: "file_citation"`
 
@@ -57220,7 +57245,7 @@ Schema name: `ResponseContentPartDoneEvent`
 
         - `index: number`
 
-          The index of the file in the list of files.
+          The index in the output text at which to insert the file citation.
 
         - `type: "file_citation"`
 
@@ -59014,7 +59039,7 @@ Schema name: `ResponseOutputTextAnnotationAddedEvent`
 
     - `index: number`
 
-      The index of the file in the list of files.
+      The index in the output text at which to insert the file citation.
 
     - `type: "file_citation"`
 
@@ -59531,7 +59556,7 @@ Schema name: `ResponseQueuedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -60099,7 +60124,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, type }`
+      - `WebSearchCall object { id, status, type, action }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -60108,7 +60133,27 @@ Schema name: `ResponseQueuedEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -60176,26 +60221,6 @@ Schema name: `ResponseQueuedEvent`
             - `url: string`
 
               The URL of the page searched for the pattern.
-
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -60600,7 +60625,7 @@ Schema name: `ResponseQueuedEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-                - `filters: array of ComparisonFilter or unknown`
+                - `filters: array of ComparisonFilter or CompoundFilter`
 
                   Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -60608,7 +60633,9 @@ Schema name: `ResponseQueuedEvent`
 
                     A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-                  - `unknown`
+                  - `CompoundFilter object { filters, type }`
+
+                    Combine multiple filters using `and` or `or`.
 
                 - `type: "and" or "or"`
 
@@ -64079,7 +64106,7 @@ Schema name: `ResponseQueuedEvent`
 
         The namespace of the tool that produced the output.
 
-    - `WebSearchCall object { id, action, status, type }`
+    - `WebSearchCall object { id, status, type, action }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -64088,7 +64115,27 @@ Schema name: `ResponseQueuedEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -64156,26 +64203,6 @@ Schema name: `ResponseQueuedEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -68765,7 +68792,7 @@ Schema name: `ResponseQueuedEvent`
 
     - `"disabled"`
 
-  - `usage: optional ResponseUsage`
+  - `usage: optional ResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -68803,7 +68830,7 @@ Schema name: `ResponseQueuedEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -68825,10 +68852,22 @@ Schema name: `ResponseQueuedEvent`
 {
   "type": "response.queued",
   "response": {
-    "id": "res_123",
+    "id": "resp_123",
+    "object": "response",
+    "access_programs": null,
+    "created_at": 1609459200,
     "status": "queued",
-    "created_at": "2021-01-01T00:00:00Z",
-    "updated_at": "2021-01-01T00:00:00Z"
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "model": "gpt-6-astra",
+    "output": [],
+    "parallel_tool_calls": true,
+    "temperature": 1,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1,
+    "metadata": {}
   },
   "sequence_number": 1
 }

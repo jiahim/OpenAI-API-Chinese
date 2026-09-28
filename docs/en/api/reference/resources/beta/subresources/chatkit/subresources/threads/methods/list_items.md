@@ -497,28 +497,36 @@ curl "https://api.openai.com/v1/chatkit/threads/cthr_abc123/items?limit=3" \
     {
       "id": "cthi_user_001",
       "object": "chatkit.thread_item",
-      "type": "user_message",
+      "type": "chatkit.user_message",
       "content": [
         {
           "type": "input_text",
           "text": "I need help debugging an onboarding issue."
         }
       ],
-      "attachments": []
+      "attachments": [],
+      "created_at": 1712345600,
+      "thread_id": "cthr_abc123",
+      "inference_options": null
     },
     {
       "id": "cthi_assistant_002",
       "object": "chatkit.thread_item",
-      "type": "assistant_message",
+      "type": "chatkit.assistant_message",
       "content": [
         {
           "type": "output_text",
-          "text": "Let's start by confirming the workflow version you deployed."
+          "text": "Let's start by confirming the workflow version you deployed.",
+          "annotations": []
         }
-      ]
+      ],
+      "created_at": 1712345601,
+      "thread_id": "cthr_abc123"
     }
   ],
   "has_more": false,
-  "object": "list"
+  "object": "list",
+  "first_id": "cthi_user_001",
+  "last_id": "cthi_assistant_002"
 }
 ```

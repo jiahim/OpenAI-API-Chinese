@@ -111,12 +111,32 @@ Delete Container File
 
 - `file_id: string`
 
+### Returns
+
+- `id: string`
+
+- `deleted: boolean`
+
+- `object: "container.file.deleted"`
+
+  - `"container.file.deleted"`
+
 ### Example
 
 ```http
 curl https://api.openai.com/v1/containers/$CONTAINER_ID/files/$FILE_ID \
     -X DELETE \
     -H "Authorization: Bearer $OPENAI_API_KEY"
+```
+
+#### Response
+
+```json
+{
+  "id": "id",
+  "deleted": true,
+  "object": "container.file.deleted"
+}
 ```
 
 ### Example
@@ -391,6 +411,18 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
   - `source: string`
 
     Source of the file (e.g., `user`, `assistant`).
+
+### File Delete Response
+
+- `FileDeleteResponse object { id, deleted, object }`
+
+  - `id: string`
+
+  - `deleted: boolean`
+
+  - `object: "container.file.deleted"`
+
+    - `"container.file.deleted"`
 
 ### File List Response
 
