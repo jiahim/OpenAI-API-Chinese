@@ -1,4 +1,4 @@
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
 
 ## Create embeddings
 
@@ -6,11 +6,11 @@
 
 创建表示输入文本的嵌入向量。
 
-### 请求体参数
+### 正文参数
 
 - `input: string or array of string or array of number or array of array of number`
 
-  要嵌入的输入，编码为字符串或 token 数组。如需在单次请求中嵌入多个输入，请传入字符串数组或 token 数组。输入不得超过该模型的最大输入 token 数（所有嵌入模型均为 8192 个 token），不能为空字符串，且任何数组的维度不得超过 2048。 [Python 代码示例](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) 用于计算 token 数。除了每个输入的 token 上限外，所有嵌入模型还限制单次请求中所有输入的总 token 数不得超过 300,000。
+  用于嵌入的输入，可以编码为字符串或 token 数组。若要在单次请求中嵌入多个输入，请传入字符串数组或 token 数组的数组。输入不得超过模型的最大输入 token 数（所有嵌入模型均为 8192 token），不能为空字符串，且任何数组的维度不得超过 2048。 [Python 代码示例](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) 用于统计 token。除了每个输入的 token 上限外，所有嵌入模型在单次请求中对所有输入的 token 总和还强制限制为最多 300,000 个。
 
   - `String = string`
 
@@ -30,7 +30,7 @@
 
 - `model: string or EmbeddingModel`
 
-  要使用的模型 ID。你可以查看 [模型列表](/api/reference/resources/models/methods/list) API 以查看所有可用模型，或参阅我们的 [模型概述](/api/docs/models) 以了解相关描述。
+  要使用的模型 ID。你可以使用 [列出模型](/api/reference/resources/models/methods/list) API 查看所有可用模型，或参阅我们的 [模型概览](/api/docs/models) 了解相关描述。
 
   - `string`
 
@@ -56,9 +56,9 @@
 
 - `user: optional string`
 
-  代表你最终用户的唯一标识符，可帮助 OpenAI 监控和检测滥用行为。 [了解详情](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+  代表你终端用户的唯一标识符，可以帮助 OpenAI 监控和检测滥用行为。 [了解更多](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
-### Returns
+### 返回值
 
 - `CreateEmbeddingResponse object { data, model, object, usage }`
 
@@ -66,13 +66,17 @@
 
     模型生成的嵌入列表。
 
-    - `embedding: array of number`
+    - `embedding: array of number or string`
 
-      嵌入向量，即一个浮点数列表。向量的长度取决于模型，详见 [embedding guide](/api/docs/guides/embeddings).
+      嵌入向量，当 `encoding_format` 为 `float` （默认值）时以浮点数列表形式返回，当 `encoding_format` 为 `base64`。时以 base64 编码的字符串形式返回。向量的长度取决于模型，详见 [嵌入指南](/api/docs/guides/embeddings).
+
+      - `array of number`
+
+      - `string`
 
     - `index: number`
 
-      嵌入在嵌入列表中的索引。
+      该嵌入在嵌入列表中的索引。
 
     - `object: "embedding"`
 
@@ -82,7 +86,7 @@
 
   - `model: string`
 
-    用于生成该嵌入的模型的名称。
+    用于生成该嵌入的模型名称。
 
   - `object: "list"`
 
@@ -96,7 +100,7 @@
 
     - `prompt_tokens: number`
 
-      提示词所使用的 token 数。
+      提示词使用的 token 数量。
 
     - `total_tokens: number`
 
@@ -145,9 +149,10 @@ curl https://api.openai.com/v1/embeddings \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "input": "The food was delicious and the waiter...",
-    "model": "text-embedding-ada-002",
-    "encoding_format": "float"
+    "input": "Hello world",
+    "model": "text-embedding-3-small",
+    "encoding_format": "float",
+    "dimensions": 3
   }'
 ```
 
@@ -160,18 +165,17 @@ curl https://api.openai.com/v1/embeddings \
     {
       "object": "embedding",
       "embedding": [
-        0.0023064255,
-        -0.009327292,
-        .... (1536 floats total for ada-002)
-        -0.0028842222,
+        0.26726124,
+        0.53452248,
+        0.80178373
       ],
       "index": 0
     }
   ],
-  "model": "text-embedding-ada-002",
+  "model": "text-embedding-3-small",
   "usage": {
-    "prompt_tokens": 8,
-    "total_tokens": 8
+    "prompt_tokens": 2,
+    "total_tokens": 2
   }
 }
 ```

@@ -1,4 +1,4 @@
-> 如需完整文档索引,请参阅 [llms.txt](/llms.txt).可在页面 URL 末尾追加 `.md` 以获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 检索批次
 
@@ -18,11 +18,11 @@
 
   - `completion_window: string`
 
-    批处理应在该时间范围内完成。
+    批处理应在该时间窗口内被处理。
 
   - `created_at: number`
 
-    批处理创建时的 Unix 时间戳（以秒为单位）。
+    批处理创建时的 Unix 时间戳（单位为秒）。
 
   - `endpoint: string`
 
@@ -40,7 +40,7 @@
 
   - `status: "validating" or "failed" or "in_progress" or 5 more`
 
-    批处理当前的状态。
+    批处理的当前状态。
 
     - `"validating"`
 
@@ -58,23 +58,23 @@
 
     - `"cancelled"`
 
-  - `cancelled_at: optional number`
+  - `cancelled_at: optional number or null`
 
-    批处理被取消时的 Unix 时间戳（以秒为单位）。
+    批处理被取消时的 Unix 时间戳（单位为秒）。
 
-  - `cancelling_at: optional number`
+  - `cancelling_at: optional number or null`
 
-    批处理开始取消时的 Unix 时间戳（以秒为单位）。
+    批处理开始取消时的 Unix 时间戳（单位为秒）。
 
-  - `completed_at: optional number`
+  - `completed_at: optional number or null`
 
-    批处理完成时的 Unix 时间戳（以秒为单位）。
+    批处理完成时的 Unix 时间戳（单位为秒）。
 
-  - `error_file_id: optional string`
+  - `error_file_id: optional string or null`
 
-    包含请求输出的文件 ID（仅限出错的请求）。
+    包含出错请求输出的文件 ID。
 
-  - `errors: optional object { data, object }`
+  - `errors: optional object { data, object }  or null`
 
     - `data: optional array of BatchError`
 
@@ -84,63 +84,63 @@
 
       - `line: optional number or null`
 
-        发生错误的输入文件行号（若适用）。
+        发生错误的输入文件行号（如果适用）。
 
       - `message: optional string`
 
-        提供错误详情的人类可读消息。
+        提供有关错误详细信息的可读消息。
 
       - `param: optional string or null`
 
-        引发错误的参数名称（若适用）。
+        导致错误的参数名称（如果适用）。
 
     - `object: optional string`
 
       对象类型，始终为 `list`.
 
-  - `expired_at: optional number`
+  - `expired_at: optional number or null`
 
-    批处理过期时的 Unix 时间戳（以秒为单位）。
+    批处理过期时的 Unix 时间戳（单位为秒）。
 
-  - `expires_at: optional number`
+  - `expires_at: optional number or null`
 
-    批处理将过期时的 Unix 时间戳（以秒为单位）。
+    批处理将要过期时的 Unix 时间戳（单位为秒）。
 
-  - `failed_at: optional number`
+  - `failed_at: optional number or null`
 
-    批处理失败时的 Unix 时间戳（以秒为单位）。
+    批处理失败时的 Unix 时间戳（单位为秒）。
 
-  - `finalizing_at: optional number`
+  - `finalizing_at: optional number or null`
 
-    批处理开始收尾时的 Unix 时间戳（以秒为单位）。
+    批处理开始进入最终化阶段的 Unix 时间戳（单位为秒）。
 
-  - `in_progress_at: optional number`
+  - `in_progress_at: optional number or null`
 
-    批处理开始处理时的 Unix 时间戳（以秒为单位）。
+    批处理开始处理的 Unix 时间戳（单位为秒）。
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象的 16 组键值对。可用于
-    以结构化格式存储对象的附加信息，并通过
-    API 或控制面板查询对象时非常有用。
+    可附加到对象的 16 组键值对。可以
+    用于以结构化格式存储有关对象的附加信息
+    ，并通过 API 或仪表板查询对象。
 
-    键为字符串，最长 64 个字符。值为字符串，
-    最长 512 个字符。
+    键为字符串，最大长度为 64 个字符。值为字符串
+    ，最大长度为 512 个字符。
 
   - `model: optional string`
 
-    用于处理该批次的模型 ID，例如 `gpt-6-astra`。OpenAI
-    提供多种具有不同能力、性能
-    特性和定价的模型。请参阅 [模型
-    指南](/api/docs/models) 以浏览和比较可用模型。
+    用于处理该批处理的模型 ID，例如 `gpt-6-astra`。OpenAI
+    提供多种具备不同能力、性能特征和定价的模型。请参阅
+    模型 [指南
+    指南](/api/docs/models) 以浏览和比较可用的模型。
 
-  - `output_file_id: optional string`
+  - `output_file_id: optional string or null`
 
-    包含已成功执行请求的输出文件的 ID。
+    包含已成功执行的请求输出的文件 ID。
 
   - `request_counts: optional BatchRequestCounts`
 
-    该批次中不同状态的请求计数。
+    该批处理中不同状态的请求计数。
 
     - `completed: number`
 
@@ -152,26 +152,26 @@
 
     - `total: number`
 
-      批次中的请求总数。
+      批处理中的请求总数。
 
   - `usage: optional BatchUsage`
 
-    表示令牌使用详情，包括输入令牌、输出令牌、
-    输出令牌的细分以及使用的总令牌。仅在
-    2025 年 9 月 7 日之后创建的批次上填充。
+    表示 token 使用详情，包括输入 token、输出 token、
+    输出 token 的细分以及使用的总 token。仅在
+    2025 年 9 月 7 日之后创建的批处理中填充。
 
     - `input_tokens: number`
 
-      输入令牌的数量。
+      输入 token 的数量。
 
     - `input_tokens_details: object { cached_tokens }`
 
-      输入令牌的详细明细。
+      输入令牌的详细分类。
 
       - `cached_tokens: number`
 
-        从缓存中检索到的令牌数量。 [了解更多
-        提示缓存](/api/docs/guides/prompt-caching).
+        从缓存中检索到的令牌数量。 [详细了解
+        prompt caching](/api/docs/guides/prompt-caching).
 
     - `output_tokens: number`
 
@@ -179,7 +179,7 @@
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      输出令牌的详细明细。
+      输出令牌的详细分类。
 
       - `reasoning_tokens: number`
 

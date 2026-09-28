@@ -1,14 +1,24 @@
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
+> 有关完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾附加 `.md` 来获取文档页面的 Markdown 版本。
 
-## Delete a container
+## 删除容器
 
 **delete** `/containers/{container_id}`
 
-Delete Container
+删除容器
 
 ### 路径参数
 
 - `container_id: string`
+
+### 返回
+
+- `id: string`
+
+- `deleted: boolean`
+
+- `object: "container.deleted"`
+
+  - `"container.deleted"`
 
 ### 示例
 
@@ -16,6 +26,16 @@ Delete Container
 curl https://api.openai.com/v1/containers/$CONTAINER_ID \
     -X DELETE \
     -H "Authorization: Bearer $OPENAI_API_KEY"
+```
+
+#### 响应
+
+```json
+{
+  "id": "id",
+  "deleted": true,
+  "object": "container.deleted"
+}
 ```
 
 ### 示例

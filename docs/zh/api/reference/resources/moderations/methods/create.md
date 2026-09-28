@@ -1,18 +1,18 @@
-> 有关完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 获取文档页面的 Markdown 版本。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取文档页面的 Markdown 版本。
 
 ## 创建审核
 
 **post** `/moderations`
 
-Classifies if text and/or image inputs are potentially harmful. Learn
-more in the [moderation guide](/api/docs/guides/moderation).
+分类判断文本和/或图像输入是否具有潜在危害。了解
+更多信息，请参阅 [审核指南](/api/docs/guides/moderation).
 
-### 请求体参数
+### 正文参数
 
 - `input: string or array of string or array of object { image_url, type }  or object { text, type }`
 
   用于分类的输入（或多个输入）。可以是单个字符串、字符串数组，或
-  与其他模型类似的多模态输入对象数组。
+  与其他模型类似的 multi-modal 输入对象数组。
 
   - `string`
 
@@ -24,7 +24,7 @@ more in the [moderation guide](/api/docs/guides/moderation).
 
   - `array of object { image_url, type }  or object { text, type }`
 
-    输入审核模型的多模态输入数组。
+    传给内容审核模型的 multi-modal 输入数组。
 
     - `ImageURL object { image_url, type }`
 
@@ -50,7 +50,7 @@ more in the [moderation guide](/api/docs/guides/moderation).
 
       - `text: string`
 
-        用于分类的文本字符串。
+        待分类的文本字符串。
 
       - `type: "text"`
 
@@ -60,8 +60,8 @@ more in the [moderation guide](/api/docs/guides/moderation).
 
 - `model: optional string or ModerationModel`
 
-  希望使用的内容审核模型。详情请参阅
-  [审核指南](/api/docs/guides/moderation)，并了解
+  你想要使用的内容审核模型。详细信息请参阅
+  [内容审核指南](/api/docs/guides/moderation)，并了解
   可用模型 [此处](/api/docs/guides/moderation).
 
   - `string`
@@ -76,11 +76,11 @@ more in the [moderation guide](/api/docs/guides/moderation).
 
     - `"text-moderation-stable"`
 
-### 返回值
+### Returns
 
 - `id: string`
 
-  该审核请求的唯一标识符。
+  审核请求的唯一标识符。
 
 - `model: string`
 
@@ -88,11 +88,11 @@ more in the [moderation guide](/api/docs/guides/moderation).
 
 - `results: array of Moderation`
 
-  审核对象的列表。
+  审核对象列表。
 
   - `categories: object { harassment, "harassment/threatening", hate, 10 more }`
 
-    类别及其是否被标记的列表。
+    各类别及其是否被标记的列表。
 
     - `harassment: boolean`
 
@@ -100,43 +100,43 @@ more in the [moderation guide](/api/docs/guides/moderation).
 
     - `"harassment/threatening": boolean`
 
-      针对任何目标包含暴力或严重伤害的骚扰内容。
+      针对任何目标同时包含暴力或严重伤害的骚扰内容。
 
     - `hate: boolean`
 
-      基于种族、性别、族裔、宗教、国籍、性取向、残障状况或种姓而表达、煽动或宣扬仇恨的内容。针对非受保护群体（例如国际象棋棋手）的仇恨内容属于骚扰。
+      基于种族、性别、民族、宗教、国籍、性取向、残疾状况或种姓表达、煽动或宣扬仇恨的内容。针对非受保护群体（例如国际象棋棋手）的仇恨内容属于骚扰。
 
     - `"hate/threatening": boolean`
 
-      基于种族、性别、族裔、宗教、国籍、性取向、残障状况或种姓，针对目标群体同时包含暴力或严重伤害的仇恨内容。
+      基于种族、性别、民族、宗教、国籍、性取向、残疾状况或种姓，针对目标群体同时包含暴力或严重伤害的仇恨内容。
 
     - `illicit: boolean or null`
 
-      包含有助于策划或实施不法行为的指导或建议的内容，或提供关于如何实施违法行为的指导或建议的内容。例如，“如何入店行窃”就属于此类。
+      包含便于策划或实施违法行为的指导或建议的内容，或提供关于如何实施非法行为的建议或指导的内容。例如，“如何入店行窃”符合此类内容。
 
     - `"illicit/violent": boolean or null`
 
-      包含有助于策划或实施同时涉及暴力的不法行为的指导或建议的内容，或提供关于获取任何武器的指导或建议的内容。
+      包含便于策划或实施同时涉及暴力的违法行为的指导或建议的内容，或提供关于获取任何武器的建议或指导的内容。
 
     - `"self-harm": boolean`
 
-      宣扬、鼓励或描绘自我伤害行为（例如自杀、自残和饮食失调）的内容。
+      宣扬、鼓励或描述自残行为（例如自杀、自我伤害和饮食失调）的内容。
 
     - `"self-harm/instructions": boolean`
 
-      鼓励实施自我伤害行为（例如自杀、自残和饮食失调），或提供关于如何实施此类行为的指导或建议的内容。
+      鼓励实施自残行为（例如自杀、自我伤害和饮食失调），或提供关于如何实施此类行为的指导或建议的内容。
 
     - `"self-harm/intent": boolean`
 
-      说话者表示正在或意图实施自我伤害行为（例如自杀、自残和饮食失调）的内容。
+      发言者表达正在实施或意图实施自残行为（例如自杀、自我伤害和饮食失调）的内容。
 
     - `sexual: boolean`
 
-      旨在唤起性兴奋的内容，例如对性行为的描述，或推广性服务的内容（不包括性教育和健康内容）。
+      旨在引起性兴奋的内容，例如对性行为的描述，或推广性服务的内容（不包括性教育和性健康）。
 
     - `"sexual/minors": boolean`
 
-      包含未满 18 岁未成年人的性内容。
+      包含未满 18 岁个人的性内容。
 
     - `violence: boolean`
 
@@ -144,21 +144,21 @@ more in the [moderation guide](/api/docs/guides/moderation).
 
     - `"violence/graphic": boolean`
 
-      以详细且生动的细节描绘死亡、暴力或人身伤害的内容。
+      以细节化方式描绘死亡、暴力或人身伤害的内容。
 
   - `category_applied_input_types: object { harassment, "harassment/threatening", hate, 10 more }`
 
-    类别及其分数所适用的输入类型列表。
+    各类别及其分数所适用的输入类型列表。
 
     - `harassment: array of "text"`
 
-      “harassment”类别所适用的输入类型。
+      类别“harassment”所适用的输入类型。
 
       - `"text"`
 
     - `"harassment/threatening": array of "text"`
 
-      “harassment/threatening”类别所适用的输入类型。
+      类别“harassment/threatening”所适用的输入类型。
 
       - `"text"`
 
@@ -242,7 +242,7 @@ more in the [moderation guide](/api/docs/guides/moderation).
 
   - `category_scores: object { harassment, "harassment/threatening", hate, 10 more }`
 
-    由模型预测的类别及其对应分数的列表。
+    模型预测的类别及其对应分数的列表。
 
     - `harassment: number`
 
@@ -278,27 +278,27 @@ more in the [moderation guide](/api/docs/guides/moderation).
 
     - `"self-harm/intent": number`
 
-      类别“self-harm/intent”的得分。
+      类别 'self-harm/intent' 的分数。
 
     - `sexual: number`
 
-      类别“sexual”的得分。
+      类别 'sexual' 的分数。
 
     - `"sexual/minors": number`
 
-      类别“sexual/minors”的得分。
+      类别 'sexual/minors' 的分数。
 
     - `violence: number`
 
-      类别“violence”的得分。
+      类别 'violence' 的分数。
 
     - `"violence/graphic": number`
 
-      类别“violence/graphic”的得分。
+      类别 'violence/graphic' 的分数。
 
   - `flagged: boolean`
 
-    以下任意类别是否被标记。
+    是否有以下任意类别被标记。
 
 ### 示例
 
@@ -515,6 +515,7 @@ curl https://api.openai.com/v1/moderations \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
+    "model": "omni-moderation-latest",
     "input": "I want to kill them."
   }'
 ```
@@ -524,7 +525,7 @@ curl https://api.openai.com/v1/moderations \
 ```json
 {
   "id": "modr-AB8CjOTu2jiq12hp1AQPfeqFWaORR",
-  "model": "text-moderation-007",
+  "model": "omni-moderation-latest",
   "results": [
     {
       "flagged": true,
@@ -539,20 +540,65 @@ curl https://api.openai.com/v1/moderations \
         "self-harm/intent": false,
         "self-harm/instructions": false,
         "harassment/threatening": true,
-        "violence": true
+        "violence": true,
+        "illicit": false,
+        "illicit/violent": false
       },
       "category_scores": {
-        "sexual": 0.000011726012417057063,
+        "sexual": 1.1726012417057063e-05,
         "hate": 0.22706663608551025,
         "harassment": 0.5215635299682617,
-        "self-harm": 2.227119921371923e-6,
-        "sexual/minors": 7.107352217872176e-8,
+        "self-harm": 2.227119921371923e-06,
+        "sexual/minors": 7.107352217872176e-08,
         "hate/threatening": 0.023547329008579254,
-        "violence/graphic": 0.00003391829886822961,
-        "self-harm/intent": 1.646940972932498e-6,
-        "self-harm/instructions": 1.1198755256458526e-9,
+        "violence/graphic": 3.391829886822961e-05,
+        "self-harm/intent": 1.646940972932498e-06,
+        "self-harm/instructions": 1.1198755256458526e-09,
         "harassment/threatening": 0.5694745779037476,
-        "violence": 0.9971134662628174
+        "violence": 0.9971134662628174,
+        "illicit": 0.001,
+        "illicit/violent": 0.001
+      },
+      "category_applied_input_types": {
+        "sexual": [
+          "text"
+        ],
+        "hate": [
+          "text"
+        ],
+        "harassment": [
+          "text"
+        ],
+        "self-harm": [
+          "text"
+        ],
+        "sexual/minors": [
+          "text"
+        ],
+        "hate/threatening": [
+          "text"
+        ],
+        "violence/graphic": [
+          "text"
+        ],
+        "self-harm/intent": [
+          "text"
+        ],
+        "self-harm/instructions": [
+          "text"
+        ],
+        "harassment/threatening": [
+          "text"
+        ],
+        "violence": [
+          "text"
+        ],
+        "illicit": [
+          "text"
+        ],
+        "illicit/violent": [
+          "text"
+        ]
       }
     }
   ]

@@ -1,10 +1,10 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 检索文件
 
 **get** `/files/{file_id}`
 
-返回有关特定文件的信息。
+Returns information about a specific file.
 
 ### 路径参数
 
@@ -22,7 +22,7 @@
 
   - `bytes: number`
 
-    文件的大小（以字节为单位）。
+    文件大小，以字节为单位。
 
   - `created_at: number`
 
@@ -40,7 +40,7 @@
 
   - `purpose: "assistants" or "assistants_output" or "batch" or 5 more`
 
-    文件的预期用途。支持的取值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
+    文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
 
     - `"assistants"`
 
@@ -60,7 +60,7 @@
 
   - `status: "uploaded" or "processed" or "error"`
 
-    已弃用。文件的当前状态，可以是 `uploaded`, `processed`，或 `error`.
+    已弃用。文件的当前状态，可以为 `uploaded`, `processed`，或 `error`.
 
     - `"uploaded"`
 
@@ -114,8 +114,9 @@ curl https://api.openai.com/v1/files/file-abc123 \
   "object": "file",
   "bytes": 120000,
   "created_at": 1677610602,
-  "expires_at": 1677614202,
+  "expires_at": 1680202602,
   "filename": "mydata.jsonl",
-  "purpose": "fine-tune"
+  "purpose": "fine-tune",
+  "status": "processed"
 }
 ```

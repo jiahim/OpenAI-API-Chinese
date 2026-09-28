@@ -1,14 +1,14 @@
 # Containers
 
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取 Markdown 版本的文档页面。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-## 创建容器
+## Create container
 
 **post** `/containers`
 
 创建容器
 
-### Body 参数
+### 请求体参数
 
 - `name: string`
 
@@ -16,11 +16,11 @@
 
 - `expires_after: optional object { anchor, minutes }`
 
-  相对“anchor”时间的容器过期时间（以秒为单位）。
+  相对于“锚点”时间的容器过期时间（以秒为单位）。
 
   - `anchor: "last_active_at"`
 
-    过期时间的时间锚点。目前仅支持 'last_active_at'。
+    过期时间的锚点。目前仅支持 'last_active_at'。
 
     - `"last_active_at"`
 
@@ -68,7 +68,7 @@
 
     - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-      针对白名单域的可选域范围密钥。
+      针对已加入允许列表的域的可选域作用域密钥。
 
       - `domain: string`
 
@@ -76,15 +76,15 @@
 
       - `name: string`
 
-        为该域注入的密钥名称。
+        要为该域注入的密钥名称。
 
       - `value: string`
 
-        为该域注入的密钥值。
+        要为该域注入的密钥值。
 
 - `skills: optional array of SkillReference or InlineSkill`
 
-  通过 ID 引用或内联数据的可选技能列表。
+  通过 ID 或内联数据引用的可选技能列表。
 
   - `SkillReference object { skill_id, type, version }`
 
@@ -100,7 +100,7 @@
 
     - `version: optional string`
 
-      可选的技能版本。使用正整数或 'latest'。省略以使用默认值。
+      可选的技能版本。使用正整数或 'latest'。省略则使用默认值。
 
   - `InlineSkill object { description, name, source, type }`
 
@@ -118,7 +118,7 @@
 
       - `data: string`
 
-        经过 Base64 编码的技能 zip 包。
+        Base64 编码的技能 zip 包。
 
       - `media_type: "application/zip"`
 
@@ -134,11 +134,11 @@
 
     - `type: "inline"`
 
-      为本次请求定义一个内联技能。
+      为此请求定义一个内联技能。
 
       - `"inline"`
 
-### Returns
+### 返回值
 
 - `id: string`
 
@@ -146,7 +146,7 @@
 
 - `created_at: number`
 
-  容器创建时的 Unix 时间戳（以秒为单位）。
+  容器创建时的 Unix 时间戳（秒）。
 
 - `name: string`
 
@@ -158,13 +158,13 @@
 
 - `status: string`
 
-  容器的状态（例如 active、deleted）。
+  容器的状态（例如，active、deleted）。
 
 - `expires_after: optional object { anchor, minutes }`
 
-  容器在此时间周期后将过期。
-  anchor 是过期时间的参考点。
-  minutes 是 anchor 之后到容器过期之前的分钟数。
+  容器将在此时间 period 之后过期。
+  锚点是过期时间的参考点。
+  minutes 是指锚点之后到容器过期为止的分钟数。
 
   - `anchor: optional "last_active_at"`
 
@@ -174,15 +174,15 @@
 
   - `minutes: optional number`
 
-    anchor 之后到容器过期之前的分钟数。
+    锚点之后到容器过期为止的分钟数。
 
 - `last_active_at: optional number`
 
-  容器最近一次活跃时的 Unix 时间戳（以秒为单位）。
+  容器最后活跃时的 Unix 时间戳（秒）。
 
 - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
-  为容器配置的内存限制。
+  为容器配置的内存上限。
 
   - `"1g"`
 
@@ -206,7 +206,7 @@
 
   - `allowed_domains: optional array of string`
 
-    当 network_policy.mode 为 `type` 时允许的出站域名 `allowlist`.
+    当 network policy mode 为 `type` 为 `allowlist`.
 
 ### 示例
 
@@ -219,7 +219,7 @@ curl https://api.openai.com/v1/containers \
         }'
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -270,7 +270,7 @@ curl https://api.openai.com/v1/containers \
       }'
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -296,11 +296,21 @@ curl https://api.openai.com/v1/containers \
 
 **delete** `/containers/{container_id}`
 
-Delete Container
+删除容器
 
 ### 路径参数
 
 - `container_id: string`
+
+### 返回值
+
+- `id: string`
+
+- `deleted: boolean`
+
+- `object: "container.deleted"`
+
+  - `"container.deleted"`
 
 ### 示例
 
@@ -310,6 +320,16 @@ curl https://api.openai.com/v1/containers/$CONTAINER_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
+#### Response
+
+```json
+{
+  "id": "id",
+  "deleted": true,
+  "object": "container.deleted"
+}
+```
+
 ### 示例
 
 ```http
@@ -317,7 +337,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -337,11 +357,11 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 - `after: optional string`
 
-  用于分页的光标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的后续调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页查询的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的下一次调用可以包含 after=obj_foo，以便获取列表的下一页。
 
 - `limit: optional number`
 
-  要返回的对象数量上限。限制范围为 1 到 100，默认为 20。
+  返回对象的数量上限。Limit 范围在 1 到 100 之间，默认为 20。
 
 - `name: optional string`
 
@@ -355,7 +375,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
   - `"desc"`
 
-### Returns
+### 返回值
 
 - `data: array of object { id, created_at, name, 6 more }`
 
@@ -367,7 +387,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
   - `created_at: number`
 
-    容器创建时的 Unix 时间戳（以秒为单位）。
+    容器创建时的 Unix 时间戳（秒）。
 
   - `name: string`
 
@@ -379,13 +399,13 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
   - `status: string`
 
-    容器的状态（例如 active、deleted）。
+    容器的状态（例如，active、deleted）。
 
   - `expires_after: optional object { anchor, minutes }`
 
-    容器在此时间周期后将过期。
-    anchor 是过期时间的参考点。
-    minutes 是 anchor 之后到容器过期之前的分钟数。
+    容器将在此时间 period 之后过期。
+    锚点是过期时间的参考点。
+    minutes 是指锚点之后到容器过期为止的分钟数。
 
     - `anchor: optional "last_active_at"`
 
@@ -395,15 +415,15 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
     - `minutes: optional number`
 
-      anchor 之后到容器过期之前的分钟数。
+      锚点之后到容器过期为止的分钟数。
 
   - `last_active_at: optional number`
 
-    容器最近一次活跃时的 Unix 时间戳（以秒为单位）。
+    容器最后活跃时的 Unix 时间戳（秒）。
 
   - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
-    为容器配置的内存限制。
+    为容器配置的内存上限。
 
     - `"1g"`
 
@@ -427,7 +447,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
     - `allowed_domains: optional array of string`
 
-      当 network_policy.mode 为 `type` 时允许的出站域名 `allowlist`.
+      当 network policy mode 为 `type` 为 `allowlist`.
 
 - `first_id: string`
 
@@ -443,7 +463,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 - `object: "list"`
 
-  返回的对象类型，必须为 'list'。
+  返回对象的类型，必须为 'list'。
 
   - `"list"`
 
@@ -454,7 +474,7 @@ curl https://api.openai.com/v1/containers \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -493,7 +513,7 @@ curl https://api.openai.com/v1/containers \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -529,7 +549,7 @@ Retrieve Container
 
 - `container_id: string`
 
-### Returns
+### 返回值
 
 - `id: string`
 
@@ -537,7 +557,7 @@ Retrieve Container
 
 - `created_at: number`
 
-  容器创建时的 Unix 时间戳（以秒为单位）。
+  容器创建时的 Unix 时间戳（秒）。
 
 - `name: string`
 
@@ -549,13 +569,13 @@ Retrieve Container
 
 - `status: string`
 
-  容器的状态（例如 active、deleted）。
+  容器的状态（例如，active、deleted）。
 
 - `expires_after: optional object { anchor, minutes }`
 
-  容器在此时间周期后将过期。
-  anchor 是过期时间的参考点。
-  minutes 是 anchor 之后到容器过期之前的分钟数。
+  容器将在此时间 period 之后过期。
+  锚点是过期时间的参考点。
+  minutes 是指锚点之后到容器过期为止的分钟数。
 
   - `anchor: optional "last_active_at"`
 
@@ -565,15 +585,15 @@ Retrieve Container
 
   - `minutes: optional number`
 
-    anchor 之后到容器过期之前的分钟数。
+    锚点之后到容器过期为止的分钟数。
 
 - `last_active_at: optional number`
 
-  容器最近一次活跃时的 Unix 时间戳（以秒为单位）。
+  容器最后活跃时的 Unix 时间戳（秒）。
 
 - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
-  为容器配置的内存限制。
+  为容器配置的内存上限。
 
   - `"1g"`
 
@@ -597,7 +617,7 @@ Retrieve Container
 
   - `allowed_domains: optional array of string`
 
-    当 network_policy.mode 为 `type` 时允许的出站域名 `allowlist`.
+    当 network policy mode 为 `type` 为 `allowlist`.
 
 ### 示例
 
@@ -606,7 +626,7 @@ curl https://api.openai.com/v1/containers/$CONTAINER_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -637,7 +657,7 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -667,7 +687,7 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
   - `created_at: number`
 
-    容器创建时的 Unix 时间戳（以秒为单位）。
+    容器创建时的 Unix 时间戳（秒）。
 
   - `name: string`
 
@@ -679,13 +699,13 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
   - `status: string`
 
-    容器的状态（例如 active、deleted）。
+    容器的状态（例如，active、deleted）。
 
   - `expires_after: optional object { anchor, minutes }`
 
-    容器在此时间周期后将过期。
-    anchor 是过期时间的参考点。
-    minutes 是 anchor 之后到容器过期之前的分钟数。
+    容器将在此时间 period 之后过期。
+    锚点是过期时间的参考点。
+    minutes 是指锚点之后到容器过期为止的分钟数。
 
     - `anchor: optional "last_active_at"`
 
@@ -695,15 +715,15 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
     - `minutes: optional number`
 
-      anchor 之后到容器过期之前的分钟数。
+      锚点之后到容器过期为止的分钟数。
 
   - `last_active_at: optional number`
 
-    容器最近一次活跃时的 Unix 时间戳（以秒为单位）。
+    容器最后活跃时的 Unix 时间戳（秒）。
 
   - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
-    为容器配置的内存限制。
+    为容器配置的内存上限。
 
     - `"1g"`
 
@@ -727,7 +747,19 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
     - `allowed_domains: optional array of string`
 
-      当 network_policy.mode 为 `type` 时允许的出站域名 `allowlist`.
+      当 network policy mode 为 `type` 为 `allowlist`.
+
+### Container Delete Response
+
+- `ContainerDeleteResponse object { id, deleted, object }`
+
+  - `id: string`
+
+  - `deleted: boolean`
+
+  - `object: "container.deleted"`
+
+    - `"container.deleted"`
 
 ### Container List Response
 
@@ -739,7 +771,7 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
   - `created_at: number`
 
-    容器创建时的 Unix 时间戳（以秒为单位）。
+    容器创建时的 Unix 时间戳（秒）。
 
   - `name: string`
 
@@ -751,13 +783,13 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
   - `status: string`
 
-    容器的状态（例如 active、deleted）。
+    容器的状态（例如，active、deleted）。
 
   - `expires_after: optional object { anchor, minutes }`
 
-    容器在此时间周期后将过期。
-    anchor 是过期时间的参考点。
-    minutes 是 anchor 之后到容器过期之前的分钟数。
+    容器将在此时间 period 之后过期。
+    锚点是过期时间的参考点。
+    minutes 是指锚点之后到容器过期为止的分钟数。
 
     - `anchor: optional "last_active_at"`
 
@@ -767,15 +799,15 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
     - `minutes: optional number`
 
-      anchor 之后到容器过期之前的分钟数。
+      锚点之后到容器过期为止的分钟数。
 
   - `last_active_at: optional number`
 
-    容器最近一次活跃时的 Unix 时间戳（以秒为单位）。
+    容器最后活跃时的 Unix 时间戳（秒）。
 
   - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
-    为容器配置的内存限制。
+    为容器配置的内存上限。
 
     - `"1g"`
 
@@ -799,7 +831,7 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
     - `allowed_domains: optional array of string`
 
-      当 network_policy.mode 为 `type` 时允许的出站域名 `allowlist`.
+      当 network policy mode 为 `type` 为 `allowlist`.
 
 ### Container Retrieve Response
 
@@ -811,7 +843,7 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
   - `created_at: number`
 
-    容器创建时的 Unix 时间戳（以秒为单位）。
+    容器创建时的 Unix 时间戳（秒）。
 
   - `name: string`
 
@@ -823,13 +855,13 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
   - `status: string`
 
-    容器的状态（例如 active、deleted）。
+    容器的状态（例如，active、deleted）。
 
   - `expires_after: optional object { anchor, minutes }`
 
-    容器在此时间周期后将过期。
-    anchor 是过期时间的参考点。
-    minutes 是 anchor 之后到容器过期之前的分钟数。
+    容器将在此时间 period 之后过期。
+    锚点是过期时间的参考点。
+    minutes 是指锚点之后到容器过期为止的分钟数。
 
     - `anchor: optional "last_active_at"`
 
@@ -839,15 +871,15 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
     - `minutes: optional number`
 
-      anchor 之后到容器过期之前的分钟数。
+      锚点之后到容器过期为止的分钟数。
 
   - `last_active_at: optional number`
 
-    容器最近一次活跃时的 Unix 时间戳（以秒为单位）。
+    容器最后活跃时的 Unix 时间戳（秒）。
 
   - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
-    为容器配置的内存限制。
+    为容器配置的内存上限。
 
     - `"1g"`
 
@@ -871,7 +903,7 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
     - `allowed_domains: optional array of string`
 
-      当 network_policy.mode 为 `type` 时允许的出站域名 `allowlist`.
+      当 network policy mode 为 `type` 为 `allowlist`.
 
 # Files
 
@@ -879,15 +911,15 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
 **post** `/containers/{container_id}/files`
 
-创建容器文件
+创建 Container 文件
 
-你可以发送包含原始文件内容的 multipart/form-data 请求，或发送包含文件 ID 的 JSON 请求。
+你可以发送包含原始文件内容的 multipart/form-data 请求，也可以发送带有文件 ID 的 JSON 请求。
 
 ### 路径参数
 
 - `container_id: string`
 
-### Body 参数
+### 请求体参数
 
 - `file: optional string`
 
@@ -897,7 +929,7 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
   要创建的文件的名称。
 
-### Returns
+### 返回值
 
 - `id: string`
 
@@ -905,7 +937,7 @@ curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a0
 
 - `bytes: number`
 
-  文件的大小（以字节为单位）。
+  文件的字节大小。
 
 - `container_id: string`
 
@@ -936,7 +968,7 @@ curl https://api.openai.com/v1/containers/$CONTAINER_ID/files \
     -d '{}'
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -958,7 +990,7 @@ curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e0
   -F file="@example.txt"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -976,13 +1008,23 @@ curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e0
 
 **delete** `/containers/{container_id}/files/{file_id}`
 
-删除容器文件
+Delete Container File
 
 ### 路径参数
 
 - `container_id: string`
 
 - `file_id: string`
+
+### 返回值
+
+- `id: string`
+
+- `deleted: boolean`
+
+- `object: "container.file.deleted"`
+
+  - `"container.file.deleted"`
 
 ### 示例
 
@@ -992,6 +1034,16 @@ curl https://api.openai.com/v1/containers/$CONTAINER_ID/files/$FILE_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
+#### Response
+
+```json
+{
+  "id": "id",
+  "deleted": true,
+  "object": "container.file.deleted"
+}
+```
+
 ### 示例
 
 ```http
@@ -999,7 +1051,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -1013,7 +1065,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 **get** `/containers/{container_id}/files`
 
-列出 Container 文件
+列出容器文件
 
 ### 路径参数
 
@@ -1023,11 +1075,11 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 - `after: optional string`
 
-  用于分页的光标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的后续调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页查询的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的下一次调用可以包含 after=obj_foo，以便获取列表的下一页。
 
 - `limit: optional number`
 
-  要返回的对象数量上限。限制范围为 1 到 100，默认为 20。
+  返回对象的数量上限。Limit 范围在 1 到 100 之间，默认为 20。
 
 - `order: optional "asc" or "desc"`
 
@@ -1037,11 +1089,11 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
   - `"desc"`
 
-### Returns
+### 返回值
 
 - `data: array of object { id, bytes, container_id, 4 more }`
 
-  容器文件列表。
+  容器文件的列表。
 
   - `id: string`
 
@@ -1049,7 +1101,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
   - `bytes: number`
 
-    文件的大小（以字节为单位）。
+    文件的字节大小。
 
   - `container_id: string`
 
@@ -1077,7 +1129,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 - `has_more: boolean`
 
-  是否有更多文件可用。
+  是否还有更多文件可用。
 
 - `last_id: string`
 
@@ -1085,7 +1137,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 - `object: "list"`
 
-  返回的对象类型，必须为 'list'。
+  返回对象的类型，必须为 'list'。
 
   - `"list"`
 
@@ -1096,7 +1148,7 @@ curl https://api.openai.com/v1/containers/$CONTAINER_ID/files \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -1125,7 +1177,7 @@ curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e0
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -1151,7 +1203,7 @@ curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e0
 
 **get** `/containers/{container_id}/files/{file_id}`
 
-检索容器文件
+Retrieve Container File
 
 ### 路径参数
 
@@ -1159,7 +1211,7 @@ curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e0
 
 - `file_id: string`
 
-### Returns
+### 返回值
 
 - `id: string`
 
@@ -1167,7 +1219,7 @@ curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e0
 
 - `bytes: number`
 
-  文件的大小（以字节为单位）。
+  文件的字节大小。
 
 - `container_id: string`
 
@@ -1196,7 +1248,7 @@ curl https://api.openai.com/v1/containers/$CONTAINER_ID/files/$FILE_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -1217,7 +1269,7 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -1233,7 +1285,7 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
 ## Domain Types
 
-### 文件创建响应
+### File Create Response
 
 - `FileCreateResponse object { id, bytes, container_id, 4 more }`
 
@@ -1243,7 +1295,7 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
   - `bytes: number`
 
-    文件的大小（以字节为单位）。
+    文件的字节大小。
 
   - `container_id: string`
 
@@ -1265,7 +1317,19 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
     文件的来源（例如， `user`, `assistant`).
 
-### 文件列表响应
+### File Delete Response
+
+- `FileDeleteResponse object { id, deleted, object }`
+
+  - `id: string`
+
+  - `deleted: boolean`
+
+  - `object: "container.file.deleted"`
+
+    - `"container.file.deleted"`
+
+### File List Response
 
 - `FileListResponse object { id, bytes, container_id, 4 more }`
 
@@ -1275,7 +1339,7 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
   - `bytes: number`
 
-    文件的大小（以字节为单位）。
+    文件的字节大小。
 
   - `container_id: string`
 
@@ -1297,7 +1361,7 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
     文件的来源（例如， `user`, `assistant`).
 
-### 文件检索响应
+### File Retrieve Response
 
 - `FileRetrieveResponse object { id, bytes, container_id, 4 more }`
 
@@ -1307,7 +1371,7 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
   - `bytes: number`
 
-    文件的大小（以字节为单位）。
+    文件的字节大小。
 
   - `container_id: string`
 
@@ -1329,13 +1393,13 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
     文件的来源（例如， `user`, `assistant`).
 
-# 内容
+# Content
 
-## 检索容器文件内容
+## Retrieve container file content
 
 **get** `/containers/{container_id}/files/{file_id}/content`
 
-Retrieve Container File Content
+检索容器文件内容
 
 ### 路径参数
 
@@ -1357,7 +1421,7 @@ curl https://api.openai.com/v1/containers/container_123/files/cfile_456/content 
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 <binary content of the file>
