@@ -46,7 +46,7 @@ name: openai-codex-session
 agent: codex-agentapi
 config:
   agent:
-    model: gpt-5.6-sol
+    model: gpt-6.1-sol
     instructions: Work from the files in /workspace.
   environment:
     type: self_hosted

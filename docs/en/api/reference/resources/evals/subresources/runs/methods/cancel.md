@@ -2078,7 +2078,7 @@ Cancel an ongoing evaluation run.
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
-- `error: EvalAPIError`
+- `error: EvalAPIError or null`
 
   An object representing an error response from the Eval API.
 
@@ -2103,11 +2103,11 @@ Cancel an ongoing evaluation run.
   Keys are strings with a maximum length of 64 characters. Values are strings
   with a maximum length of 512 characters.
 
-- `model: string`
+- `model: string or null`
 
   The model that is evaluated, if applicable.
 
-- `name: string`
+- `name: string or null`
 
   The name of the evaluation run.
 
@@ -2117,7 +2117,7 @@ Cancel an ongoing evaluation run.
 
   - `"eval.run"`
 
-- `per_model_usage: array of object { cached_tokens, completion_tokens, invocation_count, 3 more }`
+- `per_model_usage: array of object { cached_tokens, completion_tokens, invocation_count, 3 more }  or null`
 
   Usage statistics for each model during the evaluation run.
 
@@ -2145,7 +2145,7 @@ Cancel an ongoing evaluation run.
 
     The total number of tokens used.
 
-- `per_testing_criteria_results: array of object { failed, passed, testing_criteria }`
+- `per_testing_criteria_results: array of object { failed, passed, testing_criteria }  or null`
 
   Results per testing criteria applied during the evaluation run.
 

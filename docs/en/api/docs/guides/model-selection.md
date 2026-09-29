@@ -12,6 +12,17 @@ model version. Check the [models available in ChatGPT](https://developers.openai
 
 Choose your work and task and get a recommendation.
 
+### When to consider GPT-6.1 Sol
+
+Consider GPT-6.1 Sol for complex projects where cost matters, such as
+creating a board presentation from financial results or building a website
+from a product brief. Compare it with Astra on the same task to assess the
+tradeoff between quality and cost.
+
+See the [API model page](https://developers.openai.com/api/docs/models/gpt-6.1-sol) for specifications
+and API pricing, or [Codex and ChatGPT Work availability](https://developers.openai.com/codex/models#gpt-6.1-sol)
+for access through your ChatGPT plan.
+
 ## How to think about models and reasoning effort
 
 
@@ -29,35 +40,27 @@ Choose your work and task and get a recommendation.
 
    Fine-grained edits, well-scoped problem-solving, and simple data extraction.
 
-2. **Luna · Medium**
-
-   Creating from clear briefs and making coordinated updates to existing work.
-
-3. **Luna · Extra high**
+2. **Luna · Extra high**
 
    Finding current context across multiple apps, prioritizing work, and solving problems with clear constraints.
 
-4. **Sol · Low**
+3. **GPT-6.1 Sol · Medium**
 
-   Focused writing and editing, fact-checking, and straightforward work in apps.
+   Complex technical work and coordinated deliverables you expect to revise.
 
-5. **Sol · Medium**
+4. **GPT-6.1 Sol · Extra high**
 
-   Everyday coding, research, and workflows that need judgment and completeness.
+   Polished deliverables, connected visual systems, and decisions built from conflicting evidence.
 
-6. **Sol · Extra high**
-
-   Deeper analysis, thorough verification, and careful review of documents, data, and code.
-
-7. **Astra · Low**
+5. **Astra · Low**
 
    Concise writing and content adaptation that preserve facts and nuance.
 
-8. **Astra · Medium**
+6. **Astra · Medium**
 
    Ambitious projects that need broad context, reliable interactions, and complete results.
 
-9. **Astra · Extra high**
+7. **Astra · Extra high**
 
    Demanding analysis and complex deliverables with exacting requirements.
 

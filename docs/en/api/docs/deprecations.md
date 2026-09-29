@@ -36,11 +36,11 @@ Upcoming deprecations are listed below, with the most recent announcements at th
 
 ### 2026-09-11: GPT-5.4-Cyber
 
-The `gpt-5.4-cyber` model is deprecated and will be removed from the API on October 1, 2026. Migrate to `gpt-5.6-cyber` before the shutdown date.
+The `gpt-5.4-cyber` model is deprecated and will be removed from the API on October 1, 2026. Migrate to the most capable cyber model available to you before the shutdown date.
 
-| Shutdown date | Model / system  | Recommended replacement |
-| ------------- | --------------- | ----------------------- |
-| Oct 1, 2026   | `gpt-5.4-cyber` | `gpt-5.6-cyber`         |
+| Shutdown date | Model / system  | Recommended replacement                        |
+| ------------- | --------------- | ---------------------------------------------- |
+| Oct 1, 2026   | `gpt-5.4-cyber` | The most capable cyber model available to you. |
 
 ### 2026-08-26: Transcription models
 
@@ -142,6 +142,19 @@ Inference on fine-tuned models will continue to be available until the base mode
 | July 2, 2026 | Creating fine-tuning jobs is no longer available to organizations that have not run inference on a fine-tuned model in the past 60 days.                                                         |
 | Jan 6, 2027  | Active existing customers will no longer be able to create new fine-tuning jobs on this date. Inference on fine-tuned models will be disabled only when the underlying base model is deprecated. |
 
+## Past deprecations
+
+Past deprecations are listed below, with the most recent announcements at the top.
+
+### 2026-05-08: `gpt-5.2-chat-latest` and `gpt-5.3-chat-latest` model snapshots
+
+On May 8th, 2026, we notified developers using `gpt-5.2-chat-latest` and `gpt-5.3-chat-latest` model snapshots of their deprecation and removal from the API.
+
+| Shutdown date | Model / system        | Recommended replacement |
+| ------------- | --------------------- | ----------------------- |
+| Aug 10, 2026  | `gpt-5.2-chat-latest` | `gpt-5.6-sol`           |
+| Aug 10, 2026  | `gpt-5.3-chat-latest` | `gpt-5.6-sol`           |
+
 ### 2026-04-22: Legacy GPT model snapshots
 
 To improve reliability and make it easier for developers to choose the right models, we are deprecating a set of older OpenAI models. Access to these models will be shut down on the dates below.
@@ -171,43 +184,6 @@ We are also removing fine-tuned versions as below:
 | October 23, 2026 | `ft-babbage-002`             | `gpt-5.6-terra`                    |
 | October 23, 2026 | `ft-davinci-002`             | `gpt-5.6-terra`                    |
 
-### 2026-03-24: Sora 2 video generation models and Videos API
-
-On March 24th, 2026, we notified developers using the Videos API and Sora 2 video generation model aliases and snapshots of their deprecation and removal from the API on September 24, 2026.
-
-| Shutdown date | Model / system          | Recommended replacement |
-| ------------- | ----------------------- | ----------------------- |
-| 2026-09-24    | Videos API              | ---                     |
-| 2026-09-24    | `sora-2`                | ---                     |
-| 2026-09-24    | `sora-2-pro`            | ---                     |
-| 2026-09-24    | `sora-2-2025-10-06`     | ---                     |
-| 2026-09-24    | `sora-2-2025-12-08`     | ---                     |
-| 2026-09-24    | `sora-2-pro-2025-10-06` | ---                     |
-
-### 2025-09-26: Legacy GPT model snapshots
-
-To improve reliability and make it easier for developers to choose the right models, we are deprecating a set of older OpenAI models with declining usage over the next six to twelve months. Access to these models will be shut down on the dates below.
-
-| Shutdown date | Model / system           | Recommended replacement |
-| ------------- | ------------------------ | ----------------------- |
-| 2026-09-28    | `gpt-3.5-turbo-instruct` | `gpt-5.6-terra`         |
-| 2026-09-28    | `babbage-002`            | `gpt-5.6-terra`         |
-| 2026-09-28    | `davinci-002`            | `gpt-5.6-terra`         |
-| 2026-09-28    | `gpt-3.5-turbo-1106`     | `gpt-5.6-terra`         |
-
-## Past deprecations
-
-Past deprecations are listed below, with the most recent announcements at the top.
-
-### 2026-05-08: `gpt-5.2-chat-latest` and `gpt-5.3-chat-latest` model snapshots
-
-On May 8th, 2026, we notified developers using `gpt-5.2-chat-latest` and `gpt-5.3-chat-latest` model snapshots of their deprecation and removal from the API.
-
-| Shutdown date | Model / system        | Recommended replacement |
-| ------------- | --------------------- | ----------------------- |
-| Aug 10, 2026  | `gpt-5.2-chat-latest` | `gpt-5.6-sol`           |
-| Aug 10, 2026  | `gpt-5.3-chat-latest` | `gpt-5.6-sol`           |
-
 ### 2026-04-22: Legacy GPT model snapshots (July 2026 shutdown)
 
 On April 22, 2026, we announced the deprecation of the following older OpenAI models. Access to these models was shut down on July 23, 2026.
@@ -228,6 +204,19 @@ On April 22, 2026, we announced the deprecation of the following older OpenAI mo
 | July 23, 2026 | `o3-deep-research-2025-06-26` \| `o3-deep-research`           | `gpt-5.6-sol`           |
 | July 23, 2026 | `o4-mini-deep-research-2025-06-26` \| `o4-mini-deep-research` | `gpt-5.6-sol`           |
 | July 23, 2026 | `gpt-5.2-codex`                                               | `gpt-5.6-sol`           |
+
+### 2026-03-24: Sora 2 video generation models and Videos API
+
+On March 24th, 2026, we notified developers using the Videos API and Sora 2 video generation model aliases and snapshots of their deprecation and removal from the API on September 24, 2026.
+
+| Shutdown date | Model / system          | Recommended replacement |
+| ------------- | ----------------------- | ----------------------- |
+| 2026-09-24    | Videos API              | ---                     |
+| 2026-09-24    | `sora-2`                | ---                     |
+| 2026-09-24    | `sora-2-pro`            | ---                     |
+| 2026-09-24    | `sora-2-2025-10-06`     | ---                     |
+| 2026-09-24    | `sora-2-2025-12-08`     | ---                     |
+| 2026-09-24    | `sora-2-pro-2025-10-06` | ---                     |
 
 ### 2025-11-18: `chatgpt-4o-latest` snapshot
 
@@ -253,6 +242,17 @@ On November 14th, 2025, we notified developers using DALL·E model snapshots of 
 | ------------- | -------------- | --------------------------------------------------- |
 | 2026-05-12    | `dall-e-2`     | `gpt-image-2`, `gpt-image-1`, or `gpt-image-1-mini` |
 | 2026-05-12    | `dall-e-3`     | `gpt-image-2`, `gpt-image-1`, or `gpt-image-1-mini` |
+
+### 2025-09-26: Legacy GPT model snapshots
+
+To improve reliability and make it easier for developers to choose the right models, we are deprecating a set of older OpenAI models with declining usage over the next six to twelve months. Access to these models will be shut down on the dates below.
+
+| Shutdown date | Model / system           | Recommended replacement |
+| ------------- | ------------------------ | ----------------------- |
+| 2026-09-28    | `gpt-3.5-turbo-instruct` | `gpt-5.6-terra`         |
+| 2026-09-28    | `babbage-002`            | `gpt-5.6-terra`         |
+| 2026-09-28    | `davinci-002`            | `gpt-5.6-terra`         |
+| 2026-09-28    | `gpt-3.5-turbo-1106`     | `gpt-5.6-terra`         |
 
 ### 2025-09-26: Legacy GPT model snapshots (March 2026 shutdown)
 

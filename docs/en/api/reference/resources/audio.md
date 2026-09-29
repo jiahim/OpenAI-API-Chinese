@@ -155,7 +155,7 @@ curl https://api.openai.com/v1/audio/speech \
     -d '{
           "input": "input",
           "model": "tts-1",
-          "voice": "alloy"
+          "voice": "ash"
         }'
 ```
 

@@ -6,7 +6,7 @@
 
 Multi-agent lets a model spin up and coordinate subagents in parallel, synthesizing their work to provide a final response. This is especially effective for applications with complex tasks that benefit from parallel work delegation, such as codebase exploration, documentation, and implementation.
 
-Multi-agent is available as a beta feature with all GPT-5.6 models. Check the model page before enabling Multi-agent in your application.
+Multi-agent is available as a beta feature with [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol) and all GPT-5.6 models. Check the model page before enabling Multi-agent in your application.
 
 ## When to use Multi-agent
 
@@ -53,7 +53,7 @@ const client = new OpenAI();
 
 async function reviewPullRequest(diff) {
   const response = await client.beta.responses.create({
-    model: "gpt-5.6-sol",
+    model: "gpt-6.1-sol",
     input:
       "Review the pull-request diff below with three agents: one for " +
       "correctness, one for security, and one for missing tests. " +
@@ -89,7 +89,7 @@ client = OpenAI()
 
 def review_pull_request(diff: str) -> str:
     response = client.beta.responses.create(
-        model="gpt-5.6-sol",
+        model="gpt-6.1-sol",
         input=(
             "Review the pull-request diff below with three agents: one for "
             "correctness, one for security, and one for missing tests. "
@@ -243,7 +243,7 @@ while (true) {
   const itemAgents = new Map();
 
   const stream = await client.beta.responses.create({
-    model: "gpt-5.6-sol",
+    model: "gpt-6.1-sol",
     // Beta output items can be replayed as input on the next request.
     input: history,
     tools,
@@ -362,7 +362,7 @@ while True:
     item_agents: dict[int, str] = {}
 
     stream = client.beta.responses.create(
-        model="gpt-5.6-sol",
+        model="gpt-6.1-sol",
         input=history,
         tools=tools,
         store=False,
@@ -522,7 +522,7 @@ async function runMultiAgent(ws) {
   while (pendingInput.length > 0) {
     ws.send({
       type: "response.create",
-      model: "gpt-5.6-sol",
+      model: "gpt-6.1-sol",
       store: true,
       multi_agent: {
         enabled: true,
@@ -653,7 +653,7 @@ def run_multi_agent(connection):
     while pending_input:
         request = {
             "type": "response.create",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6.1-sol",
             "store": True,
             "multi_agent": {"enabled": True},
             "tools": tools,

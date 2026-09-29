@@ -4,7 +4,7 @@
 
 [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP) is an open protocol that's becoming the industry standard for extending AI models with additional tools and knowledge. Remote MCP servers can be used to connect models over the Internet to new data sources and capabilities.
 
-In this guide, we'll cover how to build a remote MCP server that reads data from a private data source (a [vector store](https://developers.openai.com/api/docs/guides/retrieval)) and makes it available through a plugin in ChatGPT and Codex, through ChatGPT deep research and company knowledge, and [through the API](https://developers.openai.com/api/docs/guides/deep-research).
+In this guide, we'll cover how to build a remote MCP server that reads data from a private data source (a [vector store](https://developers.openai.com/api/docs/guides/retrieval)) and makes it available through a plugin in ChatGPT and Codex, through ChatGPT deep research and company knowledge, and [through the API](https://developers.openai.com/api/docs/guides/tools-connectors-mcp).
 
 **Note**: To build a plugin with an MCP server, start with the plugin docs: [Quickstart](https://developers.openai.com/plugins/quickstart), [Build your MCP server](https://developers.openai.com/plugins/build/mcp-server), [Connect and test your plugin](https://developers.openai.com/plugins/deploy/connect-chatgpt), and [Authentication](https://developers.openai.com/plugins/build/auth). If your MCP server doesn't need UI, you can expose tools without UI resources.
 
@@ -398,7 +398,7 @@ if __name__ == "__main__":
 
 On Replit, configure `OPENAI_API_KEY` with your OpenAI API key in the "Secrets" UI. In the sample, replace `vs_123` with the ID of the vector store you created earlier for search.
 
-On free Replit accounts, server URLs are active for as long as the editor is active, so while you are testing, you'll need to keep the browser tab open. You can get a URL for your MCP server by clicking on the chainlink icon:
+On free Replit accounts, server URLs are active for as long as the editor is active, so while you are testing, you'll need to keep the browser tab open. Select the link icon to get a URL for your MCP server:
 
 ![replit configuration](https://cdn.openai.com/API/docs/images/replit.png)
 
@@ -414,7 +414,7 @@ https://777xxx.janeway.replit.dev/sse/
 
 ## Test and connect your MCP server
 
-You can test your MCP server with a deep research model [in the prompts dashboard](https://platform.openai.com/chat). Create a new prompt, or edit an existing one, and add a new MCP tool to the prompt configuration. This compatibility example exposes only read-only `search` and `fetch` tools, so its API request skips approval for those tools. Keep approval enabled for tools that can modify data or take other consequential actions.
+You can test your MCP server with `gpt-6.1-sol` [in the prompts dashboard](https://platform.openai.com/chat). Create a new prompt, or edit an existing one, and add a new MCP tool to the prompt configuration. This compatibility example exposes only read-only `search` and `fetch` tools, so its API request skips approval for those tools. Keep approval enabled for tools that can modify data or take other consequential actions.
 
 If you are testing this server as part of a plugin, follow [Connect and test your plugin](https://developers.openai.com/plugins/deploy/connect-chatgpt).
 
@@ -431,7 +431,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-  "model": "gpt-5.6-sol",
+  "model": "gpt-6.1-sol",
   "input": [
     {
       "role": "developer",

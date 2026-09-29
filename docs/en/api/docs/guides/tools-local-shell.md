@@ -2,9 +2,12 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-The local shell tool is outdated. For new use cases, use the
-  [`shell`](https://developers.openai.com/api/docs/guides/tools-shell) tool with GPT-5.1 instead. [Learn
-  more](https://developers.openai.com/api/docs/guides/tools-shell).
+The [deprecation
+  notice](https://developers.openai.com/api/docs/deprecations#2025-11-17-codex-mini-latest-model-snapshot)
+  lists February 12, 2026 as the end-of-support date for `codex-mini-latest` and
+  the legacy local shell tool. For new use cases, use the current
+  [`shell`](https://developers.openai.com/api/docs/guides/tools-shell) tool. Its request and execution
+  workflow differs from the legacy examples retained below.
 
 Local shell is a tool that allows agents to run shell commands locally on a machine you or the user provides. It's designed to work with [Codex CLI](https://github.com/openai/codex) and [`codex-mini-latest`](https://developers.openai.com/api/docs/models/codex-mini-latest). Commands are executed inside your own runtime, so **you are fully in control of which commands actually run**. The API only returns instructions; it does not execute them on OpenAI infrastructure.
 

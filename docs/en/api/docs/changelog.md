@@ -8,6 +8,30 @@ Upcoming deprecations are listed on the [deprecations page](/api/docs/deprecatio
 
 ## September, 2026
 
+### Sep 29
+
+Feature
+
+Added [computer use](https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use) to the Agents API. Agents can complete tasks in an OpenAI-hosted browser, with website access approvals and sign-in handled by your application.
+
+### Sep 29
+
+Feature · Model: gpt-6.1-sol · API: v1/responses · API: v1/chat/completions
+
+Released [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol) (`gpt-6.1-sol`) for complex coding and professional work at a lower cost than GPT-6 Astra.
+
+Standard pricing per 1M tokens for prompts with up to 272K input tokens is $2 input, $0.10 cached input, $2.50 cache write, and $10 output.
+
+GPT-6.1 Sol also supports [Multi-agent](https://developers.openai.com/api/docs/guides/responses-multi-agent) in beta. Let the model delegate work to subagents in a Responses API request.
+
+Use the Responses API for tool calling. See [GPT-6 model guidance](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra#gpt-61-sol) for reasoning settings and [pricing](https://developers.openai.com/api/docs/pricing) for available processing tiers.
+
+### Sep 29
+
+Feature · Model: gpt-6-astra · API: v1/responses
+
+Added [Ultrafast mode](https://developers.openai.com/api/docs/guides/ultrafast-mode) for GPT-6 Astra in the Responses API. Use `gpt-6-astra` with `service_tier: "ultrafast"` to reduce the time between generated output tokens. It is available to API customers, subject to rate limits, with global processing and US data residency. EU and other regional inference residency aren't supported. See [Ultrafast pricing](https://developers.openai.com/api/docs/pricing?latest-pricing=ultrafast).
+
 ### Sep 25
 
 Fix · Model: gpt-6-sol · Model: gpt-6-luna

@@ -416,14 +416,9 @@ For **Azure**, enter **Tenant ID**, **Subscription ID**, **Resource group**, **S
 
 ![Connect external storage dialog for Azure showing the project and Azure storage configuration fields.](https://developers.openai.com/images/platform/guides/private-safety-processing/setup-08-platform-azure-connect.webp)
 
-For **GCP**, select the OpenAI project whose ID you used in the audience, attribute condition, and bucket grant. Enter these four fields:
+For **GCP**, enter **Bucket name**, **Workload identity project number**, **Workload identity pool ID**, and **Workload identity provider ID**. Scroll down in the modal to complete all fields.
 
-| Field                                | Value from your Google Cloud setup                                                           |
-| ------------------------------------ | -------------------------------------------------------------------------------------------- |
-| **Bucket name**                      | `<CUSTOMER_GCP_BUCKET_NAME>`                                                                 |
-| **Workload identity project number** | `<CUSTOMER_GCP_PROJECT_NUMBER>`: the numeric Google Cloud project number containing the pool |
-| **Workload identity pool ID**        | `<CUSTOMER_GCP_POOL_ID>`                                                                     |
-| **Workload identity provider ID**    | `<CUSTOMER_GCP_PROVIDER_ID>`                                                                 |
+![Connect external storage dialog for GCP showing project selection, Bucket name, Workload identity project number, and Workload identity pool ID.](https://developers.openai.com/images/platform/guides/private-safety-processing/setup-10-platform-gcp-connect.webp)
 
 ##### 3. Connect and validate
 

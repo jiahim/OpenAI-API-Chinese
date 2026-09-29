@@ -536,6 +536,20 @@ Schema name: `SessionEventAgentSessionCreated`
 
           - `"web_search"`
 
+      - `ComputerUse object { include_screenshots, type }`
+
+        Browser use in an OpenAI-hosted session.
+
+        - `include_screenshots: boolean`
+
+          Whether computer tool outputs include screenshots.
+
+        - `type: "computer_use"`
+
+          The type of the object. Always `computer_use`.
+
+          - `"computer_use"`
+
   - `created_at: number`
 
     The Unix timestamp, in seconds, when the session was created.
@@ -554,7 +568,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
         - `"none"`
 
-    - `OpenAIHosted object { id, capability_directories, files, 5 more }`
+    - `OpenAIHosted object { id, capability_directories, desktop, 7 more }`
 
       An environment hosted by OpenAI.
 
@@ -565,6 +579,14 @@ Schema name: `SessionEventAgentSessionCreated`
       - `capability_directories: array of string`
 
         Directories that contain capabilities exposed to the agent.
+
+      - `desktop: object { enabled }`
+
+        The effective desktop configuration.
+
+        - `enabled: boolean`
+
+          Whether the environment provisions a desktop and browser proxy.
 
       - `files: array of HostedEnvironmentFile`
 
@@ -636,7 +658,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
           - `"restricted"`
 
-            Allows access only to configured domains.
+            Applies the configured domain restrictions.
 
         - `allowed_domains: array of string`
 
@@ -730,6 +752,16 @@ Schema name: `SessionEventAgentSessionCreated`
 
         - `"openai_hosted"`
 
+      - `container_size: optional "small" or "medium" or "large" or null`
+
+        The effective CPU and memory tier, or null when unknown or outside the public tiers.
+
+        - `"small"`
+
+        - `"medium"`
+
+        - `"large"`
+
     - `SelfHosted object { id, capability_directories, remote_url, 2 more }`
 
       An environment hosted by the application.
@@ -774,9 +806,103 @@ Schema name: `SessionEventAgentSessionCreated`
 
     - `"agent.session"`
 
-  - `required_actions: array of object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
+  - `required_actions: array of object { request, request_id, turn_id, type }  or object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
 
     Actions that must be completed before the session can continue.
+
+    - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
+
+      Respond to a computer-use request.
+
+      - `request: object { credential_origin, fields, options, 2 more }  or object { origin, reason, type }`
+
+        The information needed to render the request.
+
+        - `BrowserAuthentication object { credential_origin, fields, options, 2 more }`
+
+          A registered form awaiting the application's response.
+
+          - `credential_origin: string or null`
+
+            The registered form or frame origin where values will be entered.
+
+          - `fields: array of object { id, label, required, type }`
+
+            Controls to render. All submitted values are sensitive.
+
+            - `id: string`
+
+              The field ID to submit as field_id in a fields entry.
+
+            - `label: string`
+
+              The label to display beside the control.
+
+            - `required: boolean`
+
+              Whether this control requires a nonempty value.
+
+            - `type: string`
+
+              The rendering type, such as email, password, or text.
+
+          - `options: array of object { id, field_ids, label }`
+
+            Sign-in methods. Empty for a plain form.
+
+            - `id: string`
+
+              The option ID to submit as selected_option.
+
+            - `field_ids: array of string`
+
+              IDs from the registered fields that this method accepts.
+
+            - `label: string`
+
+              The method label to display.
+
+          - `reason: string or null`
+
+            Why the agent needs the user to sign in.
+
+          - `type: "browser_authentication"`
+
+            The type of the object. Always `browser_authentication`.
+
+            - `"browser_authentication"`
+
+        - `BrowserOriginAccess object { origin, reason, type }`
+
+          A browser origin awaiting the application's approval decision.
+
+          - `origin: string`
+
+            The origin the browser needs permission to access.
+
+          - `reason: string or null`
+
+            The browser's explanation for this request, or null when unavailable.
+
+          - `type: "browser_origin_access"`
+
+            The type of the object. Always `browser_origin_access`.
+
+            - `"browser_origin_access"`
+
+      - `request_id: string`
+
+        The registered request ID to echo when responding.
+
+      - `turn_id: string`
+
+        The turn that requested approval.
+
+      - `type: "computer_use_approval_request"`
+
+        The type of the object. Always `computer_use_approval_request`.
+
+        - `"computer_use_approval_request"`
 
     - `FunctionCall object { arguments, call_id, name, 2 more }`
 
@@ -897,11 +1023,31 @@ Schema name: `SessionEventAgentSessionCreated`
     "status": "idle",
     "required_actions": [
       {
-        "type": "function_call",
+        "type": "computer_use_approval_request",
         "turn_id": "turn_id",
-        "call_id": "call_id",
-        "name": "name",
-        "arguments": {}
+        "request_id": "request_id",
+        "request": {
+          "type": "browser_authentication",
+          "reason": "reason",
+          "credential_origin": "credential_origin",
+          "fields": [
+            {
+              "id": "id",
+              "label": "label",
+              "type": "type",
+              "required": true
+            }
+          ],
+          "options": [
+            {
+              "id": "id",
+              "label": "label",
+              "field_ids": [
+                "string"
+              ]
+            }
+          ]
+        }
       }
     ],
     "error": "error",
@@ -2628,6 +2774,166 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       - `"mcp_call"`
 
+  - `ComputerUseCall object { id, output, status, 3 more }`
+
+    One execution of the platform-provided computer-use capability.
+
+    - `id: string`
+
+      The ID of the activity item.
+
+    - `output: object { image_url, type }  or null`
+
+      The last screenshot emitted by the model. Null when screenshot inclusion is disabled or the call emitted no screenshot.
+
+      - `image_url: string`
+
+        The complete JPEG image as a base64 data URL.
+
+      - `type: "computer_screenshot"`
+
+        The content type. Always `computer_screenshot`.
+
+        - `"computer_screenshot"`
+
+    - `status: AgentFunctionCallStatus`
+
+      The execution status of the activity.
+
+    - `title: string or null`
+
+      A model-generated description of the activity, when available.
+
+    - `turn_id: string`
+
+      The ID of the turn that contains this item.
+
+    - `type: "computer_use_call"`
+
+      The item type. Always `computer_use_call`.
+
+      - `"computer_use_call"`
+
+  - `ComputerUseApprovalRequest object { id, request, request_id, 2 more }`
+
+    A credential-free history record of the emitted login request.
+
+    - `id: string`
+
+      The stable history item ID.
+
+    - `request: object { credential_origin, fields, options, 2 more }`
+
+      A registered form awaiting the application's response.
+
+      - `credential_origin: string or null`
+
+        The registered form or frame origin where values will be entered.
+
+      - `fields: array of object { id, label, required, type }`
+
+        Controls to render. All submitted values are sensitive.
+
+        - `id: string`
+
+          The field ID to submit as field_id in a fields entry.
+
+        - `label: string`
+
+          The label to display beside the control.
+
+        - `required: boolean`
+
+          Whether this control requires a nonempty value.
+
+        - `type: string`
+
+          The rendering type, such as email, password, or text.
+
+      - `options: array of object { id, field_ids, label }`
+
+        Sign-in methods. Empty for a plain form.
+
+        - `id: string`
+
+          The option ID to submit as selected_option.
+
+        - `field_ids: array of string`
+
+          IDs from the registered fields that this method accepts.
+
+        - `label: string`
+
+          The method label to display.
+
+      - `reason: string or null`
+
+        Why the agent needs the user to sign in.
+
+      - `type: "browser_authentication"`
+
+        The type of the object. Always `browser_authentication`.
+
+        - `"browser_authentication"`
+
+    - `request_id: string`
+
+    - `turn_id: string`
+
+    - `type: "computer_use_approval_request"`
+
+      The item type. Always computer_use_approval_request.
+
+      - `"computer_use_approval_request"`
+
+  - `ComputerUseApprovalRequestResult object { id, request_id, response, 2 more }`
+
+    A credential-free record of an admitted response, not proof of completion.
+
+    - `id: string`
+
+      The stable history item ID.
+
+    - `request_id: string`
+
+      The registered request answered by this item.
+
+    - `response: object { action, selected_option, type }  or object { action, type }`
+
+      The admitted response, without submitted credential values.
+
+      - `Submit object { action, selected_option, type }`
+
+        - `action: "submit"`
+
+          - `"submit"`
+
+        - `selected_option: string or null`
+
+          The chosen sign-in method, or null when no options were offered.
+
+        - `type: "browser_authentication"`
+
+          - `"browser_authentication"`
+
+      - `Cancel object { action, type }`
+
+        - `action: "cancel"`
+
+          - `"cancel"`
+
+        - `type: "browser_authentication"`
+
+          - `"browser_authentication"`
+
+    - `turn_id: string`
+
+      The ID of the turn that contains this item.
+
+    - `type: "computer_use_approval_request_result"`
+
+      - `"computer_use_approval_request_result"`
+
   - `AgentWebSearchCallItem object { id, action, status, 2 more }`
 
     A web search call produced by the agent.
@@ -3350,6 +3656,20 @@ Schema name: `SessionEventAgentSessionIdle`
 
           - `"web_search"`
 
+      - `ComputerUse object { include_screenshots, type }`
+
+        Browser use in an OpenAI-hosted session.
+
+        - `include_screenshots: boolean`
+
+          Whether computer tool outputs include screenshots.
+
+        - `type: "computer_use"`
+
+          The type of the object. Always `computer_use`.
+
+          - `"computer_use"`
+
   - `created_at: number`
 
     The Unix timestamp, in seconds, when the session was created.
@@ -3368,7 +3688,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
         - `"none"`
 
-    - `OpenAIHosted object { id, capability_directories, files, 5 more }`
+    - `OpenAIHosted object { id, capability_directories, desktop, 7 more }`
 
       An environment hosted by OpenAI.
 
@@ -3379,6 +3699,14 @@ Schema name: `SessionEventAgentSessionIdle`
       - `capability_directories: array of string`
 
         Directories that contain capabilities exposed to the agent.
+
+      - `desktop: object { enabled }`
+
+        The effective desktop configuration.
+
+        - `enabled: boolean`
+
+          Whether the environment provisions a desktop and browser proxy.
 
       - `files: array of HostedEnvironmentFile`
 
@@ -3450,7 +3778,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
           - `"restricted"`
 
-            Allows access only to configured domains.
+            Applies the configured domain restrictions.
 
         - `allowed_domains: array of string`
 
@@ -3544,6 +3872,16 @@ Schema name: `SessionEventAgentSessionIdle`
 
         - `"openai_hosted"`
 
+      - `container_size: optional "small" or "medium" or "large" or null`
+
+        The effective CPU and memory tier, or null when unknown or outside the public tiers.
+
+        - `"small"`
+
+        - `"medium"`
+
+        - `"large"`
+
     - `SelfHosted object { id, capability_directories, remote_url, 2 more }`
 
       An environment hosted by the application.
@@ -3588,9 +3926,103 @@ Schema name: `SessionEventAgentSessionIdle`
 
     - `"agent.session"`
 
-  - `required_actions: array of object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
+  - `required_actions: array of object { request, request_id, turn_id, type }  or object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
 
     Actions that must be completed before the session can continue.
+
+    - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
+
+      Respond to a computer-use request.
+
+      - `request: object { credential_origin, fields, options, 2 more }  or object { origin, reason, type }`
+
+        The information needed to render the request.
+
+        - `BrowserAuthentication object { credential_origin, fields, options, 2 more }`
+
+          A registered form awaiting the application's response.
+
+          - `credential_origin: string or null`
+
+            The registered form or frame origin where values will be entered.
+
+          - `fields: array of object { id, label, required, type }`
+
+            Controls to render. All submitted values are sensitive.
+
+            - `id: string`
+
+              The field ID to submit as field_id in a fields entry.
+
+            - `label: string`
+
+              The label to display beside the control.
+
+            - `required: boolean`
+
+              Whether this control requires a nonempty value.
+
+            - `type: string`
+
+              The rendering type, such as email, password, or text.
+
+          - `options: array of object { id, field_ids, label }`
+
+            Sign-in methods. Empty for a plain form.
+
+            - `id: string`
+
+              The option ID to submit as selected_option.
+
+            - `field_ids: array of string`
+
+              IDs from the registered fields that this method accepts.
+
+            - `label: string`
+
+              The method label to display.
+
+          - `reason: string or null`
+
+            Why the agent needs the user to sign in.
+
+          - `type: "browser_authentication"`
+
+            The type of the object. Always `browser_authentication`.
+
+            - `"browser_authentication"`
+
+        - `BrowserOriginAccess object { origin, reason, type }`
+
+          A browser origin awaiting the application's approval decision.
+
+          - `origin: string`
+
+            The origin the browser needs permission to access.
+
+          - `reason: string or null`
+
+            The browser's explanation for this request, or null when unavailable.
+
+          - `type: "browser_origin_access"`
+
+            The type of the object. Always `browser_origin_access`.
+
+            - `"browser_origin_access"`
+
+      - `request_id: string`
+
+        The registered request ID to echo when responding.
+
+      - `turn_id: string`
+
+        The turn that requested approval.
+
+      - `type: "computer_use_approval_request"`
+
+        The type of the object. Always `computer_use_approval_request`.
+
+        - `"computer_use_approval_request"`
 
     - `FunctionCall object { arguments, call_id, name, 2 more }`
 
@@ -3711,11 +4143,31 @@ Schema name: `SessionEventAgentSessionIdle`
     "status": "idle",
     "required_actions": [
       {
-        "type": "function_call",
+        "type": "computer_use_approval_request",
         "turn_id": "turn_id",
-        "call_id": "call_id",
-        "name": "name",
-        "arguments": {}
+        "request_id": "request_id",
+        "request": {
+          "type": "browser_authentication",
+          "reason": "reason",
+          "credential_origin": "credential_origin",
+          "fields": [
+            {
+              "id": "id",
+              "label": "label",
+              "type": "type",
+              "required": true
+            }
+          ],
+          "options": [
+            {
+              "id": "id",
+              "label": "label",
+              "field_ids": [
+                "string"
+              ]
+            }
+          ]
+        }
       }
     ],
     "error": "error",
@@ -4102,6 +4554,20 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           - `"web_search"`
 
+      - `ComputerUse object { include_screenshots, type }`
+
+        Browser use in an OpenAI-hosted session.
+
+        - `include_screenshots: boolean`
+
+          Whether computer tool outputs include screenshots.
+
+        - `type: "computer_use"`
+
+          The type of the object. Always `computer_use`.
+
+          - `"computer_use"`
+
   - `created_at: number`
 
     The Unix timestamp, in seconds, when the session was created.
@@ -4120,7 +4586,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         - `"none"`
 
-    - `OpenAIHosted object { id, capability_directories, files, 5 more }`
+    - `OpenAIHosted object { id, capability_directories, desktop, 7 more }`
 
       An environment hosted by OpenAI.
 
@@ -4131,6 +4597,14 @@ Schema name: `SessionEventAgentSessionInProgress`
       - `capability_directories: array of string`
 
         Directories that contain capabilities exposed to the agent.
+
+      - `desktop: object { enabled }`
+
+        The effective desktop configuration.
+
+        - `enabled: boolean`
+
+          Whether the environment provisions a desktop and browser proxy.
 
       - `files: array of HostedEnvironmentFile`
 
@@ -4202,7 +4676,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           - `"restricted"`
 
-            Allows access only to configured domains.
+            Applies the configured domain restrictions.
 
         - `allowed_domains: array of string`
 
@@ -4296,6 +4770,16 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         - `"openai_hosted"`
 
+      - `container_size: optional "small" or "medium" or "large" or null`
+
+        The effective CPU and memory tier, or null when unknown or outside the public tiers.
+
+        - `"small"`
+
+        - `"medium"`
+
+        - `"large"`
+
     - `SelfHosted object { id, capability_directories, remote_url, 2 more }`
 
       An environment hosted by the application.
@@ -4340,9 +4824,103 @@ Schema name: `SessionEventAgentSessionInProgress`
 
     - `"agent.session"`
 
-  - `required_actions: array of object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
+  - `required_actions: array of object { request, request_id, turn_id, type }  or object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
 
     Actions that must be completed before the session can continue.
+
+    - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
+
+      Respond to a computer-use request.
+
+      - `request: object { credential_origin, fields, options, 2 more }  or object { origin, reason, type }`
+
+        The information needed to render the request.
+
+        - `BrowserAuthentication object { credential_origin, fields, options, 2 more }`
+
+          A registered form awaiting the application's response.
+
+          - `credential_origin: string or null`
+
+            The registered form or frame origin where values will be entered.
+
+          - `fields: array of object { id, label, required, type }`
+
+            Controls to render. All submitted values are sensitive.
+
+            - `id: string`
+
+              The field ID to submit as field_id in a fields entry.
+
+            - `label: string`
+
+              The label to display beside the control.
+
+            - `required: boolean`
+
+              Whether this control requires a nonempty value.
+
+            - `type: string`
+
+              The rendering type, such as email, password, or text.
+
+          - `options: array of object { id, field_ids, label }`
+
+            Sign-in methods. Empty for a plain form.
+
+            - `id: string`
+
+              The option ID to submit as selected_option.
+
+            - `field_ids: array of string`
+
+              IDs from the registered fields that this method accepts.
+
+            - `label: string`
+
+              The method label to display.
+
+          - `reason: string or null`
+
+            Why the agent needs the user to sign in.
+
+          - `type: "browser_authentication"`
+
+            The type of the object. Always `browser_authentication`.
+
+            - `"browser_authentication"`
+
+        - `BrowserOriginAccess object { origin, reason, type }`
+
+          A browser origin awaiting the application's approval decision.
+
+          - `origin: string`
+
+            The origin the browser needs permission to access.
+
+          - `reason: string or null`
+
+            The browser's explanation for this request, or null when unavailable.
+
+          - `type: "browser_origin_access"`
+
+            The type of the object. Always `browser_origin_access`.
+
+            - `"browser_origin_access"`
+
+      - `request_id: string`
+
+        The registered request ID to echo when responding.
+
+      - `turn_id: string`
+
+        The turn that requested approval.
+
+      - `type: "computer_use_approval_request"`
+
+        The type of the object. Always `computer_use_approval_request`.
+
+        - `"computer_use_approval_request"`
 
     - `FunctionCall object { arguments, call_id, name, 2 more }`
 
@@ -4463,11 +5041,31 @@ Schema name: `SessionEventAgentSessionInProgress`
     "status": "idle",
     "required_actions": [
       {
-        "type": "function_call",
+        "type": "computer_use_approval_request",
         "turn_id": "turn_id",
-        "call_id": "call_id",
-        "name": "name",
-        "arguments": {}
+        "request_id": "request_id",
+        "request": {
+          "type": "browser_authentication",
+          "reason": "reason",
+          "credential_origin": "credential_origin",
+          "fields": [
+            {
+              "id": "id",
+              "label": "label",
+              "type": "type",
+              "required": true
+            }
+          ],
+          "options": [
+            {
+              "id": "id",
+              "label": "label",
+              "field_ids": [
+                "string"
+              ]
+            }
+          ]
+        }
       }
     ],
     "error": "error",
@@ -4854,6 +5452,20 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           - `"web_search"`
 
+      - `ComputerUse object { include_screenshots, type }`
+
+        Browser use in an OpenAI-hosted session.
+
+        - `include_screenshots: boolean`
+
+          Whether computer tool outputs include screenshots.
+
+        - `type: "computer_use"`
+
+          The type of the object. Always `computer_use`.
+
+          - `"computer_use"`
+
   - `created_at: number`
 
     The Unix timestamp, in seconds, when the session was created.
@@ -4872,7 +5484,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         - `"none"`
 
-    - `OpenAIHosted object { id, capability_directories, files, 5 more }`
+    - `OpenAIHosted object { id, capability_directories, desktop, 7 more }`
 
       An environment hosted by OpenAI.
 
@@ -4883,6 +5495,14 @@ Schema name: `SessionEventAgentSessionRequiresAction`
       - `capability_directories: array of string`
 
         Directories that contain capabilities exposed to the agent.
+
+      - `desktop: object { enabled }`
+
+        The effective desktop configuration.
+
+        - `enabled: boolean`
+
+          Whether the environment provisions a desktop and browser proxy.
 
       - `files: array of HostedEnvironmentFile`
 
@@ -4954,7 +5574,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           - `"restricted"`
 
-            Allows access only to configured domains.
+            Applies the configured domain restrictions.
 
         - `allowed_domains: array of string`
 
@@ -5048,6 +5668,16 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         - `"openai_hosted"`
 
+      - `container_size: optional "small" or "medium" or "large" or null`
+
+        The effective CPU and memory tier, or null when unknown or outside the public tiers.
+
+        - `"small"`
+
+        - `"medium"`
+
+        - `"large"`
+
     - `SelfHosted object { id, capability_directories, remote_url, 2 more }`
 
       An environment hosted by the application.
@@ -5092,9 +5722,103 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
     - `"agent.session"`
 
-  - `required_actions: array of object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
+  - `required_actions: array of object { request, request_id, turn_id, type }  or object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
 
     Actions that must be completed before the session can continue.
+
+    - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
+
+      Respond to a computer-use request.
+
+      - `request: object { credential_origin, fields, options, 2 more }  or object { origin, reason, type }`
+
+        The information needed to render the request.
+
+        - `BrowserAuthentication object { credential_origin, fields, options, 2 more }`
+
+          A registered form awaiting the application's response.
+
+          - `credential_origin: string or null`
+
+            The registered form or frame origin where values will be entered.
+
+          - `fields: array of object { id, label, required, type }`
+
+            Controls to render. All submitted values are sensitive.
+
+            - `id: string`
+
+              The field ID to submit as field_id in a fields entry.
+
+            - `label: string`
+
+              The label to display beside the control.
+
+            - `required: boolean`
+
+              Whether this control requires a nonempty value.
+
+            - `type: string`
+
+              The rendering type, such as email, password, or text.
+
+          - `options: array of object { id, field_ids, label }`
+
+            Sign-in methods. Empty for a plain form.
+
+            - `id: string`
+
+              The option ID to submit as selected_option.
+
+            - `field_ids: array of string`
+
+              IDs from the registered fields that this method accepts.
+
+            - `label: string`
+
+              The method label to display.
+
+          - `reason: string or null`
+
+            Why the agent needs the user to sign in.
+
+          - `type: "browser_authentication"`
+
+            The type of the object. Always `browser_authentication`.
+
+            - `"browser_authentication"`
+
+        - `BrowserOriginAccess object { origin, reason, type }`
+
+          A browser origin awaiting the application's approval decision.
+
+          - `origin: string`
+
+            The origin the browser needs permission to access.
+
+          - `reason: string or null`
+
+            The browser's explanation for this request, or null when unavailable.
+
+          - `type: "browser_origin_access"`
+
+            The type of the object. Always `browser_origin_access`.
+
+            - `"browser_origin_access"`
+
+      - `request_id: string`
+
+        The registered request ID to echo when responding.
+
+      - `turn_id: string`
+
+        The turn that requested approval.
+
+      - `type: "computer_use_approval_request"`
+
+        The type of the object. Always `computer_use_approval_request`.
+
+        - `"computer_use_approval_request"`
 
     - `FunctionCall object { arguments, call_id, name, 2 more }`
 
@@ -5215,11 +5939,31 @@ Schema name: `SessionEventAgentSessionRequiresAction`
     "status": "idle",
     "required_actions": [
       {
-        "type": "function_call",
+        "type": "computer_use_approval_request",
         "turn_id": "turn_id",
-        "call_id": "call_id",
-        "name": "name",
-        "arguments": {}
+        "request_id": "request_id",
+        "request": {
+          "type": "browser_authentication",
+          "reason": "reason",
+          "credential_origin": "credential_origin",
+          "fields": [
+            {
+              "id": "id",
+              "label": "label",
+              "type": "type",
+              "required": true
+            }
+          ],
+          "options": [
+            {
+              "id": "id",
+              "label": "label",
+              "field_ids": [
+                "string"
+              ]
+            }
+          ]
+        }
       }
     ],
     "error": "error",
@@ -5606,6 +6350,20 @@ Schema name: `SessionEventAgentSessionFailed`
 
           - `"web_search"`
 
+      - `ComputerUse object { include_screenshots, type }`
+
+        Browser use in an OpenAI-hosted session.
+
+        - `include_screenshots: boolean`
+
+          Whether computer tool outputs include screenshots.
+
+        - `type: "computer_use"`
+
+          The type of the object. Always `computer_use`.
+
+          - `"computer_use"`
+
   - `created_at: number`
 
     The Unix timestamp, in seconds, when the session was created.
@@ -5624,7 +6382,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
         - `"none"`
 
-    - `OpenAIHosted object { id, capability_directories, files, 5 more }`
+    - `OpenAIHosted object { id, capability_directories, desktop, 7 more }`
 
       An environment hosted by OpenAI.
 
@@ -5635,6 +6393,14 @@ Schema name: `SessionEventAgentSessionFailed`
       - `capability_directories: array of string`
 
         Directories that contain capabilities exposed to the agent.
+
+      - `desktop: object { enabled }`
+
+        The effective desktop configuration.
+
+        - `enabled: boolean`
+
+          Whether the environment provisions a desktop and browser proxy.
 
       - `files: array of HostedEnvironmentFile`
 
@@ -5706,7 +6472,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
           - `"restricted"`
 
-            Allows access only to configured domains.
+            Applies the configured domain restrictions.
 
         - `allowed_domains: array of string`
 
@@ -5800,6 +6566,16 @@ Schema name: `SessionEventAgentSessionFailed`
 
         - `"openai_hosted"`
 
+      - `container_size: optional "small" or "medium" or "large" or null`
+
+        The effective CPU and memory tier, or null when unknown or outside the public tiers.
+
+        - `"small"`
+
+        - `"medium"`
+
+        - `"large"`
+
     - `SelfHosted object { id, capability_directories, remote_url, 2 more }`
 
       An environment hosted by the application.
@@ -5844,9 +6620,103 @@ Schema name: `SessionEventAgentSessionFailed`
 
     - `"agent.session"`
 
-  - `required_actions: array of object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
+  - `required_actions: array of object { request, request_id, turn_id, type }  or object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
 
     Actions that must be completed before the session can continue.
+
+    - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
+
+      Respond to a computer-use request.
+
+      - `request: object { credential_origin, fields, options, 2 more }  or object { origin, reason, type }`
+
+        The information needed to render the request.
+
+        - `BrowserAuthentication object { credential_origin, fields, options, 2 more }`
+
+          A registered form awaiting the application's response.
+
+          - `credential_origin: string or null`
+
+            The registered form or frame origin where values will be entered.
+
+          - `fields: array of object { id, label, required, type }`
+
+            Controls to render. All submitted values are sensitive.
+
+            - `id: string`
+
+              The field ID to submit as field_id in a fields entry.
+
+            - `label: string`
+
+              The label to display beside the control.
+
+            - `required: boolean`
+
+              Whether this control requires a nonempty value.
+
+            - `type: string`
+
+              The rendering type, such as email, password, or text.
+
+          - `options: array of object { id, field_ids, label }`
+
+            Sign-in methods. Empty for a plain form.
+
+            - `id: string`
+
+              The option ID to submit as selected_option.
+
+            - `field_ids: array of string`
+
+              IDs from the registered fields that this method accepts.
+
+            - `label: string`
+
+              The method label to display.
+
+          - `reason: string or null`
+
+            Why the agent needs the user to sign in.
+
+          - `type: "browser_authentication"`
+
+            The type of the object. Always `browser_authentication`.
+
+            - `"browser_authentication"`
+
+        - `BrowserOriginAccess object { origin, reason, type }`
+
+          A browser origin awaiting the application's approval decision.
+
+          - `origin: string`
+
+            The origin the browser needs permission to access.
+
+          - `reason: string or null`
+
+            The browser's explanation for this request, or null when unavailable.
+
+          - `type: "browser_origin_access"`
+
+            The type of the object. Always `browser_origin_access`.
+
+            - `"browser_origin_access"`
+
+      - `request_id: string`
+
+        The registered request ID to echo when responding.
+
+      - `turn_id: string`
+
+        The turn that requested approval.
+
+      - `type: "computer_use_approval_request"`
+
+        The type of the object. Always `computer_use_approval_request`.
+
+        - `"computer_use_approval_request"`
 
     - `FunctionCall object { arguments, call_id, name, 2 more }`
 
@@ -5967,11 +6837,31 @@ Schema name: `SessionEventAgentSessionFailed`
     "status": "idle",
     "required_actions": [
       {
-        "type": "function_call",
+        "type": "computer_use_approval_request",
         "turn_id": "turn_id",
-        "call_id": "call_id",
-        "name": "name",
-        "arguments": {}
+        "request_id": "request_id",
+        "request": {
+          "type": "browser_authentication",
+          "reason": "reason",
+          "credential_origin": "credential_origin",
+          "fields": [
+            {
+              "id": "id",
+              "label": "label",
+              "type": "type",
+              "required": true
+            }
+          ],
+          "options": [
+            {
+              "id": "id",
+              "label": "label",
+              "field_ids": [
+                "string"
+              ]
+            }
+          ]
+        }
       }
     ],
     "error": "error",
@@ -7012,6 +7902,118 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
       The item type. Always `mcp_call`.
 
       - `"mcp_call"`
+
+  - `ComputerUseCall object { id, output, status, 3 more }`
+
+    One execution of the platform-provided computer-use capability.
+
+    - `id: string`
+
+      The ID of the activity item.
+
+    - `output: object { image_url, type }  or null`
+
+      The last screenshot emitted by the model. Null when screenshot inclusion is disabled or the call emitted no screenshot.
+
+      - `image_url: string`
+
+        The complete JPEG image as a base64 data URL.
+
+      - `type: "computer_screenshot"`
+
+        The content type. Always `computer_screenshot`.
+
+        - `"computer_screenshot"`
+
+    - `status: AgentFunctionCallStatus`
+
+      The execution status of the activity.
+
+    - `title: string or null`
+
+      A model-generated description of the activity, when available.
+
+    - `turn_id: string`
+
+      The ID of the turn that contains this item.
+
+    - `type: "computer_use_call"`
+
+      The item type. Always `computer_use_call`.
+
+      - `"computer_use_call"`
+
+  - `ComputerUseApprovalRequest object { id, request, request_id, 2 more }`
+
+    A credential-free history record of the emitted login request.
+
+    - `id: string`
+
+      The stable history item ID.
+
+    - `request: object { credential_origin, fields, options, 2 more }`
+
+      A registered form awaiting the application's response.
+
+      - `credential_origin: string or null`
+
+        The registered form or frame origin where values will be entered.
+
+      - `fields: array of object { id, label, required, type }`
+
+        Controls to render. All submitted values are sensitive.
+
+        - `id: string`
+
+          The field ID to submit as field_id in a fields entry.
+
+        - `label: string`
+
+          The label to display beside the control.
+
+        - `required: boolean`
+
+          Whether this control requires a nonempty value.
+
+        - `type: string`
+
+          The rendering type, such as email, password, or text.
+
+      - `options: array of object { id, field_ids, label }`
+
+        Sign-in methods. Empty for a plain form.
+
+        - `id: string`
+
+          The option ID to submit as selected_option.
+
+        - `field_ids: array of string`
+
+          IDs from the registered fields that this method accepts.
+
+        - `label: string`
+
+          The method label to display.
+
+      - `reason: string or null`
+
+        Why the agent needs the user to sign in.
+
+      - `type: "browser_authentication"`
+
+        The type of the object. Always `browser_authentication`.
+
+        - `"browser_authentication"`
+
+    - `request_id: string`
+
+    - `turn_id: string`
+
+    - `type: "computer_use_approval_request"`
+
+      The item type. Always computer_use_approval_request.
+
+      - `"computer_use_approval_request"`
 
   - `AgentWebSearchCallItem object { id, action, status, 2 more }`
 

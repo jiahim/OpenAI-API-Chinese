@@ -164,6 +164,10 @@ Store the `session_id` with your application's conversation state. Use it to sen
 
 See [Configuring Agents](https://developers.openai.com/api/docs/guides/agents-api/configuration) for reusable agent settings and [Architecture](https://developers.openai.com/api/docs/guides/agents-api/architecture) for environment choices. Sessions with `environment.type: "none"` require initial input. The [Create session reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/create) lists the request fields.
 
+### Input size
+
+The agent runtime accepts requests up to 4 MiB (4,194,304 bytes). Keep the combined size of your `input` and output schema (`agent.text.format.schema`) below this limit. Leave some space for metadata added by the Agents API. Files uploaded to the environment follow separate [file limits](https://developers.openai.com/api/docs/guides/agents-api/environments/files#file-limits).
+
 
 
 
@@ -185,6 +189,8 @@ See [Events and Items](https://developers.openai.com/api/docs/guides/agents-api/
 ## Continue or steer the work
 
 Send another `agent.session.input.message` to the same session. If the agent is working, the message steers the active turn. If the session is idle, it starts a new turn with the existing conversation.
+
+The same [input size limit](#input-size) applies to follow-up messages.
 
 Saved-agent updates apply only to new sessions. To change the model, reasoning effort, or service tier for later turns in this session, [update its settings](https://developers.openai.com/api/docs/guides/agents-api/configuration#update-settings-for-an-existing-session).
 

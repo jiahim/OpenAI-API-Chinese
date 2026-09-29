@@ -11,7 +11,7 @@ Thank you to everyone who used the Assistants API. We appreciate everything you 
 
 Use this guide to migrate your integration to the [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses).
 
-Responses are simpler—send input items and get output items back. With the Responses API, you also get better performance and new features like [deep research](https://developers.openai.com/api/docs/guides/deep-research), [MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp), and [computer use](https://developers.openai.com/api/docs/guides/tools-computer-use). This change also lets you manage conversations instead of passing back `previous_response_id`.
+Responses are simpler—send input items and get output items back. With the Responses API, you also get better performance and new features like [web search](https://developers.openai.com/api/docs/guides/tools-web-search), [MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp), and [computer use](https://developers.openai.com/api/docs/guides/tools-computer-use). This change also lets you manage conversations instead of passing back `previous_response_id`.
 
 ### What's changed?
 

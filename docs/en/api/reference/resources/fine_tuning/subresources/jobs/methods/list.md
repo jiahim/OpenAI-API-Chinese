@@ -611,9 +611,7 @@ List your organization's fine-tuning jobs
 
             A formula to calculate the output based on grader results.
 
-          - `graders: StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more`
-
-            A StringCheckGrader object that performs a string comparison between input and reference using a specified operation.
+          - `graders: map[StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more]`
 
             - `StringCheckGrader object { input, name, operation, 2 more }`
 

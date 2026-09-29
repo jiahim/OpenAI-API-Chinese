@@ -174,11 +174,11 @@ Returns a completion object, or a sequence of completion objects if the request 
 
     The list of completion choices the model generated for the input prompt.
 
-    - `finish_reason: "stop" or "length" or "content_filter"`
+    - `finish_reason: "stop" or "length" or "content_filter" or null`
 
       The reason the model stopped generating tokens. This will be `stop` if the model hit a natural stop point or a provided stop sequence,
       `length` if the maximum number of tokens specified in the request was reached,
-      or `content_filter` if content was omitted due to a flag from our content filters.
+      or `content_filter` if content was omitted due to a flag from our content filters. The value is null while a streamed completion is unfinished.
 
       - `"stop"`
 
@@ -451,11 +451,11 @@ curl https://api.openai.com/v1/completions \
 
     The list of completion choices the model generated for the input prompt.
 
-    - `finish_reason: "stop" or "length" or "content_filter"`
+    - `finish_reason: "stop" or "length" or "content_filter" or null`
 
       The reason the model stopped generating tokens. This will be `stop` if the model hit a natural stop point or a provided stop sequence,
       `length` if the maximum number of tokens specified in the request was reached,
-      or `content_filter` if content was omitted due to a flag from our content filters.
+      or `content_filter` if content was omitted due to a flag from our content filters. The value is null while a streamed completion is unfinished.
 
       - `"stop"`
 
@@ -570,11 +570,11 @@ curl https://api.openai.com/v1/completions \
 
 - `CompletionChoice object { finish_reason, index, logprobs, text }`
 
-  - `finish_reason: "stop" or "length" or "content_filter"`
+  - `finish_reason: "stop" or "length" or "content_filter" or null`
 
     The reason the model stopped generating tokens. This will be `stop` if the model hit a natural stop point or a provided stop sequence,
     `length` if the maximum number of tokens specified in the request was reached,
-    or `content_filter` if content was omitted due to a flag from our content filters.
+    or `content_filter` if content was omitted due to a flag from our content filters. The value is null while a streamed completion is unfinished.
 
     - `"stop"`
 

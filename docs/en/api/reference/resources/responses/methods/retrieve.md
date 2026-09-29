@@ -4523,9 +4523,11 @@ Retrieves a model response with the given ID.
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6.1-sol"`
 
       - `"gpt-6-sol"`
 

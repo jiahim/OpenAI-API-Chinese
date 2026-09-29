@@ -37,19 +37,22 @@ stateful workflows, and agent features.
 
 Evaluate the [GPT-6 model family](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra)
 for your workload. Use [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) for the
-highest capability, [`gpt-6-sol`](https://developers.openai.com/api/docs/models/gpt-6-sol) for demanding
-reasoning and coding, and [`gpt-6-luna`](https://developers.openai.com/api/docs/models/gpt-6-luna) for
+highest capability, [`gpt-6.1-sol`](https://developers.openai.com/api/docs/models/gpt-6.1-sol) for complex
+coding and professional work at a lower cost than Astra, and
+[`gpt-6-luna`](https://developers.openai.com/api/docs/models/gpt-6-luna) for
 efficient, repeatable work. Choose the model that performs well on representative
 tasks rather than routing every request to the most capable model.
 
 When migrating to GPT-6, preserve your current model's workload role and
 effective reasoning effort where supported. Use the Responses API for reasoning
-with tools. GPT-6 Astra requires Responses for tool calling; GPT-6 Sol and Luna
-support function calling in Chat Completions only with `reasoning_effort: "none"`.
+with tools. GPT-6 Astra and [GPT-6.1 Sol](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra#gpt-61-sol)
+require Responses for tool calling; GPT-6 Sol and GPT-6 Luna support function
+calling in Chat Completions only with `reasoning_effort: "none"`.
 When reasoning effort is not `none`, remove `temperature`, `top_p`, and
 `top_logprobs`; also remove `logprobs` from Chat Completions requests and
-`message.output_text.logprobs` from the Responses `include` array. With EU data
-residency, use Standard processing for all three models. See the
+`message.output_text.logprobs` from the Responses `include` array. Check
+[data residency eligibility](https://developers.openai.com/api/docs/guides/your-data#which-models-and-features-are-eligible-for-data-residency)
+before selecting a model or processing tier. See the
 [model migration guidance](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra#migration-quickstart)
 for other compatibility checks. Run representative evals before changing prompts or adding new
 capabilities. Compare task success, latency, input, output, reasoning, and
@@ -60,8 +63,9 @@ cache-write tokens, and cost per successful task.
 Use `reasoning.effort` to decide how much thinking the model should do before it
 answers.
 
-GPT-6 Astra, Sol, and Luna support `low`, `medium`, `high`, `xhigh`, and
-`max`. Sol and Luna also support `none`; Astra does not. Lower effort is faster and uses fewer
+GPT-6 Astra, GPT-6.1 Sol, GPT-6 Sol, and GPT-6 Luna support `low`, `medium`,
+`high`, `xhigh`, and `max`. GPT-6 Sol and GPT-6 Luna also support `none`; GPT-6
+Astra and GPT-6.1 Sol do not. Lower effort is faster and uses fewer
 reasoning tokens. Higher effort gives the model more time for planning,
 debugging, synthesis, and multi-step tradeoffs.
 
@@ -70,8 +74,9 @@ routine rewrite. Use `medium` or `high` when the model needs to diagnose a
 problem, compare options, write a plan, or reason through code. Use `xhigh` or
 `max` only when representative evals show that the quality gain justifies the
 extra latency and cost. When migrating from `minimal`, or from `none` to GPT-6
-Astra, start with `low` and compare results. Otherwise, preserve your current effective
-effort and test changes against your quality, latency, and cost targets.
+Astra or GPT-6.1 Sol, start with `low` and compare results. Otherwise, preserve
+your current effective effort and test changes against your quality, latency,
+and cost targets.
 
 For the hardest quality-first workloads, also compare
 [`reasoning.mode: "pro"`](https://developers.openai.com/api/docs/guides/reasoning#reasoning-mode) with

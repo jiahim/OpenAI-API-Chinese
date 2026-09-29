@@ -463,7 +463,7 @@ Use the event's `type` to decide what your application should do:
 
 - **Display text:** Append `agent.session.turn.output_text.delta` to the relevant content part. When `agent.session.turn.output_text.done` arrives, replace that part with its complete text. Deltas may be absent.
 - **Track work:** Session, turn, and item events report progress. Check for `agent.session.turn.completed`, `agent.session.turn.failed`, or `agent.session.turn.cancelled` to determine the turn's outcome.
-- **Provide required input:** On `agent.session.requires_action`, retrieve the session and inspect `required_actions`. Your code may need to return a function result or connect an environment.
+- **Provide required input:** On `agent.session.requires_action`, retrieve the session and inspect `required_actions`. Your code may need to return a function result, connect an environment, or handle [browser origin access or sign-in](https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use#handle-origin-access).
 
 An idle session or a closed stream alone does not establish success. A completed turn also does not guarantee that every tool succeeded. Inspect the agent's output.
 
@@ -512,5 +512,10 @@ Streams do not replay missed events. To restore your application's view:
 3. Restore your local state from those items, keyed by item ID.
 4. Apply buffered item updates using `item_id`. Discard updates for items that already reached their final state in the retrieved history.
 5. Resume handling live events.
+
+Restore pending input forms from the retrieved session's `required_actions`.
+Historical items don't indicate which requests still need a response. For
+browser approvals, match forms by `request_id` and remove those no longer
+pending. You don't need to resend the task or previous approvals after reconnecting.
 
 An `output_text.done` event can replace a temporary text buffer with the complete text. Saved items let you recover completed work, but not every intermediate event you missed.

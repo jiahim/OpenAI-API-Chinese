@@ -24,7 +24,7 @@ Click through a few demo applications generated entirely with a single prompt, w
 
 ## Model, API, and feature updates
 
-The GPT-5.2 generation includes `gpt-5.2` for complex tasks that require broad world knowledge, `gpt-5.2-chat-latest` for ChatGPT-aligned behavior, and `gpt-5.2-pro` for problems that benefit from more compute.
+The GPT-5.2 generation includes `gpt-5.2` for complex tasks that require broad world knowledge and `gpt-5.2-pro` for problems that benefit from more compute. The [deprecation notice](https://developers.openai.com/api/docs/deprecations#2026-05-08-gpt-52-chat-latest-and-gpt-53-chat-latest-model-snapshots) lists August 10, 2026 as the shutdown date for `gpt-5.2-chat-latest` and `gpt-5.6-sol` as its replacement.
 
 For a smaller model, use `gpt-5-mini`.
 
@@ -400,7 +400,7 @@ While the model should be close to a drop-in replacement for GPT-5.1, there are 
 
 Using GPT-5 models with the Responses API provides improved intelligence because of the API design. The Responses API can pass the previous turn's CoT to the model. This leads to fewer generated reasoning tokens, higher cache hit rates, and less latency. To learn more, see an [in-depth guide](https://developers.openai.com/cookbook/examples/responses_api/reasoning_items) on the benefits of the Responses API.
 
-When migrating to GPT-5.2 from an older OpenAI model, start by experimenting with reasoning levels and prompting strategies. Based on our testing, we recommend using our [prompt optimizer](https://platform.openai.com/chat/edit?models=gpt-5.2&optimize=true)—which automatically updates your prompts for GPT-5.2 based on our best practices—and following this model-specific guidance:
+When migrating to GPT-5.2 from an older OpenAI model, start by experimenting with reasoning levels and prompting strategies. Based on our testing, we recommend using our [prompt optimizer](https://platform.openai.com/chat/edit?models=gpt-5.2&optimize=true), which automatically updates your prompts for GPT-5.2 based on our best practices, and following this model-specific guidance:
 
 - **`gpt-5.1`**: `gpt-5.2` with default settings is meant to be a drop-in replacement.
 - **o3**: `gpt-5.2` with `medium` or `high` reasoning. Start with `medium` reasoning with prompt tuning, then increase to `high` if you aren't getting the results you want.
@@ -416,7 +416,7 @@ The following parameters are **only supported** when using GPT-5.2 with reasonin
 - `top_p`
 - `logprobs`
 
-Requests to GPT-5.2 or GPT-5.1 with any other reasoning effort setting, or to older GPT-5 models—for example, `gpt-5`, `gpt-5-mini`, or `gpt-5-nano`—that include these fields will raise an error.
+Requests to GPT-5.2 or GPT-5.1 with any other reasoning effort setting, or to older GPT-5 models (for example, `gpt-5`, `gpt-5-mini`, or `gpt-5-nano`) that include these fields will raise an error.
 
 To achieve similar results with reasoning effort set higher, or with another GPT-5 family model, try these alternative parameters:
 

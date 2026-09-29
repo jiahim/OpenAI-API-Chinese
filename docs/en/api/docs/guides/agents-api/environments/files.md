@@ -20,6 +20,39 @@ Use `type: "file_id"` with a `file_id` from the [Files API](https://developers.o
 
 To add files after the environment connects, use the [environment Files API](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/environments/subresources/files/methods/create).
 
+### Resolve upload errors
+
+For HTTP 400, use `error.param` and `error.message` to identify the input to correct.
+For example, a destination outside `/workspace` returns:
+
+```json
+{
+  "error": {
+    "type": "invalid_request_error",
+    "code": "invalid_request_error",
+    "message": "path must be an absolute POSIX path inside /workspace",
+    "param": "path"
+  }
+}
+```
+
+The parameter follows the request structure. Here, `i` is the file's index,
+starting at `0` for the first file:
+
+| Request                                    | Example `error.param`        |
+| ------------------------------------------ | ---------------------------- |
+| Add one environment file                   | `path`, `data`, or `file_id` |
+| Create a session or prewarm an environment | `environment.files[i].data`  |
+| Create or update an environment template   | `files[i].data`              |
+
+Use valid base64 data and file IDs, and choose an absolute path under `/workspace`.
+Check the [file limits](#file-limits). Destinations that traverse a symlink,
+already exist, or have an overlong path component return HTTP 400.
+
+Unexpected errors while installing a file return HTTP 500.
+Before retrying, check whether the destination was created, then follow the
+[retry guidance](https://developers.openai.com/api/docs/guides/agents-api/errors#retry-transient-failures).
+
 ## Retrieve your files
 
 

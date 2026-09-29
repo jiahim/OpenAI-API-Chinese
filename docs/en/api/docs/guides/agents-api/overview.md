@@ -345,6 +345,9 @@ curl -sS -X POST "https://api.openai.com/v1/agents/sessions" \
 
 For a runtime comparison, see the [Agents overview](https://developers.openai.com/api/docs/guides/agents#compare-agent-runtimes).
 
+For the AWS service built on the Agents API, see
+[Bedrock Managed Agents](https://developers.openai.com/api/docs/guides/agents-api/bedrock-managed-agents).
+
 The Agents API retains session state so you can continue work across turns without
   rebuilding the conversation context. You can delete sessions and published
   artifacts when you no longer need them.

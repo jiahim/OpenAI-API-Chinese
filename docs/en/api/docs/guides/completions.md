@@ -2,6 +2,15 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
+`gpt-3.5-turbo-instruct`, `babbage-002`, and `davinci-002` have a scheduled
+  shutdown date of September 28, 2026. The examples below retain the legacy
+  request format for reference. The documented replacement, `gpt-5.6-terra`,
+  requires migration to the [Responses
+  API](https://developers.openai.com/api/docs/guides/migrate-to-responses) or Chat Completions; it
+  is not a drop-in model replacement for the legacy Completions endpoint. See
+  the [deprecation
+  notice](https://developers.openai.com/api/docs/deprecations#2025-09-26-legacy-gpt-model-snapshots).
+
 The completions API endpoint received its final update in July 2023 and has a different interface than the new Chat Completions endpoint. Instead of the input being a list of messages, the input is a freeform text string called a `prompt`.
 
 An example legacy Completions API call looks like the following:
