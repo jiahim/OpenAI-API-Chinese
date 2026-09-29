@@ -1,17 +1,17 @@
 # Self-hosted sandboxes
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取该页面的 Markdown 版本。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾附加 `.md` 来获取文档页面的 Markdown 版本。
 
-当你希望对智能体的环境拥有更多控制权，或者希望使用你信任的计算资源时，可以连接你自己的环境。该环境可以是一台笔记本电脑、一个容器，或是一个远程沙箱。若希望由OpenAI 来预置环境，请使用 [OpenAI 托管的沙箱](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted).
-
-
+当你希望更精细地控制智能体的运行环境，或希望使用你信任的计算资源时，可以接入你自己的环境。该环境可以是笔记本电脑、容器或远程沙箱。若希望由OpenAI负责提供环境，请使用 [OpenAI 托管的沙箱](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted).
 
 
-## 连接工作原理
 
-OpenAI 运行 [智能体 运行框架](https://developers.openai.com/api/docs/guides/agents-api/architecture#the-pieces)。你在自己的环境中运行 `codex exec-server`，即执行器。它运行 shell 命令、读写文件,并按运行框架的请求使用本地 MCP 服务器。
 
-执行器使用环境 ID 和受限的 API 密钥向 API 注册,然后通过 WebSocket 建立连接以接收命令并返回结果。所有连接均为出站连接。如果连接断开,执行器会重新连接。
+## 连接的工作原理
+
+OpenAI 运行该 [智能体 框架](https://developers.openai.com/api/docs/guides/agents-api/architecture#the-pieces)，由你在自己的环境中运行 `codex exec-server`，即执行器。它根据框架的请求运行 shell 命令、读写文件，并使用本地 MCP 服务器。
+
+执行器使用环境 ID 和受限制的 API 密钥向 API 注册，然后通过 WebSocket 建立连接以接收命令并返回结果。所有连接均为出站连接。如果连接断开，执行器会重新连接。
 
 <picture>
   <source
@@ -31,11 +31,11 @@ OpenAI 运行 [智能体 运行框架](https://developers.openai.com/api/docs/gu
 
 
 
-## 准备环境
+## 准备你的开发环境
 
-准备好你的智能体所需的文件和依赖项。按用户或工作负载隔离环境。共享同一环境的智能体可以访问相同的文件、凭据及其他资源。
+准备好你的智能体所需的文件和依赖项。按用户或工作负载隔离环境。共享同一环境的智能体可以访问相同的文件、凭据和其他资源。
 
-创建工作目录并在环境中安装 Codex CLI。本示例使用 `/workspace`:
+创建工作目录并在环境中安装 Codex CLI。此示例使用 `/workspace`:
 
 ```bash
 mkdir -p /workspace
@@ -47,18 +47,18 @@ npm install -g @openai/codex@alpha
 
 ### 网络访问
 
-允许到以下主机的出站连接：
+允许与这些主机的出站连接：
 
 - `https://api.openai.com` 用于环境注册。
 - `wss://codex-cloud-environments.chatgpt.com` 用于命令和结果。
 
 ### 身份验证
 
-使用 `OPENAI_API_KEY` 用于应用请求。为其授予 `api.agents.read` 和 `api.agents.write` 权限用于会话操作，并授予 `api.responses.write` 用于模型推理。如果你的应用管理 vault，请添加 `api.vaults.read` 和 `api.vaults.write` 。
+使用 `OPENAI_API_KEY` 处理应用请求。授予它 `api.agents.read` 和 `api.agents.write` 用于会话操作，以及 `api.responses.write` 用于模型推理。添加 `api.vaults.read` 和 `api.vaults.write` 如果你的应用管理 vaults。
 
-在平台仪表板的 [智能体 标签页](https://platform.openai.com/agents?tab=environments&environment_view=keys) 中创建一个独立的环境密钥。它必须归属于拥有该会话的同一组织、项目以及用户或服务账号。将其余所有权限设置为 **None**.
+在平台仪表板的 [智能体 标签页](https://platform.openai.com/agents?tab=environments&environment_view=keys) 上创建一个单独的环境密钥。该密钥必须属于拥有该会话的同一组织、项目以及用户或服务账号。将所有其他权限设置为 **None**.
 
-在你的应用或配置服务中将 `OPENAI_EXECUTOR_API_KEY` 设置为此环境密钥。将其值作为 `CODEX_API_KEY`，传入沙箱，沙箱会读取该值。将你应用的 `codex exec-server` 保留在沙箱之外。 `OPENAI_API_KEY` 保留在沙箱外部。
+在你的应用或配置服务中将 `OPENAI_EXECUTOR_API_KEY` 设置为此环境密钥。将其值作为 `CODEX_API_KEY`，传入沙箱，由该字段读取。 `codex exec-server` 请将应用的 `OPENAI_API_KEY` 保留在沙箱之外。
 
 智能体 生成的代码可以读取该环境密钥，但该密钥仅允许连接环境，无法授权任何其他 API 操作。请勿将其写入源代码、容器镜像或日志中，并在需要时轮换或撤销。
 
@@ -67,7 +67,7 @@ npm install -g @openai/codex@alpha
 
 ## 创建会话
 
-在你的应用中、而非环境内运行此示例。如果你已有自托管会话，可复用它。
+在环境外运行你的应用中的此示例。如果已有自托管会话，请复用。
 
 使用你自己的环境创建会话
 
@@ -178,16 +178,16 @@ puts result
 ```
 
 
-存储 `session.id` 与应用的会话状态一起。将其传递给 `session.environment.id` 和 `session.environment.remote_url` 执行器。远程 URL 需原样使用，包括重新连接时也是如此。参见 [配置 智能体](https://developers.openai.com/api/docs/guides/agents-api/configuration#reuse-an-agent-across-sessions) 以使用已存储的 智能体。
+Store `session.id` 与你的应用对话状态一起使用。将 `session.environment.id` 和 `session.environment.remote_url` 传递给执行器。远程 URL 保持原样使用，包括重新连接时。参见 [配置 智能体](https://developers.openai.com/api/docs/guides/agents-api/configuration#reuse-an-agent-across-sessions) 以使用已存储的智能体。
 
 
 
 
-你可以在会话之间复用环境镜像、 `workspace_directory`，以及 `capability_directories` 。每个会话都有独立的环境 ID，并需要各自的执行器。API [环境模板](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins#reuse-a-hosted-plugin-setup) 仅适用于 OpenAI 托管的环境。
+你可以跨会话复用你的环境镜像、 `workspace_directory`，和 `capability_directories` 。每个会话都有自己的环境 ID，并需要各自的执行器。API [环境模板](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins#reuse-a-hosted-plugin-setup) 仅适用于 OpenAI 托管的环境。
 
 ## 启动执行器
 
-打开 [会话事件流](https://developers.openai.com/api/docs/guides/agents-api/sessions/events#consume-a-stream) 从你的应用接收连接事件。然后在已配置环境密钥的环境中运行此命令： `CODEX_API_KEY` 上文。将会由 API 返回的环境值替换占位符：
+打开 [会话事件流](https://developers.openai.com/api/docs/guides/agents-api/sessions/events#consume-a-stream) 从你的应用接收连接事件。然后在该环境中运行以下命令，并将环境密钥配置为 `CODEX_API_KEY` 上文。将占位符替换为 API 返回的环境变量值：
 
 ```bash
 codex exec-server \
@@ -200,32 +200,33 @@ codex exec-server \
 
 
 
-## 发送工作并监视连接
+## 发送工作并监控连接
 
-[发送输入](https://developers.openai.com/api/docs/guides/agents-api/sessions#send-input) 在事件流保持打开状态时从你的应用发送输入。智能体需要同时具备已连接的环境和用户输入才能开始工作。
+[发送输入](https://developers.openai.com/api/docs/guides/agents-api/sessions#send-input) 在事件流保持打开状态时从你的应用发起调用。智能体需要同时具备已连接的环境和用户输入才能开始工作。
 
 流会报告以下连接状态：
 
 - `agent.session.environment.pending`: 会话正在等待执行器连接。
 - `agent.session.environment.connected`: 环境已就绪。
-- `agent.session.environment.failed`: 连接失败。请检查环境错误信息和执行器日志。
+- `agent.session.environment.failed`: 连接失败。请检查环境错误和执行器的日志。
 
-继续监听流以获取该轮的结果与输出。详见 [环境生命周期](https://developers.openai.com/api/docs/guides/agents-api/environments/lifecycle) ，以便在你的应用中或通过 Webhook 管理启动、重连与关闭。
+继续跟踪该轮次结果的流式输出。详见 [环境生命周期](https://developers.openai.com/api/docs/guides/agents-api/environments/lifecycle) ，以便通过你的应用或 Webhook 管理启动、重连和关闭。
 
 ## 沙盒提供商
 
-选择一个沙箱提供程序来运行代码并处理文件。请参阅 [沙箱生命周期](https://developers.openai.com/api/docs/guides/agents-api/environments/lifecycle) 以比较由应用管理和由 Webhook 管理的预置方式。
+选择一个沙盒提供方来运行代码并处理文件。详见 [沙盒生命周期](https://developers.openai.com/api/docs/guides/agents-api/environments/lifecycle) 以比较应用管理式与 webhook 管理式两种预置方式。
 
-| Provider                          | 指南                                                                                 |
+| Provider                          | Guide                                                                                 |
 | --------------------------------- | ------------------------------------------------------------------------------------- |
-| Modal                             | [Modal 设置](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/modal)               |
-| Cloudflare                        | [Cloudflare 设置](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/cloudflare)     |
-| Vercel                            | [Vercel 设置](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/vercel)             |
-| Daytona                           | [Daytona 设置](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/daytona)           |
-| Blaxel                            | [Blaxel 设置](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/blaxel)             |
-| E2B                               | [E2B 设置](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/e2b)                   |
-| Runloop                           | [Runloop 设置](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/runloop)           |
-| DigitalOcean                      | [DigitalOcean 设置](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/digitalocean) |
-| Oracle Cloud Infrastructure (OCI) | [OCI 设置](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/oci)                   |
+| Modal                             | [Modal setup](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/modal)               |
+| Cloudflare                        | [Cloudflare setup](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/cloudflare)     |
+| Vercel                            | [Vercel setup](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/vercel)             |
+| Daytona                           | [Daytona setup](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/daytona)           |
+| Blaxel                            | [Blaxel setup](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/blaxel)             |
+| E2B                               | [E2B setup](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/e2b)                   |
+| Runloop                           | [Runloop setup](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/runloop)           |
+| DigitalOcean                      | [DigitalOcean setup](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/digitalocean) |
+| AWS Lambda MicroVMs               | [AWS setup](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/aws)                   |
+| Oracle Cloud Infrastructure (OCI) | [OCI setup](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/oci)                   |
 
-对于由 webhook 管理的配置，请使用以下方式实现处理器 [沙箱生命周期](https://developers.openai.com/api/docs/guides/agents-api/environments/lifecycle#start-compute-from-webhooks) 以及你的提供商的 SDK 或 API。请明确配置所有权和清理策略。
+对于通过 Webhook 管理的预置，请使用以下方式实现处理程序 [沙盒生命周期](https://developers.openai.com/api/docs/guides/agents-api/environments/lifecycle#start-compute-from-webhooks) 以及你提供商的 SDK 或 API。请明确预置所有权与清理策略。

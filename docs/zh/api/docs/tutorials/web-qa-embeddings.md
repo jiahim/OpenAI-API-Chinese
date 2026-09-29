@@ -1,16 +1,24 @@
-# Web QA with embeddings
+# 使用 embeddings 进行 Web 问答
 
-> 完整文档索引请参见 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取 Markdown 版本的文档页面。
 
-本教程通过一个简单的示例，演示如何爬取一个网站（本例中为 OpenAI 网站），并使用 [Embeddings API](https://developers.openai.com/api/docs/guides/embeddings)，将爬取的页面转换为 embeddings，然后创建一个基本的搜索功能，允许用户针对已嵌入的信息进行提问。本教程旨在作为更复杂的基于自定义知识库的应用程序的起点。
+本教程使用传统的 Completions 端点，
+  `gpt-3.5-turbo-instruct`，该端点的计划停用日期为 9 月 28 日，
+  2026 年。其答案生成示例保留了传统的请求格式以供
+  参考。如需使用当前的方法，请使用 [文件
+  搜索](https://developers.openai.com/api/docs/guides/tools-file-search) 使用 Responses API。请参阅
+  [弃用
+  通知](https://developers.openai.com/api/docs/deprecations#2025-09-26-legacy-gpt-model-snapshots).
+
+本教程通过一个抓取网站（本例中为 OpenAI 网站）的示例进行讲解，将抓取到的页面使用 [Embeddings API](https://developers.openai.com/api/docs/guides/embeddings)，转换为嵌入向量，然后创建一个基本的搜索功能，允许用户针对嵌入的信息进行提问。本教程旨在作为使用自定义知识库的更复杂应用的起点。
 
 # 入门
 
-具备一些 Python 和 GitHub 基础知识会帮助你更好地完成本教程。在开始之前，请务必 [设置好 OpenAI API 密钥](https://developers.openai.com/api/reference/overview) 并完成 [快速入门教程](https://developers.openai.com/api/docs/quickstart)。这将帮助你建立良好的直觉，充分发挥 API 的潜力。
+具备一些 Python 和 GitHub 的基础知识有助于学习本教程。在开始之前，请确保 [设置 OpenAI API 密钥](https://developers.openai.com/api/reference/overview) 并完成 [快速入门教程](https://developers.openai.com/api/docs/quickstart)。这将帮助你更好地理解如何充分发挥 API 的能力。
 
-本教程使用 Python 作为主要编程语言，并搭配 OpenAI、Pandas、transformers、NumPy 等常用库。如果你在学习本教程时遇到任何问题，请在 [OpenAI 社区论坛](https://community.openai.com).
+本教程以 Python 作为主要编程语言，并使用 OpenAI、Pandas、transformers、NumPy 以及其他常用库。如果你在学习过程中遇到任何问题，请在 [OpenAI 社区论坛](https://community.openai.com).
 
-要开始编写代码，请克隆 [GitHub 上本教程的完整代码](https://github.com/openai/web-crawl-q-and-a-example)。或者，你也可以跟随教程将每个部分逐步复制到 Jupyter notebook 中并运行代码，或者直接阅读。避免出现问题的一个好方法是新建一个虚拟环境，并通过运行以下命令来安装所需的包：
+提问。要开始编写代码，先克隆 [本教程的完整代码（GitHub）](https://github.com/openai/web-crawl-q-and-a-example)。你也可以跟随教程，将每个部分逐步复制到 Jupyter notebook 中并运行代码，或者仅阅读不运行。避免问题的一个好方法是新建一个虚拟环境，并通过运行以下命令安装所需的依赖包：
 
 ```bash
 python -m venv env
@@ -20,13 +28,13 @@ source env/bin/activate
 pip install -r requirements.txt
 ```
 
-## 设置网页爬虫
+## 配置网页爬虫
 
-本教程的核心重点是 OpenAI API，因此如果你愿意，可以跳过关于如何创建网络爬虫的背景说明，直接 [下载源代码](https://github.com/openai/web-crawl-q-and-a-example)。否则，请展开下方章节以完成抓取机制的实现。
+本教程的重点是 OpenAI API，因此如果你愿意，可以跳过有关如何创建网络爬虫的背景介绍，直接 [下载源代码](https://github.com/openai/web-crawl-q-and-a-example)。否则，请展开下方章节，逐步完成抓取机制的实现。
 
 
 
-### 了解如何构建一个网络爬虫
+### 了解如何构建网络爬虫
 
 
 
@@ -53,9 +61,9 @@ pip install -r requirements.txt
 
 
 
-虽然这个爬虫是从零编写的，但像 [Scrapy](https://github.com/scrapy/scrapy) 这样的开源包也可以帮助你完成这些操作。
+虽然此爬虫是从零编写的，但像 [Scrapy](https://github.com/scrapy/scrapy) 这样的开源包也能帮助你完成这些操作。
 
-该爬虫会从下方代码末尾传入的根 URL 出发，访问每个页面，查找其中的其他链接，并继续访问这些页面（只要它们属于同一个根域名）。首先，导入所需的包，设置基础 URL，并定义一个 HTMLParser 类。
+该爬虫会从下方代码中传入的根 URL 出发，依次访问每个页面，查找其中的更多链接，并继续访问这些链接（只要它们具有相同的根域名）。首先，导入所需的包，设置基本 URL，并定义一个 HTMLParser 类。
 
 ```python
 import requests
@@ -91,7 +99,7 @@ class HyperlinkParser(HTMLParser):
 ```
 
 
-下一个函数接受一个 URL 作为参数，打开该 URL 并读取 HTML 内容，然后返回在该页面上找到的所有超链接。
+下一个函数接收一个 URL 作为参数，打开该 URL，并读取其 HTML 内容，然后返回在该页面上找到的所有超链接。
 
 ```python
 # Function to get the hyperlinks from a URL
@@ -117,7 +125,7 @@ def get_hyperlinks(url):
 ```
 
 
-目标是仅抓取并索引 OpenAI 域名下的内容。为此，需要一个函数来调用 `get_hyperlinks` 函数，但过滤掉任何不属于指定域名的 URL。
+目标是仅抓取并索引 OpenAI 域名下的内容。为此，需要一个调用 `get_hyperlinks` 函数但过滤掉不属于指定域名的 URL 的函数。
 
 ```python
 # Function to get the hyperlinks from a URL that are within the same domain
@@ -151,7 +159,7 @@ def get_domain_hyperlinks(local_domain, url):
 ```
 
 
-该 `crawl` 函数是网页抓取任务设置中的最后一步。它会记录已访问的 URL，以避免重复访问同一页面（同一页面可能被站点上多个页面链接到）。它还会从页面中提取去除 HTML 标签后的纯文本，并将文本内容写入该页面专属的本地 .txt 文件中。
+该 `crawl` 函数是网页抓取任务设置的最后一个步骤。它会记录已访问的 URL 以避免重复访问同一页面（同一页面可能被站点上的多个页面链接），同时从页面中提取去除 HTML 标签后的纯文本，并将文本内容写入该页面专属的本地 .txt 文件。
 
 ```python
 def crawl(url):
@@ -216,7 +224,7 @@ crawl(full_url)
 ```
 
 
-上述示例的最后一行会运行爬虫，遍历所有可访问的链接，并将这些页面转换为文本文件。运行所需时间取决于你的站点规模和复杂度，可能需要几分钟。
+上面示例的最后一行运行爬虫，遍历所有可访问的链接并将相应页面转换为文本文件。根据你站点的规模和复杂度，这需要几分钟时间才能运行完毕。
 
 
 
@@ -256,12 +264,12 @@ def remove_newlines(serie):
 ```
 
 
-将文本转换为 CSV 需要遍历先前创建的文本目录中的文本文件。打开每个文件后，去除多余的空格，并将修改后的文本追加到列表中。然后，将去除换行符后的文本添加到空的 Pandas 数据框中，并将数据框写入 CSV 文件。
+将文本转换为 CSV 需要遍历之前创建的文本目录中的文本文件。打开每个文件后，去除多余的空格，并将修改后的文本追加到一个列表中。然后，将去除换行符后的文本添加到一个空的 Pandas 数据框中，并将该数据框写入 CSV 文件。
 
-多余的空格和换行符会使文本变得杂乱，并使嵌入过程变得复杂
-  过程。这里使用的代码有助于去除其中一部分字符，但你可能会发现第三方
-  库或其他方法有助于去除更多不必要的
-  字符。
+多余的空格和换行符会使文本变得杂乱，并使嵌入过程复杂化
+  。这里使用的代码有助于去除其中一部分，但你可能会发现第三方
+  库或其他方法对于去除更多不必要的
+  字符很有用。
 
 ```python
 import pandas as pd
@@ -300,11 +308,11 @@ df.head()
 ```
 
 
-在将原始文本保存到 CSV 文件之后，下一步是分词。此过程通过拆分句子和单词将输入文本拆分为词元。可以通过以下方式直观地了解这一过程 [查看文档中的分词器](https://platform.openai.com/tokenizer) 文档。
+在将原始文本保存到 CSV 文件之后，下一步是分词。该过程通过拆分句子和单词将输入文本拆分为标记 (token)。你可以通过查看我们的 [分词器页面](https://platform.openai.com/tokenizer) 来直观了解这一点，详见文档。
 
-> 一个实用的经验法则是，对于常见的英文文本，一个标记通常对应约 4 个字符。这大约相当于四分之三个单词（即 100 个标记 ~= 75 个单词）。
+> 一个实用的经验法则是：对于常见英文文本，一个标记（token）通常对应大约 4 个字符。这大约相当于一个词的 ¾（因此 100 个标记 ≈ 75 个词）。
 
-该 API 对嵌入的最大输入 token 数有限制。为了保持在该限制之内，CSV 文件中的文本需要拆分为多行。首先记录每行的现有长度，以识别哪些行需要拆分。
+API 对嵌入的最大输入 token 数有限制。为了不超过该限制，CSV 文件中的文本需要被拆分成多行。首先会记录每一行的现有长度，以识别哪些行需要被拆分。
 
 ```python
 import tiktoken
@@ -337,7 +345,7 @@ df.n_tokens.hist()
 
 
 
-最新的嵌入模型最多可以处理 8191 个输入 token，因此大多数行不需要进行分块，但并非每个抓取的子页面都是如此，因此下一段代码会将较长的行拆分为更小的块。
+最新的嵌入模型最多可处理 8191 个输入 token，因此大多数行无需分块，但这并不适用于每一页抓取的内容，所以下一段代码会将较长的行拆分为更小的块。
 
 ```python
 max_tokens = 500
@@ -396,7 +404,7 @@ for row in df.iterrows():
 ```
 
 
-再次可视化更新后的直方图有助于确认行是否已成功拆分为更短的部分。
+再次查看更新后的直方图有助于确认各行是否已成功拆分为更短的片段。
 
 ```python
 df = pd.DataFrame(shortened, columns=["text"])
@@ -419,7 +427,7 @@ df.n_tokens.hist()
 
 
 
-内容现在已被拆分为更小的块，可以向 OpenAI API 发送一个简单的请求，指定使用新的 text-embedding-ada-002 模型来创建嵌入：
+内容现在已经被拆分为更小的块，可以向 OpenAI API 发送请求，指定使用新的 text-embedding-ada-002 模型来生成嵌入：
 
 ```python
 from openai import OpenAI
@@ -437,9 +445,9 @@ df.head()
 ```
 
 
-这大约需要 3-5 分钟，但完成后你将拥有可立即使用的嵌入！
+这大约需要 3-5 分钟，之后你就可以得到可用的嵌入！
 
-## 使用你的 embeddings 构建问答系统
+## 使用你的嵌入构建问答系统
 
 
 
@@ -460,7 +468,7 @@ df.head()
 
 ---
 
-将嵌入向量转换为 NumPy 数组是第一步，这将为后续使用提供更多灵活性，因为有许多函数可对 NumPy 数组进行操作。它还会将维度展平为 1-D，而这是许多后续操作所要求的格式。
+将嵌入转换为 NumPy 数组是第一步，由于有许多可对 NumPy 数组进行运算的函数，这将提供更灵活的使用方式。它还会将维度展平为 1-D，这是许多后续操作所需的格式。
 
 ```python
 import numpy as np
@@ -472,7 +480,7 @@ df.head()
 ```
 
 
-数据准备就绪后，只需通过一个简单的函数即可将问题转换为嵌入向量。这很重要，因为基于嵌入的搜索会使用余弦距离来比较这些数字向量（即原始文本转换后的结果）。如果向量在余弦距离上接近，它们很可能是相关的，并可能回答该问题。OpenAI Python 包内置了一个 `distances_from_embeddings` 函数，在这里非常实用。
+数据准备就绪后，需要使用一个函数将问题转换为嵌入。这一点很重要，因为基于嵌入的搜索会使用余弦距离比较数字向量（即原始文本转换后的结果）。如果这些向量在余弦距离上接近，它们很可能是相关的，并且可能就是问题的答案。OpenAI python 包内置了一个 `distances_from_embeddings` 函数，在此处非常有用。
 
 ```python
 def create_context(question, df, max_len=1800, size="ada"):
@@ -512,13 +520,13 @@ def create_context(question, df, max_len=1800, size="ada"):
 ```
 
 
-文本被拆分为较小的 token 集合，因此按升序循环并持续拼接文本是确保获得完整答案的关键步骤。如果返回的内容超过所需，也可以将 max_len 修改为更小的值。
+文本已被拆分为较小的分词集合，因此按升序循环并持续添加文本是确保获得完整答案的关键步骤。 `max_len` 如果返回的内容多于预期，也可以将其修改为更小的值。
 
-上一步仅检索了与问题语义相关的文本片段，它们可能包含答案，但并不能保证一定包含。通过返回前 5 个最可能的结果，可以进一步提高找到答案的概率。
+上一步仅检索了与问题语义相关的文本块，因此它们可能包含答案，但不能保证一定包含。通过返回最可能的 5 个结果，可以进一步提高找到答案的概率。
 
-回答提示词随后会尝试从检索到的上下文中提取相关事实，以组织出连贯的答案。如果没有相关答案，提示词将返回“I don’t know”。
+回答提示随后会尝试从检索到的上下文中提取相关事实，以组织出连贯的答案。如果没有相关答案，提示将返回“I don’t know.”
 
-可以使用补全接口生成一个听起来真实可信的答案，使用 `gpt-3.5-turbo-instruct`.
+可以使用补全端点结合 `gpt-3.5-turbo-instruct`.
 
 ```python
 def answer_question(
@@ -590,6 +598,6 @@ answer_question(df, question="What is ChatGPT?")
 'ChatGPT is a model trained to interact in a conversational way. It is able to answer followup questions, admit its mistakes, challenge incorrect premises, and reject inappropriate requests.'
 ```
 
-如果系统无法回答一个预期中应该能回答的问题，建议在原始文本文件中搜索一下，看一下期望被了解的信息是否确实已被嵌入。最初执行的爬取过程设置为跳过原始域名之外的站点，因此如果存在子域名，它可能并不具备相关知识。
+如果系统无法回答一个预期它能回答的问题，那么值得搜索一下原始文本文件，看看期望它知道的信息是否最终确实被嵌入。早先设置的爬取过程会跳过所提供原始域之外的站点，因此如果存在子域设置，系统可能不具备相关知识。
 
-目前，每次回答问题时都会传入该 dataframe。对于更接近生产环境的 [向量数据库方案](https://developers.openai.com/api/docs/guides/embeddings#how-can-i-retrieve-k-nearest-embedding-vectors-quickly) 应该用于替代将嵌入向量存储在 CSV 文件中的方式，但当前方法非常适合用于原型开发。
+目前，每次回答问题时都会传入数据框。对于更接近生产的工作流，应当改用 [向量数据库方案](https://developers.openai.com/api/docs/guides/embeddings#how-can-i-retrieve-k-nearest-embedding-vectors-quickly) ，而不是将嵌入存储在 CSV 文件中，不过当前方案非常适合用于原型开发。

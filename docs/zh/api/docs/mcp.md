@@ -1,43 +1,43 @@
 # 为插件和 API 集成构建 MCP 服务器
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取对应文档页面的 Markdown 版本。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 获取。
 
-[Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP) 是一个开放协议，正逐渐成为通过额外工具和知识扩展 AI 模型的事实行业标准。远程 MCP 服务器可用于通过互联网将模型连接到新的数据源和能力。
+[Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP) 是一个开放协议，正在成为通过额外工具和知识扩展 AI 模型的事实行业标准。远程 MCP 服务器可用于通过互联网将模型连接到新的数据源和功能。
 
-在本指南中，我们将介绍如何构建一个远程 MCP 服务器，该服务器从私有数据源（一个 [vector store](https://developers.openai.com/api/docs/guides/retrieval)）读取数据，并通过 ChatGPT 和 Codex 中的插件、通过 ChatGPT 深度研究与公司知识，以及通过 [API](https://developers.openai.com/api/docs/guides/deep-research).
+在本指南中，我们将介绍如何构建一个远程 MCP 服务器，从私有数据源（一个 [向量存储](https://developers.openai.com/api/docs/guides/retrieval)）读取数据，然后通过 ChatGPT 和 Codex 中的插件、通过 ChatGPT 深度研究与公司知识，以及通过 [API 提供该数据。](https://developers.openai.com/api/docs/guides/tools-connectors-mcp).
 
-**注意**：要使用 MCP 服务器构建插件，请从插件文档开始： [快速入门](https://developers.openai.com/plugins/quickstart), [构建你的 MCP 服务器](https://developers.openai.com/plugins/build/mcp-server), [连接并测试你的插件](https://developers.openai.com/plugins/deploy/connect-chatgpt)，以及 [身份验证](https://developers.openai.com/plugins/build/auth)。如果你的 MCP 服务器不需要 UI，可以在不提供 UI 资源的情况下暴露工具。
+**注意**：要使用 MCP 服务器构建插件，请从插件文档开始： [快速入门](https://developers.openai.com/plugins/quickstart), [构建你的 MCP 服务器](https://developers.openai.com/plugins/build/mcp-server), [连接并测试你的插件](https://developers.openai.com/plugins/deploy/connect-chatgpt)，以及 [身份验证](https://developers.openai.com/plugins/build/auth)。如果你的 MCP 服务器不需要 UI，可以直接暴露工具而无需 UI 资源。
 
 ## 配置数据源
 
-你可以使用来自任何来源的数据来驱动远程 MCP 服务器，但为简便起见，我们将使用 [向量存储](https://developers.openai.com/api/docs/guides/retrieval) 中的OpenAI API。首先将一个 PDF 文档上传到新的向量存储—— [你可以使用这本关于猫的 19 世纪公有领域图书作为示例](https://cdn.openai.com/API/docs/cats.pdf) 作为示例。
+你可以使用来自任何来源的数据来为远程 MCP 服务提供支持，但为简单起见，我们将使用 [向量存储](https://developers.openai.com/api/docs/guides/retrieval) 中的 OpenAI API。首先将一个 PDF 文档上传到一个新的向量存储 —— [你可以使用这本关于猫的 19 世纪公版书作为示例](https://cdn.openai.com/API/docs/cats.pdf) 作为示例。
 
-你可以上传文件并创建一个向量存储 [在此处的控制台中](https://platform.openai.com/storage/vector_stores)，或者你也可以通过API创建向量存储并上传文件。 [参考向量存储指南](https://developers.openai.com/api/docs/guides/retrieval) 以设置向量存储并向其中上传文件。
+你可以在控制台中上传文件并创建向量存储 [在这里](https://platform.openai.com/storage/vector_stores)，或者你也可以通过 API 创建向量存储并上传文件。 [按照向量存储指南](https://developers.openai.com/api/docs/guides/retrieval) 来设置一个向量存储并向其中上传文件。
 
-记下该向量存储的唯一 ID，以在接下来的示例中使用。
+记下该向量存储的唯一 ID，以便在后续示例中使用。
 
 ![向量存储配置](https://cdn.openai.com/API/docs/images/vector_store.png)
 
-## 创建一个 MCP 服务器
+## Create an MCP server
 
-接下来，我们来创建一个远程 MCP 服务器，它将对我们的向量存储执行搜索查询，并能够根据给定的 ID 返回文件的内容。
+接下来，让我们创建一个远程 MCP 服务器，它将对我们的向量存储执行搜索查询，并能够针对给定 ID 的文件返回文档内容。
 
-在本示例中，我们将使用 Python 和 [FastMCP](https://github.com/jlowin/fastmcp)。服务器的完整实现出现在本节末尾，并附有在 [基于浏览器的开发环境](https://replit.com/).
+在本示例中，我们将使用 Python 和 [FastMCP](https://github.com/jlowin/fastmcp)。构建 MCP 服务器。服务器的完整实现出现在本节末尾，并附有在 [基于浏览器的开发环境](https://replit.com/).
 
-请注意，还有许多其他 MCP 服务器框架可用于各种编程语言。不过无论使用哪种框架，你的服务器中的工具定义都必须符合此处描述的形态。
+中运行它的说明。请注意，还有许多其他可用于各种编程语言的 MCP 服务器框架。不过，无论你使用哪个框架，服务器中的工具定义都必须符合此处描述的格式。
 
-若要与 ChatGPT 深度研究及公司知识协同工作，你的 MCP 服务器
-应当实现两个只读工具： `search` 和 `fetch`，使用
-中的兼容性架构 [公司知识兼容性](https://developers.openai.com/plugins/build/mcp-server#company-knowledge-compatibility).
-通过 API，同一接口对研究工作流也很有用。
+要使用 ChatGPT 深度研究和公司知识，你的 MCP 服务器
+应实现两个只读工具： `search` 和 `fetch`，使用
+中的兼容性模式， [公司知识兼容性](https://developers.openai.com/plugins/build/mcp-server#company-knowledge-compatibility).
+相同的接口对于通过 API 进行的研究工作流也很有用。
 
-为每个工具声明输出架构，以便客户端能够校验结果的形态。
-在 FastMCP 中，类型化的返回模型可以自动生成该架构；
-下面的示例显式传递了 `output_schema` 与这些模型相同的类型。
+为每个工具声明一个输出模式，以便客户端可以验证结果格式。
+在 FastMCP 中，类型化的返回模型可以自动生成此模式；
+下面的示例 `output_schema` 显式地从相同的模型传递该模式。
 
 ### `search` tool
 
-该 `search` 该工具负责根据用户的查询，从你的 MCP 服务器的数据源返回一份相关搜索结果列表。
+该 `search` 该工具负责根据用户的查询，从你的 MCP 服务器的数据源返回一份相关的搜索结果列表。
 
 _参数：_
 
@@ -45,15 +45,15 @@ _参数：_
 
 _返回：_
 
-一个具有单个键的对象， `results`，其值是一个结果对象数组。每个结果对象应包含：
+一个只包含一个键的对象， `results`，其值是一个由结果对象组成的数组。每个结果对象应包含：
 
-- `id` - 文档或搜索结果项的唯一标识
+- `id` - 文档或搜索结果条目的唯一标识符
 - `title` - 人类可读的标题。
 - `url` - 用于引用的规范 URL。
 
-在 MCP 中，将此对象作为 `structuredContent` 返回，并在
-数组中以 JSON 编码字符串形式包含相同的值， [content](https://modelcontextprotocol.io/docs/learn/architecture#understanding-the-tool-execution-response)
-以保持兼容性。
+在 MCP 中，将此对象作为返回 `structuredContent` ，并在其中包含相同的值作为
+JSON 编码后的字符串，放入 [content 数组](https://modelcontextprotocol.io/docs/learn/architecture#understanding-the-tool-execution-response)
+中以保证兼容性。
 
 最终的工具响应应如下所示：
 
@@ -73,25 +73,25 @@ _返回：_
 
 ### `fetch` tool
 
-fetch 工具用于检索搜索结果文档或条目的完整内容。
+fetch 工具用于检索搜索结果文档或项目的完整内容。
 
 _参数：_
 
-作为搜索文档唯一标识符的字符串。
+一个字符串，表示该搜索文档的唯一标识符。
 
 _返回：_
 
-具有以下属性的单个对象：
+一个包含以下属性的对象：
 
-- `id` - 文档或搜索结果项的唯一标识
+- `id` - 文档或搜索结果条目的唯一标识符
 - `title` - 搜索结果项的字符串标题
-- `text` - 文档或项的完整文本
-- `url` - 文档或搜索结果项的 URL。可用于在研究
-  中引用特定资源。
-- `metadata` - 关于结果的可选键/值数据对
+- `text` - 文档或条目的完整文本
+- `url` - 文档或搜索结果项的 URL。可用于引用
+  研究中的具体资源。
+- `metadata` - 关于结果的可选键值对数据
 
-在 MCP 中，将此对象作为 `structuredContent` 返回，并在
-为兼容性，在 content 数组中使用 JSON 编码的字符串。
+在 MCP 中，将此对象作为返回 `structuredContent` ，并在其中包含相同的值作为
+为兼容性而在 content 数组中使用 JSON 编码的字符串。
 
 最终的工具响应应如下所示：
 
@@ -115,18 +115,18 @@ _返回：_
 
 ### 引用行为
 
-对于 `search` results 和 `fetch` responses，ChatGPT 仅在以下情况下创建引用
-元数据： `url` 是非空字符串时。如果某个结果有 `title` 但没有
-可用的 `url` ，则它仍只是普通的工具输出，而不会成为空的
-引用。若要使结果可被引用，请返回其规范的 `url`.
+对于 `search` results 和 `fetch` responses，ChatGPT 仅在
+时才会创建引用元数据，条件是该 `url` 是一个非空字符串。带有 `title` 但没有
+usable `url` 的结果仍只是普通工具输出，不会成为空的
+citation。若要让结果可被引用，请返回其规范的 `url`.
 
-。例如，ChatGPT 可能会使用以下方式调用 `search` ：
+例如，ChatGPT 可能会使用以下参数调用 `search` ：
 
 ```json
 { "query": "What is the quarterly plan?" }
 ```
 
-MCP 服务器可以使用由 URL 支持的结果进行响应：
+MCP 服务器可以返回一个由 URL 支持的结果：
 
 ```json
 {
@@ -148,14 +148,14 @@ MCP 服务器可以使用由 URL 支持的结果进行响应：
 }
 ```
 
-在此响应中， `url` 字段有值，这使得该结果有资格获得
-引用元数据。查询本身不会触发引用处理。如果
-结果省略了 `url`，或提供了空值或非字符串值，ChatGPT
-会将该结果保留为普通的工具输出。
+在此响应中， `url` 字段具有值，这使得该结果有资格
+获得引用元数据。查询本身不会触发引用处理。如果
+结果省略了 `url`，或者提供了一个空值或非字符串值，ChatGPT
+会将该结果保留为普通工具输出。
 
 ### 服务端示例
 
-你可以在 [基于浏览器的开发环境](https://replit.com/)。中试用这个示例 MCP 服务器。配置示例时填入你自己的 API 凭据和 vector store 信息。
+你可以在以下位置试用这个示例 MCP 服务器 [基于浏览器的开发环境](https://replit.com/)。请使用你自己的 API 凭据和向量存储信息配置该示例。
 
 [Replit 上的示例 MCP 服务器
 
@@ -163,11 +163,11 @@ MCP 服务器可以使用由 URL 支持的结果进行响应：
 
       Remix the server example on Replit to test live.](https://replit.com/@kwhinnery-oai/DeepResearchServer?v=1#README.md)
 
-下面还提供了使用 FastMCP 实现这两种 `search` 和 `fetch` 工具的完整实现，方便参考。
+以下是使用 FastMCP 实现上述两个工具的完整实现，便于参考。 `search` 和 `fetch` （下方同样提供了 FastMCP 中两个工具的完整实现以方便使用。）
 
 
 
-#### 完整实现 - FastMCP 服务
+#### 完整实现 - FastMCP 服务器
 
 
 
@@ -396,13 +396,13 @@ if __name__ == "__main__":
 
 
 
-在 Replit 上配置 `OPENAI_API_KEY` ，在 “Secrets” 界面中填入你的 OpenAI API key。在示例中，将 `vs_123` 替换为你之前为搜索创建的向量存储的 ID。
+在 Replit 上，配置 `OPENAI_API_KEY` 时，在「Secrets」界面中填入你的 OpenAI API 密钥。在示例中，将 `vs_123` 替换为你之前为搜索所创建的向量存储的 ID。
 
-在免费版 Replit 账户上，只要编辑器处于活动状态，服务端 URL 就一直有效，因此在测试时你需要保持浏览器标签页处于打开状态。点击链条图标即可获取 MCP server 的 URL：
+在免费的 Replit 账号下，只要编辑器处于活跃状态，服务端 URL 就会保持有效，因此测试时你需要保持浏览器标签页处于打开状态。点击链接图标即可获取你的 MCP 服务器的 URL：
 
 ![replit configuration](https://cdn.openai.com/API/docs/images/replit.png)
 
-在长版开发 URL 中，确保其结尾为 `/sse/`，这是 MCP server 的 server-sent events（流式）接口。你将使用此 URL 在 ChatGPT 中连接你的应用，并通过 API 进行调用。一个 Replit URL 的示例如下：
+在较长的开发 URL 中，确保其以 `/sse/`，结尾，这是 MCP 服务器的服务器发送事件（流式）接口。你将使用此 URL 在 ChatGPT 中连接你的应用，并通过 API 调用它。一个 Replit URL 示例如下：
 
 ```
 https://777xxx.janeway.replit.dev/sse/
@@ -414,24 +414,24 @@ https://777xxx.janeway.replit.dev/sse/
 
 ## 测试并连接你的 MCP 服务器
 
-你可以使用深度研究模型在提示词面板中测试你的 MCP 服务器 [提示词面板](https://platform.openai.com/chat)。新建一个提示词，或编辑现有提示词，并向提示词配置中添加一个新的 MCP 工具。这个兼容示例仅暴露只读 `search` 和 `fetch` 工具，因此其 API 请求会跳过对这些工具的审批。请为可能修改数据或执行其他重要操作的工具保留审批。
+你可以在 `gpt-6.1-sol` [提示词仪表板中测试你的 MCP 服务器](https://platform.openai.com/chat)。新建一个提示词，或者编辑现有提示词，然后在提示词配置中添加一个新的 MCP 工具。此兼容性示例仅暴露只读 `search` 和 `fetch` 工具，因此其 API 请求会跳过对这些工具的审批。请为可能修改数据或执行其他重大操作的工具保持启用审批。
 
-如果你正在作为插件的一部分测试此服务器，请参阅 [连接并测试你的插件](https://developers.openai.com/plugins/deploy/connect-chatgpt).
+如果你将此服务器作为插件的一部分进行测试，请按照 [连接并测试你的插件](https://developers.openai.com/plugins/deploy/connect-chatgpt).
 
 ![提示词配置](https://cdn.openai.com/API/docs/images/prompts_mcp.png)
 
-配置好 MCP 服务器后，你可以通过提示词界面使用模型进行对话。
+配置好 MCP 服务器后，你可以通过 Prompts UI 使用它与模型对话。
 
-![提示词对话](https://cdn.openai.com/API/docs/images/chat_prompts_mcp.png)
+![提示词聊天](https://cdn.openai.com/API/docs/images/chat_prompts_mcp.png)
 
-你可以直接使用 Responses API 通过类似下面的请求来测试 MCP 服务器：
+你可以使用 Responses API 直接通过类似如下的请求来测试 MCP 服务器：
 
 ```bash
 curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-  "model": "gpt-5.6-sol",
+  "model": "gpt-6.1-sol",
   "input": [
     {
       "role": "developer",
@@ -473,54 +473,54 @@ curl https://api.openai.com/v1/responses \
 
 ### 处理身份验证
 
-作为自定义远程 MCP 服务器的构建者，授权与身份验证可帮助你保护数据。当你的授权服务器支持 CIMD 且插件创建者选择它时，我们建议使用 OAuth 进行 [客户端 ID 元数据文档](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization#client-id-metadata-documents) 来完成客户端注册。ChatGPT 支持通过公共客户端令牌交换（`none`）或已签名客户端断言令牌交换（`private_key_jwt`）使用 CIMD。动态客户端注册在配置后仍受支持。有关插件身份验证要求，请参阅 [身份验证](https://developers.openai.com/plugins/build/auth)。有关协议详情，请阅读 [MCP 用户指南](https://modelcontextprotocol.io/docs/concepts/transports#authentication-and-authorization) 或 [授权规范](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization).
+作为构建自定义远程 MCP 服务器的人员，授权与身份验证可帮助你保护数据。当你的授权服务器支持 CIMD 且插件创建者选择使用它时，我们建议在客户端注册时使用 [Client ID Metadata Documents](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization#client-id-metadata-documents) 。ChatGPT 通过公共客户端令牌交换（`none`）或签名客户端断言令牌交换（`private_key_jwt`）支持 CIMD。动态客户端注册在配置后仍受支持。有关插件身份验证要求，请参阅 [身份验证](https://developers.openai.com/plugins/build/auth)。有关协议详情，请阅读 [MCP user guide](https://modelcontextprotocol.io/docs/concepts/transports#authentication-and-authorization) 或 [authorization specification](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization).
 
-如果你通过插件连接自定义远程 MCP 服务器，工作区中的用户将看到通往你服务的 OAuth 流程。
+如果你通过插件连接自定义远程 MCP 服务器，工作区中的用户将获得面向你服务的 OAuth 流程。
 
 ### 在 ChatGPT 中连接
 
-1. 在 [ChatGPT](https://chatgpt.com)，中，打开 **Settings → Security and login** 并启用 **Developer mode**.
+1. 在 [ChatGPT](https://chatgpt.com)，中，打开 **Settings → Security and login** 并开启 **Developer mode**.
 1. 前往 [ChatGPT Plugins](https://chatgpt.com/plugins)，点击加号按钮，并在开发者模式下连接你的服务器 URL。
-1. 通过在聊天和深度研究中运行提示来测试你的插件。
+1. 在聊天和深度研究中运行提示词以测试你的插件。
 
 有关详细的设置步骤，请参阅 [连接并测试你的插件](https://developers.openai.com/plugins/deploy/connect-chatgpt).
 
 ## 风险与安全
 
-自定义 MCP 服务器可让你将 ChatGPT 工作区连接到外部应用程序，从而允许 ChatGPT 在这些应用程序中访问、发送和接收数据。请注意，自定义 MCP 服务器并非由 OpenAI 开发或验证，它们属于第三方服务，需遵守各自的条款和条件。
+自定义 MCP 服务器使你能够将 ChatGPT 工作区连接到外部应用，从而让 ChatGPT 在这些应用中访问、发送和接收数据。请注意，自定义 MCP 服务器并非由 OpenAI 开发或验证，它们属于第三方服务，需遵循各自的服务条款。
 
-如果你发现恶意的 MCP 服务器，请向 security@openai.com.
+如果你发现恶意 MCP 服务器，请向以下邮箱举报： security@openai.com.
 
 ### 提示注入相关风险
 
-提示注入是一种攻击形式，攻击者将恶意指令嵌入到我们的模型可能遇到的内容中——例如网页——意图让这些指令覆盖 ChatGPT 的预期行为。如果模型遵从了被注入的指令，就可能执行用户和开发者从未预期的操作——包括将私有数据发送到外部目的地。
+提示注入是一种攻击形式，攻击者将恶意指令嵌入到我们的模型可能遇到的内容中——例如网页——意图让这些指令覆盖 ChatGPT 的预期行为。如果模型遵从了注入的指令，它可能会执行用户和开发者从未预期的操作——包括将私密数据发送到外部目标。
 
-例如，你可能让 ChatGPT 通过查看你的日历和最近的邮件来为一次团体晚餐找一家餐厅。在调研过程中，它可能会遇到一条恶意评论——本质上是一段有害内容，旨在诱使智能体执行非预期操作——指示它从 Gmail 中获取密码重置码并发送到恶意网站。
+例如，你可能让 ChatGPT 通过查看你的日历和最近的邮件来为一次聚餐找一个餐厅。在调研过程中，它可能会遇到一条恶意评论——本质上就是一段旨在诱骗智能体执行非预期操作的有害内容——这条评论指示它从 Gmail 检索密码重置码并发送给一个恶意网站。
 
-下表列出了需要考虑的具体场景。我们建议仔细审阅此表，以帮助你决定是否使用自定义 MCP。
+下表列出了一些需要考虑的具体场景。我们建议你仔细审阅此表，以帮助你判断是否应使用自定义 MCP。
 
-| 场景 / 风险                                                                                                                                                                                                                                                                                                                                                                                                                       | 如果我信任 MCP 的开发者，这样安全吗？                                                                                                                                                                                                                                                       | 我可以做些什么来降低风险？                                                                                                                                                                                                                                                                                                  |
+| 场景 / 风险                                                                                                                                                                                                                                                                                                                                                                                                                       | 如果我信任 MCP 的开发者，这样做安全吗？                                                                                                                                                                                                                                                       | 我可以采取哪些措施来降低风险？                                                                                                                                                                                                                                                                                                  |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 攻击者可能通过某种方式将提示注入攻击插入到可通过 MCP 访问的数据中。 <br /><br />_示例：_<br />• 对于客户支持 MCP，攻击者可能会向你发送一个包含提示注入攻击的客户支持请求。                                                                                                                                                                                           | 信任 MCP 的开发者并不能保证其安全。<br /><br />要使其安全，你需要信任 _MCP 中可访问的所有内容_.                                                                                                                                          | • 即便你信任 MCP 的开发者，也不要使用可能包含恶意或不可信用户输入的 MCP。<br />• 配置访问权限，最大限度减少可访问 MCP 的人数。                                                                                                                              |
-| 恶意 MCP 可能会在读或写操作中请求过多参数。 <br /><br />_示例：_<br />• 一个员工机票预订 MCP 可能会开放一个读取操作来获取航班时刻表，但请求的参数包括 `summaryOfConversation`, `userAnnualIncome`, `userHomeAddress`.                                                                                                                                        | 信任 MCP 的开发者不一定能保证其安全。<br /><br />MCP 的开发者可能认为请求某些数据是合理的，而你认为这些数据不适合共享。                                                                                              | • 手动安装 MCP 服务器时，请检查每个操作请求的参数，确保不存在超出合理范围的隐私访问。                                                                                                                                                                                              |
-| 攻击者可能利用提示注入攻击欺骗 ChatGPT 从自定义 MCP 中获取敏感数据，然后将其发送给攻击者。 <br /><br />_示例：_<br />• 攻击者可能通过另一个 MCP（例如电子邮件）向企业用户之一发起提示注入攻击，试图欺骗 ChatGPT 从内部工具中读取敏感数据并将其发送给攻击者。 | 信任 MCP 的开发者并不能保证其安全。<br /><br />新 MCP 中的所有内容可能都是安全且受信任的，因为风险在于这些数据可能被来自不同恶意来源的攻击窃取。                                                                             | • _ChatGPT 旨在保护用户_，但攻击者可能会尝试窃取你的数据，因此请注意该风险，并考虑是否值得使用。<br />• 配置访问权限，尽量减少能够访问包含特别敏感数据的 MCP 的人数。                                                          |
-| 攻击者可能利用提示注入攻击，通过对某个自定义 MCP 的写入操作泄露敏感信息。 <br /><br />_示例：_<br />• 攻击者通过另一个 MCP 发起提示注入攻击，诱使 ChatGPT 获取敏感数据，然后利用用于客服系统的 MCP 将其发送给攻击者。                                                                                       | 信任 MCP 的开发者并不能保证其安全。<br /><br />即使你完全信任该 MCP，如果写入操作存在任何可被攻击者观察到的后果，攻击者就可能试图利用这一点。                                                                          | • 用户应在写入操作发生时仔细审查（以确保这些操作是预期的，并且不包含任何不应分享的数据）。                                                                                                                                                                            |
-| 攻击者可能利用提示注入攻击，通过对某个恶意自定义 MCP 的读取操作泄露敏感信息，因为该 MCP 可以记录这些操作。                                                                                                                                                                                                                                                                    | 只有在该 MCP 是恶意的情况下，或者该 MCP 错误地将写入操作标记为读取操作时，这种攻击才会奏效。<br /><br />如果你信任某个 MCP 的开发者能够正确地仅将读取操作标记为 _读取_，并且相信该开发者不会试图窃取数据，那么这种风险可能很小。 | • 仅使用你信任的开发者提供的 MCP（但请注意，这本身并不足以确保安全）。                                                                                                                                                                                                                            |
-| 攻击者可能利用提示注入攻击，诱使 ChatGPT 通过某个自定义 MCP 执行用户并未预期的有害或破坏性写入操作。                                                                                                                                                                                                                                                                          | 信任 MCP 的开发者并不能保证其安全。<br /><br />新 MCP 中的所有内容都可能是安全且可信的，但由于攻击来自另一个恶意来源，该风险仍然存在。                                                                                     | • 用户应仔细审查写入操作，以确保它们是预期的且正确的。<br />• ChatGPT 旨在保护用户，但攻击者可能会试图诱使 ChatGPT 执行非预期的写入操作。<br />• 配置访问权限，尽量减少能够访问包含特别敏感数据的 MCP 的人数。 |
+| 攻击者可能通过某种方式在 MCP 可访问的数据中植入提示词注入攻击。 <br /><br />_示例：_<br />• 对于一个客户支持 MCP，攻击者可以向你发送一个带有提示词注入攻击的客户支持请求。                                                                                                                                                                                           | 信任 MCP 的开发者并不能保证安全。<br /><br />要保证安全，你需要信任 _MCP 内可访问的所有内容_.                                                                                                                                          | • 即使你信任 MCP 的开发者，也不要使用可能包含恶意或不可信用户输入的 MCP。<br />• 配置访问权限，尽量减少可访问该 MCP 的人数。                                                                                                                              |
+| 恶意 MCP 可能在读取或写入操作中请求过多的参数。 <br /><br />_示例：_<br />• 一个员工机票预订 MCP 可能公开一个用于获取航班时刻表的读取操作，但请求的参数包括 `summaryOfConversation`, `userAnnualIncome`, `userHomeAddress`.                                                                                                                                        | 信任 MCP 的开发者并不一定能保证安全。<br /><br />MCP 的开发者可能认为请求某些数据是合理的，而你并不认为可以接受共享这些数据。                                                                                              | • 在手动安装 MCP 服务器时，请检查每个操作请求的参数，并确保不存在超出合理范围的隐私访问。                                                                                                                                                                                              |
+| 攻击者可能使用提示词注入攻击，诱使 ChatGPT 从自定义 MCP 中获取敏感数据，然后发送给攻击者。 <br /><br />_示例：_<br />• 攻击者可能通过另一个 MCP（例如电子邮件）对企业用户之一发起提示词注入攻击，试图诱使 ChatGPT 从内部工具中读取敏感数据并发送给攻击者。 | 信任 MCP 的开发者并不能保证安全。<br /><br />新 MCP 中的所有内容都可能安全且可信，因为风险在于这些数据会被来自其他恶意来源的攻击窃取。                                                                             | • _ChatGPT 旨在保护用户_，但攻击者可能会尝试窃取你的数据，因此请注意相关风险，并考虑是否有必要这样做。<br />• 配置访问权限，最大限度地减少能够访问包含特别敏感数据的 MCP 的人数。                                                          |
+| 攻击者可能利用提示词注入攻击，通过对自定义 MCP 的写操作泄露敏感信息。 <br /><br />_示例：_<br />• 攻击者通过一个 MCP 利用提示词注入攻击，诱使 ChatGPT 获取敏感数据，然后利用用于客服系统的 MCP 将其发送给攻击者。                                                                                       | 信任 MCP 的开发者并不能保证安全。<br /><br />即使你完全信任该 MCP，只要写操作存在任何可被攻击者观察到的后果，他们就可能试图加以利用。                                                                          | • 用户应在写操作发生时仔细审查（以确保它们符合预期，并且不包含任何不应共享的数据）。                                                                                                                                                                            |
+| 攻击者可能利用提示词注入攻击，通过对恶意自定义 MCP 的读操作泄露敏感信息，因为该 MCP 可以记录这些操作。                                                                                                                                                                                                                                                                    | 只有当该 MCP 是恶意的，或者该 MCP 错误地将写操作标记为读操作时，此类攻击才会奏效。<br /><br />如果你信任 MCP 的开发者能够正确地仅将读操作标记为 _读_，操作，并且信任该开发者不会试图窃取数据，那么该风险可能很小。 | • 仅使用你信任的开发者提供的 MCP（但请注意，这并不足以保证安全）。                                                                                                                                                                                                                            |
+| 攻击者可能利用提示词注入攻击，诱使 ChatGPT 通过用户并未预期的自定义 MCP 执行有害或破坏性的写操作。                                                                                                                                                                                                                                                                          | 信任 MCP 的开发者并不能保证安全。<br /><br />新的 MCP 中的所有内容都可能是安全且受信任的，但由于攻击来自不同的恶意来源，这一风险仍然存在。                                                                                     | • 用户应仔细审查写操作，以确保它们符合预期且正确无误。<br />• ChatGPT 旨在保护用户，但攻击者可能会试图诱使 ChatGPT 执行未经预期的写操作。<br />• 配置访问权限，最大限度地减少能够访问包含特别敏感数据的 MCP 的人数。 |
 
-### 与非提示注入相关的风险
+### 非提示词注入相关风险
 
-自定义 MCP 引入了与提示注入攻击无关的其他风险：
+自定义 MCP 会引入与提示注入攻击无关的其他风险：
 
-- **写入操作既可能提升 MCP 服务器的实用性，也可能带来更大的风险**，因为它们使服务器能够执行潜在的破坏性操作，而不仅仅是向 ChatGPT 返回信息。在任何对话中，ChatGPT 目前都要求在执行写入操作之前进行手动确认。确认流程会标记潜在的敏感数据，但你只应在已仔细考虑并接受 ChatGPT 在执行此类操作时可能出错的前提下使用写入操作。即使 MCP 服务器已将操作标记为只读，写入操作仍有可能发生，这进一步凸显了在将自定义 MCP 服务器部署到 ChatGPT 之前对其进行充分信任的重要性。
-- **任何 MCP 服务器都可能在查询过程中接收到敏感数据**。即使服务器本身并非恶意，它也会访问 ChatGPT 在交互过程中提供的所有数据，其中可能包括用户此前向 ChatGPT 提供过的敏感数据。例如，在使用深度研究或聊天应用工具时，ChatGPT 向 MCP 服务器发送的查询中可能就包含这些数据。
+- **写入操作既可能提升 MCP 服务器的实用性，也可能带来更大的风险**，因为它们使服务器能够执行潜在的破坏性操作，而不仅仅是向 ChatGPT 返回信息。ChatGPT 目前在任何对话中执行写入操作之前都需要手动确认。确认过程会标记可能敏感的数据，但你应当仅在已经仔细考虑并接受 ChatGPT 可能在该操作上犯错的情况下使用写入操作。即使 MCP 服务器将该操作标记为只读，写入操作仍有可能发生，因此更加重要的是，在部署到 ChatGPT 之前要信任该自定义 MCP 服务器。
+- **任何 MCP 服务器都可能在查询过程中接收到敏感数据**. 即便服务器并非恶意，它也能够访问 ChatGPT 在交互过程中提供的任何数据，其中可能包括用户先前提供给 ChatGPT 的敏感数据。例如，在使用深度研究或聊天应用工具时，ChatGPT 向 MCP 服务器发送的查询中可能包含此类数据。
 
 ### 连接到受信任的服务器
 
-建议你在了解并信任底层应用之前，不要连接到自定义 MCP 服务器。
+我们建议你在了解并信任底层应用之前，不要连接自定义 MCP 服务器。
 
-例如，可以选择由服务提供商官方托管的服务器，例如连接到 Stripe 官方托管的 Stripe 服务器，地址为 `mcp.stripe.com` 而不是由第三方托管的非官方 Stripe MCP 服务器。由于目前官方 MCP 服务器数量有限，你也可以考虑由某个组织托管、通过 API 将请求代理到另一项服务的服务器。但请务必先了解该组织如何使用你的数据，并确认可以信任该服务器后再进行连接。在构建并连接你自己的 MCP 服务器时，请仔细确认它是正确的服务器。对于请求中响应的数据以及 OpenAI 调用你的 MCP 服务器时发送给你的数据，请务必谨慎处理。
+例如，选择由服务提供商自行托管的官方服务器。连接到由 Stripe 在以下地址托管的 Stripe 服务器 `mcp.stripe.com` ，而不是由第三方托管的非官方 Stripe MCP 服务器。由于目前可用的官方 MCP 服务器很少，你可以考虑使用通过 API 将请求代理到另一项服务的组织所托管的服务器。只有在审查了该组织如何使用你的数据并确认可以信任该服务器之后，才能进行连接。在构建并连接你自己的 MCP 服务器时，请仔细确认这是正确的服务器。注意你在响应请求时所提供的数据，以及在 OpenAI 调用你的 MCP 服务器时如何处理发送给的数据。
 
-你的远程 MCP 服务器允许他人将 OpenAI 连接到你的服务，并允许 OpenAI 在这些服务中访问、收发数据以及执行操作。请避免在工具的 JSON 中放置任何敏感信息，也避免存储访问你远程 MCP 服务器的 ChatGPT 用户的任何敏感信息。
+你的远程 MCP 服务器允许他人将 OpenAI 连接到你的服务，并允许 OpenAI 在这些服务中访问、发送和接收数据以及执行操作。避免在工具的 JSON 中放入任何敏感信息，并避免存储访问你的远程 MCP 服务器的 ChatGPT 用户的任何敏感信息。
 
-作为 MCP 服务器的构建者，请不要在工具定义中放置任何恶意内容。
+作为 MCP 服务器的构建者，不要在工具定义中放入任何恶意内容。
